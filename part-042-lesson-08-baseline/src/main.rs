@@ -29,6 +29,13 @@ fn main() {
         / labels.len() as f64;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("класс большинства={majority_label}, accuracy={accuracy:.2}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(labels, positive_count);
+}
+
+// Строим график по результатам урока.
+fn visualize(labels: [bool; 5], positive_count: usize) {
     // Сравниваем величины, вычисленные в примере.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

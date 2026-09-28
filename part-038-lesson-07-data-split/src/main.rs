@@ -19,6 +19,13 @@ fn main() {
     let test = &rows[8..];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("train={train:?}, validation={validation:?}, test={test:?}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(train, validation, test);
+}
+
+// Строим график по результатам урока.
+fn visualize(train: &[i32], validation: &[i32], test: &[i32]) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

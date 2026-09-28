@@ -22,6 +22,13 @@ fn main() {
     let derivative_output_by_x = derivative_output_by_square * derivative_square_by_x;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("f(x)={output}, df/dx={derivative_output_by_x}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize();
+}
+
+// Строим график по результатам урока.
+fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
     let chart_points_0: Vec<(f64, f64)> = (-30..=30)
         // Преобразуем каждый элемент в новое значение.

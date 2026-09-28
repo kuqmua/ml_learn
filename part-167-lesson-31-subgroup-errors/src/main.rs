@@ -52,6 +52,13 @@ fn main() {
             correct as f64 / matching.len() as f64
         );
     }
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(groups);
+}
+
+// Строим график по результатам урока.
+fn visualize(groups: [(&str, bool, bool); 4]) {
     // Сохраняем результат этого шага в `group_accuracy`.
     let group_accuracy = |name: &str| {
         // Собираем значения для `examples` в коллекцию.

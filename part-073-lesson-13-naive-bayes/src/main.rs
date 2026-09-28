@@ -163,6 +163,13 @@ fn main() {
         // Вызываем нужное вычисление с подготовленными аргументами.
         classify_text_with_multinomial_naive_bayes(&training_examples, "неизвестное")
     );
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(training_examples);
+}
+
+// Строим график по результатам урока.
+fn visualize(training_examples: [(&str, bool); 4]) {
     // Наглядное сравнение результатов сводной практики.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

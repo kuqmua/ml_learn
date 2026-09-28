@@ -19,6 +19,23 @@ fn main() {
     let joint_score = prior_positive * word_one_given_positive * word_two_given_positive;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("оценка положительного класса = {joint_score}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(
+        prior_positive,
+        word_one_given_positive,
+        word_two_given_positive,
+        joint_score,
+    );
+}
+
+// Строим график по результатам урока.
+fn visualize(
+    prior_positive: f64,
+    word_one_given_positive: f64,
+    word_two_given_positive: f64,
+    joint_score: f64,
+) {
     // Сравниваем величины, вычисленные в примере.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

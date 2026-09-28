@@ -38,6 +38,13 @@ fn main() {
             "{description}: прогноз={predicted_probability}, частота={observed_frequency}, разница={gap:.2}"
         );
     }
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(observed_frequency);
+}
+
+// Строим график по результатам урока.
+fn visualize(observed_frequency: f64) {
     // График величин и зависимостей, изученных в этом уроке.
     let chart_points_0: Vec<(f64, f64)> = (0..=10)
         // Преобразуем каждый элемент в новое значение.

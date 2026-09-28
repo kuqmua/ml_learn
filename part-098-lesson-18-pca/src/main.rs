@@ -157,6 +157,13 @@ fn main() {
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
         "mean={mean:?}, axis={axis:?}, explained={explained_variance_fraction:.3}, projected={projections:?}"
     );
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(projections);
+}
+
+// Строим график по результатам урока.
+fn visualize(projections: std::vec::Vec<f64>) {
     // Значения из этого урока на графике.
     let chart_points_0: Vec<(f64, f64)> = projections
         // Просматриваем элементы коллекции по ссылке.

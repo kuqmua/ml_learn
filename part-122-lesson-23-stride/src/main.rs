@@ -20,6 +20,13 @@ fn main() {
     let positions: Vec<_> = (0..output_width).map(|index| index * stride).collect();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("позиции ядра по ширине: {positions:?}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(positions);
+}
+
+// Строим график по результатам урока.
+fn visualize(positions: std::vec::Vec<i32>) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

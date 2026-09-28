@@ -90,6 +90,13 @@ fn main() {
     let baseline_mse = lesson_047::mean_squared_error(&targets, &baseline_predictions).unwrap();
     // Печатаем рассчитанные значения для проверки примера.
     println!("w={weight:.3}, b={bias:.3}, test MSE={model_mse:.6}, baseline MSE={baseline_mse:.3}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(weight, bias, test);
+}
+
+// Строим график по результатам урока.
+fn visualize(weight: f64, bias: f64, test: [(f64, f64); 2]) {
     // График величин и зависимостей, изученных в этом уроке.
     let chart_points_0: Vec<(f64, f64)> = (0..=60)
         // Преобразуем каждый элемент в новое значение.

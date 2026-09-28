@@ -43,6 +43,17 @@ fn main() {
     assert_eq!(useless_recall, Some(0.0));
     // Печатаем рассчитанные значения для проверки примера.
     println!("всегда отрицательно: accuracy={useless_accuracy:?}, recall={useless_recall:?}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(precision, recall, accuracy);
+}
+
+// Строим график по результатам урока.
+fn visualize(
+    precision: core::option::Option<f64>,
+    recall: core::option::Option<f64>,
+    accuracy: core::option::Option<f64>,
+) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

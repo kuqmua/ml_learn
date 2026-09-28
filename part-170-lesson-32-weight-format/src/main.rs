@@ -22,6 +22,13 @@ fn main() {
     let loaded_bias: f64 = lines.next().unwrap().parse().unwrap();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("после загрузки: вес={loaded_weight}, смещение={loaded_bias}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(loaded_weight, loaded_bias);
+}
+
+// Строим график по результатам урока.
+fn visualize(loaded_weight: f64, loaded_bias: f64) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

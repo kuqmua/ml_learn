@@ -25,6 +25,13 @@ fn main() {
             validation_error[depth - 1]
         );
     }
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(train_error, validation_error);
+}
+
+// Строим график по результатам урока.
+fn visualize(train_error: [f64; 3], validation_error: [f64; 3]) {
     // График величин и зависимостей, изученных в этом уроке.
     let chart_points_0: Vec<(f64, f64)> = train_error
         // Просматриваем элементы коллекции по ссылке.

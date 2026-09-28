@@ -144,6 +144,13 @@ fn main() {
         // Умножаем величины согласно используемой формуле.
         weight * 10. + bias
     );
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(training_examples, weight, bias);
+}
+
+// Строим график по результатам урока.
+fn visualize(training_examples: &[(f64, f64)], weight: f64, bias: f64) {
     // Значения из этого урока на графике.
     let chart_points_0: Vec<(f64, f64)> = training_examples.iter().map(|&(x, y)| (x, y)).collect();
     // Собираем значения для `chart_points_1` в коллекцию.

@@ -187,6 +187,13 @@ fn main() {
     })();
     // Шаг: Печатаем веса, чтобы увидеть запрет доступа к будущим токенам.
     println!("weights={attention_weights:?}, output={attended_output:?}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(attention_weights);
+}
+
+// Строим график по результатам урока.
+fn visualize(attention_weights: std::vec::Vec<std::vec::Vec<f64>>) {
     // Значения ячеек видны по цвету и подписи.
     let chart = lesson_visualization::heatmap(
         // Передаём путь к каталогу текущего урока.

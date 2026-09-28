@@ -29,6 +29,13 @@ fn main() {
             "{description}: P(A)={first}, P(B)={second}, P(A и B)={both}, независимы={independent}"
         );
     }
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(cases);
+}
+
+// Строим график по результатам урока.
+fn visualize(cases: [(&str, f64, f64, f64, bool); 3]) {
     // Сравниваем величины, вычисленные в примере.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

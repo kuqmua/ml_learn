@@ -23,6 +23,13 @@ fn main() {
     let posterior = true_positive / (true_positive + false_positive);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("P(болен | положительный тест) = {posterior:.3}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(posterior);
+}
+
+// Строим график по результатам урока.
+fn visualize(posterior: f64) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

@@ -28,6 +28,13 @@ fn main() {
     let new_weight = old_weight - learning_rate * mini_batch_gradient;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("средний градиент={mini_batch_gradient}, новый вес={new_weight}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(old_weight, new_weight);
+}
+
+// Строим график по результатам урока.
+fn visualize(old_weight: f64, new_weight: f64) {
     // Сравниваем величины, вычисленные в примере.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

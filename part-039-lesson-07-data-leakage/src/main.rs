@@ -23,6 +23,13 @@ fn main() {
         (train.iter().sum::<f64>() + test.iter().sum::<f64>()) / (train.len() + test.len()) as f64;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("только train={train_mean}, с утечкой={contaminated_mean}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(train_mean, contaminated_mean);
+}
+
+// Строим график по результатам урока.
+fn visualize(train_mean: f64, contaminated_mean: f64) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

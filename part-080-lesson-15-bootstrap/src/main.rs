@@ -17,6 +17,13 @@ fn main() {
     let sample: Vec<_> = sampled_indices.iter().map(|&index| data[index]).collect();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("исходные={data:?}, bootstrap={sample:?}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(sample);
+}
+
+// Строим график по результатам урока.
+fn visualize(sample: std::vec::Vec<&str>) {
     // Сравниваем величины, вычисленные в примере.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

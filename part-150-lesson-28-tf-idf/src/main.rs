@@ -36,6 +36,13 @@ fn main() {
     let score = term_frequency * inverse_document_frequency;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("частота={term_frequency}, IDF={inverse_document_frequency:.3}, TF-IDF={score:.3}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(inverse_document_frequency);
+}
+
+// Строим график по результатам урока.
+fn visualize(inverse_document_frequency: f64) {
     // График величин и зависимостей, изученных в этом уроке.
     let chart_points_0: Vec<(f64, f64)> = (0..=10)
         // Преобразуем каждый элемент в новое значение.

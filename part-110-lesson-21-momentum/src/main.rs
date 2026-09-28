@@ -31,6 +31,16 @@ fn main() {
         // Вычисляем значение по указанной формуле.
         velocity_history.push(((step + 1) as f64, velocity));
     }
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(weight_history, velocity_history);
+}
+
+// Строим график по результатам урока.
+fn visualize(
+    weight_history: std::vec::Vec<(f64, f64)>,
+    velocity_history: std::vec::Vec<(f64, f64)>,
+) {
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.

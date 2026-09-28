@@ -89,6 +89,13 @@ fn main() {
             // Собираем полученные элементы в вектор.
             .collect::<Vec<_>>()
     );
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(records, training_mean);
+}
+
+// Строим график по результатам урока.
+fn visualize(records: std::vec::Vec<(f64, u8)>, training_mean: f64) {
     // Сравниваем величины, вычисленные в примере.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

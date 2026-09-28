@@ -32,6 +32,13 @@ fn main() {
     let updated = old_weight - 0.01 * corrected_first / (root + 0.00000001);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("вес после первого шага Adam = {updated}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(gradient, corrected_first, old_weight, updated);
+}
+
+// Строим график по результатам урока.
+fn visualize(gradient: f64, corrected_first: f64, old_weight: f64, updated: f64) {
     // Сравниваем величины, вычисленные в примере.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

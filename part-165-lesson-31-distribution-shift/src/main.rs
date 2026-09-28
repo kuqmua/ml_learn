@@ -35,6 +35,13 @@ fn main() {
             "{description}: эталон={reference_mean}, новые данные={current_mean}, разница={difference}"
         );
     }
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(reference, cases);
+}
+
+// Строим график по результатам урока.
+fn visualize(reference: [f64; 3], cases: [(&str, [f64; 3], f64); 3]) {
     // Показываем значения, рассчитанные по данным примера.
     let chart_points_0: Vec<(f64, f64)> = reference
         // Просматриваем элементы коллекции по ссылке.

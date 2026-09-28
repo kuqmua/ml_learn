@@ -66,6 +66,13 @@ fn main() {
             break;
         }
     }
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(probabilities);
+}
+
+// Строим график по результатам урока.
+fn visualize(probabilities: [f64; 3]) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

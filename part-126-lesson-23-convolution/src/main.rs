@@ -96,6 +96,13 @@ fn main() {
             pooled
         })()
     );
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(feature_map);
+}
+
+// Строим график по результатам урока.
+fn visualize(feature_map: std::vec::Vec<std::vec::Vec<f64>>) {
     // Значения ячеек видны по цвету и подписи.
     let chart = lesson_visualization::heatmap(
         // Передаём путь к каталогу текущего урока.

@@ -78,6 +78,16 @@ fn main() {
             // Собираем полученные элементы в вектор.
             .collect::<Vec<_>>()
     );
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(vocabulary, token_indices);
+}
+
+// Строим график по результатам урока.
+fn visualize(
+    vocabulary: std::collections::BTreeMap<std::string::String, usize>,
+    token_indices: std::vec::Vec<usize>,
+) {
     // Наглядное сравнение результатов сводной практики.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

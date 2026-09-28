@@ -132,6 +132,13 @@ fn main() {
         // Обновляем `current_state` результатом текущего шага.
         current_state = next_state;
     }
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(action_values);
+}
+
+// Строим график по результатам урока.
+fn visualize(action_values: [[f64; 2]; 5]) {
     // Значения из этого урока на графике.
     let chart_points_0: Vec<(f64, f64)> = action_values
         // Просматриваем элементы коллекции по ссылке.

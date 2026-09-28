@@ -17,6 +17,13 @@ fn main() {
     let output = [input[0] + transformed[0], input[1] + transformed[1]];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("вход={input:?}, после residual={output:?}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(input, output);
+}
+
+// Строим график по результатам урока.
+fn visualize(input: [f64; 2], output: [f64; 2]) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

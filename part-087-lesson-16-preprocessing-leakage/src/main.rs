@@ -21,6 +21,13 @@ fn main() {
     let validation_centered = validation[0] - train_mean;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("среднее train={train_mean}, validation после центрирования={validation_centered}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(train_mean, validation_centered);
+}
+
+// Строим график по результатам урока.
+fn visualize(train_mean: f64, validation_centered: f64) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

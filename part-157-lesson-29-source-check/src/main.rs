@@ -30,6 +30,13 @@ fn main() {
         // Печатаем рассчитанные значения для проверки примера.
         println!("{description}: score={retrieval_score} → {answer}");
     }
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(minimum_reliable_score);
+}
+
+// Строим график по результатам урока.
+fn visualize(minimum_reliable_score: f64) {
     // Сравниваем величины, вычисленные в примере.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

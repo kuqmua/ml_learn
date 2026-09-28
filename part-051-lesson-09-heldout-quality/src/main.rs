@@ -54,6 +54,13 @@ fn main() {
     let mse = lesson_047::mean_squared_error(&targets, &predictions).unwrap();
     // Печатаем рассчитанные значения для проверки примера.
     println!("test MSE = {mse}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(training, test, weight, bias);
+}
+
+// Строим график по результатам урока.
+fn visualize(training: [(f64, f64); 2], test: [(f64, f64); 2], weight: f64, bias: f64) {
     // Показываем значения, рассчитанные по данным примера.
     let chart_points_0: Vec<(f64, f64)> = training.iter().map(|&(x, y)| (x, y)).collect();
     // Собираем значения для `chart_points_1` в коллекцию.

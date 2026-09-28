@@ -20,6 +20,13 @@ fn main() {
             println!("найден документ {id}");
         }
     }
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(documents, query);
+}
+
+// Строим график по результатам урока.
+fn visualize(documents: [(&str, &str); 2], query: &str) {
     // Сравниваем величины, вычисленные в примере.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

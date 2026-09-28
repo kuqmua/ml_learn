@@ -135,6 +135,16 @@ fn main() {
             output_sum
         })()
     );
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(left_gradients, right_gradients);
+}
+
+// Строим график по результатам урока.
+fn visualize(
+    left_gradients: std::vec::Vec<std::vec::Vec<f64>>,
+    right_gradients: std::vec::Vec<std::vec::Vec<f64>>,
+) {
     // Цветом показываем вклад каждого элемента входных матриц в градиент.
     for (name, title, values) in [
         (

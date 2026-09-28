@@ -30,6 +30,13 @@ fn main() {
     let stochastic_gradient = 2.0 * (weight * first_feature - first_target) * first_feature;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("batch={batch_gradient}, stochastic={stochastic_gradient}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(batch_gradient, stochastic_gradient);
+}
+
+// Строим график по результатам урока.
+fn visualize(batch_gradient: f64, stochastic_gradient: f64) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

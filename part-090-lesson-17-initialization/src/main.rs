@@ -17,6 +17,13 @@ fn main() {
     let second_start = [points[0], points[1]];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("разнесённые центры={first_start:?}; соседние центры={second_start:?}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(points, first_start, second_start);
+}
+
+// Строим график по результатам урока.
+fn visualize(points: [[f64; 2]; 4], first_start: [[f64; 2]; 2], second_start: [[f64; 2]; 2]) {
     // Значения из этого урока на графике.
     let chart_points_0: Vec<(f64, f64)> = points.iter().map(|p| (p[0], p[1])).collect();
     // Собираем значения для `chart_points_1` в коллекцию.

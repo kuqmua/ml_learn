@@ -32,6 +32,13 @@ fn main() {
     let scaled_squared = lesson_004::squared_distance(&scaled_first, &scaled_second).unwrap();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("до={raw_squared}, после масштабирования={scaled_squared}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(raw_squared, scaled_squared);
+}
+
+// Строим график по результатам урока.
+fn visualize(raw_squared: f64, scaled_squared: f64) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

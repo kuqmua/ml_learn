@@ -23,6 +23,13 @@ fn main() {
     let analytical_derivative = 2.0 * x;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("численно={numerical_derivative}, точно={analytical_derivative}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(x, analytical_derivative);
+}
+
+// Строим график по результатам урока.
+fn visualize(x: f64, analytical_derivative: f64) {
     // На малом шаге проявляется погрешность округления центральной разности.
     let points: Vec<(f64, f64)> = (1..=12)
         // Преобразуем каждый элемент в новое значение.

@@ -71,6 +71,13 @@ fn main() {
             "размеры {incompatible_left_shape:?} и {incompatible_right_shape:?}: умножение невозможно"
         );
     }
+
+    // Построение графика вынесено из основного кода урока.
+    visualize();
+}
+
+// Строим график по результатам урока.
+fn visualize() {
     // Значения ячеек видны по цвету и подписи.
     let chart = lesson_visualization::heatmap(
         // Передаём путь к каталогу текущего урока.

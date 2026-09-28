@@ -89,6 +89,13 @@ fn main() {
                 / (true_positive_probability + (1.0 - prevalence) * (1.0 - specificity))
         })()
     );
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(positive_test_count, true_positive_count);
+}
+
+// Строим график по результатам урока.
+fn visualize(positive_test_count: i32, true_positive_count: i32) {
     // Значения из этого урока на графике.
     let chart_points_0: Vec<(f64, f64)> = [
         // Добавляем пару значений для сравнения или построения графика.

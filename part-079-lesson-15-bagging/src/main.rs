@@ -17,6 +17,13 @@ fn main() {
     let bagged_prediction = positive_votes * 2 > model_predictions.len();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("голосов за класс 1: {positive_votes}; ансамбль={bagged_prediction}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(model_predictions, positive_votes);
+}
+
+// Строим график по результатам урока.
+fn visualize(model_predictions: [bool; 5], positive_votes: usize) {
     // Сравниваем величины, вычисленные в примере.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

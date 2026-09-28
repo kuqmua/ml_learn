@@ -285,6 +285,15 @@ fn main() {
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("generated: {}", generated_tokens.join(" "));
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(bigram_counts);
+}
+
+// Строим график по результатам урока.
+fn visualize(
+    bigram_counts: std::collections::BTreeMap<(std::string::String, std::string::String), usize>,
+) {
     // Наглядное представление вычислений сводной практики.
     let chart_points_0: Vec<(f64, f64)> = bigram_counts
         // Просматриваем элементы коллекции по ссылке.

@@ -19,6 +19,13 @@ fn main() {
     let centered: Vec<_> = train.iter().map(|&value| value - mean).collect();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("среднее train={mean}, центрировано={centered:?}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(train, centered);
+}
+
+// Строим график по результатам урока.
+fn visualize(train: [f64; 3], centered: std::vec::Vec<f64>) {
     // График величин и зависимостей, изученных в этом уроке.
     let chart_points_0: Vec<(f64, f64)> = train
         // Просматриваем элементы коллекции по ссылке.

@@ -21,6 +21,13 @@ fn main() {
         // Присваиваем вычисленное значение соответствующей переменной или полю.
         "градиент слева={left_path_gradient}, справа={right_path_gradient}, всего={total_gradient}"
     );
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(left_path_gradient, right_path_gradient, total_gradient);
+}
+
+// Строим график по результатам урока.
+fn visualize(left_path_gradient: f64, right_path_gradient: f64, total_gradient: f64) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

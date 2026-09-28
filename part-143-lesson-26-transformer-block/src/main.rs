@@ -219,6 +219,13 @@ fn main() {
     })();
     // Печатаем рассчитанные значения для проверки примера.
     println!("transformer block: {transformer_output:?}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(input_values, transformer_output);
+}
+
+// Строим график по результатам урока.
+fn visualize(input_values: [[f64; 2]; 2], transformer_output: std::vec::Vec<[f64; 2]>) {
     // Собираем значения для `input_matrix` в коллекцию.
     let input_matrix: Vec<Vec<f64>> = input_values.iter().map(|row| row.to_vec()).collect();
     // Собираем значения для `output_matrix` в коллекцию.

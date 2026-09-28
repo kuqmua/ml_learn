@@ -26,6 +26,13 @@ fn main() {
     let ml_prior = 1.0 - code_prior;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("P(code)={code_prior}, P(ml)={ml_prior}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(code_prior, ml_prior);
+}
+
+// Строим график по результатам урока.
+fn visualize(code_prior: f64, ml_prior: f64) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

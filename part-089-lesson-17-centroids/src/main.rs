@@ -28,6 +28,13 @@ fn main() {
     centroid[1] /= cluster.len() as f64;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("центроид = {centroid:?}");
+
+    // Построение графика вынесено из основного кода урока.
+    visualize(cluster, centroid);
+}
+
+// Строим график по результатам урока.
+fn visualize(cluster: [[f64; 2]; 2], centroid: [f64; 2]) {
     // Значения из этого урока на графике.
     let chart_points_0: Vec<(f64, f64)> = cluster.iter().map(|p| (p[0], p[1])).collect();
     // Собираем значения для `chart_points_1` в коллекцию.
