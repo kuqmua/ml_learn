@@ -1,0 +1,7 @@
+[package]
+name = "part-204-lesson-39-diffusion-noise-prediction"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-203-lesson-39-diffusion-forward = { path = "../part-203-lesson-39-diffusion-forward" }

@@ -1,8 +1,0 @@
-[package]
-name = "part-095-lesson-18-covariance"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

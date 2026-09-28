@@ -1,0 +1,9 @@
+[package]
+name = "part-122-lesson-22-training"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+
+lesson-visualization = { path = "../lesson-visualization" }

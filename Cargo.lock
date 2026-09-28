@@ -348,195 +348,203 @@ name = "part-037-lesson-07-feature-types"
 version = "0.1.0"
 
 [[package]]
-name = "part-038-lesson-07-data-split"
+name = "part-038-lesson-07-train-only-imputation"
+version = "0.1.0"
+
+[[package]]
+name = "part-039-lesson-07-categorical-encoding"
+version = "0.1.0"
+
+[[package]]
+name = "part-040-lesson-07-data-split"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-039-lesson-07-data-leakage"
+name = "part-041-lesson-07-data-leakage"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-040-lesson-07-data-pipeline"
+name = "part-042-lesson-07-data-pipeline"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-041-lesson-08-seed"
+name = "part-043-lesson-08-seed"
 version = "0.1.0"
 
 [[package]]
-name = "part-042-lesson-08-baseline"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-043-lesson-08-configuration"
-version = "0.1.0"
-
-[[package]]
-name = "part-044-lesson-08-metric-log"
+name = "part-044-lesson-08-baseline"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-045-lesson-08-data-version"
+name = "part-045-lesson-08-configuration"
 version = "0.1.0"
 
 [[package]]
-name = "part-046-lesson-08-experiment"
-version = "0.1.0"
-
-[[package]]
-name = "part-047-lesson-09-mse"
+name = "part-046-lesson-08-metric-log"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-048-lesson-09-mae"
+name = "part-047-lesson-08-data-version"
+version = "0.1.0"
+
+[[package]]
+name = "part-048-lesson-08-experiment"
+version = "0.1.0"
+
+[[package]]
+name = "part-049-lesson-09-mse"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-049-lesson-09-coefficients"
+name = "part-050-lesson-09-mae"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-050-lesson-09-regularization"
+name = "part-051-lesson-09-coefficients"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-051-lesson-09-heldout-quality"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-047-lesson-09-mse",
-]
-
-[[package]]
-name = "part-052-lesson-09-linear-regression"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-047-lesson-09-mse",
-]
-
-[[package]]
-name = "part-053-lesson-10-sigmoid"
+name = "part-052-lesson-09-regularization"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-054-lesson-10-log-loss"
+name = "part-053-lesson-09-heldout-quality"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-049-lesson-09-mse",
+]
+
+[[package]]
+name = "part-054-lesson-09-linear-regression"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-049-lesson-09-mse",
+]
+
+[[package]]
+name = "part-055-lesson-10-sigmoid"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-055-lesson-10-probability"
+name = "part-056-lesson-10-log-loss"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-056-lesson-10-threshold"
+name = "part-057-lesson-10-probability"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-057-lesson-10-logistic-regression"
+name = "part-058-lesson-10-threshold"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-058-lesson-11-confusion-matrix"
+name = "part-059-lesson-10-logistic-regression"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-059-lesson-11-precision"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-058-lesson-11-confusion-matrix",
-]
-
-[[package]]
-name = "part-060-lesson-11-recall"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-058-lesson-11-confusion-matrix",
-]
-
-[[package]]
-name = "part-061-lesson-11-f1"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-058-lesson-11-confusion-matrix",
- "part-059-lesson-11-precision",
- "part-060-lesson-11-recall",
-]
-
-[[package]]
-name = "part-062-lesson-11-roc-auc"
+name = "part-060-lesson-11-confusion-matrix"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-063-lesson-11-pr-auc"
+name = "part-061-lesson-11-precision"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-060-lesson-11-confusion-matrix",
+]
+
+[[package]]
+name = "part-062-lesson-11-recall"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-060-lesson-11-confusion-matrix",
+]
+
+[[package]]
+name = "part-063-lesson-11-f1"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-060-lesson-11-confusion-matrix",
+ "part-061-lesson-11-precision",
+ "part-062-lesson-11-recall",
+]
+
+[[package]]
+name = "part-064-lesson-11-roc-auc"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-064-lesson-11-metrics"
+name = "part-065-lesson-11-pr-auc"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
- "part-058-lesson-11-confusion-matrix",
- "part-059-lesson-11-precision",
- "part-060-lesson-11-recall",
- "part-061-lesson-11-f1",
 ]
 
 [[package]]
-name = "part-065-lesson-12-distances"
+name = "part-066-lesson-11-metrics"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-060-lesson-11-confusion-matrix",
+ "part-061-lesson-11-precision",
+ "part-062-lesson-11-recall",
+ "part-063-lesson-11-f1",
+]
+
+[[package]]
+name = "part-067-lesson-12-distances"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -544,7 +552,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-066-lesson-12-feature-scaling"
+name = "part-068-lesson-12-feature-scaling"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -552,324 +560,227 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-067-lesson-12-choose-k"
+name = "part-069-lesson-12-choose-k"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-068-lesson-12-prediction-cost"
+name = "part-070-lesson-12-prediction-cost"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-069-lesson-12-knn"
+name = "part-071-lesson-12-knn"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-070-lesson-13-conditional-independence"
+name = "part-072-lesson-13-conditional-independence"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-071-lesson-13-priors"
+name = "part-073-lesson-13-priors"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-072-lesson-13-laplace-smoothing"
+name = "part-074-lesson-13-laplace-smoothing"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-073-lesson-13-naive-bayes"
+name = "part-075-lesson-13-naive-bayes"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-074-lesson-14-entropy"
+name = "part-076-lesson-14-entropy"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-075-lesson-14-gini"
+name = "part-077-lesson-14-gini"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-076-lesson-14-greedy-split"
+name = "part-078-lesson-14-greedy-split"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-077-lesson-14-overfitting"
+name = "part-079-lesson-14-overfitting"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-078-lesson-14-decision-tree"
+name = "part-080-lesson-14-decision-tree"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-079-lesson-15-bagging"
+name = "part-081-lesson-15-bagging"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-080-lesson-15-bootstrap"
+name = "part-082-lesson-15-bootstrap"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-081-lesson-15-majority-vote"
+name = "part-083-lesson-15-majority-vote"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-082-lesson-15-bias-variance"
+name = "part-084-lesson-15-bias-variance"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-083-lesson-15-ensembles"
+name = "part-085-lesson-15-ensembles"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-084-lesson-16-k-fold"
+name = "part-086-lesson-16-residual-boosting"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-085-lesson-16-stratification"
+name = "part-087-lesson-16-oblivious-tree"
+version = "0.1.0"
+
+[[package]]
+name = "part-088-lesson-16-ordered-category-statistics"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-086-lesson-16-nested-evaluation"
+name = "part-089-lesson-16-ordered-boosting"
+version = "0.1.0"
+
+[[package]]
+name = "part-090-lesson-16-catboost-principles"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-087-lesson-16-oblivious-tree",
+ "part-088-lesson-16-ordered-category-statistics",
+]
+
+[[package]]
+name = "part-091-lesson-17-k-fold"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-087-lesson-16-preprocessing-leakage"
+name = "part-092-lesson-17-stratification"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-088-lesson-16-cross-validation"
+name = "part-093-lesson-17-nested-evaluation"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-089-lesson-17-centroids"
+name = "part-094-lesson-17-preprocessing-leakage"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-090-lesson-17-initialization"
+name = "part-095-lesson-17-cross-validation"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-091-lesson-17-inertia"
+name = "part-096-lesson-18-centroids"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-092-lesson-17-choose-k"
+name = "part-097-lesson-18-initialization"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-093-lesson-17-clustering"
+name = "part-098-lesson-18-inertia"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-094-lesson-18-centering"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-029-lesson-06-mean",
-]
-
-[[package]]
-name = "part-095-lesson-18-covariance"
+name = "part-099-lesson-18-choose-k"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-096-lesson-18-principal-direction"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-001-lesson-01-multiply-coordinates-and-add",
-]
-
-[[package]]
-name = "part-097-lesson-18-explained-variance"
+name = "part-100-lesson-18-clustering"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-098-lesson-18-pca"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-099-lesson-19-forward-pass"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-100-lesson-19-backpropagation"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-101-lesson-19-gradient-accumulation"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-102-lesson-19-computation-graph"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-103-lesson-20-layers"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-104-lesson-20-parameters"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-105-lesson-20-activation"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-106-lesson-20-initialization"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-107-lesson-20-mini-batch"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-108-lesson-20-mlp"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-109-lesson-21-sgd"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-110-lesson-21-momentum"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-111-lesson-21-adam"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-112-lesson-21-normalization"
+name = "part-101-lesson-19-centering"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -877,120 +788,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-113-lesson-21-clipping"
+name = "part-102-lesson-19-covariance"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-114-lesson-21-early-stopping"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-115-lesson-21-training"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-116-lesson-22-reverse-mode"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-117-lesson-22-tensor-shapes"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-118-lesson-22-broadcasting"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-119-lesson-22-gradient-check"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-120-lesson-22-autodiff"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-121-lesson-23-kernel"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-122-lesson-23-stride"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-123-lesson-23-padding"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-124-lesson-23-pooling"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-125-lesson-23-local-features"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-126-lesson-23-convolution"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-127-lesson-24-vocabulary"
-version = "0.1.0"
-
-[[package]]
-name = "part-128-lesson-24-special-tokens"
-version = "0.1.0"
-
-[[package]]
-name = "part-129-lesson-24-dense-representations"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-130-lesson-24-embedding-similarity"
+name = "part-103-lesson-19-principal-direction"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -998,21 +803,338 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-131-lesson-24-embeddings"
+name = "part-104-lesson-19-explained-variance"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-132-lesson-25-query"
+name = "part-105-lesson-19-pca"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-133-lesson-25-key"
+name = "part-106-lesson-20-forward-pass"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-107-lesson-20-backpropagation"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-108-lesson-20-gradient-accumulation"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-109-lesson-20-computation-graph"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-110-lesson-21-layers"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-111-lesson-21-parameters"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-112-lesson-21-activation"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-113-lesson-21-initialization"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-114-lesson-21-mini-batch"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-115-lesson-21-mlp"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-116-lesson-22-sgd"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-117-lesson-22-momentum"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-118-lesson-22-adam"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-119-lesson-22-normalization"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-029-lesson-06-mean",
+]
+
+[[package]]
+name = "part-120-lesson-22-clipping"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-121-lesson-22-early-stopping"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-122-lesson-22-training"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-123-lesson-23-reverse-mode"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-124-lesson-23-tensor-shapes"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-125-lesson-23-broadcasting"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-126-lesson-23-gradient-check"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-127-lesson-23-autodiff"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-128-lesson-24-kernel"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-129-lesson-24-stride"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-130-lesson-24-padding"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-131-lesson-24-pooling"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-132-lesson-24-local-features"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-133-lesson-24-convolution"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-134-lesson-25-vit-patches"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-135-lesson-25-vit-global-attention"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-134-lesson-25-vit-patches",
+]
+
+[[package]]
+name = "part-136-lesson-25-vit-class-token"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-137-lesson-26-rnn-state"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-138-lesson-26-bptt"
+version = "0.1.0"
+dependencies = [
+ "part-137-lesson-26-rnn-state",
+]
+
+[[package]]
+name = "part-139-lesson-26-lstm-cell"
+version = "0.1.0"
+
+[[package]]
+name = "part-140-lesson-26-gru-cell"
+version = "0.1.0"
+
+[[package]]
+name = "part-141-lesson-27-causal-convolution"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-142-lesson-27-dilation-receptive-field"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-141-lesson-27-causal-convolution",
+]
+
+[[package]]
+name = "part-143-lesson-27-gated-activation"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-144-lesson-27-residual-skip"
+version = "0.1.0"
+
+[[package]]
+name = "part-145-lesson-27-wavenet-mini"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-141-lesson-27-causal-convolution",
+]
+
+[[package]]
+name = "part-146-lesson-28-utf8-bytes"
+version = "0.1.0"
+
+[[package]]
+name = "part-147-lesson-28-bpe-training"
+version = "0.1.0"
+
+[[package]]
+name = "part-148-lesson-28-bpe-encode-decode"
+version = "0.1.0"
+dependencies = [
+ "part-147-lesson-28-bpe-training",
+]
+
+[[package]]
+name = "part-149-lesson-28-control-tokens"
+version = "0.1.0"
+
+[[package]]
+name = "part-150-lesson-28-tokenizer-evaluation"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-147-lesson-28-bpe-training",
+]
+
+[[package]]
+name = "part-151-lesson-29-vocabulary"
+version = "0.1.0"
+
+[[package]]
+name = "part-152-lesson-29-special-tokens"
+version = "0.1.0"
+
+[[package]]
+name = "part-153-lesson-29-dense-representations"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-154-lesson-29-embedding-similarity"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -1020,36 +1142,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-134-lesson-25-value"
+name = "part-155-lesson-29-embeddings"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-135-lesson-25-multiply-coordinates-add-and-scale"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-001-lesson-01-multiply-coordinates-and-add",
-]
-
-[[package]]
-name = "part-136-lesson-25-softmax"
+name = "part-156-lesson-30-query"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-137-lesson-25-causal-mask"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-138-lesson-25-attention"
+name = "part-157-lesson-30-key"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -1057,35 +1164,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-139-lesson-26-self-attention"
+name = "part-158-lesson-30-value"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-140-lesson-26-residual"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-141-lesson-26-layer-norm"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-142-lesson-26-feed-forward"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-143-lesson-26-transformer-block"
+name = "part-159-lesson-30-multiply-coordinates-add-and-scale"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -1093,56 +1179,242 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-144-lesson-27-next-token"
+name = "part-160-lesson-30-softmax"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-145-lesson-27-cross-entropy"
+name = "part-161-lesson-30-causal-mask"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-146-lesson-27-perplexity"
+name = "part-162-lesson-30-attention"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-001-lesson-01-multiply-coordinates-and-add",
+]
+
+[[package]]
+name = "part-163-lesson-31-self-attention"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-147-lesson-27-sampling"
+name = "part-164-lesson-31-residual"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-148-lesson-27-language-model"
+name = "part-165-lesson-31-layer-norm"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-149-lesson-28-lexical-search"
+name = "part-166-lesson-31-feed-forward"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-150-lesson-28-tf-idf"
+name = "part-167-lesson-31-transformer-block"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-001-lesson-01-multiply-coordinates-and-add",
+]
+
+[[package]]
+name = "part-168-lesson-32-bidirectional-encoder"
+version = "0.1.0"
+
+[[package]]
+name = "part-169-lesson-32-padding-mask"
+version = "0.1.0"
+dependencies = [
+ "part-168-lesson-32-bidirectional-encoder",
+]
+
+[[package]]
+name = "part-170-lesson-32-masked-language-model"
+version = "0.1.0"
+dependencies = [
+ "part-168-lesson-32-bidirectional-encoder",
+]
+
+[[package]]
+name = "part-171-lesson-33-next-token"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-151-lesson-28-cosine"
+name = "part-172-lesson-33-cross-entropy"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-173-lesson-33-perplexity"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-174-lesson-33-sampling"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-175-lesson-33-language-model"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-176-lesson-34-token-position-embeddings"
+version = "0.1.0"
+
+[[package]]
+name = "part-177-lesson-34-causal-self-attention"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-178-lesson-34-multi-head-attention"
+version = "0.1.0"
+dependencies = [
+ "part-177-lesson-34-causal-self-attention",
+]
+
+[[package]]
+name = "part-179-lesson-34-decoder-block"
+version = "0.1.0"
+dependencies = [
+ "part-177-lesson-34-causal-self-attention",
+]
+
+[[package]]
+name = "part-180-lesson-34-next-token-loss"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-177-lesson-34-causal-self-attention",
+]
+
+[[package]]
+name = "part-181-lesson-34-tiny-gpt-forward"
+version = "0.1.0"
+dependencies = [
+ "part-177-lesson-34-causal-self-attention",
+]
+
+[[package]]
+name = "part-182-lesson-34-gpt-readout-training"
+version = "0.1.0"
+dependencies = [
+ "part-181-lesson-34-tiny-gpt-forward",
+]
+
+[[package]]
+name = "part-183-lesson-35-rmsnorm"
+version = "0.1.0"
+
+[[package]]
+name = "part-184-lesson-35-rope"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-185-lesson-35-grouped-query-attention"
+version = "0.1.0"
+dependencies = [
+ "part-177-lesson-34-causal-self-attention",
+]
+
+[[package]]
+name = "part-186-lesson-35-qk-norm"
+version = "0.1.0"
+dependencies = [
+ "part-183-lesson-35-rmsnorm",
+ "part-184-lesson-35-rope",
+]
+
+[[package]]
+name = "part-187-lesson-35-swiglu"
+version = "0.1.0"
+
+[[package]]
+name = "part-188-lesson-35-kv-cache"
+version = "0.1.0"
+dependencies = [
+ "part-177-lesson-34-causal-self-attention",
+]
+
+[[package]]
+name = "part-189-lesson-35-mixture-of-experts"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-177-lesson-34-causal-self-attention",
+]
+
+[[package]]
+name = "part-190-lesson-35-qwen-inspired-block"
+version = "0.1.0"
+dependencies = [
+ "part-177-lesson-34-causal-self-attention",
+ "part-183-lesson-35-rmsnorm",
+ "part-184-lesson-35-rope",
+ "part-187-lesson-35-swiglu",
+]
+
+[[package]]
+name = "part-191-lesson-36-lora"
+version = "0.1.0"
+
+[[package]]
+name = "part-192-lesson-36-weight-quantization"
+version = "0.1.0"
+
+[[package]]
+name = "part-193-lesson-37-lexical-search"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-194-lesson-37-tf-idf"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-195-lesson-37-cosine"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -1150,437 +1422,249 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-152-lesson-28-top-k"
+name = "part-196-lesson-37-top-k"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-153-lesson-28-retrieval"
+name = "part-197-lesson-37-retrieval"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-154-lesson-29-context"
+name = "part-198-lesson-38-context"
 version = "0.1.0"
 
 [[package]]
-name = "part-155-lesson-29-context-length"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-156-lesson-29-citation"
-version = "0.1.0"
-
-[[package]]
-name = "part-157-lesson-29-source-check"
+name = "part-199-lesson-38-context-length"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-158-lesson-29-rag"
+name = "part-200-lesson-38-citation"
 version = "0.1.0"
 
 [[package]]
-name = "part-159-lesson-30-state"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-160-lesson-30-action"
+name = "part-201-lesson-38-source-check"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-161-lesson-30-reward"
+name = "part-202-lesson-38-rag"
 version = "0.1.0"
 
 [[package]]
-name = "part-162-lesson-30-policy"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-163-lesson-30-exploration"
+name = "part-203-lesson-39-diffusion-forward"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-164-lesson-30-reinforcement-learning"
+name = "part-204-lesson-39-diffusion-noise-prediction"
+version = "0.1.0"
+dependencies = [
+ "part-203-lesson-39-diffusion-forward",
+]
+
+[[package]]
+name = "part-205-lesson-39-reverse-denoising"
+version = "0.1.0"
+dependencies = [
+ "part-203-lesson-39-diffusion-forward",
+]
+
+[[package]]
+name = "part-206-lesson-40-state-space-model"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-165-lesson-31-distribution-shift"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-029-lesson-06-mean",
-]
-
-[[package]]
-name = "part-166-lesson-31-calibration"
+name = "part-207-lesson-40-selective-state-space"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-167-lesson-31-subgroup-errors"
+name = "part-208-lesson-40-selective-vs-fixed-memory"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-206-lesson-40-state-space-model",
+]
+
+[[package]]
+name = "part-209-lesson-41-state"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-168-lesson-31-model-limits"
-version = "0.1.0"
-
-[[package]]
-name = "part-169-lesson-31-safety-evaluation"
+name = "part-210-lesson-41-action"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-170-lesson-32-weight-format"
+name = "part-211-lesson-41-reward"
+version = "0.1.0"
+
+[[package]]
+name = "part-212-lesson-41-policy"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-171-lesson-32-schema-version"
-version = "0.1.0"
-
-[[package]]
-name = "part-172-lesson-32-input-validation"
-version = "0.1.0"
-
-[[package]]
-name = "part-173-lesson-32-backward-compatibility"
-version = "0.1.0"
-
-[[package]]
-name = "part-174-lesson-32-model-serialization"
-version = "0.1.0"
-
-[[package]]
-name = "part-175-lesson-33-io-contract"
-version = "0.1.0"
-
-[[package]]
-name = "part-176-lesson-33-batch-processing"
-version = "0.1.0"
-
-[[package]]
-name = "part-177-lesson-33-errors"
-version = "0.1.0"
-
-[[package]]
-name = "part-178-lesson-33-performance"
+name = "part-213-lesson-41-exploration"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-179-lesson-33-inference-cli"
-version = "0.1.0"
-
-[[package]]
-name = "part-180-lesson-34-feature-distribution"
+name = "part-214-lesson-41-reinforcement-learning"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-181-lesson-34-postrelease-quality"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-182-lesson-34-latency"
-version = "0.1.0"
-
-[[package]]
-name = "part-183-lesson-34-alerts"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-184-lesson-34-monitoring"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-185-lesson-35-end-to-end"
+name = "part-215-lesson-42-distribution-shift"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
  "part-029-lesson-06-mean",
- "part-048-lesson-09-mae",
 ]
 
 [[package]]
-name = "part-186-lesson-36-capstone"
+name = "part-216-lesson-42-calibration"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-187-lesson-37-utf8-bytes"
-version = "0.1.0"
-
-[[package]]
-name = "part-188-lesson-37-bpe-training"
-version = "0.1.0"
-
-[[package]]
-name = "part-189-lesson-37-bpe-encode-decode"
-version = "0.1.0"
-dependencies = [
- "part-188-lesson-37-bpe-training",
-]
-
-[[package]]
-name = "part-190-lesson-37-control-tokens"
-version = "0.1.0"
-
-[[package]]
-name = "part-191-lesson-37-tokenizer-evaluation"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-188-lesson-37-bpe-training",
-]
-
-[[package]]
-name = "part-192-lesson-38-residual-boosting"
+name = "part-217-lesson-42-subgroup-errors"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-193-lesson-38-oblivious-tree"
+name = "part-218-lesson-42-model-limits"
 version = "0.1.0"
 
 [[package]]
-name = "part-194-lesson-38-ordered-category-statistics"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-195-lesson-38-ordered-boosting"
-version = "0.1.0"
-
-[[package]]
-name = "part-196-lesson-38-catboost-principles"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-193-lesson-38-oblivious-tree",
- "part-194-lesson-38-ordered-category-statistics",
-]
-
-[[package]]
-name = "part-197-lesson-39-causal-convolution"
+name = "part-219-lesson-42-safety-evaluation"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-198-lesson-39-dilation-receptive-field"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-197-lesson-39-causal-convolution",
-]
-
-[[package]]
-name = "part-199-lesson-39-gated-activation"
+name = "part-220-lesson-43-weight-format"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-200-lesson-39-residual-skip"
+name = "part-221-lesson-43-schema-version"
 version = "0.1.0"
 
 [[package]]
-name = "part-201-lesson-39-wavenet-mini"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-197-lesson-39-causal-convolution",
-]
-
-[[package]]
-name = "part-202-lesson-40-token-position-embeddings"
+name = "part-222-lesson-43-input-validation"
 version = "0.1.0"
 
 [[package]]
-name = "part-203-lesson-40-causal-self-attention"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-204-lesson-40-multi-head-attention"
-version = "0.1.0"
-dependencies = [
- "part-203-lesson-40-causal-self-attention",
-]
-
-[[package]]
-name = "part-205-lesson-40-decoder-block"
-version = "0.1.0"
-dependencies = [
- "part-203-lesson-40-causal-self-attention",
-]
-
-[[package]]
-name = "part-206-lesson-40-next-token-loss"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-203-lesson-40-causal-self-attention",
-]
-
-[[package]]
-name = "part-207-lesson-40-tiny-gpt-forward"
-version = "0.1.0"
-dependencies = [
- "part-203-lesson-40-causal-self-attention",
-]
-
-[[package]]
-name = "part-208-lesson-41-rmsnorm"
+name = "part-223-lesson-43-backward-compatibility"
 version = "0.1.0"
 
 [[package]]
-name = "part-209-lesson-41-rope"
+name = "part-224-lesson-43-model-serialization"
+version = "0.1.0"
+
+[[package]]
+name = "part-225-lesson-44-io-contract"
+version = "0.1.0"
+
+[[package]]
+name = "part-226-lesson-44-batch-processing"
+version = "0.1.0"
+
+[[package]]
+name = "part-227-lesson-44-errors"
+version = "0.1.0"
+
+[[package]]
+name = "part-228-lesson-44-performance"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-210-lesson-41-grouped-query-attention"
-version = "0.1.0"
-dependencies = [
- "part-203-lesson-40-causal-self-attention",
-]
-
-[[package]]
-name = "part-211-lesson-41-qk-norm"
-version = "0.1.0"
-dependencies = [
- "part-208-lesson-41-rmsnorm",
- "part-209-lesson-41-rope",
-]
-
-[[package]]
-name = "part-212-lesson-41-swiglu"
+name = "part-229-lesson-44-inference-cli"
 version = "0.1.0"
 
 [[package]]
-name = "part-213-lesson-41-kv-cache"
-version = "0.1.0"
-dependencies = [
- "part-203-lesson-40-causal-self-attention",
-]
-
-[[package]]
-name = "part-214-lesson-41-mixture-of-experts"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-203-lesson-40-causal-self-attention",
-]
-
-[[package]]
-name = "part-215-lesson-41-qwen-inspired-block"
-version = "0.1.0"
-dependencies = [
- "part-203-lesson-40-causal-self-attention",
- "part-208-lesson-41-rmsnorm",
- "part-209-lesson-41-rope",
- "part-212-lesson-41-swiglu",
-]
-
-[[package]]
-name = "part-216-lesson-42-vit-patches"
+name = "part-230-lesson-45-feature-distribution"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-217-lesson-42-vit-global-attention"
-version = "0.1.0"
-dependencies = [
- "lesson-visualization",
- "part-203-lesson-40-causal-self-attention",
- "part-216-lesson-42-vit-patches",
-]
-
-[[package]]
-name = "part-218-lesson-42-diffusion-forward"
+name = "part-231-lesson-45-postrelease-quality"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-219-lesson-42-diffusion-noise-prediction"
+name = "part-232-lesson-45-latency"
 version = "0.1.0"
-dependencies = [
- "part-218-lesson-42-diffusion-forward",
-]
 
 [[package]]
-name = "part-220-lesson-42-state-space-model"
+name = "part-233-lesson-45-alerts"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "part-221-lesson-42-selective-state-space"
+name = "part-234-lesson-45-monitoring"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-235-lesson-46-end-to-end"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-029-lesson-06-mean",
+ "part-050-lesson-09-mae",
+]
+
+[[package]]
+name = "part-236-lesson-47-capstone"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",

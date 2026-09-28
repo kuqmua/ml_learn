@@ -1,6 +1,0 @@
-[package]
-name = "part-168-lesson-31-model-limits"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

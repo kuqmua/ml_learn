@@ -1,0 +1,6 @@
+[package]
+name = "part-225-lesson-44-io-contract"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

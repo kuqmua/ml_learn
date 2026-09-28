@@ -1,9 +1,0 @@
-[package]
-name = "part-065-lesson-12-distances"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson_004 = { package = "part-004-lesson-01-distance", path = "../part-004-lesson-01-distance" }
-
-lesson-visualization = { path = "../lesson-visualization" }

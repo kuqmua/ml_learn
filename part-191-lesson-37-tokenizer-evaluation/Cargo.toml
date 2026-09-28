@@ -1,8 +1,0 @@
-[package]
-name = "part-191-lesson-37-tokenizer-evaluation"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-part-188-lesson-37-bpe-training = { path = "../part-188-lesson-37-bpe-training" }
-lesson-visualization = { path = "../lesson-visualization" }

@@ -1,0 +1,8 @@
+[package]
+name = "part-121-lesson-22-early-stopping"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

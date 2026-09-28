@@ -1,6 +1,0 @@
-[package]
-name = "part-188-lesson-37-bpe-training"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

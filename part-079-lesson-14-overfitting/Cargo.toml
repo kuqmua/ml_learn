@@ -1,0 +1,8 @@
+[package]
+name = "part-079-lesson-14-overfitting"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

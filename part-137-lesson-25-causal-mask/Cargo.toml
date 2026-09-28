@@ -1,8 +1,0 @@
-[package]
-name = "part-137-lesson-25-causal-mask"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

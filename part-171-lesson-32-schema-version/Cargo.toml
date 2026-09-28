@@ -1,6 +1,0 @@
-[package]
-name = "part-171-lesson-32-schema-version"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

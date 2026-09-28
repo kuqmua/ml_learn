@@ -1,0 +1,8 @@
+[package]
+name = "part-057-lesson-10-probability"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

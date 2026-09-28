@@ -1,0 +1,8 @@
+[package]
+name = "part-189-lesson-35-mixture-of-experts"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-177-lesson-34-causal-self-attention = { path = "../part-177-lesson-34-causal-self-attention" }
+lesson-visualization = { path = "../lesson-visualization" }

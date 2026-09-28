@@ -1,9 +1,0 @@
-[package]
-name = "part-217-lesson-42-vit-global-attention"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-part-203-lesson-40-causal-self-attention = { path = "../part-203-lesson-40-causal-self-attention" }
-part-216-lesson-42-vit-patches = { path = "../part-216-lesson-42-vit-patches" }
-lesson-visualization = { path = "../lesson-visualization" }

@@ -1,0 +1,9 @@
+[package]
+name = "part-054-lesson-09-linear-regression"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson_047 = { package = "part-049-lesson-09-mse", path = "../part-049-lesson-09-mse" }
+
+lesson-visualization = { path = "../lesson-visualization" }

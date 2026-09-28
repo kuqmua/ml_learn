@@ -1,6 +1,0 @@
-[package]
-name = "part-173-lesson-32-backward-compatibility"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

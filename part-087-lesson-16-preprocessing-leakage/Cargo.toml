@@ -1,8 +1,0 @@
-[package]
-name = "part-087-lesson-16-preprocessing-leakage"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

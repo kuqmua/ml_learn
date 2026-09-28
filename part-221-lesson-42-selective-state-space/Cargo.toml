@@ -1,7 +1,0 @@
-[package]
-name = "part-221-lesson-42-selective-state-space"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-visualization = { path = "../lesson-visualization" }

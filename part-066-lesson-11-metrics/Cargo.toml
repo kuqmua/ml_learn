@@ -1,0 +1,12 @@
+[package]
+name = "part-066-lesson-11-metrics"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson_058 = { package = "part-060-lesson-11-confusion-matrix", path = "../part-060-lesson-11-confusion-matrix" }
+lesson_059 = { package = "part-061-lesson-11-precision", path = "../part-061-lesson-11-precision" }
+lesson_060 = { package = "part-062-lesson-11-recall", path = "../part-062-lesson-11-recall" }
+lesson_061 = { package = "part-063-lesson-11-f1", path = "../part-063-lesson-11-f1" }
+
+lesson-visualization = { path = "../lesson-visualization" }

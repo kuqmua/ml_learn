@@ -1,9 +1,0 @@
-[package]
-name = "part-196-lesson-38-catboost-principles"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-part-193-lesson-38-oblivious-tree = { path = "../part-193-lesson-38-oblivious-tree" }
-part-194-lesson-38-ordered-category-statistics = { path = "../part-194-lesson-38-ordered-category-statistics" }
-lesson-visualization = { path = "../lesson-visualization" }

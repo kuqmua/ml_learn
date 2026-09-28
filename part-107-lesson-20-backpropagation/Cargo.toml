@@ -1,0 +1,8 @@
+[package]
+name = "part-107-lesson-20-backpropagation"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

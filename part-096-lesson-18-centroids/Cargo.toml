@@ -1,0 +1,8 @@
+[package]
+name = "part-096-lesson-18-centroids"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

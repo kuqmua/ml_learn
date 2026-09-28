@@ -1,0 +1,10 @@
+[package]
+name = "part-190-lesson-35-qwen-inspired-block"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-183-lesson-35-rmsnorm = { path = "../part-183-lesson-35-rmsnorm" }
+part-184-lesson-35-rope = { path = "../part-184-lesson-35-rope" }
+part-187-lesson-35-swiglu = { path = "../part-187-lesson-35-swiglu" }
+part-177-lesson-34-causal-self-attention = { path = "../part-177-lesson-34-causal-self-attention" }

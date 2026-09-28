@@ -1,0 +1,8 @@
+[package]
+name = "part-175-lesson-33-language-model"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

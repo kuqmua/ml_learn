@@ -1,0 +1,8 @@
+[package]
+name = "part-100-lesson-18-clustering"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

@@ -1,0 +1,7 @@
+[package]
+name = "part-138-lesson-26-bptt"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-137-lesson-26-rnn-state = { path = "../part-137-lesson-26-rnn-state" }

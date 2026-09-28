@@ -1,0 +1,8 @@
+[package]
+name = "part-104-lesson-19-explained-variance"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

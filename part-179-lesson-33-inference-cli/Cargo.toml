@@ -1,6 +1,0 @@
-[package]
-name = "part-179-lesson-33-inference-cli"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

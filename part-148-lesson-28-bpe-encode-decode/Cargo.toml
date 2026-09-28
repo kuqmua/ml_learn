@@ -1,0 +1,7 @@
+[package]
+name = "part-148-lesson-28-bpe-encode-decode"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-147-lesson-28-bpe-training = { path = "../part-147-lesson-28-bpe-training" }

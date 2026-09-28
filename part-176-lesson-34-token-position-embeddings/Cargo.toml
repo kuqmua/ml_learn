@@ -1,0 +1,6 @@
+[package]
+name = "part-176-lesson-34-token-position-embeddings"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
