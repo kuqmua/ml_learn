@@ -1,41 +1,38 @@
 // Урок 14.1. Энтропия классов.
 //
-// Что изучаем: Энтропия классов.
-// Зачем это нужно: Энтропия мала для чистого узла и велика при равных долях классов. Логарифм считаем
-// рядом для учебных долей.
-// Что делает пример: на небольших проверяемых данных вычисляет результат этой темы и печатает его.
-// Как проверить понимание: предскажи вывод до запуска, затем измени одно входное значение и объясни
-// изменение результата.
+// У чистого узла энтропия равна нулю, при долях 50/50 она максимальна.
+// Нулевую долю пропускаем: предел p·log(p) при p→0 равен нулю.
 
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Инициализируем значение `positive_fraction` начальным состоянием.
-    let positive_fraction = 0.5;
-    // Комбинируем исходные величины и сохраняем результат в `negative_fraction`.
-    let negative_fraction = 1.0 - positive_fraction;
-    // Инициализируем изменяемый накопитель `entropy` начальным состоянием.
-    let mut entropy = 0.0;
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
-    for probability in [positive_fraction, negative_fraction] {
-        // Проверяем условие и выбираем соответствующую ветку алгоритма.
-        if probability > 0.0 {
-            // Нормируем или усредняем величину делением и сохраняем её в `ratio`.
-            let ratio = (probability - 1.0) / (probability + 1.0);
-            // Создаём изменяемое значение `term` для следующих операций.
-            let mut term = ratio;
-            // Инициализируем изменяемый накопитель `logarithm` начальным состоянием.
-            let mut logarithm = 0.0;
-            // Повторяем следующий блок для каждого элемента указанной последовательности.
-            for odd in (1..=99).step_by(2) {
-                // Прибавляем очередной вклад к ранее накопленному результату.
-                logarithm += term / odd as f64;
-                // Умножаем накопленное значение на очередной множитель.
-                term *= ratio * ratio;
+    for (description, positive_fraction) in [
+        ("только отрицательный класс", 0.0),
+        ("четверть положительных", 0.25),
+        ("классы поровну", 0.5),
+        ("только положительный класс", 1.0),
+    ] {
+        assert!((0.0..=1.0).contains(&positive_fraction));
+        let negative_fraction = 1.0 - positive_fraction;
+        let mut entropy = 0.0;
+        for probability in [positive_fraction, negative_fraction] {
+            if probability > 0.0 {
+                let ratio = (probability - 1.0) / (probability + 1.0);
+                let mut term = ratio;
+                let mut logarithm = 0.0;
+                for odd in (1..=99).step_by(2) {
+                    logarithm += term / odd as f64;
+                    term *= ratio * ratio;
+                }
+                // Переводим натуральный логарифм в логарифм по основанию 2.
+                entropy -= probability * (2.0 * logarithm) / std::f64::consts::LN_2;
             }
-            // Вычитаем очередной вклад из текущего значения параметра.
-            entropy -= probability * 2.0 * logarithm;
         }
+        assert!(entropy >= -1e-10 && entropy <= 1.0 + 1e-10);
+        if positive_fraction == 0.0 || positive_fraction == 1.0 {
+            assert!(entropy.abs() < 1e-10);
+        }
+        if positive_fraction == 0.5 {
+            assert!((entropy - 1.0).abs() < 1e-10);
+        }
+        println!("{description}: доля={positive_fraction}, энтропия={entropy:.3}");
     }
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("энтропия = {entropy:.3}");
 }

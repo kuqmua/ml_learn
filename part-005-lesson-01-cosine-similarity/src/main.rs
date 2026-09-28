@@ -1,54 +1,55 @@
 // Урок 01.5. Косинусное сходство.
 //
-// Что изучаем: Косинусное сходство.
-// Зачем это нужно: Изучаем сравнение направлений двух векторов без влияния их длины. Делим сумму после попарного умножения
-// соответствующих координат на результат умножения длин: одинаковое направление даёт 1, перпендикулярность — 0,
-// противоположное направление — −1. Нулевой вектор исключаем, потому что его длина обратила бы знаменатель
-// в ноль.
-// Что делает пример: на небольших проверяемых данных вычисляет результат этой темы и печатает его.
-// Как проверить понимание: предскажи вывод до запуска, затем измени одно входное значение и объясни
-// изменение результата.
+// Что изучаем: сравнение направлений независимо от длины векторов.
+// 1 означает одинаковое направление, 0 — перпендикулярность, −1 — противоположное.
+// Промежуточные значения показывают острый или тупой угол. Для нулевого вектора направления нет.
 
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Создаём набор значений `left` для следующего шага примера.
     let left = [1.0, 0.0];
-    // Создаём набор значений `right` для следующего шага примера.
-    let right = [2.0, 0.0];
-    // Каждой координате левого вектора должна соответствовать координата правого.
-    assert_eq!(
-        left.len(),
-        right.len(),
-        "векторы должны быть одинаковой длины"
-    );
-    // Инициализируем изменяемый накопитель `sum_after_multiplying_coordinates` начальным состоянием.
-    let mut sum_after_multiplying_coordinates = 0.0;
-    // Инициализируем изменяемый накопитель `left_squared_length` начальным состоянием.
-    let mut left_squared_length = 0.0;
-    // Инициализируем изменяемый накопитель `right_squared_length` начальным состоянием.
-    let mut right_squared_length = 0.0;
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
-    for index in 0..left.len() {
-        // Одновременно собираем числитель и квадраты обеих длин.
-        sum_after_multiplying_coordinates += left[index] * right[index];
-        // Прибавляем очередной вклад к ранее накопленному результату.
-        left_squared_length += left[index] * left[index];
-        // Прибавляем очередной вклад к ранее накопленному результату.
-        right_squared_length += right[index] * right[index];
+    let cases: [(&str, &[f64], f64); 5] = [
+        ("то же направление", &[2.0, 0.0], 1.0),
+        ("острый угол", &[1.0, 1.0], 0.7071067811865475),
+        ("перпендикулярные векторы", &[0.0, 2.0], 0.0),
+        ("тупой угол", &[-1.0, 1.0], -0.7071067811865475),
+        ("противоположные направления", &[-2.0, 0.0], -1.0),
+    ];
+
+    for (description, right, expected) in cases {
+        assert_eq!(
+            left.len(),
+            right.len(),
+            "векторы должны быть одинаковой длины"
+        );
+        let mut sum_after_multiplying_coordinates = 0.0;
+        let mut left_squared_length = 0.0;
+        let mut right_squared_length = 0.0;
+        for index in 0..left.len() {
+            sum_after_multiplying_coordinates += left[index] * right[index];
+            left_squared_length += left[index] * left[index];
+            right_squared_length += right[index] * right[index];
+        }
+        assert!(
+            left_squared_length > 0.0 && right_squared_length > 0.0,
+            "у нулевого вектора нет направления"
+        );
+        // Извлекаем корень по методу Ньютона, чтобы получить длины векторов.
+        let squared_denominator = left_squared_length * right_squared_length;
+        let mut denominator = squared_denominator;
+        for _ in 0..80 {
+            denominator = (denominator + squared_denominator / denominator) / 2.0;
+        }
+        let similarity = sum_after_multiplying_coordinates / denominator;
+        assert!((similarity - expected).abs() < 1e-10);
+        println!("{description}: {left:?} и {right:?} → {similarity:.3}");
     }
-    // Проверяем обязательное условие до дальнейшего вычисления.
-    assert!(left_squared_length > 0.0 && right_squared_length > 0.0);
-    // Корень из результата умножения квадратов длин равен результату умножения длин.
-    let squared_denominator = left_squared_length * right_squared_length;
-    // Создаём изменяемое значение `denominator` для следующих операций.
-    let mut denominator = squared_denominator;
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
-    for _ in 0..80 {
-        // Присваиваем вычисленное значение соответствующей переменной или полю.
-        denominator = (denominator + squared_denominator / denominator) / 2.0;
+
+    // Показанные ниже входы не имеют косинусного сходства.
+    for (description, right) in [
+        ("нулевой вектор", &[0.0, 0.0][..]),
+        ("разная длина", &[1.0][..]),
+    ] {
+        if left.len() != right.len() || right.iter().all(|&value| value == 0.0) {
+            println!("{description}: вычисление невозможно");
+        }
     }
-    // Нормируем или усредняем величину делением и сохраняем её в `similarity`.
-    let similarity = sum_after_multiplying_coordinates / denominator;
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("косинусное сходство = {similarity}");
 }

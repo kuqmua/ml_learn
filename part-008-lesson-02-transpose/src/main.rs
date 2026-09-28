@@ -23,4 +23,14 @@ fn main() {
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("исходная: {matrix:?}; транспонированная: {transposed:?}");
+
+    // Повторное транспонирование возвращает каждое число на исходное место.
+    let mut restored = [[0; 3]; 2];
+    for row in 0..transposed.len() {
+        for column in 0..transposed[row].len() {
+            restored[column][row] = transposed[row][column];
+        }
+    }
+    assert_eq!(restored, matrix);
+    println!("после второго транспонирования: {restored:?}");
 }

@@ -143,4 +143,51 @@ fn main() {
         // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
         .unwrap()
     );
+
+    // Сравниваем разные направления на одних и тех же входных координатах.
+    for (description, other, expected_sum, expected_cosine) in [
+        ("тот же вектор", [3.0, 4.0], 25.0, Some(1.0)),
+        ("перпендикулярный", [-4.0, 3.0], 0.0, Some(0.0)),
+        ("противоположный", [-3.0, -4.0], -25.0, Some(-1.0)),
+        ("нулевой без направления", [0.0, 0.0], 0.0, None),
+    ] {
+        let sum = multiply_matching_coordinates_then_add(&first_vector, &other).unwrap();
+        assert_eq!(sum, expected_sum);
+        let lengths = calculate_vector_length_from_coordinates(&first_vector)
+            * calculate_vector_length_from_coordinates(&other);
+        let cosine = if lengths == 0.0 {
+            None
+        } else {
+            Some(sum / lengths)
+        };
+        if let (Some(actual), Some(expected)) = (cosine, expected_cosine) {
+            assert!((actual - expected).abs() < 1e-10);
+        } else {
+            assert_eq!(cosine, expected_cosine);
+        }
+        println!("{description}: сумма={sum}, косинус={cosine:?}");
+    }
+
+    // Проверяем симметрию расстояния: порядок точек меняет знак разности, но не её квадрат.
+    assert_eq!(
+        first_vector.len(),
+        second_vector.len(),
+        "векторы должны быть одинаковой длины"
+    );
+    let forward = approximate_square_root_with_newton_method(
+        first_vector
+            .iter()
+            .zip(second_vector)
+            .map(|(&a, b)| (a - b) * (a - b))
+            .sum(),
+    );
+    let backward = approximate_square_root_with_newton_method(
+        second_vector
+            .iter()
+            .zip(first_vector)
+            .map(|(&a, b)| (a - b) * (a - b))
+            .sum(),
+    );
+    assert!((forward - backward).abs() < 1e-10);
+    println!("расстояние в обе стороны: {forward:.3} и {backward:.3}");
 }
