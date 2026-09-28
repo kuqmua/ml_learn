@@ -22,4 +22,14 @@ fn main() {
     ];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("контекст для двух позиций = {context:?}");
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Self-attention: контекст",
+        "компонента",
+        &[("позиция 0", context[0]), ("позиция 1", context[1])],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

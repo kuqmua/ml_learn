@@ -17,4 +17,28 @@ fn main() {
     let similarity = lesson_005::cosine_similarity(&query, &document)
         .expect("ненулевые векторы слов одинаковой размерности");
     println!("косинусное сходство={similarity}");
+    let points: Vec<(f64, f64)> = (0..=180)
+        .step_by(5)
+        .map(|degrees| {
+            let angle = (degrees as f64).to_radians();
+            let rotated_document = [angle.cos(), angle.sin()];
+            (
+                degrees as f64,
+                lesson_005::cosine_similarity(&query, &rotated_document).unwrap(),
+            )
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Сходство документов при изменении направления",
+        "угол, градусы",
+        "косинус",
+        &[lesson_visualization::Series {
+            name: "сходство",
+            points: &points,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

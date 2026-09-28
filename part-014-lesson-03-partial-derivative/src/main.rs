@@ -17,4 +17,36 @@ fn main() {
     let derivative_by_y = 6.0 * y;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("∂f/∂x={derivative_by_x}, ∂f/∂y={derivative_by_y}");
+    // Наглядное представление величин из этого урока.
+    let chart_points_0: Vec<(f64, f64)> = (-40..=40)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, x * x + 4.0)
+        })
+        .collect();
+    let chart_points_1: Vec<(f64, f64)> = (-40..=40)
+        .map(|i| {
+            let y = i as f64 / 10.0;
+            (y, 4.0 + y * y)
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Сечения функции x² + 3y²",
+        "координата",
+        "значение",
+        &[
+            lesson_visualization::Series {
+                name: "y=-1",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "x=2",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

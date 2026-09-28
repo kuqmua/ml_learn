@@ -5,3 +5,5 @@ edition = "2024"
 
 [dependencies]
 lesson_058 = { package = "part-058-lesson-11-confusion-matrix", path = "../part-058-lesson-11-confusion-matrix" }
+
+lesson-visualization = { path = "../lesson-visualization" }

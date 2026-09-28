@@ -150,4 +150,23 @@ fn main() {
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
         "mean={mean:?}, axis={axis:?}, explained={explained_variance_fraction:.3}, projected={projections:?}"
     );
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = projections
+        .iter()
+        .enumerate()
+        .map(|(i, &v)| (i as f64, v))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "PCA: координаты вдоль главной оси",
+        "номер точки",
+        "проекция",
+        &[lesson_visualization::Series {
+            name: "проекции",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

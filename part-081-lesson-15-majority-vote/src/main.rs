@@ -17,4 +17,14 @@ fn main() {
         assert_eq!(result, expected);
         println!("{description}: {votes:?} → {result}");
     }
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Большинство голосов",
+        "количество голосов",
+        &[("за", 3.0), ("против", 2.0)],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

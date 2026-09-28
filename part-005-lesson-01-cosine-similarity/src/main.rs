@@ -31,4 +31,32 @@ fn main() {
             .expect_err("этот вход должен быть отклонён");
         println!("{description}: {error}");
     }
+    // Наглядное представление величин из этого урока.
+    let chart_points_0: Vec<(f64, f64)> = (0..=180)
+        .step_by(5)
+        .map(|i| {
+            let angle = (i as f64).to_radians();
+            (
+                i as f64,
+                part_005_lesson_01_cosine_similarity::cosine_similarity(
+                    &[1.0, 0.0],
+                    &[angle.cos(), angle.sin()],
+                )
+                .unwrap(),
+            )
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Косинусное сходство",
+        "угол, градусы",
+        "сходство",
+        &[lesson_visualization::Series {
+            name: "вектор [1, 0]",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

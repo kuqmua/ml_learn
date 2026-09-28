@@ -167,4 +167,25 @@ fn main() {
     }
     // Шаг: Указываем ограничение вывода из очень маленькой выборки.
     println!("Ограничение: по четырём примерам на группу нельзя оценить реальное качество.");
+    // Сравниваем качество по группам, используя те же оценочные примеры.
+    let group_accuracy = |group: &str| {
+        let cases: Vec<_> = EVALUATION_CASES
+            .iter()
+            .filter(|case| case.group == group)
+            .collect();
+        cases
+            .iter()
+            .filter(|case| (case.score >= 0.5) == case.truth)
+            .count() as f64
+            / cases.len() as f64
+    };
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Accuracy по подгруппам",
+        "accuracy",
+        &[("A", group_accuracy("A")), ("B", group_accuracy("B"))],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

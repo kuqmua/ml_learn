@@ -31,4 +31,21 @@ fn main() {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("позиция={start}, отклик на границу={response}");
     }
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = (0..=image.len() - kernel.len())
+        .map(|i| (i as f64, image[i] * kernel[0] + image[i + 1] * kernel[1]))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Отклик ядра на локальные границы",
+        "позиция",
+        "отклик",
+        &[lesson_visualization::Series {
+            name: "свёртка",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

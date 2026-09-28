@@ -22,4 +22,14 @@ fn main() {
     ];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("Q = {query:?}");
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Проекция в Q",
+        "компонента",
+        &[("Q₀", query[0]), ("Q₁", query[1])],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

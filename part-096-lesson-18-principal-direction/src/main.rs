@@ -21,4 +21,19 @@ fn main() {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("точка={point:?}, координата на главной оси={projection}");
     }
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = centered_points.iter().map(|p| (p[0], p[1])).collect();
+    let chart = lesson_visualization::scatter_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Проекция на главное направление",
+        "первая координата",
+        "вторая координата",
+        &[lesson_visualization::Series {
+            name: "центрированные точки",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

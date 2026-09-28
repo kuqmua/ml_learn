@@ -82,4 +82,20 @@ fn main() {
             // Собираем полученные элементы в вектор.
             .collect::<Vec<_>>()
     );
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Среднее признака",
+        "значение",
+        &[
+            ("train", training_mean),
+            (
+                "весь набор",
+                records.iter().map(|r| r.0).sum::<f64>() / records.len() as f64,
+            ),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

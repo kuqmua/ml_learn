@@ -21,4 +21,28 @@ fn main() {
     let smoothed = (observed_count + 1.0) / (total_words_in_class + vocabulary_size);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("без сглаживания={unsmoothed}, со сглаживанием={smoothed}");
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (0..=8).map(|n| (n as f64, n as f64 / 10.0)).collect();
+    let chart_points_1: Vec<(f64, f64)> = (0..=8)
+        .map(|n| (n as f64, (n as f64 + 1.0) / 12.0))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Сглаживание Лапласа",
+        "частота токена",
+        "оценка вероятности",
+        &[
+            lesson_visualization::Series {
+                name: "без сглаживания",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "со сглаживанием",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

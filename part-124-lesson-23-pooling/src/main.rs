@@ -31,4 +31,20 @@ fn main() {
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("max pooling = {maximum}");
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Max pooling",
+        "значение",
+        &[
+            ("1", feature_map[0][0]),
+            ("2", feature_map[0][1]),
+            ("3", feature_map[1][0]),
+            ("4", feature_map[1][1]),
+            ("максимум", maximum),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

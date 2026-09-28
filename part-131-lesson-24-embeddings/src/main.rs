@@ -74,4 +74,17 @@ fn main() {
             // Собираем полученные элементы в вектор.
             .collect::<Vec<_>>()
     );
+    // Наглядное сравнение результатов сводной практики.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Размер словаря и последовательности",
+        "число элементов",
+        &[
+            ("словарь", vocabulary.len() as f64),
+            ("токены", token_indices.len() as f64),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

@@ -35,4 +35,36 @@ fn main() {
     let error = lesson_001::multiply_matching_coordinates_then_add(&first, &too_short)
         .expect_err("векторы разной длины нужно отклонить");
     println!("разная длина: {error}");
+    // Наглядное представление величин из этого урока.
+    let chart_points_0: Vec<(f64, f64)> = (-50..=50)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, x.abs() + 4.0)
+        })
+        .collect();
+    let chart_points_1: Vec<(f64, f64)> = (-50..=50)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, (x * x + 16.0).sqrt())
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Сравнение норм",
+        "первая координата",
+        "норма",
+        &[
+            lesson_visualization::Series {
+                name: "L1",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "L2",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

@@ -20,4 +20,21 @@ fn main() {
         assert_eq!(precision, expected);
         println!("{description}: precision={precision:?}");
     }
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (0..=10)
+        .map(|fp| (fp as f64, 2.0 / (2.0 + fp as f64)))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Precision при фиксированном TP=2",
+        "FP",
+        "precision",
+        &[lesson_visualization::Series {
+            name: "precision",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

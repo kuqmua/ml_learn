@@ -82,4 +82,44 @@ fn main() {
             history.len() - 1
         );
     }
+    // Логарифмическая шкала позволяет видеть и сходимость, и расходимость.
+    let histories: Vec<Vec<(f64, f64)>> = [0.01, 0.2, 1.1]
+        .into_iter()
+        .map(|rate| {
+            let mut parameter = 0.0;
+            let mut points = vec![(0.0, (calculate_quadratic_loss(parameter) + 1e-12).log10())];
+            for step in 1..=30 {
+                let gradient = 2.0 * (parameter - 3.0);
+                parameter -= rate * gradient;
+                points.push((
+                    step as f64,
+                    (calculate_quadratic_loss(parameter) + 1e-12).log10(),
+                ));
+            }
+            points
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Скорость обучения и ошибка",
+        "шаг",
+        "log₁₀(loss)",
+        &[
+            lesson_visualization::Series {
+                name: "η=0.01",
+                points: &histories[0],
+            },
+            lesson_visualization::Series {
+                name: "η=0.2",
+                points: &histories[1],
+            },
+            lesson_visualization::Series {
+                name: "η=1.1",
+                points: &histories[2],
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

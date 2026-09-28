@@ -33,4 +33,40 @@ fn main() {
         // Складываем или вычитаем величины согласно используемой формуле.
         mean + margin
     );
+    // Границы интервала показаны рядом с наблюдениями и средним.
+    let observations: Vec<(f64, f64)> = values
+        .iter()
+        .enumerate()
+        .map(|(i, &v)| ((i + 1) as f64, v))
+        .collect();
+    let mean_line = [(1.0, mean), (values.len() as f64, mean)];
+    let lower = [(1.0, mean - margin), (values.len() as f64, mean - margin)];
+    let upper = [(1.0, mean + margin), (values.len() as f64, mean + margin)];
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Приближённый доверительный интервал",
+        "номер наблюдения",
+        "значение",
+        &[
+            lesson_visualization::Series {
+                name: "выборка",
+                points: &observations,
+            },
+            lesson_visualization::Series {
+                name: "среднее",
+                points: &mean_line,
+            },
+            lesson_visualization::Series {
+                name: "нижняя граница",
+                points: &lower,
+            },
+            lesson_visualization::Series {
+                name: "верхняя граница",
+                points: &upper,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

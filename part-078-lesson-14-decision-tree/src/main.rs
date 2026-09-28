@@ -188,4 +188,24 @@ fn main() {
         // Вызываем нужное вычисление с подготовленными аргументами.
         classify_feature_with_decision_tree(&tree, 3.5)
     );
+    // Наглядное представление вычислений сводной практики.
+    let chart_points_0: Vec<(f64, f64)> = (0..=50)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, f64::from(classify_feature_with_decision_tree(&tree, x)))
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Решение дерева по признаку",
+        "признак",
+        "класс 1",
+        &[lesson_visualization::Series {
+            name: "прогноз",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

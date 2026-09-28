@@ -47,4 +47,19 @@ fn main() {
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("лучший порог={}, Gini={}", best.1, best.0);
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = [(1.5, 1.0 / 3.0), (2.5, 0.0), (3.5, 1.0 / 3.0)].to_vec();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Чистота разбиения",
+        "порог",
+        "взвешенный Gini",
+        &[lesson_visualization::Series {
+            name: "данные −−++",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

@@ -22,4 +22,14 @@ fn main() {
     let loaded_bias: f64 = lines.next().unwrap().parse().unwrap();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("после загрузки: вес={loaded_weight}, смещение={loaded_bias}");
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Загруженные параметры",
+        "значение",
+        &[("вес", loaded_weight), ("смещение", loaded_bias)],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

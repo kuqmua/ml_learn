@@ -148,4 +148,23 @@ fn main() {
         // Вызываем нужное вычисление с подготовленными аргументами.
         calculate_population_stability_index(&reference, &shifted)
     );
+    // Наглядное сравнение результатов сводной практики.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Сдвиг признака",
+        "PSI",
+        &[
+            (
+                "стабильно",
+                calculate_population_stability_index(&reference, &stable),
+            ),
+            (
+                "сдвиг",
+                calculate_population_stability_index(&reference, &shifted),
+            ),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

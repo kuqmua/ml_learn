@@ -17,4 +17,19 @@ fn main() {
     let sample: Vec<_> = sampled_indices.iter().map(|&index| data[index]).collect();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("исходные={data:?}, bootstrap={sample:?}");
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Повторы в bootstrap-выборке",
+        "число появлений",
+        &[
+            ("A", sample.iter().filter(|&&x| x == "A").count() as f64),
+            ("B", sample.iter().filter(|&&x| x == "B").count() as f64),
+            ("C", sample.iter().filter(|&&x| x == "C").count() as f64),
+            ("D", sample.iter().filter(|&&x| x == "D").count() as f64),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

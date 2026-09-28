@@ -17,4 +17,36 @@ fn main() {
     let doubled_square = square + square;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("x={x}, x²={square}, 2x²={doubled_square}");
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (-30..=30)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, x * x)
+        })
+        .collect();
+    let chart_points_1: Vec<(f64, f64)> = (-30..=30)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, 2.0 * x * x)
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Прямой проход вычислительного графа",
+        "x",
+        "значение",
+        &[
+            lesson_visualization::Series {
+                name: "x²",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "2x²",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

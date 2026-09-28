@@ -24,4 +24,14 @@ fn main() {
     let after = weight * input + bias;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("до={before}, после обновления={after}");
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Обновление веса сети",
+        "значение",
+        &[("до", before), ("после", after)],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

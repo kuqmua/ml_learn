@@ -126,4 +126,31 @@ fn main() {
         // Умножаем величины согласно используемой формуле.
         weight * 10. + bias
     );
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = training_examples.iter().map(|&(x, y)| (x, y)).collect();
+    let chart_points_1: Vec<(f64, f64)> = (0..=80)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, weight * x + bias)
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Регрессия: данные и модель",
+        "признак",
+        "целевое значение",
+        &[
+            lesson_visualization::Series {
+                name: "train",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "модель",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

@@ -25,4 +25,18 @@ fn main() {
     assert!(useless_accuracy.unwrap() > 0.8);
     assert_eq!(useless_recall, Some(0.0));
     println!("всегда отрицательно: accuracy={useless_accuracy:?}, recall={useless_recall:?}");
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Метрики при дисбалансе классов",
+        "доля",
+        &[
+            ("precision", precision.unwrap_or(0.0)),
+            ("recall", recall.unwrap_or(0.0)),
+            ("accuracy", accuracy.unwrap_or(0.0)),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

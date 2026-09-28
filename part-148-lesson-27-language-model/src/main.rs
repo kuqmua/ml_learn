@@ -279,4 +279,24 @@ fn main() {
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("generated: {}", generated_tokens.join(" "));
+    // Наглядное представление вычислений сводной практики.
+    let chart_points_0: Vec<(f64, f64)> = bigram_counts
+        .iter()
+        .filter(|((previous, _), _)| previous == "<s>")
+        .enumerate()
+        .map(|(i, (_, count))| (i as f64, *count as f64))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Частоты переходов после начала строки",
+        "номер следующего токена",
+        "частота",
+        &[lesson_visualization::Series {
+            name: "биграммы",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

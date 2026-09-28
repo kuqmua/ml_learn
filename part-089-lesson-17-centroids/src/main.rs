@@ -27,4 +27,26 @@ fn main() {
     centroid[1] /= cluster.len() as f64;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("центроид = {centroid:?}");
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = cluster.iter().map(|p| (p[0], p[1])).collect();
+    let chart_points_1: Vec<(f64, f64)> = vec![(centroid[0], centroid[1])];
+    let chart = lesson_visualization::scatter_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Точки кластера и центроид",
+        "x",
+        "y",
+        &[
+            lesson_visualization::Series {
+                name: "точки",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "центроид",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

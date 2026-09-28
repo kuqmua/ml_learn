@@ -16,4 +16,19 @@ fn main() {
     let distance_to_goal = goal_cell - current_cell;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("состояние: клетка={current_cell}, до цели={distance_to_goal}");
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = (0..=5).map(|i| (i as f64, (5 - i) as f64)).collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Расстояние до цели",
+        "позиция",
+        "шагов осталось",
+        &[lesson_visualization::Series {
+            name: "линейная среда",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

@@ -39,4 +39,24 @@ fn main() {
     if invalid.iter().any(|&p| p <= 0.0) {
         println!("нулевая вероятность правильного токена: конечную ошибку вычислить нельзя");
     }
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (1..=100)
+        .map(|i| {
+            let p = i as f64 / 100.0;
+            (p, -p.ln())
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Cross-entropy правильного токена",
+        "вероятность",
+        "ошибка",
+        &[lesson_visualization::Series {
+            name: "-ln(p)",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

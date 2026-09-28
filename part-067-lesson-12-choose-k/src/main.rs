@@ -20,4 +20,34 @@ fn main() {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("k={k}: прогноз={prediction}");
     }
+    // Показываем значения, рассчитанные по данным примера.
+    let chart_points_0: Vec<(f64, f64)> = [1usize, 3, 5]
+        .iter()
+        .map(|&k| {
+            (
+                k as f64,
+                neighbor_labels[..k].iter().filter(|&&v| v).count() as f64 / k as f64,
+            )
+        })
+        .collect();
+    let chart_points_1: Vec<(f64, f64)> = [(1.0, 0.5), (5.0, 0.5)].to_vec();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Соседи и доля положительных",
+        "k",
+        "доля",
+        &[
+            lesson_visualization::Series {
+                name: "положительные среди k",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "граница решения",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

@@ -23,4 +23,25 @@ fn main() {
     let analytical_derivative = 2.0 * x;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("численно={numerical_derivative}, точно={analytical_derivative}");
+    // На малом шаге проявляется погрешность округления центральной разности.
+    let points: Vec<(f64, f64)> = (1..=12)
+        .map(|k| {
+            let h = 10f64.powi(-k);
+            let numeric = ((x + h) * (x + h) - (x - h) * (x - h)) / (2.0 * h);
+            (k as f64, (numeric - analytical_derivative).abs())
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Ошибка центральной разности",
+        "k для h=10⁻ᵏ",
+        "абсолютная ошибка",
+        &[lesson_visualization::Series {
+            name: "x² в x=3",
+            points: &points,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

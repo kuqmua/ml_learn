@@ -74,4 +74,31 @@ fn main() {
     let model_mse = lesson_047::mean_squared_error(&targets, &model_predictions).unwrap();
     let baseline_mse = lesson_047::mean_squared_error(&targets, &baseline_predictions).unwrap();
     println!("w={weight:.3}, b={bias:.3}, test MSE={model_mse:.6}, baseline MSE={baseline_mse:.3}");
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (0..=60)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, weight * x + bias)
+        })
+        .collect();
+    let chart_points_1: Vec<(f64, f64)> = test.iter().map(|&(x, y)| (x, y)).collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Линейная регрессия и тест",
+        "признак x",
+        "целевое значение",
+        &[
+            lesson_visualization::Series {
+                name: "модель",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "тест",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

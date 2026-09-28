@@ -18,4 +18,19 @@ fn main() {
         assert_eq!(bins, expected);
         println!("{description}: {values:?} → частоты {bins:?}");
     }
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Распределение признака",
+        "число наблюдений",
+        &[
+            ("до: <0.5", 2.0),
+            ("до: ≥0.5", 2.0),
+            ("после: <0.5", 0.0),
+            ("после: ≥0.5", 4.0),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

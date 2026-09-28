@@ -25,4 +25,13 @@ fn main() {
         let value = elements[row * columns + column];
         println!("{description}: ячейка [{row}, {column}] = {value}");
     }
+    // Значения ячеек видны по цвету и подписи.
+    let chart = lesson_visualization::heatmap(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Форма 2 × 3",
+        &[vec![1.0, 2.0, 3.0], vec![4.0, 5.0, 6.0]],
+    )
+    .expect("не удалось сохранить тепловую карту");
+    println!("график: {}", chart.display());
 }

@@ -126,4 +126,17 @@ fn main() {
             .unwrap();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("A*x={:?}, A^T*A={:?}", output_vector, result_matrix);
+    // Значения ячеек видны по цвету и подписи.
+    let chart = lesson_visualization::heatmap(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Матрица AᵀA",
+        &result_matrix
+            .data
+            .chunks(result_matrix.cols)
+            .map(|row| row.to_vec())
+            .collect::<Vec<_>>(),
+    )
+    .expect("не удалось сохранить тепловую карту");
+    println!("график: {}", chart.display());
 }

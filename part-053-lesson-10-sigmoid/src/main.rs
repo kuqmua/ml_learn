@@ -27,4 +27,24 @@ fn main() {
         assert_eq!(side, expected_side);
         println!("{description} logit {logit}: вероятность {probability:.4}");
     }
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (-60..=60)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, 1.0 / (1.0 + (-x).exp()))
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Сигмоида",
+        "логит",
+        "вероятность",
+        &[lesson_visualization::Series {
+            name: "σ(x)",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

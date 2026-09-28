@@ -25,4 +25,24 @@ fn main() {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("старт={start}, найдено x={x:.3}, f(x)={loss:.3}");
     }
+    // Наглядное представление величин из этого урока.
+    let chart_points_0: Vec<(f64, f64)> = (-150..=150)
+        .map(|i| {
+            let x = i as f64 / 100.0;
+            (x, x * x * x * x - 2.0 * x * x)
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Два локальных минимума",
+        "x",
+        "f(x)",
+        &[lesson_visualization::Series {
+            name: "x⁴−2x²",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

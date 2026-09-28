@@ -25,4 +25,13 @@ fn main() {
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("после broadcasting: {result:?}");
+    // Значения ячеек видны по цвету и подписи.
+    let chart = lesson_visualization::heatmap(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Broadcasting: результат",
+        &result.iter().map(|row| row.to_vec()).collect::<Vec<_>>(),
+    )
+    .expect("не удалось сохранить тепловую карту");
+    println!("график: {}", chart.display());
 }

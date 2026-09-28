@@ -22,4 +22,16 @@ fn main() {
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("после padding: {padded:?}");
+    // Значения ячеек видны по цвету и подписи.
+    let chart = lesson_visualization::heatmap(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Padding: дополненное изображение",
+        &padded
+            .iter()
+            .map(|row| row.iter().map(|&v| v as f64).collect::<Vec<_>>())
+            .collect::<Vec<_>>(),
+    )
+    .expect("не удалось сохранить тепловую карту");
+    println!("график: {}", chart.display());
 }

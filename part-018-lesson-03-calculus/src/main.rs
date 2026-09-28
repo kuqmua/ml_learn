@@ -117,4 +117,26 @@ fn main() {
         // Вызываем нужное вычисление с подготовленными аргументами.
         calculate_quadratic_function_value(0.3, 2.0)
     );
+    let points: Vec<(f64, f64)> = (1..=12)
+        .map(|k| {
+            let h = 10f64.powi(-k);
+            let numeric = (calculate_quadratic_function_value(0.3 + h, 2.0)
+                - calculate_quadratic_function_value(0.3 - h, 2.0))
+                / (2.0 * h);
+            (k as f64, (numeric - 2.0 * (0.3 - 2.0)).abs())
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Ошибка численного градиента",
+        "k для h=10⁻ᵏ",
+        "абсолютная ошибка",
+        &[lesson_visualization::Series {
+            name: "∂f/∂x",
+            points: &points,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

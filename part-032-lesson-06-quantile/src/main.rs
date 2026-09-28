@@ -22,4 +22,24 @@ fn main() {
         assert_eq!(quantile, expected);
         println!("{description}: доля {fraction} → {quantile}");
     }
+    // Наглядное представление величин из этого урока.
+    let chart_points_0: Vec<(f64, f64)> = (0..=100)
+        .map(|i| {
+            let p = i as f64 / 100.0;
+            (p, [1.0, 2.0, 3.0, 4.0, 5.0][((p * 4.0) as usize).min(4)])
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Квантили выборки",
+        "доля",
+        "квантиль",
+        &[lesson_visualization::Series {
+            name: "значения 1, 2, 3, 4, 5",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

@@ -36,4 +36,28 @@ fn main() {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("индексы {indices:?} -> среднее {mean:.2}");
     }
+    // Показываем значения, рассчитанные по данным примера.
+    let chart_points_0: Vec<(f64, f64)> = resamples
+        .iter()
+        .enumerate()
+        .map(|(i, indices)| {
+            (
+                (i + 1) as f64,
+                indices.iter().map(|&j| values[j]).sum::<f64>() / indices.len() as f64,
+            )
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Bootstrap: средние повторных выборок",
+        "номер выборки",
+        "среднее",
+        &[lesson_visualization::Series {
+            name: "среднее",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

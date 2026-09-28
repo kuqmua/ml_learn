@@ -22,4 +22,25 @@ fn main() {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("rate={rate}: параметр={updated}, ошибка={error}");
     }
+    let learning_rates = [0.1, 1.0, 2.0];
+    let errors: Vec<(f64, f64)> = learning_rates
+        .into_iter()
+        .map(|rate| {
+            let updated = parameter - rate * gradient;
+            (rate, (updated - 3.0) * (updated - 3.0))
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "learning-rate",
+        "Ошибка после одного шага",
+        "Скорость обучения",
+        "Квадратичная ошибка",
+        &[lesson_visualization::Series {
+            name: "Ошибка",
+            points: &errors,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

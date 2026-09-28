@@ -43,4 +43,13 @@ fn main() {
             "размеры {incompatible_left_shape:?} и {incompatible_right_shape:?}: умножение невозможно"
         );
     }
+    // Значения ячеек видны по цвету и подписи.
+    let chart = lesson_visualization::heatmap(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Произведение матриц A × B",
+        &[vec![19.0, 22.0], vec![43.0, 50.0]],
+    )
+    .expect("не удалось сохранить тепловую карту");
+    println!("график: {}", chart.display());
 }

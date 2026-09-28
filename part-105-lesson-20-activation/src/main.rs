@@ -16,4 +16,24 @@ fn main() {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("logit={logit}, ReLU={relu}");
     }
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (-50..=50)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, x.max(0.0))
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "ReLU",
+        "вход",
+        "выход",
+        &[lesson_visualization::Series {
+            name: "max(0,x)",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

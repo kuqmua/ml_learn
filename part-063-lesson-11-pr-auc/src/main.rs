@@ -31,4 +31,19 @@ fn main() {
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("average precision (ступенчатая PR-AUC) = {area:.3}");
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = [(0.0, 1.0), (0.5, 1.0), (1.0, 2.0 / 3.0)].to_vec();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "PR-кривая по ранжированным меткам",
+        "полнота",
+        "precision",
+        &[lesson_visualization::Series {
+            name: "метки +−+−",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

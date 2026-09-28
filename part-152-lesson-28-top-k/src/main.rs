@@ -16,4 +16,23 @@ fn main() {
     let top_k = &ranked[..2];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("лучшие источники: {top_k:?}");
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = top_k
+        .iter()
+        .enumerate()
+        .map(|(i, (_, score))| ((i + 1) as f64, *score))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Оценки top-k",
+        "ранг",
+        "оценка",
+        &[lesson_visualization::Series {
+            name: "выбранные документы",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

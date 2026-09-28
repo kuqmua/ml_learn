@@ -26,4 +26,31 @@ fn main() {
         // Умножаем величины согласно используемой формуле.
         penalty_strength * squared_weight
     );
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (-30..=30).map(|i| (i as f64 / 10.0, 1.0)).collect();
+    let chart_points_1: Vec<(f64, f64)> = (-30..=30)
+        .map(|i| {
+            let w = i as f64 / 10.0;
+            (w, 1.0 + w * w)
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Штраф за большой вес",
+        "вес",
+        "целевая функция",
+        &[
+            lesson_visualization::Series {
+                name: "без регуляризации",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "со штрафом",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

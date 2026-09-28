@@ -182,4 +182,14 @@ fn main() {
         // Передаём найденную оценку качества выбранного числа соседей.
         best.1
     );
+    // Наглядное сравнение результатов сводной практики.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Кросс-валидация и тест",
+        "accuracy",
+        &[("CV", best.1), ("test", accuracy)],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

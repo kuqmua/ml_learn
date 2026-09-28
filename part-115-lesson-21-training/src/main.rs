@@ -14,6 +14,7 @@ fn main() {
     // Учебные реализации математических операций для этого урока.
 
     // Шаг: Запускаем один и тот же эксперимент без импульса и с импульсом.
+    let mut results = Vec::new();
     for momentum in [0., 0.8] {
         // Шаг: Для каждого запуска сохраняем лучшую ошибку на validation и эпоху.
         let (loss, epoch) = (|| -> (f64, usize) {
@@ -79,5 +80,15 @@ fn main() {
         })();
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("momentum={momentum}: best validation loss={loss:.6} at epoch {epoch}");
+        results.push((momentum, loss));
     }
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Momentum и лучшая validation error",
+        "ошибка",
+        &[("без momentum", results[0].1), ("с momentum", results[1].1)],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

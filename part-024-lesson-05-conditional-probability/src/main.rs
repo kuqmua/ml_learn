@@ -23,4 +23,14 @@ fn main() {
         assert_eq!(probability, expected);
         println!("{description}: P(болен | тест положительный)={probability:?}");
     }
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Условная вероятность",
+        "P(болен | положительный тест)",
+        &[("часть", 8.0 / 20.0), ("все", 1.0), ("никто", 0.0)],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

@@ -30,4 +30,19 @@ fn main() {
         (1, 1, 1, 1)
     );
     println!("итоговые счётчики: {counts:?}");
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Матрица ошибок: исходы",
+        "количество",
+        &[
+            ("TP", counts.true_positives as f64),
+            ("FP", counts.false_positives as f64),
+            ("TN", counts.true_negatives as f64),
+            ("FN", counts.false_negatives as f64),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

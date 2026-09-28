@@ -23,4 +23,14 @@ fn main() {
     let ml_prior = 1.0 - code_prior;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("P(code)={code_prior}, P(ml)={ml_prior}");
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Априорные вероятности",
+        "вероятность",
+        &[("code", code_prior), ("ml", ml_prior)],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

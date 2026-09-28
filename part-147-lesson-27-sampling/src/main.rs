@@ -50,4 +50,18 @@ fn main() {
             break;
         }
     }
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Распределение следующего токена",
+        "вероятность",
+        &[
+            ("токен 1", probabilities[0]),
+            ("токен 2", probabilities[1]),
+            ("токен 3", probabilities[2]),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

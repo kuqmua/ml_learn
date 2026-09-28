@@ -33,4 +33,36 @@ fn main() {
             println!("{description}: определитель равен нулю");
         }
     }
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = (0..=50)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, 5.0 - 2.0 * x)
+        })
+        .collect();
+    let chart_points_1: Vec<(f64, f64)> = (0..=50)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, x - 1.0)
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Две прямые с единственным пересечением",
+        "x",
+        "y",
+        &[
+            lesson_visualization::Series {
+                name: "2x+y=5",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "x−y=1",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

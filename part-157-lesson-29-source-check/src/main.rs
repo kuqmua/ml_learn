@@ -18,4 +18,18 @@ fn main() {
         assert_eq!(answer, expected_answer);
         println!("{description}: score={retrieval_score} → {answer}");
     }
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Порог проверки источника",
+        "оценка",
+        &[
+            ("ниже", 0.3),
+            ("порог", minimum_reliable_score),
+            ("выше", 0.8),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

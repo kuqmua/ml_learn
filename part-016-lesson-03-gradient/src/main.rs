@@ -15,4 +15,24 @@ fn main() {
     let gradient = [2.0 * (x - 2.0), 6.0 * (y + 1.0)];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("градиент в (0,0) = {gradient:?}");
+    // Наглядное представление величин из этого урока.
+    let chart_points_0: Vec<(f64, f64)> = (-40..=40)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, 2.0 * (x - 3.0))
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Градиент квадратичной функции",
+        "x",
+        "производная",
+        &[lesson_visualization::Series {
+            name: "∂f/∂x при y=0",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

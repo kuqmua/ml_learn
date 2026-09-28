@@ -27,4 +27,24 @@ fn main() {
         // Вычитаем очередной вклад из текущего значения параметра.
         parameter -= rate * gradient;
     }
+    // Наглядное представление величин из этого урока.
+    let chart_points_0: Vec<(f64, f64)> = (0..=30)
+        .map(|i| {
+            let x = 3.0 * (1.0 - 0.6_f64.powi(i));
+            (i as f64, (x - 3.0) * (x - 3.0))
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Сходимость градиентного спуска",
+        "шаг",
+        "ошибка",
+        &[lesson_visualization::Series {
+            name: "η=0.2",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

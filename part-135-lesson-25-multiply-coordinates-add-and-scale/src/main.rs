@@ -31,4 +31,21 @@ fn main() {
         "Q·K={sum_after_multiplying_coordinates}, после масштабирования={}",
         sum_after_multiplying_coordinates / scale
     );
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (1..=64)
+        .map(|d| (d as f64, 1.0 / (d as f64).sqrt()))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Масштабирование Q·K",
+        "размерность d",
+        "множитель 1/√d",
+        &[lesson_visualization::Series {
+            name: "масштаб",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

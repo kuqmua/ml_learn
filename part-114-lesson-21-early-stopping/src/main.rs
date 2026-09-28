@@ -37,4 +37,23 @@ fn main() {
         assert_eq!(stopped_at, expected_stop);
         println!("{description}: остановка={stopped_at:?}, лучший loss={best}");
     }
+    let chart_points: Vec<(f64, f64)> = cases[0]
+        .1
+        .iter()
+        .enumerate()
+        .map(|(epoch, &loss)| (epoch as f64, loss))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Ранняя остановка: первая серия",
+        "эпоха",
+        "validation loss",
+        &[lesson_visualization::Series {
+            name: "loss",
+            points: &chart_points,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

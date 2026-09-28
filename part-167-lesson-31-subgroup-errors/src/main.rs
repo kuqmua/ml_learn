@@ -49,4 +49,24 @@ fn main() {
             correct as f64 / matching.len() as f64
         );
     }
+    let group_accuracy = |name: &str| {
+        let examples: Vec<_> = groups
+            .iter()
+            .filter(|(group, _, _)| *group == name)
+            .collect();
+        examples
+            .iter()
+            .filter(|(_, truth, predicted)| truth == predicted)
+            .count() as f64
+            / examples.len() as f64
+    };
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Точность по подгруппам",
+        "accuracy",
+        &[("A", group_accuracy("A")), ("B", group_accuracy("B"))],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

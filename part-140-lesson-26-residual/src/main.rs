@@ -17,4 +17,14 @@ fn main() {
     let output = [input[0] + transformed[0], input[1] + transformed[1]];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("вход={input:?}, после residual={output:?}");
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Остаточная связь",
+        "первая компонента",
+        &[("вход", input[0]), ("после", output[0])],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

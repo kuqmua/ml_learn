@@ -21,4 +21,27 @@ fn main() {
     let error = part_004_lesson_01_distance::distance(&first_point, &too_short)
         .expect_err("точки разной размерности нужно отклонить");
     println!("разная размерность: {error}");
+    // Наглядное представление величин из этого урока.
+    let chart_points_0: Vec<(f64, f64)> = (-50..=50)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (
+                x,
+                part_004_lesson_01_distance::distance(&[0.0, 0.0], &[x, 4.0]).unwrap(),
+            )
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Расстояние до начала координат",
+        "x точки [x, 4]",
+        "расстояние",
+        &[lesson_visualization::Series {
+            name: "расстояние",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

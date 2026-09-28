@@ -19,4 +19,19 @@ fn main() {
     let joint_score = prior_positive * word_one_given_positive * word_two_given_positive;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("оценка положительного класса = {joint_score}");
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Условно независимые признаки",
+        "вероятность",
+        &[
+            ("prior", prior_positive),
+            ("слово 1", word_one_given_positive),
+            ("слово 2", word_two_given_positive),
+            ("совместно", joint_score),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

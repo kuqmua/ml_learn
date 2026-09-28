@@ -23,4 +23,24 @@ fn main() {
         assert_eq!(clipped, expected);
         println!("{description}: {gradient} → {clipped}");
     }
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (-30..=30)
+        .map(|i| {
+            let g = i as f64 / 10.0;
+            (g, g.clamp(-1.0, 1.0))
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Ограничение градиента",
+        "градиент до",
+        "градиент после",
+        &[lesson_visualization::Series {
+            name: "порог ±1",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

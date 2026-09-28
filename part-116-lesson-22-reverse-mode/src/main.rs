@@ -20,4 +20,23 @@ fn main() {
     let derivative_by_y = x;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("f={output}, df/dx={derivative_by_x}, df/dy={derivative_by_y}");
+    let chart_points: Vec<(f64, f64)> = (0..=50)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, x * y + x)
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "f(x,y)=xy+x при y=3",
+        "x",
+        "f(x,3)",
+        &[lesson_visualization::Series {
+            name: "прямой проход",
+            points: &chart_points,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

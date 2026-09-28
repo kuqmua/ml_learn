@@ -9,3 +9,5 @@ lesson_002 = { package = "part-002-lesson-01-l1-norm", path = "../part-002-lesso
 lesson_003 = { package = "part-003-lesson-01-l2-norm", path = "../part-003-lesson-01-l2-norm" }
 lesson_004 = { package = "part-004-lesson-01-distance", path = "../part-004-lesson-01-distance" }
 lesson_005 = { package = "part-005-lesson-01-cosine-similarity", path = "../part-005-lesson-01-cosine-similarity" }
+
+lesson-visualization = { path = "../lesson-visualization" }

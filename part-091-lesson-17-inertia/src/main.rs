@@ -36,4 +36,24 @@ fn main() {
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("инерция = {inertia}");
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (0..=60)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, ((x - 0.5) * (x - 0.5)).min((x - 5.5) * (x - 5.5)))
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Инерция для двух центров",
+        "точка x",
+        "квадрат расстояния",
+        &[lesson_visualization::Series {
+            name: "ближайший из 0.5 и 5.5",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

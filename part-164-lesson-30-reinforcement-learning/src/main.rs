@@ -123,4 +123,23 @@ fn main() {
         // Обновляем `current_state` результатом текущего шага.
         current_state = next_state;
     }
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = action_values
+        .iter()
+        .enumerate()
+        .map(|(i, row)| (i as f64, row[0].max(row[1])))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Ценность состояния после обучения",
+        "состояние",
+        "лучшее Q",
+        &[lesson_visualization::Series {
+            name: "Q-таблица",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

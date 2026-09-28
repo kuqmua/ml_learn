@@ -20,4 +20,24 @@ fn main() {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("доля положительных={positive_fraction}, Gini={gini}");
     }
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (0..=100)
+        .map(|i| {
+            let p = i as f64 / 100.0;
+            (p, 2.0 * p * (1.0 - p))
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Нечистота Gini",
+        "доля положительных",
+        "Gini",
+        &[lesson_visualization::Series {
+            name: "Gini(p)",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

@@ -17,4 +17,17 @@ fn main() {
     let bagged_prediction = positive_votes * 2 > model_predictions.len();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("голосов за класс 1: {positive_votes}; ансамбль={bagged_prediction}");
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Голосование bagging",
+        "голоса",
+        &[
+            ("класс 1", positive_votes as f64),
+            ("класс 0", (model_predictions.len() - positive_votes) as f64),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

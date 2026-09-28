@@ -23,4 +23,26 @@ fn main() {
         assert_eq!(median, expected);
         println!("{description}: {values:?} → медиана {median}");
     }
+    // Наглядное представление величин из этого урока.
+    let chart_points_0: Vec<(f64, f64)> = [(1.0, 1.0), (2.0, 3.0), (3.0, 7.0)].to_vec();
+    let chart_points_1: Vec<(f64, f64)> = [(1.0, 3.0), (3.0, 3.0)].to_vec();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Медиана и отдельные значения",
+        "индекс",
+        "значение",
+        &[
+            lesson_visualization::Series {
+                name: "наблюдения",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "медиана",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

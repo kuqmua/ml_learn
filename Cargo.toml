@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "lesson-visualization",
     "part-001-lesson-01-multiply-coordinates-and-add",
     "part-002-lesson-01-l1-norm",
     "part-003-lesson-01-l2-norm",

@@ -20,4 +20,24 @@ fn main() {
         assert_eq!(action, expected_action);
         println!("{description}: случайное число={random_fraction}, действие={action}");
     }
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (0..=100)
+        .map(|i| {
+            let u = i as f64 / 100.0;
+            (u, if u < 0.2 { 1.0 } else { 0.0 })
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Исследование и использование",
+        "случайное число",
+        "выбор",
+        &[lesson_visualization::Series {
+            name: "порог ε=0.2: 1=исследование",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

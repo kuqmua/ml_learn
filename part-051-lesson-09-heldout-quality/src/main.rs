@@ -36,4 +36,36 @@ fn main() {
         .collect();
     let mse = lesson_047::mean_squared_error(&targets, &predictions).unwrap();
     println!("test MSE = {mse}");
+    // Показываем значения, рассчитанные по данным примера.
+    let chart_points_0: Vec<(f64, f64)> = training.iter().map(|&(x, y)| (x, y)).collect();
+    let chart_points_1: Vec<(f64, f64)> = test.iter().map(|&(x, y)| (x, y)).collect();
+    let chart_points_2: Vec<(f64, f64)> = (0..=50)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, weight * x + bias)
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Отложенные данные и прямая",
+        "признак",
+        "цель и прогноз",
+        &[
+            lesson_visualization::Series {
+                name: "обучение",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "тест",
+                points: &chart_points_1,
+            },
+            lesson_visualization::Series {
+                name: "модель",
+                points: &chart_points_2,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

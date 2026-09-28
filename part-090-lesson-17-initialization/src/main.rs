@@ -17,4 +17,31 @@ fn main() {
     let second_start = [points[0], points[1]];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("разнесённые центры={first_start:?}; соседние центры={second_start:?}");
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = points.iter().map(|p| (p[0], p[1])).collect();
+    let chart_points_1: Vec<(f64, f64)> = first_start.iter().map(|p| (p[0], p[1])).collect();
+    let chart_points_2: Vec<(f64, f64)> = second_start.iter().map(|p| (p[0], p[1])).collect();
+    let chart = lesson_visualization::scatter_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Инициализация k-means",
+        "x",
+        "y",
+        &[
+            lesson_visualization::Series {
+                name: "объекты",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "разнесённые центры",
+                points: &chart_points_1,
+            },
+            lesson_visualization::Series {
+                name: "соседние центры",
+                points: &chart_points_2,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

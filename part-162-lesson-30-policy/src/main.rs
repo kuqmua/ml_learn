@@ -22,4 +22,13 @@ fn main() {
     };
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("политика выбирает: {action}");
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Оценки действий политики",
+        "Q-значение",
+        &[("влево", q_left), ("вправо", q_right)],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

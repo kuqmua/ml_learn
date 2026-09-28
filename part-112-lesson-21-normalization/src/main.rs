@@ -18,4 +18,34 @@ fn main() {
     let centered: Vec<_> = train.iter().map(|&value| value - mean).collect();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("среднее train={mean}, центрировано={centered:?}");
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = train
+        .iter()
+        .enumerate()
+        .map(|(i, &v)| (i as f64, v))
+        .collect();
+    let chart_points_1: Vec<(f64, f64)> = centered
+        .iter()
+        .enumerate()
+        .map(|(i, &v)| (i as f64, v))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Центрирование признака",
+        "номер объекта",
+        "значение",
+        &[
+            lesson_visualization::Series {
+                name: "до",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "после",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

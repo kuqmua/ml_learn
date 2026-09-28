@@ -21,4 +21,19 @@ fn main() {
         assert_eq!(counts, expected_positive);
         println!("{description}: части {fold_a:?} и {fold_b:?}, положительных {counts:?}");
     }
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Положительные в каждой части",
+        "число",
+        &[
+            ("подряд: fold 1", 4.0),
+            ("подряд: fold 2", 0.0),
+            ("страты: fold 1", 2.0),
+            ("страты: fold 2", 2.0),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

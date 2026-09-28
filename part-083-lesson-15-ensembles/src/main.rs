@@ -124,4 +124,23 @@ fn main() {
             votes * 2 > models.len()
         );
     }
+    // Наглядное представление вычислений сводной практики.
+    let chart_points_0: Vec<(f64, f64)> = models
+        .iter()
+        .enumerate()
+        .map(|(i, (threshold, _))| (i as f64, *threshold))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Пороги моделей ансамбля",
+        "номер модели",
+        "порог",
+        &[lesson_visualization::Series {
+            name: "пороги",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

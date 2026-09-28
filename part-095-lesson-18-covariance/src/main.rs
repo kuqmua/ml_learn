@@ -32,4 +32,19 @@ fn main() {
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("выборочная ковариация={}", sum / (x.len() - 1) as f64);
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = x.iter().zip(y.iter()).map(|(&a, &b)| (a, b)).collect();
+    let chart = lesson_visualization::scatter_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Ковариация: совместное изменение",
+        "x",
+        "y",
+        &[lesson_visualization::Series {
+            name: "наблюдения",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

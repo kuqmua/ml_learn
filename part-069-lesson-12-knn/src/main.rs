@@ -85,4 +85,39 @@ fn main() {
             })()
         );
     }
+    // Показываем именно обучающие точки и запрос из примера.
+    let class_zero: Vec<(f64, f64)> = training_examples
+        .iter()
+        .filter(|(_, label)| !*label)
+        .map(|(point, _)| (point[0], point[1]))
+        .collect();
+    let class_one: Vec<(f64, f64)> = training_examples
+        .iter()
+        .filter(|(_, label)| *label)
+        .map(|(point, _)| (point[0], point[1]))
+        .collect();
+    let query_point = [(1.8, 2.1)];
+    let chart = lesson_visualization::scatter_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Ближайшие соседи и запрос",
+        "признак 1",
+        "признак 2",
+        &[
+            lesson_visualization::Series {
+                name: "класс 0",
+                points: &class_zero,
+            },
+            lesson_visualization::Series {
+                name: "класс 1",
+                points: &class_one,
+            },
+            lesson_visualization::Series {
+                name: "запрос",
+                points: &query_point,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

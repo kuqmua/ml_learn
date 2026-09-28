@@ -17,4 +17,14 @@ fn main() {
         assert_eq!(first_output == second_output, should_match);
         println!("{description}: ответы {first_output} и {second_output}");
     }
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Разные начальные веса",
+        "вес",
+        &[("нейрон 1", 0.5), ("нейрон 2", -0.5)],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

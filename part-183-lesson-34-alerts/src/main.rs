@@ -15,4 +15,14 @@ fn main() {
         assert_eq!(alert, expected);
         println!("{description}: дрейф={drift_score}, требуется проверка={alert}");
     }
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Порог алерта и два случая",
+        "оценка дрейфа",
+        &[("ниже", 0.1), ("порог", alert_threshold), ("выше", 0.35)],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

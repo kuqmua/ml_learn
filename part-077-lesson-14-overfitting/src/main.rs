@@ -25,4 +25,34 @@ fn main() {
             validation_error[depth - 1]
         );
     }
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = train_error
+        .iter()
+        .enumerate()
+        .map(|(i, &v)| ((i + 1) as f64, v))
+        .collect();
+    let chart_points_1: Vec<(f64, f64)> = validation_error
+        .iter()
+        .enumerate()
+        .map(|(i, &v)| ((i + 1) as f64, v))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Переобучение дерева",
+        "глубина",
+        "ошибка",
+        &[
+            lesson_visualization::Series {
+                name: "train",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "validation",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

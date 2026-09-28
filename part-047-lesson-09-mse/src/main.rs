@@ -19,4 +19,31 @@ fn main() {
     let error = part_047_lesson_09_mse::mean_squared_error(&targets, &[2.0, 4.0])
         .expect_err("длины должны совпадать");
     println!("разная длина: {error}");
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (-30..=30)
+        .map(|i| {
+            let d = i as f64 / 10.0;
+            (
+                d,
+                part_047_lesson_09_mse::mean_squared_error(
+                    &[2.0, 4.0, 6.0],
+                    &[2.0 + d, 4.0 + d, 6.0 + d],
+                )
+                .unwrap(),
+            )
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Среднеквадратичная ошибка",
+        "смещение прогноза",
+        "MSE",
+        &[lesson_visualization::Series {
+            name: "цели [2,4,6]",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

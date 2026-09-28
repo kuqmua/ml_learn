@@ -235,4 +235,26 @@ fn main() {
             output_probability
         );
     }
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = [(0.0, 0.0), (1.0, 1.0)].to_vec();
+    let chart_points_1: Vec<(f64, f64)> = [(0.0, 1.0), (1.0, 0.0)].to_vec();
+    let chart = lesson_visualization::scatter_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "XOR: обучающие примеры",
+        "первый признак",
+        "второй признак",
+        &[
+            lesson_visualization::Series {
+                name: "класс 0",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "класс 1",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

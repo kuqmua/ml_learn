@@ -21,4 +21,26 @@ fn main() {
     println!(
         "сумма после попарного умножения координат представлений = {sum_after_multiplying_coordinates}"
     );
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = vec![(first[0], first[1])];
+    let chart_points_1: Vec<(f64, f64)> = vec![(second[0], second[1])];
+    let chart = lesson_visualization::scatter_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Похожие эмбеддинги",
+        "первая координата",
+        "вторая координата",
+        &[
+            lesson_visualization::Series {
+                name: "первый",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "второй",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

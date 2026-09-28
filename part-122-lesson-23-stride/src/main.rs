@@ -20,4 +20,17 @@ fn main() {
     let positions: Vec<_> = (0..output_width).map(|index| index * stride).collect();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("позиции ядра по ширине: {positions:?}");
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Stride и позиции ядра",
+        "позиция",
+        &[
+            ("первая", positions[0] as f64),
+            ("последняя", *positions.last().unwrap() as f64),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

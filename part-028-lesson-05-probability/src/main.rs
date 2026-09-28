@@ -86,4 +86,34 @@ fn main() {
                 / (true_positive_probability + (1.0 - prevalence) * (1.0 - specificity))
         })()
     );
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = [
+        (0.0, 0.01 * 0.9 / (0.01 * 0.9 + 0.99 * 0.05)),
+        (100000.0, 0.01 * 0.9 / (0.01 * 0.9 + 0.99 * 0.05)),
+    ]
+    .to_vec();
+    let chart_points_1: Vec<(f64, f64)> = [(
+        100000.0,
+        true_positive_count as f64 / positive_test_count as f64,
+    )]
+    .to_vec();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Монте-Карло и формула Байеса",
+        "число испытаний",
+        "частота заболевания после положительного теста",
+        &[
+            lesson_visualization::Series {
+                name: "теория",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "симуляция",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

@@ -22,4 +22,14 @@ fn main() {
         (train.iter().sum::<f64>() + test.iter().sum::<f64>()) / (train.len() + test.len()) as f64;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("только train={train_mean}, с утечкой={contaminated_mean}");
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Утечка меняет статистику",
+        "среднее",
+        &[("train", train_mean), ("с утечкой", contaminated_mean)],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

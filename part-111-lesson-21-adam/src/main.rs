@@ -32,4 +32,19 @@ fn main() {
     let updated = old_weight - 0.01 * corrected_first / (root + 0.00000001);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("вес после первого шага Adam = {updated}");
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Adam: первый шаг",
+        "значение",
+        &[
+            ("градиент", gradient),
+            ("первый момент", corrected_first),
+            ("вес до", old_weight),
+            ("вес после", updated),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

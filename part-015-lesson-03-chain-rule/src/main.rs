@@ -21,4 +21,36 @@ fn main() {
     let derivative = outer_derivative * inner_derivative;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("f'(3)={derivative}");
+    // Наглядное представление величин из этого урока.
+    let chart_points_0: Vec<(f64, f64)> = (-20..=20)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, x * x * x * x)
+        })
+        .collect();
+    let chart_points_1: Vec<(f64, f64)> = (-20..=20)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, 4.0 * x * x * x)
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Правило цепочки: (2x+1)²",
+        "x",
+        "значение",
+        &[
+            lesson_visualization::Series {
+                name: "(2x+1)²",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "производная",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

@@ -3,17 +3,99 @@
 version = 4
 
 [[package]]
+name = "autocfg"
+version = "1.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
+
+[[package]]
+name = "bumpalo"
+version = "3.20.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "72f5acc6cb2ba439de613abc23857ec3d78374d8ed5ac84e9d11336e87da8649"
+
+[[package]]
+name = "cfg-if"
+version = "1.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4e7648175b45a9a48536d676f68d918270699102aa8dab5496df06904c914600"
+
+[[package]]
+name = "futures-core"
+version = "0.3.34"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "92d699e522242e69e3003b94ecc1f960f3a5e015aa7c5d7486e65ad01dd94f5e"
+
+[[package]]
+name = "futures-task"
+version = "0.3.34"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cd417de3d1d015fc3bfd2b1ea46dfc7bab72ef86f1cc7cc9c78e728b34a6d1fd"
+
+[[package]]
+name = "futures-util"
+version = "0.3.34"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0d50a92467f8ba5dd6e3ee5d4bd04d73ab2e4e1c44474a0674821dfce14b79bc"
+dependencies = [
+ "futures-core",
+ "futures-task",
+ "pin-project-lite",
+ "slab",
+]
+
+[[package]]
+name = "js-sys"
+version = "0.3.106"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7883d941dae510fb2d978fc3fe018c71c9e2892fd38854de3e8b92c2e5ad9cc5"
+dependencies = [
+ "cfg-if",
+ "futures-util",
+ "wasm-bindgen",
+]
+
+[[package]]
+name = "lesson-visualization"
+version = "0.1.0"
+dependencies = [
+ "plotters",
+]
+
+[[package]]
+name = "num-traits"
+version = "0.2.19"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "071dfc062690e90b734c0b2273ce72ad0ffa95f0c74596bc250dcfd960262841"
+dependencies = [
+ "autocfg",
+]
+
+[[package]]
+name = "once_cell"
+version = "1.21.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9f7c3e4beb33f85d45ae3e3a1792185706c8e16d043238c593331cc7cd313b50"
+
+[[package]]
 name = "part-001-lesson-01-multiply-coordinates-and-add"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-002-lesson-01-l1-norm"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-003-lesson-01-l2-norm"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-001-lesson-01-multiply-coordinates-and-add",
 ]
 
@@ -21,6 +103,7 @@ dependencies = [
 name = "part-004-lesson-01-distance"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-003-lesson-01-l2-norm",
 ]
 
@@ -28,6 +111,7 @@ dependencies = [
 name = "part-005-lesson-01-cosine-similarity"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-001-lesson-01-multiply-coordinates-and-add",
  "part-003-lesson-01-l2-norm",
 ]
@@ -36,6 +120,7 @@ dependencies = [
 name = "part-006-lesson-01-vectors"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-001-lesson-01-multiply-coordinates-and-add",
  "part-002-lesson-01-l1-norm",
  "part-003-lesson-01-l2-norm",
@@ -46,15 +131,22 @@ dependencies = [
 [[package]]
 name = "part-007-lesson-02-matrix-shape"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-008-lesson-02-transpose"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-009-lesson-02-matvec"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-001-lesson-01-multiply-coordinates-and-add",
 ]
 
@@ -62,107 +154,171 @@ dependencies = [
 name = "part-010-lesson-02-matmul"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-001-lesson-01-multiply-coordinates-and-add",
 ]
 
 [[package]]
 name = "part-011-lesson-02-linear-system"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-012-lesson-02-matrices"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-001-lesson-01-multiply-coordinates-and-add",
 ]
 
 [[package]]
 name = "part-013-lesson-03-derivative"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-014-lesson-03-partial-derivative"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-015-lesson-03-chain-rule"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-016-lesson-03-gradient"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-017-lesson-03-finite-difference"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-018-lesson-03-calculus"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-019-lesson-04-learning-rate"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-020-lesson-04-convergence"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-021-lesson-04-local-minima"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-022-lesson-04-batch-stochastic"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-023-lesson-04-optimization"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-024-lesson-05-conditional-probability"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-025-lesson-05-independence"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-026-lesson-05-bayes"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-027-lesson-05-expectation"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-028-lesson-05-probability"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-029-lesson-06-mean"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-030-lesson-06-median"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-031-lesson-06-variance"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-029-lesson-06-mean",
 ]
 
 [[package]]
 name = "part-032-lesson-06-quantile"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-033-lesson-06-confidence-interval"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-029-lesson-06-mean",
  "part-031-lesson-06-variance",
 ]
@@ -170,11 +326,15 @@ dependencies = [
 [[package]]
 name = "part-034-lesson-06-bootstrap"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-035-lesson-06-statistics"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-029-lesson-06-mean",
  "part-031-lesson-06-variance",
 ]
@@ -190,14 +350,23 @@ version = "0.1.0"
 [[package]]
 name = "part-038-lesson-07-data-split"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-039-lesson-07-data-leakage"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-040-lesson-07-data-pipeline"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-041-lesson-08-seed"
@@ -206,6 +375,9 @@ version = "0.1.0"
 [[package]]
 name = "part-042-lesson-08-baseline"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-043-lesson-08-configuration"
@@ -214,6 +386,9 @@ version = "0.1.0"
 [[package]]
 name = "part-044-lesson-08-metric-log"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-045-lesson-08-data-version"
@@ -226,23 +401,36 @@ version = "0.1.0"
 [[package]]
 name = "part-047-lesson-09-mse"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-048-lesson-09-mae"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-049-lesson-09-coefficients"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-050-lesson-09-regularization"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-051-lesson-09-heldout-quality"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-047-lesson-09-mse",
 ]
 
@@ -250,37 +438,57 @@ dependencies = [
 name = "part-052-lesson-09-linear-regression"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-047-lesson-09-mse",
 ]
 
 [[package]]
 name = "part-053-lesson-10-sigmoid"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-054-lesson-10-log-loss"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-055-lesson-10-probability"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-056-lesson-10-threshold"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-057-lesson-10-logistic-regression"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-058-lesson-11-confusion-matrix"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-059-lesson-11-precision"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-058-lesson-11-confusion-matrix",
 ]
 
@@ -288,6 +496,7 @@ dependencies = [
 name = "part-060-lesson-11-recall"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-058-lesson-11-confusion-matrix",
 ]
 
@@ -295,6 +504,7 @@ dependencies = [
 name = "part-061-lesson-11-f1"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-058-lesson-11-confusion-matrix",
  "part-059-lesson-11-precision",
  "part-060-lesson-11-recall",
@@ -303,15 +513,22 @@ dependencies = [
 [[package]]
 name = "part-062-lesson-11-roc-auc"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-063-lesson-11-pr-auc"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-064-lesson-11-metrics"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-058-lesson-11-confusion-matrix",
  "part-059-lesson-11-precision",
  "part-060-lesson-11-recall",
@@ -322,6 +539,7 @@ dependencies = [
 name = "part-065-lesson-12-distances"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-004-lesson-01-distance",
 ]
 
@@ -329,257 +547,432 @@ dependencies = [
 name = "part-066-lesson-12-feature-scaling"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-004-lesson-01-distance",
 ]
 
 [[package]]
 name = "part-067-lesson-12-choose-k"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-068-lesson-12-prediction-cost"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-069-lesson-12-knn"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-070-lesson-13-conditional-independence"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-071-lesson-13-priors"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-072-lesson-13-laplace-smoothing"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-073-lesson-13-naive-bayes"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-074-lesson-14-entropy"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-075-lesson-14-gini"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-076-lesson-14-greedy-split"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-077-lesson-14-overfitting"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-078-lesson-14-decision-tree"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-079-lesson-15-bagging"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-080-lesson-15-bootstrap"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-081-lesson-15-majority-vote"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-082-lesson-15-bias-variance"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-083-lesson-15-ensembles"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-084-lesson-16-k-fold"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-085-lesson-16-stratification"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-086-lesson-16-nested-evaluation"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-087-lesson-16-preprocessing-leakage"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-088-lesson-16-cross-validation"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-089-lesson-17-centroids"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-090-lesson-17-initialization"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-091-lesson-17-inertia"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-092-lesson-17-choose-k"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-093-lesson-17-clustering"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-094-lesson-18-centering"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-029-lesson-06-mean",
 ]
 
 [[package]]
 name = "part-095-lesson-18-covariance"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-096-lesson-18-principal-direction"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-001-lesson-01-multiply-coordinates-and-add",
 ]
 
 [[package]]
 name = "part-097-lesson-18-explained-variance"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-098-lesson-18-pca"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-099-lesson-19-forward-pass"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-100-lesson-19-backpropagation"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-101-lesson-19-gradient-accumulation"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-102-lesson-19-computation-graph"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-103-lesson-20-layers"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-104-lesson-20-parameters"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-105-lesson-20-activation"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-106-lesson-20-initialization"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-107-lesson-20-mini-batch"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-108-lesson-20-mlp"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-109-lesson-21-sgd"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-110-lesson-21-momentum"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-111-lesson-21-adam"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-112-lesson-21-normalization"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-029-lesson-06-mean",
 ]
 
 [[package]]
 name = "part-113-lesson-21-clipping"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-114-lesson-21-early-stopping"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-115-lesson-21-training"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-116-lesson-22-reverse-mode"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-117-lesson-22-tensor-shapes"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-118-lesson-22-broadcasting"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-119-lesson-22-gradient-check"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-120-lesson-22-autodiff"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-121-lesson-23-kernel"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-122-lesson-23-stride"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-123-lesson-23-padding"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-124-lesson-23-pooling"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-125-lesson-23-local-features"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-126-lesson-23-convolution"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-127-lesson-24-vocabulary"
@@ -592,120 +985,183 @@ version = "0.1.0"
 [[package]]
 name = "part-129-lesson-24-dense-representations"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-130-lesson-24-embedding-similarity"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-001-lesson-01-multiply-coordinates-and-add",
 ]
 
 [[package]]
 name = "part-131-lesson-24-embeddings"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-132-lesson-25-query"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-133-lesson-25-key"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-001-lesson-01-multiply-coordinates-and-add",
 ]
 
 [[package]]
 name = "part-134-lesson-25-value"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-135-lesson-25-multiply-coordinates-add-and-scale"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-001-lesson-01-multiply-coordinates-and-add",
 ]
 
 [[package]]
 name = "part-136-lesson-25-softmax"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-137-lesson-25-causal-mask"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-138-lesson-25-attention"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-001-lesson-01-multiply-coordinates-and-add",
 ]
 
 [[package]]
 name = "part-139-lesson-26-self-attention"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-140-lesson-26-residual"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-141-lesson-26-layer-norm"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-142-lesson-26-feed-forward"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-143-lesson-26-transformer-block"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-001-lesson-01-multiply-coordinates-and-add",
 ]
 
 [[package]]
 name = "part-144-lesson-27-next-token"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-145-lesson-27-cross-entropy"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-146-lesson-27-perplexity"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-147-lesson-27-sampling"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-148-lesson-27-language-model"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-149-lesson-28-lexical-search"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-150-lesson-28-tf-idf"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-151-lesson-28-cosine"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-005-lesson-01-cosine-similarity",
 ]
 
 [[package]]
 name = "part-152-lesson-28-top-k"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-153-lesson-28-retrieval"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-154-lesson-29-context"
@@ -714,6 +1170,9 @@ version = "0.1.0"
 [[package]]
 name = "part-155-lesson-29-context-length"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-156-lesson-29-citation"
@@ -722,6 +1181,9 @@ version = "0.1.0"
 [[package]]
 name = "part-157-lesson-29-source-check"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-158-lesson-29-rag"
@@ -730,10 +1192,16 @@ version = "0.1.0"
 [[package]]
 name = "part-159-lesson-30-state"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-160-lesson-30-action"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-161-lesson-30-reward"
@@ -742,29 +1210,45 @@ version = "0.1.0"
 [[package]]
 name = "part-162-lesson-30-policy"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-163-lesson-30-exploration"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-164-lesson-30-reinforcement-learning"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-165-lesson-31-distribution-shift"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-029-lesson-06-mean",
 ]
 
 [[package]]
 name = "part-166-lesson-31-calibration"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-167-lesson-31-subgroup-errors"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-168-lesson-31-model-limits"
@@ -773,10 +1257,16 @@ version = "0.1.0"
 [[package]]
 name = "part-169-lesson-31-safety-evaluation"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-170-lesson-32-weight-format"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-171-lesson-32-schema-version"
@@ -809,6 +1299,9 @@ version = "0.1.0"
 [[package]]
 name = "part-178-lesson-33-performance"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-179-lesson-33-inference-cli"
@@ -817,10 +1310,16 @@ version = "0.1.0"
 [[package]]
 name = "part-180-lesson-34-feature-distribution"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-181-lesson-34-postrelease-quality"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-182-lesson-34-latency"
@@ -829,15 +1328,22 @@ version = "0.1.0"
 [[package]]
 name = "part-183-lesson-34-alerts"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-184-lesson-34-monitoring"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
 
 [[package]]
 name = "part-185-lesson-35-end-to-end"
 version = "0.1.0"
 dependencies = [
+ "lesson-visualization",
  "part-029-lesson-06-mean",
  "part-048-lesson-09-mae",
 ]
@@ -845,3 +1351,142 @@ dependencies = [
 [[package]]
 name = "part-186-lesson-36-capstone"
 version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "pin-project-lite"
+version = "0.2.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a89322df9ebe1c1578d689c92318e070967d1042b512afbe49518723f4e6d5cd"
+
+[[package]]
+name = "plotters"
+version = "0.3.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5aeb6f403d7a4911efb1e33402027fc44f29b5bf6def3effcc22d7bb75f2b747"
+dependencies = [
+ "num-traits",
+ "plotters-backend",
+ "plotters-svg",
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
+name = "plotters-backend"
+version = "0.3.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "df42e13c12958a16b3f7f4386b9ab1f3e7933914ecea48da7139435263a4172a"
+
+[[package]]
+name = "plotters-svg"
+version = "0.3.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "51bae2ac328883f7acdfea3d66a7c35751187f870bc81f94563733a154d7a670"
+dependencies = [
+ "plotters-backend",
+]
+
+[[package]]
+name = "proc-macro2"
+version = "1.0.107"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "985e7ec9bb745e6ce6535b544d84d6cd6f7ad8bd711c398938ae983b91a766d9"
+dependencies = [
+ "unicode-ident",
+]
+
+[[package]]
+name = "quote"
+version = "1.0.47"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1fbf4db142a473a8d80c26bbf18454ed458bf8d26c8219c331daecfdbd079001"
+dependencies = [
+ "proc-macro2",
+]
+
+[[package]]
+name = "rustversion"
+version = "1.0.23"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cf54715a573b99ac80df0bc206da022bcd442c974952c7b9720069370852e21f"
+
+[[package]]
+name = "slab"
+version = "0.4.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0c790de23124f9ab44544d7ac05d60440adc586479ce501c1d6d7da3cd8c9cf5"
+
+[[package]]
+name = "syn"
+version = "3.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8593e8e72159ed2257d083c7a454a85cbf854f37a0966d8d483aff8c8a3ebcee"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "unicode-ident",
+]
+
+[[package]]
+name = "unicode-ident"
+version = "1.0.26"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d245f478577f809a851594d02313b640fb437e0bb33866753cff937863096954"
+
+[[package]]
+name = "wasm-bindgen"
+version = "0.2.129"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9bb54f33acc68fd454578d9820b0bde1a1a3d17aa17bb7b6595806d02886d409"
+dependencies = [
+ "cfg-if",
+ "once_cell",
+ "rustversion",
+ "wasm-bindgen-macro",
+ "wasm-bindgen-shared",
+]
+
+[[package]]
+name = "wasm-bindgen-macro"
+version = "0.2.129"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2e29d0c35b16e224a7eeb5cd2d25e3e1968fbd65604117b44d3b789d00ee8535"
+dependencies = [
+ "quote",
+ "wasm-bindgen-macro-support",
+]
+
+[[package]]
+name = "wasm-bindgen-macro-support"
+version = "0.2.129"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6f501a8bc3719dba86ef8ae4728879c08001bea749eb1333ac5b91e040e2a6b7"
+dependencies = [
+ "bumpalo",
+ "proc-macro2",
+ "quote",
+ "syn",
+ "wasm-bindgen-shared",
+]
+
+[[package]]
+name = "wasm-bindgen-shared"
+version = "0.2.129"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "23f0c9c52aa7cd7d77769a4cfe2a9adb1b331f489a41d912ce14513d5ab995c6"
+dependencies = [
+ "unicode-ident",
+]
+
+[[package]]
+name = "web-sys"
+version = "0.3.106"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "88261b9deccee56594c11a3460c462c41f58d148598fe70ad77070126a68aba4"
+dependencies = [
+ "js-sys",
+ "wasm-bindgen",
+]

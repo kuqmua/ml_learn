@@ -30,4 +30,24 @@ fn main() {
         // Замер завершается после обработки всей партии объектов.
         start.elapsed()
     );
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (0..=100)
+        .map(|i| {
+            let n = (i * 10) as f64;
+            (n, 2.0 * n)
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Стоимость пакетного инференса",
+        "число строк",
+        "условное число операций",
+        &[lesson_visualization::Series {
+            name: "линейный проход",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

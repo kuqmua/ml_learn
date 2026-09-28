@@ -8,3 +8,5 @@ lesson_058 = { package = "part-058-lesson-11-confusion-matrix", path = "../part-
 lesson_059 = { package = "part-059-lesson-11-precision", path = "../part-059-lesson-11-precision" }
 lesson_060 = { package = "part-060-lesson-11-recall", path = "../part-060-lesson-11-recall" }
 lesson_061 = { package = "part-061-lesson-11-f1", path = "../part-061-lesson-11-f1" }
+
+lesson-visualization = { path = "../lesson-visualization" }

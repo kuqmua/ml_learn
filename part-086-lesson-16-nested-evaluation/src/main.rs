@@ -51,4 +51,22 @@ fn main() {
         // Печатаем выбранное число соседей рядом с внешней оценкой.
         best.0
     );
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = inner_scores
+        .iter()
+        .map(|&(k, score)| (k as f64, score))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Выбор k внутри вложенной оценки",
+        "k",
+        "внутренняя оценка",
+        &[lesson_visualization::Series {
+            name: "validation",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

@@ -22,4 +22,13 @@ fn main() {
     let error = lesson_001::multiply_matching_coordinates_then_add(&matrix[0], &too_short)
         .expect_err("разные длины нужно отклонить");
     println!("разная длина строки и вектора: {error}");
+    // Значения ячеек видны по цвету и подписи.
+    let chart = lesson_visualization::heatmap(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Коэффициенты матрицы",
+        &matrix.iter().map(|row| row.to_vec()).collect::<Vec<_>>(),
+    )
+    .expect("не удалось сохранить тепловую карту");
+    println!("график: {}", chart.display());
 }

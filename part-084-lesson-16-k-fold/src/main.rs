@@ -38,4 +38,19 @@ fn main() {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("fold={fold}: train={train:?}, validation={validation:?}");
     }
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = (0..9).map(|i| (i as f64, (i % 3) as f64)).collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "K-fold: номер fold для строки",
+        "номер строки",
+        "fold",
+        &[lesson_visualization::Series {
+            name: "3 части",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

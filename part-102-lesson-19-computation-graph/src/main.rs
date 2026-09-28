@@ -191,4 +191,24 @@ fn main() {
         // Показываем накопленную производную результата по входу.
         graph.0[input_index].gradient
     );
+    // Наглядное представление вычислений сводной практики.
+    let chart_points_0: Vec<(f64, f64)> = graph
+        .0
+        .iter()
+        .enumerate()
+        .map(|(i, node)| (i as f64, node.gradient))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Градиенты вычислительного графа",
+        "номер узла",
+        "градиент",
+        &[lesson_visualization::Series {
+            name: "обратный проход",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

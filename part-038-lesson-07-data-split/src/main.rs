@@ -19,4 +19,18 @@ fn main() {
     let test = &rows[8..];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("train={train:?}, validation={validation:?}, test={test:?}");
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Разделение набора",
+        "число строк",
+        &[
+            ("train", train.len() as f64),
+            ("validation", validation.len() as f64),
+            ("test", test.len() as f64),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

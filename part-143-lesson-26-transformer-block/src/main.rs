@@ -116,106 +116,112 @@ fn main() {
     }
 
     // Шаг: Пропускаем его через attention, residual, нормализацию и feed-forward.
-    println!(
-        // Подставляем результаты в этот шаблон вывода или текстового значения.
-        "transformer block: {:?}",
-        // Составляем результат из вычисленных значений в указанном порядке.
-        (|| -> Vec<[f64; 2]> {
-            /* Собираем causal self-attention, остаточные связи, нормализацию и feed-forward. */
-            let input_values: &[[f64; 2]] = &input_values;
-            // Используем ранее рассчитанное значение `input_values` в текущем выражении.
-            input_values
-                // Перебираем элементы по ссылке, не копируя исходную коллекцию.
-                .iter()
-                // Добавляем порядковый индекс к каждому элементу обхода.
-                .enumerate()
-                // Преобразуем каждый элемент последовательности.
-                .map(|(token_index, &query)| {
-                    // Причинная маска оставляет текущему токену только предшествующие ключи.
-                    let logits: Vec<_> = input_values
-                        // Перебираем элементы по ссылке, не копируя исходную коллекцию.
-                        .iter()
-                        // Складываем или вычитаем величины согласно используемой формуле.
-                        .take(token_index + 1)
-                        // Преобразуем каждый элемент последовательности.
-                        .map(|key| {
-                            // Составляем результат из вычисленных значений в указанном порядке.
-                            lesson_001::multiply_matching_coordinates_then_add(&query, key).unwrap()
+    let transformer_output = (|| -> Vec<[f64; 2]> {
+        /* Собираем causal self-attention, остаточные связи, нормализацию и feed-forward. */
+        let input_values: &[[f64; 2]] = &input_values;
+        // Используем ранее рассчитанное значение `input_values` в текущем выражении.
+        input_values
+            // Перебираем элементы по ссылке, не копируя исходную коллекцию.
+            .iter()
+            // Добавляем порядковый индекс к каждому элементу обхода.
+            .enumerate()
+            // Преобразуем каждый элемент последовательности.
+            .map(|(token_index, &query)| {
+                // Причинная маска оставляет текущему токену только предшествующие ключи.
+                let logits: Vec<_> = input_values
+                    // Перебираем элементы по ссылке, не копируя исходную коллекцию.
+                    .iter()
+                    // Складываем или вычитаем величины согласно используемой формуле.
+                    .take(token_index + 1)
+                    // Преобразуем каждый элемент последовательности.
+                    .map(|key| {
+                        // Составляем результат из вычисленных значений в указанном порядке.
+                        lesson_001::multiply_matching_coordinates_then_add(&query, key).unwrap()
                                 // Делим значения, получая нормированную величину или среднее.
                                 / approximate_square_root_with_newton_method(2.0)
-                        })
-                        // Собираем элементы итератора в итоговую коллекцию.
-                        .collect();
-                    // Выполняем встроенный расчёт один раз и сохраняем результат в `attention_weights`.
-                    let attention_weights = (|| -> Vec<f64> {
-                        /* Вычитаем максимум для устойчивости, затем нормируем экспоненты. */
-                        let input_values: &[f64] = &logits;
-                        // Создаём изменяемое значение `maximum_value` для следующих операций.
-                        let mut maximum_value = f64::NEG_INFINITY;
-                        // Повторяем следующий блок для каждого элемента указанной последовательности.
-                        for &value in input_values {
-                            // Проверяем условие и выбираем соответствующую ветку алгоритма.
-                            if value > maximum_value {
-                                // Обновляем `maximum_value` результатом текущего шага.
-                                maximum_value = value;
-                            }
+                    })
+                    // Собираем элементы итератора в итоговую коллекцию.
+                    .collect();
+                // Выполняем встроенный расчёт один раз и сохраняем результат в `attention_weights`.
+                let attention_weights = (|| -> Vec<f64> {
+                    /* Вычитаем максимум для устойчивости, затем нормируем экспоненты. */
+                    let input_values: &[f64] = &logits;
+                    // Создаём изменяемое значение `maximum_value` для следующих операций.
+                    let mut maximum_value = f64::NEG_INFINITY;
+                    // Повторяем следующий блок для каждого элемента указанной последовательности.
+                    for &value in input_values {
+                        // Проверяем условие и выбираем соответствующую ветку алгоритма.
+                        if value > maximum_value {
+                            // Обновляем `maximum_value` результатом текущего шага.
+                            maximum_value = value;
                         }
-                        // Считаем количество элементов и сохраняем его в `exponentials`.
-                        let mut exponentials = Vec::with_capacity(input_values.len());
-                        // Инициализируем изменяемый накопитель `normalizer` начальным состоянием.
-                        let mut normalizer = 0.0;
-                        // Повторяем следующий блок для каждого элемента указанной последовательности.
-                        for &value in input_values {
-                            // Сохраняем рассчитанное значение `exponential_value` для следующих операций.
-                            let exponential_value =
+                    }
+                    // Считаем количество элементов и сохраняем его в `exponentials`.
+                    let mut exponentials = Vec::with_capacity(input_values.len());
+                    // Инициализируем изменяемый накопитель `normalizer` начальным состоянием.
+                    let mut normalizer = 0.0;
+                    // Повторяем следующий блок для каждого элемента указанной последовательности.
+                    for &value in input_values {
+                        // Сохраняем рассчитанное значение `exponential_value` для следующих операций.
+                        let exponential_value =
                                 // Складываем или вычитаем величины согласно используемой формуле.
                                 approximate_exponential_with_taylor_series(value - maximum_value);
-                            // Сохраняем очередной рассчитанный элемент в коллекции.
-                            exponentials.push(exponential_value);
-                            // Прибавляем очередной вклад к ранее накопленному результату.
-                            normalizer += exponential_value;
-                        }
-                        // Повторяем следующий блок для каждого элемента указанной последовательности.
-                        for exponential_value in &mut exponentials {
-                            // Масштабируем текущую величину делением.
-                            *exponential_value /= normalizer;
-                        }
-                        // Используем ранее рассчитанное значение `exponentials` в текущем выражении.
-                        exponentials
-                    })();
-                    // Смешиваем value-векторы по рассчитанным весам внимания.
-                    let mut attended = [0.0, 0.0];
-                    // Повторяем следующий блок для каждого элемента указанной последовательности.
-                    for key_index in 0..attention_weights.len() {
+                        // Сохраняем очередной рассчитанный элемент в коллекции.
+                        exponentials.push(exponential_value);
                         // Прибавляем очередной вклад к ранее накопленному результату.
-                        attended[0] += attention_weights[key_index] * input_values[key_index][0];
-                        // Прибавляем очередной вклад к ранее накопленному результату.
-                        attended[1] += attention_weights[key_index] * input_values[key_index][1];
+                        normalizer += exponential_value;
                     }
-                    // После первой остаточной связи применяем нормализацию и простую feed-forward функцию.
-                    let normalized_values = normalize_two_feature_vector([
-                        // Складываем или вычитаем величины согласно используемой формуле.
-                        query[0] + attended[0],
-                        // Складываем или вычитаем величины согласно используемой формуле.
-                        query[1] + attended[1],
-                    ]);
-                    // Создаём набор значений `feed_forward_values` для следующего шага примера.
-                    let feed_forward_values = [
-                        // Вызываем нужное вычисление с подготовленными аргументами.
-                        choose_larger_number(normalized_values[0], 0.),
-                        // Вызываем нужное вычисление с подготовленными аргументами.
-                        choose_larger_number(normalized_values[1], 0.),
-                    ];
+                    // Повторяем следующий блок для каждого элемента указанной последовательности.
+                    for exponential_value in &mut exponentials {
+                        // Масштабируем текущую величину делением.
+                        *exponential_value /= normalizer;
+                    }
+                    // Используем ранее рассчитанное значение `exponentials` в текущем выражении.
+                    exponentials
+                })();
+                // Смешиваем value-векторы по рассчитанным весам внимания.
+                let mut attended = [0.0, 0.0];
+                // Повторяем следующий блок для каждого элемента указанной последовательности.
+                for key_index in 0..attention_weights.len() {
+                    // Прибавляем очередной вклад к ранее накопленному результату.
+                    attended[0] += attention_weights[key_index] * input_values[key_index][0];
+                    // Прибавляем очередной вклад к ранее накопленному результату.
+                    attended[1] += attention_weights[key_index] * input_values[key_index][1];
+                }
+                // После первой остаточной связи применяем нормализацию и простую feed-forward функцию.
+                let normalized_values = normalize_two_feature_vector([
+                    // Складываем или вычитаем величины согласно используемой формуле.
+                    query[0] + attended[0],
+                    // Складываем или вычитаем величины согласно используемой формуле.
+                    query[1] + attended[1],
+                ]);
+                // Создаём набор значений `feed_forward_values` для следующего шага примера.
+                let feed_forward_values = [
                     // Вызываем нужное вычисление с подготовленными аргументами.
-                    normalize_two_feature_vector([
-                        // Складываем или вычитаем величины согласно используемой формуле.
-                        normalized_values[0] + feed_forward_values[0],
-                        // Складываем или вычитаем величины согласно используемой формуле.
-                        normalized_values[1] + feed_forward_values[1],
-                    ])
-                })
-                // Собираем элементы итератора в итоговую коллекцию.
-                .collect()
-        })()
-    );
+                    choose_larger_number(normalized_values[0], 0.),
+                    // Вызываем нужное вычисление с подготовленными аргументами.
+                    choose_larger_number(normalized_values[1], 0.),
+                ];
+                // Вызываем нужное вычисление с подготовленными аргументами.
+                normalize_two_feature_vector([
+                    // Складываем или вычитаем величины согласно используемой формуле.
+                    normalized_values[0] + feed_forward_values[0],
+                    // Складываем или вычитаем величины согласно используемой формуле.
+                    normalized_values[1] + feed_forward_values[1],
+                ])
+            })
+            // Собираем элементы итератора в итоговую коллекцию.
+            .collect()
+    })();
+    println!("transformer block: {transformer_output:?}");
+    let input_matrix: Vec<Vec<f64>> = input_values.iter().map(|row| row.to_vec()).collect();
+    let output_matrix: Vec<Vec<f64>> = transformer_output.iter().map(|row| row.to_vec()).collect();
+    for (name, title, values) in [
+        ("input", "Вход блока Transformer", &input_matrix),
+        ("output", "Выход блока Transformer", &output_matrix),
+    ] {
+        let chart = lesson_visualization::heatmap(env!("CARGO_MANIFEST_DIR"), name, title, values)
+            .expect("не удалось сохранить график");
+        println!("график: {}", chart.display());
+    }
 }

@@ -23,4 +23,14 @@ fn main() {
     let posterior = true_positive / (true_positive + false_positive);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("P(болен | положительный тест) = {posterior:.3}");
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Байес: до и после теста",
+        "вероятность",
+        &[("до теста", 0.01), ("после теста", posterior)],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

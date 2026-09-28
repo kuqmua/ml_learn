@@ -21,4 +21,24 @@ fn main() {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("кандидат {candidate:?}: квадрат расстояния={squared_distance}");
     }
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = (-50..=50)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, (x * x + 1.0).sqrt())
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Расстояние до запроса",
+        "первая координата",
+        "евклидово расстояние",
+        &[lesson_visualization::Series {
+            name: "запрос [0,0]",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

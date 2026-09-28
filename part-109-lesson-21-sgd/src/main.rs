@@ -13,13 +13,28 @@ fn main() {
     let examples = [(1.0, 2.0), (2.0, 4.0)];
     // Инициализируем изменяемый накопитель `weight` начальным состоянием.
     let mut weight = 0.0;
+    let mut weight_history = vec![(0.0, weight)];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
-    for (feature, target) in examples {
+    for (step, (feature, target)) in examples.into_iter().enumerate() {
         // Умножаем значения и сохраняем результат в `gradient`.
         let gradient = 2.0 * (weight * feature - target) * feature;
         // Вычитаем очередной вклад из текущего значения параметра.
         weight -= 0.1 * gradient;
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("после x={feature}: вес={weight}");
+        weight_history.push(((step + 1) as f64, weight));
     }
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Шаги SGD",
+        "шаг",
+        "вес",
+        &[lesson_visualization::Series {
+            name: "вес",
+            points: &weight_history,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

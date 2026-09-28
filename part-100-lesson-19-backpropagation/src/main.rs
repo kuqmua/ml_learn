@@ -22,4 +22,36 @@ fn main() {
     let derivative_output_by_x = derivative_output_by_square * derivative_square_by_x;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("f(x)={output}, df/dx={derivative_output_by_x}");
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (-30..=30)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, 2.0 * x * x)
+        })
+        .collect();
+    let chart_points_1: Vec<(f64, f64)> = (-30..=30)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, 4.0 * x)
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Обратное распространение для 2x²",
+        "x",
+        "значение",
+        &[
+            lesson_visualization::Series {
+                name: "f(x)",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "df/dx",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

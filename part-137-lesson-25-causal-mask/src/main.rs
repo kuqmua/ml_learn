@@ -23,4 +23,27 @@ fn main() {
         );
         println!("позиция {current_position}: веса {masked:?}");
     }
+    // Каждая строка показывает допустимые ключи для текущей позиции.
+    let weights: Vec<Vec<f64>> = (0..raw_weights.len())
+        .map(|position| {
+            let total: f64 = raw_weights[..=position].iter().sum();
+            (0..raw_weights.len())
+                .map(|key| {
+                    if key <= position {
+                        raw_weights[key] / total
+                    } else {
+                        0.0
+                    }
+                })
+                .collect()
+        })
+        .collect();
+    let chart = lesson_visualization::heatmap(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Причинная маска внимания",
+        &weights,
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

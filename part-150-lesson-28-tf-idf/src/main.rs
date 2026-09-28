@@ -36,4 +36,24 @@ fn main() {
     let score = term_frequency * inverse_document_frequency;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("частота={term_frequency}, IDF={inverse_document_frequency:.3}, TF-IDF={score:.3}");
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (0..=10)
+        .map(|i| {
+            let tf = i as f64 / 10.0;
+            (tf, tf * inverse_document_frequency)
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "TF-IDF",
+        "частота токена",
+        "оценка TF-IDF",
+        &[lesson_visualization::Series {
+            name: "idf из примера",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

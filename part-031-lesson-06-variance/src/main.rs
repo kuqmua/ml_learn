@@ -18,4 +18,24 @@ fn main() {
     let error = part_031_lesson_06_variance::sample_variance(&[4.0])
         .expect_err("одного значения недостаточно");
     println!("одно значение: {error}");
+    // Наглядное представление величин из этого урока.
+    let chart_points_0: Vec<(f64, f64)> = (0..=80)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, (x - 4.0) * (x - 4.0))
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Разброс относительно среднего",
+        "значение",
+        "квадрат отклонения",
+        &[lesson_visualization::Series {
+            name: "среднее=4",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

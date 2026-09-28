@@ -5,3 +5,5 @@ edition = "2024"
 
 [dependencies]
 lesson_003 = { package = "part-003-lesson-01-l2-norm", path = "../part-003-lesson-01-l2-norm" }
+
+lesson-visualization = { path = "../lesson-visualization" }

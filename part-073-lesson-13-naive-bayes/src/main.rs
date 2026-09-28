@@ -162,4 +162,26 @@ fn main() {
         // Вызываем нужное вычисление с подготовленными аргументами.
         classify_text_with_multinomial_naive_bayes(&training_examples, "неизвестное")
     );
+    // Наглядное сравнение результатов сводной практики.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Классы обучающих документов",
+        "число текстов",
+        &[
+            (
+                "положительные",
+                training_examples.iter().filter(|(_, class)| *class).count() as f64,
+            ),
+            (
+                "отрицательные",
+                training_examples
+                    .iter()
+                    .filter(|(_, class)| !*class)
+                    .count() as f64,
+            ),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

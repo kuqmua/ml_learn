@@ -36,4 +36,36 @@ fn main() {
     }
     assert!(losses[0] < losses[1] && losses[1] < losses[2]);
     assert!((losses[0] - losses[3]).abs() < 1e-10);
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (1..100)
+        .map(|i| {
+            let p = i as f64 / 100.0;
+            (p, -p.ln())
+        })
+        .collect();
+    let chart_points_1: Vec<(f64, f64)> = (1..100)
+        .map(|i| {
+            let p = i as f64 / 100.0;
+            (p, -(1.0 - p).ln())
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Логарифмическая ошибка",
+        "вероятность положительного класса",
+        "ошибка",
+        &[
+            lesson_visualization::Series {
+                name: "y=1",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "y=0",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

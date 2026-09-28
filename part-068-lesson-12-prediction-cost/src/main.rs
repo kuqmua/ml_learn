@@ -18,4 +18,24 @@ fn main() {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("объектов={training_size}, сравнений координат={coordinate_comparisons}");
     }
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (1..=100)
+        .map(|i| {
+            let n = (i * 10) as f64;
+            (n, 2.0 * n)
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Стоимость kNN",
+        "число обучающих объектов",
+        "сравнения координат",
+        &[lesson_visualization::Series {
+            name: "4 признака",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

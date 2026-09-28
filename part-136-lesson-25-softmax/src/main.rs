@@ -46,4 +46,24 @@ fn main() {
         }
         println!("{description}: {logits:?} → {weights:?}");
     }
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (-60..=60)
+        .map(|i| {
+            let d = i as f64 / 10.0;
+            (d, 1.0 / (1.0 + (-d).exp()))
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Softmax двух логитов",
+        "разность второго и первого",
+        "вес второго",
+        &[lesson_visualization::Series {
+            name: "softmax",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

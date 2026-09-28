@@ -130,4 +130,19 @@ fn main() {
             (centers, inertia)
         })()
     );
+    // Значения из этого урока на графике.
+    let chart_points_0: Vec<(f64, f64)> = dataset.iter().map(|p| (p[0], p[1])).collect();
+    let chart = lesson_visualization::scatter_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Две группы точек k-means",
+        "x",
+        "y",
+        &[lesson_visualization::Series {
+            name: "данные",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

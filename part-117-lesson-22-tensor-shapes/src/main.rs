@@ -16,4 +16,19 @@ fn main() {
         assert_eq!(result_shape, expected);
         println!("{description}: {left_shape:?} × {right_shape:?} → {result_shape:?}");
     }
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Размеры тензоров",
+        "измерение",
+        &[
+            ("строки A", 2.0),
+            ("столбцы A", 3.0),
+            ("строки B", 3.0),
+            ("столбцы B", 2.0),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

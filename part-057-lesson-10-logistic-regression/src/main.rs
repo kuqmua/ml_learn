@@ -241,4 +241,31 @@ fn main() {
         // Умножаем величины согласно используемой формуле.
         convert_logit_to_probability(2. * weight + bias)
     );
+    // Наглядное представление вычислений сводной практики.
+    let chart_points_0: Vec<(f64, f64)> = (-10..=60)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, 1.0 / (1.0 + (-(weight * x + bias)).exp()))
+        })
+        .collect();
+    let chart_points_1: Vec<(f64, f64)> = TRAINING_EXAMPLES.iter().map(|&(x, y)| (x, y)).collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Обученная логистическая модель",
+        "признак",
+        "P(y=1)",
+        &[
+            lesson_visualization::Series {
+                name: "модель",
+                points: &chart_points_0,
+            },
+            lesson_visualization::Series {
+                name: "метки обучения",
+                points: &chart_points_1,
+            },
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

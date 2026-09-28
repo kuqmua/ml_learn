@@ -28,4 +28,17 @@ fn main() {
         / labels.len() as f64;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("класс большинства={majority_label}, accuracy={accuracy:.2}");
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Классы для baseline",
+        "объектов",
+        &[
+            ("отрицательные", (labels.len() - positive_count) as f64),
+            ("положительные", positive_count as f64),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

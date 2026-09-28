@@ -20,4 +20,17 @@ fn main() {
     let validation_centered = validation[0] - train_mean;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("среднее train={train_mean}, validation после центрирования={validation_centered}");
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Центрирование по train",
+        "значение",
+        &[
+            ("train mean", train_mean),
+            ("validation centered", validation_centered),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

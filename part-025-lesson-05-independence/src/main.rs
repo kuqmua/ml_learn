@@ -18,4 +18,18 @@ fn main() {
             "{description}: P(A)={first}, P(B)={second}, P(A и B)={both}, независимы={independent}"
         );
     }
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Зависимость событий",
+        "P(A∩B)",
+        &[
+            ("независимые", cases[0].3),
+            ("зависимые", cases[1].3),
+            ("несовместимые", cases[2].3),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

@@ -16,4 +16,24 @@ fn main() {
         assert_eq!(l1_norm, expected);
         println!("{description}: {vector:?} → L1 = {l1_norm}");
     }
+    // Наглядное представление величин из этого урока.
+    let chart_points_0: Vec<(f64, f64)> = (-50..=50)
+        .map(|i| {
+            let x = i as f64 / 10.0;
+            (x, part_002_lesson_01_l1_norm::l1_norm(&[x, 4.0]))
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Норма L1",
+        "первая координата",
+        "L1",
+        &[lesson_visualization::Series {
+            name: "вектор [x, 4]",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

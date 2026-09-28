@@ -14,4 +14,31 @@ fn main() {
         assert_eq!(f1, expected);
         println!("{description}: precision={precision}, recall={recall}, F1={f1:?}");
     }
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (0..=100)
+        .map(|i| {
+            let r = i as f64 / 100.0;
+            (
+                r,
+                if r == 0.0 {
+                    0.0
+                } else {
+                    2.0 * 0.8 * r / (0.8 + r)
+                },
+            )
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "F1 при precision=0.8",
+        "recall",
+        "F1",
+        &[lesson_visualization::Series {
+            name: "F1",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

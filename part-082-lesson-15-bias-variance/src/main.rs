@@ -33,4 +33,14 @@ fn main() {
         / predictions.len() as f64;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("смещение={bias}, разброс={variance:.2}");
+    // Сравниваем компоненты ошибки на том же наборе прогнозов.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Смещение и разброс",
+        "вклад в MSE",
+        &[("смещение²", bias * bias), ("разброс", variance)],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

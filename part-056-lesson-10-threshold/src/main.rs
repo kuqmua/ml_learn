@@ -18,4 +18,27 @@ fn main() {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("порог {threshold}: {predictions:?}");
     }
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (0..=100)
+        .map(|i| {
+            let t = i as f64 / 100.0;
+            (
+                t,
+                [0.2, 0.55, 0.8].iter().filter(|&&p| p >= t).count() as f64,
+            )
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Число положительных прогнозов",
+        "порог",
+        "количество",
+        &[lesson_visualization::Series {
+            name: "оценки 0.2, 0.55, 0.8",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

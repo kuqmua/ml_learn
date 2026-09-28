@@ -23,4 +23,24 @@ fn main() {
     let numerical = (right - left) / (2.0 * h);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("аналитически={analytical}, численно={numerical}");
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = (1..=100)
+        .map(|i| {
+            let h = i as f64 / 100.0;
+            (h, (((3.0 + h) * (3.0 + h) - 9.0) / h - 6.0).abs())
+        })
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Проверка градиента",
+        "шаг h",
+        "разность",
+        &[lesson_visualization::Series {
+            name: "x² в x=3",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

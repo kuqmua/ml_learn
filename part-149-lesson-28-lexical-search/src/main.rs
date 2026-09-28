@@ -20,4 +20,29 @@ fn main() {
             println!("найден документ {id}");
         }
     }
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Лексический поиск",
+        "документов",
+        &[
+            (
+                "найдены",
+                documents
+                    .iter()
+                    .filter(|(text, _)| text.contains(query))
+                    .count() as f64,
+            ),
+            (
+                "не найдены",
+                documents
+                    .iter()
+                    .filter(|(text, _)| !text.contains(query))
+                    .count() as f64,
+            ),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

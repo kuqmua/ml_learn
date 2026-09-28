@@ -180,4 +180,13 @@ fn main() {
     })();
     // Шаг: Печатаем веса, чтобы увидеть запрет доступа к будущим токенам.
     println!("weights={attention_weights:?}, output={attended_output:?}");
+    // Значения ячеек видны по цвету и подписи.
+    let chart = lesson_visualization::heatmap(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Причинные веса внимания",
+        &attention_weights,
+    )
+    .expect("не удалось сохранить тепловую карту");
+    println!("график: {}", chart.display());
 }

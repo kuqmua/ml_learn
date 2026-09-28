@@ -21,4 +21,18 @@ fn main() {
         // Присваиваем вычисленное значение соответствующей переменной или полю.
         "градиент слева={left_path_gradient}, справа={right_path_gradient}, всего={total_gradient}"
     );
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Накопление градиентов",
+        "вклад",
+        &[
+            ("левый путь", left_path_gradient),
+            ("правый путь", right_path_gradient),
+            ("всего", total_gradient),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

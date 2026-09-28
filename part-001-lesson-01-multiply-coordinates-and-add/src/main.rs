@@ -37,4 +37,19 @@ fn main() {
         )
         .expect_err("разная длина должна быть отклонена");
     println!("разная длина: {:?} и {too_short:?} → {error}", left);
+    // Наглядное представление величин из этого урока.
+    let chart_points_0: Vec<(f64, f64)> = (-40..=40).map(|i| { let x=i as f64/10.0; (x, part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(&[1.0,2.0], &[1.0,x]).unwrap()) }).collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Скалярное произведение",
+        "x второй координаты",
+        "скалярное произведение",
+        &[lesson_visualization::Series {
+            name: "вектор [1, 2]",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

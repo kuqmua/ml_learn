@@ -133,4 +133,17 @@ fn main() {
             "query={sample_text:?}, predicted={predicted_topic}, actual={expected_topic}, overlap={overlap_count}"
         );
     }
+    // Наглядное сравнение результатов сводной практики.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Итоговый AI-проект",
+        "accuracy",
+        &[
+            ("baseline", baseline),
+            ("test", correct as f64 / TEST_EXAMPLES.len() as f64),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

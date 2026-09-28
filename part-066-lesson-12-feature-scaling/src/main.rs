@@ -25,4 +25,14 @@ fn main() {
     let scaled_squared = lesson_004::squared_distance(&scaled_first, &scaled_second).unwrap();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("до={raw_squared}, после масштабирования={scaled_squared}");
+    // Сравнение величин из этого урока.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Эффект масштабирования",
+        "квадрат расстояния",
+        &[("до", raw_squared), ("после", scaled_squared)],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

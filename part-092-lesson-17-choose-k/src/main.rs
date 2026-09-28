@@ -18,4 +18,22 @@ fn main() {
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("заметный излом кривой находится около k=2");
+    // График величин и зависимостей, изученных в этом уроке.
+    let chart_points_0: Vec<(f64, f64)> = candidates
+        .iter()
+        .map(|&(k, inertia)| (k as f64, inertia))
+        .collect();
+    let chart = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Метод локтя",
+        "число кластеров k",
+        "инерция",
+        &[lesson_visualization::Series {
+            name: "варианты из урока",
+            points: &chart_points_0,
+        }],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

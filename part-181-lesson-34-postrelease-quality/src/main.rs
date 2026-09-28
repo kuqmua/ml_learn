@@ -35,4 +35,17 @@ fn main() {
         // Делим значения, получая нормированную величину или среднее.
         correct as f64 / truth.len() as f64
     );
+    // Сравниваем величины, вычисленные в примере.
+    let chart = lesson_visualization::bars(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Качество после релиза",
+        "число объектов",
+        &[
+            ("верно", correct as f64),
+            ("ошибка", (truth.len() - correct) as f64),
+        ],
+    )
+    .expect("не удалось сохранить график");
+    println!("график: {}", chart.display());
 }

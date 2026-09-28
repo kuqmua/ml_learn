@@ -129,4 +129,21 @@ fn main() {
             output_sum
         })()
     );
+    // Цветом показываем вклад каждого элемента входных матриц в градиент.
+    for (name, title, values) in [
+        (
+            "left-gradient",
+            "Производная по левой матрице",
+            &left_gradients,
+        ),
+        (
+            "right-gradient",
+            "Производная по правой матрице",
+            &right_gradients,
+        ),
+    ] {
+        let chart = lesson_visualization::heatmap(env!("CARGO_MANIFEST_DIR"), name, title, values)
+            .expect("не удалось сохранить график градиента");
+        println!("график: {}", chart.display());
+    }
 }
