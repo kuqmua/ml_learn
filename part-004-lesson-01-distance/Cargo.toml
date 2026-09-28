@@ -4,3 +4,4 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+lesson_003 = { package = "part-003-lesson-01-l2-norm", path = "../part-003-lesson-01-l2-norm" }

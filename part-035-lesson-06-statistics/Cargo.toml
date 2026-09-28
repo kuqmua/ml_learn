@@ -4,3 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+lesson_029 = { package = "part-029-lesson-06-mean", path = "../part-029-lesson-06-mean" }
+lesson_031 = { package = "part-031-lesson-06-variance", path = "../part-031-lesson-06-variance" }

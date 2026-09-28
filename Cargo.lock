@@ -13,18 +13,35 @@ version = "0.1.0"
 [[package]]
 name = "part-003-lesson-01-l2-norm"
 version = "0.1.0"
+dependencies = [
+ "part-001-lesson-01-multiply-coordinates-and-add",
+]
 
 [[package]]
 name = "part-004-lesson-01-distance"
 version = "0.1.0"
+dependencies = [
+ "part-003-lesson-01-l2-norm",
+]
 
 [[package]]
 name = "part-005-lesson-01-cosine-similarity"
 version = "0.1.0"
+dependencies = [
+ "part-001-lesson-01-multiply-coordinates-and-add",
+ "part-003-lesson-01-l2-norm",
+]
 
 [[package]]
 name = "part-006-lesson-01-vectors"
 version = "0.1.0"
+dependencies = [
+ "part-001-lesson-01-multiply-coordinates-and-add",
+ "part-002-lesson-01-l1-norm",
+ "part-003-lesson-01-l2-norm",
+ "part-004-lesson-01-distance",
+ "part-005-lesson-01-cosine-similarity",
+]
 
 [[package]]
 name = "part-007-lesson-02-matrix-shape"
@@ -37,10 +54,16 @@ version = "0.1.0"
 [[package]]
 name = "part-009-lesson-02-matvec"
 version = "0.1.0"
+dependencies = [
+ "part-001-lesson-01-multiply-coordinates-and-add",
+]
 
 [[package]]
 name = "part-010-lesson-02-matmul"
 version = "0.1.0"
+dependencies = [
+ "part-001-lesson-01-multiply-coordinates-and-add",
+]
 
 [[package]]
 name = "part-011-lesson-02-linear-system"
@@ -49,6 +72,9 @@ version = "0.1.0"
 [[package]]
 name = "part-012-lesson-02-matrices"
 version = "0.1.0"
+dependencies = [
+ "part-001-lesson-01-multiply-coordinates-and-add",
+]
 
 [[package]]
 name = "part-013-lesson-03-derivative"
@@ -125,6 +151,9 @@ version = "0.1.0"
 [[package]]
 name = "part-031-lesson-06-variance"
 version = "0.1.0"
+dependencies = [
+ "part-029-lesson-06-mean",
+]
 
 [[package]]
 name = "part-032-lesson-06-quantile"
@@ -133,6 +162,10 @@ version = "0.1.0"
 [[package]]
 name = "part-033-lesson-06-confidence-interval"
 version = "0.1.0"
+dependencies = [
+ "part-029-lesson-06-mean",
+ "part-031-lesson-06-variance",
+]
 
 [[package]]
 name = "part-034-lesson-06-bootstrap"
@@ -141,6 +174,10 @@ version = "0.1.0"
 [[package]]
 name = "part-035-lesson-06-statistics"
 version = "0.1.0"
+dependencies = [
+ "part-029-lesson-06-mean",
+ "part-031-lesson-06-variance",
+]
 
 [[package]]
 name = "part-036-lesson-07-data-schema"
@@ -205,10 +242,16 @@ version = "0.1.0"
 [[package]]
 name = "part-051-lesson-09-heldout-quality"
 version = "0.1.0"
+dependencies = [
+ "part-047-lesson-09-mse",
+]
 
 [[package]]
 name = "part-052-lesson-09-linear-regression"
 version = "0.1.0"
+dependencies = [
+ "part-047-lesson-09-mse",
+]
 
 [[package]]
 name = "part-053-lesson-10-sigmoid"
@@ -237,14 +280,25 @@ version = "0.1.0"
 [[package]]
 name = "part-059-lesson-11-precision"
 version = "0.1.0"
+dependencies = [
+ "part-058-lesson-11-confusion-matrix",
+]
 
 [[package]]
 name = "part-060-lesson-11-recall"
 version = "0.1.0"
+dependencies = [
+ "part-058-lesson-11-confusion-matrix",
+]
 
 [[package]]
 name = "part-061-lesson-11-f1"
 version = "0.1.0"
+dependencies = [
+ "part-058-lesson-11-confusion-matrix",
+ "part-059-lesson-11-precision",
+ "part-060-lesson-11-recall",
+]
 
 [[package]]
 name = "part-062-lesson-11-roc-auc"
@@ -257,14 +311,26 @@ version = "0.1.0"
 [[package]]
 name = "part-064-lesson-11-metrics"
 version = "0.1.0"
+dependencies = [
+ "part-058-lesson-11-confusion-matrix",
+ "part-059-lesson-11-precision",
+ "part-060-lesson-11-recall",
+ "part-061-lesson-11-f1",
+]
 
 [[package]]
 name = "part-065-lesson-12-distances"
 version = "0.1.0"
+dependencies = [
+ "part-004-lesson-01-distance",
+]
 
 [[package]]
 name = "part-066-lesson-12-feature-scaling"
 version = "0.1.0"
+dependencies = [
+ "part-004-lesson-01-distance",
+]
 
 [[package]]
 name = "part-067-lesson-12-choose-k"
@@ -377,6 +443,9 @@ version = "0.1.0"
 [[package]]
 name = "part-094-lesson-18-centering"
 version = "0.1.0"
+dependencies = [
+ "part-029-lesson-06-mean",
+]
 
 [[package]]
 name = "part-095-lesson-18-covariance"
@@ -385,6 +454,9 @@ version = "0.1.0"
 [[package]]
 name = "part-096-lesson-18-principal-direction"
 version = "0.1.0"
+dependencies = [
+ "part-001-lesson-01-multiply-coordinates-and-add",
+]
 
 [[package]]
 name = "part-097-lesson-18-explained-variance"
@@ -449,6 +521,9 @@ version = "0.1.0"
 [[package]]
 name = "part-112-lesson-21-normalization"
 version = "0.1.0"
+dependencies = [
+ "part-029-lesson-06-mean",
+]
 
 [[package]]
 name = "part-113-lesson-21-clipping"
@@ -521,6 +596,9 @@ version = "0.1.0"
 [[package]]
 name = "part-130-lesson-24-embedding-similarity"
 version = "0.1.0"
+dependencies = [
+ "part-001-lesson-01-multiply-coordinates-and-add",
+]
 
 [[package]]
 name = "part-131-lesson-24-embeddings"
@@ -533,6 +611,9 @@ version = "0.1.0"
 [[package]]
 name = "part-133-lesson-25-key"
 version = "0.1.0"
+dependencies = [
+ "part-001-lesson-01-multiply-coordinates-and-add",
+]
 
 [[package]]
 name = "part-134-lesson-25-value"
@@ -541,6 +622,9 @@ version = "0.1.0"
 [[package]]
 name = "part-135-lesson-25-multiply-coordinates-add-and-scale"
 version = "0.1.0"
+dependencies = [
+ "part-001-lesson-01-multiply-coordinates-and-add",
+]
 
 [[package]]
 name = "part-136-lesson-25-softmax"
@@ -553,6 +637,9 @@ version = "0.1.0"
 [[package]]
 name = "part-138-lesson-25-attention"
 version = "0.1.0"
+dependencies = [
+ "part-001-lesson-01-multiply-coordinates-and-add",
+]
 
 [[package]]
 name = "part-139-lesson-26-self-attention"
@@ -573,6 +660,9 @@ version = "0.1.0"
 [[package]]
 name = "part-143-lesson-26-transformer-block"
 version = "0.1.0"
+dependencies = [
+ "part-001-lesson-01-multiply-coordinates-and-add",
+]
 
 [[package]]
 name = "part-144-lesson-27-next-token"
@@ -605,6 +695,9 @@ version = "0.1.0"
 [[package]]
 name = "part-151-lesson-28-cosine"
 version = "0.1.0"
+dependencies = [
+ "part-005-lesson-01-cosine-similarity",
+]
 
 [[package]]
 name = "part-152-lesson-28-top-k"
@@ -661,6 +754,9 @@ version = "0.1.0"
 [[package]]
 name = "part-165-lesson-31-distribution-shift"
 version = "0.1.0"
+dependencies = [
+ "part-029-lesson-06-mean",
+]
 
 [[package]]
 name = "part-166-lesson-31-calibration"
@@ -741,6 +837,10 @@ version = "0.1.0"
 [[package]]
 name = "part-185-lesson-35-end-to-end"
 version = "0.1.0"
+dependencies = [
+ "part-029-lesson-06-mean",
+ "part-048-lesson-09-mae",
+]
 
 [[package]]
 name = "part-186-lesson-36-capstone"
