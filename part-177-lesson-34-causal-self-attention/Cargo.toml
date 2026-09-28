@@ -1,7 +1,0 @@
-[package]
-name = "part-177-lesson-34-causal-self-attention"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-visualization = { path = "../lesson-visualization" }

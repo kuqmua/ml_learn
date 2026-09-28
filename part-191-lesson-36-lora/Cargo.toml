@@ -1,6 +1,0 @@
-[package]
-name = "part-191-lesson-36-lora"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

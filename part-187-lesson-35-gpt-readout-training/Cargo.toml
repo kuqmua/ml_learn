@@ -1,0 +1,7 @@
+[package]
+name = "part-187-lesson-35-gpt-readout-training"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-186-lesson-35-tiny-gpt-forward = { path = "../part-186-lesson-35-tiny-gpt-forward" }

@@ -1,0 +1,8 @@
+[package]
+name = "part-155-lesson-29-perplexity"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

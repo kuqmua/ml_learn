@@ -1,0 +1,8 @@
+[package]
+name = "part-147-lesson-27-tokenizer-evaluation"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-144-lesson-27-bpe-training = { path = "../part-144-lesson-27-bpe-training" }
+lesson-visualization = { path = "../lesson-visualization" }

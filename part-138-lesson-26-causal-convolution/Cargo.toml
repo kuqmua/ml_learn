@@ -1,0 +1,7 @@
+[package]
+name = "part-138-lesson-26-causal-convolution"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-visualization = { path = "../lesson-visualization" }

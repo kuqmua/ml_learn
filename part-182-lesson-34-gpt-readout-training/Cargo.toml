@@ -1,7 +1,0 @@
-[package]
-name = "part-182-lesson-34-gpt-readout-training"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-part-181-lesson-34-tiny-gpt-forward = { path = "../part-181-lesson-34-tiny-gpt-forward" }

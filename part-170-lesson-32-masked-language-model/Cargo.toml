@@ -1,7 +1,0 @@
-[package]
-name = "part-170-lesson-32-masked-language-model"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-part-168-lesson-32-bidirectional-encoder = { path = "../part-168-lesson-32-bidirectional-encoder" }

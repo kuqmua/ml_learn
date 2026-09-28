@@ -1,6 +1,0 @@
-[package]
-name = "part-168-lesson-32-bidirectional-encoder"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

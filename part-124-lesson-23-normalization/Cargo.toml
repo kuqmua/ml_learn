@@ -1,0 +1,9 @@
+[package]
+name = "part-124-lesson-23-normalization"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson_029 = { package = "part-029-lesson-06-mean", path = "../part-029-lesson-06-mean" }
+
+lesson-visualization = { path = "../lesson-visualization" }

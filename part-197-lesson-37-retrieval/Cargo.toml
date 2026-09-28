@@ -1,9 +1,0 @@
-[package]
-name = "part-197-lesson-37-retrieval"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-
-lesson-visualization = { path = "../lesson-visualization" }
