@@ -17,10 +17,11 @@ fn main() {
     let mut weight_history = vec![(0.0, weight)];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (step, (feature, target)) in examples.into_iter().enumerate() {
-        // Умножаем значения и сохраняем результат в `gradient`.
-        let gradient = 2.0 * (weight * feature - target) * feature;
+        // Умножаем значения и сохраняем результат в `rate_of_change`.
+        // Производную функции по параметру или вектор таких производных называют gradient.
+        let rate_of_change = 2.0 * (weight * feature - target) * feature;
         // Вычитаем очередной вклад из текущего значения параметра.
-        weight -= 0.1 * gradient;
+        weight -= 0.1 * rate_of_change;
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("после x={feature}: вес={weight}");
         // Вычисляем значение по указанной формуле.

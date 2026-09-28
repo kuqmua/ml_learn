@@ -9,21 +9,23 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Инициализируем значение `cross_entropy` начальным состоянием.
-    let cross_entropy = 0.7;
+    // Инициализируем значение `predicted_probability_error` начальным состоянием.
+    // Ошибку предсказанного распределения вероятностей называют cross-entropy.
+    let predicted_probability_error = 0.7;
     // Создаём изменяемое значение `term` для следующих операций.
     let mut term = 1.0;
-    // Создаём изменяемое значение `perplexity` для следующих операций.
-    let mut perplexity = 1.0;
+    // Создаём изменяемое значение `effective_choice_count` для следующих операций.
+    // Эффективное число вариантов, соответствующее ошибке языковой модели, называют perplexity.
+    let mut effective_choice_count = 1.0;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for order in 1..=30 {
         // Умножаем накопленное значение на очередной множитель.
-        term *= cross_entropy / order as f64;
+        term *= predicted_probability_error / order as f64;
         // Прибавляем очередной вклад к ранее накопленному результату.
-        perplexity += term;
+        effective_choice_count += term;
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("perplexity={perplexity:.3}");
+    println!("perplexity={effective_choice_count:.3}");
 
     // Построение графика вынесено из основного кода урока.
     visualize();
@@ -32,7 +34,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let perplexity_points: Vec<(f64, f64)> = (0..=40)
+    let effective_choice_count_points: Vec<(f64, f64)> = (0..=40)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `loss_value`.
@@ -59,7 +61,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "exp(loss)",
             // Передаём рассчитанные координаты точек.
-            points: &perplexity_points,
+            points: &effective_choice_count_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

@@ -9,7 +9,8 @@ fn main() {
     // Сохраняем результат этого шага в `best_known_action`.
     let best_known_action = "вправо";
     // Повторяем расчёт для каждого элемента последовательности.
-    for (description, random_fraction, expected_action) in [
+    // Число от 0 до 1 задаёт долю единичного интервала; такую долю называют fraction.
+    for (description, random_number_between_zero_and_one, expected_action) in [
         // Добавляем пару значений для сравнения или построения графика.
         ("исследование", 0.05, "влево"),
         // Добавляем пару значений для сравнения или построения графика.
@@ -18,9 +19,9 @@ fn main() {
         ("использование", 0.8, "вправо"),
     ] {
         // Проверяем ожидаемое свойство учебного примера.
-        assert!((0.0..1.0).contains(&random_fraction));
+        assert!((0.0..1.0).contains(&random_number_between_zero_and_one));
         // Сохраняем результат этого шага в `action`.
-        let action = if random_fraction < exploration_probability {
+        let action = if random_number_between_zero_and_one < exploration_probability {
             // Передаём подпись или текстовое значение для следующего шага.
             "влево"
         // Обрабатываем случай, когда предыдущее условие не выполнено.
@@ -31,7 +32,9 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(action, expected_action);
         // Печатаем рассчитанные значения для проверки примера.
-        println!("{description}: случайное число={random_fraction}, действие={action}");
+        println!(
+            "{description}: случайное число={random_number_between_zero_and_one}, действие={action}"
+        );
     }
 
     // Построение графика вынесено из основного кода урока.

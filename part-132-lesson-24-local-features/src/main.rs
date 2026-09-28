@@ -11,12 +11,13 @@
 fn main() {
     // Создаём набор значений `image` для следующего шага примера.
     let image = [1.0, 3.0, 2.0, 5.0];
-    // Создаём набор значений `kernel` для следующего шага примера.
-    let kernel = [-1.0, 1.0];
+    // Создаём набор значений `filter_weights` для следующего шага примера.
+    // Небольшой набор весов свёрточного фильтра называют kernel.
+    let filter_weights = [-1.0, 1.0];
     // Формула ниже использует ровно два коэффициента ядра и два соседних пикселя.
     assert_eq!(
         // Используем подготовленное значение в следующем шаге примера.
-        kernel.len(),
+        filter_weights.len(),
         // Используем подготовленное значение в следующем шаге примера.
         2,
         // Передаём подпись или текстовое значение для следующего шага.
@@ -25,31 +26,32 @@ fn main() {
     // Ядро должно помещаться в изображение, иначе окно считать нельзя.
     assert!(
         // Обновляем значение результатом текущего вычисления.
-        !kernel.is_empty() && image.len() >= kernel.len(),
+        !filter_weights.is_empty() && image.len() >= filter_weights.len(),
         // Передаём подпись или текстовое значение для следующего шага.
         "ядро должно быть непустым и не длиннее изображения"
     );
     // Повторяем следующий блок для каждого положения окна.
-    for start in 0..=image.len() - kernel.len() {
+    for start in 0..=image.len() - filter_weights.len() {
         // Умножаем значения и сохраняем результат в `response`.
-        let response = image[start] * kernel[0] + image[start + 1] * kernel[1];
+        let response = image[start] * filter_weights[0] + image[start + 1] * filter_weights[1];
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("позиция={start}, отклик на границу={response}");
     }
 
     // Построение графика вынесено из основного кода урока.
-    visualize(image, kernel);
+    visualize(image, filter_weights);
 }
 
 // Строим график по результатам урока.
-fn visualize(image: [f64; 4], kernel: [f64; 2]) {
+fn visualize(image: [f64; 4], filter_weights: [f64; 2]) {
     // Значения из этого урока на графике.
-    let local_features_points: Vec<(f64, f64)> = (0..=image.len() - kernel.len())
+    let local_features_points: Vec<(f64, f64)> = (0..=image.len() - filter_weights.len())
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             (
                 plot_step_index as f64,
-                image[plot_step_index] * kernel[0] + image[plot_step_index + 1] * kernel[1],
+                image[plot_step_index] * filter_weights[0]
+                    + image[plot_step_index + 1] * filter_weights[1],
             )
         })
         // Собираем результаты в коллекцию.

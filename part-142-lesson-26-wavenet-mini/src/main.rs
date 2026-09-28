@@ -17,7 +17,10 @@ fn next_probability(history: &[u8]) -> f64 {
     let layer_one: Vec<f64> = filter_one
         .iter()
         .zip(&gate_one)
-        .map(|(&filter_value, &gradient_value)| filter_value.tanh() * sigmoid(gradient_value))
+        // Производную функции по параметру или вектор таких производных называют gradient.
+        .map(|(&filter_value, &rate_of_change_value)| {
+            filter_value.tanh() * sigmoid(rate_of_change_value)
+        })
         .collect();
     let filter_two = causal_convolution(&layer_one, 1.0, 0.5, 2).unwrap();
     let gate_two = causal_convolution(&layer_one, 0.1, 0.6, 2).unwrap();

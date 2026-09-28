@@ -18,7 +18,8 @@ fn main() {
     // Задаём учебные значения для `reference_weights`.
     let mut reference_weights = [0.0; 2];
     // Повторяем расчёт для каждого элемента последовательности.
-    for (description, logits) in cases {
+    // Оценку модели до преобразования в вероятность называют logit.
+    for (description, raw_model_scores) in cases {
         // Задаём учебные значения для `exponentials`.
         let mut exponentials = [0.0; 2];
         // Повторяем расчёт для каждого элемента последовательности.
@@ -30,7 +31,7 @@ fn main() {
             // Повторяем расчёт для каждого элемента последовательности.
             for order in 1..=30 {
                 // Обновляем значение результатом текущего вычисления.
-                term *= logits[index] / order as f64;
+                term *= raw_model_scores[index] / order as f64;
                 // Обновляем значение результатом текущего вычисления.
                 sum += term;
             }
@@ -76,7 +77,7 @@ fn main() {
             _ => unreachable!(),
         }
         // Печатаем рассчитанные значения для проверки примера.
-        println!("{description}: {logits:?} → {weights:?}");
+        println!("{description}: {raw_model_scores:?} → {weights:?}");
     }
 
     // Построение графика вынесено из основного кода урока.
@@ -86,7 +87,8 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let softmax_points: Vec<(f64, f64)> = (-60..=60)
+    // Преобразование оценок в вероятности с суммой 1 называют softmax.
+    let normalized_probability_points: Vec<(f64, f64)> = (-60..=60)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `distance_value`.
@@ -113,7 +115,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "softmax",
             // Передаём рассчитанные координаты точек.
-            points: &softmax_points,
+            points: &normalized_probability_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

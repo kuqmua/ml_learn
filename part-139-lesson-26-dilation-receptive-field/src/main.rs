@@ -5,9 +5,10 @@ use part_138_lesson_26_causal_convolution::causal_convolution;
 fn main() {
     let mut signal = vec![0.0; 9];
     signal[0] = 1.0;
-    for dilation in [1, 2, 4] {
-        signal = causal_convolution(&signal, 1.0, 1.0, dilation).unwrap();
-        println!("после dilation={dilation}: {signal:?}");
+    // Промежуток между используемыми точками фильтра называют dilation.
+    for filter_spacing in [1, 2, 4] {
+        signal = causal_convolution(&signal, 1.0, 1.0, filter_spacing).unwrap();
+        println!("после dilation={filter_spacing}: {signal:?}");
     }
     // Три двухточечных слоя видят 1 + 1 + 2 + 4 = 8 временных шагов.
     assert_eq!(signal[..8], [1.0; 8]);

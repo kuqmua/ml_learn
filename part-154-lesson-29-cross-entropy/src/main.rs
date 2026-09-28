@@ -73,7 +73,8 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let cross_entropy_points: Vec<(f64, f64)> = (1..=100)
+    // Ошибку предсказанного распределения вероятностей называют cross-entropy.
+    let predicted_probability_error_points: Vec<(f64, f64)> = (1..=100)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `probability`.
@@ -100,7 +101,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "-ln(p)",
             // Передаём рассчитанные координаты точек.
-            points: &cross_entropy_points,
+            points: &predicted_probability_error_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

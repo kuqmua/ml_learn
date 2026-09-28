@@ -32,9 +32,10 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(first: [f64; 2], second: [f64; 2]) {
     // Значения из этого урока на графике.
-    let first_embedding_points: Vec<(f64, f64)> = vec![(first[0], first[1])];
-    // Собираем значения для `second_embedding_points` в коллекцию.
-    let second_embedding_points: Vec<(f64, f64)> = vec![(second[0], second[1])];
+    // Плотное числовое представление объекта называют embedding.
+    let first_dense_representation_points: Vec<(f64, f64)> = vec![(first[0], first[1])];
+    // Собираем значения для `second_dense_representation_points` в коллекцию.
+    let second_dense_representation_points: Vec<(f64, f64)> = vec![(second[0], second[1])];
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
@@ -54,14 +55,14 @@ fn visualize(first: [f64; 2], second: [f64; 2]) {
                 // Указываем подпись этого ряда в легенде.
                 name: "первый",
                 // Передаём рассчитанные координаты точек.
-                points: &first_embedding_points,
+                points: &first_dense_representation_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "второй",
                 // Передаём рассчитанные координаты точек.
-                points: &second_embedding_points,
+                points: &second_dense_representation_points,
             },
         ],
     )

@@ -93,7 +93,8 @@ fn main() {
         // Указываем тип возвращаемого значения.
     ) -> (bool, [f64; 2]) {
         // Словарь задаёт все слова, встреченные во время обучения.
-        let vocabulary: std::collections::HashSet<_> = training_examples
+        // Набор известных модели текстовых единиц называют vocabulary.
+        let known_text_units: std::collections::HashSet<_> = training_examples
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
             .iter()
             // Разделяем текст по пробельным символам на отдельные слова.
@@ -112,18 +113,19 @@ fn main() {
                 .filter(|(_, label)| *label == (class == 1))
                 // Собираем элементы итератора в итоговую коллекцию.
                 .collect();
-            // Инициализируем изменяемый накопитель `token_counts` начальным состоянием.
-            let mut token_counts = std::collections::HashMap::new();
-            // Инициализируем изменяемый накопитель `total_tokens` начальным состоянием.
-            let mut total_tokens = 0;
+            // Инициализируем изменяемый накопитель `text_unit_counts` начальным состоянием.
+            // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+            let mut text_unit_counts = std::collections::HashMap::new();
+            // Инициализируем изменяемый накопитель `total_text_units` начальным состоянием.
+            let mut total_text_units = 0;
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for (document_text, _) in &class_documents {
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
-                for token in document_text.split_whitespace() {
+                for text_unit in document_text.split_whitespace() {
                     // Прибавляем очередной вклад к ранее накопленному результату.
-                    *token_counts.entry(token).or_insert(0usize) += 1;
+                    *text_unit_counts.entry(text_unit).or_insert(0usize) += 1;
                     // Прибавляем очередной вклад к ранее накопленному результату.
-                    total_tokens += 1;
+                    total_text_units += 1;
                 }
             }
             // Начинаем с априорной вероятности класса и добавляем логарифмы вероятностей слов.
@@ -132,15 +134,15 @@ fn main() {
                 (class_documents.len() as f64 + 1.) / (training_examples.len() as f64 + 2.),
             );
             // Повторяем следующий блок для каждого элемента указанной последовательности.
-            for token in text.split_whitespace() {
+            for text_unit in text.split_whitespace() {
                 // Проверяем условие и выбираем соответствующую ветку алгоритма.
-                if vocabulary.contains(token) {
+                if known_text_units.contains(text_unit) {
                     // Прибавляем очередной вклад к ранее накопленному результату.
                     *score += approximate_natural_logarithm_with_series(
                         // Составляем результат из вычисленных значений в указанном порядке.
-                        (*token_counts.get(token).unwrap_or(&0) as f64 + 1.)
+                        (*text_unit_counts.get(text_unit).unwrap_or(&0) as f64 + 1.)
                             // Делим значения, получая нормированную величину или среднее.
-                            / (total_tokens + vocabulary.len()) as f64,
+                            / (total_text_units + known_text_units.len()) as f64,
                     );
                 }
             }

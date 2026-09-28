@@ -18,8 +18,9 @@ fn main() {
 
     // Группируем методы рядом с типом, к которому они относятся.
     impl PseudorandomGenerator {
-        // Объявляем повторно используемое вычисление `generate_uniform_fraction`; параметры ниже задают его входы.
-        fn generate_uniform_fraction(&mut self) -> f64 {
+        // Объявляем повторно используемое вычисление `generate_random_number_between_zero_and_one`; параметры ниже задают его входы.
+        // Случайное число от 0 до 1 задаёт долю единичного интервала; такую долю называют fraction.
+        fn generate_random_number_between_zero_and_one(&mut self) -> f64 {
             // Обновляем состояние объекта результатом текущей операции.
             self.0 = self.0.wrapping_mul(6364136223846793005).wrapping_add(1);
             // Составляем результат из вычисленных значений в указанном порядке.
@@ -38,20 +39,20 @@ fn main() {
     // Шаг: Моделируем монету, истинное заболевание и результат теста.
     for _ in 0..100_000 {
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
-        if generator.generate_uniform_fraction() < 0.5 {
+        if generator.generate_random_number_between_zero_and_one() < 0.5 {
             // Прибавляем очередной вклад к ранее накопленному результату.
             heads_count += 1;
         }
         // Сохраняем рассчитанное значение `has_disease` для следующих операций.
-        let has_disease = generator.generate_uniform_fraction() < 0.01;
+        let has_disease = generator.generate_random_number_between_zero_and_one() < 0.01;
         // Сохраняем рассчитанное значение `test_is_positive` для следующих операций.
         let test_is_positive = if has_disease {
             // Для больного моделируем положительный тест с чувствительностью 90%.
-            generator.generate_uniform_fraction() < 0.9
+            generator.generate_random_number_between_zero_and_one() < 0.9
         // Обрабатываем случай, когда предыдущее условие не выполнено.
         } else {
             // Для здорового моделируем ложноположительный тест с вероятностью 5%.
-            generator.generate_uniform_fraction() < 0.05
+            generator.generate_random_number_between_zero_and_one() < 0.05
         };
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if test_is_positive {

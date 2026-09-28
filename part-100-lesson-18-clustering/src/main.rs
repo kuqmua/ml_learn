@@ -141,7 +141,8 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(dataset: [[f64; 2]; 4]) {
     // Значения из этого урока на графике.
-    let clustering_points: Vec<(f64, f64)> = dataset
+    // Группировку похожих объектов без готовых меток называют clustering.
+    let grouped_observation_points: Vec<(f64, f64)> = dataset
         .iter()
         .map(|data_point| (data_point[0], data_point[1]))
         .collect();
@@ -162,7 +163,7 @@ fn visualize(dataset: [[f64; 2]; 4]) {
             // Указываем подпись этого ряда в легенде.
             name: "данные",
             // Передаём рассчитанные координаты точек.
-            points: &clustering_points,
+            points: &grouped_observation_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

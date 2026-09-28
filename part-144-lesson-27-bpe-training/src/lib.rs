@@ -36,14 +36,15 @@ impl BytePairEncoding {
             else {
                 break;
             };
-            let token_identifier = pieces.len();
+            // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+            let text_unit_identifier = pieces.len();
             let mut joined = pieces[pair.0].clone();
             joined.extend_from_slice(&pieces[pair.1]);
             pieces.push(joined);
             merges.push(pair);
             // Заменяем выбранную пару во всём обучающем корпусе.
             for row in &mut rows {
-                *row = merge_pair(row, pair, token_identifier);
+                *row = merge_pair(row, pair, text_unit_identifier);
             }
         }
         Self { pieces, merges }
@@ -51,20 +52,20 @@ impl BytePairEncoding {
 
     /// Применяет сохранённые слияния к новому тексту в порядке обучения.
     pub fn encode(&self, text: &str) -> Vec<usize> {
-        let mut token_identifiers = text.bytes().map(usize::from).collect::<Vec<_>>();
+        let mut text_unit_identifiers = text.bytes().map(usize::from).collect::<Vec<_>>();
         for (offset, &pair) in self.merges.iter().enumerate() {
-            token_identifiers = merge_pair(&token_identifiers, pair, 256 + offset);
+            text_unit_identifiers = merge_pair(&text_unit_identifiers, pair, 256 + offset);
         }
-        token_identifiers
+        text_unit_identifiers
     }
 
     /// Восстанавливает байты и проверяет корректность UTF-8.
-    pub fn decode(&self, token_identifiers: &[usize]) -> Result<String, String> {
+    pub fn decode(&self, text_unit_identifiers: &[usize]) -> Result<String, String> {
         let mut bytes = Vec::new();
-        for &token_identifier in token_identifiers {
+        for &text_unit_identifier in text_unit_identifiers {
             let piece = self
                 .pieces
-                .get(token_identifier)
+                .get(text_unit_identifier)
                 .ok_or("неизвестный ID токена")?;
             bytes.extend_from_slice(piece);
         }
@@ -74,20 +75,20 @@ impl BytePairEncoding {
 
 // Слияния не перекрываются: каждую исходную позицию используем ровно один раз.
 fn merge_pair(
-    token_identifiers: &[usize],
+    text_unit_identifiers: &[usize],
     pair: (usize, usize),
     new_identifier: usize,
 ) -> Vec<usize> {
     let mut result = Vec::new();
     let mut index = 0;
-    while index < token_identifiers.len() {
-        if token_identifiers.get(index) == Some(&pair.0)
-            && token_identifiers.get(index + 1) == Some(&pair.1)
+    while index < text_unit_identifiers.len() {
+        if text_unit_identifiers.get(index) == Some(&pair.0)
+            && text_unit_identifiers.get(index + 1) == Some(&pair.1)
         {
             result.push(new_identifier);
             index += 2;
         } else {
-            result.push(token_identifiers[index]);
+            result.push(text_unit_identifiers[index]);
             index += 1;
         }
     }

@@ -8,11 +8,12 @@ fn main() {
     let mut history = vec![1.0];
     for round in 0..2 {
         // Для квадратичной ошибки отрицательный градиент равен y - prediction.
-        let residuals = std::array::from_fn::<_, 4, _>(|step_index| {
+        // Разность целевого значения и прогноза называют residual (остатком).
+        let target_minus_prediction_values = std::array::from_fn::<_, 4, _>(|step_index| {
             targets[step_index] - predictions[step_index]
         });
-        let left = (residuals[0] + residuals[1]) / 2.0;
-        let right = (residuals[2] + residuals[3]) / 2.0;
+        let left = (target_minus_prediction_values[0] + target_minus_prediction_values[1]) / 2.0;
+        let right = (target_minus_prediction_values[2] + target_minus_prediction_values[3]) / 2.0;
         for (index, value) in predictions.iter_mut().enumerate() {
             *value += 0.5 * if index < 2 { left } else { right };
         }

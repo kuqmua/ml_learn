@@ -45,8 +45,9 @@ mod tests {
     #[test]
     fn masked_padding_does_not_change_real_output() {
         let base = bidirectional_attention(&[[1.0, 0.0]], &[true]).unwrap();
-        let padded =
+        // Добавление пустых позиций к последовательности называют padding.
+        let input_with_padding =
             bidirectional_attention(&[[1.0, 0.0], [999.0, 999.0]], &[true, false]).unwrap();
-        assert_eq!(base[0], padded[0]);
+        assert_eq!(base[0], input_with_padding[0]);
     }
 }

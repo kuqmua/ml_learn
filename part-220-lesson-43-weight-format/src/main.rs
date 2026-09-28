@@ -12,10 +12,11 @@ fn main() {
     let weight = 2.0;
     // Сохраняем рассчитанное значение `bias` для следующих операций.
     let bias = 1.0;
-    // Сохраняем рассчитанное значение `serialized` для следующих операций.
-    let serialized = format!("{weight}\n{bias}\n");
+    // Сохраняем рассчитанное значение `saved_model_text` для следующих операций.
+    // Преобразование параметров модели в текст называют serialization.
+    let saved_model_text = format!("{weight}\n{bias}\n");
     // Создаём изменяемое значение `lines` для следующих операций.
-    let mut lines = serialized.lines();
+    let mut lines = saved_model_text.lines();
     // Читаем или разбираем входные данные в значение `loaded_weight`.
     let loaded_weight: f64 = lines.next().unwrap().parse().unwrap();
     // Читаем или разбираем входные данные в значение `loaded_bias`.

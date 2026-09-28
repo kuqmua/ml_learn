@@ -10,38 +10,39 @@
 fn main() {
     // Создаём набор значений `cluster` для следующего шага примера.
     let cluster = [[1.0, 2.0], [3.0, 4.0]];
-    // Создаём набор значений `centroid` для следующего шага примера.
+    // Создаём набор значений `cluster_center` для следующего шага примера.
     // Среднее пустого кластера не определено.
     assert!(!cluster.is_empty(), "для центра нужна хотя бы одна точка");
-    // Задаём учебные значения для `centroid`.
-    let mut centroid = [0.0, 0.0];
+    // Задаём учебные значения для `cluster_center`.
+    // Центр группы точек называют centroid.
+    let mut cluster_center = [0.0, 0.0];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for point in cluster {
         // Прибавляем очередной вклад к ранее накопленному результату.
-        centroid[0] += point[0];
+        cluster_center[0] += point[0];
         // Прибавляем очередной вклад к ранее накопленному результату.
-        centroid[1] += point[1];
+        cluster_center[1] += point[1];
     }
     // Масштабируем текущую величину делением.
-    centroid[0] /= cluster.len() as f64;
+    cluster_center[0] /= cluster.len() as f64;
     // Масштабируем текущую величину делением.
-    centroid[1] /= cluster.len() as f64;
+    cluster_center[1] /= cluster.len() as f64;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("центроид = {centroid:?}");
+    println!("центроид = {cluster_center:?}");
 
     // Построение графика вынесено из основного кода урока.
-    visualize(cluster, centroid);
+    visualize(cluster, cluster_center);
 }
 
 // Строим график по результатам урока.
-fn visualize(cluster: [[f64; 2]; 2], centroid: [f64; 2]) {
+fn visualize(cluster: [[f64; 2]; 2], cluster_center: [f64; 2]) {
     // Значения из этого урока на графике.
     let observation_points: Vec<(f64, f64)> = cluster
         .iter()
         .map(|data_point| (data_point[0], data_point[1]))
         .collect();
-    // Собираем значения для `centroid_points` в коллекцию.
-    let centroid_points: Vec<(f64, f64)> = vec![(centroid[0], centroid[1])];
+    // Собираем значения для `cluster_center_points` в коллекцию.
+    let cluster_center_points: Vec<(f64, f64)> = vec![(cluster_center[0], cluster_center[1])];
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
@@ -68,7 +69,7 @@ fn visualize(cluster: [[f64; 2]; 2], centroid: [f64; 2]) {
                 // Указываем подпись этого ряда в легенде.
                 name: "центроид",
                 // Передаём рассчитанные координаты точек.
-                points: &centroid_points,
+                points: &cluster_center_points,
             },
         ],
     )

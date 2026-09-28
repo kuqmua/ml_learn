@@ -33,7 +33,8 @@ fn main() {
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for _ in 0..3000 {
             // Выполняем встроенный расчёт один раз и сохраняем результат в `(weight_gradient, bias_gradient)`.
-            let (weight_gradient, bias_gradient) = (|| -> (f64, f64) {
+            // Производную функции по параметру или вектор таких производных называют gradient.
+            let (weight_loss_rate_of_change, bias_loss_rate_of_change) = (|| -> (f64, f64) {
                 // Вычисляем значение по указанной формуле.
                 /* Частные производные MSE по весу и смещению: 2/n * sum(error*x) и 2/n * sum(error). */
                 // Сохраняем результат этого шага в `data`.
@@ -43,28 +44,32 @@ fn main() {
                 // Сохраняем рассчитанное значение `bias` для следующих операций.
                 let bias: f64 = bias;
                 // Сохраняем рассчитанное значение `(mut weight_gradient_sum, mut bias_gradient_sum)` для следующих операций.
-                let (mut weight_gradient_sum, mut bias_gradient_sum) = (0.0, 0.0);
+                let (
+                    mut accumulated_weight_loss_rate_of_change,
+                    mut accumulated_bias_loss_rate_of_change,
+                ) = (0.0, 0.0);
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for &(feature_value, target_value) in data {
                     // Умножаем значения и сохраняем результат в `prediction_error`.
                     let prediction_error = weight * feature_value + bias - target_value;
                     // Прибавляем очередной вклад к ранее накопленному результату.
-                    weight_gradient_sum += 2.0 * feature_value * prediction_error;
+                    accumulated_weight_loss_rate_of_change +=
+                        2.0 * feature_value * prediction_error;
                     // Прибавляем очередной вклад к ранее накопленному результату.
-                    bias_gradient_sum += 2.0 * prediction_error;
+                    accumulated_bias_loss_rate_of_change += 2.0 * prediction_error;
                 }
                 // Составляем результат из вычисленных значений в указанном порядке.
                 (
                     // Делим значения, получая нормированную величину или среднее.
-                    weight_gradient_sum / data.len() as f64,
+                    accumulated_weight_loss_rate_of_change / data.len() as f64,
                     // Делим значения, получая нормированную величину или среднее.
-                    bias_gradient_sum / data.len() as f64,
+                    accumulated_bias_loss_rate_of_change / data.len() as f64,
                 )
             })();
             // Вычитаем очередной вклад из текущего значения параметра.
-            weight -= 0.02 * weight_gradient;
+            weight -= 0.02 * weight_loss_rate_of_change;
             // Вычитаем очередной вклад из текущего значения параметра.
-            bias -= 0.02 * bias_gradient;
+            bias -= 0.02 * bias_loss_rate_of_change;
         }
         // Составляем результат из вычисленных значений в указанном порядке.
         (weight, bias)

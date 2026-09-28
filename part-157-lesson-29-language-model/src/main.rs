@@ -16,7 +16,8 @@ fn main() {
     let training_sentences = ["кот спит", "кот ест", "пёс спит"];
 
     // Шаг: Считаем частоты переходов и словарь возможных следующих токенов.
-    let (bigram_counts, vocabulary) =
+    // Набор известных модели текстовых единиц называют vocabulary.
+    let (bigram_counts, known_text_units) =
         // Составляем результат из вычисленных значений в указанном порядке.
         (|| -> (std::collections::BTreeMap<(String, String), usize>, std::collections::BTreeSet<String>) {
             // Используем подготовленное значение в следующем шаге примера.
@@ -25,8 +26,8 @@ fn main() {
             let sentences: &[&str] = &training_sentences;
             // Инициализируем изменяемый накопитель `counts` начальным состоянием.
             let mut counts = std::collections::BTreeMap::new();
-            // Создаём изменяемое значение `vocabulary` для следующих операций.
-            let mut vocabulary = std::collections::BTreeSet::new();
+            // Создаём изменяемое значение `known_text_units` для следующих операций.
+            let mut known_text_units = std::collections::BTreeSet::new();
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for sentence in sentences {
                 // Создаём изменяемое значение `previous` для следующих операций.
@@ -36,13 +37,13 @@ fn main() {
                     // Прибавляем очередной вклад к ранее накопленному результату.
                     *counts.entry((previous.into(), word.into())).or_insert(0) += 1;
                     // Выполняем очередное действие, после которого продолжаем следующий шаг.
-                    vocabulary.insert(word.into());
+                    known_text_units.insert(word.into());
                     // Обновляем `previous` результатом текущего шага.
                     previous = word;
                 }
             }
             // Составляем результат из вычисленных значений в указанном порядке.
-            (counts, vocabulary)
+            (counts, known_text_units)
         })();
 
     // Учебные реализации математических операций для этого урока.
@@ -99,34 +100,35 @@ fn main() {
     fn calculate_smoothed_next_token_probability(
         // Получаем таблицу частот биграмм для оценки вероятности перехода.
         counts: &std::collections::BTreeMap<(String, String), usize>,
-        // `vocabulary` задаёт соответствующее входное значение или поле структуры.
-        vocabulary: &std::collections::BTreeSet<String>,
-        // `previous_token` задаёт соответствующее входное значение или поле структуры.
-        previous_token: &str,
-        // `next_token` задаёт соответствующее входное значение или поле структуры.
-        next_token: &str,
+        // `known_text_units` задаёт соответствующее входное значение или поле структуры.
+        known_text_units: &std::collections::BTreeSet<String>,
+        // `previous_text_unit` задаёт соответствующее входное значение или поле структуры.
+        // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+        previous_text_unit: &str,
+        // `next_text_unit` задаёт соответствующее входное значение или поле структуры.
+        next_text_unit: &str,
         // Указываем тип возвращаемого значения.
     ) -> f64 {
         // Инициализируем изменяемый накопитель `total` начальным состоянием.
         let mut total = 0;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
-        for ((previous_context, _), &token_count) in counts {
+        for ((previous_context, _), &text_unit_count) in counts {
             // Проверяем условие и выбираем соответствующую ветку алгоритма.
-            if previous_context == previous_token {
+            if previous_context == previous_text_unit {
                 // Прибавляем очередной вклад к ранее накопленному результату.
-                total += token_count;
+                total += text_unit_count;
             }
         }
         // Составляем результат из вычисленных значений в указанном порядке.
         (*counts
             // Ищем сохранённую частоту указанной пары слов.
-            .get(&(previous_token.into(), next_token.into()))
+            .get(&(previous_text_unit.into(), next_text_unit.into()))
             // При отсутствии значения используем запасной вариант.
             .unwrap_or(&0) as f64
             // Складываем или вычитаем величины согласно используемой формуле.
             + 1.)
             // Делим значения, получая нормированную величину или среднее.
-            / (total + vocabulary.len()) as f64
+            / (total + known_text_units.len()) as f64
     }
 
     // Объявляем повторно используемое вычисление `calculate_perplexity_of_sentences`; параметры ниже задают его входы.
@@ -135,16 +137,16 @@ fn main() {
         sentences: &[&str],
         // Получаем таблицу частот биграмм для оценки вероятности перехода.
         counts: &std::collections::BTreeMap<(String, String), usize>,
-        // `vocabulary` задаёт соответствующее входное значение или поле структуры.
-        vocabulary: &std::collections::BTreeSet<String>,
+        // `known_text_units` задаёт соответствующее входное значение или поле структуры.
+        known_text_units: &std::collections::BTreeSet<String>,
         // Указываем тип возвращаемого значения.
     ) -> f64 {
         // Сохраняем рассчитанное значение `(mut token_count, mut negative_log_likelihood)` для следующих операций.
-        let (mut token_count, mut negative_log_likelihood) = (0, 0.);
+        let (mut text_unit_count, mut negative_log_likelihood) = (0, 0.);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for sentence in sentences {
-            // Создаём изменяемое значение `previous_token` для следующих операций.
-            let mut previous_token = "<s>";
+            // Создаём изменяемое значение `previous_text_unit` для следующих операций.
+            let mut previous_text_unit = "<s>";
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for word in sentence.split_whitespace().chain(["</s>"]) {
                 // Вычитаем очередной вклад из текущего значения параметра.
@@ -155,10 +157,10 @@ fn main() {
                     let value: f64 = calculate_smoothed_next_token_probability(
                         // Используем ранее рассчитанное значение `counts` в текущем выражении.
                         counts,
-                        // Используем ранее рассчитанное значение `vocabulary` в текущем выражении.
-                        vocabulary,
-                        // Используем ранее рассчитанное значение `previous_token` в текущем выражении.
-                        previous_token,
+                        // Используем ранее рассчитанное значение `known_text_units` в текущем выражении.
+                        known_text_units,
+                        // Используем ранее рассчитанное значение `previous_text_unit` в текущем выражении.
+                        previous_text_unit,
                         // Используем ранее рассчитанное значение `word` в текущем выражении.
                         word,
                     );
@@ -218,13 +220,13 @@ fn main() {
                     sum_logarithm_series_terms(scaled) + power_of_two as f64 * logarithm_of_two
                 })();
                 // Прибавляем очередной вклад к ранее накопленному результату.
-                token_count += 1;
-                // Обновляем `previous_token` результатом текущего шага.
-                previous_token = word;
+                text_unit_count += 1;
+                // Обновляем `previous_text_unit` результатом текущего шага.
+                previous_text_unit = word;
             }
         }
         // Делим значения, получая нормированную величину или среднее.
-        approximate_exponential_with_taylor_series(negative_log_likelihood / token_count as f64)
+        approximate_exponential_with_taylor_series(negative_log_likelihood / text_unit_count as f64)
     }
 
     // Шаг: Сравниваем perplexity на обучающих и новых сочетаниях слов.
@@ -232,18 +234,18 @@ fn main() {
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
         "train perplexity={:.3}, validation perplexity={:.3}",
         // Вызываем нужное вычисление с подготовленными аргументами.
-        calculate_perplexity_of_sentences(&training_sentences, &bigram_counts, &vocabulary),
+        calculate_perplexity_of_sentences(&training_sentences, &bigram_counts, &known_text_units),
         // Вызываем нужное вычисление с подготовленными аргументами.
-        calculate_perplexity_of_sentences(&["пёс ест"], &bigram_counts, &vocabulary)
+        calculate_perplexity_of_sentences(&["пёс ест"], &bigram_counts, &known_text_units)
     );
     // Шаг: Генерируем цепочку, каждый раз выбирая наиболее вероятный следующий токен.
-    let mut previous_token = "<s>";
-    // Создаём набор значений `generated_tokens` для следующего шага примера.
-    let mut generated_tokens = vec![];
+    let mut previous_text_unit = "<s>";
+    // Создаём набор значений `generated_text_units` для следующего шага примера.
+    let mut generated_text_units = vec![];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for _ in 0..5 {
-        // Сохраняем рассчитанное значение `next_token` для следующих операций.
-        let next_token = vocabulary
+        // Сохраняем рассчитанное значение `next_text_unit` для следующих операций.
+        let next_text_unit = known_text_units
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
             .iter()
             // Сравниваем кандидатов и оставляем наибольший результат.
@@ -253,9 +255,9 @@ fn main() {
                     // Передаём данные по ссылке или разыменовываем их для следующей операции.
                     &bigram_counts,
                     // Передаём данные по ссылке или разыменовываем их для следующей операции.
-                    &vocabulary,
-                    // Используем ранее рассчитанное значение `previous_token` в текущем выражении.
-                    previous_token,
+                    &known_text_units,
+                    // Используем ранее рассчитанное значение `previous_text_unit` в текущем выражении.
+                    previous_text_unit,
                     // Используем ранее рассчитанное значение `first_candidate` в текущем выражении.
                     first_candidate,
                 )
@@ -264,9 +266,9 @@ fn main() {
                     // Передаём данные по ссылке или разыменовываем их для следующей операции.
                     &bigram_counts,
                     // Передаём данные по ссылке или разыменовываем их для следующей операции.
-                    &vocabulary,
-                    // Используем ранее рассчитанное значение `previous_token` в текущем выражении.
-                    previous_token,
+                    &known_text_units,
+                    // Используем ранее рассчитанное значение `previous_text_unit` в текущем выражении.
+                    previous_text_unit,
                     // Используем ранее рассчитанное значение `second_candidate` в текущем выражении.
                     second_candidate,
                 ))
@@ -274,17 +276,17 @@ fn main() {
             // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
             .unwrap();
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
-        if next_token == "</s>" {
+        if next_text_unit == "</s>" {
             // Останавливаем цикл после достижения условия завершения.
             break;
         }
         // Сохраняем очередной рассчитанный элемент в коллекции.
-        generated_tokens.push(next_token.as_str());
-        // Обновляем `previous_token` результатом текущего шага.
-        previous_token = next_token;
+        generated_text_units.push(next_text_unit.as_str());
+        // Обновляем `previous_text_unit` результатом текущего шага.
+        previous_text_unit = next_text_unit;
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("generated: {}", generated_tokens.join(" "));
+    println!("generated: {}", generated_text_units.join(" "));
 
     // Построение графика вынесено из основного кода урока.
     visualize(bigram_counts);

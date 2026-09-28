@@ -37,21 +37,25 @@ fn block(states: &[[f64; 2]]) -> Vec<[f64; 2]> {
             };
             let query = root_mean_square_normalization(&raw_query, &gamma, 1e-6).unwrap();
             let query = rotate_pair([query[0], query[1]], index, 0.1);
-            let logits: Vec<f64> = (0..=index)
+            // Оценку модели до преобразования в вероятность называют logit.
+            let raw_model_scores: Vec<f64> = (0..=index)
                 .map(|past| (query[0] * keys[past][0] + query[1] * keys[past][1]) / 2.0_f64.sqrt())
                 .collect();
-            let weights = softmax(&logits);
+            let weights = softmax(&raw_model_scores);
             for (past, &weight) in weights.iter().enumerate() {
                 context[0] += 0.5 * weight * norm[past][0];
                 context[1] += 0.5 * weight * norm[past][1];
             }
         }
-        let residual = [states[index][0] + context[0], states[index][1] + context[1]];
-        let feed_forward_input = root_mean_square_normalization(&residual, &gamma, 1e-6).unwrap();
+        // Добавление входа блока к его преобразованному выходу называют residual connection.
+        let input_plus_transformed_value =
+            [states[index][0] + context[0], states[index][1] + context[1]];
+        let feed_forward_input =
+            root_mean_square_normalization(&input_plus_transformed_value, &gamma, 1e-6).unwrap();
         output.push([
-            residual[0]
+            input_plus_transformed_value[0]
                 + 0.1 * swish_gated_linear_unit(feed_forward_input[0], feed_forward_input[1]),
-            residual[1]
+            input_plus_transformed_value[1]
                 + 0.1 * swish_gated_linear_unit(feed_forward_input[1], feed_forward_input[0]),
         ]);
     }

@@ -29,13 +29,14 @@ fn visualize(points: [[f64; 2]; 4], first_start: [[f64; 2]; 2], second_start: [[
         .iter()
         .map(|data_point| (data_point[0], data_point[1]))
         .collect();
-    // Собираем значения для `separated_centroid_points` в коллекцию.
-    let separated_centroid_points: Vec<(f64, f64)> = first_start
+    // Собираем значения для `separated_cluster_center_points` в коллекцию.
+    // Центр группы точек называют centroid.
+    let separated_cluster_center_points: Vec<(f64, f64)> = first_start
         .iter()
         .map(|data_point| (data_point[0], data_point[1]))
         .collect();
-    // Собираем значения для `adjacent_centroid_points` в коллекцию.
-    let adjacent_centroid_points: Vec<(f64, f64)> = second_start
+    // Собираем значения для `nearby_cluster_center_points` в коллекцию.
+    let nearby_cluster_center_points: Vec<(f64, f64)> = second_start
         .iter()
         .map(|data_point| (data_point[0], data_point[1]))
         .collect();
@@ -65,14 +66,14 @@ fn visualize(points: [[f64; 2]; 4], first_start: [[f64; 2]; 2], second_start: [[
                 // Указываем подпись этого ряда в легенде.
                 name: "разнесённые центры",
                 // Передаём рассчитанные координаты точек.
-                points: &separated_centroid_points,
+                points: &separated_cluster_center_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "соседние центры",
                 // Передаём рассчитанные координаты точек.
-                points: &adjacent_centroid_points,
+                points: &nearby_cluster_center_points,
             },
         ],
     )

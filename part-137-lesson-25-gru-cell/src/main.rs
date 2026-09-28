@@ -4,10 +4,11 @@
 fn sigmoid(input_value: f64) -> f64 {
     1.0 / (1.0 + (-input_value).exp())
 }
-fn gated_recurrent_unit_output(input: f64, previous: f64, update_logit: f64) -> f64 {
+// Оценку модели до преобразования в вероятность называют logit.
+fn gated_recurrent_unit_output(input: f64, previous: f64, update_gate_raw_score: f64) -> f64 {
     let reset = sigmoid(input);
     let candidate = (input + reset * previous).tanh();
-    let update = sigmoid(update_logit);
+    let update = sigmoid(update_gate_raw_score);
     (1.0 - update) * previous + update * candidate
 }
 fn main() {

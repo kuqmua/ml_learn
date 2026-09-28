@@ -5,9 +5,10 @@ use part_203_lesson_39_diffusion_forward::add_noise;
 fn main() {
     let clean = 2.0;
     let noise = -1.0;
-    for alpha in [1.0, 0.75, 0.25, 0.0] {
-        let noisy = add_noise(clean, noise, alpha).unwrap();
-        println!("alpha_bar={alpha:.2}; x_t={noisy:.3}");
+    // Долю (fraction) дисперсии исходного сигнала обозначают alpha_bar; её сохранение называют retention.
+    for original_signal_variance_share in [1.0, 0.75, 0.25, 0.0] {
+        let noisy = add_noise(clean, noise, original_signal_variance_share).unwrap();
+        println!("alpha_bar={original_signal_variance_share:.2}; x_t={noisy:.3}");
     }
     assert_eq!(add_noise(clean, noise, 1.0).unwrap(), clean);
     assert_eq!(add_noise(clean, noise, 0.0).unwrap(), noise);
@@ -17,8 +18,11 @@ fn main() {
 fn visualize(clean: f64, noise: f64) {
     let points: Vec<_> = (0..=100)
         .map(|plot_step_index| {
-            let alpha = plot_step_index as f64 / 100.0;
-            (alpha, add_noise(clean, noise, alpha).unwrap())
+            let original_signal_variance_share = plot_step_index as f64 / 100.0;
+            (
+                original_signal_variance_share,
+                add_noise(clean, noise, original_signal_variance_share).unwrap(),
+            )
         })
         .collect();
     let path = lesson_visualization::line_chart(

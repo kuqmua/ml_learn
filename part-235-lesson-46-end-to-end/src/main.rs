@@ -111,11 +111,13 @@ fn main() {
         // Нормируем или усредняем величину делением и сохраняем её в `mean_target`.
         let mean_target = target_sum / sample_count;
         // Сохраняем рассчитанное значение `(mut covariance_sum, mut variance_sum)` для следующих операций.
-        let (mut covariance_sum, mut variance_sum) = (0.0, 0.0);
+        // Совместное изменение двух величин описывают через covariance.
+        let (mut joint_deviation_product_sum, mut variance_sum) = (0.0, 0.0);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(feature_value, target_value) in data {
             // Прибавляем очередной вклад к ранее накопленному результату.
-            covariance_sum += (feature_value - mean_feature) * (target_value - mean_target);
+            joint_deviation_product_sum +=
+                (feature_value - mean_feature) * (target_value - mean_target);
             // Прибавляем очередной вклад к ранее накопленному результату.
             variance_sum += (|| -> f64 {
                 // Используем подготовленное значение в следующем шаге примера.
@@ -127,7 +129,7 @@ fn main() {
             })();
         }
         // Нормируем или усредняем величину делением и сохраняем её в `weight`.
-        let weight = covariance_sum / variance_sum;
+        let weight = joint_deviation_product_sum / variance_sum;
         // Составляем результат из вычисленных значений в указанном порядке.
         (weight, mean_target - weight * mean_feature)
     })();

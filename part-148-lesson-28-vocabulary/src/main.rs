@@ -10,18 +10,20 @@
 fn main() {
     // Создаём набор значений `words` для следующего шага примера.
     let words = ["кот", "спит", "кот"];
-    // Преобразуем входные данные и сохраняем полученную коллекцию в `vocabulary`.
-    let mut vocabulary = std::collections::BTreeMap::new();
+    // Преобразуем входные данные и сохраняем полученную коллекцию в `known_text_units`.
+    // Набор известных модели текстовых единиц называют vocabulary.
+    let mut known_text_units = std::collections::BTreeMap::new();
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for word in words {
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
-        if !vocabulary.contains_key(word) {
-            // Считаем количество элементов и сохраняем его в `token_identifier`.
-            let token_identifier = vocabulary.len() + 1;
+        if !known_text_units.contains_key(word) {
+            // Считаем количество элементов и сохраняем его в `text_unit_identifier`.
+            // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+            let text_unit_identifier = known_text_units.len() + 1;
             // Выполняем очередное действие, после которого продолжаем следующий шаг.
-            vocabulary.insert(word, token_identifier);
+            known_text_units.insert(word, text_unit_identifier);
         }
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("словарь: {vocabulary:?}");
+    println!("словарь: {known_text_units:?}");
 }

@@ -5,8 +5,9 @@ use part_186_lesson_35_tiny_gpt_forward::forward;
 
 fn main() {
     let prefix = [0, 1];
-    let logits = forward(&prefix);
-    let last = logits.last().unwrap();
+    // Оценку модели до преобразования в вероятность называют logit.
+    let raw_model_scores = forward(&prefix);
+    let last = raw_model_scores.last().unwrap();
     let next = last
         .iter()
         .enumerate()
@@ -14,7 +15,7 @@ fn main() {
         .unwrap()
         .0;
     // Изменение будущего токена не меняет предыдущие позиции.
-    assert_eq!(forward(&[0])[0], logits[0]);
+    assert_eq!(forward(&[0])[0], raw_model_scores[0]);
     println!("префикс: {prefix:?}; logits: {last:?}; следующий ID: {next}");
     // Весов из GPT здесь нет: это минимальный прямой проход с фиксированными параметрами.
 }

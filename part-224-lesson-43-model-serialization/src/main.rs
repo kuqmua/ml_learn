@@ -42,13 +42,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     )?;
     // Шаг: Читаем модель заново и используем её для прогноза.
     // Проверяем версию, оба числовых поля и отсутствие лишних данных.
-    let serialized_text = std::fs::read_to_string(&model_path)?;
+    // Текстовое представление модели получают с помощью serialization.
+    let saved_model_text_content = std::fs::read_to_string(&model_path)?;
     // Выполняем встроенный расчёт один раз и сохраняем результат в `loaded_model`.
     let loaded_model = (|| -> Result<Model, String> {
-        // Создаём изменяемое значение `serialized_lines` для следующих операций.
-        let mut serialized_lines = serialized_text.lines();
+        // Создаём изменяемое значение `saved_model_lines` для следующих операций.
+        // Построчное чтение сохранённой модели относится к serialization.
+        let mut saved_model_lines = saved_model_text_content.lines();
         // Разбираем наличие значения перед использованием результата.
-        if serialized_lines.next() != Some("ml_learn_v1") {
+        if saved_model_lines.next() != Some("ml_learn_v1") {
             // Прерываем расчёт и явно сообщаем причину некорректного входа.
             return Err("неизвестная версия".into());
         }
@@ -64,11 +66,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .map_err(|parse_error| parse_error.to_string())
         };
         // Читаем или разбираем входные данные в значение `weight`.
-        let weight = parse_parameter(serialized_lines.next())?;
+        let weight = parse_parameter(saved_model_lines.next())?;
         // Читаем или разбираем входные данные в значение `bias`.
-        let bias = parse_parameter(serialized_lines.next())?;
+        let bias = parse_parameter(saved_model_lines.next())?;
         // Отсекаем бесконечные и неопределённые числовые значения.
-        if !weight.is_finite() || !bias.is_finite() || serialized_lines.next().is_some() {
+        if !weight.is_finite() || !bias.is_finite() || saved_model_lines.next().is_some() {
             // Прерываем расчёт и явно сообщаем причину некорректного входа.
             return Err("повреждённая модель".into());
         }

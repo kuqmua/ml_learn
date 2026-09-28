@@ -14,25 +14,30 @@ fn main() {
     let recurrent_weight = 0.4;
     let target = 0.7;
     let history = states(&input, input_weight, recurrent_weight);
-    let mut hidden_gradient = history.last().unwrap() - target;
-    let mut recurrent_weight_gradient = 0.0;
+    // Производную функции по параметру или вектор таких производных называют gradient.
+    let mut hidden_state_loss_rate_of_change = history.last().unwrap() - target;
+    let mut recurrent_weight_loss_rate_of_change = 0.0;
     for time_index in (0..input.len()).rev() {
         let hidden_state = history[time_index];
-        let preactivation_gradient = hidden_gradient * (1.0 - hidden_state * hidden_state);
+        let preactivation_loss_rate_of_change =
+            hidden_state_loss_rate_of_change * (1.0 - hidden_state * hidden_state);
         let previous = if time_index == 0 {
             0.0
         } else {
             history[time_index - 1]
         };
-        recurrent_weight_gradient += preactivation_gradient * previous;
-        hidden_gradient = preactivation_gradient * recurrent_weight;
+        recurrent_weight_loss_rate_of_change += preactivation_loss_rate_of_change * previous;
+        hidden_state_loss_rate_of_change = preactivation_loss_rate_of_change * recurrent_weight;
     }
     let epsilon = 1e-5;
-    let numerical_gradient = (loss(&input, input_weight, recurrent_weight + epsilon, target)
-        - loss(&input, input_weight, recurrent_weight - epsilon, target))
-        / (2.0 * epsilon);
-    assert!((recurrent_weight_gradient - numerical_gradient).abs() < 1e-8);
+    let numerically_estimated_rate_of_change =
+        (loss(&input, input_weight, recurrent_weight + epsilon, target)
+            - loss(&input, input_weight, recurrent_weight - epsilon, target))
+            / (2.0 * epsilon);
+    assert!(
+        (recurrent_weight_loss_rate_of_change - numerically_estimated_rate_of_change).abs() < 1e-8
+    );
     println!(
-        "BPTT gradient={recurrent_weight_gradient:.6}; численная проверка={numerical_gradient:.6}"
+        "BPTT gradient={recurrent_weight_loss_rate_of_change:.6}; численная проверка={numerically_estimated_rate_of_change:.6}"
     );
 }

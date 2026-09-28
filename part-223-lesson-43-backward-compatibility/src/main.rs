@@ -4,7 +4,7 @@
 
 fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
-    for (description, serialized, expected) in [
+    for (description, saved_model_text, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
         ("старый формат", "model_v1\n2.0\n1.0\n", "вес и смещение"),
         (
@@ -25,7 +25,7 @@ fn main() {
         ),
     ] {
         // Сохраняем результат этого шага в `explanation`.
-        let explanation = match serialized.lines().next() {
+        let explanation = match saved_model_text.lines().next() {
             // Возвращаем присутствующее значение.
             Some("model_v1") => "вес и смещение",
             // Возвращаем присутствующее значение.

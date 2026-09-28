@@ -4,7 +4,7 @@
 
 fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
-    for (description, serialized, expected) in [
+    for (description, saved_model_text, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
         ("поддерживаемый формат", "model_v1\n2.0\n1.0\n", "model_v1"),
         (
@@ -19,7 +19,7 @@ fn main() {
         ("пустой файл", "", "нет версии"),
     ] {
         // Сохраняем результат этого шага в `status`.
-        let status = match serialized.lines().next() {
+        let status = match saved_model_text.lines().next() {
             // Возвращаем присутствующее значение.
             Some("model_v1") => "model_v1",
             // Возвращаем присутствующее значение.

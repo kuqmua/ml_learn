@@ -1,9 +1,13 @@
 //! Причинное self-attention.
 
 /// Устойчивый softmax для конечных логитов.
-pub fn softmax(logits: &[f64]) -> Vec<f64> {
-    let maximum = logits.iter().copied().fold(f64::NEG_INFINITY, f64::max);
-    let weights: Vec<f64> = logits
+// Оценку модели до преобразования в вероятность называют logit.
+pub fn softmax(raw_model_scores: &[f64]) -> Vec<f64> {
+    let maximum = raw_model_scores
+        .iter()
+        .copied()
+        .fold(f64::NEG_INFINITY, f64::max);
+    let weights: Vec<f64> = raw_model_scores
         .iter()
         .map(|&value| (value - maximum).exp())
         .collect();
@@ -25,14 +29,14 @@ pub fn causal_attention(
     }
     let mut output = Vec::with_capacity(query_vector.len());
     for index in 0..query_vector.len() {
-        let logits: Vec<f64> = (0..=index)
+        let raw_model_scores: Vec<f64> = (0..=index)
             .map(|past| {
                 (query_vector[index][0] * key_vector[past][0]
                     + query_vector[index][1] * key_vector[past][1])
                     / 2.0_f64.sqrt()
             })
             .collect();
-        let weights = softmax(&logits);
+        let weights = softmax(&raw_model_scores);
         let mut state = [0.0; 2];
         for (past, &weight) in weights.iter().enumerate() {
             for feature in 0..2 {

@@ -38,12 +38,13 @@ fn main() {
             // Завершаем текущий расчёт и возвращаем найденное значение.
             return 0.;
         }
-        // Сохраняем рассчитанное значение `positive_fraction` для следующих операций.
-        let positive_fraction =
+        // Сохраняем рассчитанное значение `positive_class_share` для следующих операций.
+        // Долю объектов одного класса среди всех объектов называют fraction.
+        let positive_class_share =
             // Делим значения, получая нормированную величину или среднее.
             data.iter().filter(|(_, label)| *label).count() as f64 / data.len() as f64;
         // Умножаем величины согласно используемой формуле.
-        2. * positive_fraction * (1. - positive_fraction)
+        2. * positive_class_share * (1. - positive_class_share)
     }
     // Ищем порог с минимальной взвешенной нечистотой и строим дочерние узлы.
     fn build_numeric_decision_tree(data: &[(f64, bool)], remaining_depth: usize) -> Tree {

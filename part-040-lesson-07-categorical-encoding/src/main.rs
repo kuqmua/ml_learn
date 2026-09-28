@@ -3,24 +3,25 @@
 
 use std::collections::BTreeMap;
 fn build_vocabulary(training_data: &[&str]) -> BTreeMap<String, usize> {
-    let mut vocabulary = BTreeMap::new();
+    // Набор известных модели текстовых единиц называют vocabulary.
+    let mut known_text_units = BTreeMap::new();
     for &category in training_data {
-        if !vocabulary.contains_key(category) {
-            let category_identifier = vocabulary.len() + 1;
-            vocabulary.insert(category.to_owned(), category_identifier);
+        if !known_text_units.contains_key(category) {
+            let category_identifier = known_text_units.len() + 1;
+            known_text_units.insert(category.to_owned(), category_identifier);
         }
     }
-    vocabulary
+    known_text_units
 }
-fn encode(vocabulary: &BTreeMap<String, usize>, values: &[&str]) -> Vec<usize> {
+fn encode(known_text_units: &BTreeMap<String, usize>, values: &[&str]) -> Vec<usize> {
     values
         .iter()
-        .map(|value| vocabulary.get(*value).copied().unwrap_or(0))
+        .map(|value| known_text_units.get(*value).copied().unwrap_or(0))
         .collect()
 }
 fn main() {
-    let vocabulary = build_vocabulary(&["red", "blue", "red"]);
-    let validation = encode(&vocabulary, &["blue", "green"]);
+    let known_text_units = build_vocabulary(&["red", "blue", "red"]);
+    let validation = encode(&known_text_units, &["blue", "green"]);
     assert_eq!(validation[1], 0);
-    println!("словарь train={vocabulary:?}; validation ID={validation:?}; ID 0=unknown");
+    println!("словарь train={known_text_units:?}; validation ID={validation:?}; ID 0=unknown");
 }

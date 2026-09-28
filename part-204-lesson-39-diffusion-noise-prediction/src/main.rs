@@ -18,12 +18,13 @@ fn main() {
         .collect();
     let mut weight = 0.0;
     for _ in 0..100 {
-        let gradient = inputs
+        // Производную функции по параметру или вектор таких производных называют gradient.
+        let rate_of_change = inputs
             .iter()
             .map(|&(input_value, target)| 2.0 * (weight * input_value - target) * input_value)
             .sum::<f64>()
             / inputs.len() as f64;
-        weight -= 0.2 * gradient;
+        weight -= 0.2 * rate_of_change;
     }
     let loss = inputs
         .iter()

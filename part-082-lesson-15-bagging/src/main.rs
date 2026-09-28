@@ -13,10 +13,11 @@ fn main() {
     let model_predictions = [true, false, true, true, false];
     // Преобразуем входные данные и сохраняем полученную коллекцию в `positive_votes`.
     let positive_votes = model_predictions.iter().filter(|&&vote| vote).count();
-    // Считаем количество элементов и сохраняем его в `bagged_prediction`.
-    let bagged_prediction = positive_votes * 2 > model_predictions.len();
+    // Считаем количество элементов и сохраняем его в `majority_vote_from_models`.
+    // Объединение моделей, обученных на разных выборках, называют bagging.
+    let majority_vote_from_models = positive_votes * 2 > model_predictions.len();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("голосов за класс 1: {positive_votes}; ансамбль={bagged_prediction}");
+    println!("голосов за класс 1: {positive_votes}; ансамбль={majority_vote_from_models}");
 
     // Построение графика вынесено из основного кода урока.
     visualize(model_predictions, positive_votes);

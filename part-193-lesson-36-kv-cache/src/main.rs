@@ -11,11 +11,12 @@ fn main() {
     for &new_state in &states {
         cached_keys.push(new_state);
         cached_values.push(new_state);
-        let logits: Vec<f64> = cached_keys
+        // Оценку модели до преобразования в вероятность называют logit.
+        let raw_model_scores: Vec<f64> = cached_keys
             .iter()
             .map(|key| (new_state[0] * key[0] + new_state[1] * key[1]) / 2.0_f64.sqrt())
             .collect();
-        let weights = softmax(&logits);
+        let weights = softmax(&raw_model_scores);
         let output = weights.iter().zip(&cached_values).fold(
             [0.0; 2],
             |mut output_state, (&weight_value, cached_value)| {

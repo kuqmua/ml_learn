@@ -9,9 +9,10 @@ fn main() {
         vec![9.0, 10.0, 11.0, 12.0],
         vec![13.0, 14.0, 15.0, 16.0],
     ];
-    let tokens = patches(&image, 2).unwrap();
-    assert_eq!(tokens.len(), 4);
-    println!("4 патча 2x2: {tokens:?}");
+    // Участок изображения, передаваемый трансформеру, называют visual token.
+    let image_patches = patches(&image, 2).unwrap();
+    assert_eq!(image_patches.len(), 4);
+    println!("4 патча 2x2: {image_patches:?}");
     visualize(&image);
 }
 

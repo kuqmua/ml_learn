@@ -15,8 +15,9 @@ fn main() {
     let feature = 3.0;
     // Умножаем значения и сохраняем результат в `prediction`.
     let prediction = 2.0 * feature + 1.0;
-    // Сохраняем рассчитанное значение `latency` для следующих операций.
-    let latency = start.elapsed();
+    // Сохраняем рассчитанное значение `response_delay` для следующих операций.
+    // Время ожидания ответа после запроса называют latency.
+    let response_delay = start.elapsed();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("прогноз={prediction}, задержка={latency:?}");
+    println!("прогноз={prediction}, задержка={response_delay:?}");
 }

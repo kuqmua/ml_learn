@@ -9,12 +9,13 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Сохраняем рассчитанное значение `gradient` для следующих операций.
-    let gradient = 2.0;
+    // Сохраняем рассчитанное значение `rate_of_change` для следующих операций.
+    // Производную функции по параметру или вектор таких производных называют gradient.
+    let rate_of_change = 2.0;
     // Инициализируем значение `first_moment` начальным состоянием.
-    let first_moment = 0.9 * 0.0 + 0.1 * gradient;
+    let first_moment = 0.9 * 0.0 + 0.1 * rate_of_change;
     // Инициализируем значение `second_moment` начальным состоянием.
-    let second_moment = 0.999 * 0.0 + 0.001 * gradient * gradient;
+    let second_moment = 0.999 * 0.0 + 0.001 * rate_of_change * rate_of_change;
     // Нормируем или усредняем величину делением и сохраняем её в `corrected_first`.
     let corrected_first = first_moment / (1.0 - 0.9);
     // Нормируем или усредняем величину делением и сохраняем её в `corrected_second`.
@@ -34,11 +35,11 @@ fn main() {
     println!("вес после первого шага Adam = {updated}");
 
     // Построение графика вынесено из основного кода урока.
-    visualize(gradient, corrected_first, old_weight, updated);
+    visualize(rate_of_change, corrected_first, old_weight, updated);
 }
 
 // Строим график по результатам урока.
-fn visualize(gradient: f64, corrected_first: f64, old_weight: f64, updated: f64) {
+fn visualize(rate_of_change: f64, corrected_first: f64, old_weight: f64, updated: f64) {
     // Сравниваем величины, вычисленные в примере.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.
@@ -52,7 +53,7 @@ fn visualize(gradient: f64, corrected_first: f64, old_weight: f64, updated: f64)
         // Передаём ряды или значения для отрисовки графика.
         &[
             // Добавляем пару значений для сравнения или построения графика.
-            ("градиент", gradient),
+            ("градиент", rate_of_change),
             // Добавляем пару значений для сравнения или построения графика.
             ("первый момент", corrected_first),
             // Добавляем пару значений для сравнения или построения графика.

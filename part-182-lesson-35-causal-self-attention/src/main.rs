@@ -18,14 +18,15 @@ fn visualize(states: &[[f64; 2]]) {
         .iter()
         .enumerate()
         .map(|(item_index, query_vector)| {
-            let logits: Vec<_> = (0..=item_index)
+            // Оценку модели до преобразования в вероятность называют logit.
+            let raw_model_scores: Vec<_> = (0..=item_index)
                 .map(|past_index| {
                     (query_vector[0] * states[past_index][0]
                         + query_vector[1] * states[past_index][1])
                         / 2.0_f64.sqrt()
                 })
                 .collect();
-            let weights = softmax(&logits);
+            let weights = softmax(&raw_model_scores);
             (0..states.len())
                 .map(|past_index| {
                     if past_index <= item_index {

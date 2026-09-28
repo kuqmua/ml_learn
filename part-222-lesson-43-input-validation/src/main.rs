@@ -5,7 +5,7 @@
 
 fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
-    for (description, serialized, should_be_valid) in [
+    for (description, saved_model_text, should_be_valid) in [
         // Добавляем пару значений для сравнения или построения графика.
         ("допустимая модель", "2.0\n1.0\n", true),
         // Добавляем пару значений для сравнения или построения графика.
@@ -18,7 +18,7 @@ fn main() {
         ("бесконечный вес", "inf\n1.0\n", false),
     ] {
         // Собираем значения для `values` в коллекцию.
-        let values: Vec<_> = serialized.lines().collect();
+        let values: Vec<_> = saved_model_text.lines().collect();
         // Определяем размер данных и сохраняем его в `result`.
         let result = if values.len() != 2 {
             // Возвращаем описание ошибки.

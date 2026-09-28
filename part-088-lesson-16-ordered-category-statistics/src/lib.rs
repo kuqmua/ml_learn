@@ -12,18 +12,19 @@ pub fn ordered_target_mean(
         return Err("неверные входы");
     }
     let mut stats = BTreeMap::<&str, (f64, usize)>::new();
-    let mut encoded = Vec::with_capacity(categories.len());
+    // Замену категорий числами, рассчитанными по целям, называют target encoding.
+    let mut category_target_mean_values = Vec::with_capacity(categories.len());
     for (&category, &target) in categories.iter().zip(targets) {
         if !target.is_finite() {
             return Err("нечисловая метка");
         }
         let &(sum, count) = stats.get(category).unwrap_or(&(0.0, 0));
-        encoded.push((sum + prior * strength) / (count as f64 + strength));
+        category_target_mean_values.push((sum + prior * strength) / (count as f64 + strength));
         let entry = stats.entry(category).or_default();
         entry.0 += target;
         entry.1 += 1;
     }
-    Ok(encoded)
+    Ok(category_target_mean_values)
 }
 
 #[cfg(test)]

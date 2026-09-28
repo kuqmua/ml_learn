@@ -10,14 +10,18 @@
 fn main() {
     // Сохраняем рассчитанное значение `image_width` для следующих операций.
     let image_width = 5;
-    // Сохраняем рассчитанное значение `kernel_width` для следующих операций.
-    let kernel_width = 2;
-    // Сохраняем рассчитанное значение `stride` для следующих операций.
-    let stride = 2;
+    // Сохраняем рассчитанное значение `filter_width` для следующих операций.
+    // Небольшой набор весов свёрточного фильтра называют kernel.
+    let filter_width = 2;
+    // Сохраняем рассчитанное значение `filter_step_size` для следующих операций.
+    // Шаг перемещения фильтра по входу называют stride.
+    let filter_step_size = 2;
     // Нормируем или усредняем величину делением и сохраняем её в `output_width`.
-    let output_width = (image_width - kernel_width) / stride + 1;
+    let output_width = (image_width - filter_width) / filter_step_size + 1;
     // Преобразуем входные данные и сохраняем полученную коллекцию в `positions`.
-    let positions: Vec<_> = (0..output_width).map(|index| index * stride).collect();
+    let positions: Vec<_> = (0..output_width)
+        .map(|index| index * filter_step_size)
+        .collect();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("позиции ядра по ширине: {positions:?}");
 

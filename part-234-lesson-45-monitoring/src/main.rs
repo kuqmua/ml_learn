@@ -27,8 +27,9 @@ fn main() {
         if first > second { first } else { second }
     }
 
-    // Объявляем повторно используемое вычисление `calculate_three_bin_feature_fractions`; параметры ниже задают его входы.
-    fn calculate_three_bin_feature_fractions(data: &[f64]) -> [f64; 3] {
+    // Объявляем повторно используемое вычисление `calculate_three_group_shares`; параметры ниже задают его входы.
+    // Долю значений, попавших в одну группу, называют fraction этой группы.
+    fn calculate_three_group_shares(data: &[f64]) -> [f64; 3] {
         // Создаём набор значений `bin_counts` для следующего шага примера.
         let mut bin_counts = [0.; 3];
         // Одни и те же границы интервалов используются для обоих наборов данных.
@@ -50,35 +51,36 @@ fn main() {
             bin_counts[histogram_bin] += 1.;
         }
         // Переходим от числа объектов к долям, чтобы сравнивать разные размеры выборок.
-        for bin_fraction in &mut bin_counts {
+        for group_share in &mut bin_counts {
             // Масштабируем текущую величину делением.
-            *bin_fraction /= data.len() as f64;
+            *group_share /= data.len() as f64;
         }
         // Используем ранее рассчитанное значение `bin_counts` в текущем выражении.
         bin_counts
     }
     // Сравниваем доли объектов в одинаковых интервалах эталона и новых данных.
     fn calculate_population_stability_index(reference: &[f64], current: &[f64]) -> f64 {
-        // Сохраняем рассчитанное значение `reference_bin_fraction` для следующих операций.
-        let reference_bin_fraction = calculate_three_bin_feature_fractions(reference);
-        // Сохраняем рассчитанное значение `current_bin_fraction` для следующих операций.
-        let current_bin_fraction = calculate_three_bin_feature_fractions(current);
+        // Сохраняем рассчитанное значение `reference_group_shares` для следующих операций.
+        let reference_group_shares = calculate_three_group_shares(reference);
+        // Сохраняем рассчитанное значение `current_group_shares` для следующих операций.
+        let current_group_shares = calculate_three_group_shares(current);
         // Инициализируем изменяемый накопитель `stability_index` начальным состоянием.
         let mut stability_index = 0.0;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
-        for bin_index in 0..reference_bin_fraction.len() {
+        for bin_index in 0..reference_group_shares.len() {
             // Малое положительное значение предотвращает деление на ноль и log(0).
-            let reference_fraction = choose_larger_number(reference_bin_fraction[bin_index], 1e-6);
-            // Комбинируем исходные величины и сохраняем результат в `current_fraction`.
-            let current_fraction = choose_larger_number(current_bin_fraction[bin_index], 1e-6);
+            let reference_group_share =
+                choose_larger_number(reference_group_shares[bin_index], 1e-6);
+            // Комбинируем исходные величины и сохраняем результат в `current_group_share`.
+            let current_group_share = choose_larger_number(current_group_shares[bin_index], 1e-6);
             // Прибавляем очередной вклад к ранее накопленному результату.
-            stability_index += (current_fraction - reference_fraction)
+            stability_index += (current_group_share - reference_group_share)
                 // Добавляем этот член в составное арифметическое выражение.
                 * (|| -> f64 {
                     // Обновляем значение результатом текущего вычисления.
                     /* ln(x) через ряд 2 * (t + t³/3 + t⁵/5 + ...), t=(x-1)/(x+1). */
                     // Сохраняем результат этого шага в `value`.
-                    let value: f64 = current_fraction / reference_fraction;
+                    let value: f64 = current_group_share / reference_group_share;
                     // Проверяем обязательное условие до дальнейшего вычисления.
                     assert!(
                         // Передаём очередное значение в составе результата или вызова.

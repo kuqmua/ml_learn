@@ -8,8 +8,9 @@ fn main() {
     let raw_weights = [0.2, 0.3, 0.5];
     // Повторяем расчёт для каждого элемента последовательности.
     for current_position in 0..raw_weights.len() {
-        // Задаём учебные значения для `masked`.
-        let mut masked = [0.0; 3];
+        // Задаём учебные значения для `future_position_filtered_weights`.
+        // Запрет внимания к будущим позициям называют causal mask.
+        let mut future_position_filtered_weights = [0.0; 3];
         // Вычисляем `allowed_sum` по элементам исходной коллекции.
         let allowed_sum: f64 = raw_weights[..=current_position].iter().sum();
         // Проверяем ожидаемое свойство учебного примера.
@@ -22,21 +23,21 @@ fn main() {
         // Повторяем расчёт для каждого элемента последовательности.
         for index in 0..=current_position {
             // Обновляем значение результатом текущего вычисления.
-            masked[index] = raw_weights[index] / allowed_sum;
+            future_position_filtered_weights[index] = raw_weights[index] / allowed_sum;
         }
         // Проверяем ожидаемое свойство учебного примера.
-        assert!((masked.iter().sum::<f64>() - 1.0).abs() < 1e-10);
+        assert!((future_position_filtered_weights.iter().sum::<f64>() - 1.0).abs() < 1e-10);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(
             // Вычисляем значение по указанной формуле.
-            masked[current_position + 1..]
+            future_position_filtered_weights[current_position + 1..]
                 // Просматриваем элементы коллекции по ссылке.
                 .iter()
                 // Настраиваем или преобразуем результат предыдущего шага.
                 .all(|&weight| weight == 0.0)
         );
         // Печатаем рассчитанные значения для проверки примера.
-        println!("позиция {current_position}: веса {masked:?}");
+        println!("позиция {current_position}: веса {future_position_filtered_weights:?}");
     }
 
     // Построение графика вынесено из основного кода урока.

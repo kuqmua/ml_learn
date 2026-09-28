@@ -46,7 +46,8 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(observed_frequency: f64) {
     // График величин и зависимостей, изученных в этом уроке.
-    let ideal_calibration_points: Vec<(f64, f64)> = (0..=10)
+    // Соответствие вероятностей модели реальным частотам называют calibration.
+    let ideal_probability_frequency_points: Vec<(f64, f64)> = (0..=10)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `probability`.
@@ -56,8 +57,8 @@ fn visualize(observed_frequency: f64) {
         })
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `observed_calibration_points` в коллекцию.
-    let observed_calibration_points: Vec<(f64, f64)> =
+    // Собираем значения для `observed_probability_frequency_points` в коллекцию.
+    let observed_probability_frequency_points: Vec<(f64, f64)> =
         // Задаём значения следующей строки или последовательности.
         [(0.0, observed_frequency), (1.0, observed_frequency)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
@@ -79,14 +80,14 @@ fn visualize(observed_frequency: f64) {
                 // Указываем подпись этого ряда в легенде.
                 name: "идеальная",
                 // Передаём рассчитанные координаты точек.
-                points: &ideal_calibration_points,
+                points: &ideal_probability_frequency_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "частота в примере",
                 // Передаём рассчитанные координаты точек.
-                points: &observed_calibration_points,
+                points: &observed_probability_frequency_points,
             },
         ],
     )

@@ -42,24 +42,25 @@ fn main() {
         // Сохраняем результат этого шага в `query`.
         let query: &str = "модель данные";
         // Один и тот же разбор текста используем для запроса и документов.
-        let query_tokens = split_text_into_lowercase_words(query);
+        // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+        let query_text_units = split_text_into_lowercase_words(query);
         // Создаём набор значений `ranked_results` для следующего шага примера.
         let mut ranked_results = vec![];
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(document_identifier, document_text) in &DOCUMENTS {
-            // Сохраняем рассчитанное значение `document_tokens` для следующих операций.
-            let document_tokens = split_text_into_lowercase_words(document_text);
+            // Сохраняем рассчитанное значение `document_text_units` для следующих операций.
+            let document_text_units = split_text_into_lowercase_words(document_text);
             // Частота слова внутри документа составляет компонент TF.
-            let mut token_counts = std::collections::BTreeMap::new();
+            let mut text_unit_counts = std::collections::BTreeMap::new();
             // Повторяем следующий блок для каждого элемента указанной последовательности.
-            for token in &document_tokens {
+            for text_unit in &document_text_units {
                 // Прибавляем очередной вклад к ранее накопленному результату.
-                *token_counts.entry(token).or_insert(0usize) += 1;
+                *text_unit_counts.entry(text_unit).or_insert(0usize) += 1;
             }
             // Инициализируем изменяемый накопитель `relevance_score` начальным состоянием.
             let mut relevance_score = 0.;
             // Редкие во всём корпусе слова получают больший вес IDF.
-            for word in query_tokens
+            for word in query_text_units
                 // Перебираем слова запроса без копирования строк.
                 .iter()
                 // Убираем повторы, чтобы слово запроса учитывалось один раз.
@@ -141,9 +142,9 @@ fn main() {
                     // Вычисляем значение по указанной формуле.
                 })() + 1.;
                 // Прибавляем очередной вклад к ранее накопленному результату.
-                relevance_score += *token_counts.get(word).unwrap_or(&0) as f64
+                relevance_score += *text_unit_counts.get(word).unwrap_or(&0) as f64
                         // Делим значения, получая нормированную величину или среднее.
-                        / document_tokens.len() as f64
+                        / document_text_units.len() as f64
                         // Добавляем этот член в составное арифметическое выражение.
                         * inverse_document_frequency;
             }

@@ -10,11 +10,16 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Повторяем следующий блок для каждого элемента указанной последовательности.
-    for logit in [-2.0, 0.0, 2.0] {
+    // Оценку модели до преобразования в вероятность называют logit.
+    for raw_model_score in [-2.0, 0.0, 2.0] {
         // ReLU оставляет положительные значения и обнуляет отрицательные.
-        let rectified_linear_output = if logit > 0.0 { logit } else { 0.0 };
+        let rectified_linear_output = if raw_model_score > 0.0 {
+            raw_model_score
+        } else {
+            0.0
+        };
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-        println!("logit={logit}, ReLU={rectified_linear_output}");
+        println!("logit={raw_model_score}, ReLU={rectified_linear_output}");
     }
 
     // Построение графика вынесено из основного кода урока.

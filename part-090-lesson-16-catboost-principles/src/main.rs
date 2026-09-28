@@ -7,7 +7,8 @@ use part_088_lesson_16_ordered_category_statistics::ordered_target_mean;
 fn main() {
     let categories = ["A", "B", "A", "B", "A", "B"];
     let targets: [f64; 6] = [1.0, 0.0, 1.0, 0.0, 1.0, 0.0];
-    let encoded = ordered_target_mean(&categories, &targets, 0.5, 1.0).unwrap();
+    // Замену категорий числами, рассчитанными по целям, называют target encoding.
+    let category_target_mean_values = ordered_target_mean(&categories, &targets, 0.5, 1.0).unwrap();
     // Порог фиксирован для прозрачности примера; настоящий алгоритм выбирает split по данным.
     let tree = ObliviousTree {
         splits: vec![(0, 0.5)],
@@ -17,7 +18,8 @@ fn main() {
     let learning_rate = 0.5;
     let mut before = 0.0;
     let mut after = 0.0;
-    for (index, (&feature, &target)) in encoded.iter().zip(&targets).enumerate() {
+    for (index, (&feature, &target)) in category_target_mean_values.iter().zip(&targets).enumerate()
+    {
         let prediction = base + learning_rate * tree.predict(&[feature]).unwrap();
         before += (base - target).powi(2);
         after += (prediction - target).powi(2);

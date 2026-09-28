@@ -15,28 +15,33 @@ fn main() {
     assert!(!data.is_empty(), "для градиента нужны обучающие примеры");
     // Инициализируем значение `weight` начальным состоянием.
     let weight = 0.0;
-    // Инициализируем изменяемый накопитель `gradient_sum` начальным состоянием.
-    let mut gradient_sum = 0.0;
+    // Инициализируем изменяемый накопитель `summed_rates_of_change` начальным состоянием.
+    // Производную функции по параметру или вектор таких производных называют gradient.
+    let mut summed_rates_of_change = 0.0;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (feature, target) in data {
         // Прибавляем очередной вклад к ранее накопленному результату.
-        gradient_sum += 2.0 * (weight * feature - target) * feature;
+        summed_rates_of_change += 2.0 * (weight * feature - target) * feature;
     }
-    // Считаем количество элементов и сохраняем его в `batch_gradient`.
-    let batch_gradient = gradient_sum / data.len() as f64;
+    // Считаем количество элементов и сохраняем его в `batch_loss_rate_of_change`.
+    let batch_loss_rate_of_change = summed_rates_of_change / data.len() as f64;
     // Сохраняем рассчитанное значение `(first_feature, first_target)` для следующих операций.
     let (first_feature, first_target) = data[0];
-    // Умножаем значения и сохраняем результат в `stochastic_gradient`.
-    let stochastic_gradient = 2.0 * (weight * first_feature - first_target) * first_feature;
+    // Умножаем значения и сохраняем результат в `single_example_loss_rate_of_change`.
+    let single_example_loss_rate_of_change =
+        2.0 * (weight * first_feature - first_target) * first_feature;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("batch={batch_gradient}, stochastic={stochastic_gradient}");
+    println!("batch={batch_loss_rate_of_change}, stochastic={single_example_loss_rate_of_change}");
 
     // Построение графика вынесено из основного кода урока.
-    visualize(batch_gradient, stochastic_gradient);
+    visualize(
+        batch_loss_rate_of_change,
+        single_example_loss_rate_of_change,
+    );
 }
 
 // Строим график по результатам урока.
-fn visualize(batch_gradient: f64, stochastic_gradient: f64) {
+fn visualize(batch_loss_rate_of_change: f64, single_example_loss_rate_of_change: f64) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.
@@ -50,9 +55,9 @@ fn visualize(batch_gradient: f64, stochastic_gradient: f64) {
         // Передаём ряды или значения для отрисовки графика.
         &[
             // Добавляем пару значений для сравнения или построения графика.
-            ("batch", batch_gradient),
+            ("batch", batch_loss_rate_of_change),
             // Добавляем пару значений для сравнения или построения графика.
-            ("stochastic", stochastic_gradient),
+            ("stochastic", single_example_loss_rate_of_change),
         ],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

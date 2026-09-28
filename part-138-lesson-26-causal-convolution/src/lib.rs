@@ -6,16 +6,19 @@ pub fn causal_convolution(
     input: &[f64],
     weight_current: f64,
     weight_previous: f64,
-    dilation: usize,
+    // Промежуток между используемыми точками фильтра называют dilation.
+    filter_spacing: usize,
 ) -> Result<Vec<f64>, &'static str> {
-    if dilation == 0 {
+    if filter_spacing == 0 {
         return Err("dilation должен быть положительным");
     }
     Ok(input
         .iter()
         .enumerate()
         .map(|(index, &current)| {
-            let previous = index.checked_sub(dilation).map_or(0.0, |past| input[past]);
+            let previous = index
+                .checked_sub(filter_spacing)
+                .map_or(0.0, |past| input[past]);
             weight_current * current + weight_previous * previous
         })
         .collect())

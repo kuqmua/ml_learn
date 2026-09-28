@@ -16,9 +16,10 @@ fn main() {
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for _ in 0..100 {
             // Производная равна 4x³−4x; шагаем против её знака.
-            let gradient = 4.0 * input_value * input_value * input_value - 4.0 * input_value;
+            // Производную функции по параметру или вектор таких производных называют gradient.
+            let rate_of_change = 4.0 * input_value * input_value * input_value - 4.0 * input_value;
             // Вычитаем очередной вклад из текущего значения параметра.
-            input_value -= 0.1 * gradient;
+            input_value -= 0.1 * rate_of_change;
         }
         // Умножаем значения и сохраняем результат в `loss`.
         let loss =

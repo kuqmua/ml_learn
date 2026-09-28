@@ -6,8 +6,9 @@ fn selective_scan(input: &[(f64, bool)]) -> Vec<f64> {
     input
         .iter()
         .map(|&(value, reset)| {
-            let retention = if reset { 0.0 } else { 0.9 };
-            state = retention * state + value;
+            // Долю (fraction) предыдущего состояния, сохраняемую на следующем шаге, называют retention.
+            let previous_state_share_kept = if reset { 0.0 } else { 0.9 };
+            state = previous_state_share_kept * state + value;
             state
         })
         .collect()

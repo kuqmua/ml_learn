@@ -11,12 +11,13 @@
 fn main() {
     // Инициализируем значение `parameter` начальным состоянием.
     let parameter = 0.0;
-    // Умножаем значения и сохраняем результат в `gradient`.
-    let gradient = 2.0 * (parameter - 3.0);
+    // Умножаем значения и сохраняем результат в `rate_of_change`.
+    // Производную функции по параметру или вектор таких производных называют gradient.
+    let rate_of_change = 2.0 * (parameter - 3.0);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for rate in [0.1, 1.0, 2.0] {
         // Делаем ровно одно обновление, чтобы изолировать влияние скорости.
-        let updated = parameter - rate * gradient;
+        let updated = parameter - rate * rate_of_change;
         // Умножаем значения и сохраняем результат в `error`.
         let error = (updated - 3.0) * (updated - 3.0);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -24,11 +25,11 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
-    visualize(parameter, gradient);
+    visualize(parameter, rate_of_change);
 }
 
 // Строим график по результатам урока.
-fn visualize(parameter: f64, gradient: f64) {
+fn visualize(parameter: f64, rate_of_change: f64) {
     // Задаём учебные значения для `learning_rates`.
     let learning_rates = [0.1, 1.0, 2.0];
     // Собираем значения для `errors` в коллекцию.
@@ -38,7 +39,7 @@ fn visualize(parameter: f64, gradient: f64) {
         // Преобразуем каждый элемент в новое значение.
         .map(|rate| {
             // Сохраняем результат этого шага в `updated`.
-            let updated = parameter - rate * gradient;
+            let updated = parameter - rate * rate_of_change;
             // Добавляем пару значений для сравнения или построения графика.
             (rate, (updated - 3.0) * (updated - 3.0))
         })

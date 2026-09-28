@@ -14,24 +14,27 @@ fn main() {
     // Шаг: Создаём одноканальное изображение 3×3.
     let image = vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]];
     // Шаг: Задаём ядро 2×2, реагирующее на локальную разницу значений.
-    let kernel = vec![vec![1., 0.], vec![0., -1.]];
+    // Небольшой набор весов свёрточного фильтра называют kernel.
+    let filter_weights = vec![vec![1., 0.], vec![0., -1.]];
 
+    // Скользящую взвешенную сумму называют convolution (свёрткой).
     // Шаг: Проводим свёртку, затем уменьшаем карту признаков max pooling.
     let feature_map = (|| -> Vec<Vec<f64>> {
         // Используем подготовленное значение в следующем шаге примера.
         /* Сдвигаем ядро по изображению и умножаем соответствующие значения и складываем результаты. */
         // Собираем значения для `image` в коллекцию.
         let image: &[Vec<f64>] = &image;
-        // Сохраняем рассчитанное значение `kernel` для следующих операций.
-        let kernel: &[Vec<f64>] = &kernel;
-        // Сохраняем рассчитанное значение `stride` для следующих операций.
-        let stride: usize = 1;
+        // Сохраняем рассчитанное значение `filter_weights` для следующих операций.
+        let filter_weights: &[Vec<f64>] = &filter_weights;
+        // Сохраняем рассчитанное значение `filter_step_size` для следующих операций.
+        // Шаг перемещения фильтра по входу называют stride.
+        let filter_step_size: usize = 1;
         // Проверяем обязательное условие до дальнейшего вычисления.
-        assert!(stride > 0);
+        assert!(filter_step_size > 0);
         // Считаем количество элементов и сохраняем его в `rows`.
-        let rows = (image.len() - kernel.len()) / stride + 1;
+        let rows = (image.len() - filter_weights.len()) / filter_step_size + 1;
         // Считаем количество элементов и сохраняем его в `column_count`.
-        let column_count = (image[0].len() - kernel[0].len()) / stride + 1;
+        let column_count = (image[0].len() - filter_weights[0].len()) / filter_step_size + 1;
         // Создаём набор значений `output` для следующего шага примера.
         let mut output = vec![vec![0.0; column_count]; rows];
         // Повторяем следующий блок для каждого элемента указанной последовательности.
@@ -39,15 +42,15 @@ fn main() {
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for output_column in 0..column_count {
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
-                for kernel_row in 0..kernel.len() {
+                for filter_row in 0..filter_weights.len() {
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
-                    for kernel_column in 0..kernel[0].len() {
+                    for filter_column in 0..filter_weights[0].len() {
                         // Прибавляем очередной вклад к ранее накопленному результату.
-                        output[output_row][output_column] += kernel[kernel_row][kernel_column]
+                        output[output_row][output_column] += filter_weights[filter_row][filter_column]
                             // Добавляем этот член в составное арифметическое выражение.
-                            * image[output_row * stride + kernel_row]
+                            * image[output_row * filter_step_size + filter_row]
                                 // Составляем результат из вычисленных значений в указанном порядке.
-                                [output_column * stride + kernel_column];
+                                [output_column * filter_step_size + filter_column];
                     }
                 }
             }
@@ -58,19 +61,19 @@ fn main() {
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
-        "convolution={feature_map:?}, pooled={:?}",
+        "convolution={feature_map:?}, local_maximum_values={:?}",
         // Составляем результат из вычисленных значений в указанном порядке.
         (|| -> Vec<Vec<f64>> {
             // Используем подготовленное значение в следующем шаге примера.
             /* В каждом окне 2×2 оставляем максимальный элемент. */
             // Собираем значения для `image` в коллекцию.
             let image: &[Vec<f64>] = &feature_map;
-            // Создаём набор значений `pooled` для следующего шага примера.
-            let mut pooled = vec![vec![0.0; image[0].len() / 2]; image.len() / 2];
+            // Создаём набор значений `local_maximum_values` для следующего шага примера.
+            let mut local_maximum_values = vec![vec![0.0; image[0].len() / 2]; image.len() / 2];
             // Повторяем следующий блок для каждого элемента указанной последовательности.
-            for output_row in 0..pooled.len() {
+            for output_row in 0..local_maximum_values.len() {
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
-                for output_column in 0..pooled[0].len() {
+                for output_column in 0..local_maximum_values[0].len() {
                     // Создаём изменяемое значение `largest_value` для следующих операций.
                     let mut largest_value = f64::NEG_INFINITY;
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
@@ -88,12 +91,12 @@ fn main() {
                             }
                         }
                     }
-                    // Обновляем `pooled[output_row][output_column]` результатом текущего шага.
-                    pooled[output_row][output_column] = largest_value;
+                    // Обновляем `local_maximum_values[output_row][output_column]` результатом текущего шага.
+                    local_maximum_values[output_row][output_column] = largest_value;
                 }
             }
-            // Используем ранее рассчитанное значение `pooled` в текущем выражении.
-            pooled
+            // Используем ранее рассчитанное значение `local_maximum_values` в текущем выражении.
+            local_maximum_values
         })()
     );
 

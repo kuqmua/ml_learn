@@ -15,15 +15,16 @@ fn main() {
     let corpus = ["кот спит", "пёс спит"];
 
     // Шаг: Назначаем индекс каждому слову и резервируем индекс для неизвестных слов.
-    let vocabulary = (|| -> std::collections::BTreeMap<String, usize> {
+    // Набор известных модели текстовых единиц называют vocabulary.
+    let known_text_units = (|| -> std::collections::BTreeMap<String, usize> {
         // Используем подготовленное значение в следующем шаге примера.
         /* Нумеруем слова корпуса; нулевой индекс оставляем неизвестному токену. */
         // Сохраняем результат этого шага в `corpus`.
         let corpus: &[&str] = &corpus;
-        // Инициализируем изменяемый накопитель `vocabulary` начальным состоянием.
-        let mut vocabulary = std::collections::BTreeMap::new();
+        // Инициализируем изменяемый накопитель `known_text_units` начальным состоянием.
+        let mut known_text_units = std::collections::BTreeMap::new();
         // Выполняем очередное действие, после которого продолжаем следующий шаг.
-        vocabulary.insert("<unk>".into(), 0);
+        known_text_units.insert("<unk>".into(), 0);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for word in corpus
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -32,61 +33,63 @@ fn main() {
             .flat_map(|sentence| sentence.split_whitespace())
         {
             // Проверяем условие и выбираем соответствующую ветку алгоритма.
-            if !vocabulary.contains_key(word) {
-                // Считаем количество элементов и сохраняем его в `token_identifier`.
-                let token_identifier = vocabulary.len();
+            if !known_text_units.contains_key(word) {
+                // Считаем количество элементов и сохраняем его в `text_unit_identifier`.
+                // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+                let text_unit_identifier = known_text_units.len();
                 // Выполняем очередное действие, после которого продолжаем следующий шаг.
-                vocabulary.insert(word.into(), token_identifier);
+                known_text_units.insert(word.into(), text_unit_identifier);
             }
         }
-        // Используем ранее рассчитанное значение `vocabulary` в текущем выражении.
-        vocabulary
+        // Используем ранее рассчитанное значение `known_text_units` в текущем выражении.
+        known_text_units
     })();
 
     // Шаг: Создаём таблицу векторов и читаем строки по индексам токенов.
-    let mut embeddings = vec![[0., 0.]; vocabulary.len()];
+    // Плотное числовое представление объекта называют embedding.
+    let mut dense_numeric_representations = vec![[0., 0.]; known_text_units.len()];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
-    for (token_index, row) in embeddings.iter_mut().enumerate() {
+    for (text_unit_index, row) in dense_numeric_representations.iter_mut().enumerate() {
         // Передаём данные по ссылке или разыменовываем их для следующей операции.
-        *row = [token_index as f64 * 0.1, token_index as f64 * 0.2];
+        *row = [text_unit_index as f64 * 0.1, text_unit_index as f64 * 0.2];
     }
-    // Выполняем встроенный расчёт один раз и сохраняем результат в `token_indices`.
-    let token_indices = (|| -> Vec<usize> {
+    // Выполняем встроенный расчёт один раз и сохраняем результат в `text_unit_indices`.
+    let text_unit_indices = (|| -> Vec<usize> {
         // Используем подготовленное значение в следующем шаге примера.
         /* Каждое слово превращаем в индекс словаря, неизвестным словам даём нулевой индекс. */
         // Сохраняем результат этого шага в `text`.
         let text: &str = "кот неизвестно";
-        // Сохраняем рассчитанное значение `vocabulary` для следующих операций.
-        let vocabulary: &std::collections::BTreeMap<String, usize> = &vocabulary;
+        // Сохраняем рассчитанное значение `known_text_units` для следующих операций.
+        let known_text_units: &std::collections::BTreeMap<String, usize> = &known_text_units;
         // Разделяем текст по пробельным символам на отдельные слова.
         text.split_whitespace()
             // Преобразуем каждый элемент последовательности.
-            .map(|word| *vocabulary.get(word).unwrap_or(&0))
+            .map(|word| *known_text_units.get(word).unwrap_or(&0))
             // Собираем элементы итератора в итоговую коллекцию.
             .collect()
     })();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
-        "vocab={vocabulary:?}, ids={token_indices:?}, vectors={:?}",
-        // Используем ранее рассчитанное значение `token_indices` в текущем выражении.
-        token_indices
+        "vocab={known_text_units:?}, ids={text_unit_indices:?}, vectors={:?}",
+        // Используем ранее рассчитанное значение `text_unit_indices` в текущем выражении.
+        text_unit_indices
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
             .iter()
             // Преобразуем каждый элемент последовательности.
-            .map(|&token_index| embeddings[token_index])
+            .map(|&token_index| dense_numeric_representations[token_index])
             // Собираем полученные элементы в вектор.
             .collect::<Vec<_>>()
     );
 
     // Построение графика вынесено из основного кода урока.
-    visualize(vocabulary, token_indices);
+    visualize(known_text_units, text_unit_indices);
 }
 
 // Строим график по результатам урока.
 fn visualize(
-    vocabulary: std::collections::BTreeMap<std::string::String, usize>,
-    token_indices: std::vec::Vec<usize>,
+    known_text_units: std::collections::BTreeMap<std::string::String, usize>,
+    text_unit_indices: std::vec::Vec<usize>,
 ) {
     // Наглядное сравнение результатов сводной практики.
     let chart = lesson_visualization::bars(
@@ -101,9 +104,9 @@ fn visualize(
         // Передаём ряды или значения для отрисовки графика.
         &[
             // Добавляем пару значений для сравнения или построения графика.
-            ("словарь", vocabulary.len() as f64),
+            ("словарь", known_text_units.len() as f64),
             // Добавляем пару значений для сравнения или построения графика.
-            ("токены", token_indices.len() as f64),
+            ("токены", text_unit_indices.len() as f64),
         ],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

@@ -91,20 +91,21 @@ fn main() {
         let mut loss_sum = 0.0;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(feature_value, target_label) in data {
-            // Умножаем значения и сохраняем результат в `logit`.
-            let logit = weight * feature_value + bias;
+            // Умножаем значения и сохраняем результат в `raw_model_score`.
+            // Оценку модели до преобразования в вероятность называют logit.
+            let raw_model_score = weight * feature_value + bias;
             // Прибавляем очередной вклад к ранее накопленному результату.
             loss_sum += (|| -> f64 {
                 // Используем подготовленное значение в следующем шаге примера.
                 /* Выбираем большее из двух чисел для формул softmax, log-loss и Q-learning. */
                 // Сохраняем результат этого шага в `first`.
-                let first: f64 = logit;
+                let first: f64 = raw_model_score;
                 // Инициализируем значение `second` начальным состоянием.
                 let second: f64 = 0.;
                 // Проверяем условие и выбираем соответствующую ветку алгоритма.
                 if first > second { first } else { second }
             // Вычисляем значение по указанной формуле.
-            })() - target_label * logit
+            })() - target_label * raw_model_score
                 // Складываем или вычитаем величины согласно используемой формуле.
                 + (|| -> f64 {
                     // Обновляем значение результатом текущего вычисления.
@@ -116,7 +117,7 @@ fn main() {
                             // Используем подготовленное значение в следующем шаге примера.
                             /* Модуль числа по определению: меняем знак только у отрицательного числа. */
                             // Сохраняем результат этого шага в `value`.
-                            let value: f64 = logit;
+                            let value: f64 = raw_model_score;
                             // Проверяем условие и выбираем соответствующую ветку алгоритма.
                             if value < 0.0 { -value } else { value }
                         })());
@@ -183,15 +184,15 @@ fn main() {
     // Шаг: Измеряем loss модели с нулевыми коэффициентами.
     let before = calculate_binary_cross_entropy_from_logits(&TRAINING_EXAMPLES, 0., 0.);
     // Объявляем повторно используемое вычисление `convert_logit_to_probability`; параметры ниже задают его входы.
-    fn convert_logit_to_probability(logit: f64) -> f64 {
+    fn convert_logit_to_probability(raw_model_score: f64) -> f64 {
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
-        if logit >= 0. {
+        if raw_model_score >= 0. {
             // Делим значения, получая нормированную величину или среднее.
-            1. / (1. + approximate_exponential_with_taylor_series(-logit))
+            1. / (1. + approximate_exponential_with_taylor_series(-raw_model_score))
         // Обрабатываем случай, когда предыдущее условие не выполнено.
         } else {
             // Сохраняем рассчитанное значение `prediction_error` для следующих операций.
-            let prediction_error = approximate_exponential_with_taylor_series(logit);
+            let prediction_error = approximate_exponential_with_taylor_series(raw_model_score);
             // Делим значения, получая нормированную величину или среднее.
             prediction_error / (1. + prediction_error)
         }
@@ -207,7 +208,8 @@ fn main() {
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for _ in 0..300 {
             // Выполняем встроенный расчёт один раз и сохраняем результат в `(weight_gradient, bias_gradient)`.
-            let (weight_gradient, bias_gradient) = (|| -> (f64, f64) {
+            // Производную функции по параметру или вектор таких производных называют gradient.
+            let (weight_loss_rate_of_change, bias_loss_rate_of_change) = (|| -> (f64, f64) {
                 // Используем подготовленное значение в следующем шаге примера.
                 /* Для log-loss производная по logit равна sigmoid(logit) − правильная метка. */
                 // Сохраняем результат этого шага в `data`.
@@ -217,7 +219,7 @@ fn main() {
                 // Сохраняем рассчитанное значение `bias` для следующих операций.
                 let bias: f64 = bias;
                 // Сохраняем рассчитанное значение `(mut weight_gradient, mut bias_gradient)` для следующих операций.
-                let (mut weight_gradient, mut bias_gradient) = (0.0, 0.0);
+                let (mut weight_loss_rate_of_change, mut bias_loss_rate_of_change) = (0.0, 0.0);
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for &(feature_value, target_label) in data {
                     // Сохраняем рассчитанное значение `prediction_error` для следующих операций.
@@ -225,22 +227,22 @@ fn main() {
                         // Умножаем величины согласно используемой формуле.
                         convert_logit_to_probability(weight * feature_value + bias) - target_label;
                     // Прибавляем очередной вклад к ранее накопленному результату.
-                    weight_gradient += prediction_error * feature_value;
+                    weight_loss_rate_of_change += prediction_error * feature_value;
                     // Прибавляем очередной вклад к ранее накопленному результату.
-                    bias_gradient += prediction_error;
+                    bias_loss_rate_of_change += prediction_error;
                 }
                 // Составляем результат из вычисленных значений в указанном порядке.
                 (
                     // Делим значения, получая нормированную величину или среднее.
-                    weight_gradient / data.len() as f64,
+                    weight_loss_rate_of_change / data.len() as f64,
                     // Делим значения, получая нормированную величину или среднее.
-                    bias_gradient / data.len() as f64,
+                    bias_loss_rate_of_change / data.len() as f64,
                 )
             })();
             // Вычитаем очередной вклад из текущего значения параметра.
-            weight -= 0.1 * weight_gradient;
+            weight -= 0.1 * weight_loss_rate_of_change;
             // Вычитаем очередной вклад из текущего значения параметра.
-            bias -= 0.1 * bias_gradient;
+            bias -= 0.1 * bias_loss_rate_of_change;
         }
         // Составляем результат из вычисленных значений в указанном порядке.
         (weight, bias)

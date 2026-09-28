@@ -26,8 +26,9 @@ fn main() {
         );
         // Сохраняем результат этого шага в `total_variance`.
         let total_variance = eigenvalues[0] + eigenvalues[1];
-        // Сохраняем результат этого шага в `explained_fraction`.
-        let explained_fraction = if total_variance == 0.0 {
+        // Сохраняем результат этого шага в `variance_share_explained_by_first_axis`.
+        // Долю общей дисперсии, объяснённую осью, называют explained variance fraction.
+        let variance_share_explained_by_first_axis = if total_variance == 0.0 {
             // Отмечаем отсутствие подходящего значения.
             None
         // Обрабатываем случай, когда предыдущее условие не выполнено.
@@ -36,9 +37,11 @@ fn main() {
             Some(eigenvalues[0] / total_variance)
         };
         // Проверяем ожидаемое свойство учебного примера.
-        assert_eq!(explained_fraction, expected);
+        assert_eq!(variance_share_explained_by_first_axis, expected);
         // Печатаем рассчитанные значения для проверки примера.
-        println!("{description}: {eigenvalues:?} → доля первой оси {explained_fraction:?}");
+        println!(
+            "{description}: {eigenvalues:?} → доля первой оси {variance_share_explained_by_first_axis:?}"
+        );
     }
 
     // Построение графика вынесено из основного кода урока.

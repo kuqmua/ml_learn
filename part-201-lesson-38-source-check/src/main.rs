@@ -6,7 +6,8 @@ fn main() {
     // Сохраняем результат этого шага в `minimum_reliable_score`.
     let minimum_reliable_score = 0.5;
     // Повторяем расчёт для каждого элемента последовательности.
-    for (description, retrieval_score, expected_answer) in [
+    // Поиск подходящих документов и оценку их релевантности называют retrieval.
+    for (description, document_relevance_score, expected_answer) in [
         // Добавляем пару значений для сравнения или построения графика.
         ("слабый источник", 0.1, "нет надёжного источника"),
         // Добавляем пару значений для сравнения или построения графика.
@@ -15,9 +16,9 @@ fn main() {
         ("сильный источник", 0.9, "подтверждённый ответ"),
     ] {
         // Проверяем ожидаемое свойство учебного примера.
-        assert!((0.0..=1.0).contains(&retrieval_score));
+        assert!((0.0..=1.0).contains(&document_relevance_score));
         // Сохраняем результат этого шага в `answer`.
-        let answer = if retrieval_score >= minimum_reliable_score {
+        let answer = if document_relevance_score >= minimum_reliable_score {
             // Передаём подпись или текстовое значение для следующего шага.
             "подтверждённый ответ"
         // Обрабатываем случай, когда предыдущее условие не выполнено.
@@ -28,7 +29,7 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(answer, expected_answer);
         // Печатаем рассчитанные значения для проверки примера.
-        println!("{description}: score={retrieval_score} → {answer}");
+        println!("{description}: score={document_relevance_score} → {answer}");
     }
 
     // Построение графика вынесено из основного кода урока.

@@ -9,23 +9,25 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Создаём набор значений `embedding_table` для следующего шага примера.
-    let embedding_table = [[0.0, 0.0], [0.8, 0.2], [0.7, 0.3]];
-    // Сохраняем рассчитанное значение `token_identifier` для следующих операций.
-    let token_identifier = 2;
-    // Сохраняем рассчитанное значение `embedding` для следующих операций.
-    let embedding = embedding_table[token_identifier];
+    // Создаём набор значений `dense_representation_table` для следующего шага примера.
+    // Плотное числовое представление объекта называют embedding.
+    let dense_representation_table = [[0.0, 0.0], [0.8, 0.2], [0.7, 0.3]];
+    // Сохраняем рассчитанное значение `text_unit_identifier` для следующих операций.
+    // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+    let text_unit_identifier = 2;
+    // Сохраняем рассчитанное значение `dense_numeric_representation` для следующих операций.
+    let dense_numeric_representation = dense_representation_table[text_unit_identifier];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("токен={token_identifier}, плотный вектор={embedding:?}");
+    println!("токен={text_unit_identifier}, плотный вектор={dense_numeric_representation:?}");
 
     // Построение графика вынесено из основного кода урока.
-    visualize(embedding);
+    visualize(dense_numeric_representation);
 }
 
 // Строим график по результатам урока.
-fn visualize(embedding: [f64; 2]) {
+fn visualize(dense_numeric_representation: [f64; 2]) {
     // График величин и зависимостей, изученных в этом уроке.
-    let dense_representations_points: Vec<(f64, f64)> = embedding
+    let dense_representations_points: Vec<(f64, f64)> = dense_numeric_representation
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.

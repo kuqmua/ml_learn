@@ -42,7 +42,8 @@ fn main() {
     }
 
     // Шаг: Находим среднее, главную ось и долю объяснённой дисперсии.
-    let (mean, axis, explained_variance_fraction) = (|| -> ([f64; 2], [f64; 2], f64) {
+    // Долю общей дисперсии, объяснённую осью, называют explained variance fraction.
+    let (mean, axis, variance_share_explained_by_first_axis) = (|| -> ([f64; 2], [f64; 2], f64) {
         // Используем подготовленное значение в следующем шаге примера.
         /* Находим главную ось двумерной ковариационной матрицы. */
         // Сохраняем результат этого шага в `data`.
@@ -66,7 +67,8 @@ fn main() {
             coordinate_sums[1] / sample_count,
         ];
         // Сохраняем рассчитанное значение `(mut first_variance_sum, mut cross_covariance_sum, mut second_variance_sum)` для следующих операций.
-        let (mut first_variance_sum, mut cross_covariance_sum, mut second_variance_sum) =
+        // Совместное изменение двух величин описывают через covariance.
+        let (mut first_variance_sum, mut cross_deviation_product_sum, mut second_variance_sum) =
             // Составляем результат из вычисленных значений в указанном порядке.
             (0.0, 0.0, 0.0);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
@@ -78,7 +80,7 @@ fn main() {
             // Прибавляем очередной вклад к ранее накопленному результату.
             first_variance_sum += multiply_number_by_itself(centered_first);
             // Прибавляем очередной вклад к ранее накопленному результату.
-            cross_covariance_sum += centered_first * centered_second;
+            cross_deviation_product_sum += centered_first * centered_second;
             // Прибавляем очередной вклад к ранее накопленному результату.
             second_variance_sum += multiply_number_by_itself(centered_second);
         }
@@ -86,7 +88,7 @@ fn main() {
         // равно (a+c+sqrt((a-c)^2+4b^2))/2. Его собственный вектор — [b, lambda-a].
         let discriminant = multiply_number_by_itself(first_variance_sum - second_variance_sum)
             // Умножаем величины согласно используемой формуле.
-            + 4.0 * multiply_number_by_itself(cross_covariance_sum);
+            + 4.0 * multiply_number_by_itself(cross_deviation_product_sum);
         // Сохраняем рассчитанное значение `largest_eigenvalue` для следующих операций.
         let largest_eigenvalue = (first_variance_sum
             // Складываем или вычитаем величины согласно используемой формуле.
@@ -100,7 +102,7 @@ fn main() {
             // Используем подготовленное значение в следующем шаге примера.
             /* Модуль числа по определению: меняем знак только у отрицательного числа. */
             // Сохраняем результат этого шага в `value`.
-            let value: f64 = cross_covariance_sum;
+            let value: f64 = cross_deviation_product_sum;
             // Проверяем условие и выбираем соответствующую ветку алгоритма.
             if value < 0.0 { -value } else { value }
             // Используем подготовленное значение в следующем шаге примера.
@@ -119,8 +121,8 @@ fn main() {
         } else {
             // Создаём набор значений `unnormalized_axis` для следующего шага примера.
             let unnormalized_axis = [
-                // Используем ранее рассчитанное значение `cross_covariance_sum` в текущем выражении.
-                cross_covariance_sum,
+                // Используем ранее рассчитанное значение `cross_deviation_product_sum` в текущем выражении.
+                cross_deviation_product_sum,
                 // Складываем или вычитаем величины согласно используемой формуле.
                 largest_eigenvalue - first_variance_sum,
             ];
@@ -155,7 +157,7 @@ fn main() {
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
-        "mean={mean:?}, axis={axis:?}, explained={explained_variance_fraction:.3}, projected={projections:?}"
+        "mean={mean:?}, axis={axis:?}, explained={variance_share_explained_by_first_axis:.3}, projected={projections:?}"
     );
 
     // Построение графика вынесено из основного кода урока.

@@ -13,12 +13,13 @@ fn main() {
     let observed_count = 0.0;
     // Сохраняем рассчитанное значение `total_words_in_class` для следующих операций.
     let total_words_in_class = 8.0;
-    // Сохраняем рассчитанное значение `vocabulary_size` для следующих операций.
-    let vocabulary_size = 4.0;
+    // Сохраняем рассчитанное значение `known_text_unit_count` для следующих операций.
+    // Набор известных модели текстовых единиц называют vocabulary.
+    let known_text_unit_count = 4.0;
     // Нормируем или усредняем величину делением и сохраняем её в `unsmoothed`.
     let unsmoothed = observed_count / total_words_in_class;
     // Нормируем или усредняем величину делением и сохраняем её в `smoothed`.
-    let smoothed = (observed_count + 1.0) / (total_words_in_class + vocabulary_size);
+    let smoothed = (observed_count + 1.0) / (total_words_in_class + known_text_unit_count);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("без сглаживания={unsmoothed}, со сглаживанием={smoothed}");
 

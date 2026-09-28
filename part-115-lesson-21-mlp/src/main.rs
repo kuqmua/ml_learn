@@ -74,9 +74,10 @@ fn main() {
     ];
 
     // Объявляем повторно используемое вычисление `convert_logit_to_probability`; параметры ниже задают его входы.
-    fn convert_logit_to_probability(logit: f64) -> f64 {
+    // Оценку модели до преобразования в вероятность называют logit.
+    fn convert_logit_to_probability(raw_model_score: f64) -> f64 {
         // Делим значения, получая нормированную величину или среднее.
-        1. / (1. + approximate_exponential_with_taylor_series(-logit))
+        1. / (1. + approximate_exponential_with_taylor_series(-raw_model_score))
     }
     // d sigmoid(z)/dz = sigmoid(z) * (1 − sigmoid(z)).
     fn calculate_sigmoid_derivative_from_output(sigmoid_output: f64) -> f64 {
@@ -140,7 +141,8 @@ fn main() {
                         + network.output_weights[2],
                 );
                 // Правило цепочки даёт градиент ошибки для выхода и каждого скрытого нейрона.
-                let output_gradient = (|| -> f64 {
+                // Производную функции по параметру или вектор таких производных называют gradient.
+                let output_loss_rate_of_change = (|| -> f64 {
                     // Используем подготовленное значение в следующем шаге примера.
                     /* Для квадратичной ошибки 1/2*(prediction−target)² производная по prediction — разность. */
                     // Сохраняем результат этого шага в `prediction`.
@@ -154,16 +156,16 @@ fn main() {
                     // Используем ранее рассчитанное значение `output_probability` в текущем выражении.
                     output_probability,
                 );
-                // Создаём набор значений `hidden_gradients` для следующего шага примера.
-                let hidden_gradients = [
-                    // Используем ранее рассчитанное значение `output_gradient` в текущем выражении.
-                    output_gradient
+                // Создаём набор значений `hidden_layer_loss_rates_of_change` для следующего шага примера.
+                let hidden_layer_loss_rates_of_change = [
+                    // Используем ранее рассчитанное значение `output_loss_rate_of_change` в текущем выражении.
+                    output_loss_rate_of_change
                         // Добавляем этот член в составное арифметическое выражение.
                         * network.output_weights[0]
                         // Добавляем этот член в составное арифметическое выражение.
                         * calculate_sigmoid_derivative_from_output(hidden_outputs[0]),
-                    // Используем ранее рассчитанное значение `output_gradient` в текущем выражении.
-                    output_gradient
+                    // Используем ранее рассчитанное значение `output_loss_rate_of_change` в текущем выражении.
+                    output_loss_rate_of_change
                         // Добавляем этот член в составное арифметическое выражение.
                         * network.output_weights[1]
                         // Добавляем этот член в составное арифметическое выражение.
@@ -174,23 +176,23 @@ fn main() {
                     // Обновляем параметр модели с учётом вычисленного градиента.
                     network.output_weights[hidden_neuron_index] -=
                         // Умножаем величины согласно используемой формуле.
-                        learning_rate * output_gradient * hidden_outputs[hidden_neuron_index];
+                        learning_rate * output_loss_rate_of_change * hidden_outputs[hidden_neuron_index];
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
                     for feature_index in 0..2 {
                         // Обновляем параметр модели с учётом вычисленного градиента.
                         network.hidden_weights[hidden_neuron_index][feature_index] -= learning_rate
                             // Добавляем этот член в составное арифметическое выражение.
-                            * hidden_gradients[hidden_neuron_index]
+                            * hidden_layer_loss_rates_of_change[hidden_neuron_index]
                             // Добавляем этот член в составное арифметическое выражение.
                             * features[feature_index];
                     }
                     // Обновляем параметр модели с учётом вычисленного градиента.
                     network.hidden_weights[hidden_neuron_index][2] -=
                         // Умножаем величины согласно используемой формуле.
-                        learning_rate * hidden_gradients[hidden_neuron_index];
+                        learning_rate * hidden_layer_loss_rates_of_change[hidden_neuron_index];
                 }
                 // Обновляем параметр модели с учётом вычисленного градиента.
-                network.output_weights[2] -= learning_rate * output_gradient;
+                network.output_weights[2] -= learning_rate * output_loss_rate_of_change;
             }
         }
         // Используем ранее рассчитанное значение `network` в текущем выражении.

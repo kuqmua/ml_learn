@@ -75,8 +75,9 @@ fn main() {
         let keys: &[[f64; 2]] = &sequence;
         // Сохраняем рассчитанное значение `values` для следующих операций.
         let values: &[[f64; 2]] = &sequence;
-        // Сохраняем рассчитанное значение `causal` для следующих операций.
-        let causal: bool = true;
+        // Сохраняем рассчитанное значение `past_only_attention` для следующих операций.
+        // Ограничение доступа к будущим значениям называют causal mask.
+        let past_only_attention: bool = true;
         // Проверяем, что сравниваемые размерности или значения действительно совпадают.
         assert_eq!(keys.len(), values.len());
         // Создаём набор значений `outputs` для следующего шага примера.
@@ -86,7 +87,8 @@ fn main() {
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for (query_index, query) in queries.iter().enumerate() {
             // Маска исключает будущие ключи до softmax.
-            let logits: Vec<f64> = keys
+            // Оценку модели до преобразования в вероятность называют logit.
+            let raw_model_scores: Vec<f64> = keys
                 // Перебираем элементы по ссылке, не копируя исходную коллекцию.
                 .iter()
                 // Добавляем порядковый индекс к каждому элементу обхода.
@@ -94,7 +96,7 @@ fn main() {
                 // Преобразуем каждый элемент последовательности.
                 .map(|(key_index, key)| {
                     // Проверяем условие и выбираем соответствующую ветку алгоритма.
-                    if causal && key_index > query_index {
+                    if past_only_attention && key_index > query_index {
                         // `f64` задаёт соответствующее входное значение или поле структуры.
                         f64::NEG_INFINITY
                     // Обрабатываем случай, когда предыдущее условие не выполнено.
@@ -133,28 +135,28 @@ fn main() {
             let attention_weights = (|| -> Vec<f64> {
                 // Используем подготовленное значение в следующем шаге примера.
                 /* Превращаем оценки внимания в веса с суммой, равной единице. */
-                // Сохраняем результат этого шага в `logits`.
-                let logits: &[f64] = &logits;
-                // Создаём изменяемое значение `maximum_logit` для следующих операций.
-                let mut maximum_logit = f64::NEG_INFINITY;
+                // Сохраняем результат этого шага в `raw_model_scores`.
+                let raw_model_scores: &[f64] = &raw_model_scores;
+                // Создаём изменяемое значение `maximum_raw_model_score` для следующих операций.
+                let mut maximum_raw_model_score = f64::NEG_INFINITY;
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
-                for &logit in logits {
+                for &raw_model_score in raw_model_scores {
                     // Проверяем условие и выбираем соответствующую ветку алгоритма.
-                    if logit > maximum_logit {
-                        // Обновляем `maximum_logit` результатом текущего шага.
-                        maximum_logit = logit;
+                    if raw_model_score > maximum_raw_model_score {
+                        // Обновляем `maximum_raw_model_score` результатом текущего шага.
+                        maximum_raw_model_score = raw_model_score;
                     }
                 }
                 // Считаем количество элементов и сохраняем его в `exponentials`.
-                let mut exponentials = Vec::with_capacity(logits.len());
+                let mut exponentials = Vec::with_capacity(raw_model_scores.len());
                 // Инициализируем изменяемый накопитель `normalizer` начальным состоянием.
                 let mut normalizer = 0.0;
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
-                for &logit in logits {
+                for &raw_model_score in raw_model_scores {
                     // Сохраняем рассчитанное значение `exponential_value` для следующих операций.
                     let exponential_value =
                         // Складываем или вычитаем величины согласно используемой формуле.
-                        approximate_exponential_with_taylor_series(logit - maximum_logit);
+                        approximate_exponential_with_taylor_series(raw_model_score - maximum_raw_model_score);
                     // Сохраняем очередной рассчитанный элемент в коллекции.
                     exponentials.push(exponential_value);
                     // Прибавляем очередной вклад к ранее накопленному результату.

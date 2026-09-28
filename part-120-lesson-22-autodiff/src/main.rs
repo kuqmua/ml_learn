@@ -18,51 +18,55 @@ fn main() {
     let right_matrix = vec![vec![3.], vec![4.]];
 
     // Шаг: Вычисляем производные суммы элементов результата по обеим матрицам.
-    let (left_gradients, right_gradients) = (|| -> (Vec<Vec<f64>>, Vec<Vec<f64>>) {
-        // Используем подготовленное значение в следующем шаге примера.
-        /* Для суммы элементов результата умножения матриц вычисляем производные по обоим входам. */
-        // Собираем значения для `left_matrix` в коллекцию.
-        let left_matrix: &[Vec<f64>] = &left_matrix;
-        // Сохраняем рассчитанное значение `right_matrix` для следующих операций.
-        let right_matrix: &[Vec<f64>] = &right_matrix;
-        // Создаём набор значений `left_gradients` для следующего шага примера.
-        let mut left_gradients = vec![vec![0.0; right_matrix.len()]; left_matrix.len()];
-        // Создаём набор значений `right_gradients` для следующего шага примера.
-        let mut right_gradients = vec![vec![0.0; right_matrix[0].len()]; right_matrix.len()];
-        // Производная суммы элементов A·B по A[i,k] — сумма строки B[k,*].
-        for row_index in 0..left_matrix.len() {
-            // Повторяем следующий блок для каждого элемента указанной последовательности.
+    // Производную функции по параметру или вектор таких производных называют gradient.
+    let (left_input_rates_of_change, right_input_rates_of_change) =
+        (|| -> (Vec<Vec<f64>>, Vec<Vec<f64>>) {
+            // Используем подготовленное значение в следующем шаге примера.
+            /* Для суммы элементов результата умножения матриц вычисляем производные по обоим входам. */
+            // Собираем значения для `left_matrix` в коллекцию.
+            let left_matrix: &[Vec<f64>] = &left_matrix;
+            // Сохраняем рассчитанное значение `right_matrix` для следующих операций.
+            let right_matrix: &[Vec<f64>] = &right_matrix;
+            // Создаём набор значений `left_input_rates_of_change` для следующего шага примера.
+            let mut left_input_rates_of_change =
+                vec![vec![0.0; right_matrix.len()]; left_matrix.len()];
+            // Создаём набор значений `right_input_rates_of_change` для следующего шага примера.
+            let mut right_input_rates_of_change =
+                vec![vec![0.0; right_matrix[0].len()]; right_matrix.len()];
+            // Производная суммы элементов A·B по A[i,k] — сумма строки B[k,*].
+            for row_index in 0..left_matrix.len() {
+                // Повторяем следующий блок для каждого элемента указанной последовательности.
+                for shared_index in 0..right_matrix.len() {
+                    // Повторяем следующий блок для каждого элемента указанной последовательности.
+                    for column_index in 0..right_matrix[0].len() {
+                        // Прибавляем очередной вклад к ранее накопленному результату.
+                        left_input_rates_of_change[row_index][shared_index] +=
+                        // Выполняем очередное действие, после которого продолжаем следующий шаг.
+                        right_matrix[shared_index][column_index];
+                    }
+                }
+            }
+            // Производная по B[k,j] — сумма столбца A[*,k].
             for shared_index in 0..right_matrix.len() {
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for column_index in 0..right_matrix[0].len() {
-                    // Прибавляем очередной вклад к ранее накопленному результату.
-                    left_gradients[row_index][shared_index] +=
-                        // Выполняем очередное действие, после которого продолжаем следующий шаг.
-                        right_matrix[shared_index][column_index];
-                }
-            }
-        }
-        // Производная по B[k,j] — сумма столбца A[*,k].
-        for shared_index in 0..right_matrix.len() {
-            // Повторяем следующий блок для каждого элемента указанной последовательности.
-            for column_index in 0..right_matrix[0].len() {
-                // Повторяем следующий блок для каждого элемента указанной последовательности.
-                for row_index in 0..left_matrix.len() {
-                    // Прибавляем очередной вклад к ранее накопленному результату.
-                    right_gradients[shared_index][column_index] +=
+                    // Повторяем следующий блок для каждого элемента указанной последовательности.
+                    for row_index in 0..left_matrix.len() {
+                        // Прибавляем очередной вклад к ранее накопленному результату.
+                        right_input_rates_of_change[shared_index][column_index] +=
                         // Выполняем очередное действие, после которого продолжаем следующий шаг.
                         left_matrix[row_index][shared_index];
+                    }
                 }
             }
-        }
-        // Составляем результат из вычисленных значений в указанном порядке.
-        (left_gradients, right_gradients)
-    })();
+            // Составляем результат из вычисленных значений в указанном порядке.
+            (left_input_rates_of_change, right_input_rates_of_change)
+        })();
 
     // Шаг: Выводим loss и обе матрицы градиентов.
     println!(
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
-        "loss={}, dA={left_gradients:?}, dB={right_gradients:?}",
+        "loss={}, dA={left_input_rates_of_change:?}, dB={right_input_rates_of_change:?}",
         // Составляем результат из вычисленных значений в указанном порядке.
         (|| -> f64 {
             // Используем подготовленное значение в следующем шаге примера.
@@ -137,13 +141,13 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
-    visualize(left_gradients, right_gradients);
+    visualize(left_input_rates_of_change, right_input_rates_of_change);
 }
 
 // Строим график по результатам урока.
 fn visualize(
-    left_gradients: std::vec::Vec<std::vec::Vec<f64>>,
-    right_gradients: std::vec::Vec<std::vec::Vec<f64>>,
+    left_input_rates_of_change: std::vec::Vec<std::vec::Vec<f64>>,
+    right_input_rates_of_change: std::vec::Vec<std::vec::Vec<f64>>,
 ) {
     // Цветом показываем вклад каждого элемента входных матриц в градиент.
     for (name, title, values) in [
@@ -153,7 +157,7 @@ fn visualize(
             // Передаём подпись или текстовое значение для следующего шага.
             "Производная по левой матрице",
             // Используем подготовленное значение в следующем шаге примера.
-            &left_gradients,
+            &left_input_rates_of_change,
         ),
         (
             // Передаём подпись или текстовое значение для следующего шага.
@@ -161,7 +165,7 @@ fn visualize(
             // Передаём подпись или текстовое значение для следующего шага.
             "Производная по правой матрице",
             // Используем подготовленное значение в следующем шаге примера.
-            &right_gradients,
+            &right_input_rates_of_change,
         ),
     ] {
         // Строим график по рассчитанным значениям и сохраняем его как SVG.

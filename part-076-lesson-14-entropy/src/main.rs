@@ -5,7 +5,8 @@
 
 fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
-    for (description, positive_fraction) in [
+    // Долю объектов одного класса среди всех объектов называют fraction.
+    for (description, positive_class_share) in [
         // Добавляем пару значений для сравнения или построения графика.
         ("только отрицательный класс", 0.0),
         // Добавляем пару значений для сравнения или построения графика.
@@ -16,13 +17,14 @@ fn main() {
         ("только положительный класс", 1.0),
     ] {
         // Проверяем ожидаемое свойство учебного примера.
-        assert!((0.0..=1.0).contains(&positive_fraction));
-        // Сохраняем результат этого шага в `negative_fraction`.
-        let negative_fraction = 1.0 - positive_fraction;
-        // Сохраняем результат этого шага в `entropy`.
-        let mut entropy = 0.0;
+        assert!((0.0..=1.0).contains(&positive_class_share));
+        // Сохраняем результат этого шага в `negative_class_share`.
+        let negative_class_share = 1.0 - positive_class_share;
+        // Сохраняем результат этого шага в `uncertainty_measure`.
+        // Меру неопределённости распределения называют entropy.
+        let mut uncertainty_measure = 0.0;
         // Повторяем расчёт для каждого элемента последовательности.
-        for probability in [positive_fraction, negative_fraction] {
+        for probability in [positive_class_share, negative_class_share] {
             // Выбираем дальнейший шаг по выполнению условия.
             if probability > 0.0 {
                 // Сохраняем результат этого шага в `ratio`.
@@ -39,23 +41,23 @@ fn main() {
                     term *= ratio * ratio;
                 }
                 // Переводим натуральный логарифм в логарифм по основанию 2.
-                entropy -= probability * (2.0 * logarithm) / std::f64::consts::LN_2;
+                uncertainty_measure -= probability * (2.0 * logarithm) / std::f64::consts::LN_2;
             }
         }
         // Проверяем ожидаемое свойство учебного примера.
-        assert!(entropy >= -1e-10 && entropy <= 1.0 + 1e-10);
+        assert!(uncertainty_measure >= -1e-10 && uncertainty_measure <= 1.0 + 1e-10);
         // Выбираем дальнейший шаг по выполнению условия.
-        if positive_fraction == 0.0 || positive_fraction == 1.0 {
+        if positive_class_share == 0.0 || positive_class_share == 1.0 {
             // Проверяем ожидаемое свойство учебного примера.
-            assert!(entropy.abs() < 1e-10);
+            assert!(uncertainty_measure.abs() < 1e-10);
         }
         // Выбираем дальнейший шаг по выполнению условия.
-        if positive_fraction == 0.5 {
+        if positive_class_share == 0.5 {
             // Проверяем ожидаемое свойство учебного примера.
-            assert!((entropy - 1.0).abs() < 1e-10);
+            assert!((uncertainty_measure - 1.0).abs() < 1e-10);
         }
         // Печатаем рассчитанные значения для проверки примера.
-        println!("{description}: доля={positive_fraction}, энтропия={entropy:.3}");
+        println!("{description}: доля={positive_class_share}, энтропия={uncertainty_measure:.3}");
     }
 
     // Построение графика вынесено из основного кода урока.
@@ -65,7 +67,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let entropy_points: Vec<(f64, f64)> = (1..100)
+    let uncertainty_measure_points: Vec<(f64, f64)> = (1..100)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `probability`.
@@ -96,7 +98,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "H(p)",
             // Передаём рассчитанные координаты точек.
-            points: &entropy_points,
+            points: &uncertainty_measure_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

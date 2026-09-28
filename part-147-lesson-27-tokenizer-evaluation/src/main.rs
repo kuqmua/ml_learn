@@ -13,10 +13,11 @@ fn main() {
         .chain(validation.iter())
         .map(|&text| (text, text.len(), model.encode(text).len()))
         .collect();
-    for &(text, bytes, tokens) in &rows {
-        assert!(tokens <= bytes);
+    // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+    for &(text, bytes, text_units) in &rows {
+        assert!(text_units <= bytes);
         assert_eq!(model.decode(&model.encode(text)).unwrap(), text);
-        println!("{text:?}: байтов={bytes}, BPE-токенов={tokens}");
+        println!("{text:?}: байтов={bytes}, BPE-токенов={text_units}");
     }
     visualize(&rows);
 }

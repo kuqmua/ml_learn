@@ -17,12 +17,13 @@ fn block(input: &[[f64; 2]]) -> Vec<[f64; 2]> {
         .iter()
         .zip(&attention)
         .map(|(&original, &context)| {
-            let residual = [original[0] + context[0], original[1] + context[1]];
-            let norm = layer_normalization(residual);
+            // Добавление входа блока к его преобразованному выходу называют residual connection.
+            let input_plus_transformed_value = [original[0] + context[0], original[1] + context[1]];
+            let norm = layer_normalization(input_plus_transformed_value);
             // Упрощённый FFN: два ReLU-канала и фиксированная выходная проекция.
             [
-                residual[0] + 0.2 * norm[0].max(0.0),
-                residual[1] + 0.2 * norm[1].max(0.0),
+                input_plus_transformed_value[0] + 0.2 * norm[0].max(0.0),
+                input_plus_transformed_value[1] + 0.2 * norm[1].max(0.0),
             ]
         })
         .collect()

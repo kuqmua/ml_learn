@@ -3,15 +3,17 @@
 use part_182_lesson_35_causal_self_attention::causal_attention;
 
 /// Возвращает состояния после причинного внимания и residual.
-pub fn hidden_states(token_identifiers: &[usize]) -> Vec<[f64; 2]> {
-    let embedding = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
-    let states: Vec<[f64; 2]> = token_identifiers
+// Единицу текста, которую модель обрабатывает как одно целое, называют token.
+pub fn hidden_states(text_unit_identifiers: &[usize]) -> Vec<[f64; 2]> {
+    // Плотное числовое представление объекта называют embedding.
+    let dense_numeric_representation = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
+    let states: Vec<[f64; 2]> = text_unit_identifiers
         .iter()
         .enumerate()
         .map(|(position, &item_identifier)| {
             [
-                embedding[item_identifier][0] + position as f64 * 0.1,
-                embedding[item_identifier][1],
+                dense_numeric_representation[item_identifier][0] + position as f64 * 0.1,
+                dense_numeric_representation[item_identifier][1],
             ]
         })
         .collect();
@@ -27,8 +29,8 @@ pub fn hidden_states(token_identifiers: &[usize]) -> Vec<[f64; 2]> {
 }
 
 /// Применяет фиксированную выходную проекцию к состояниям decoder.
-pub fn forward(token_identifiers: &[usize]) -> Vec<[f64; 3]> {
-    hidden_states(token_identifiers)
+pub fn forward(text_unit_identifiers: &[usize]) -> Vec<[f64; 3]> {
+    hidden_states(text_unit_identifiers)
         .into_iter()
         .map(|hidden| [hidden[0], hidden[1], (hidden[0] + hidden[1]) * 0.5])
         .collect()

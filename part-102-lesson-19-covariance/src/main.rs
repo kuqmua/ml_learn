@@ -54,7 +54,8 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(horizontal_value: [f64; 3], vertical_value: [f64; 3]) {
     // Значения из этого урока на графике.
-    let covariance_points: Vec<(f64, f64)> = horizontal_value
+    // Совместное изменение двух величин описывают через covariance.
+    let joint_variation_points: Vec<(f64, f64)> = horizontal_value
         .iter()
         .zip(vertical_value.iter())
         .map(|(&first_feature_value, &second_feature_value)| {
@@ -78,7 +79,7 @@ fn visualize(horizontal_value: [f64; 3], vertical_value: [f64; 3]) {
             // Указываем подпись этого ряда в легенде.
             name: "наблюдения",
             // Передаём рассчитанные координаты точек.
-            points: &covariance_points,
+            points: &joint_variation_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

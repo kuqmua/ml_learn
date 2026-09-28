@@ -12,9 +12,10 @@ fn main() {
     // Создаём набор значений `candidates` для следующего шага примера.
     let candidates = [(1, 52.0), (2, 4.0), (3, 3.5), (4, 3.0)];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
-    for (cluster_count, inertia) in candidates {
+    // Сумму квадратов расстояний до центров кластеров называют inertia.
+    for (cluster_count, total_squared_distance_to_cluster_centers) in candidates {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-        println!("k={cluster_count}, инерция={inertia}");
+        println!("k={cluster_count}, инерция={total_squared_distance_to_cluster_centers}");
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("заметный излом кривой находится около k=2");
@@ -30,7 +31,14 @@ fn visualize(candidates: [(i32, f64); 4]) {
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Преобразуем каждый элемент в новое значение.
-        .map(|&(cluster_count, inertia)| (cluster_count as f64, inertia))
+        .map(
+            |&(cluster_count, total_squared_distance_to_cluster_centers)| {
+                (
+                    cluster_count as f64,
+                    total_squared_distance_to_cluster_centers,
+                )
+            },
+        )
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.

@@ -11,7 +11,8 @@ fn main() {
     // Используем подготовленное значение в следующем шаге примера.
     values.sort();
     // Повторяем расчёт для каждого элемента последовательности.
-    for (description, fraction, expected) in [
+    // Долю наблюдений от 0 до 1 называют fraction; она задаёт положение quantile.
+    for (description, target_share_below_cutoff, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
         ("минимум", 0.0, 1),
         // Добавляем пару значений для сравнения или построения графика.
@@ -24,18 +25,19 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert!(
             // Обновляем значение результатом текущего вычисления.
-            (0.0..=1.0).contains(&fraction),
+            (0.0..=1.0).contains(&target_share_below_cutoff),
             // Передаём подпись или текстовое значение для следующего шага.
             "доля должна быть от 0 до 1"
         );
         // Определяем размер данных и сохраняем его в `index`.
-        let index = ((values.len() - 1) as f64 * fraction) as usize;
-        // Сохраняем результат этого шага в `quantile`.
-        let quantile = values[index];
+        let index = ((values.len() - 1) as f64 * target_share_below_cutoff) as usize;
+        // Сохраняем результат этого шага в `distribution_cutoff_value`.
+        // Границу, ниже которой лежит заданная доля наблюдений, называют quantile.
+        let distribution_cutoff_value = values[index];
         // Проверяем ожидаемое свойство учебного примера.
-        assert_eq!(quantile, expected);
+        assert_eq!(distribution_cutoff_value, expected);
         // Печатаем рассчитанные значения для проверки примера.
-        println!("{description}: доля {fraction} → {quantile}");
+        println!("{description}: доля {target_share_below_cutoff} → {distribution_cutoff_value}");
     }
 
     // Построение графика вынесено из основного кода урока.
@@ -45,7 +47,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Наглядное представление величин из этого урока.
-    let quantile_points: Vec<(f64, f64)> = (0..=100)
+    let distribution_cutoff_points: Vec<(f64, f64)> = (0..=100)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `probability`.
@@ -75,7 +77,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "значения 1, 2, 3, 4, 5",
             // Передаём рассчитанные координаты точек.
-            points: &quantile_points,
+            points: &distribution_cutoff_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

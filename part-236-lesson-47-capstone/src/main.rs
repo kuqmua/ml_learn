@@ -71,13 +71,14 @@ fn main() {
         // Указываем тип возвращаемого значения.
     ) -> (&'static str, usize) {
         // Выделяем уникальные слова запроса для сравнения с обучающими фразами.
-        let query_tokens = collect_unique_words_from_text(query);
+        // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+        let query_text_units = collect_unique_words_from_text(query);
         // Создаём изменяемое значение `scores` для следующих операций.
         let mut scores = std::collections::BTreeMap::from([("code", 0usize), ("ml", 0)]);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(sample_text, label) in training_examples {
             // Прибавляем очередной вклад к ранее накопленному результату.
-            *scores.get_mut(label).unwrap() += query_tokens
+            *scores.get_mut(label).unwrap() += query_text_units
                 // Находим общие слова запроса и обучающего текста.
                 .intersection(&collect_unique_words_from_text(sample_text))
                 // Подсчитываем число элементов после отбора.

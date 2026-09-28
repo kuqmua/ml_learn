@@ -97,7 +97,7 @@ fn main() {
     struct Node {
         // Поле `value` соответствующее значение в составе структуры.
         value: f64,
-        // Поле `gradient` соответствующее значение в составе структуры.
+        // Поле `rate_of_change` соответствующее значение в составе структуры.
         gradient: f64,
         // Поле `operation` соответствующее значение в составе структуры.
         operation: Operation,
@@ -116,7 +116,7 @@ fn main() {
             self.0.push(Node {
                 // Используем ранее рассчитанное значение `value` в текущем выражении.
                 value,
-                // Заполняем поле `gradient` соответствующим рассчитанным значением.
+                // Заполняем поле `rate_of_change` соответствующим рассчитанным значением.
                 gradient: 0.,
                 // Заполняем поле `operation` соответствующим рассчитанным значением.
                 operation: Operation::Input,
@@ -151,8 +151,9 @@ fn main() {
     graph.0[output_index].gradient = 1.;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for node_index in (0..=output_index).rev() {
-        // Сохраняем рассчитанное значение `upstream_gradient` для следующих операций.
-        let upstream_gradient = graph.0[node_index].gradient;
+        // Сохраняем рассчитанное значение `incoming_loss_rate_of_change` для следующих операций.
+        // Производную функции по параметру или вектор таких производных называют gradient.
+        let incoming_loss_rate_of_change = graph.0[node_index].gradient;
         // Разбираем каждый возможный вариант значения отдельно.
         match graph.0[node_index].operation {
             // Обрабатываем этот вариант структуры данных отдельным правилом.
@@ -160,16 +161,18 @@ fn main() {
             // Обрабатываем этот вариант структуры данных отдельным правилом.
             Operation::Add(left_index, right_index) => {
                 // Накапливаем вклад текущего шага в состояние модели или графа.
-                graph.0[left_index].gradient += upstream_gradient;
+                graph.0[left_index].gradient += incoming_loss_rate_of_change;
                 // Накапливаем вклад текущего шага в состояние модели или графа.
-                graph.0[right_index].gradient += upstream_gradient;
+                graph.0[right_index].gradient += incoming_loss_rate_of_change;
             }
             // Обрабатываем этот вариант структуры данных отдельным правилом.
             Operation::Mul(left_index, right_index) => {
                 // Накапливаем вклад текущего шага в состояние модели или графа.
-                graph.0[left_index].gradient += upstream_gradient * graph.0[right_index].value;
+                graph.0[left_index].gradient +=
+                    incoming_loss_rate_of_change * graph.0[right_index].value;
                 // Накапливаем вклад текущего шага в состояние модели или графа.
-                graph.0[right_index].gradient += upstream_gradient * graph.0[left_index].value;
+                graph.0[right_index].gradient +=
+                    incoming_loss_rate_of_change * graph.0[left_index].value;
             }
             // Обрабатываем этот вариант структуры данных отдельным правилом.
             Operation::Tanh(left_index) => {
@@ -178,7 +181,7 @@ fn main() {
                 // Накапливаем вклад текущего шага в состояние модели или графа.
                 graph.0[left_index].gradient +=
                     // Умножаем величины согласно используемой формуле.
-                    upstream_gradient * (1.0 - output_value * output_value);
+                    incoming_loss_rate_of_change * (1.0 - output_value * output_value);
             }
         }
     }

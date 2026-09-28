@@ -10,15 +10,16 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Повторяем следующий блок для каждого элемента указанной последовательности.
-    for positive_fraction in [0.0, 0.5, 1.0] {
-        // Комбинируем исходные величины и сохраняем результат в `negative_fraction`.
-        let negative_fraction = 1.0 - positive_fraction;
+    // Долю объектов одного класса среди всех объектов называют fraction.
+    for positive_class_share in [0.0, 0.5, 1.0] {
+        // Комбинируем исходные величины и сохраняем результат в `negative_class_share`.
+        let negative_class_share = 1.0 - positive_class_share;
         // Сохраняем рассчитанное значение `gini` для следующих операций.
         let gini =
             // Умножаем величины согласно используемой формуле.
-            1.0 - positive_fraction * positive_fraction - negative_fraction * negative_fraction;
+            1.0 - positive_class_share * positive_class_share - negative_class_share * negative_class_share;
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-        println!("доля положительных={positive_fraction}, Gini={gini}");
+        println!("доля положительных={positive_class_share}, Gini={gini}");
     }
 
     // Построение графика вынесено из основного кода урока.

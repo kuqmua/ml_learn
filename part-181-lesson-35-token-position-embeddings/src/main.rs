@@ -3,16 +3,20 @@
 
 fn main() {
     // Строки таблиц — обучаемые параметры; здесь числа фиксированы для проверки.
-    let token_embedding = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
-    let position_embedding = [[0.0, 0.0], [0.1, 0.0], [0.2, 0.0]];
-    let token_identifiers = [0, 1, 0];
-    let states: Vec<[f64; 2]> = token_identifiers
+    // Плотное числовое представление объекта называют embedding.
+    let text_unit_dense_representation = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
+    let position_dense_representation = [[0.0, 0.0], [0.1, 0.0], [0.2, 0.0]];
+    // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+    let text_unit_identifiers = [0, 1, 0];
+    let states: Vec<[f64; 2]> = text_unit_identifiers
         .iter()
         .enumerate()
-        .map(|(position, &token_identifier)| {
+        .map(|(position, &text_unit_identifier)| {
             [
-                token_embedding[token_identifier][0] + position_embedding[position][0],
-                token_embedding[token_identifier][1] + position_embedding[position][1],
+                text_unit_dense_representation[text_unit_identifier][0]
+                    + position_dense_representation[position][0],
+                text_unit_dense_representation[text_unit_identifier][1]
+                    + position_dense_representation[position][1],
             ]
         })
         .collect();

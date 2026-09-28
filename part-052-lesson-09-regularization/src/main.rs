@@ -37,8 +37,9 @@ fn visualize() {
     let unregularized_model_points: Vec<(f64, f64)> = (-30..=30)
         .map(|plot_step_index| (plot_step_index as f64 / 10.0, 1.0))
         .collect();
-    // Собираем значения для `regularized_model_points` в коллекцию.
-    let regularized_model_points: Vec<(f64, f64)> = (-30..=30)
+    // Собираем значения для `penalty_constrained_model_points` в коллекцию.
+    // Штраф за сложность модели называют regularization.
+    let penalty_constrained_model_points: Vec<(f64, f64)> = (-30..=30)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `weight_value`.
@@ -74,7 +75,7 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "со штрафом",
                 // Передаём рассчитанные координаты точек.
-                points: &regularized_model_points,
+                points: &penalty_constrained_model_points,
             },
         ],
     )

@@ -11,23 +11,32 @@ fn main() {
     // Сохраняем рассчитанное значение `input_value` для следующих операций.
     let input_value = 3.0;
     // f(x)=x*x: вход x участвует как левый и правый множитель.
-    let left_path_gradient = input_value;
-    // Сохраняем рассчитанное значение `right_path_gradient` для следующих операций.
-    let right_path_gradient = input_value;
-    // Комбинируем исходные величины и сохраняем результат в `total_gradient`.
-    let total_gradient = left_path_gradient + right_path_gradient;
+    // Производную функции по параметру или вектор таких производных называют gradient.
+    let left_path_rate_of_change = input_value;
+    // Сохраняем рассчитанное значение `right_path_rate_of_change` для следующих операций.
+    let right_path_rate_of_change = input_value;
+    // Комбинируем исходные величины и сохраняем результат в `combined_rate_of_change`.
+    let combined_rate_of_change = left_path_rate_of_change + right_path_rate_of_change;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Присваиваем вычисленное значение соответствующей переменной или полю.
-        "градиент слева={left_path_gradient}, справа={right_path_gradient}, всего={total_gradient}"
+        "градиент слева={left_path_rate_of_change}, справа={right_path_rate_of_change}, всего={combined_rate_of_change}"
     );
 
     // Построение графика вынесено из основного кода урока.
-    visualize(left_path_gradient, right_path_gradient, total_gradient);
+    visualize(
+        left_path_rate_of_change,
+        right_path_rate_of_change,
+        combined_rate_of_change,
+    );
 }
 
 // Строим график по результатам урока.
-fn visualize(left_path_gradient: f64, right_path_gradient: f64, total_gradient: f64) {
+fn visualize(
+    left_path_rate_of_change: f64,
+    right_path_rate_of_change: f64,
+    combined_rate_of_change: f64,
+) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.
@@ -41,11 +50,11 @@ fn visualize(left_path_gradient: f64, right_path_gradient: f64, total_gradient: 
         // Передаём ряды или значения для отрисовки графика.
         &[
             // Добавляем пару значений для сравнения или построения графика.
-            ("левый путь", left_path_gradient),
+            ("левый путь", left_path_rate_of_change),
             // Добавляем пару значений для сравнения или построения графика.
-            ("правый путь", right_path_gradient),
+            ("правый путь", right_path_rate_of_change),
             // Добавляем пару значений для сравнения или построения графика.
-            ("всего", total_gradient),
+            ("всего", combined_rate_of_change),
         ],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

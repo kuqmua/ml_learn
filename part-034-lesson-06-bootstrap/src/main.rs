@@ -51,7 +51,8 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(values: [f64; 3], resamples: [[usize; 3]; 4]) {
     // Показываем значения, рассчитанные по данным примера.
-    let bootstrap_points: Vec<(f64, f64)> = resamples
+    // Повторную выборку с возвращением называют bootstrap sample.
+    let resampled_mean_points: Vec<(f64, f64)> = resamples
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.
@@ -88,7 +89,7 @@ fn visualize(values: [f64; 3], resamples: [[usize; 3]; 4]) {
             // Указываем подпись этого ряда в легенде.
             name: "среднее",
             // Передаём рассчитанные координаты точек.
-            points: &bootstrap_points,
+            points: &resampled_mean_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

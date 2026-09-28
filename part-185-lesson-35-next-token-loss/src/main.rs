@@ -2,27 +2,29 @@
 // Логиты позиции t оцениваются по целевому токену позиции t+1.
 
 use part_182_lesson_35_causal_self_attention::softmax;
-fn cross_entropy(logits: &[f64], target: usize) -> f64 {
-    -softmax(logits)[target].ln()
+// Оценку модели до преобразования в вероятность называют logit.
+fn cross_entropy(raw_model_scores: &[f64], target: usize) -> f64 {
+    -softmax(raw_model_scores)[target].ln()
 }
 fn main() {
     // BOS, A, B, EOS: на последней позиции нет следующей цели.
-    let token_identifiers = [0, 1, 2, 3];
-    let logits = [
+    // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+    let text_unit_identifiers = [0, 1, 2, 3];
+    let raw_model_scores = [
         [0.2, 2.0, 0.1, 0.0],
         [0.1, 0.2, 2.0, 0.0],
         [0.0, 0.1, 0.2, 2.0],
     ];
-    let losses: Vec<f64> = (0..token_identifiers.len() - 1)
+    let losses: Vec<f64> = (0..text_unit_identifiers.len() - 1)
         .map(|plot_step_index| {
             cross_entropy(
-                &logits[plot_step_index],
-                token_identifiers[plot_step_index + 1],
+                &raw_model_scores[plot_step_index],
+                text_unit_identifiers[plot_step_index + 1],
             )
         })
         .collect();
     let average = losses.iter().sum::<f64>() / losses.len() as f64;
-    let wrong = cross_entropy(&[2.0, 0.2, 0.1, 0.0], token_identifiers[1]);
+    let wrong = cross_entropy(&[2.0, 0.2, 0.1, 0.0], text_unit_identifiers[1]);
     assert!(average < wrong);
     println!("loss по позициям: {losses:?}; средний loss={average:.3}");
     visualize(&losses);

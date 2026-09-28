@@ -3,9 +3,10 @@
 
 fn block(input: f64, transform: f64) -> (f64, f64) {
     let activation = (input * transform).tanh();
-    let residual = input + activation;
+    // Добавление входа блока к его преобразованному выходу называют residual connection.
+    let input_plus_transformed_value = input + activation;
     let skip = activation;
-    (residual, skip)
+    (input_plus_transformed_value, skip)
 }
 fn main() {
     let mut state = 0.5;

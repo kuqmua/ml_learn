@@ -15,23 +15,29 @@ fn softmax(values: &[f64]) -> Vec<f64> {
 }
 fn main() {
     // Первый токен обозначает CLS; остальные представляют патчи.
-    let tokens = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    let logits: Vec<f64> = tokens
+    // Патчи и элемент классификации в ViT называют visual tokens.
+    let image_input_representations = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
+    // Оценку модели до преобразования в вероятность называют logit.
+    let raw_model_scores: Vec<f64> = image_input_representations
         .iter()
-        .map(|token| tokens[0][0] * token[0] + tokens[0][1] * token[1])
+        .map(|image_input_representation| {
+            image_input_representations[0][0] * image_input_representation[0]
+                + image_input_representations[0][1] * image_input_representation[1]
+        })
         .collect();
-    let weights = softmax(&logits);
-    let pooled = tokens
-        .iter()
-        .zip(&weights)
-        .fold([0.0; 2], |mut sum, (patch_value, &weight)| {
+    let weights = softmax(&raw_model_scores);
+    // Итоговое представление элемента классификации получают через class token pooling.
+    let image_classification_summary = image_input_representations.iter().zip(&weights).fold(
+        [0.0; 2],
+        |mut sum, (patch_value, &weight)| {
             sum[0] += weight * patch_value[0];
             sum[1] += weight * patch_value[1];
             sum
-        });
-    let class = u8::from(pooled[0] > pooled[1]);
+        },
+    );
+    let class = u8::from(image_classification_summary[0] > image_classification_summary[1]);
     assert_eq!(weights.len(), 3);
-    println!("CLS context={pooled:?}; class={class}");
+    println!("CLS context={image_classification_summary:?}; class={class}");
     visualize(&weights);
 }
 fn visualize(weights: &[f64]) {

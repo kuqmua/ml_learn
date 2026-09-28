@@ -404,7 +404,8 @@ pub fn heatmap(
         // Рисуем каждую ячейку своим цветом и числом.
         for (column_index, &value) in row.iter().enumerate() {
             // Нормируем значение ячейки в диапазон от нуля до единицы.
-            let normalized_fraction = if maximum_value == minimum_value {
+            // Долю положения между минимумом и максимумом называют fraction диапазона.
+            let position_within_value_range = if maximum_value == minimum_value {
                 // Для одинаковых ячеек используем середину цветовой шкалы.
                 0.5
             // Нормируем разные значения по минимуму и максимуму.
@@ -415,11 +416,11 @@ pub fn heatmap(
             // Номер ряда определяет цвет из палитры Plotters.
             let color = RGBColor(
                 // Вычисляем значение по указанной формуле.
-                (35.0 + 180.0 * normalized_fraction) as u8,
+                (35.0 + 180.0 * position_within_value_range) as u8,
                 // Вычисляем значение по указанной формуле.
-                (80.0 + 90.0 * (1.0 - normalized_fraction)) as u8,
+                (80.0 + 90.0 * (1.0 - position_within_value_range)) as u8,
                 // Вычисляем значение по указанной формуле.
-                (220.0 - 160.0 * normalized_fraction) as u8,
+                (220.0 - 160.0 * position_within_value_range) as u8,
             );
             // Номер столбца задаёт положение ячейки по горизонтали.
             let input_value = column_index as f64;
