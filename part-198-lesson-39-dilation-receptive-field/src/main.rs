@@ -1,0 +1,37 @@
+// Урок 39.2. Дилатация и рецептивное поле.
+// Дилатации 1, 2, 4 расширяют область прошлого без длинных фильтров.
+
+use part_197_lesson_39_causal_convolution::causal_conv;
+fn main() {
+    let mut signal = vec![0.0; 9];
+    signal[0] = 1.0;
+    for dilation in [1, 2, 4] {
+        signal = causal_conv(&signal, 1.0, 1.0, dilation).unwrap();
+        println!("после dilation={dilation}: {signal:?}");
+    }
+    // Три двухточечных слоя видят 1 + 1 + 2 + 4 = 8 временных шагов.
+    assert_eq!(signal[..8], [1.0; 8]);
+    assert_eq!(signal[8], 0.0);
+    visualize(&signal);
+}
+
+fn visualize(signal: &[f64]) {
+    let points: Vec<_> = signal
+        .iter()
+        .enumerate()
+        .map(|(i, &y)| (i as f64, y))
+        .collect();
+    let path = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "receptive-field",
+        "Отклик на импульс",
+        "t",
+        "отклик",
+        &[lesson_visualization::Series {
+            name: "dilation 1,2,4",
+            points: &points,
+        }],
+    )
+    .expect("график");
+    println!("график: {}", path.display());
+}

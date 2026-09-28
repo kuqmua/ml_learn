@@ -1,0 +1,7 @@
+[package]
+name = "part-199-lesson-39-gated-activation"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-visualization = { path = "../lesson-visualization" }

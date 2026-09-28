@@ -1,0 +1,7 @@
+[package]
+name = "part-207-lesson-40-tiny-gpt-forward"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-203-lesson-40-causal-self-attention = { path = "../part-203-lesson-40-causal-self-attention" }

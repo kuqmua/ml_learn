@@ -1356,6 +1356,237 @@ dependencies = [
 ]
 
 [[package]]
+name = "part-187-lesson-37-utf8-bytes"
+version = "0.1.0"
+
+[[package]]
+name = "part-188-lesson-37-bpe-training"
+version = "0.1.0"
+
+[[package]]
+name = "part-189-lesson-37-bpe-encode-decode"
+version = "0.1.0"
+dependencies = [
+ "part-188-lesson-37-bpe-training",
+]
+
+[[package]]
+name = "part-190-lesson-37-control-tokens"
+version = "0.1.0"
+
+[[package]]
+name = "part-191-lesson-37-tokenizer-evaluation"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-188-lesson-37-bpe-training",
+]
+
+[[package]]
+name = "part-192-lesson-38-residual-boosting"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-193-lesson-38-oblivious-tree"
+version = "0.1.0"
+
+[[package]]
+name = "part-194-lesson-38-ordered-category-statistics"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-195-lesson-38-ordered-boosting"
+version = "0.1.0"
+
+[[package]]
+name = "part-196-lesson-38-catboost-principles"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-193-lesson-38-oblivious-tree",
+ "part-194-lesson-38-ordered-category-statistics",
+]
+
+[[package]]
+name = "part-197-lesson-39-causal-convolution"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-198-lesson-39-dilation-receptive-field"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-197-lesson-39-causal-convolution",
+]
+
+[[package]]
+name = "part-199-lesson-39-gated-activation"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-200-lesson-39-residual-skip"
+version = "0.1.0"
+
+[[package]]
+name = "part-201-lesson-39-wavenet-mini"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-197-lesson-39-causal-convolution",
+]
+
+[[package]]
+name = "part-202-lesson-40-token-position-embeddings"
+version = "0.1.0"
+
+[[package]]
+name = "part-203-lesson-40-causal-self-attention"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-204-lesson-40-multi-head-attention"
+version = "0.1.0"
+dependencies = [
+ "part-203-lesson-40-causal-self-attention",
+]
+
+[[package]]
+name = "part-205-lesson-40-decoder-block"
+version = "0.1.0"
+dependencies = [
+ "part-203-lesson-40-causal-self-attention",
+]
+
+[[package]]
+name = "part-206-lesson-40-next-token-loss"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-203-lesson-40-causal-self-attention",
+]
+
+[[package]]
+name = "part-207-lesson-40-tiny-gpt-forward"
+version = "0.1.0"
+dependencies = [
+ "part-203-lesson-40-causal-self-attention",
+]
+
+[[package]]
+name = "part-208-lesson-41-rmsnorm"
+version = "0.1.0"
+
+[[package]]
+name = "part-209-lesson-41-rope"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-210-lesson-41-grouped-query-attention"
+version = "0.1.0"
+dependencies = [
+ "part-203-lesson-40-causal-self-attention",
+]
+
+[[package]]
+name = "part-211-lesson-41-qk-norm"
+version = "0.1.0"
+dependencies = [
+ "part-208-lesson-41-rmsnorm",
+ "part-209-lesson-41-rope",
+]
+
+[[package]]
+name = "part-212-lesson-41-swiglu"
+version = "0.1.0"
+
+[[package]]
+name = "part-213-lesson-41-kv-cache"
+version = "0.1.0"
+dependencies = [
+ "part-203-lesson-40-causal-self-attention",
+]
+
+[[package]]
+name = "part-214-lesson-41-mixture-of-experts"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-203-lesson-40-causal-self-attention",
+]
+
+[[package]]
+name = "part-215-lesson-41-qwen-inspired-block"
+version = "0.1.0"
+dependencies = [
+ "part-203-lesson-40-causal-self-attention",
+ "part-208-lesson-41-rmsnorm",
+ "part-209-lesson-41-rope",
+ "part-212-lesson-41-swiglu",
+]
+
+[[package]]
+name = "part-216-lesson-42-vit-patches"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-217-lesson-42-vit-global-attention"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+ "part-203-lesson-40-causal-self-attention",
+ "part-216-lesson-42-vit-patches",
+]
+
+[[package]]
+name = "part-218-lesson-42-diffusion-forward"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-219-lesson-42-diffusion-noise-prediction"
+version = "0.1.0"
+dependencies = [
+ "part-218-lesson-42-diffusion-forward",
+]
+
+[[package]]
+name = "part-220-lesson-42-state-space-model"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-221-lesson-42-selective-state-space"
+version = "0.1.0"
+dependencies = [
+ "lesson-visualization",
+]
+
+[[package]]
 name = "pin-project-lite"
 version = "0.2.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"

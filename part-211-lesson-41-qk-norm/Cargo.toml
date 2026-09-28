@@ -1,0 +1,8 @@
+[package]
+name = "part-211-lesson-41-qk-norm"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-208-lesson-41-rmsnorm = { path = "../part-208-lesson-41-rmsnorm" }
+part-209-lesson-41-rope = { path = "../part-209-lesson-41-rope" }

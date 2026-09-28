@@ -1,0 +1,6 @@
+[package]
+name = "part-212-lesson-41-swiglu"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

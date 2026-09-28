@@ -1,0 +1,8 @@
+[package]
+name = "part-206-lesson-40-next-token-loss"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-203-lesson-40-causal-self-attention = { path = "../part-203-lesson-40-causal-self-attention" }
+lesson-visualization = { path = "../lesson-visualization" }

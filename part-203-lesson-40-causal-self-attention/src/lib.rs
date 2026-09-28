@@ -1,0 +1,52 @@
+//! Причинное self-attention.
+
+/// Устойчивый softmax для конечных логитов.
+pub fn softmax(logits: &[f64]) -> Vec<f64> {
+    let maximum = logits.iter().copied().fold(f64::NEG_INFINITY, f64::max);
+    let weights: Vec<f64> = logits
+        .iter()
+        .map(|&value| (value - maximum).exp())
+        .collect();
+    let total: f64 = weights.iter().sum();
+    weights.into_iter().map(|weight| weight / total).collect()
+}
+
+/// Один причинный head. Строка i видит только j <= i.
+pub fn causal_attention(
+    q: &[[f64; 2]],
+    k: &[[f64; 2]],
+    v: &[[f64; 2]],
+) -> Result<Vec<[f64; 2]>, &'static str> {
+    if q.len() != k.len() || k.len() != v.len() || q.is_empty() {
+        return Err("неверная форма Q/K/V");
+    }
+    let mut output = Vec::with_capacity(q.len());
+    for index in 0..q.len() {
+        let logits: Vec<f64> = (0..=index)
+            .map(|past| (q[index][0] * k[past][0] + q[index][1] * k[past][1]) / 2.0_f64.sqrt())
+            .collect();
+        let weights = softmax(&logits);
+        let mut state = [0.0; 2];
+        for (past, &weight) in weights.iter().enumerate() {
+            for feature in 0..2 {
+                state[feature] += weight * v[past][feature];
+            }
+        }
+        output.push(state);
+    }
+    Ok(output)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::causal_attention;
+    #[test]
+    fn first_output_ignores_future_values() {
+        let q = [[1.0, 0.0], [0.0, 1.0]];
+        let k = q;
+        let first = causal_attention(&q, &k, &[[2.0, 3.0], [4.0, 5.0]]).unwrap();
+        let second = causal_attention(&q, &k, &[[2.0, 3.0], [999.0, 999.0]]).unwrap();
+        assert_eq!(first[0], second[0]);
+        assert_eq!(first[0], [2.0, 3.0]);
+    }
+}
