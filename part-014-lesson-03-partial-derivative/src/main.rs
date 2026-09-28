@@ -10,11 +10,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // f(x,y)=x²+3y².
-    let (x, y) = (2.0, -1.0);
+    let (input_value, second_input_value) = (2.0, -1.0);
     // Умножаем значения и сохраняем результат в `derivative_by_x`.
-    let derivative_by_x = 2.0 * x;
+    let derivative_by_x = 2.0 * input_value;
     // Умножаем значения и сохраняем результат в `derivative_by_y`.
-    let derivative_by_y = 6.0 * y;
+    let derivative_by_y = 6.0 * second_input_value;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("∂f/∂x={derivative_by_x}, ∂f/∂y={derivative_by_y}");
 
@@ -25,24 +25,24 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Наглядное представление величин из этого урока.
-    let chart_points_0: Vec<(f64, f64)> = (-40..=40)
+    let fixed_y_slice_points: Vec<(f64, f64)> = (-40..=40)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, x * x + 4.0)
+            (horizontal_value, horizontal_value * horizontal_value + 4.0)
         })
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = (-40..=40)
+    // Собираем значения для `fixed_x_slice_points` в коллекцию.
+    let fixed_x_slice_points: Vec<(f64, f64)> = (-40..=40)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `y`.
-            let y = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `vertical_value`.
+            let vertical_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (y, 4.0 + y * y)
+            (vertical_value, 4.0 + vertical_value * vertical_value)
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -65,14 +65,14 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "y=-1",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &fixed_y_slice_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "x=2",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &fixed_x_slice_points,
             },
         ],
     )

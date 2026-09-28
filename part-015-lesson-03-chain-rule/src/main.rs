@@ -10,9 +10,9 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // f(x)=(2x+1)²: внутренняя функция u=2x+1, внешняя u².
-    let x = 3.0;
+    let input_value = 3.0;
     // Умножаем значения и сохраняем результат в `inner`.
-    let inner = 2.0 * x + 1.0;
+    let inner = 2.0 * input_value + 1.0;
     // Умножаем значения и сохраняем результат в `outer_derivative`.
     let outer_derivative = 2.0 * inner;
     // Сохраняем рассчитанное значение `inner_derivative` для следующих операций.
@@ -29,24 +29,30 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Наглядное представление величин из этого урока.
-    let chart_points_0: Vec<(f64, f64)> = (-20..=20)
+    let composed_function_points: Vec<(f64, f64)> = (-20..=20)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, x * x * x * x)
+            (
+                horizontal_value,
+                horizontal_value * horizontal_value * horizontal_value * horizontal_value,
+            )
         })
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = (-20..=20)
+    // Собираем значения для `derivative_points` в коллекцию.
+    let derivative_points: Vec<(f64, f64)> = (-20..=20)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, 4.0 * x * x * x)
+            (
+                horizontal_value,
+                4.0 * horizontal_value * horizontal_value * horizontal_value,
+            )
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -69,14 +75,14 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "(2x+1)²",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &composed_function_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "производная",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &derivative_points,
             },
         ],
     )

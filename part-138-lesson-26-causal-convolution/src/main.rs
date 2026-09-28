@@ -10,15 +10,15 @@ fn main() {
     visualize(&signal, &output);
 }
 fn visualize(input: &[f64], output: &[f64]) {
-    let a: Vec<_> = input
+    let first_plot_points: Vec<_> = input
         .iter()
         .enumerate()
-        .map(|(i, &y)| (i as f64, y))
+        .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
         .collect();
-    let b: Vec<_> = output
+    let second_plot_points: Vec<_> = output
         .iter()
         .enumerate()
-        .map(|(i, &y)| (i as f64, y))
+        .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
         .collect();
     let path = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
@@ -29,11 +29,11 @@ fn visualize(input: &[f64], output: &[f64]) {
         &[
             lesson_visualization::Series {
                 name: "вход",
-                points: &a,
+                points: &first_plot_points,
             },
             lesson_visualization::Series {
                 name: "выход",
-                points: &b,
+                points: &second_plot_points,
             },
         ],
     )

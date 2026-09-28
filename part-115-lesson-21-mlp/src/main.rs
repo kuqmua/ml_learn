@@ -247,9 +247,9 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = [(0.0, 0.0), (1.0, 1.0)].to_vec();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = [(0.0, 1.0), (1.0, 0.0)].to_vec();
+    let class_zero_points: Vec<(f64, f64)> = [(0.0, 0.0), (1.0, 1.0)].to_vec();
+    // Собираем значения для `class_one_points` в коллекцию.
+    let class_one_points: Vec<(f64, f64)> = [(0.0, 1.0), (1.0, 0.0)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
@@ -269,14 +269,14 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "класс 0",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &class_zero_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "класс 1",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &class_one_points,
             },
         ],
     )

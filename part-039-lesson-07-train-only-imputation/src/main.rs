@@ -11,10 +11,13 @@ fn main() {
     let validation = [None, Some(100.0)];
     let observed: Vec<_> = train.iter().flatten().copied().collect();
     let replacement = median(&observed);
-    let train_filled: Vec<_> = train.iter().map(|x| x.unwrap_or(replacement)).collect();
+    let train_filled: Vec<_> = train
+        .iter()
+        .map(|input_value| input_value.unwrap_or(replacement))
+        .collect();
     let validation_filled: Vec<_> = validation
         .iter()
-        .map(|x| x.unwrap_or(replacement))
+        .map(|input_value| input_value.unwrap_or(replacement))
         .collect();
     assert_eq!(replacement, 3.0);
     assert_eq!(validation_filled, [3.0, 100.0]);

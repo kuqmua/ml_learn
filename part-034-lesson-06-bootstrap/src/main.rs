@@ -51,18 +51,22 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(values: [f64; 3], resamples: [[usize; 3]; 4]) {
     // Показываем значения, рассчитанные по данным примера.
-    let chart_points_0: Vec<(f64, f64)> = resamples
+    let bootstrap_points: Vec<(f64, f64)> = resamples
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.
         .enumerate()
         // Преобразуем каждый элемент в новое значение.
-        .map(|(i, indices)| {
+        .map(|(item_index, indices)| {
             (
                 // Вычисляем значение по указанной формуле.
-                (i + 1) as f64,
+                (item_index + 1) as f64,
                 // Вычисляем значение по указанной формуле.
-                indices.iter().map(|&j| values[j]).sum::<f64>() / indices.len() as f64,
+                indices
+                    .iter()
+                    .map(|&sample_index| values[sample_index])
+                    .sum::<f64>()
+                    / indices.len() as f64,
             )
         })
         // Собираем результаты в коллекцию.
@@ -84,7 +88,7 @@ fn visualize(values: [f64; 3], resamples: [[usize; 3]; 4]) {
             // Указываем подпись этого ряда в легенде.
             name: "среднее",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &bootstrap_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

@@ -19,7 +19,7 @@ fn visualize(signal: &[f64]) {
     let points: Vec<_> = signal
         .iter()
         .enumerate()
-        .map(|(i, &y)| (i as f64, y))
+        .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
         .collect();
     let path = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),

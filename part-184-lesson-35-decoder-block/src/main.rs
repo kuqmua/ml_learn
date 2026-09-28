@@ -2,12 +2,12 @@
 // Нормализация, причинное внимание, residual, FFN и второй residual образуют блок.
 
 use part_182_lesson_35_causal_self_attention::causal_attention;
-fn layer_norm(x: [f64; 2]) -> [f64; 2] {
-    let mean = (x[0] + x[1]) / 2.0;
-    let variance = ((x[0] - mean).powi(2) + (x[1] - mean).powi(2)) / 2.0;
+fn layer_norm(input_value: [f64; 2]) -> [f64; 2] {
+    let mean = (input_value[0] + input_value[1]) / 2.0;
+    let variance = ((input_value[0] - mean).powi(2) + (input_value[1] - mean).powi(2)) / 2.0;
     [
-        (x[0] - mean) / (variance + 1e-5).sqrt(),
-        (x[1] - mean) / (variance + 1e-5).sqrt(),
+        (input_value[0] - mean) / (variance + 1e-5).sqrt(),
+        (input_value[1] - mean) / (variance + 1e-5).sqrt(),
     ]
 }
 fn block(input: &[[f64; 2]]) -> Vec<[f64; 2]> {

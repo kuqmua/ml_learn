@@ -176,7 +176,10 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(top_k: std::vec::Vec<(&str, f64)>) {
     // Собираем значения для `chart_values` в коллекцию.
-    let chart_values: Vec<(&str, f64)> = top_k.iter().map(|(id, score)| (*id, *score)).collect();
+    let chart_values: Vec<(&str, f64)> = top_k
+        .iter()
+        .map(|(document_id, score)| (*document_id, *score))
+        .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.

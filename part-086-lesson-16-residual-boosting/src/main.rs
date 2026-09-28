@@ -8,21 +8,23 @@ fn main() {
     let mut history = vec![1.0];
     for round in 0..2 {
         // Для квадратичной ошибки отрицательный градиент равен y - prediction.
-        let residuals = std::array::from_fn::<_, 4, _>(|i| targets[i] - predictions[i]);
+        let residuals = std::array::from_fn::<_, 4, _>(|step_index| {
+            targets[step_index] - predictions[step_index]
+        });
         let left = (residuals[0] + residuals[1]) / 2.0;
         let right = (residuals[2] + residuals[3]) / 2.0;
         for (index, value) in predictions.iter_mut().enumerate() {
             *value += 0.5 * if index < 2 { left } else { right };
         }
-        let mse: f64 = targets
+        let mean_squared_error_value: f64 = targets
             .iter()
             .zip(predictions)
             .map(|(target, pred)| (target - pred).powi(2))
             .sum::<f64>()
             / 4.0;
-        history.push(mse);
+        history.push(mean_squared_error_value);
         println!(
-            "итерация {}: prediction={predictions:?}, MSE={mse}",
+            "итерация {}: prediction={predictions:?}, MSE={mean_squared_error_value}",
             round + 1
         );
     }
@@ -34,7 +36,7 @@ fn visualize(losses: &[f64]) {
     let points: Vec<_> = losses
         .iter()
         .enumerate()
-        .map(|(i, &loss)| (i as f64, loss))
+        .map(|(item_index, &loss)| (item_index as f64, loss))
         .collect();
     let path = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),

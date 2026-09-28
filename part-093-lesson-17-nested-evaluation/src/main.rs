@@ -23,7 +23,9 @@ fn main() {
         // Перебираем элементы по ссылке, не копируя исходную коллекцию.
         .iter()
         // Выбираем k с максимальной оценкой на внутренней проверке.
-        .max_by(|a, b| a.1.total_cmp(&b.1))
+        .max_by(|first_candidate, second_candidate| {
+            first_candidate.1.total_cmp(&second_candidate.1)
+        })
         // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
         .unwrap();
     // Внешние метки не участвовали в выборе k: они нужны только для итоговой оценки.
@@ -69,11 +71,11 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(inner_scores: [(usize, f64); 3]) {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = inner_scores
+    let nested_evaluation_points: Vec<(f64, f64)> = inner_scores
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Преобразуем каждый элемент в новое значение.
-        .map(|&(k, score)| (k as f64, score))
+        .map(|&(neighbor_count, score)| (neighbor_count as f64, score))
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
@@ -93,7 +95,7 @@ fn visualize(inner_scores: [(usize, f64); 3]) {
             // Указываем подпись этого ряда в легенде.
             name: "validation",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &nested_evaluation_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

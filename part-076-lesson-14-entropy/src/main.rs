@@ -32,9 +32,9 @@ fn main() {
                 // Сохраняем результат этого шага в `logarithm`.
                 let mut logarithm = 0.0;
                 // Повторяем расчёт для каждого элемента последовательности.
-                for odd in (1..=99).step_by(2) {
+                for odd_divisor in (1..=99).step_by(2) {
                     // Обновляем значение результатом текущего вычисления.
-                    logarithm += term / odd as f64;
+                    logarithm += term / odd_divisor as f64;
                     // Обновляем значение результатом текущего вычисления.
                     term *= ratio * ratio;
                 }
@@ -65,13 +65,17 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = (1..100)
+    let entropy_points: Vec<(f64, f64)> = (1..100)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `p`.
-            let p = i as f64 / 100.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `probability`.
+            let probability = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (p, -p * p.log2() - (1.0 - p) * (1.0 - p).log2())
+            (
+                probability,
+                -probability * probability.log2()
+                    - (1.0 - probability) * (1.0 - probability).log2(),
+            )
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -92,7 +96,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "H(p)",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &entropy_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

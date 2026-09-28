@@ -25,13 +25,13 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(embedding: [f64; 2]) {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = embedding
+    let dense_representations_points: Vec<(f64, f64)> = embedding
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.
         .enumerate()
         // Преобразуем каждый элемент в новое значение.
-        .map(|(i, &v)| (i as f64, v))
+        .map(|(item_index, &element_value)| (item_index as f64, element_value))
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
@@ -51,7 +51,7 @@ fn visualize(embedding: [f64; 2]) {
             // Указываем подпись этого ряда в легенде.
             name: "эмбеддинг",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &dense_representations_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

@@ -2,14 +2,14 @@
 // Фиксируем decoder и подгоняем только выходные веса на train; качество проверяем отдельно.
 
 use part_186_lesson_35_tiny_gpt_forward::hidden_states;
-fn sigmoid(x: f64) -> f64 {
-    1.0 / (1.0 + (-x).exp())
+fn sigmoid(input_value: f64) -> f64 {
+    1.0 / (1.0 + (-input_value).exp())
 }
 fn loss(weight: &[f64; 2], sample: (&[usize], f64)) -> f64 {
-    let h = *hidden_states(sample.0).last().unwrap();
-    let logit = weight[0] * h[0] + weight[1] * h[1];
-    let p = sigmoid(logit).clamp(1e-12, 1.0 - 1e-12);
-    -sample.1 * p.ln() - (1.0 - sample.1) * (1.0 - p).ln()
+    let final_hidden_state = *hidden_states(sample.0).last().unwrap();
+    let logit = weight[0] * final_hidden_state[0] + weight[1] * final_hidden_state[1];
+    let probability = sigmoid(logit).clamp(1e-12, 1.0 - 1e-12);
+    -sample.1 * probability.ln() - (1.0 - sample.1) * (1.0 - probability).ln()
 }
 fn main() {
     let train = [(&[0][..], 1.0), (&[1][..], 0.0)];
@@ -22,14 +22,16 @@ fn main() {
         / validation.len() as f64;
     for _ in 0..100 {
         let mut gradient = [0.0; 2];
-        for &(ids, target) in &train {
-            let h = *hidden_states(ids).last().unwrap();
-            let error = sigmoid(weight[0] * h[0] + weight[1] * h[1]) - target;
-            gradient[0] += error * h[0];
-            gradient[1] += error * h[1];
+        for &(token_ids, target) in &train {
+            let final_hidden_state = *hidden_states(token_ids).last().unwrap();
+            let error =
+                sigmoid(weight[0] * final_hidden_state[0] + weight[1] * final_hidden_state[1])
+                    - target;
+            gradient[0] += error * final_hidden_state[0];
+            gradient[1] += error * final_hidden_state[1];
         }
-        for i in 0..2 {
-            weight[i] -= 0.2 * gradient[i] / train.len() as f64;
+        for step_index in 0..2 {
+            weight[step_index] -= 0.2 * gradient[step_index] / train.len() as f64;
         }
     }
     let held_out = validation

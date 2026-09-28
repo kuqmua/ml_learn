@@ -69,24 +69,27 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Наглядное представление величин из этого урока.
-    let chart_points_0: Vec<(f64, f64)> = (-50..=50)
+    let l1_norm_points: Vec<(f64, f64)> = (-50..=50)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, x.abs() + 4.0)
+            (horizontal_value, horizontal_value.abs() + 4.0)
         })
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = (-50..=50)
+    // Собираем значения для `l2_norm_points` в коллекцию.
+    let l2_norm_points: Vec<(f64, f64)> = (-50..=50)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, (x * x + 16.0).sqrt())
+            (
+                horizontal_value,
+                (horizontal_value * horizontal_value + 16.0).sqrt(),
+            )
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -109,14 +112,14 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "L1",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &l1_norm_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "L2",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &l2_norm_points,
             },
         ],
     )

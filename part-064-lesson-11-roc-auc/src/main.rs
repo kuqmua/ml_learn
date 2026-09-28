@@ -47,12 +47,12 @@ fn main() {
         }
         // Определяем размер данных и сохраняем его в `pair_count`.
         let pair_count = (positive_scores.len() * negative_scores.len()) as f64;
-        // Сохраняем результат этого шага в `auc`.
-        let auc = ordered_pairs / pair_count;
+        // Сохраняем результат этого шага в `area_under_curve`.
+        let area_under_curve = ordered_pairs / pair_count;
         // Проверяем ожидаемое свойство учебного примера.
-        assert_eq!(auc, expected);
+        assert_eq!(area_under_curve, expected);
         // Печатаем рассчитанные значения для проверки примера.
-        println!("{description}: ROC-AUC = {auc}");
+        println!("{description}: ROC-AUC = {area_under_curve}");
     }
 
     // Построение графика вынесено из основного кода урока.
@@ -62,9 +62,9 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = [(0.0, 0.0), (0.0, 1.0), (1.0, 1.0)].to_vec();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = [(0.0, 0.0), (1.0, 1.0)].to_vec();
+    let ideal_roc_points: Vec<(f64, f64)> = [(0.0, 0.0), (0.0, 1.0), (1.0, 1.0)].to_vec();
+    // Собираем значения для `random_roc_points` в коллекцию.
+    let random_roc_points: Vec<(f64, f64)> = [(0.0, 0.0), (1.0, 1.0)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
@@ -84,14 +84,14 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "идеал",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &ideal_roc_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "случайный порядок",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &random_roc_points,
             },
         ],
     )

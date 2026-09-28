@@ -9,37 +9,42 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Сохраняем рассчитанное значение `x` для следующих операций.
-    let x = 3.0;
+    // Сохраняем рассчитанное значение `input_value` для следующих операций.
+    let input_value = 3.0;
     // Инициализируем значение `step` начальным состоянием.
     let step = 0.0001;
     // Для f(x)=x² считаем значения в x+h и x−h.
-    let right = (x + step) * (x + step);
+    let right = (input_value + step) * (input_value + step);
     // Умножаем значения и сохраняем результат в `left`.
-    let left = (x - step) * (x - step);
+    let left = (input_value - step) * (input_value - step);
     // Нормируем или усредняем величину делением и сохраняем её в `numerical_derivative`.
     let numerical_derivative = (right - left) / (2.0 * step);
     // Умножаем значения и сохраняем результат в `analytical_derivative`.
-    let analytical_derivative = 2.0 * x;
+    let analytical_derivative = 2.0 * input_value;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("численно={numerical_derivative}, точно={analytical_derivative}");
 
     // Построение графика вынесено из основного кода урока.
-    visualize(x, analytical_derivative);
+    visualize(input_value, analytical_derivative);
 }
 
 // Строим график по результатам урока.
-fn visualize(x: f64, analytical_derivative: f64) {
+fn visualize(horizontal_value: f64, analytical_derivative: f64) {
     // На малом шаге проявляется погрешность округления центральной разности.
     let points: Vec<(f64, f64)> = (1..=12)
         // Преобразуем каждый элемент в новое значение.
-        .map(|k| {
-            // Сохраняем результат этого шага в `h`.
-            let h = 10f64.powi(-k);
+        .map(|step_exponent| {
+            // Сохраняем результат этого шага в `step_size`.
+            let step_size = 10f64.powi(-step_exponent);
             // Сохраняем результат этого шага в `numeric`.
-            let numeric = ((x + h) * (x + h) - (x - h) * (x - h)) / (2.0 * h);
+            let numeric = ((horizontal_value + step_size) * (horizontal_value + step_size)
+                - (horizontal_value - step_size) * (horizontal_value - step_size))
+                / (2.0 * step_size);
             // Добавляем пару значений для сравнения или построения графика.
-            (k as f64, (numeric - analytical_derivative).abs())
+            (
+                step_exponent as f64,
+                (numeric - analytical_derivative).abs(),
+            )
         })
         // Собираем результаты в коллекцию.
         .collect();

@@ -17,13 +17,23 @@ fn visualize(states: &[[f64; 2]]) {
     let matrix: Vec<Vec<f64>> = states
         .iter()
         .enumerate()
-        .map(|(i, q)| {
-            let logits: Vec<_> = (0..=i)
-                .map(|j| (q[0] * states[j][0] + q[1] * states[j][1]) / 2.0_f64.sqrt())
+        .map(|(item_index, query_vector)| {
+            let logits: Vec<_> = (0..=item_index)
+                .map(|past_index| {
+                    (query_vector[0] * states[past_index][0]
+                        + query_vector[1] * states[past_index][1])
+                        / 2.0_f64.sqrt()
+                })
                 .collect();
             let weights = softmax(&logits);
             (0..states.len())
-                .map(|j| if j <= i { weights[j] } else { 0.0 })
+                .map(|past_index| {
+                    if past_index <= item_index {
+                        weights[past_index]
+                    } else {
+                        0.0
+                    }
+                })
                 .collect()
         })
         .collect();

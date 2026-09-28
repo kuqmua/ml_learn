@@ -135,17 +135,17 @@ fn main() {
         // Собираем значения для `points` в коллекцию.
         let points: Vec<(f64, f64)> = (1..=12)
             // Преобразуем каждый элемент в новое значение.
-            .map(|k| {
-                // Сохраняем результат этого шага в `h`.
-                let h = 10f64.powi(-k);
+            .map(|step_exponent| {
+                // Сохраняем результат этого шага в `step_size`.
+                let step_size = 10f64.powi(-step_exponent);
                 // Сохраняем результат этого шага в `numeric`.
-                let numeric = (calculate_quadratic_function_value(0.3 + h, 2.0)
+                let numeric = (calculate_quadratic_function_value(0.3 + step_size, 2.0)
                     // Вычисляем значение по указанной формуле.
-                    - calculate_quadratic_function_value(0.3 - h, 2.0))
+                    - calculate_quadratic_function_value(0.3 - step_size, 2.0))
                     // Вычисляем значение по указанной формуле.
-                    / (2.0 * h);
+                    / (2.0 * step_size);
                 // Добавляем пару значений для сравнения или построения графика.
-                (k as f64, (numeric - 2.0 * (0.3 - 2.0)).abs())
+                (step_exponent as f64, (numeric - 2.0 * (0.3 - 2.0)).abs())
             })
             // Собираем результаты в коллекцию.
             .collect();

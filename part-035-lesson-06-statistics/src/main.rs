@@ -59,19 +59,19 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(values: std::vec::Vec<f64>, mean: f64, median: f64) {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = values
+    let csv_observation_points: Vec<(f64, f64)> = values
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.
         .enumerate()
         // Преобразуем каждый элемент в новое значение.
-        .map(|(i, &v)| ((i + 1) as f64, v))
+        .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = [(1.0, mean), (values.len() as f64, mean)].to_vec();
-    // Собираем значения для `chart_points_2` в коллекцию.
-    let chart_points_2: Vec<(f64, f64)> = [(1.0, median), (values.len() as f64, median)].to_vec();
+    // Собираем значения для `mean_points` в коллекцию.
+    let mean_points: Vec<(f64, f64)> = [(1.0, mean), (values.len() as f64, mean)].to_vec();
+    // Собираем значения для `median_points` в коллекцию.
+    let median_points: Vec<(f64, f64)> = [(1.0, median), (values.len() as f64, median)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
@@ -91,21 +91,21 @@ fn visualize(values: std::vec::Vec<f64>, mean: f64, median: f64) {
                 // Указываем подпись этого ряда в легенде.
                 name: "CSV",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &csv_observation_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "среднее",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &mean_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "медиана",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_2,
+                points: &median_points,
             },
         ],
     )

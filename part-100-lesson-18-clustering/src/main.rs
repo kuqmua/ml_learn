@@ -141,7 +141,10 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(dataset: [[f64; 2]; 4]) {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = dataset.iter().map(|p| (p[0], p[1])).collect();
+    let clustering_points: Vec<(f64, f64)> = dataset
+        .iter()
+        .map(|data_point| (data_point[0], data_point[1]))
+        .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
@@ -159,7 +162,7 @@ fn visualize(dataset: [[f64; 2]; 4]) {
             // Указываем подпись этого ряда в легенде.
             name: "данные",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &clustering_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

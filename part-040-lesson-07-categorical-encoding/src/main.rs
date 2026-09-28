@@ -6,8 +6,8 @@ fn fit_vocab(train: &[&str]) -> BTreeMap<String, usize> {
     let mut vocab = BTreeMap::new();
     for &category in train {
         if !vocab.contains_key(category) {
-            let id = vocab.len() + 1;
-            vocab.insert(category.to_owned(), id);
+            let category_id = vocab.len() + 1;
+            vocab.insert(category.to_owned(), category_id);
         }
     }
     vocab

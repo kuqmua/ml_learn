@@ -8,16 +8,16 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Сохраняем рассчитанное значение `x` для следующих операций.
-    let x = 2.0;
+    // Сохраняем рассчитанное значение `input_value` для следующих операций.
+    let input_value = 2.0;
     // Умножаем значения и сохраняем результат в `square`.
-    let square = x * x;
+    let square = input_value * input_value;
     // Умножаем значения и сохраняем результат в `output`.
     let output = 2.0 * square;
     // Сохраняем рассчитанное значение `derivative_output_by_square` для следующих операций.
     let derivative_output_by_square = 2.0;
     // Умножаем значения и сохраняем результат в `derivative_square_by_x`.
-    let derivative_square_by_x = 2.0 * x;
+    let derivative_square_by_x = 2.0 * input_value;
     // Умножаем значения и сохраняем результат в `derivative_output_by_x`.
     let derivative_output_by_x = derivative_output_by_square * derivative_square_by_x;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -30,24 +30,24 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = (-30..=30)
+    let function_points: Vec<(f64, f64)> = (-30..=30)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, 2.0 * x * x)
+            (horizontal_value, 2.0 * horizontal_value * horizontal_value)
         })
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = (-30..=30)
+    // Собираем значения для `derivative_points` в коллекцию.
+    let derivative_points: Vec<(f64, f64)> = (-30..=30)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, 4.0 * x)
+            (horizontal_value, 4.0 * horizontal_value)
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -70,14 +70,14 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "f(x)",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &function_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "df/dx",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &derivative_points,
             },
         ],
     )

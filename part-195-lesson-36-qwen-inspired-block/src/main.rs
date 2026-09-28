@@ -10,17 +10,17 @@ fn block(states: &[[f64; 2]]) -> Vec<[f64; 2]> {
     let gamma = [1.0, 1.0];
     let norm: Vec<[f64; 2]> = states
         .iter()
-        .map(|x| {
-            let y = rms_norm(x, &gamma, 1e-6).unwrap();
-            [y[0], y[1]]
+        .map(|input_value| {
+            let second_input_value = rms_norm(input_value, &gamma, 1e-6).unwrap();
+            [second_input_value[0], second_input_value[1]]
         })
         .collect();
     // Одна K/V-голова хранит общие ключи и значения для двух Q-голов.
     let keys: Vec<_> = norm
         .iter()
         .enumerate()
-        .map(|(position, x)| {
-            let key = rms_norm(x, &gamma, 1e-6).unwrap();
+        .map(|(position, input_value)| {
+            let key = rms_norm(input_value, &gamma, 1e-6).unwrap();
             rotate_pair([key[0], key[1]], position, 0.1)
         })
         .collect();

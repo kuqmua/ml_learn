@@ -3,9 +3,15 @@
 
 fn softmax(values: &[f64]) -> Vec<f64> {
     let max = values.iter().copied().fold(f64::NEG_INFINITY, f64::max);
-    let exp: Vec<_> = values.iter().map(|&x| (x - max).exp()).collect();
-    let sum: f64 = exp.iter().sum();
-    exp.iter().map(|x| x / sum).collect()
+    let exponential_values: Vec<_> = values
+        .iter()
+        .map(|&patch_value| (patch_value - max).exp())
+        .collect();
+    let sum: f64 = exponential_values.iter().sum();
+    exponential_values
+        .iter()
+        .map(|patch_value| patch_value / sum)
+        .collect()
 }
 fn main() {
     // Первый токен обозначает CLS; остальные представляют патчи.
@@ -18,9 +24,9 @@ fn main() {
     let pooled = tokens
         .iter()
         .zip(&weights)
-        .fold([0.0; 2], |mut sum, (x, &weight)| {
-            sum[0] += weight * x[0];
-            sum[1] += weight * x[1];
+        .fold([0.0; 2], |mut sum, (patch_value, &weight)| {
+            sum[0] += weight * patch_value[0];
+            sum[1] += weight * patch_value[1];
             sum
         });
     let class = u8::from(pooled[0] > pooled[1]);

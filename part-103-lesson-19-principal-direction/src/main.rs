@@ -30,7 +30,10 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(centered_points: [[f64; 2]; 4]) {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = centered_points.iter().map(|p| (p[0], p[1])).collect();
+    let principal_direction_points: Vec<(f64, f64)> = centered_points
+        .iter()
+        .map(|data_point| (data_point[0], data_point[1]))
+        .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
@@ -48,7 +51,7 @@ fn visualize(centered_points: [[f64; 2]; 4]) {
             // Указываем подпись этого ряда в легенде.
             name: "центрированные точки",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &principal_direction_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

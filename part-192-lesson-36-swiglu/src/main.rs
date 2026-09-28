@@ -5,9 +5,9 @@ use part_192_lesson_36_swiglu::swiglu;
 fn main() {
     let input = [1.0, -2.0];
     let gate = input[0] - input[1];
-    let up = input[0] + input[1];
-    let hidden = swiglu(gate, up);
+    let up_projection = input[0] + input[1];
+    let hidden = swiglu(gate, up_projection);
     let down = hidden * 0.5;
     assert!(down.is_finite());
-    println!("gate={gate}, up={up}, hidden={hidden:.4}, down={down:.4}");
+    println!("gate={gate}, up={up_projection}, hidden={hidden:.4}, down={down:.4}");
 }

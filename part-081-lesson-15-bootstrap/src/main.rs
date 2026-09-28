@@ -37,13 +37,37 @@ fn visualize(sample: std::vec::Vec<&str>) {
         // Передаём ряды или значения для отрисовки графика.
         &[
             // Добавляем пару значений для сравнения или построения графика.
-            ("A", sample.iter().filter(|&&x| x == "A").count() as f64),
+            (
+                "A",
+                sample
+                    .iter()
+                    .filter(|&&horizontal_value| horizontal_value == "A")
+                    .count() as f64,
+            ),
             // Добавляем пару значений для сравнения или построения графика.
-            ("B", sample.iter().filter(|&&x| x == "B").count() as f64),
+            (
+                "B",
+                sample
+                    .iter()
+                    .filter(|&&horizontal_value| horizontal_value == "B")
+                    .count() as f64,
+            ),
             // Добавляем пару значений для сравнения или построения графика.
-            ("C", sample.iter().filter(|&&x| x == "C").count() as f64),
+            (
+                "C",
+                sample
+                    .iter()
+                    .filter(|&&horizontal_value| horizontal_value == "C")
+                    .count() as f64,
+            ),
             // Добавляем пару значений для сравнения или построения графика.
-            ("D", sample.iter().filter(|&&x| x == "D").count() as f64),
+            (
+                "D",
+                sample
+                    .iter()
+                    .filter(|&&horizontal_value| horizontal_value == "D")
+                    .count() as f64,
+            ),
         ],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

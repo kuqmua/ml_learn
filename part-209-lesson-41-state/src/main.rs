@@ -24,7 +24,9 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = (0..=5).map(|i| (i as f64, (5 - i) as f64)).collect();
+    let state_points: Vec<(f64, f64)> = (0..=5)
+        .map(|plot_step_index| (plot_step_index as f64, (5 - plot_step_index) as f64))
+        .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
@@ -42,7 +44,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "линейная среда",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &state_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

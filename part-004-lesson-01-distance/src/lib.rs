@@ -28,7 +28,11 @@ pub fn distance(left: &[f64], right: &[f64]) -> Result<f64, &'static str> {
         return Err("точки должны иметь одинаковое число координат");
     }
     // Собираем значения для `differences` в коллекцию.
-    let differences: Vec<f64> = left.iter().zip(right).map(|(&a, &b)| a - b).collect();
+    let differences: Vec<f64> = left
+        .iter()
+        .zip(right)
+        .map(|(&first_value, &second_value)| first_value - second_value)
+        .collect();
     // Возвращаем успешный результат.
     Ok(lesson_003::l2_norm(&differences))
 }

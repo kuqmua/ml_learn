@@ -295,7 +295,7 @@ fn visualize(
     bigram_counts: std::collections::BTreeMap<(std::string::String, std::string::String), usize>,
 ) {
     // Наглядное представление вычислений сводной практики.
-    let chart_points_0: Vec<(f64, f64)> = bigram_counts
+    let language_model_points: Vec<(f64, f64)> = bigram_counts
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Оставляем элементы, отвечающие условию.
@@ -303,7 +303,7 @@ fn visualize(
         // Добавляем порядковый номер к каждому элементу.
         .enumerate()
         // Преобразуем каждый элемент в новое значение.
-        .map(|(i, (_, count))| (i as f64, *count as f64))
+        .map(|(item_index, (_, count))| (item_index as f64, *count as f64))
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
@@ -323,7 +323,7 @@ fn visualize(
             // Указываем подпись этого ряда в легенде.
             name: "биграммы",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &language_model_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

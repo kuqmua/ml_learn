@@ -1,8 +1,8 @@
 // Урок 25.4. Ячейка GRU.
 // Update gate выбирает между предыдущим состоянием и новым кандидатом.
 
-fn sigmoid(x: f64) -> f64 {
-    1.0 / (1.0 + (-x).exp())
+fn sigmoid(input_value: f64) -> f64 {
+    1.0 / (1.0 + (-input_value).exp())
 }
 fn gru(input: f64, previous: f64, update_logit: f64) -> f64 {
     let reset = sigmoid(input);

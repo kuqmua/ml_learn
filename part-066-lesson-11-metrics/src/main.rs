@@ -18,13 +18,13 @@ fn main() {
     // Сохраняем результат этого шага в `recall`.
     let recall = lesson_060::recall(counts);
     // Сохраняем результат этого шага в `f1`.
-    let f1 = lesson_061::f1(precision, recall);
+    let f1_score = lesson_061::f1(precision, recall);
     // Сохраняем результат этого шага в `accuracy`.
     let accuracy = lesson_058::accuracy(counts);
     // Печатаем рассчитанные значения для проверки примера.
     println!(
         // Передаём подпись или текстовое значение для следующего шага.
-        "модель: {counts:?}, precision={precision:?}, recall={recall:?}, F1={f1:?}, accuracy={accuracy:?}"
+        "модель: {counts:?}, precision={precision:?}, recall={recall:?}, F1={f1_score:?}, accuracy={accuracy:?}"
     );
 
     // Задаём учебные значения для `all_negative_scores`.

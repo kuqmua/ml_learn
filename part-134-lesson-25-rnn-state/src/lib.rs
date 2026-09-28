@@ -1,13 +1,13 @@
 //! Скрытое состояние RNN.
 
 /// Скалярная RNN: h_t = tanh(w_x*x_t + w_h*h_(t-1)).
-pub fn states(input: &[f64], wx: f64, wh: f64) -> Vec<f64> {
-    let mut h = 0.0;
+pub fn states(input: &[f64], input_weight: f64, recurrent_weight: f64) -> Vec<f64> {
+    let mut hidden_state = 0.0;
     input
         .iter()
-        .map(|&x| {
-            h = (wx * x + wh * h).tanh();
-            h
+        .map(|&input_value| {
+            hidden_state = (input_weight * input_value + recurrent_weight * hidden_state).tanh();
+            hidden_state
         })
         .collect()
 }

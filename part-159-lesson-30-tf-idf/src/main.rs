@@ -24,9 +24,9 @@ fn main() {
     // Инициализируем изменяемый накопитель `logarithm` начальным состоянием.
     let mut logarithm = 0.0;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
-    for odd in (1..=99).step_by(2) {
+    for odd_divisor in (1..=99).step_by(2) {
         // Прибавляем очередной вклад к ранее накопленному результату.
-        logarithm += term / odd as f64;
+        logarithm += term / odd_divisor as f64;
         // Умножаем накопленное значение на очередной множитель.
         term *= normalized * normalized;
     }
@@ -44,13 +44,13 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(inverse_document_frequency: f64) {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = (0..=10)
+    let tf_idf_points: Vec<(f64, f64)> = (0..=10)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `tf`.
-            let tf = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `term_frequency`.
+            let term_frequency = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (tf, tf * inverse_document_frequency)
+            (term_frequency, term_frequency * inverse_document_frequency)
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -71,7 +71,7 @@ fn visualize(inverse_document_frequency: f64) {
             // Указываем подпись этого ряда в легенде.
             name: "idf из примера",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &tf_idf_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

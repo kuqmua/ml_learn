@@ -16,10 +16,10 @@ fn main() {
     for word in words {
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if !vocabulary.contains_key(word) {
-            // Считаем количество элементов и сохраняем его в `id`.
-            let id = vocabulary.len() + 1;
+            // Считаем количество элементов и сохраняем его в `token_id`.
+            let token_id = vocabulary.len() + 1;
             // Выполняем очередное действие, после которого продолжаем следующий шаг.
-            vocabulary.insert(word, id);
+            vocabulary.insert(word, token_id);
         }
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.

@@ -43,9 +43,14 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = (1..=64)
+    let multiply_coordinates_add_and_scale_points: Vec<(f64, f64)> = (1..=64)
         // Преобразуем каждый элемент в новое значение.
-        .map(|d| (d as f64, 1.0 / (d as f64).sqrt()))
+        .map(|vector_dimension| {
+            (
+                vector_dimension as f64,
+                1.0 / (vector_dimension as f64).sqrt(),
+            )
+        })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
@@ -65,7 +70,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "масштаб",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &multiply_coordinates_add_and_scale_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

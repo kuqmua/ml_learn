@@ -20,14 +20,14 @@ fn main() {
     for _ in 0..100 {
         let gradient = inputs
             .iter()
-            .map(|&(x, target)| 2.0 * (weight * x - target) * x)
+            .map(|&(input_value, target)| 2.0 * (weight * input_value - target) * input_value)
             .sum::<f64>()
             / inputs.len() as f64;
         weight -= 0.2 * gradient;
     }
     let loss = inputs
         .iter()
-        .map(|&(x, target)| (weight * x - target).powi(2))
+        .map(|&(input_value, target)| (weight * input_value - target).powi(2))
         .sum::<f64>()
         / inputs.len() as f64;
     assert!(loss < 1e-6);
@@ -41,15 +41,15 @@ fn main() {
             )
         })
         .collect();
-    let mse = |candidate: f64| {
+    let mean_squared_error_value = |candidate: f64| {
         held_out
             .iter()
-            .map(|&(x, target)| (candidate * x - target).powi(2))
+            .map(|&(input_value, target)| (candidate * input_value - target).powi(2))
             .sum::<f64>()
             / held_out.len() as f64
     };
-    let baseline = mse(0.0);
-    let validation_loss = mse(weight);
+    let baseline = mean_squared_error_value(0.0);
+    let validation_loss = mean_squared_error_value(weight);
     assert!(validation_loss < baseline);
     println!(
         "вес={weight:.3}; train MSE={loss:.8}; validation MSE={validation_loss:.8}; baseline={baseline:.3}"

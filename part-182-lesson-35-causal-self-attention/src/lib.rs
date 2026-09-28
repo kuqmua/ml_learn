@@ -13,23 +13,30 @@ pub fn softmax(logits: &[f64]) -> Vec<f64> {
 
 /// Один причинный head. Строка i видит только j <= i.
 pub fn causal_attention(
-    q: &[[f64; 2]],
-    k: &[[f64; 2]],
-    v: &[[f64; 2]],
+    query_vector: &[[f64; 2]],
+    key_vector: &[[f64; 2]],
+    value_vectors: &[[f64; 2]],
 ) -> Result<Vec<[f64; 2]>, &'static str> {
-    if q.len() != k.len() || k.len() != v.len() || q.is_empty() {
+    if query_vector.len() != key_vector.len()
+        || key_vector.len() != value_vectors.len()
+        || query_vector.is_empty()
+    {
         return Err("неверная форма Q/K/V");
     }
-    let mut output = Vec::with_capacity(q.len());
-    for index in 0..q.len() {
+    let mut output = Vec::with_capacity(query_vector.len());
+    for index in 0..query_vector.len() {
         let logits: Vec<f64> = (0..=index)
-            .map(|past| (q[index][0] * k[past][0] + q[index][1] * k[past][1]) / 2.0_f64.sqrt())
+            .map(|past| {
+                (query_vector[index][0] * key_vector[past][0]
+                    + query_vector[index][1] * key_vector[past][1])
+                    / 2.0_f64.sqrt()
+            })
             .collect();
         let weights = softmax(&logits);
         let mut state = [0.0; 2];
         for (past, &weight) in weights.iter().enumerate() {
             for feature in 0..2 {
-                state[feature] += weight * v[past][feature];
+                state[feature] += weight * value_vectors[past][feature];
             }
         }
         output.push(state);
@@ -42,10 +49,12 @@ mod tests {
     use super::causal_attention;
     #[test]
     fn first_output_ignores_future_values() {
-        let q = [[1.0, 0.0], [0.0, 1.0]];
-        let k = q;
-        let first = causal_attention(&q, &k, &[[2.0, 3.0], [4.0, 5.0]]).unwrap();
-        let second = causal_attention(&q, &k, &[[2.0, 3.0], [999.0, 999.0]]).unwrap();
+        let query_vector = [[1.0, 0.0], [0.0, 1.0]];
+        let key_vector = query_vector;
+        let first =
+            causal_attention(&query_vector, &key_vector, &[[2.0, 3.0], [4.0, 5.0]]).unwrap();
+        let second =
+            causal_attention(&query_vector, &key_vector, &[[2.0, 3.0], [999.0, 999.0]]).unwrap();
         assert_eq!(first[0], second[0]);
         assert_eq!(first[0], [2.0, 3.0]);
     }

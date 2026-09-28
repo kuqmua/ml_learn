@@ -261,19 +261,24 @@ fn main() {
     // Строим график по результатам урока.
     fn visualize(weight: f64, bias: f64) {
         // Наглядное представление вычислений сводной практики.
-        let chart_points_0: Vec<(f64, f64)> = (-10..=60)
+        let model_points: Vec<(f64, f64)> = (-10..=60)
             // Преобразуем каждый элемент в новое значение.
-            .map(|i| {
-                // Сохраняем результат этого шага в `x`.
-                let x = i as f64 / 10.0;
+            .map(|plot_step_index| {
+                // Сохраняем результат этого шага в `horizontal_value`.
+                let horizontal_value = plot_step_index as f64 / 10.0;
                 // Добавляем пару значений для сравнения или построения графика.
-                (x, 1.0 / (1.0 + (-(weight * x + bias)).exp()))
+                (
+                    horizontal_value,
+                    1.0 / (1.0 + (-(weight * horizontal_value + bias)).exp()),
+                )
             })
             // Собираем результаты в коллекцию.
             .collect();
-        // Собираем значения для `chart_points_1` в коллекцию.
-        let chart_points_1: Vec<(f64, f64)> =
-            TRAINING_EXAMPLES.iter().map(|&(x, y)| (x, y)).collect();
+        // Собираем значения для `training_label_points` в коллекцию.
+        let training_label_points: Vec<(f64, f64)> = TRAINING_EXAMPLES
+            .iter()
+            .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
+            .collect();
         // Строим график по рассчитанным значениям и сохраняем его как SVG.
         let chart = lesson_visualization::line_chart(
             // Передаём путь к каталогу текущего урока.
@@ -293,14 +298,14 @@ fn main() {
                     // Указываем подпись этого ряда в легенде.
                     name: "модель",
                     // Передаём рассчитанные координаты точек.
-                    points: &chart_points_0,
+                    points: &model_points,
                 },
                 // Добавляем ряд данных с подписью к графику.
                 lesson_visualization::Series {
                     // Указываем подпись этого ряда в легенде.
                     name: "метки обучения",
                     // Передаём рассчитанные координаты точек.
-                    points: &chart_points_1,
+                    points: &training_label_points,
                 },
             ],
         )

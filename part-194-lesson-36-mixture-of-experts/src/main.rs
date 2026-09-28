@@ -6,7 +6,9 @@ fn main() {
     let input = [0.8, 0.2];
     let scores: [f64; 4] = [input[0], input[1], -input[0], -input[1]];
     let mut order = [0, 1, 2, 3];
-    order.sort_by(|&a, &b| scores[b].total_cmp(&scores[a]));
+    order.sort_by(|&first_candidate, &second_candidate| {
+        scores[second_candidate].total_cmp(&scores[first_candidate])
+    });
     let selected = [order[0], order[1]];
     let weights = softmax(&[scores[selected[0]], scores[selected[1]]]);
     // У каждого эксперта своя простая линейная функция.

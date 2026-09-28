@@ -140,13 +140,13 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(action_values: [[f64; 2]; 5]) {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = action_values
+    let reinforcement_learning_points: Vec<(f64, f64)> = action_values
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.
         .enumerate()
         // Преобразуем каждый элемент в новое значение.
-        .map(|(i, row)| (i as f64, row[0].max(row[1])))
+        .map(|(item_index, row)| (item_index as f64, row[0].max(row[1])))
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
@@ -166,7 +166,7 @@ fn visualize(action_values: [[f64; 2]; 5]) {
             // Указываем подпись этого ряда в легенде.
             name: "Q-таблица",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &reinforcement_learning_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

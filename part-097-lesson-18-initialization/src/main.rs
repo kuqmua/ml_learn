@@ -25,11 +25,20 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(points: [[f64; 2]; 4], first_start: [[f64; 2]; 2], second_start: [[f64; 2]; 2]) {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = points.iter().map(|p| (p[0], p[1])).collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = first_start.iter().map(|p| (p[0], p[1])).collect();
-    // Собираем значения для `chart_points_2` в коллекцию.
-    let chart_points_2: Vec<(f64, f64)> = second_start.iter().map(|p| (p[0], p[1])).collect();
+    let observation_points: Vec<(f64, f64)> = points
+        .iter()
+        .map(|data_point| (data_point[0], data_point[1]))
+        .collect();
+    // Собираем значения для `separated_centroid_points` в коллекцию.
+    let separated_centroid_points: Vec<(f64, f64)> = first_start
+        .iter()
+        .map(|data_point| (data_point[0], data_point[1]))
+        .collect();
+    // Собираем значения для `adjacent_centroid_points` в коллекцию.
+    let adjacent_centroid_points: Vec<(f64, f64)> = second_start
+        .iter()
+        .map(|data_point| (data_point[0], data_point[1]))
+        .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
@@ -49,21 +58,21 @@ fn visualize(points: [[f64; 2]; 4], first_start: [[f64; 2]; 2], second_start: [[
                 // Указываем подпись этого ряда в легенде.
                 name: "объекты",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &observation_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "разнесённые центры",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &separated_centroid_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "соседние центры",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_2,
+                points: &adjacent_centroid_points,
             },
         ],
     )

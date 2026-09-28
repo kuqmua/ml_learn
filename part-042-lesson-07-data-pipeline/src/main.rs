@@ -114,7 +114,7 @@ fn visualize(records: std::vec::Vec<(f64, u8)>, training_mean: f64) {
                 // Передаём подпись или текстовое значение для следующего шага.
                 "весь набор",
                 // Вычисляем значение по указанной формуле.
-                records.iter().map(|r| r.0).sum::<f64>() / records.len() as f64,
+                records.iter().map(|record| record.0).sum::<f64>() / records.len() as f64,
             ),
         ],
     )

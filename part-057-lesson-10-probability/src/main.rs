@@ -25,24 +25,24 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = (0..=100)
+    let positive_class_probability_points: Vec<(f64, f64)> = (0..=100)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `p`.
-            let p = i as f64 / 100.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `probability`.
+            let probability = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (p, p)
+            (probability, probability)
         })
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = (0..=100)
+    // Собираем значения для `negative_class_probability_points` в коллекцию.
+    let negative_class_probability_points: Vec<(f64, f64)> = (0..=100)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `p`.
-            let p = i as f64 / 100.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `probability`.
+            let probability = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (p, 1.0 - p)
+            (probability, 1.0 - probability)
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -65,14 +65,14 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "положительный",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &positive_class_probability_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "отрицательный",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &negative_class_probability_points,
             },
         ],
     )

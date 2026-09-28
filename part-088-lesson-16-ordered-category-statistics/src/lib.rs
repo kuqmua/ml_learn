@@ -31,10 +31,10 @@ mod tests {
     use super::ordered_target_mean;
     #[test]
     fn current_label_cannot_enter_own_encoding() {
-        let a = ordered_target_mean(&["a", "a"], &[0.0, 1.0], 0.5, 1.0).unwrap();
-        let b = ordered_target_mean(&["a", "a"], &[0.0, 0.0], 0.5, 1.0).unwrap();
-        assert_eq!(a[0], 0.5);
-        assert_eq!(a[1], 0.25);
-        assert_eq!(a[1], b[1]);
+        let first_encoding = ordered_target_mean(&["a", "a"], &[0.0, 1.0], 0.5, 1.0).unwrap();
+        let second_encoding = ordered_target_mean(&["a", "a"], &[0.0, 0.0], 0.5, 1.0).unwrap();
+        assert_eq!(first_encoding[0], 0.5);
+        assert_eq!(first_encoding[1], 0.25);
+        assert_eq!(first_encoding[1], second_encoding[1]);
     }
 }

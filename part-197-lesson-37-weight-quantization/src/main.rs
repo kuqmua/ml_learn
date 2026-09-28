@@ -7,13 +7,16 @@ fn main() {
     let scale = maximum / 127.0;
     let quantized: Vec<i8> = weights
         .iter()
-        .map(|&w| (w / scale).round().clamp(-127.0, 127.0) as i8)
+        .map(|&weight_value| (weight_value / scale).round().clamp(-127.0, 127.0) as i8)
         .collect();
-    let reconstructed: Vec<f64> = quantized.iter().map(|&q| f64::from(q) * scale).collect();
+    let reconstructed: Vec<f64> = quantized
+        .iter()
+        .map(|&query_vector| f64::from(query_vector) * scale)
+        .collect();
     let error = weights
         .iter()
         .zip(&reconstructed)
-        .map(|(a, b)| (a - b).abs())
+        .map(|(first_value, second_value)| (first_value - second_value).abs())
         .fold(0.0, f64::max);
     assert!(error <= scale / 2.0 + 1e-12);
     println!("INT8={quantized:?}; максимум ошибки={error:.6}");

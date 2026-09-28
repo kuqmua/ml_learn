@@ -36,14 +36,14 @@ impl Bpe {
             else {
                 break;
             };
-            let id = pieces.len();
+            let token_id = pieces.len();
             let mut joined = pieces[pair.0].clone();
             joined.extend_from_slice(&pieces[pair.1]);
             pieces.push(joined);
             merges.push(pair);
             // Заменяем выбранную пару во всём обучающем корпусе.
             for row in &mut rows {
-                *row = merge_pair(row, pair, id);
+                *row = merge_pair(row, pair, token_id);
             }
         }
         Self { pieces, merges }
@@ -51,18 +51,18 @@ impl Bpe {
 
     /// Применяет сохранённые слияния к новому тексту в порядке обучения.
     pub fn encode(&self, text: &str) -> Vec<usize> {
-        let mut ids = text.bytes().map(usize::from).collect::<Vec<_>>();
+        let mut token_ids = text.bytes().map(usize::from).collect::<Vec<_>>();
         for (offset, &pair) in self.merges.iter().enumerate() {
-            ids = merge_pair(&ids, pair, 256 + offset);
+            token_ids = merge_pair(&token_ids, pair, 256 + offset);
         }
-        ids
+        token_ids
     }
 
     /// Восстанавливает байты и проверяет корректность UTF-8.
-    pub fn decode(&self, ids: &[usize]) -> Result<String, String> {
+    pub fn decode(&self, token_ids: &[usize]) -> Result<String, String> {
         let mut bytes = Vec::new();
-        for &id in ids {
-            let piece = self.pieces.get(id).ok_or("неизвестный ID токена")?;
+        for &token_id in token_ids {
+            let piece = self.pieces.get(token_id).ok_or("неизвестный ID токена")?;
             bytes.extend_from_slice(piece);
         }
         String::from_utf8(bytes).map_err(|error| error.to_string())
@@ -70,15 +70,15 @@ impl Bpe {
 }
 
 // Слияния не перекрываются: каждую исходную позицию используем ровно один раз.
-fn merge_pair(ids: &[usize], pair: (usize, usize), new_id: usize) -> Vec<usize> {
+fn merge_pair(token_ids: &[usize], pair: (usize, usize), new_id: usize) -> Vec<usize> {
     let mut result = Vec::new();
     let mut index = 0;
-    while index < ids.len() {
-        if ids.get(index) == Some(&pair.0) && ids.get(index + 1) == Some(&pair.1) {
+    while index < token_ids.len() {
+        if token_ids.get(index) == Some(&pair.0) && token_ids.get(index + 1) == Some(&pair.1) {
             result.push(new_id);
             index += 2;
         } else {
-            result.push(ids[index]);
+            result.push(token_ids[index]);
             index += 1;
         }
     }

@@ -12,7 +12,7 @@ fn main() {
         let group = head / 2;
         let logits: Vec<_> = keys[group]
             .iter()
-            .map(|k| query[0] * k[0] + query[1] * k[1])
+            .map(|key_vector| query[0] * key_vector[0] + query[1] * key_vector[1])
             .collect();
         let weights = softmax(&logits);
         output.push([

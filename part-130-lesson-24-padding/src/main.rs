@@ -42,7 +42,11 @@ fn visualize(padded: [[i32; 4]; 4]) {
             // Просматриваем элементы коллекции по ссылке.
             .iter()
             // Преобразуем каждый элемент в новое значение.
-            .map(|row| row.iter().map(|&v| v as f64).collect::<Vec<_>>())
+            .map(|row| {
+                row.iter()
+                    .map(|&element_value| element_value as f64)
+                    .collect::<Vec<_>>()
+            })
             // Настраиваем или преобразуем результат предыдущего шага.
             .collect::<Vec<_>>(),
     )

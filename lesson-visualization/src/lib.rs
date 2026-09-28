@@ -78,9 +78,11 @@ fn draw_chart(
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Объединяем вложенные последовательности.
-        .flat_map(|s| s.points.iter().copied())
+        .flat_map(|series| series.points.iter().copied())
         // Оставляем элементы, отвечающие условию.
-        .filter(|(x, y)| x.is_finite() && y.is_finite())
+        .filter(|(horizontal_value, vertical_value)| {
+            horizontal_value.is_finite() && vertical_value.is_finite()
+        })
         // Собираем результаты в коллекцию.
         .collect();
     // Пустому графику невозможно назначить диапазон осей.
@@ -130,16 +132,24 @@ fn draw_chart(
                         // Берём собственные пары чисел из ссылок на точки.
                         .copied()
                         // Оставляем элементы, отвечающие условию.
-                        .filter(|(x, y)| x.is_finite() && y.is_finite()),
+                        .filter(|(horizontal_value, vertical_value)| {
+                            horizontal_value.is_finite() && vertical_value.is_finite()
+                        }),
                     // Окрашиваем линию цветом текущего ряда.
                     &color,
                 ))?
                 // Добавляем название ряда в легенду.
                 .label(item.name)
                 // Показываем обозначение ряда в легенде.
-                .legend(move |(x, y)| {
+                .legend(move |(horizontal_value, vertical_value)| {
                     // Вычисляем значение по указанной формуле.
-                    PathElement::new(vec![(x, y), (x + 20, y)], Palette99::pick(index))
+                    PathElement::new(
+                        vec![
+                            (horizontal_value, vertical_value),
+                            (horizontal_value + 20, vertical_value),
+                        ],
+                        Palette99::pick(index),
+                    )
                 });
         }
         // Маркеры сохраняют видимость отдельных наблюдений.
@@ -150,7 +160,9 @@ fn draw_chart(
                 // Берём собственные пары чисел из ссылок на точки.
                 .copied()
                 // Оставляем элементы, отвечающие условию.
-                .filter(|(x, y)| x.is_finite() && y.is_finite())
+                .filter(|(horizontal_value, vertical_value)| {
+                    horizontal_value.is_finite() && vertical_value.is_finite()
+                })
                 // Преобразуем каждый элемент в новое значение.
                 .map(|point| Circle::new(point, 4, color.filled())),
         )?;
@@ -159,7 +171,13 @@ fn draw_chart(
             // Подписываем маркер точек в легенде.
             dots.label(item.name)
                 // Показываем обозначение ряда в легенде.
-                .legend(move |(x, y)| Circle::new((x + 10, y), 4, Palette99::pick(index).filled()));
+                .legend(move |(horizontal_value, vertical_value)| {
+                    Circle::new(
+                        (horizontal_value + 10, vertical_value),
+                        4,
+                        Palette99::pick(index).filled(),
+                    )
+                });
         }
     }
     // Легенда нужна, когда сравниваются несколько рядов.
@@ -193,16 +211,26 @@ pub fn bars(
     // Проверяем имя файла и подготавливаем каталог visualizations.
     let path = output_path(lesson_dir, name)?;
     // Пустые и нечисловые данные невозможно показать на диаграмме.
-    if values.is_empty() || values.iter().any(|(_, v)| !v.is_finite()) {
+    if values.is_empty()
+        || values
+            .iter()
+            .any(|(_, element_value)| !element_value.is_finite())
+    {
         // Прерываем вычисление и возвращаем причину ошибки.
         return Err("для столбцов нужны конечные значения".into());
     }
     // Нижняя граница цвета или вертикальной оси.
-    let min = values.iter().map(|(_, v)| *v).fold(0.0_f64, f64::min);
+    let min = values
+        .iter()
+        .map(|(_, element_value)| *element_value)
+        .fold(0.0_f64, f64::min);
     // Верхняя граница цвета или вертикальной оси.
-    let max = values.iter().map(|(_, v)| *v).fold(0.0_f64, f64::max);
+    let max = values
+        .iter()
+        .map(|(_, element_value)| *element_value)
+        .fold(0.0_f64, f64::max);
     // Добавляем поле, чтобы крайний столбец не касался рамки.
-    let pad = (max - min).max(1.0) * 0.1;
+    let axis_padding = (max - min).max(1.0) * 0.1;
     // Создаём SVG-холст заданного размера.
     let root = SVGBackend::new(&path, (900, 560)).into_drawing_area();
     // Делаем фон графика белым.
@@ -218,7 +246,10 @@ pub fn bars(
         // Выделяем место для подписей вертикальной оси.
         .y_label_area_size(65)
         // Устанавливаем числовые диапазоны обеих осей.
-        .build_cartesian_2d(-0.5..values.len() as f64 - 0.5, min - pad..max + pad)?;
+        .build_cartesian_2d(
+            -0.5..values.len() as f64 - 0.5,
+            min - axis_padding..max + axis_padding,
+        )?;
     chart
         // Настраиваем оси и координатную сетку.
         .configure_mesh()
@@ -227,11 +258,11 @@ pub fn bars(
         // Число подписей соответствует числу столбцов.
         .x_labels(values.len())
         // Заменяем числовые позиции подписями категорий.
-        .x_label_formatter(&|x| {
+        .x_label_formatter(&|input_value| {
             // Сохраняем результат этого шага в `index`.
-            let index = x.round();
+            let index = input_value.round();
             // Подписываем только целые позиции существующих категорий.
-            if (x - index).abs() > 0.15 || index < 0.0 {
+            if (input_value - index).abs() > 0.15 || index < 0.0 {
                 // Завершаем вычисление с полученным результатом.
                 return String::new();
             }
@@ -248,13 +279,16 @@ pub fn bars(
         // Наносим подготовленные элементы на график.
         .draw()?;
     // Строим один столбец для каждого подписанного значения.
-    for (i, (_, value)) in values.iter().enumerate() {
+    for (item_index, (_, value)) in values.iter().enumerate() {
         // Рисуем цветной прямоугольник на соответствующих координатах.
         chart.draw_series(std::iter::once(Rectangle::new(
             // Задаём значения следующей строки или последовательности.
-            [(i as f64 - 0.35, 0.0), (i as f64 + 0.35, *value)],
+            [
+                (item_index as f64 - 0.35, 0.0),
+                (item_index as f64 + 0.35, *value),
+            ],
             // Задаём именованное поле или параметр.
-            Palette99::pick(i).filled(),
+            Palette99::pick(item_index).filled(),
         )))?;
     }
     // Завершаем запись SVG на диск.
@@ -293,7 +327,7 @@ pub fn heatmap(
             // Просматриваем элементы коллекции по ссылке.
             .iter()
             // Отклоняем рваные строки и нечисловые значения.
-            .any(|row| row.len() != columns || row.iter().any(|v| !v.is_finite()))
+            .any(|row| row.len() != columns || row.iter().any(|element_value| !element_value.is_finite()))
     {
         // Прерываем вычисление и возвращаем причину ошибки.
         return Err("матрица должна быть прямоугольной и содержать конечные значения".into());
@@ -350,7 +384,7 @@ pub fn heatmap(
         // Рисуем каждую ячейку своим цветом и числом.
         for (column_index, &value) in row.iter().enumerate() {
             // Нормируем значение ячейки в диапазон от нуля до единицы.
-            let t = if max == min {
+            let normalized_fraction = if max == min {
                 // Для одинаковых ячеек используем середину цветовой шкалы.
                 0.5
             // Нормируем разные значения по минимуму и максимуму.
@@ -361,20 +395,23 @@ pub fn heatmap(
             // Номер ряда определяет цвет из палитры Plotters.
             let color = RGBColor(
                 // Вычисляем значение по указанной формуле.
-                (35.0 + 180.0 * t) as u8,
+                (35.0 + 180.0 * normalized_fraction) as u8,
                 // Вычисляем значение по указанной формуле.
-                (80.0 + 90.0 * (1.0 - t)) as u8,
+                (80.0 + 90.0 * (1.0 - normalized_fraction)) as u8,
                 // Вычисляем значение по указанной формуле.
-                (220.0 - 160.0 * t) as u8,
+                (220.0 - 160.0 * normalized_fraction) as u8,
             );
             // Номер столбца задаёт положение ячейки по горизонтали.
-            let x = column_index as f64;
+            let input_value = column_index as f64;
             // Разворачиваем ось строк так, чтобы первая была сверху.
-            let y = (rows - row_index - 1) as f64;
+            let second_input_value = (rows - row_index - 1) as f64;
             // Рисуем цветной прямоугольник на соответствующих координатах.
             chart.draw_series(std::iter::once(Rectangle::new(
                 // Задаём значения следующей строки или последовательности.
-                [(x, y), (x + 1.0, y + 1.0)],
+                [
+                    (input_value, second_input_value),
+                    (input_value + 1.0, second_input_value + 1.0),
+                ],
                 // Заливаем прямоугольник выбранным цветом.
                 color.filled(),
             )))?;
@@ -383,7 +420,7 @@ pub fn heatmap(
                 // Показываем значение с двумя знаками после запятой.
                 format!("{value:.2}"),
                 // Добавляем пару значений для сравнения или построения графика.
-                (x + 0.5, y + 0.5),
+                (input_value + 0.5, second_input_value + 0.5),
                 // Добавляем пару значений для сравнения или построения графика.
                 ("sans-serif", 16)
                     // Выбираем шрифт для числовой подписи.
@@ -414,17 +451,17 @@ fn output_path(lesson_dir: &str, name: &str) -> Result<PathBuf, Box<dyn Error>> 
             // Просматриваем символы имени по одному.
             .chars()
             // Разрешаем только буквы ASCII, цифры, дефис и подчёркивание.
-            .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+            .all(|character| character.is_ascii_alphanumeric() || character == '-' || character == '_')
     {
         // Прерываем вычисление и возвращаем причину ошибки.
         return Err("недопустимое имя графика".into());
     }
     // Все графики урока хранятся в его каталоге visualizations.
-    let dir = Path::new(lesson_dir).join("visualizations");
+    let output_directory = Path::new(lesson_dir).join("visualizations");
     // Создаём каталог при первом запуске урока.
-    std::fs::create_dir_all(&dir)?;
+    std::fs::create_dir_all(&output_directory)?;
     // Добавляем к проверенному имени расширение SVG.
-    Ok(dir.join(format!("{name}.svg")))
+    Ok(output_directory.join(format!("{name}.svg")))
 }
 
 // Добавляет свободное поле вокруг крайних точек графика.
@@ -441,15 +478,15 @@ fn bounds(points: &[(f64, f64)]) -> ((f64, f64), (f64, f64)) {
         f64::NEG_INFINITY,
     );
     // Обновляем границы обеих осей для каждой точки.
-    for &(x, y) in points {
+    for &(input_value, second_input_value) in points {
         // Обновляем значение результатом текущего вычисления.
-        x_min = x_min.min(x);
+        x_min = x_min.min(input_value);
         // Обновляем значение результатом текущего вычисления.
-        x_max = x_max.max(x);
+        x_max = x_max.max(input_value);
         // Обновляем значение результатом текущего вычисления.
-        y_min = y_min.min(y);
+        y_min = y_min.min(second_input_value);
         // Обновляем значение результатом текущего вычисления.
-        y_max = y_max.max(y);
+        y_max = y_max.max(second_input_value);
     }
     // Сохраняем результат этого шага в `x_pad`.
     let x_pad = (x_max - x_min).max(1.0) * 0.05;

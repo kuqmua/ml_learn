@@ -198,13 +198,16 @@ fn main() {
     // Строим график по результатам урока.
     fn visualize(tree: Tree) {
         // Наглядное представление вычислений сводной практики.
-        let chart_points_0: Vec<(f64, f64)> = (0..=50)
+        let decision_tree_points: Vec<(f64, f64)> = (0..=50)
             // Преобразуем каждый элемент в новое значение.
-            .map(|i| {
-                // Сохраняем результат этого шага в `x`.
-                let x = i as f64 / 10.0;
+            .map(|plot_step_index| {
+                // Сохраняем результат этого шага в `horizontal_value`.
+                let horizontal_value = plot_step_index as f64 / 10.0;
                 // Добавляем пару значений для сравнения или построения графика.
-                (x, f64::from(classify_feature_with_decision_tree(&tree, x)))
+                (
+                    horizontal_value,
+                    f64::from(classify_feature_with_decision_tree(&tree, horizontal_value)),
+                )
             })
             // Собираем результаты в коллекцию.
             .collect();
@@ -225,7 +228,7 @@ fn main() {
                 // Указываем подпись этого ряда в легенде.
                 name: "прогноз",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &decision_tree_points,
             }],
         )
         // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

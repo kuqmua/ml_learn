@@ -12,13 +12,16 @@ fn main() {
     // Соседи отсортированы от ближайшего к дальнему.
     let neighbor_labels = [true, false, false, true, true];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
-    for k in [1, 3, 5] {
+    for neighbor_count in [1, 3, 5] {
         // Преобразуем входные данные и сохраняем полученную коллекцию в `positive`.
-        let positive = neighbor_labels[..k].iter().filter(|&&label| label).count();
+        let positive = neighbor_labels[..neighbor_count]
+            .iter()
+            .filter(|&&label| label)
+            .count();
         // Умножаем значения и сохраняем результат в `prediction`.
-        let prediction = positive * 2 > k;
+        let prediction = positive * 2 > neighbor_count;
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-        println!("k={k}: прогноз={prediction}");
+        println!("k={neighbor_count}: прогноз={prediction}");
     }
 
     // Построение графика вынесено из основного кода урока.
@@ -28,22 +31,26 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(neighbor_labels: [bool; 5]) {
     // Показываем значения, рассчитанные по данным примера.
-    let chart_points_0: Vec<(f64, f64)> = [1usize, 3, 5]
+    let positive_neighbor_count_points: Vec<(f64, f64)> = [1usize, 3, 5]
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Преобразуем каждый элемент в новое значение.
-        .map(|&k| {
+        .map(|&neighbor_count| {
             (
                 // Используем подготовленное значение в следующем шаге примера.
-                k as f64,
+                neighbor_count as f64,
                 // Вычисляем значение по указанной формуле.
-                neighbor_labels[..k].iter().filter(|&&v| v).count() as f64 / k as f64,
+                neighbor_labels[..neighbor_count]
+                    .iter()
+                    .filter(|&&element_value| element_value)
+                    .count() as f64
+                    / neighbor_count as f64,
             )
         })
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = [(1.0, 0.5), (5.0, 0.5)].to_vec();
+    // Собираем значения для `decision_boundary_points` в коллекцию.
+    let decision_boundary_points: Vec<(f64, f64)> = [(1.0, 0.5), (5.0, 0.5)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
@@ -63,14 +70,14 @@ fn visualize(neighbor_labels: [bool; 5]) {
                 // Указываем подпись этого ряда в легенде.
                 name: "положительные среди k",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &positive_neighbor_count_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "граница решения",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &decision_boundary_points,
             },
         ],
     )

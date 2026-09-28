@@ -141,13 +141,13 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(models: std::vec::Vec<(f64, bool)>) {
     // Наглядное представление вычислений сводной практики.
-    let chart_points_0: Vec<(f64, f64)> = models
+    let ensembles_points: Vec<(f64, f64)> = models
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.
         .enumerate()
         // Преобразуем каждый элемент в новое значение.
-        .map(|(i, (threshold, _))| (i as f64, *threshold))
+        .map(|(item_index, (threshold, _))| (item_index as f64, *threshold))
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
@@ -167,7 +167,7 @@ fn visualize(models: std::vec::Vec<(f64, bool)>) {
             // Указываем подпись этого ряда в легенде.
             name: "пороги",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &ensembles_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

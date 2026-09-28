@@ -34,15 +34,17 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = (-30..=30).map(|i| (i as f64 / 10.0, 1.0)).collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = (-30..=30)
+    let unregularized_model_points: Vec<(f64, f64)> = (-30..=30)
+        .map(|plot_step_index| (plot_step_index as f64 / 10.0, 1.0))
+        .collect();
+    // Собираем значения для `regularized_model_points` в коллекцию.
+    let regularized_model_points: Vec<(f64, f64)> = (-30..=30)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `w`.
-            let w = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `weight_value`.
+            let weight_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (w, 1.0 + w * w)
+            (weight_value, 1.0 + weight_value * weight_value)
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -65,14 +67,14 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "без регуляризации",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &unregularized_model_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "со штрафом",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &regularized_model_points,
             },
         ],
     )

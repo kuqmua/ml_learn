@@ -9,14 +9,14 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Сохраняем рассчитанное значение `x` для следующих операций.
-    let x = 2.0;
+    // Сохраняем рассчитанное значение `input_value` для следующих операций.
+    let input_value = 2.0;
     // Умножаем значения и сохраняем результат в `square`.
-    let square = x * x;
+    let square = input_value * input_value;
     // Комбинируем исходные величины и сохраняем результат в `doubled_square`.
     let doubled_square = square + square;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("x={x}, x²={square}, 2x²={doubled_square}");
+    println!("x={input_value}, x²={square}, 2x²={doubled_square}");
 
     // Построение графика вынесено из основного кода урока.
     visualize();
@@ -25,24 +25,24 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = (-30..=30)
+    let squared_function_points: Vec<(f64, f64)> = (-30..=30)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, x * x)
+            (horizontal_value, horizontal_value * horizontal_value)
         })
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = (-30..=30)
+    // Собираем значения для `doubled_squared_function_points` в коллекцию.
+    let doubled_squared_function_points: Vec<(f64, f64)> = (-30..=30)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, 2.0 * x * x)
+            (horizontal_value, 2.0 * horizontal_value * horizontal_value)
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -65,14 +65,14 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "x²",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &squared_function_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "2x²",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &doubled_squared_function_points,
             },
         ],
     )

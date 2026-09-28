@@ -5,7 +5,10 @@ pub fn bidirectional_attention(
     states: &[[f64; 2]],
     visible: &[bool],
 ) -> Result<Vec<[f64; 2]>, &'static str> {
-    if states.is_empty() || states.len() != visible.len() || !visible.iter().any(|&x| x) {
+    if states.is_empty()
+        || states.len() != visible.len()
+        || !visible.iter().any(|&input_value| input_value)
+    {
         return Err("неверная форма или пустая маска");
     }
     let mut result = Vec::new();
@@ -13,17 +16,20 @@ pub fn bidirectional_attention(
         let scores: Vec<_> = states
             .iter()
             .enumerate()
-            .filter(|(i, _)| visible[*i])
+            .filter(|(item_index, _)| visible[*item_index])
             .map(|(_, key)| (query[0] * key[0] + query[1] * key[1]) / 2.0_f64.sqrt())
             .collect();
         let maximum = scores.iter().copied().fold(f64::NEG_INFINITY, f64::max);
-        let exp: Vec<_> = scores.iter().map(|&x| (x - maximum).exp()).collect();
-        let sum: f64 = exp.iter().sum();
+        let exponential_values: Vec<_> = scores
+            .iter()
+            .map(|&input_value| (input_value - maximum).exp())
+            .collect();
+        let sum: f64 = exponential_values.iter().sum();
         let mut output = [0.0; 2];
         let mut index = 0;
         for (position, value) in states.iter().enumerate() {
             if visible[position] {
-                let weight = exp[index] / sum;
+                let weight = exponential_values[index] / sum;
                 output[0] += weight * value[0];
                 output[1] += weight * value[1];
                 index += 1;

@@ -8,12 +8,12 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Сохраняем рассчитанное значение `x` для следующих операций.
-    let x = 3.0;
+    // Сохраняем рассчитанное значение `input_value` для следующих операций.
+    let input_value = 3.0;
     // f(x)=x*x: вход x участвует как левый и правый множитель.
-    let left_path_gradient = x;
+    let left_path_gradient = input_value;
     // Сохраняем рассчитанное значение `right_path_gradient` для следующих операций.
-    let right_path_gradient = x;
+    let right_path_gradient = input_value;
     // Комбинируем исходные величины и сохраняем результат в `total_gradient`.
     let total_gradient = left_path_gradient + right_path_gradient;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.

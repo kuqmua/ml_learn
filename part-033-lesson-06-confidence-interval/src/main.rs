@@ -49,7 +49,7 @@ fn visualize(values: [f64; 4], mean: f64, margin: f64) {
         // Добавляем порядковый номер к каждому элементу.
         .enumerate()
         // Преобразуем каждый элемент в новое значение.
-        .map(|(i, &v)| ((i + 1) as f64, v))
+        .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
         // Собираем результаты в коллекцию.
         .collect();
     // Определяем размер данных и сохраняем его в `mean_line`.

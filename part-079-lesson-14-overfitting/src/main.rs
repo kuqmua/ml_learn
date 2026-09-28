@@ -33,23 +33,23 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(train_error: [f64; 3], validation_error: [f64; 3]) {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = train_error
+    let training_error_points: Vec<(f64, f64)> = train_error
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.
         .enumerate()
         // Преобразуем каждый элемент в новое значение.
-        .map(|(i, &v)| ((i + 1) as f64, v))
+        .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = validation_error
+    // Собираем значения для `validation_error_points` в коллекцию.
+    let validation_error_points: Vec<(f64, f64)> = validation_error
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.
         .enumerate()
         // Преобразуем каждый элемент в новое значение.
-        .map(|(i, &v)| ((i + 1) as f64, v))
+        .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
@@ -71,14 +71,14 @@ fn visualize(train_error: [f64; 3], validation_error: [f64; 3]) {
                 // Указываем подпись этого ряда в легенде.
                 name: "train",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &training_error_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "validation",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &validation_error_points,
             },
         ],
     )

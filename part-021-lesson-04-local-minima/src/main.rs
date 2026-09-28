@@ -11,19 +11,20 @@
 fn main() {
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for start in [-0.5, 0.5] {
-        // Создаём изменяемое значение `x` для следующих операций.
-        let mut x = start;
+        // Создаём изменяемое значение `input_value` для следующих операций.
+        let mut input_value = start;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for _ in 0..100 {
             // Производная равна 4x³−4x; шагаем против её знака.
-            let gradient = 4.0 * x * x * x - 4.0 * x;
+            let gradient = 4.0 * input_value * input_value * input_value - 4.0 * input_value;
             // Вычитаем очередной вклад из текущего значения параметра.
-            x -= 0.1 * gradient;
+            input_value -= 0.1 * gradient;
         }
         // Умножаем значения и сохраняем результат в `loss`.
-        let loss = x * x * x * x - 2.0 * x * x;
+        let loss =
+            input_value * input_value * input_value * input_value - 2.0 * input_value * input_value;
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-        println!("старт={start}, найдено x={x:.3}, f(x)={loss:.3}");
+        println!("старт={start}, найдено x={input_value:.3}, f(x)={loss:.3}");
     }
 
     // Построение графика вынесено из основного кода урока.
@@ -33,13 +34,17 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Наглядное представление величин из этого урока.
-    let chart_points_0: Vec<(f64, f64)> = (-150..=150)
+    let local_minima_points: Vec<(f64, f64)> = (-150..=150)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 100.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, x * x * x * x - 2.0 * x * x)
+            (
+                horizontal_value,
+                horizontal_value * horizontal_value * horizontal_value * horizontal_value
+                    - 2.0 * horizontal_value * horizontal_value,
+            )
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -60,7 +65,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "x⁴−2x²",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &local_minima_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

@@ -2,14 +2,20 @@
 // Позиция вращает пары координат Q и K, сохраняя их длину.
 
 use part_189_lesson_36_rope::rotate_pair;
-fn dot(a: [f64; 2], b: [f64; 2]) -> f64 {
-    a[0] * b[0] + a[1] * b[1]
+fn dot(first_value: [f64; 2], second_value: [f64; 2]) -> f64 {
+    first_value[0] * second_value[0] + first_value[1] * second_value[1]
 }
 fn main() {
-    let q = [1.0, 0.0];
-    let k = [1.0, 0.0];
-    let same = dot(rotate_pair(q, 3, 0.2), rotate_pair(k, 3, 0.2));
-    let distant = dot(rotate_pair(q, 3, 0.2), rotate_pair(k, 8, 0.2));
+    let query_vector = [1.0, 0.0];
+    let key_vector = [1.0, 0.0];
+    let same = dot(
+        rotate_pair(query_vector, 3, 0.2),
+        rotate_pair(key_vector, 3, 0.2),
+    );
+    let distant = dot(
+        rotate_pair(query_vector, 3, 0.2),
+        rotate_pair(key_vector, 8, 0.2),
+    );
     assert!((same - 1.0).abs() < 1e-12);
     assert!(distant < same);
     println!("одинаковая позиция: {same:.3}; разные позиции: {distant:.3}");
@@ -17,12 +23,12 @@ fn main() {
 }
 
 fn visualize() {
-    let q = [1.0, 0.0];
-    let q = rotate_pair(q, 0, 0.2);
+    let query_vector = [1.0, 0.0];
+    let query_vector = rotate_pair(query_vector, 0, 0.2);
     let points: Vec<_> = (0..=20)
-        .map(|p| {
-            let k = rotate_pair([1.0, 0.0], p, 0.2);
-            (p as f64, dot(q, k))
+        .map(|position_index| {
+            let key_vector = rotate_pair([1.0, 0.0], position_index, 0.2);
+            (position_index as f64, dot(query_vector, key_vector))
         })
         .collect();
     let path = lesson_visualization::line_chart(

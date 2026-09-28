@@ -16,14 +16,14 @@ fn main() {
             .map(|key| (new_state[0] * key[0] + new_state[1] * key[1]) / 2.0_f64.sqrt())
             .collect();
         let weights = softmax(&logits);
-        let output = weights
-            .iter()
-            .zip(&cached_values)
-            .fold([0.0; 2], |mut out, (&w, v)| {
-                out[0] += w * v[0];
-                out[1] += w * v[1];
-                out
-            });
+        let output = weights.iter().zip(&cached_values).fold(
+            [0.0; 2],
+            |mut output_state, (&weight_value, cached_value)| {
+                output_state[0] += weight_value * cached_value[0];
+                output_state[1] += weight_value * cached_value[1];
+                output_state
+            },
+        );
         cached_outputs.push(output);
     }
     for (cached, recomputed) in cached_outputs.iter().zip(full) {

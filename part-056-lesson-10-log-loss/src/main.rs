@@ -40,9 +40,9 @@ fn main() {
         // Сохраняем результат этого шага в `logarithm`.
         let mut logarithm = 0.0;
         // Повторяем расчёт для каждого элемента последовательности.
-        for odd in (1..=99).step_by(2) {
+        for odd_divisor in (1..=99).step_by(2) {
             // Обновляем значение результатом текущего вычисления.
-            logarithm += term / odd as f64;
+            logarithm += term / odd_divisor as f64;
             // Обновляем значение результатом текущего вычисления.
             term *= ratio * ratio;
         }
@@ -68,24 +68,24 @@ fn visualize(losses: [f64; 4]) {
     // Проверяем ожидаемое свойство учебного примера.
     assert!((losses[0] - losses[3]).abs() < 1e-10);
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = (1..100)
+    let positive_target_loss_points: Vec<(f64, f64)> = (1..100)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `p`.
-            let p = i as f64 / 100.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `probability`.
+            let probability = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (p, -p.ln())
+            (probability, -probability.ln())
         })
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = (1..100)
+    // Собираем значения для `negative_target_loss_points` в коллекцию.
+    let negative_target_loss_points: Vec<(f64, f64)> = (1..100)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `p`.
-            let p = i as f64 / 100.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `probability`.
+            let probability = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (p, -(1.0 - p).ln())
+            (probability, -(1.0 - probability).ln())
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -108,14 +108,14 @@ fn visualize(losses: [f64; 4]) {
                 // Указываем подпись этого ряда в легенде.
                 name: "y=1",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &positive_target_loss_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "y=0",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &negative_target_loss_points,
             },
         ],
     )

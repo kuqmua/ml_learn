@@ -152,15 +152,18 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(training_examples: &[(f64, f64)], weight: f64, bias: f64) {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = training_examples.iter().map(|&(x, y)| (x, y)).collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = (0..=80)
+    let training_points: Vec<(f64, f64)> = training_examples
+        .iter()
+        .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
+        .collect();
+    // Собираем значения для `model_points` в коллекцию.
+    let model_points: Vec<(f64, f64)> = (0..=80)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, weight * x + bias)
+            (horizontal_value, weight * horizontal_value + bias)
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -183,14 +186,14 @@ fn visualize(training_examples: &[(f64, f64)], weight: f64, bias: f64) {
                 // Указываем подпись этого ряда в легенде.
                 name: "train",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &training_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "модель",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &model_points,
             },
         ],
     )

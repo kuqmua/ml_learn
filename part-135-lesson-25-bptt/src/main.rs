@@ -2,28 +2,37 @@
 // Градиент рекуррентного веса учитывает все предыдущие шаги.
 
 use part_134_lesson_25_rnn_state::states;
-fn loss(input: &[f64], wx: f64, wh: f64, target: f64) -> f64 {
-    let last = *states(input, wx, wh).last().unwrap();
+fn loss(input: &[f64], input_weight: f64, recurrent_weight: f64, target: f64) -> f64 {
+    let last = *states(input, input_weight, recurrent_weight)
+        .last()
+        .unwrap();
     0.5 * (last - target).powi(2)
 }
 fn main() {
     let input = [1.0, 0.5, -0.2];
-    let wx = 0.3;
-    let wh = 0.4;
+    let input_weight = 0.3;
+    let recurrent_weight = 0.4;
     let target = 0.7;
-    let history = states(&input, wx, wh);
-    let mut dh = history.last().unwrap() - target;
-    let mut gradient_wh = 0.0;
-    for t in (0..input.len()).rev() {
-        let h = history[t];
-        let dz = dh * (1.0 - h * h);
-        let previous = if t == 0 { 0.0 } else { history[t - 1] };
-        gradient_wh += dz * previous;
-        dh = dz * wh;
+    let history = states(&input, input_weight, recurrent_weight);
+    let mut hidden_gradient = history.last().unwrap() - target;
+    let mut recurrent_weight_gradient = 0.0;
+    for time_index in (0..input.len()).rev() {
+        let hidden_state = history[time_index];
+        let preactivation_gradient = hidden_gradient * (1.0 - hidden_state * hidden_state);
+        let previous = if time_index == 0 {
+            0.0
+        } else {
+            history[time_index - 1]
+        };
+        recurrent_weight_gradient += preactivation_gradient * previous;
+        hidden_gradient = preactivation_gradient * recurrent_weight;
     }
     let epsilon = 1e-5;
-    let numeric = (loss(&input, wx, wh + epsilon, target) - loss(&input, wx, wh - epsilon, target))
+    let numerical_gradient = (loss(&input, input_weight, recurrent_weight + epsilon, target)
+        - loss(&input, input_weight, recurrent_weight - epsilon, target))
         / (2.0 * epsilon);
-    assert!((gradient_wh - numeric).abs() < 1e-8);
-    println!("BPTT gradient={gradient_wh:.6}; численная проверка={numeric:.6}");
+    assert!((recurrent_weight_gradient - numerical_gradient).abs() < 1e-8);
+    println!(
+        "BPTT gradient={recurrent_weight_gradient:.6}; численная проверка={numerical_gradient:.6}"
+    );
 }

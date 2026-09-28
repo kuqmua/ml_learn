@@ -97,7 +97,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(positive_test_count: i32, true_positive_count: i32) {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = [
+    let theoretical_probability_points: Vec<(f64, f64)> = [
         // Добавляем пару значений для сравнения или построения графика.
         (0.0, 0.01 * 0.9 / (0.01 * 0.9 + 0.99 * 0.05)),
         // Добавляем пару значений для сравнения или построения графика.
@@ -105,8 +105,8 @@ fn visualize(positive_test_count: i32, true_positive_count: i32) {
     ]
     // Настраиваем или преобразуем результат предыдущего шага.
     .to_vec();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = [(
+    // Собираем значения для `simulated_probability_points` в коллекцию.
+    let simulated_probability_points: Vec<(f64, f64)> = [(
         // Используем подготовленное значение в следующем шаге примера.
         100000.0,
         // Вычисляем значение по указанной формуле.
@@ -133,14 +133,14 @@ fn visualize(positive_test_count: i32, true_positive_count: i32) {
                 // Указываем подпись этого ряда в легенде.
                 name: "теория",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &theoretical_probability_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "симуляция",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &simulated_probability_points,
             },
         ],
     )

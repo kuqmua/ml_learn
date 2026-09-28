@@ -19,14 +19,15 @@ fn main() {
     ];
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, predictions, expected) in cases {
-        // Сохраняем результат этого шага в `mae`.
-        let mae = part_050_lesson_09_mae::mean_absolute_error(&targets, predictions)
-            // Используем результат, ожидая успешного выполнения шага.
-            .expect("у каждого прогноза есть правильный ответ");
+        // Сохраняем результат этого шага в `mean_absolute_error_value`.
+        let mean_absolute_error_value =
+            part_050_lesson_09_mae::mean_absolute_error(&targets, predictions)
+                // Используем результат, ожидая успешного выполнения шага.
+                .expect("у каждого прогноза есть правильный ответ");
         // Проверяем ожидаемое свойство учебного примера.
-        assert!((mae - expected).abs() < 1e-10);
+        assert!((mean_absolute_error_value - expected).abs() < 1e-10);
         // Печатаем рассчитанные значения для проверки примера.
-        println!("{description}: {predictions:?} → MAE {mae:.3}");
+        println!("{description}: {predictions:?} → MAE {mean_absolute_error_value:.3}");
     }
 
     // Построение графика вынесено из основного кода урока.
@@ -36,20 +37,24 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = (-30..=30)
+    let mae_points: Vec<(f64, f64)> = (-30..=30)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `d`.
-            let d = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `prediction_difference`.
+            let prediction_difference = plot_step_index as f64 / 10.0;
             (
                 // Используем подготовленное значение в следующем шаге примера.
-                d,
+                prediction_difference,
                 // Используем подготовленное значение в следующем шаге примера.
                 part_050_lesson_09_mae::mean_absolute_error(
                     // Передаём ряды или значения для отрисовки графика.
                     &[2.0, 4.0, 6.0],
                     // Передаём ряды или значения для отрисовки графика.
-                    &[2.0 + d, 4.0 + d, 6.0 + d],
+                    &[
+                        2.0 + prediction_difference,
+                        4.0 + prediction_difference,
+                        6.0 + prediction_difference,
+                    ],
                 )
                 // Используем результат, ожидая успешного выполнения шага.
                 .unwrap(),
@@ -74,7 +79,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "цели [2,4,6]",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &mae_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

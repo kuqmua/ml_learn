@@ -44,9 +44,14 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(image: [f64; 4], kernel: [f64; 2]) {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = (0..=image.len() - kernel.len())
+    let local_features_points: Vec<(f64, f64)> = (0..=image.len() - kernel.len())
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| (i as f64, image[i] * kernel[0] + image[i + 1] * kernel[1]))
+        .map(|plot_step_index| {
+            (
+                plot_step_index as f64,
+                image[plot_step_index] * kernel[0] + image[plot_step_index + 1] * kernel[1],
+            )
+        })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
@@ -66,7 +71,7 @@ fn visualize(image: [f64; 4], kernel: [f64; 2]) {
             // Указываем подпись этого ряда в легенде.
             name: "свёртка",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &local_features_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

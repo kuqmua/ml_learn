@@ -50,10 +50,10 @@ fn main() {
         .map(|&(feature, _)| weight * feature + bias)
         // Собираем результаты в коллекцию.
         .collect();
-    // Сохраняем результат этого шага в `mse`.
-    let mse = lesson_047::mean_squared_error(&targets, &predictions).unwrap();
+    // Сохраняем результат этого шага в `mean_squared_error_value`.
+    let mean_squared_error_value = lesson_047::mean_squared_error(&targets, &predictions).unwrap();
     // Печатаем рассчитанные значения для проверки примера.
-    println!("test MSE = {mse}");
+    println!("test MSE = {mean_squared_error_value}");
 
     // Построение графика вынесено из основного кода урока.
     visualize(training, test, weight, bias);
@@ -62,17 +62,23 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(training: [(f64, f64); 2], test: [(f64, f64); 2], weight: f64, bias: f64) {
     // Показываем значения, рассчитанные по данным примера.
-    let chart_points_0: Vec<(f64, f64)> = training.iter().map(|&(x, y)| (x, y)).collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = test.iter().map(|&(x, y)| (x, y)).collect();
-    // Собираем значения для `chart_points_2` в коллекцию.
-    let chart_points_2: Vec<(f64, f64)> = (0..=50)
+    let training_points: Vec<(f64, f64)> = training
+        .iter()
+        .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
+        .collect();
+    // Собираем значения для `test_points` в коллекцию.
+    let test_points: Vec<(f64, f64)> = test
+        .iter()
+        .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
+        .collect();
+    // Собираем значения для `model_points` в коллекцию.
+    let model_points: Vec<(f64, f64)> = (0..=50)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, weight * x + bias)
+            (horizontal_value, weight * horizontal_value + bias)
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -95,21 +101,21 @@ fn visualize(training: [(f64, f64); 2], test: [(f64, f64); 2], weight: f64, bias
                 // Указываем подпись этого ряда в легенде.
                 name: "обучение",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &training_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "тест",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &test_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "модель",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_2,
+                points: &model_points,
             },
         ],
     )

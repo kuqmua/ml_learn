@@ -46,7 +46,9 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = (0..9).map(|i| (i as f64, (i % 3) as f64)).collect();
+    let k_fold_points: Vec<(f64, f64)> = (0..9)
+        .map(|plot_step_index| (plot_step_index as f64, (plot_step_index % 3) as f64))
+        .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
@@ -64,7 +66,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "3 части",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &k_fold_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

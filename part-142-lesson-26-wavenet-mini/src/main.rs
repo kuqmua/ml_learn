@@ -2,8 +2,8 @@
 // Сочетаем причинные дилатированные свёртки, gate и вероятность следующего дискретного отсчёта.
 
 use part_138_lesson_26_causal_convolution::causal_conv;
-fn sigmoid(x: f64) -> f64 {
-    1.0 / (1.0 + (-x).exp())
+fn sigmoid(input_value: f64) -> f64 {
+    1.0 / (1.0 + (-input_value).exp())
 }
 
 // Текущий вход содержит только уже известные отсчёты.
@@ -17,7 +17,7 @@ fn next_probability(history: &[u8]) -> f64 {
     let layer_one: Vec<f64> = filter_one
         .iter()
         .zip(&gate_one)
-        .map(|(&f, &g)| f.tanh() * sigmoid(g))
+        .map(|(&filter_value, &gradient_value)| filter_value.tanh() * sigmoid(gradient_value))
         .collect();
     let filter_two = causal_conv(&layer_one, 1.0, 0.5, 2).unwrap();
     let gate_two = causal_conv(&layer_one, 0.1, 0.6, 2).unwrap();
@@ -43,7 +43,7 @@ fn visualize(samples: &[u8]) {
     let points: Vec<_> = samples
         .iter()
         .enumerate()
-        .map(|(i, &x)| (i as f64, f64::from(x)))
+        .map(|(item_index, &horizontal_value)| (item_index as f64, f64::from(horizontal_value)))
         .collect();
     let path = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),

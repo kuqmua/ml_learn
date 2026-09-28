@@ -9,32 +9,35 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // f(x,y)=x*y+x.
-    let (x, y) = (2.0, 3.0);
+    let (input_value, second_input_value) = (2.0, 3.0);
     // Умножаем значения и сохраняем результат в `multiplied_xy`.
-    let multiplied_xy = x * y;
+    let multiplied_xy = input_value * second_input_value;
     // Комбинируем исходные величины и сохраняем результат в `output`.
-    let output = multiplied_xy + x;
+    let output = multiplied_xy + input_value;
     // Комбинируем исходные величины и сохраняем результат в `derivative_by_x`.
-    let derivative_by_x = y + 1.0;
+    let derivative_by_x = second_input_value + 1.0;
     // Сохраняем рассчитанное значение `derivative_by_y` для следующих операций.
-    let derivative_by_y = x;
+    let derivative_by_y = input_value;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("f={output}, df/dx={derivative_by_x}, df/dy={derivative_by_y}");
 
     // Построение графика вынесено из основного кода урока.
-    visualize(y);
+    visualize(second_input_value);
 }
 
 // Строим график по результатам урока.
-fn visualize(y: f64) {
+fn visualize(vertical_value: f64) {
     // Собираем значения для `chart_points` в коллекцию.
     let chart_points: Vec<(f64, f64)> = (0..=50)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, x * y + x)
+            (
+                horizontal_value,
+                horizontal_value * vertical_value + horizontal_value,
+            )
         })
         // Собираем результаты в коллекцию.
         .collect();

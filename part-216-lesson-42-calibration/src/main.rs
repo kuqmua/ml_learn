@@ -46,18 +46,18 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(observed_frequency: f64) {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = (0..=10)
+    let ideal_calibration_points: Vec<(f64, f64)> = (0..=10)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `p`.
-            let p = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `probability`.
+            let probability = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (p, p)
+            (probability, probability)
         })
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> =
+    // Собираем значения для `observed_calibration_points` в коллекцию.
+    let observed_calibration_points: Vec<(f64, f64)> =
         // Задаём значения следующей строки или последовательности.
         [(0.0, observed_frequency), (1.0, observed_frequency)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
@@ -79,14 +79,14 @@ fn visualize(observed_frequency: f64) {
                 // Указываем подпись этого ряда в легенде.
                 name: "идеальная",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &ideal_calibration_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "частота в примере",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &observed_calibration_points,
             },
         ],
     )

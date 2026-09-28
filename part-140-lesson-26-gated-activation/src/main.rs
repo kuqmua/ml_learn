@@ -19,8 +19,8 @@ fn main() {
 
 fn visualize(filter: f64) {
     let points: Vec<_> = (-50..=50)
-        .map(|i| {
-            let gate = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            let gate = plot_step_index as f64 / 10.0;
             (gate, gated(filter, gate))
         })
         .collect();

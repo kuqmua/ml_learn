@@ -27,23 +27,23 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(train: [f64; 3], centered: std::vec::Vec<f64>) {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = train
+    let original_points: Vec<(f64, f64)> = train
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.
         .enumerate()
         // Преобразуем каждый элемент в новое значение.
-        .map(|(i, &v)| (i as f64, v))
+        .map(|(item_index, &element_value)| (item_index as f64, element_value))
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = centered
+    // Собираем значения для `normalized_points` в коллекцию.
+    let normalized_points: Vec<(f64, f64)> = centered
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.
         .enumerate()
         // Преобразуем каждый элемент в новое значение.
-        .map(|(i, &v)| (i as f64, v))
+        .map(|(item_index, &element_value)| (item_index as f64, element_value))
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
@@ -65,14 +65,14 @@ fn visualize(train: [f64; 3], centered: std::vec::Vec<f64>) {
                 // Указываем подпись этого ряда в легенде.
                 name: "до",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &original_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "после",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &normalized_points,
             },
         ],
     )

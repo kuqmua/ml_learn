@@ -14,8 +14,14 @@ mod tests {
     use super::rotate_pair;
     #[test]
     fn rotation_preserves_norm() {
-        let x = [3.0, 4.0];
-        let y = rotate_pair(x, 7, 0.1);
-        assert!((y[0] * y[0] + y[1] * y[1] - 25.0).abs() < 1e-10);
+        let input_value = [3.0, 4.0];
+        let second_input_value = rotate_pair(input_value, 7, 0.1);
+        assert!(
+            (second_input_value[0] * second_input_value[0]
+                + second_input_value[1] * second_input_value[1]
+                - 25.0)
+                .abs()
+                < 1e-10
+        );
     }
 }

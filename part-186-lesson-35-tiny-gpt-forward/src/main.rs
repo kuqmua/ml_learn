@@ -10,7 +10,7 @@ fn main() {
     let next = last
         .iter()
         .enumerate()
-        .max_by(|a, b| a.1.total_cmp(b.1))
+        .max_by(|first_candidate, second_candidate| first_candidate.1.total_cmp(second_candidate.1))
         .unwrap()
         .0;
     // Изменение будущего токена не меняет предыдущие позиции.

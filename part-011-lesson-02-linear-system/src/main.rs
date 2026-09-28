@@ -18,27 +18,44 @@ fn main() {
         ("решений нет", [0.0, 0.0, 0.0, 0.0], [1.0, 0.0]),
     ];
     // Повторяем расчёт для каждого элемента последовательности.
-    for (description, [a, b, c, d], [first_rhs, second_rhs]) in cases {
+    for (
+        description,
+        [
+            first_row_first_coefficient,
+            first_row_second_coefficient,
+            second_row_first_coefficient,
+            second_row_second_coefficient,
+        ],
+        [first_rhs, second_rhs],
+    ) in cases
+    {
         // Сохраняем результат этого шага в `determinant`.
-        let determinant = a * d - b * c;
+        let determinant = first_row_first_coefficient * second_row_second_coefficient
+            - first_row_second_coefficient * second_row_first_coefficient;
         // Выбираем дальнейший шаг по выполнению условия.
         if determinant != 0.0 {
-            // Сохраняем результат этого шага в `x`.
-            let x = (first_rhs * d - b * second_rhs) / determinant;
-            // Сохраняем результат этого шага в `y`.
-            let y = (a * second_rhs - first_rhs * c) / determinant;
+            // Сохраняем результат этого шага в `first_unknown`.
+            let first_unknown = (first_rhs * second_row_second_coefficient
+                - first_row_second_coefficient * second_rhs)
+                / determinant;
+            // Сохраняем результат этого шага в `second_unknown`.
+            let second_unknown = (first_row_first_coefficient * second_rhs
+                - first_rhs * second_row_first_coefficient)
+                / determinant;
             // Печатаем рассчитанные значения для проверки примера.
-            println!("{description}: x={x}, y={y}");
+            println!("{description}: x={first_unknown}, y={second_unknown}");
         // Обрабатываем случай, когда предыдущее условие не выполнено.
         } else {
             // Если замена столбца правой частью тоже даёт ноль, обе строки описывают одну прямую.
-            let first_replaced = first_rhs * d - b * second_rhs;
+            let first_replaced = first_rhs * second_row_second_coefficient
+                - first_row_second_coefficient * second_rhs;
             // Сохраняем результат этого шага в `second_replaced`.
-            let second_replaced = a * second_rhs - first_rhs * c;
+            let second_replaced =
+                first_row_first_coefficient * second_rhs - first_rhs * second_row_first_coefficient;
             // Сохраняем результат этого шага в `impossible_zero_row`.
-            let impossible_zero_row = (a == 0.0 && b == 0.0 && first_rhs != 0.0)
+            let impossible_zero_row = (first_row_first_coefficient == 0.0 && first_row_second_coefficient == 0.0 && first_rhs != 0.0)
                 // Задаём преобразование для элементов коллекции.
-                || (c == 0.0 && d == 0.0 && second_rhs != 0.0);
+                || (second_row_first_coefficient == 0.0 && second_row_second_coefficient == 0.0 && second_rhs != 0.0);
             // Сохраняем результат этого шага в `actual`.
             let actual = if first_replaced == 0.0 && second_replaced == 0.0 && !impossible_zero_row
             {
@@ -63,24 +80,24 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = (0..=50)
+    let first_equation_points: Vec<(f64, f64)> = (0..=50)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, 5.0 - 2.0 * x)
+            (horizontal_value, 5.0 - 2.0 * horizontal_value)
         })
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = (0..=50)
+    // Собираем значения для `second_equation_points` в коллекцию.
+    let second_equation_points: Vec<(f64, f64)> = (0..=50)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, x - 1.0)
+            (horizontal_value, horizontal_value - 1.0)
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -103,14 +120,14 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "2x+y=5",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &first_equation_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "x−y=1",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &second_equation_points,
             },
         ],
     )

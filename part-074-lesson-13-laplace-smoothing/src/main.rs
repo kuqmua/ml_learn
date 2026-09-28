@@ -29,11 +29,13 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = (0..=8).map(|n| (n as f64, n as f64 / 10.0)).collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = (0..=8)
+    let unsmoothed_probability_points: Vec<(f64, f64)> = (0..=8)
+        .map(|sample_count| (sample_count as f64, sample_count as f64 / 10.0))
+        .collect();
+    // Собираем значения для `smoothed_probability_points` в коллекцию.
+    let smoothed_probability_points: Vec<(f64, f64)> = (0..=8)
         // Преобразуем каждый элемент в новое значение.
-        .map(|n| (n as f64, (n as f64 + 1.0) / 12.0))
+        .map(|sample_count| (sample_count as f64, (sample_count as f64 + 1.0) / 12.0))
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
@@ -55,14 +57,14 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "без сглаживания",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &unsmoothed_probability_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "со сглаживанием",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &smoothed_probability_points,
             },
         ],
     )

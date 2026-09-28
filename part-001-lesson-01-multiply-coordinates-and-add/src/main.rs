@@ -64,15 +64,15 @@ fn visualize(left: &[f64; 2]) {
     // по вертикали — результат умножения координат и сложения. При x = −0,5 результат равен нулю.
     let chart_points: Vec<(f64, f64)> = (-40..=40)
         // Превращаем целые числа в значения x с шагом 0,1.
-        .map(|i| {
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Вычисляем скалярное произведение той же функцией, что использовали выше.
             let product = part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(
                 left,
-                &[1.0, x],
+                &[1.0, horizontal_value],
             )
             .expect("оба вектора имеют две координаты");
-            (x, product)
+            (horizontal_value, product)
         })
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.

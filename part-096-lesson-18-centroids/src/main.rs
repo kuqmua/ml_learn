@@ -36,9 +36,12 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(cluster: [[f64; 2]; 2], centroid: [f64; 2]) {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = cluster.iter().map(|p| (p[0], p[1])).collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = vec![(centroid[0], centroid[1])];
+    let observation_points: Vec<(f64, f64)> = cluster
+        .iter()
+        .map(|data_point| (data_point[0], data_point[1]))
+        .collect();
+    // Собираем значения для `centroid_points` в коллекцию.
+    let centroid_points: Vec<(f64, f64)> = vec![(centroid[0], centroid[1])];
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
@@ -58,14 +61,14 @@ fn visualize(cluster: [[f64; 2]; 2], centroid: [f64; 2]) {
                 // Указываем подпись этого ряда в легенде.
                 name: "точки",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &observation_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "центроид",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &centroid_points,
             },
         ],
     )

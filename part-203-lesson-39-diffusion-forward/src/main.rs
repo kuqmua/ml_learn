@@ -16,8 +16,8 @@ fn main() {
 
 fn visualize(clean: f64, noise: f64) {
     let points: Vec<_> = (0..=100)
-        .map(|i| {
-            let alpha = i as f64 / 100.0;
+        .map(|plot_step_index| {
+            let alpha = plot_step_index as f64 / 100.0;
             (alpha, add_noise(clean, noise, alpha).unwrap())
         })
         .collect();

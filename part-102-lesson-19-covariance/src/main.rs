@@ -9,42 +9,55 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Создаём набор значений `x` для следующего шага примера.
-    let x = [1.0, 2.0, 3.0];
-    // Создаём набор значений `y` для следующего шага примера.
-    let y = [2.0, 4.0, 6.0];
+    // Создаём набор значений `first_feature_values` для следующего шага примера.
+    let first_feature_values = [1.0, 2.0, 3.0];
+    // Создаём набор значений `second_feature_values` для следующего шага примера.
+    let second_feature_values = [2.0, 4.0, 6.0];
     // Преобразуем входные данные и сохраняем полученную коллекцию в `mean_x`.
     // Для каждой пары наблюдений нужны обе координаты; выборочная оценка требует хотя бы две пары.
-    assert_eq!(x.len(), y.len(), "оба ряда должны иметь одинаковую длину");
+    assert_eq!(
+        first_feature_values.len(),
+        second_feature_values.len(),
+        "оба ряда должны иметь одинаковую длину"
+    );
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Обновляем значение результатом текущего вычисления.
-        x.len() >= 2,
+        first_feature_values.len() >= 2,
         // Передаём подпись или текстовое значение для следующего шага.
         "для выборочной ковариации нужны хотя бы две пары"
     );
     // Вычисляем `mean_x` по элементам исходной коллекции.
-    let mean_x = x.iter().sum::<f64>() / x.len() as f64;
+    let mean_x = first_feature_values.iter().sum::<f64>() / first_feature_values.len() as f64;
     // Преобразуем входные данные и сохраняем полученную коллекцию в `mean_y`.
-    let mean_y = y.iter().sum::<f64>() / y.len() as f64;
+    let mean_y = second_feature_values.iter().sum::<f64>() / second_feature_values.len() as f64;
     // Инициализируем изменяемый накопитель `sum` начальным состоянием.
     let mut sum = 0.0;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
-    for index in 0..x.len() {
+    for index in 0..first_feature_values.len() {
         // Прибавляем очередной вклад к ранее накопленному результату.
-        sum += (x[index] - mean_x) * (y[index] - mean_y);
+        sum += (first_feature_values[index] - mean_x) * (second_feature_values[index] - mean_y);
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("выборочная ковариация={}", sum / (x.len() - 1) as f64);
+    println!(
+        "выборочная ковариация={}",
+        sum / (first_feature_values.len() - 1) as f64
+    );
 
     // Построение графика вынесено из основного кода урока.
-    visualize(x, y);
+    visualize(first_feature_values, second_feature_values);
 }
 
 // Строим график по результатам урока.
-fn visualize(x: [f64; 3], y: [f64; 3]) {
+fn visualize(horizontal_value: [f64; 3], vertical_value: [f64; 3]) {
     // Значения из этого урока на графике.
-    let chart_points_0: Vec<(f64, f64)> = x.iter().zip(y.iter()).map(|(&a, &b)| (a, b)).collect();
+    let covariance_points: Vec<(f64, f64)> = horizontal_value
+        .iter()
+        .zip(vertical_value.iter())
+        .map(|(&first_feature_value, &second_feature_value)| {
+            (first_feature_value, second_feature_value)
+        })
+        .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
@@ -62,7 +75,7 @@ fn visualize(x: [f64; 3], y: [f64; 3]) {
             // Указываем подпись этого ряда в легенде.
             name: "наблюдения",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &covariance_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

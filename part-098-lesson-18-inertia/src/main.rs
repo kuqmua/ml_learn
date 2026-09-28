@@ -51,13 +51,17 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = (0..=60)
+    let inertia_points: Vec<(f64, f64)> = (0..=60)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `x`.
-            let x = i as f64 / 10.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `horizontal_value`.
+            let horizontal_value = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
-            (x, ((x - 0.5) * (x - 0.5)).min((x - 5.5) * (x - 5.5)))
+            (
+                horizontal_value,
+                ((horizontal_value - 0.5) * (horizontal_value - 0.5))
+                    .min((horizontal_value - 5.5) * (horizontal_value - 5.5)),
+            )
         })
         // Собираем результаты в коллекцию.
         .collect();
@@ -78,7 +82,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "ближайший из 0.5 и 5.5",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &inertia_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

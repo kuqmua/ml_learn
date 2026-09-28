@@ -43,17 +43,17 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(reference: [f64; 3], cases: [(&str, [f64; 3], f64); 3]) {
     // Показываем значения, рассчитанные по данным примера.
-    let chart_points_0: Vec<(f64, f64)> = reference
+    let reference_distribution_points: Vec<(f64, f64)> = reference
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.
         .enumerate()
         // Преобразуем каждый элемент в новое значение.
-        .map(|(i, &v)| (i as f64, v))
+        .map(|(item_index, &element_value)| (item_index as f64, element_value))
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_1` в коллекцию.
-    let chart_points_1: Vec<(f64, f64)> = cases[1]
+    // Собираем значения для `shifted_distribution_points` в коллекцию.
+    let shifted_distribution_points: Vec<(f64, f64)> = cases[1]
         // Настраиваем или преобразуем результат предыдущего шага.
         .1
         // Просматриваем элементы коллекции по ссылке.
@@ -61,11 +61,11 @@ fn visualize(reference: [f64; 3], cases: [(&str, [f64; 3], f64); 3]) {
         // Добавляем порядковый номер к каждому элементу.
         .enumerate()
         // Преобразуем каждый элемент в новое значение.
-        .map(|(i, &v)| (i as f64, v))
+        .map(|(item_index, &element_value)| (item_index as f64, element_value))
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `chart_points_2` в коллекцию.
-    let chart_points_2: Vec<(f64, f64)> = cases[2]
+    // Собираем значения для `spread_distribution_points` в коллекцию.
+    let spread_distribution_points: Vec<(f64, f64)> = cases[2]
         // Настраиваем или преобразуем результат предыдущего шага.
         .1
         // Просматриваем элементы коллекции по ссылке.
@@ -73,7 +73,7 @@ fn visualize(reference: [f64; 3], cases: [(&str, [f64; 3], f64); 3]) {
         // Добавляем порядковый номер к каждому элементу.
         .enumerate()
         // Преобразуем каждый элемент в новое значение.
-        .map(|(i, &v)| (i as f64, v))
+        .map(|(item_index, &element_value)| (item_index as f64, element_value))
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
@@ -95,21 +95,21 @@ fn visualize(reference: [f64; 3], cases: [(&str, [f64; 3], f64); 3]) {
                 // Указываем подпись этого ряда в легенде.
                 name: "эталон",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_0,
+                points: &reference_distribution_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "сдвиг",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_1,
+                points: &shifted_distribution_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "изменение разброса",
                 // Передаём рассчитанные координаты точек.
-                points: &chart_points_2,
+                points: &spread_distribution_points,
             },
         ],
     )

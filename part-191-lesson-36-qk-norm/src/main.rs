@@ -4,11 +4,12 @@
 use part_188_lesson_36_rmsnorm::rms_norm;
 use part_189_lesson_36_rope::rotate_pair;
 fn main() {
-    let q = rms_norm(&[2.0, 1.0], &[1.0, 1.0], 1e-6).unwrap();
-    let k = rms_norm(&[1.0, 3.0], &[1.0, 1.0], 1e-6).unwrap();
-    let q = rotate_pair([q[0], q[1]], 2, 0.1);
-    let k = rotate_pair([k[0], k[1]], 1, 0.1);
-    let score = (q[0] * k[0] + q[1] * k[1]) / 2.0_f64.sqrt();
+    let query_vector = rms_norm(&[2.0, 1.0], &[1.0, 1.0], 1e-6).unwrap();
+    let key_vector = rms_norm(&[1.0, 3.0], &[1.0, 1.0], 1e-6).unwrap();
+    let query_vector = rotate_pair([query_vector[0], query_vector[1]], 2, 0.1);
+    let key_vector = rotate_pair([key_vector[0], key_vector[1]], 1, 0.1);
+    let score =
+        (query_vector[0] * key_vector[0] + query_vector[1] * key_vector[1]) / 2.0_f64.sqrt();
     assert!(score.is_finite());
     println!("QK-Norm + RoPE score={score:.4}");
 }

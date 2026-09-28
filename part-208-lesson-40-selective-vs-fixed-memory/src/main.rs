@@ -7,8 +7,12 @@ fn selective(values: &[f64], reset: &[bool]) -> Vec<f64> {
     values
         .iter()
         .zip(reset)
-        .map(|(&x, &clear)| {
-            state = if clear { x } else { 0.8 * state + x };
+        .map(|(&input_value, &clear)| {
+            state = if clear {
+                input_value
+            } else {
+                0.8 * state + input_value
+            };
             state
         })
         .collect()
@@ -23,15 +27,15 @@ fn main() {
     visualize(&fixed, &dynamic);
 }
 fn visualize(fixed: &[f64], dynamic: &[f64]) {
-    let a: Vec<_> = fixed
+    let first_plot_points: Vec<_> = fixed
         .iter()
         .enumerate()
-        .map(|(i, &x)| (i as f64, x))
+        .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
         .collect();
-    let b: Vec<_> = dynamic
+    let second_plot_points: Vec<_> = dynamic
         .iter()
         .enumerate()
-        .map(|(i, &x)| (i as f64, x))
+        .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
         .collect();
     let path = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
@@ -42,11 +46,11 @@ fn visualize(fixed: &[f64], dynamic: &[f64]) {
         &[
             lesson_visualization::Series {
                 name: "fixed",
-                points: &a,
+                points: &first_plot_points,
             },
             lesson_visualization::Series {
                 name: "selective",
-                points: &b,
+                points: &second_plot_points,
             },
         ],
     )

@@ -14,7 +14,10 @@ fn main() {
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for threshold in [0.5, 0.7] {
         // Преобразуем входные данные и сохраняем полученную коллекцию в `predictions`.
-        let predictions: Vec<bool> = probabilities.iter().map(|&p| p >= threshold).collect();
+        let predictions: Vec<bool> = probabilities
+            .iter()
+            .map(|&probability| probability >= threshold)
+            .collect();
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("порог {threshold}: {predictions:?}");
     }
@@ -26,16 +29,19 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let chart_points_0: Vec<(f64, f64)> = (0..=100)
+    let threshold_points: Vec<(f64, f64)> = (0..=100)
         // Преобразуем каждый элемент в новое значение.
-        .map(|i| {
-            // Сохраняем результат этого шага в `t`.
-            let t = i as f64 / 100.0;
+        .map(|plot_step_index| {
+            // Сохраняем результат этого шага в `threshold_value`.
+            let threshold_value = plot_step_index as f64 / 100.0;
             (
                 // Используем подготовленное значение в следующем шаге примера.
-                t,
+                threshold_value,
                 // Задаём значения следующей строки или последовательности.
-                [0.2, 0.55, 0.8].iter().filter(|&&p| p >= t).count() as f64,
+                [0.2, 0.55, 0.8]
+                    .iter()
+                    .filter(|&&probability| probability >= threshold_value)
+                    .count() as f64,
             )
         })
         // Собираем результаты в коллекцию.
@@ -57,7 +63,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "оценки 0.2, 0.55, 0.8",
             // Передаём рассчитанные координаты точек.
-            points: &chart_points_0,
+            points: &threshold_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
