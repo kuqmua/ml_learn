@@ -17,7 +17,7 @@ fn main() {
     // Задаём учебные значения для `second_fold`.
     let second_fold = [positive[2], positive[3], negative[2], negative[3]];
     // Повторяем расчёт для каждого элемента последовательности.
-    for (description, fold_a, fold_b, expected_positive) in [
+    for (description, first_fold, second_fold, expected_positive) in [
         // Добавляем пару значений для сравнения или построения графика.
         ("разбиение подряд", bad_first, bad_second, [4, 0]),
         // Добавляем пару значений для сравнения или построения графика.
@@ -26,14 +26,14 @@ fn main() {
         // Задаём учебные значения для `counts`.
         let counts = [
             // Обновляем значение результатом текущего вычисления.
-            fold_a.iter().filter(|&&value| value % 2 == 1).count(),
+            first_fold.iter().filter(|&&value| value % 2 == 1).count(),
             // Обновляем значение результатом текущего вычисления.
-            fold_b.iter().filter(|&&value| value % 2 == 1).count(),
+            second_fold.iter().filter(|&&value| value % 2 == 1).count(),
         ];
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(counts, expected_positive);
         // Печатаем рассчитанные значения для проверки примера.
-        println!("{description}: части {fold_a:?} и {fold_b:?}, положительных {counts:?}");
+        println!("{description}: части {first_fold:?} и {second_fold:?}, положительных {counts:?}");
     }
 
     // Построение графика вынесено из основного кода урока.

@@ -30,14 +30,14 @@ fn main() {
         assert!(stride > 0);
         // Считаем количество элементов и сохраняем его в `rows`.
         let rows = (image.len() - kernel.len()) / stride + 1;
-        // Считаем количество элементов и сохраняем его в `cols`.
-        let cols = (image[0].len() - kernel[0].len()) / stride + 1;
+        // Считаем количество элементов и сохраняем его в `column_count`.
+        let column_count = (image[0].len() - kernel[0].len()) / stride + 1;
         // Создаём набор значений `output` для следующего шага примера.
-        let mut output = vec![vec![0.0; cols]; rows];
+        let mut output = vec![vec![0.0; column_count]; rows];
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for output_row in 0..rows {
             // Повторяем следующий блок для каждого элемента указанной последовательности.
-            for output_column in 0..cols {
+            for output_column in 0..column_count {
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for kernel_row in 0..kernel.len() {
                     // Повторяем следующий блок для каждого элемента указанной последовательности.

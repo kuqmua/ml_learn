@@ -5,7 +5,7 @@ pub fn cosine_similarity(left: &[f64], right: &[f64]) -> Result<f64, &'static st
     // Сохраняем результат этого шага в `numerator`.
     let numerator = lesson_001::multiply_matching_coordinates_then_add(left, right)?;
     // Сохраняем результат этого шага в `denominator`.
-    let denominator = lesson_003::l2_norm(left) * lesson_003::l2_norm(right);
+    let denominator = lesson_003::euclidean_norm(left) * lesson_003::euclidean_norm(right);
     // Выбираем дальнейший шаг по выполнению условия.
     if denominator == 0.0 {
         // Прерываем вычисление и возвращаем причину ошибки.

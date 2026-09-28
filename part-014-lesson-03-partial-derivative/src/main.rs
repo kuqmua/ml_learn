@@ -11,12 +11,14 @@
 fn main() {
     // f(x,y)=x²+3y².
     let (input_value, second_input_value) = (2.0, -1.0);
-    // Умножаем значения и сохраняем результат в `derivative_by_x`.
-    let derivative_by_x = 2.0 * input_value;
-    // Умножаем значения и сохраняем результат в `derivative_by_y`.
-    let derivative_by_y = 6.0 * second_input_value;
+    // Умножаем значения и сохраняем результат в `derivative_by_horizontal_coordinate`.
+    let derivative_by_horizontal_coordinate = 2.0 * input_value;
+    // Умножаем значения и сохраняем результат в `derivative_by_vertical_coordinate`.
+    let derivative_by_vertical_coordinate = 6.0 * second_input_value;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("∂f/∂x={derivative_by_x}, ∂f/∂y={derivative_by_y}");
+    println!(
+        "∂f/∂x={derivative_by_horizontal_coordinate}, ∂f/∂y={derivative_by_vertical_coordinate}"
+    );
 
     // Построение графика вынесено из основного кода урока.
     visualize();
@@ -25,7 +27,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Наглядное представление величин из этого урока.
-    let fixed_y_slice_points: Vec<(f64, f64)> = (-40..=40)
+    let fixed_vertical_coordinate_slice_points: Vec<(f64, f64)> = (-40..=40)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
@@ -35,8 +37,8 @@ fn visualize() {
         })
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `fixed_x_slice_points` в коллекцию.
-    let fixed_x_slice_points: Vec<(f64, f64)> = (-40..=40)
+    // Собираем значения для `fixed_horizontal_coordinate_slice_points` в коллекцию.
+    let fixed_horizontal_coordinate_slice_points: Vec<(f64, f64)> = (-40..=40)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `vertical_value`.
@@ -65,14 +67,14 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "y=-1",
                 // Передаём рассчитанные координаты точек.
-                points: &fixed_y_slice_points,
+                points: &fixed_vertical_coordinate_slice_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "x=2",
                 // Передаём рассчитанные координаты точек.
-                points: &fixed_x_slice_points,
+                points: &fixed_horizontal_coordinate_slice_points,
             },
         ],
     )

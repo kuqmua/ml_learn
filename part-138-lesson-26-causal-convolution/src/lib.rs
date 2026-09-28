@@ -2,7 +2,7 @@
 
 /// Фильтр длины два читает только текущий и предыдущий элементы.
 /// При генерации прогноз после `input` нельзя использовать будущий элемент.
-pub fn causal_conv(
+pub fn causal_convolution(
     input: &[f64],
     weight_current: f64,
     weight_previous: f64,
@@ -23,11 +23,11 @@ pub fn causal_conv(
 
 #[cfg(test)]
 mod tests {
-    use super::causal_conv;
+    use super::causal_convolution;
     #[test]
     fn future_does_not_change_past_outputs() {
-        let short = causal_conv(&[1.0, 2.0], 1.0, 2.0, 1).unwrap();
-        let long = causal_conv(&[1.0, 2.0, 999.0], 1.0, 2.0, 1).unwrap();
+        let short = causal_convolution(&[1.0, 2.0], 1.0, 2.0, 1).unwrap();
+        let long = causal_convolution(&[1.0, 2.0, 999.0], 1.0, 2.0, 1).unwrap();
         assert_eq!(short, long[..2]);
         assert_eq!(short, [1.0, 4.0]);
     }

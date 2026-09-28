@@ -5,11 +5,11 @@
 
 fn main() {
     // Задаём неизменяемые учебные данные.
-    const SAMPLE_CSV: &str = "value\n2\n4\n\n6\n8\n";
+    const SAMPLE_COMMA_SEPARATED_VALUES: &str = "value\n2\n4\n\n6\n8\n";
     // Сохраняем результат этого шага в `values`.
     let mut values = Vec::new();
     // Повторяем расчёт для каждого элемента последовательности.
-    for (line_index, line) in SAMPLE_CSV.lines().enumerate().skip(1) {
+    for (line_index, line) in SAMPLE_COMMA_SEPARATED_VALUES.lines().enumerate().skip(1) {
         // Выбираем дальнейший шаг по выполнению условия.
         if line.trim().is_empty() {
             // Переходим к следующему шагу цикла или завершаем его.
@@ -59,7 +59,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(values: std::vec::Vec<f64>, mean: f64, median: f64) {
     // Значения из этого урока на графике.
-    let csv_observation_points: Vec<(f64, f64)> = values
+    let comma_separated_value_observation_points: Vec<(f64, f64)> = values
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.
@@ -91,7 +91,7 @@ fn visualize(values: std::vec::Vec<f64>, mean: f64, median: f64) {
                 // Указываем подпись этого ряда в легенде.
                 name: "CSV",
                 // Передаём рассчитанные координаты точек.
-                points: &csv_observation_points,
+                points: &comma_separated_value_observation_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {

@@ -11,12 +11,12 @@
 fn main() {
     // Создаём набор значений `embedding_table` для следующего шага примера.
     let embedding_table = [[0.0, 0.0], [0.8, 0.2], [0.7, 0.3]];
-    // Сохраняем рассчитанное значение `token_id` для следующих операций.
-    let token_id = 2;
+    // Сохраняем рассчитанное значение `token_identifier` для следующих операций.
+    let token_identifier = 2;
     // Сохраняем рассчитанное значение `embedding` для следующих операций.
-    let embedding = embedding_table[token_id];
+    let embedding = embedding_table[token_identifier];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("токен={token_id}, плотный вектор={embedding:?}");
+    println!("токен={token_identifier}, плотный вектор={embedding:?}");
 
     // Построение графика вынесено из основного кода урока.
     visualize(embedding);

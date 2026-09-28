@@ -4,7 +4,7 @@
 fn main() {
     // Повторяющийся корпус даёт устойчивые кандидаты на слияние.
     let corpus = ["мама мыла", "мама дома", "мама мыла"];
-    let model = part_144_lesson_27_bpe_training::Bpe::train(&corpus, 16);
+    let model = part_144_lesson_27_bpe_training::BytePairEncoding::train_from_corpus(&corpus, 16);
     assert!(!model.merges.is_empty());
     // Показываем, как растёт словарь после каждого слияния.
     println!(

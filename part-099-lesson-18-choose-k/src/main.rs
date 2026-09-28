@@ -26,7 +26,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(candidates: [(i32, f64); 4]) {
     // График величин и зависимостей, изученных в этом уроке.
-    let choose_k_points: Vec<(f64, f64)> = candidates
+    let cluster_count_candidate_points: Vec<(f64, f64)> = candidates
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Преобразуем каждый элемент в новое значение.
@@ -50,7 +50,7 @@ fn visualize(candidates: [(i32, f64); 4]) {
             // Указываем подпись этого ряда в легенде.
             name: "варианты из урока",
             // Передаём рассчитанные координаты точек.
-            points: &choose_k_points,
+            points: &cluster_count_candidate_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

@@ -13,7 +13,7 @@ fn main() {
     let first_feature_values = [1.0, 2.0, 3.0];
     // Создаём набор значений `second_feature_values` для следующего шага примера.
     let second_feature_values = [2.0, 4.0, 6.0];
-    // Преобразуем входные данные и сохраняем полученную коллекцию в `mean_x`.
+    // Преобразуем входные данные и сохраняем полученную коллекцию в `mean_horizontal_coordinate`.
     // Для каждой пары наблюдений нужны обе координаты; выборочная оценка требует хотя бы две пары.
     assert_eq!(
         first_feature_values.len(),
@@ -27,16 +27,19 @@ fn main() {
         // Передаём подпись или текстовое значение для следующего шага.
         "для выборочной ковариации нужны хотя бы две пары"
     );
-    // Вычисляем `mean_x` по элементам исходной коллекции.
-    let mean_x = first_feature_values.iter().sum::<f64>() / first_feature_values.len() as f64;
-    // Преобразуем входные данные и сохраняем полученную коллекцию в `mean_y`.
-    let mean_y = second_feature_values.iter().sum::<f64>() / second_feature_values.len() as f64;
+    // Вычисляем `mean_horizontal_coordinate` по элементам исходной коллекции.
+    let mean_horizontal_coordinate =
+        first_feature_values.iter().sum::<f64>() / first_feature_values.len() as f64;
+    // Преобразуем входные данные и сохраняем полученную коллекцию в `mean_vertical_coordinate`.
+    let mean_vertical_coordinate =
+        second_feature_values.iter().sum::<f64>() / second_feature_values.len() as f64;
     // Инициализируем изменяемый накопитель `sum` начальным состоянием.
     let mut sum = 0.0;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for index in 0..first_feature_values.len() {
         // Прибавляем очередной вклад к ранее накопленному результату.
-        sum += (first_feature_values[index] - mean_x) * (second_feature_values[index] - mean_y);
+        sum += (first_feature_values[index] - mean_horizontal_coordinate)
+            * (second_feature_values[index] - mean_vertical_coordinate);
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(

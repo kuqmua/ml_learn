@@ -19,60 +19,76 @@ pub struct Series<'a> {
 /// Строит линейный SVG-график и возвращает путь к файлу.
 pub fn line_chart(
     // Путь к пакету урока определяет место сохранения SVG.
-    lesson_dir: &str,
+    lesson_directory: &str,
     // Безопасное имя выходного файла без расширения.
     name: &str,
     // Заголовок, видимый над рисунком.
     title: &str,
     // Название величины на горизонтальной оси.
-    x_label: &str,
+    horizontal_axis_label: &str,
     // Название величины на вертикальной оси.
-    y_label: &str,
+    vertical_axis_label: &str,
     // Наборы точек с подписями для легенды.
     series: &[Series<'_>],
 ) -> Result<PathBuf, Box<dyn Error>> {
     // Передаём точки в общую отрисовку с соединяющими линиями.
-    draw_chart(lesson_dir, name, title, x_label, y_label, series, true)
+    draw_chart(
+        lesson_directory,
+        name,
+        title,
+        horizontal_axis_label,
+        vertical_axis_label,
+        series,
+        true,
+    )
 }
 
 /// Строит диаграмму рассеяния и возвращает путь к SVG.
 pub fn scatter_chart(
     // Путь к пакету урока определяет место сохранения SVG.
-    lesson_dir: &str,
+    lesson_directory: &str,
     // Безопасное имя выходного файла без расширения.
     name: &str,
     // Заголовок, видимый над рисунком.
     title: &str,
     // Название величины на горизонтальной оси.
-    x_label: &str,
+    horizontal_axis_label: &str,
     // Название величины на вертикальной оси.
-    y_label: &str,
+    vertical_axis_label: &str,
     // Наборы точек с подписями для легенды.
     series: &[Series<'_>],
 ) -> Result<PathBuf, Box<dyn Error>> {
     // Передаём точки в общую отрисовку без соединяющих линий.
-    draw_chart(lesson_dir, name, title, x_label, y_label, series, false)
+    draw_chart(
+        lesson_directory,
+        name,
+        title,
+        horizontal_axis_label,
+        vertical_axis_label,
+        series,
+        false,
+    )
 }
 
 // Общая отрисовка: линии включаются только для линейного графика.
 fn draw_chart(
     // Путь к пакету урока определяет место сохранения SVG.
-    lesson_dir: &str,
+    lesson_directory: &str,
     // Безопасное имя выходного файла без расширения.
     name: &str,
     // Заголовок, видимый над рисунком.
     title: &str,
     // Название величины на горизонтальной оси.
-    x_label: &str,
+    horizontal_axis_label: &str,
     // Название величины на вертикальной оси.
-    y_label: &str,
+    vertical_axis_label: &str,
     // Наборы точек с подписями для легенды.
     series: &[Series<'_>],
     // Соединять точки линией или показывать их отдельно.
     connect_points: bool,
 ) -> Result<PathBuf, Box<dyn Error>> {
     // Проверяем имя файла и подготавливаем каталог visualizations.
-    let path = output_path(lesson_dir, name)?;
+    let path = output_path(lesson_directory, name)?;
     // Собираем только конечные координаты для выбора диапазона осей.
     let points: Vec<(f64, f64)> = series
         // Просматриваем элементы коллекции по ссылке.
@@ -91,7 +107,8 @@ fn draw_chart(
         return Err("нет конечных точек для графика".into());
     }
     // Определяем диапазоны осей с небольшими полями.
-    let ((x_min, x_max), (y_min, y_max)) = bounds(&points);
+    let ((horizontal_minimum, horizontal_maximum), (vertical_minimum, vertical_maximum)) =
+        bounds(&points);
     // Создаём SVG-холст заданного размера.
     let root = SVGBackend::new(&path, (900, 560)).into_drawing_area();
     // Делаем фон графика белым.
@@ -107,14 +124,17 @@ fn draw_chart(
         // Выделяем место для подписей вертикальной оси.
         .y_label_area_size(65)
         // Устанавливаем числовые диапазоны обеих осей.
-        .build_cartesian_2d(x_min..x_max, y_min..y_max)?;
+        .build_cartesian_2d(
+            horizontal_minimum..horizontal_maximum,
+            vertical_minimum..vertical_maximum,
+        )?;
     chart
         // Настраиваем оси и координатную сетку.
         .configure_mesh()
         // Подписываем горизонтальную ось.
-        .x_desc(x_label)
+        .x_desc(horizontal_axis_label)
         // Подписываем вертикальную ось.
-        .y_desc(y_label)
+        .y_desc(vertical_axis_label)
         // Наносим подготовленные элементы на график.
         .draw()?;
     // Рисуем каждый подписанный ряд своим цветом.
@@ -198,18 +218,18 @@ fn draw_chart(
 /// Строит столбчатую диаграмму из подписанных значений.
 pub fn bars(
     // Путь к пакету урока определяет место сохранения SVG.
-    lesson_dir: &str,
+    lesson_directory: &str,
     // Безопасное имя выходного файла без расширения.
     name: &str,
     // Заголовок, видимый над рисунком.
     title: &str,
     // Название величины на вертикальной оси.
-    y_label: &str,
+    vertical_axis_label: &str,
     // Подписанные значения для столбцов.
     values: &[(&str, f64)],
 ) -> Result<PathBuf, Box<dyn Error>> {
     // Проверяем имя файла и подготавливаем каталог visualizations.
-    let path = output_path(lesson_dir, name)?;
+    let path = output_path(lesson_directory, name)?;
     // Пустые и нечисловые данные невозможно показать на диаграмме.
     if values.is_empty()
         || values
@@ -220,17 +240,17 @@ pub fn bars(
         return Err("для столбцов нужны конечные значения".into());
     }
     // Нижняя граница цвета или вертикальной оси.
-    let min = values
+    let minimum_value = values
         .iter()
         .map(|(_, element_value)| *element_value)
         .fold(0.0_f64, f64::min);
     // Верхняя граница цвета или вертикальной оси.
-    let max = values
+    let maximum_value = values
         .iter()
         .map(|(_, element_value)| *element_value)
         .fold(0.0_f64, f64::max);
     // Добавляем поле, чтобы крайний столбец не касался рамки.
-    let axis_padding = (max - min).max(1.0) * 0.1;
+    let axis_padding = (maximum_value - minimum_value).max(1.0) * 0.1;
     // Создаём SVG-холст заданного размера.
     let root = SVGBackend::new(&path, (900, 560)).into_drawing_area();
     // Делаем фон графика белым.
@@ -248,7 +268,7 @@ pub fn bars(
         // Устанавливаем числовые диапазоны обеих осей.
         .build_cartesian_2d(
             -0.5..values.len() as f64 - 0.5,
-            min - axis_padding..max + axis_padding,
+            minimum_value - axis_padding..maximum_value + axis_padding,
         )?;
     chart
         // Настраиваем оси и координатную сетку.
@@ -275,7 +295,7 @@ pub fn bars(
                 .unwrap_or_default()
         })
         // Подписываем вертикальную ось.
-        .y_desc(y_label)
+        .y_desc(vertical_axis_label)
         // Наносим подготовленные элементы на график.
         .draw()?;
     // Строим один столбец для каждого подписанного значения.
@@ -304,7 +324,7 @@ pub fn bars(
 /// Показывает значения матрицы цветом: светлая ячейка — меньшее значение.
 pub fn heatmap(
     // Путь к пакету урока определяет место сохранения SVG.
-    lesson_dir: &str,
+    lesson_directory: &str,
     // Безопасное имя выходного файла без расширения.
     name: &str,
     // Заголовок, видимый над рисунком.
@@ -313,7 +333,7 @@ pub fn heatmap(
     values: &[Vec<f64>],
 ) -> Result<PathBuf, Box<dyn Error>> {
     // Проверяем имя файла и подготавливаем каталог visualizations.
-    let path = output_path(lesson_dir, name)?;
+    let path = output_path(lesson_directory, name)?;
     // Количество строк задаёт высоту сетки.
     let rows = values.len();
     // Длина первой строки задаёт ширину сетки.
@@ -333,7 +353,7 @@ pub fn heatmap(
         return Err("матрица должна быть прямоугольной и содержать конечные значения".into());
     }
     // Нижняя граница цвета или вертикальной оси.
-    let min = values
+    let minimum_value = values
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Объединяем все ячейки матрицы в один поток чисел.
@@ -343,7 +363,7 @@ pub fn heatmap(
         // Находим наименьшее значение для цветовой шкалы.
         .fold(f64::INFINITY, f64::min);
     // Верхняя граница цвета или вертикальной оси.
-    let max = values
+    let maximum_value = values
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Объединяем все ячейки матрицы в один поток чисел.
@@ -384,13 +404,13 @@ pub fn heatmap(
         // Рисуем каждую ячейку своим цветом и числом.
         for (column_index, &value) in row.iter().enumerate() {
             // Нормируем значение ячейки в диапазон от нуля до единицы.
-            let normalized_fraction = if max == min {
+            let normalized_fraction = if maximum_value == minimum_value {
                 // Для одинаковых ячеек используем середину цветовой шкалы.
                 0.5
             // Нормируем разные значения по минимуму и максимуму.
             } else {
                 // Вычисляем значение по указанной формуле.
-                (value - min) / (max - min)
+                (value - minimum_value) / (maximum_value - minimum_value)
             };
             // Номер ряда определяет цвет из палитры Plotters.
             let color = RGBColor(
@@ -443,7 +463,7 @@ pub fn heatmap(
 }
 
 // Создаёт отдельный каталог для файлов, полученных при запуске урока.
-fn output_path(lesson_dir: &str, name: &str) -> Result<PathBuf, Box<dyn Error>> {
+fn output_path(lesson_directory: &str, name: &str) -> Result<PathBuf, Box<dyn Error>> {
     // Проверяем имя файла до обращения к файловой системе.
     if name.is_empty()
         // Задаём преобразование для элементов коллекции.
@@ -457,7 +477,7 @@ fn output_path(lesson_dir: &str, name: &str) -> Result<PathBuf, Box<dyn Error>> 
         return Err("недопустимое имя графика".into());
     }
     // Все графики урока хранятся в его каталоге visualizations.
-    let output_directory = Path::new(lesson_dir).join("visualizations");
+    let output_directory = Path::new(lesson_directory).join("visualizations");
     // Создаём каталог при первом запуске урока.
     std::fs::create_dir_all(&output_directory)?;
     // Добавляем к проверенному имени расширение SVG.
@@ -467,7 +487,12 @@ fn output_path(lesson_dir: &str, name: &str) -> Result<PathBuf, Box<dyn Error>> 
 // Добавляет свободное поле вокруг крайних точек графика.
 fn bounds(points: &[(f64, f64)]) -> ((f64, f64), (f64, f64)) {
     // Начинаем поиск крайних координат среди точек.
-    let (mut x_min, mut x_max, mut y_min, mut y_max) = (
+    let (
+        mut horizontal_minimum,
+        mut horizontal_maximum,
+        mut vertical_minimum,
+        mut vertical_maximum,
+    ) = (
         // Задаём именованное поле или параметр.
         f64::INFINITY,
         // Задаём именованное поле или параметр.
@@ -480,22 +505,28 @@ fn bounds(points: &[(f64, f64)]) -> ((f64, f64), (f64, f64)) {
     // Обновляем границы обеих осей для каждой точки.
     for &(input_value, second_input_value) in points {
         // Обновляем значение результатом текущего вычисления.
-        x_min = x_min.min(input_value);
+        horizontal_minimum = horizontal_minimum.min(input_value);
         // Обновляем значение результатом текущего вычисления.
-        x_max = x_max.max(input_value);
+        horizontal_maximum = horizontal_maximum.max(input_value);
         // Обновляем значение результатом текущего вычисления.
-        y_min = y_min.min(second_input_value);
+        vertical_minimum = vertical_minimum.min(second_input_value);
         // Обновляем значение результатом текущего вычисления.
-        y_max = y_max.max(second_input_value);
+        vertical_maximum = vertical_maximum.max(second_input_value);
     }
-    // Сохраняем результат этого шага в `x_pad`.
-    let x_pad = (x_max - x_min).max(1.0) * 0.05;
-    // Сохраняем результат этого шага в `y_pad`.
-    let y_pad = (y_max - y_min).max(1.0) * 0.1;
+    // Сохраняем результат этого шага в `horizontal_axis_padding`.
+    let horizontal_axis_padding = (horizontal_maximum - horizontal_minimum).max(1.0) * 0.05;
+    // Сохраняем результат этого шага в `vertical_axis_padding`.
+    let vertical_axis_padding = (vertical_maximum - vertical_minimum).max(1.0) * 0.1;
     (
         // Добавляем пару значений для сравнения или построения графика.
-        (x_min - x_pad, x_max + x_pad),
+        (
+            horizontal_minimum - horizontal_axis_padding,
+            horizontal_maximum + horizontal_axis_padding,
+        ),
         // Добавляем пару значений для сравнения или построения графика.
-        (y_min - y_pad, y_max + y_pad),
+        (
+            vertical_minimum - vertical_axis_padding,
+            vertical_maximum + vertical_axis_padding,
+        ),
     )
 }

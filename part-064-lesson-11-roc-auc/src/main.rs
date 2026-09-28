@@ -62,9 +62,11 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Значения из этого урока на графике.
-    let ideal_roc_points: Vec<(f64, f64)> = [(0.0, 0.0), (0.0, 1.0), (1.0, 1.0)].to_vec();
-    // Собираем значения для `random_roc_points` в коллекцию.
-    let random_roc_points: Vec<(f64, f64)> = [(0.0, 0.0), (1.0, 1.0)].to_vec();
+    let ideal_receiver_operating_characteristic_points: Vec<(f64, f64)> =
+        [(0.0, 0.0), (0.0, 1.0), (1.0, 1.0)].to_vec();
+    // Собираем значения для `random_receiver_operating_characteristic_points` в коллекцию.
+    let random_receiver_operating_characteristic_points: Vec<(f64, f64)> =
+        [(0.0, 0.0), (1.0, 1.0)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
@@ -84,14 +86,14 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "идеал",
                 // Передаём рассчитанные координаты точек.
-                points: &ideal_roc_points,
+                points: &ideal_receiver_operating_characteristic_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "случайный порядок",
                 // Передаём рассчитанные координаты точек.
-                points: &random_roc_points,
+                points: &random_receiver_operating_characteristic_points,
             },
         ],
     )

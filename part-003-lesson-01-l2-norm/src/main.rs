@@ -18,7 +18,7 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, vector, expected) in cases {
         // В библиотеке длина строится на вычислении из первого урока.
-        let length = part_003_lesson_01_l2_norm::l2_norm(&vector);
+        let length = part_003_lesson_01_l2_norm::euclidean_norm(&vector);
         // Проверяем ожидаемое свойство учебного примера.
         assert!((length - expected).abs() < 1e-10);
         // Печатаем рассчитанные значения для проверки примера.
@@ -32,7 +32,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Наглядное представление величин из этого урока.
-    let l2_norm_points: Vec<(f64, f64)> = (-50..=50)
+    let euclidean_norm_points: Vec<(f64, f64)> = (-50..=50)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
@@ -40,7 +40,7 @@ fn visualize() {
             // Добавляем пару значений для сравнения или построения графика.
             (
                 horizontal_value,
-                part_003_lesson_01_l2_norm::l2_norm(&[horizontal_value, 4.0]),
+                part_003_lesson_01_l2_norm::euclidean_norm(&[horizontal_value, 4.0]),
             )
         })
         // Собираем результаты в коллекцию.
@@ -62,7 +62,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "вектор [x, 4]",
             // Передаём рассчитанные координаты точек.
-            points: &l2_norm_points,
+            points: &euclidean_norm_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

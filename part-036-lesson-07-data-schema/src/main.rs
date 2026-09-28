@@ -9,10 +9,10 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Сохраняем рассчитанное значение `csv` для следующих операций.
-    let csv = "feature,target\n1.5,0\n2.5,1\n";
+    // Сохраняем рассчитанное значение `comma_separated_values_text` для следующих операций.
+    let comma_separated_values_text = "feature,target\n1.5,0\n2.5,1\n";
     // Создаём изменяемое значение `lines` для следующих операций.
-    let mut lines = csv.lines();
+    let mut lines = comma_separated_values_text.lines();
     // Сохраняем рассчитанное значение `header` для следующих операций.
     let header = lines.next().expect("CSV не пустой");
     // Проверяем, что сравниваемые размерности или значения действительно совпадают.

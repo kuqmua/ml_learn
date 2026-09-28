@@ -17,14 +17,14 @@ fn main() {
     let precision = lesson_059::precision(counts);
     // Сохраняем результат этого шага в `recall`.
     let recall = lesson_060::recall(counts);
-    // Сохраняем результат этого шага в `f1`.
-    let f1_score = lesson_061::f1(precision, recall);
+    // Сохраняем результат этого шага в `harmonic_mean_of_precision_and_recall`.
+    let harmonic_mean_score = lesson_061::harmonic_mean_of_precision_and_recall(precision, recall);
     // Сохраняем результат этого шага в `accuracy`.
     let accuracy = lesson_058::accuracy(counts);
     // Печатаем рассчитанные значения для проверки примера.
     println!(
         // Передаём подпись или текстовое значение для следующего шага.
-        "модель: {counts:?}, precision={precision:?}, recall={recall:?}, F1={f1_score:?}, accuracy={accuracy:?}"
+        "модель: {counts:?}, precision={precision:?}, recall={recall:?}, F1={harmonic_mean_score:?}, accuracy={accuracy:?}"
     );
 
     // Задаём учебные значения для `all_negative_scores`.

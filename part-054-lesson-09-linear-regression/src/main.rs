@@ -84,12 +84,16 @@ fn main() {
         .collect();
     // Собираем значения для `baseline_predictions` в коллекцию.
     let baseline_predictions: Vec<_> = test.iter().map(|_| 5.0).collect();
-    // Сохраняем результат этого шага в `model_mse`.
-    let model_mse = lesson_047::mean_squared_error(&targets, &model_predictions).unwrap();
-    // Сохраняем результат этого шага в `baseline_mse`.
-    let baseline_mse = lesson_047::mean_squared_error(&targets, &baseline_predictions).unwrap();
+    // Сохраняем результат этого шага в `model_mean_squared_error`.
+    let model_mean_squared_error =
+        lesson_047::mean_squared_error(&targets, &model_predictions).unwrap();
+    // Сохраняем результат этого шага в `baseline_mean_squared_error`.
+    let baseline_mean_squared_error =
+        lesson_047::mean_squared_error(&targets, &baseline_predictions).unwrap();
     // Печатаем рассчитанные значения для проверки примера.
-    println!("w={weight:.3}, b={bias:.3}, test MSE={model_mse:.6}, baseline MSE={baseline_mse:.3}");
+    println!(
+        "w={weight:.3}, b={bias:.3}, test MSE={model_mean_squared_error:.6}, baseline MSE={baseline_mean_squared_error:.3}"
+    );
 
     // Построение графика вынесено из основного кода урока.
     visualize(weight, bias, test);

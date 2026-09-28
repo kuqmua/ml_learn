@@ -10,16 +10,18 @@
 fn main() {
     // f(x,y)=x*y+x.
     let (input_value, second_input_value) = (2.0, 3.0);
-    // Умножаем значения и сохраняем результат в `multiplied_xy`.
-    let multiplied_xy = input_value * second_input_value;
+    // Умножаем значения и сохраняем результат в `multiplied_coordinates`.
+    let multiplied_coordinates = input_value * second_input_value;
     // Комбинируем исходные величины и сохраняем результат в `output`.
-    let output = multiplied_xy + input_value;
-    // Комбинируем исходные величины и сохраняем результат в `derivative_by_x`.
-    let derivative_by_x = second_input_value + 1.0;
-    // Сохраняем рассчитанное значение `derivative_by_y` для следующих операций.
-    let derivative_by_y = input_value;
+    let output = multiplied_coordinates + input_value;
+    // Комбинируем исходные величины и сохраняем результат в `derivative_by_horizontal_coordinate`.
+    let derivative_by_horizontal_coordinate = second_input_value + 1.0;
+    // Сохраняем рассчитанное значение `derivative_by_vertical_coordinate` для следующих операций.
+    let derivative_by_vertical_coordinate = input_value;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("f={output}, df/dx={derivative_by_x}, df/dy={derivative_by_y}");
+    println!(
+        "f={output}, df/dx={derivative_by_horizontal_coordinate}, df/dy={derivative_by_vertical_coordinate}"
+    );
 
     // Построение графика вынесено из основного кода урока.
     visualize(second_input_value);

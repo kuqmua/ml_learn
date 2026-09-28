@@ -2,10 +2,10 @@
 // Специальный токен собирает информацию от патчей для классификации изображения.
 
 fn softmax(values: &[f64]) -> Vec<f64> {
-    let max = values.iter().copied().fold(f64::NEG_INFINITY, f64::max);
+    let maximum_value = values.iter().copied().fold(f64::NEG_INFINITY, f64::max);
     let exponential_values: Vec<_> = values
         .iter()
-        .map(|&patch_value| (patch_value - max).exp())
+        .map(|&patch_value| (patch_value - maximum_value).exp())
         .collect();
     let sum: f64 = exponential_values.iter().sum();
     exponential_values

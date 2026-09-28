@@ -33,10 +33,10 @@ fn main() {
         {
             // Проверяем условие и выбираем соответствующую ветку алгоритма.
             if !vocabulary.contains_key(word) {
-                // Считаем количество элементов и сохраняем его в `token_id`.
-                let token_id = vocabulary.len();
+                // Считаем количество элементов и сохраняем его в `token_identifier`.
+                let token_identifier = vocabulary.len();
                 // Выполняем очередное действие, после которого продолжаем следующий шаг.
-                vocabulary.insert(word.into(), token_id);
+                vocabulary.insert(word.into(), token_identifier);
             }
         }
         // Используем ранее рассчитанное значение `vocabulary` в текущем выражении.

@@ -36,7 +36,7 @@ fn main() {
     }
 
     // Шаг: Токенизируем запрос, рассчитываем TF-IDF по документам и возвращаем top-k источников.
-    let top_k = (|| -> Vec<(&'static str, f64)> {
+    let highest_ranked_items = (|| -> Vec<(&'static str, f64)> {
         // Используем подготовленное значение в следующем шаге примера.
         /* Оцениваем совпадения слов запроса и документов с поправкой на частоту слова. */
         // Сохраняем результат этого шага в `query`.
@@ -46,7 +46,7 @@ fn main() {
         // Создаём набор значений `ranked_results` для следующего шага примера.
         let mut ranked_results = vec![];
         // Повторяем следующий блок для каждого элемента указанной последовательности.
-        for &(document_id, document_text) in &DOCUMENTS {
+        for &(document_identifier, document_text) in &DOCUMENTS {
             // Сохраняем рассчитанное значение `document_tokens` для следующих операций.
             let document_tokens = split_text_into_lowercase_words(document_text);
             // Частота слова внутри документа составляет компонент TF.
@@ -150,7 +150,7 @@ fn main() {
             // Проверяем условие и выбираем соответствующую ветку алгоритма.
             if relevance_score > 0. {
                 // Сохраняем очередной рассчитанный элемент в коллекции.
-                ranked_results.push((document_id, relevance_score));
+                ranked_results.push((document_identifier, relevance_score));
             }
         }
         // Самые релевантные документы ставим первыми.
@@ -167,18 +167,18 @@ fn main() {
     // Собираем полученные элементы в вектор.
     .collect::<Vec<_>>();
     // Печатаем рассчитанные значения для проверки примера.
-    println!("top-k: {top_k:?}");
+    println!("top-k: {highest_ranked_items:?}");
 
     // Построение графика вынесено из основного кода урока.
-    visualize(top_k);
+    visualize(highest_ranked_items);
 }
 
 // Строим график по результатам урока.
-fn visualize(top_k: std::vec::Vec<(&str, f64)>) {
+fn visualize(highest_ranked_items: std::vec::Vec<(&str, f64)>) {
     // Собираем значения для `chart_values` в коллекцию.
-    let chart_values: Vec<(&str, f64)> = top_k
+    let chart_values: Vec<(&str, f64)> = highest_ranked_items
         .iter()
-        .map(|(document_id, score)| (*document_id, *score))
+        .map(|(document_identifier, score)| (*document_identifier, *score))
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::bars(

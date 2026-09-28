@@ -11,21 +11,21 @@
 fn main() {
     // Создаём набор значений `rows` для следующего шага примера.
     let rows = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    // Сохраняем рассчитанное значение `train` для следующих операций.
-    let train = &rows[..6];
+    // Сохраняем рассчитанное значение `training_data` для следующих операций.
+    let training_data = &rows[..6];
     // Сохраняем рассчитанное значение `validation` для следующих операций.
     let validation = &rows[6..8];
     // Сохраняем рассчитанное значение `test` для следующих операций.
     let test = &rows[8..];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("train={train:?}, validation={validation:?}, test={test:?}");
+    println!("train={training_data:?}, validation={validation:?}, test={test:?}");
 
     // Построение графика вынесено из основного кода урока.
-    visualize(train, validation, test);
+    visualize(training_data, validation, test);
 }
 
 // Строим график по результатам урока.
-fn visualize(train: &[i32], validation: &[i32], test: &[i32]) {
+fn visualize(training_data: &[i32], validation: &[i32], test: &[i32]) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.
@@ -39,7 +39,7 @@ fn visualize(train: &[i32], validation: &[i32], test: &[i32]) {
         // Передаём ряды или значения для отрисовки графика.
         &[
             // Добавляем пару значений для сравнения или построения графика.
-            ("train", train.len() as f64),
+            ("train", training_data.len() as f64),
             // Добавляем пару значений для сравнения или построения графика.
             ("validation", validation.len() as f64),
             // Добавляем пару значений для сравнения или построения графика.

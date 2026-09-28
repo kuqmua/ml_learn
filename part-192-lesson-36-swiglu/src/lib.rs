@@ -1,6 +1,6 @@
 //! SwiGLU в feed-forward слое.
 
 /// SiLU(gate) * up — промежуточный выход gated FFN.
-pub fn swiglu(gate: f64, up_projection: f64) -> f64 {
+pub fn swish_gated_linear_unit(gate: f64, up_projection: f64) -> f64 {
     gate / (1.0 + (-gate).exp()) * up_projection
 }

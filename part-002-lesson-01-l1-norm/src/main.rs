@@ -18,11 +18,12 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, vector, expected) in cases {
         // Формула из общей библиотеки пригодится и в сводной практике.
-        let l1_norm = part_002_lesson_01_l1_norm::l1_norm(&vector);
+        let sum_of_absolute_coordinates =
+            part_002_lesson_01_l1_norm::sum_of_absolute_coordinates(&vector);
         // Проверяем ожидаемое свойство учебного примера.
-        assert_eq!(l1_norm, expected);
+        assert_eq!(sum_of_absolute_coordinates, expected);
         // Печатаем рассчитанные значения для проверки примера.
-        println!("{description}: {vector:?} → L1 = {l1_norm}");
+        println!("{description}: {vector:?} → L1 = {sum_of_absolute_coordinates}");
     }
 
     // Построение графика вынесено из основного кода урока.
@@ -32,7 +33,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Наглядное представление величин из этого урока.
-    let l1_norm_points: Vec<(f64, f64)> = (-50..=50)
+    let sum_of_absolute_coordinates_points: Vec<(f64, f64)> = (-50..=50)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
@@ -40,7 +41,7 @@ fn visualize() {
             // Добавляем пару значений для сравнения или построения графика.
             (
                 horizontal_value,
-                part_002_lesson_01_l1_norm::l1_norm(&[horizontal_value, 4.0]),
+                part_002_lesson_01_l1_norm::sum_of_absolute_coordinates(&[horizontal_value, 4.0]),
             )
         })
         // Собираем результаты в коллекцию.
@@ -62,7 +63,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "вектор [x, 4]",
             // Передаём рассчитанные координаты точек.
-            points: &l1_norm_points,
+            points: &sum_of_absolute_coordinates_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

@@ -2,8 +2,9 @@
 // При известном точном шуме можно алгебраически восстановить x_0.
 
 use part_203_lesson_39_diffusion_forward::add_noise;
-fn reconstruct(noisy: f64, predicted_noise: f64, alpha_bar: f64) -> f64 {
-    (noisy - (1.0 - alpha_bar).sqrt() * predicted_noise) / alpha_bar.sqrt()
+fn reconstruct(noisy: f64, predicted_noise: f64, cumulative_signal_retention: f64) -> f64 {
+    (noisy - (1.0 - cumulative_signal_retention).sqrt() * predicted_noise)
+        / cumulative_signal_retention.sqrt()
 }
 fn main() {
     let clean = 2.0;

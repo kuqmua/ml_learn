@@ -9,25 +9,28 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Создаём набор значений `train` для следующего шага примера.
-    let train = [1.0, 2.0, 3.0];
+    // Создаём набор значений `training_data` для следующего шага примера.
+    let training_data = [1.0, 2.0, 3.0];
     // Проверяем ожидаемое свойство учебного примера.
-    assert!(!train.is_empty(), "обучающая выборка не должна быть пустой");
+    assert!(
+        !training_data.is_empty(),
+        "обучающая выборка не должна быть пустой"
+    );
     // Создаём набор значений `validation` для следующего шага примера.
     let validation = [100.0];
-    // Преобразуем входные данные и сохраняем полученную коллекцию в `train_mean`.
-    let train_mean = train.iter().sum::<f64>() / train.len() as f64;
+    // Преобразуем входные данные и сохраняем полученную коллекцию в `training_mean`.
+    let training_mean = training_data.iter().sum::<f64>() / training_data.len() as f64;
     // Комбинируем исходные величины и сохраняем результат в `validation_centered`.
-    let validation_centered = validation[0] - train_mean;
+    let validation_centered = validation[0] - training_mean;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("среднее train={train_mean}, validation после центрирования={validation_centered}");
+    println!("среднее train={training_mean}, validation после центрирования={validation_centered}");
 
     // Построение графика вынесено из основного кода урока.
-    visualize(train_mean, validation_centered);
+    visualize(training_mean, validation_centered);
 }
 
 // Строим график по результатам урока.
-fn visualize(train_mean: f64, validation_centered: f64) {
+fn visualize(training_mean: f64, validation_centered: f64) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.
@@ -41,7 +44,7 @@ fn visualize(train_mean: f64, validation_centered: f64) {
         // Передаём ряды или значения для отрисовки графика.
         &[
             // Добавляем пару значений для сравнения или построения графика.
-            ("train mean", train_mean),
+            ("train mean", training_mean),
             // Добавляем пару значений для сравнения или построения графика.
             ("validation centered", validation_centered),
         ],

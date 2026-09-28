@@ -12,30 +12,30 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Шаг: Считываем CSV из стандартного ввода.
-    let mut input_csv = String::new();
+    let mut input_comma_separated_values = String::new();
     // Читаем весь CSV из стандартного ввода через трейт `Read`.
-    std::io::Read::read_to_string(&mut std::io::stdin(), &mut input_csv)?;
+    std::io::Read::read_to_string(&mut std::io::stdin(), &mut input_comma_separated_values)?;
     // Шаг: При пустом stdin запускаем встроенный демонстрационный набор.
-    if input_csv.is_empty() {
-        // Обновляем `input_csv` результатом текущего шага.
-        input_csv = "feature\n1\n2\n3\n".into();
+    if input_comma_separated_values.is_empty() {
+        // Обновляем `input_comma_separated_values` результатом текущего шага.
+        input_comma_separated_values = "feature\n1\n2\n3\n".into();
     }
 
     // Шаг: Печатаем прогнозы либо явную ошибку формата.
     match (|| -> Result<String, String> {
         // Используем подготовленное значение в следующем шаге примера.
         /* Проверяем схему CSV и обрабатываем строки в исходном порядке. */
-        // Сохраняем результат этого шага в `input_csv`.
-        let input_csv: &str = &input_csv;
+        // Сохраняем результат этого шага в `input_comma_separated_values`.
+        let input_comma_separated_values: &str = &input_comma_separated_values;
         // Создаём изменяемое значение `lines` для следующих операций.
-        let mut lines = input_csv.lines();
+        let mut lines = input_comma_separated_values.lines();
         // Разбираем наличие значения перед использованием результата.
         if lines.next() != Some("feature") {
             // Прерываем расчёт и явно сообщаем причину некорректного входа.
             return Err("ожидается заголовок feature".into());
         }
-        // Создаём изменяемое значение `output_csv` для следующих операций.
-        let mut output_csv = String::from("prediction\n");
+        // Создаём изменяемое значение `output_comma_separated_values` для следующих операций.
+        let mut output_comma_separated_values = String::from("prediction\n");
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for (row_index, line) in lines.enumerate() {
             // Сохраняем рассчитанное значение `feature_value` для следующих операций.
@@ -50,10 +50,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 return Err(format!("строка {}: не конечное число", row_index + 2));
             }
             // Умножаем величины согласно используемой формуле.
-            output_csv.push_str(&format!("{}\n", 2. * feature_value + 1.));
+            output_comma_separated_values.push_str(&format!("{}\n", 2. * feature_value + 1.));
         }
         // Возвращаем успешное значение в типе `Result`.
-        Ok(output_csv)
+        Ok(output_comma_separated_values)
     })() {
         // Возвращаем успешное значение в типе `Result`.
         Ok(result) => print!("{result}"),

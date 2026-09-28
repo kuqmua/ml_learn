@@ -3,15 +3,15 @@
 use part_182_lesson_35_causal_self_attention::causal_attention;
 
 /// Возвращает состояния после причинного внимания и residual.
-pub fn hidden_states(token_ids: &[usize]) -> Vec<[f64; 2]> {
+pub fn hidden_states(token_identifiers: &[usize]) -> Vec<[f64; 2]> {
     let embedding = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
-    let states: Vec<[f64; 2]> = token_ids
+    let states: Vec<[f64; 2]> = token_identifiers
         .iter()
         .enumerate()
-        .map(|(position, &item_id)| {
+        .map(|(position, &item_identifier)| {
             [
-                embedding[item_id][0] + position as f64 * 0.1,
-                embedding[item_id][1],
+                embedding[item_identifier][0] + position as f64 * 0.1,
+                embedding[item_identifier][1],
             ]
         })
         .collect();
@@ -27,8 +27,8 @@ pub fn hidden_states(token_ids: &[usize]) -> Vec<[f64; 2]> {
 }
 
 /// Применяет фиксированную выходную проекцию к состояниям decoder.
-pub fn forward(token_ids: &[usize]) -> Vec<[f64; 3]> {
-    hidden_states(token_ids)
+pub fn forward(token_identifiers: &[usize]) -> Vec<[f64; 3]> {
+    hidden_states(token_identifiers)
         .into_iter()
         .map(|hidden| [hidden[0], hidden[1], (hidden[0] + hidden[1]) * 0.5])
         .collect()

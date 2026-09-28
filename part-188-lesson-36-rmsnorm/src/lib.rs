@@ -1,7 +1,11 @@
 //! RMSNorm перед подслоем.
 
 /// RMSNorm без вычитания среднего; gamma задаётся отдельно для каждой координаты.
-pub fn rms_norm(input: &[f64], gamma: &[f64], epsilon: f64) -> Result<Vec<f64>, &'static str> {
+pub fn root_mean_square_normalization(
+    input: &[f64],
+    gamma: &[f64],
+    epsilon: f64,
+) -> Result<Vec<f64>, &'static str> {
     if input.is_empty() || input.len() != gamma.len() || epsilon <= 0.0 {
         return Err("неверная форма или epsilon");
     }
@@ -19,11 +23,11 @@ pub fn rms_norm(input: &[f64], gamma: &[f64], epsilon: f64) -> Result<Vec<f64>, 
 }
 #[cfg(test)]
 mod tests {
-    use super::rms_norm;
+    use super::root_mean_square_normalization;
     #[test]
     fn shape_and_scale() {
-        let output = rms_norm(&[3.0, 4.0], &[1.0, 1.0], 1e-8).unwrap();
+        let output = root_mean_square_normalization(&[3.0, 4.0], &[1.0, 1.0], 1e-8).unwrap();
         assert!(((output[0] * output[0] + output[1] * output[1]) / 2.0 - 1.0).abs() < 1e-7);
-        assert!(rms_norm(&[1.0], &[], 1e-8).is_err());
+        assert!(root_mean_square_normalization(&[1.0], &[], 1e-8).is_err());
     }
 }

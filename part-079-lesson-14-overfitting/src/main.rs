@@ -9,8 +9,8 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Создаём набор значений `train_error` для следующего шага примера.
-    let train_error = [0.25, 0.05, 0.0];
+    // Создаём набор значений `training_error` для следующего шага примера.
+    let training_error = [0.25, 0.05, 0.0];
     // Создаём набор значений `validation_error` для следующего шага примера.
     let validation_error = [0.30, 0.15, 0.35];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
@@ -20,20 +20,20 @@ fn main() {
             // Присваиваем вычисленное значение соответствующей переменной или полю.
             "глубина={depth}, train={}, validation={}",
             // Складываем или вычитаем величины согласно используемой формуле.
-            train_error[depth - 1],
+            training_error[depth - 1],
             // Складываем или вычитаем величины согласно используемой формуле.
             validation_error[depth - 1]
         );
     }
 
     // Построение графика вынесено из основного кода урока.
-    visualize(train_error, validation_error);
+    visualize(training_error, validation_error);
 }
 
 // Строим график по результатам урока.
-fn visualize(train_error: [f64; 3], validation_error: [f64; 3]) {
+fn visualize(training_error: [f64; 3], validation_error: [f64; 3]) {
     // График величин и зависимостей, изученных в этом уроке.
-    let training_error_points: Vec<(f64, f64)> = train_error
+    let training_error_points: Vec<(f64, f64)> = training_error
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.

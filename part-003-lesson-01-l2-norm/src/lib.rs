@@ -21,7 +21,7 @@ fn square_root_with_newton_method(value: f64) -> f64 {
 }
 
 /// Длина вектора использует вычисление из урока 01.1.
-pub fn l2_norm(vector: &[f64]) -> f64 {
+pub fn euclidean_norm(vector: &[f64]) -> f64 {
     // Сохраняем результат этого шага в `squared_length`.
     let squared_length = lesson_001::multiply_matching_coordinates_then_add(vector, vector)
         // Используем результат, ожидая успешного выполнения шага.

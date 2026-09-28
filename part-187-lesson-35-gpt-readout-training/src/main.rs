@@ -12,7 +12,7 @@ fn loss(weight: &[f64; 2], sample: (&[usize], f64)) -> f64 {
     -sample.1 * probability.ln() - (1.0 - sample.1) * (1.0 - probability).ln()
 }
 fn main() {
-    let train = [(&[0][..], 1.0), (&[1][..], 0.0)];
+    let training_data = [(&[0][..], 1.0), (&[1][..], 0.0)];
     let validation = [(&[0, 0][..], 1.0), (&[1, 1][..], 0.0)];
     let mut weight = [0.0; 2];
     let baseline = validation
@@ -22,8 +22,8 @@ fn main() {
         / validation.len() as f64;
     for _ in 0..100 {
         let mut gradient = [0.0; 2];
-        for &(token_ids, target) in &train {
-            let final_hidden_state = *hidden_states(token_ids).last().unwrap();
+        for &(token_identifiers, target) in &training_data {
+            let final_hidden_state = *hidden_states(token_identifiers).last().unwrap();
             let error =
                 sigmoid(weight[0] * final_hidden_state[0] + weight[1] * final_hidden_state[1])
                     - target;
@@ -31,7 +31,7 @@ fn main() {
             gradient[1] += error * final_hidden_state[1];
         }
         for step_index in 0..2 {
-            weight[step_index] -= 0.2 * gradient[step_index] / train.len() as f64;
+            weight[step_index] -= 0.2 * gradient[step_index] / training_data.len() as f64;
         }
     }
     let held_out = validation

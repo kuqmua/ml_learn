@@ -2,16 +2,17 @@
 // Собираем pre-RMSNorm, QK-Norm, RoPE, GQA, residual и SwiGLU без реальных весов Qwen.
 
 use part_182_lesson_35_causal_self_attention::softmax;
-use part_188_lesson_36_rmsnorm::rms_norm;
+use part_188_lesson_36_rmsnorm::root_mean_square_normalization;
 use part_189_lesson_36_rope::rotate_pair;
-use part_192_lesson_36_swiglu::swiglu;
+use part_192_lesson_36_swiglu::swish_gated_linear_unit;
 
 fn block(states: &[[f64; 2]]) -> Vec<[f64; 2]> {
     let gamma = [1.0, 1.0];
     let norm: Vec<[f64; 2]> = states
         .iter()
         .map(|input_value| {
-            let second_input_value = rms_norm(input_value, &gamma, 1e-6).unwrap();
+            let second_input_value =
+                root_mean_square_normalization(input_value, &gamma, 1e-6).unwrap();
             [second_input_value[0], second_input_value[1]]
         })
         .collect();
@@ -20,7 +21,7 @@ fn block(states: &[[f64; 2]]) -> Vec<[f64; 2]> {
         .iter()
         .enumerate()
         .map(|(position, input_value)| {
-            let key = rms_norm(input_value, &gamma, 1e-6).unwrap();
+            let key = root_mean_square_normalization(input_value, &gamma, 1e-6).unwrap();
             rotate_pair([key[0], key[1]], position, 0.1)
         })
         .collect();
@@ -34,7 +35,7 @@ fn block(states: &[[f64; 2]]) -> Vec<[f64; 2]> {
             } else {
                 [norm[index][1], -norm[index][0]]
             };
-            let query = rms_norm(&raw_query, &gamma, 1e-6).unwrap();
+            let query = root_mean_square_normalization(&raw_query, &gamma, 1e-6).unwrap();
             let query = rotate_pair([query[0], query[1]], index, 0.1);
             let logits: Vec<f64> = (0..=index)
                 .map(|past| (query[0] * keys[past][0] + query[1] * keys[past][1]) / 2.0_f64.sqrt())
@@ -46,10 +47,12 @@ fn block(states: &[[f64; 2]]) -> Vec<[f64; 2]> {
             }
         }
         let residual = [states[index][0] + context[0], states[index][1] + context[1]];
-        let ff_input = rms_norm(&residual, &gamma, 1e-6).unwrap();
+        let feed_forward_input = root_mean_square_normalization(&residual, &gamma, 1e-6).unwrap();
         output.push([
-            residual[0] + 0.1 * swiglu(ff_input[0], ff_input[1]),
-            residual[1] + 0.1 * swiglu(ff_input[1], ff_input[0]),
+            residual[0]
+                + 0.1 * swish_gated_linear_unit(feed_forward_input[0], feed_forward_input[1]),
+            residual[1]
+                + 0.1 * swish_gated_linear_unit(feed_forward_input[1], feed_forward_input[0]),
         ]);
     }
     output

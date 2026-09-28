@@ -15,12 +15,17 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("обе равны нулю", 0.0, 0.0, None),
     ] {
-        // Сохраняем результат этого шага в `f1`.
-        let f1_score = part_063_lesson_11_f1::f1(Some(precision), Some(recall));
+        // Сохраняем результат этого шага в `harmonic_mean_of_precision_and_recall`.
+        let harmonic_mean_score = part_063_lesson_11_f1::harmonic_mean_of_precision_and_recall(
+            Some(precision),
+            Some(recall),
+        );
         // Проверяем ожидаемое свойство учебного примера.
-        assert_eq!(f1_score, expected);
+        assert_eq!(harmonic_mean_score, expected);
         // Печатаем рассчитанные значения для проверки примера.
-        println!("{description}: precision={precision}, recall={recall}, F1={f1_score:?}");
+        println!(
+            "{description}: precision={precision}, recall={recall}, F1={harmonic_mean_score:?}"
+        );
     }
 
     // Построение графика вынесено из основного кода урока.
@@ -30,7 +35,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // График величин и зависимостей, изученных в этом уроке.
-    let f1_points: Vec<(f64, f64)> = (0..=100)
+    let harmonic_mean_score_points: Vec<(f64, f64)> = (0..=100)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `recall_value`.
@@ -68,7 +73,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "F1",
             // Передаём рассчитанные координаты точек.
-            points: &f1_points,
+            points: &harmonic_mean_score_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

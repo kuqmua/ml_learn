@@ -18,8 +18,8 @@ fn main() {
     struct Matrix {
         // `rows` задаёт соответствующее входное значение или поле структуры.
         rows: usize,
-        // `cols` задаёт соответствующее входное значение или поле структуры.
-        cols: usize,
+        // `column_count` задаёт соответствующее входное значение или поле структуры.
+        column_count: usize,
         // `data` задаёт соответствующее входное значение или поле структуры.
         data: Vec<f64>,
     }
@@ -30,24 +30,28 @@ fn main() {
         fn from_row_major_elements(
             // `rows` задаёт соответствующее входное значение или поле структуры.
             rows: usize,
-            // `cols` задаёт соответствующее входное значение или поле структуры.
-            cols: usize,
+            // `column_count` задаёт соответствующее входное значение или поле структуры.
+            column_count: usize,
             // `data` задаёт соответствующее входное значение или поле структуры.
             data: Vec<f64>,
             // Указываем тип возвращаемого значения.
         ) -> Result<Self, &'static str> {
             // Число элементов обязано совпадать с заявленной формой матрицы.
-            if rows * cols != data.len() {
+            if rows * column_count != data.len() {
                 // Прерываем расчёт и явно сообщаем причину некорректного входа.
                 return Err("неверная форма");
             }
             // Возвращаем успешное значение в типе `Result`.
-            Ok(Self { rows, cols, data })
+            Ok(Self {
+                rows,
+                column_count,
+                data,
+            })
         }
         // Объявляем повторно используемое вычисление `value_at_row_and_column`; параметры ниже задают его входы.
         fn value_at_row_and_column(&self, row_index: usize, column_index: usize) -> f64 {
             // Обновляем состояние объекта результатом текущей операции.
-            self.data[row_index * self.cols + column_index]
+            self.data[row_index * self.column_count + column_index]
         }
     }
 
@@ -56,15 +60,19 @@ fn main() {
     // Шаг: Умножаем матрицу на вектор: каждая координата ответа — сумма после попарного умножения элементов строки.
     let input_vector = [1., 1.];
     // Проверяем, что сравниваемые размерности или значения действительно совпадают.
-    assert_eq!(left_matrix.cols, input_vector.len(), "несовместимые формы");
+    assert_eq!(
+        left_matrix.column_count,
+        input_vector.len(),
+        "несовместимые формы"
+    );
     // Создаём изменяемое значение `output_vector` для следующих операций.
     let mut output_vector = Vec::with_capacity(left_matrix.rows);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for row_index in 0..left_matrix.rows {
         // Сохраняем результат этого шага в `row_start`.
-        let row_start = row_index * left_matrix.cols;
+        let row_start = row_index * left_matrix.column_count;
         // Сохраняем результат этого шага в `row_end`.
-        let row_end = row_start + left_matrix.cols;
+        let row_end = row_start + left_matrix.column_count;
         // Сохраняем результат этого шага в `row_result`.
         let row_result = lesson_001::multiply_matching_coordinates_then_add(
             // Используем подготовленное значение в следующем шаге примера.
@@ -80,7 +88,7 @@ fn main() {
     // Шаг: Транспонируем матрицу, меняя строки и столбцы местами.
     let mut transposed_elements = Vec::with_capacity(left_matrix.data.len());
     // Повторяем следующий блок для каждого элемента указанной последовательности.
-    for column_index in 0..left_matrix.cols {
+    for column_index in 0..left_matrix.column_count {
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for row_index in 0..left_matrix.rows {
             // Сохраняем очередной рассчитанный элемент в коллекции.
@@ -90,31 +98,31 @@ fn main() {
     // Сохраняем рассчитанное значение `transposed_matrix` для следующих операций.
     let transposed_matrix = Matrix {
         // `rows` задаёт соответствующее входное значение или поле структуры.
-        rows: left_matrix.cols,
-        // `cols` задаёт соответствующее входное значение или поле структуры.
-        cols: left_matrix.rows,
+        rows: left_matrix.column_count,
+        // `column_count` задаёт соответствующее входное значение или поле структуры.
+        column_count: left_matrix.rows,
         // `data` задаёт соответствующее входное значение или поле структуры.
         data: transposed_elements,
     };
     // Шаг: Считаем каждый элемент результата умножения как сумму после попарного умножения координат строки и столбца.
     assert_eq!(
         // Передаём очередное значение в составе результата или вызова.
-        transposed_matrix.cols,
+        transposed_matrix.column_count,
         // Передаём число строк результата как первую размерность матрицы.
         left_matrix.rows,
         // Подставляем результаты в этот шаблон вывода или текстового значения.
         "несовместимые формы"
     );
     // Умножаем значения и сохраняем результат в `result_elements`.
-    let mut result_elements = Vec::with_capacity(transposed_matrix.rows * left_matrix.cols);
+    let mut result_elements = Vec::with_capacity(transposed_matrix.rows * left_matrix.column_count);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for row_index in 0..transposed_matrix.rows {
         // Повторяем следующий блок для каждого элемента указанной последовательности.
-        for column_index in 0..left_matrix.cols {
+        for column_index in 0..left_matrix.column_count {
             // Сохраняем результат этого шага в `row_start`.
-            let row_start = row_index * transposed_matrix.cols;
+            let row_start = row_index * transposed_matrix.column_count;
             // Сохраняем результат этого шага в `row_end`.
-            let row_end = row_start + transposed_matrix.cols;
+            let row_end = row_start + transposed_matrix.column_count;
             // Собираем значения для `column_values` в коллекцию.
             let column_values: Vec<_> = (0..left_matrix.rows)
                 // Преобразуем каждый элемент в новое значение.
@@ -137,7 +145,7 @@ fn main() {
     // Сохраняем рассчитанное значение `result_matrix` для следующих операций.
     let result_matrix =
         // Собираем матрицу после умножения с рассчитанными размерностями и элементами.
-        Matrix::from_row_major_elements(transposed_matrix.rows, left_matrix.cols, result_elements)
+        Matrix::from_row_major_elements(transposed_matrix.rows, left_matrix.column_count, result_elements)
             // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
             .unwrap();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -161,7 +169,7 @@ fn main() {
                 // Настраиваем или преобразуем результат предыдущего шага.
                 .data
                 // Настраиваем или преобразуем результат предыдущего шага.
-                .chunks(result_matrix.cols)
+                .chunks(result_matrix.column_count)
                 // Преобразуем каждый элемент в новое значение.
                 .map(|row| row.to_vec())
                 // Настраиваем или преобразуем результат предыдущего шага.

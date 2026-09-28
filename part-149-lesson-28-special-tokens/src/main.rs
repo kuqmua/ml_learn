@@ -8,16 +8,21 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Инициализируем значение `unknown_id` начальным состоянием.
-    let unknown_id = 0;
-    // Сохраняем рассчитанное значение `begin_id` для следующих операций.
-    let begin_id = 1;
-    // Сохраняем рассчитанное значение `end_id` для следующих операций.
-    let end_id = 2;
-    // Сохраняем рассчитанное значение `known_word_id` для следующих операций.
-    let known_word_id = 3;
+    // Инициализируем значение `unknown_identifier` начальным состоянием.
+    let unknown_identifier = 0;
+    // Сохраняем рассчитанное значение `begin_identifier` для следующих операций.
+    let begin_identifier = 1;
+    // Сохраняем рассчитанное значение `end_identifier` для следующих операций.
+    let end_identifier = 2;
+    // Сохраняем рассчитанное значение `known_word_identifier` для следующих операций.
+    let known_word_identifier = 3;
     // Создаём набор значений `sequence` для следующего шага примера.
-    let sequence = [begin_id, known_word_id, unknown_id, end_id];
+    let sequence = [
+        begin_identifier,
+        known_word_identifier,
+        unknown_identifier,
+        end_identifier,
+    ];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("индексы последовательности: {sequence:?}");
 }

@@ -9,25 +9,28 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Создаём набор значений `train` для следующего шага примера.
-    let train = [10.0, 20.0, 30.0];
+    // Создаём набор значений `training_data` для следующего шага примера.
+    let training_data = [10.0, 20.0, 30.0];
     // Проверяем ожидаемое свойство учебного примера.
-    assert!(!train.is_empty(), "обучающая выборка не должна быть пустой");
+    assert!(
+        !training_data.is_empty(),
+        "обучающая выборка не должна быть пустой"
+    );
     // Преобразуем входные данные и сохраняем полученную коллекцию в `mean`.
-    let mean = lesson_029::mean(&train).unwrap();
+    let mean = lesson_029::mean(&training_data).unwrap();
     // Преобразуем входные данные и сохраняем полученную коллекцию в `centered`.
-    let centered: Vec<_> = train.iter().map(|&value| value - mean).collect();
+    let centered: Vec<_> = training_data.iter().map(|&value| value - mean).collect();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("среднее train={mean}, центрировано={centered:?}");
 
     // Построение графика вынесено из основного кода урока.
-    visualize(train, centered);
+    visualize(training_data, centered);
 }
 
 // Строим график по результатам урока.
-fn visualize(train: [f64; 3], centered: std::vec::Vec<f64>) {
+fn visualize(training_data: [f64; 3], centered: std::vec::Vec<f64>) {
     // График величин и зависимостей, изученных в этом уроке.
-    let original_points: Vec<(f64, f64)> = train
+    let original_points: Vec<(f64, f64)> = training_data
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.

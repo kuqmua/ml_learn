@@ -44,7 +44,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(inverse_document_frequency: f64) {
     // График величин и зависимостей, изученных в этом уроке.
-    let tf_idf_points: Vec<(f64, f64)> = (0..=10)
+    let term_frequency_inverse_document_frequency_points: Vec<(f64, f64)> = (0..=10)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `term_frequency`.
@@ -71,7 +71,7 @@ fn visualize(inverse_document_frequency: f64) {
             // Указываем подпись этого ряда в легенде.
             name: "idf из примера",
             // Передаём рассчитанные координаты точек.
-            points: &tf_idf_points,
+            points: &term_frequency_inverse_document_frequency_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

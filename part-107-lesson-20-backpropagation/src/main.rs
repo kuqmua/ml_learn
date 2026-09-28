@@ -16,12 +16,12 @@ fn main() {
     let output = 2.0 * square;
     // Сохраняем рассчитанное значение `derivative_output_by_square` для следующих операций.
     let derivative_output_by_square = 2.0;
-    // Умножаем значения и сохраняем результат в `derivative_square_by_x`.
-    let derivative_square_by_x = 2.0 * input_value;
-    // Умножаем значения и сохраняем результат в `derivative_output_by_x`.
-    let derivative_output_by_x = derivative_output_by_square * derivative_square_by_x;
+    // Умножаем значения и сохраняем результат в `derivative_square_by_input`.
+    let derivative_square_by_input = 2.0 * input_value;
+    // Умножаем значения и сохраняем результат в `derivative_output_by_input`.
+    let derivative_output_by_input = derivative_output_by_square * derivative_square_by_input;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("f(x)={output}, df/dx={derivative_output_by_x}");
+    println!("f(x)={output}, df/dx={derivative_output_by_input}");
 
     // Построение графика вынесено из основного кода урока.
     visualize();

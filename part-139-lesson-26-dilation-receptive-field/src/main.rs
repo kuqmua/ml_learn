@@ -1,12 +1,12 @@
 // Урок 26.2. Дилатация и рецептивное поле.
 // Дилатации 1, 2, 4 расширяют область прошлого без длинных фильтров.
 
-use part_138_lesson_26_causal_convolution::causal_conv;
+use part_138_lesson_26_causal_convolution::causal_convolution;
 fn main() {
     let mut signal = vec![0.0; 9];
     signal[0] = 1.0;
     for dilation in [1, 2, 4] {
-        signal = causal_conv(&signal, 1.0, 1.0, dilation).unwrap();
+        signal = causal_convolution(&signal, 1.0, 1.0, dilation).unwrap();
         println!("после dilation={dilation}: {signal:?}");
     }
     // Три двухточечных слоя видят 1 + 1 + 2 + 4 = 8 временных шагов.

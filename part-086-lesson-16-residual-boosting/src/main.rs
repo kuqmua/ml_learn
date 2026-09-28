@@ -19,7 +19,7 @@ fn main() {
         let mean_squared_error_value: f64 = targets
             .iter()
             .zip(predictions)
-            .map(|(target, pred)| (target - pred).powi(2))
+            .map(|(target, prediction)| (target - prediction).powi(2))
             .sum::<f64>()
             / 4.0;
         history.push(mean_squared_error_value);

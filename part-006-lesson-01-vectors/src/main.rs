@@ -7,9 +7,9 @@ fn main() {
     // Задаём учебные значения для `first`.
     let first = [3.0, 4.0];
     // Проверяем ожидаемое свойство учебного примера.
-    assert_eq!(lesson_002::l1_norm(&first), 7.0);
+    assert_eq!(lesson_002::sum_of_absolute_coordinates(&first), 7.0);
     // Проверяем ожидаемое свойство учебного примера.
-    assert_eq!(lesson_003::l2_norm(&first), 5.0);
+    assert_eq!(lesson_003::euclidean_norm(&first), 5.0);
     // Печатаем рассчитанные значения для проверки примера.
     println!("вектор {first:?}: L1=7, L2=5");
 
@@ -69,7 +69,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Наглядное представление величин из этого урока.
-    let l1_norm_points: Vec<(f64, f64)> = (-50..=50)
+    let sum_of_absolute_coordinates_points: Vec<(f64, f64)> = (-50..=50)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
@@ -79,8 +79,8 @@ fn visualize() {
         })
         // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `l2_norm_points` в коллекцию.
-    let l2_norm_points: Vec<(f64, f64)> = (-50..=50)
+    // Собираем значения для `euclidean_norm_points` в коллекцию.
+    let euclidean_norm_points: Vec<(f64, f64)> = (-50..=50)
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
@@ -112,14 +112,14 @@ fn visualize() {
                 // Указываем подпись этого ряда в легенде.
                 name: "L1",
                 // Передаём рассчитанные координаты точек.
-                points: &l1_norm_points,
+                points: &sum_of_absolute_coordinates_points,
             },
             // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
                 // Указываем подпись этого ряда в легенде.
                 name: "L2",
                 // Передаём рассчитанные координаты точек.
-                points: &l2_norm_points,
+                points: &euclidean_norm_points,
             },
         ],
     )

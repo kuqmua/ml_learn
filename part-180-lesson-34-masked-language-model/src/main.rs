@@ -17,14 +17,14 @@ fn main() {
         .iter()
         .map(|candidate| context[1][0] * candidate[0] + context[1][1] * candidate[1])
         .collect();
-    let max = logits.iter().copied().fold(f64::NEG_INFINITY, f64::max);
-    let log_sum_exp = max
+    let maximum_value = logits.iter().copied().fold(f64::NEG_INFINITY, f64::max);
+    let logarithm_of_sum_of_exponentials = maximum_value
         + logits
             .iter()
-            .map(|value| (value - max).exp())
+            .map(|value| (value - maximum_value).exp())
             .sum::<f64>()
             .ln();
-    let loss = log_sum_exp - logits[masked_target];
+    let loss = logarithm_of_sum_of_exponentials - logits[masked_target];
     assert!(loss.is_finite());
     println!("цель скрытой позиции={masked_target}; MLM loss={loss:.4}");
     // Фиксированные embeddings иллюстрируют loss, а не обученный BERT.

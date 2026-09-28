@@ -7,19 +7,22 @@ fn cross_entropy(logits: &[f64], target: usize) -> f64 {
 }
 fn main() {
     // BOS, A, B, EOS: на последней позиции нет следующей цели.
-    let token_ids = [0, 1, 2, 3];
+    let token_identifiers = [0, 1, 2, 3];
     let logits = [
         [0.2, 2.0, 0.1, 0.0],
         [0.1, 0.2, 2.0, 0.0],
         [0.0, 0.1, 0.2, 2.0],
     ];
-    let losses: Vec<f64> = (0..token_ids.len() - 1)
+    let losses: Vec<f64> = (0..token_identifiers.len() - 1)
         .map(|plot_step_index| {
-            cross_entropy(&logits[plot_step_index], token_ids[plot_step_index + 1])
+            cross_entropy(
+                &logits[plot_step_index],
+                token_identifiers[plot_step_index + 1],
+            )
         })
         .collect();
     let average = losses.iter().sum::<f64>() / losses.len() as f64;
-    let wrong = cross_entropy(&[2.0, 0.2, 0.1, 0.0], token_ids[1]);
+    let wrong = cross_entropy(&[2.0, 0.2, 0.1, 0.0], token_identifiers[1]);
     assert!(average < wrong);
     println!("loss по позициям: {losses:?}; средний loss={average:.3}");
     visualize(&losses);

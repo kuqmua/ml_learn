@@ -165,7 +165,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(projections: std::vec::Vec<f64>) {
     // Значения из этого урока на графике.
-    let pca_points: Vec<(f64, f64)> = projections
+    let principal_component_analysis_points: Vec<(f64, f64)> = projections
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.
@@ -191,7 +191,7 @@ fn visualize(projections: std::vec::Vec<f64>) {
             // Указываем подпись этого ряда в легенде.
             name: "проекции",
             // Передаём рассчитанные координаты точек.
-            points: &pca_points,
+            points: &principal_component_analysis_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

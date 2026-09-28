@@ -26,7 +26,7 @@ fn main() {
             second_row_first_coefficient,
             second_row_second_coefficient,
         ],
-        [first_rhs, second_rhs],
+        [first_right_hand_side, second_right_hand_side],
     ) in cases
     {
         // Сохраняем результат этого шага в `determinant`.
@@ -35,27 +35,27 @@ fn main() {
         // Выбираем дальнейший шаг по выполнению условия.
         if determinant != 0.0 {
             // Сохраняем результат этого шага в `first_unknown`.
-            let first_unknown = (first_rhs * second_row_second_coefficient
-                - first_row_second_coefficient * second_rhs)
+            let first_unknown = (first_right_hand_side * second_row_second_coefficient
+                - first_row_second_coefficient * second_right_hand_side)
                 / determinant;
             // Сохраняем результат этого шага в `second_unknown`.
-            let second_unknown = (first_row_first_coefficient * second_rhs
-                - first_rhs * second_row_first_coefficient)
+            let second_unknown = (first_row_first_coefficient * second_right_hand_side
+                - first_right_hand_side * second_row_first_coefficient)
                 / determinant;
             // Печатаем рассчитанные значения для проверки примера.
             println!("{description}: x={first_unknown}, y={second_unknown}");
         // Обрабатываем случай, когда предыдущее условие не выполнено.
         } else {
             // Если замена столбца правой частью тоже даёт ноль, обе строки описывают одну прямую.
-            let first_replaced = first_rhs * second_row_second_coefficient
-                - first_row_second_coefficient * second_rhs;
+            let first_replaced = first_right_hand_side * second_row_second_coefficient
+                - first_row_second_coefficient * second_right_hand_side;
             // Сохраняем результат этого шага в `second_replaced`.
-            let second_replaced =
-                first_row_first_coefficient * second_rhs - first_rhs * second_row_first_coefficient;
+            let second_replaced = first_row_first_coefficient * second_right_hand_side
+                - first_right_hand_side * second_row_first_coefficient;
             // Сохраняем результат этого шага в `impossible_zero_row`.
-            let impossible_zero_row = (first_row_first_coefficient == 0.0 && first_row_second_coefficient == 0.0 && first_rhs != 0.0)
+            let impossible_zero_row = (first_row_first_coefficient == 0.0 && first_row_second_coefficient == 0.0 && first_right_hand_side != 0.0)
                 // Задаём преобразование для элементов коллекции.
-                || (second_row_first_coefficient == 0.0 && second_row_second_coefficient == 0.0 && second_rhs != 0.0);
+                || (second_row_first_coefficient == 0.0 && second_row_second_coefficient == 0.0 && second_right_hand_side != 0.0);
             // Сохраняем результат этого шага в `actual`.
             let actual = if first_replaced == 0.0 && second_replaced == 0.0 && !impossible_zero_row
             {

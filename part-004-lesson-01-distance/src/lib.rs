@@ -34,5 +34,5 @@ pub fn distance(left: &[f64], right: &[f64]) -> Result<f64, &'static str> {
         .map(|(&first_value, &second_value)| first_value - second_value)
         .collect();
     // Возвращаем успешный результат.
-    Ok(lesson_003::l2_norm(&differences))
+    Ok(lesson_003::euclidean_norm(&differences))
 }

@@ -4,16 +4,16 @@ use std::collections::BTreeMap;
 
 /// Учебный byte-level BPE: ID 0..=255 обозначают одиночные байты.
 #[derive(Debug)]
-pub struct Bpe {
+pub struct BytePairEncoding {
     /// Содержимое каждого токена нужно для обратного преобразования.
     pub pieces: Vec<Vec<u8>>,
     /// Порядок слияний важен при кодировании новых строк.
     pub merges: Vec<(usize, usize)>,
 }
 
-impl Bpe {
+impl BytePairEncoding {
     /// Учит пары только на переданном обучающем корпусе.
-    pub fn train(corpus: &[&str], merge_count: usize) -> Self {
+    pub fn train_from_corpus(corpus: &[&str], merge_count: usize) -> Self {
         // Начальный словарь покрывает любой UTF-8 текст.
         let mut pieces = (0..=255).map(|byte| vec![byte as u8]).collect::<Vec<_>>();
         let mut rows = corpus
@@ -36,14 +36,14 @@ impl Bpe {
             else {
                 break;
             };
-            let token_id = pieces.len();
+            let token_identifier = pieces.len();
             let mut joined = pieces[pair.0].clone();
             joined.extend_from_slice(&pieces[pair.1]);
             pieces.push(joined);
             merges.push(pair);
             // Заменяем выбранную пару во всём обучающем корпусе.
             for row in &mut rows {
-                *row = merge_pair(row, pair, token_id);
+                *row = merge_pair(row, pair, token_identifier);
             }
         }
         Self { pieces, merges }
@@ -51,18 +51,21 @@ impl Bpe {
 
     /// Применяет сохранённые слияния к новому тексту в порядке обучения.
     pub fn encode(&self, text: &str) -> Vec<usize> {
-        let mut token_ids = text.bytes().map(usize::from).collect::<Vec<_>>();
+        let mut token_identifiers = text.bytes().map(usize::from).collect::<Vec<_>>();
         for (offset, &pair) in self.merges.iter().enumerate() {
-            token_ids = merge_pair(&token_ids, pair, 256 + offset);
+            token_identifiers = merge_pair(&token_identifiers, pair, 256 + offset);
         }
-        token_ids
+        token_identifiers
     }
 
     /// Восстанавливает байты и проверяет корректность UTF-8.
-    pub fn decode(&self, token_ids: &[usize]) -> Result<String, String> {
+    pub fn decode(&self, token_identifiers: &[usize]) -> Result<String, String> {
         let mut bytes = Vec::new();
-        for &token_id in token_ids {
-            let piece = self.pieces.get(token_id).ok_or("неизвестный ID токена")?;
+        for &token_identifier in token_identifiers {
+            let piece = self
+                .pieces
+                .get(token_identifier)
+                .ok_or("неизвестный ID токена")?;
             bytes.extend_from_slice(piece);
         }
         String::from_utf8(bytes).map_err(|error| error.to_string())
@@ -70,15 +73,21 @@ impl Bpe {
 }
 
 // Слияния не перекрываются: каждую исходную позицию используем ровно один раз.
-fn merge_pair(token_ids: &[usize], pair: (usize, usize), new_id: usize) -> Vec<usize> {
+fn merge_pair(
+    token_identifiers: &[usize],
+    pair: (usize, usize),
+    new_identifier: usize,
+) -> Vec<usize> {
     let mut result = Vec::new();
     let mut index = 0;
-    while index < token_ids.len() {
-        if token_ids.get(index) == Some(&pair.0) && token_ids.get(index + 1) == Some(&pair.1) {
-            result.push(new_id);
+    while index < token_identifiers.len() {
+        if token_identifiers.get(index) == Some(&pair.0)
+            && token_identifiers.get(index + 1) == Some(&pair.1)
+        {
+            result.push(new_identifier);
             index += 2;
         } else {
-            result.push(token_ids[index]);
+            result.push(token_identifiers[index]);
             index += 1;
         }
     }
@@ -87,10 +96,10 @@ fn merge_pair(token_ids: &[usize], pair: (usize, usize), new_id: usize) -> Vec<u
 
 #[cfg(test)]
 mod tests {
-    use super::Bpe;
+    use super::BytePairEncoding;
     #[test]
     fn roundtrip_and_unseen_utf8() {
-        let model = Bpe::train(&["мама мыла", "мама дома"], 12);
+        let model = BytePairEncoding::train_from_corpus(&["мама мыла", "мама дома"], 12);
         for text in ["мама", "кот 🐈", "", "\0"] {
             assert_eq!(model.decode(&model.encode(text)).unwrap(), text);
         }

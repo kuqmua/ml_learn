@@ -14,19 +14,19 @@ fn main() {
     ranked.sort_by(|first_candidate, second_candidate| {
         second_candidate.1.total_cmp(&first_candidate.1)
     });
-    // Сохраняем рассчитанное значение `top_k` для следующих операций.
-    let top_k = &ranked[..2];
+    // Сохраняем рассчитанное значение `highest_ranked_items` для следующих операций.
+    let highest_ranked_items = &ranked[..2];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("лучшие источники: {top_k:?}");
+    println!("лучшие источники: {highest_ranked_items:?}");
 
     // Построение графика вынесено из основного кода урока.
-    visualize(top_k);
+    visualize(highest_ranked_items);
 }
 
 // Строим график по результатам урока.
-fn visualize(top_k: &[(&str, f64)]) {
+fn visualize(highest_ranked_items: &[(&str, f64)]) {
     // Значения из этого урока на графике.
-    let top_k_points: Vec<(f64, f64)> = top_k
+    let highest_ranked_item_points: Vec<(f64, f64)> = highest_ranked_items
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Добавляем порядковый номер к каждому элементу.
@@ -52,7 +52,7 @@ fn visualize(top_k: &[(&str, f64)]) {
             // Указываем подпись этого ряда в легенде.
             name: "выбранные документы",
             // Передаём рассчитанные координаты точек.
-            points: &top_k_points,
+            points: &highest_ranked_item_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.

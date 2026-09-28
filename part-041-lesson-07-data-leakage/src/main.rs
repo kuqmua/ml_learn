@@ -9,27 +9,30 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
-    // Создаём набор значений `train` для следующего шага примера.
-    let train = [1.0, 2.0, 3.0];
+    // Создаём набор значений `training_data` для следующего шага примера.
+    let training_data = [1.0, 2.0, 3.0];
     // Создаём набор значений `test` для следующего шага примера.
     let test = [100.0];
     // Проверяем ожидаемое свойство учебного примера.
-    assert!(!train.is_empty(), "обучающая выборка не должна быть пустой");
-    // Преобразуем входные данные и сохраняем полученную коллекцию в `train_mean`.
-    let train_mean = train.iter().sum::<f64>() / train.len() as f64;
+    assert!(
+        !training_data.is_empty(),
+        "обучающая выборка не должна быть пустой"
+    );
+    // Преобразуем входные данные и сохраняем полученную коллекцию в `training_mean`.
+    let training_mean = training_data.iter().sum::<f64>() / training_data.len() as f64;
     // Сохраняем рассчитанное значение `contaminated_mean` для следующих операций.
     let contaminated_mean =
         // Составляем результат из вычисленных значений в указанном порядке.
-        (train.iter().sum::<f64>() + test.iter().sum::<f64>()) / (train.len() + test.len()) as f64;
+        (training_data.iter().sum::<f64>() + test.iter().sum::<f64>()) / (training_data.len() + test.len()) as f64;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("только train={train_mean}, с утечкой={contaminated_mean}");
+    println!("только train={training_mean}, с утечкой={contaminated_mean}");
 
     // Построение графика вынесено из основного кода урока.
-    visualize(train_mean, contaminated_mean);
+    visualize(training_mean, contaminated_mean);
 }
 
 // Строим график по результатам урока.
-fn visualize(train_mean: f64, contaminated_mean: f64) {
+fn visualize(training_mean: f64, contaminated_mean: f64) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.
@@ -41,7 +44,7 @@ fn visualize(train_mean: f64, contaminated_mean: f64) {
         // Указываем подпись вертикальной оси.
         "среднее",
         // Передаём ряды или значения для отрисовки графика.
-        &[("train", train_mean), ("с утечкой", contaminated_mean)],
+        &[("train", training_mean), ("с утечкой", contaminated_mean)],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");

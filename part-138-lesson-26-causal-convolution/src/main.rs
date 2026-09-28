@@ -1,10 +1,10 @@
 // Урок 26.1. Причинная свёртка одномерного сигнала.
 // Выход в момент t зависит от текущего и прошлых элементов, но не от будущего.
 
-use part_138_lesson_26_causal_convolution::causal_conv;
+use part_138_lesson_26_causal_convolution::causal_convolution;
 fn main() {
     let signal = [1.0, 2.0, 3.0, 4.0];
-    let output = causal_conv(&signal, 1.0, 2.0, 1).unwrap();
+    let output = causal_convolution(&signal, 1.0, 2.0, 1).unwrap();
     assert_eq!(output, [1.0, 4.0, 7.0, 10.0]);
     println!("сигнал: {signal:?}; causal conv: {output:?}");
     visualize(&signal, &output);

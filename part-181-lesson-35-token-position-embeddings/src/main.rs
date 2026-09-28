@@ -5,14 +5,14 @@ fn main() {
     // Строки таблиц — обучаемые параметры; здесь числа фиксированы для проверки.
     let token_embedding = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
     let position_embedding = [[0.0, 0.0], [0.1, 0.0], [0.2, 0.0]];
-    let token_ids = [0, 1, 0];
-    let states: Vec<[f64; 2]> = token_ids
+    let token_identifiers = [0, 1, 0];
+    let states: Vec<[f64; 2]> = token_identifiers
         .iter()
         .enumerate()
-        .map(|(position, &token_id)| {
+        .map(|(position, &token_identifier)| {
             [
-                token_embedding[token_id][0] + position_embedding[position][0],
-                token_embedding[token_id][1] + position_embedding[position][1],
+                token_embedding[token_identifier][0] + position_embedding[position][0],
+                token_embedding[token_identifier][1] + position_embedding[position][1],
             ]
         })
         .collect();

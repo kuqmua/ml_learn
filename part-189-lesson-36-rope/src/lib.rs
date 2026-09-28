@@ -3,10 +3,10 @@
 /// Вращаем пару координат согласно позиции; для многомерной головы это делают по парам.
 pub fn rotate_pair(vector: [f64; 2], position: usize, theta: f64) -> [f64; 2] {
     let angle = position as f64 * theta;
-    let (sin, cos) = angle.sin_cos();
+    let (sine_value, cosine_value) = angle.sin_cos();
     [
-        vector[0] * cos - vector[1] * sin,
-        vector[0] * sin + vector[1] * cos,
+        vector[0] * cosine_value - vector[1] * sine_value,
+        vector[0] * sine_value + vector[1] * cosine_value,
     ]
 }
 #[cfg(test)]

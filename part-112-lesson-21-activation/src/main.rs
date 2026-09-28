@@ -12,9 +12,9 @@ fn main() {
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for logit in [-2.0, 0.0, 2.0] {
         // ReLU оставляет положительные значения и обнуляет отрицательные.
-        let relu = if logit > 0.0 { logit } else { 0.0 };
+        let rectified_linear_output = if logit > 0.0 { logit } else { 0.0 };
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-        println!("logit={logit}, ReLU={relu}");
+        println!("logit={logit}, ReLU={rectified_linear_output}");
     }
 
     // Построение графика вынесено из основного кода урока.

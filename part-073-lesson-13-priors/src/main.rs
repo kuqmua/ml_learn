@@ -22,17 +22,17 @@ fn main() {
     let code_count = labels.iter().filter(|&&label| label == "code").count();
     // Считаем количество элементов и сохраняем его в `code_prior`.
     let code_prior = code_count as f64 / labels.len() as f64;
-    // Комбинируем исходные величины и сохраняем результат в `ml_prior`.
-    let ml_prior = 1.0 - code_prior;
+    // Комбинируем исходные величины и сохраняем результат в `machine_learning_prior`.
+    let machine_learning_prior = 1.0 - code_prior;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
-    println!("P(code)={code_prior}, P(ml)={ml_prior}");
+    println!("P(code)={code_prior}, P(ml)={machine_learning_prior}");
 
     // Построение графика вынесено из основного кода урока.
-    visualize(code_prior, ml_prior);
+    visualize(code_prior, machine_learning_prior);
 }
 
 // Строим график по результатам урока.
-fn visualize(code_prior: f64, ml_prior: f64) {
+fn visualize(code_prior: f64, machine_learning_prior: f64) {
     // Сравнение величин из этого урока.
     let chart = lesson_visualization::bars(
         // Передаём путь к каталогу текущего урока.
@@ -44,7 +44,7 @@ fn visualize(code_prior: f64, ml_prior: f64) {
         // Указываем подпись вертикальной оси.
         "вероятность",
         // Передаём ряды или значения для отрисовки графика.
-        &[("code", code_prior), ("ml", ml_prior)],
+        &[("code", code_prior), ("ml", machine_learning_prior)],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");

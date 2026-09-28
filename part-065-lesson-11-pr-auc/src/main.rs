@@ -39,7 +39,8 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize() {
     // Значения из этого урока на графике.
-    let pr_auc_points: Vec<(f64, f64)> = [(0.0, 1.0), (0.5, 1.0), (1.0, 2.0 / 3.0)].to_vec();
+    let precision_recall_area_under_curve_points: Vec<(f64, f64)> =
+        [(0.0, 1.0), (0.5, 1.0), (1.0, 2.0 / 3.0)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
     let chart = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
@@ -57,7 +58,7 @@ fn visualize() {
             // Указываем подпись этого ряда в легенде.
             name: "метки +−+−",
             // Передаём рассчитанные координаты точек.
-            points: &pr_auc_points,
+            points: &precision_recall_area_under_curve_points,
         }],
     )
     // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
