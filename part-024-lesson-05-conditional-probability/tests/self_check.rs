@@ -1,26 +1,13 @@
-// Самопроверка для урока 024. Практическое задание находится в SELF_CHECK.md.
-// Сначала реши задачу, затем выбери верный критерий и замени None на Some(1), Some(2) или Some(3).
+// Из 100 человек 20 больны. У 8 больных и 32 здоровых тест положительный.
 #[test]
-#[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
-fn choose_correct_check_for_lesson() {
-    let question = "Построй таблицу совместных событий для болезни и положительного теста.";
-    let choices = [
-        "Для каждого сравни P(A и B) с P(A)·P(B).",
-        "Пересчитай вероятность болезни после положительного результата и объясни направление изменения.",
-        "Вычисли P(болезнь при положительном тесте) через частоты, не путая её с P(положительный тест при болезни).",
-    ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
-    let selected_choice: Option<usize> = None;
-    let selected_choice = selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
-    assert!(
-        (1..=3).contains(&selected_choice),
-        "номер варианта должен быть от 1 до 3"
-    );
-    assert_eq!(
-        selected_choice, 3,
-        "вернись к примеру и проверь своё объяснение"
-    );
+#[ignore = "заполни ответы и запусти тест с --ignored"]
+fn distinguish_two_conditional_probabilities() {
+    let probability_of_illness_given_positive: Option<f64> = None;
+    let probability_of_positive_given_illness: Option<f64> = None;
+    let illness_given_positive =
+        probability_of_illness_given_positive.expect("впиши 8 / число положительных тестов");
+    let positive_given_illness =
+        probability_of_positive_given_illness.expect("впиши 8 / число больных");
+    assert!((illness_given_positive - 0.2).abs() < 1e-12);
+    assert!((positive_given_illness - 0.4).abs() < 1e-12);
 }

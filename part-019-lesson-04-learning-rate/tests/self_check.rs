@@ -1,26 +1,13 @@
-// Самопроверка для урока 019. Практическое задание находится в SELF_CHECK.md.
-// Сначала реши задачу, затем выбери верный критерий и замени None на Some(1), Some(2) или Some(3).
+// Один шаг спуска для f(x)=x²: x_new = x_old − rate·2x_old.
 #[test]
-#[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
-fn choose_correct_check_for_lesson() {
-    let question = "Запусти спуск к минимуму x² с тремя разными скоростями обучения.";
-    let choices = [
-        "Объясни по истории значений, где движение медленное, где сходится, а где колеблется или расходится.",
-        "Покажи, что остановка определяется изменением функции или градиента, а не только числом шагов.",
-        "Найди старты с разными конечными минимумами и объясни причину.",
-    ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
-    let selected_choice: Option<usize> = None;
-    let selected_choice = selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
-    assert!(
-        (1..=3).contains(&selected_choice),
-        "номер варианта должен быть от 1 до 3"
-    );
-    assert_eq!(
-        selected_choice, 1,
-        "вернись к примеру и проверь своё объяснение"
-    );
+#[ignore = "заполни ответы и запусти тест с --ignored"]
+fn calculate_one_gradient_step() {
+    let next_x: Option<f64> = None; // x=2, rate=0.1
+    let next_x = next_x.expect("вычисли новый x и впиши Some(...)");
+    assert!((next_x - 1.6).abs() < 1e-12);
+    assert!(next_x * next_x < 4.0);
+
+    // При rate=1.5 новое x=-4: ошибка возрастает с 4 до 16.
+    let loss_after_large_step: Option<f64> = None;
+    assert_eq!(loss_after_large_step, Some(16.0));
 }
