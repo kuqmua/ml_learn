@@ -1,0 +1,14 @@
+[package]
+name = "lesson-datasets"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[dev-dependencies]
+part-004-lesson-01-distance = { path = "../part-004-lesson-01-distance" }
+part-029-lesson-06-mean = { path = "../part-029-lesson-06-mean" }
+part-049-lesson-09-mean-squared-error = { path = "../part-049-lesson-09-mean-squared-error" }
+part-050-lesson-09-mean-absolute-error = { path = "../part-050-lesson-09-mean-absolute-error" }
+part-060-lesson-11-confusion-matrix = { path = "../part-060-lesson-11-confusion-matrix" }
+part-062-lesson-11-recall = { path = "../part-062-lesson-11-recall" }

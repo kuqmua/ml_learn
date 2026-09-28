@@ -1,0 +1,57 @@
+use lesson_datasets::{SmsSpamRecord, load_sms_spam_records, split_indices_stratified_by_class};
+use part_060_lesson_11_confusion_matrix::{
+    calculate_classification_accuracy, count_binary_classification_outcomes,
+};
+use part_062_lesson_11_recall::recall;
+use std::error::Error;
+
+fn report_majority_baseline(
+    name: &str,
+    records: &[SmsSpamRecord],
+    indices: &[usize],
+    majority_is_spam: bool,
+) -> Result<(), Box<dyn Error>> {
+    let truth: Vec<bool> = indices
+        .iter()
+        .map(|&index| records[index].is_spam)
+        .collect();
+    let predictions = vec![majority_is_spam; indices.len()];
+    let counts = count_binary_classification_outcomes(&truth, &predictions)?;
+    println!(
+        "{name}: accuracy={:.3}, spam recall={:.3}, missed spam={}",
+        calculate_classification_accuracy(counts).unwrap(),
+        recall(counts).unwrap(),
+        counts.false_negatives
+    );
+    Ok(())
+}
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let records = load_sms_spam_records()?;
+    let labels: Vec<u8> = records
+        .iter()
+        .map(|record| u8::from(record.is_spam))
+        .collect();
+    let split = split_indices_stratified_by_class(&labels, 42)?;
+    let training_spam_count = split
+        .training_indices
+        .iter()
+        .filter(|&&index| records[index].is_spam)
+        .count();
+    let majority_is_spam = training_spam_count * 2 > split.training_indices.len();
+    println!(
+        "SMS Spam: {} строк, метка bool + текст String, train={}, validation={}, test={}",
+        records.len(),
+        split.training_indices.len(),
+        split.validation_indices.len(),
+        split.test_indices.len()
+    );
+    report_majority_baseline(
+        "validation",
+        &records,
+        &split.validation_indices,
+        majority_is_spam,
+    )?;
+    report_majority_baseline("test", &records, &split.test_indices, majority_is_spam)?;
+    Ok(())
+}
