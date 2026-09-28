@@ -18,13 +18,13 @@ fn main() {
     // Проверяем ожидаемое свойство учебного примера.
     assert!(!reference.is_empty());
     // Сохраняем результат этого шага в `reference_mean`.
-    let reference_mean = lesson_029::mean(&reference).unwrap();
+    let reference_mean = part_029_lesson_06_mean::arithmetic_mean_of_values(&reference).unwrap();
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, current, expected_difference) in cases {
         // Проверяем ожидаемое свойство учебного примера.
         assert!(!current.is_empty());
         // Сохраняем результат этого шага в `current_mean`.
-        let current_mean = lesson_029::mean(&current).unwrap();
+        let current_mean = part_029_lesson_06_mean::arithmetic_mean_of_values(&current).unwrap();
         // Сохраняем результат этого шага в `difference`.
         let difference = current_mean - reference_mean;
         // Проверяем ожидаемое свойство учебного примера.

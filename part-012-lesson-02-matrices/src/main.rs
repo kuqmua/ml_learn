@@ -74,7 +74,7 @@ fn main() {
         // Сохраняем результат этого шага в `row_end`.
         let row_end = row_start + left_matrix.column_count;
         // Сохраняем результат этого шага в `row_result`.
-        let row_result = lesson_001::multiply_matching_coordinates_then_add(
+        let row_result = part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(
             // Используем подготовленное значение в следующем шаге примера.
             &left_matrix.data[row_start..row_end],
             // Используем подготовленное значение в следующем шаге примера.
@@ -130,7 +130,7 @@ fn main() {
                 // Собираем результаты в коллекцию.
                 .collect();
             // Сохраняем результат этого шага в `cell_value`.
-            let cell_value = lesson_001::multiply_matching_coordinates_then_add(
+            let cell_value = part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(
                 // Используем подготовленное значение в следующем шаге примера.
                 &transposed_matrix.data[row_start..row_end],
                 // Используем подготовленное значение в следующем шаге примера.

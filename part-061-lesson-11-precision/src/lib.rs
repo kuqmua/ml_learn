@@ -1,7 +1,7 @@
 //! Вычисления и примеры урока part-061-lesson-11-precision.
 
 /// Доля верных среди положительных прогнозов.
-pub fn precision(counts: lesson_058::Counts) -> Option<f64> {
+pub fn precision(counts: part_060_lesson_11_confusion_matrix::Counts) -> Option<f64> {
     // Сохраняем результат этого шага в `predicted_positives`.
     let predicted_positives = counts.true_positives + counts.false_positives;
     // Выбираем дальнейший шаг по выполнению условия.

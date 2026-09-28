@@ -1,7 +1,7 @@
 // Урок 26.4. Residual и skip связи.
 // Residual переносит состояние через слои, skip собирает вклады для выхода.
 
-fn block(input: f64, transform: f64) -> (f64, f64) {
+fn apply_residual_and_skip_block(input: f64, transform: f64) -> (f64, f64) {
     let activation = (input * transform).tanh();
     // Добавление входа блока к его преобразованному выходу называют residual connection.
     let input_plus_transformed_value = input + activation;
@@ -12,7 +12,7 @@ fn main() {
     let mut state = 0.5;
     let mut skip_sum = 0.0;
     for transform in [0.2, -0.4, 0.8] {
-        let (next, skip) = block(state, transform);
+        let (next, skip) = apply_residual_and_skip_block(state, transform);
         state = next;
         skip_sum += skip;
     }

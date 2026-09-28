@@ -23,13 +23,19 @@ fn main() {
         "масштабы должны быть положительными"
     );
     // Сохраняем результат этого шага в `raw_squared`.
-    let raw_squared = lesson_004::squared_distance(&first, &second).unwrap();
+    let raw_squared =
+        part_004_lesson_01_distance::squared_euclidean_distance_between_points(&first, &second)
+            .unwrap();
     // Задаём учебные значения для `scaled_first`.
     let scaled_first = [first[0] / scale[0], first[1] / scale[1]];
     // Задаём учебные значения для `scaled_second`.
     let scaled_second = [second[0] / scale[0], second[1] / scale[1]];
     // Сохраняем результат этого шага в `scaled_squared`.
-    let scaled_squared = lesson_004::squared_distance(&scaled_first, &scaled_second).unwrap();
+    let scaled_squared = part_004_lesson_01_distance::squared_euclidean_distance_between_points(
+        &scaled_first,
+        &scaled_second,
+    )
+    .unwrap();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("до={raw_squared}, после масштабирования={scaled_squared}");
 
@@ -40,7 +46,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(raw_squared: f64, scaled_squared: f64) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bars(
+    let chart = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

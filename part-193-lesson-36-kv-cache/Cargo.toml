@@ -1,7 +1,0 @@
-[package]
-name = "part-193-lesson-36-kv-cache"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-part-182-lesson-35-causal-self-attention = { path = "../part-182-lesson-35-causal-self-attention" }

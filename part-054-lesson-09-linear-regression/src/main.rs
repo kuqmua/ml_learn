@@ -91,10 +91,12 @@ fn main() {
     let baseline_predictions: Vec<_> = test.iter().map(|_| 5.0).collect();
     // Сохраняем результат этого шага в `model_mean_squared_error`.
     let model_mean_squared_error =
-        lesson_047::mean_squared_error(&targets, &model_predictions).unwrap();
+        part_049_lesson_09_mean_squared_error::mean_squared_error(&targets, &model_predictions)
+            .unwrap();
     // Сохраняем результат этого шага в `baseline_mean_squared_error`.
     let baseline_mean_squared_error =
-        lesson_047::mean_squared_error(&targets, &baseline_predictions).unwrap();
+        part_049_lesson_09_mean_squared_error::mean_squared_error(&targets, &baseline_predictions)
+            .unwrap();
     // Печатаем рассчитанные значения для проверки примера.
     println!(
         "w={weight:.3}, b={bias:.3}, test MSE={model_mean_squared_error:.6}, baseline MSE={baseline_mean_squared_error:.3}"

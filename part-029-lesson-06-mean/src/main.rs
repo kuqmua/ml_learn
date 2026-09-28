@@ -16,7 +16,8 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, values, expected) in cases {
         // Общая функция среднего повторно понадобится в дисперсии и нормализации.
-        let mean = part_029_lesson_06_mean::mean(values).expect("в этой строке есть значения");
+        let mean = part_029_lesson_06_mean::arithmetic_mean_of_values(values)
+            .expect("в этой строке есть значения");
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(mean, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -25,7 +26,7 @@ fn main() {
     // Задаём учебные значения для `empty`.
     let empty: [f64; 0] = [];
     // Сохраняем результат этого шага в `error`.
-    let error = part_029_lesson_06_mean::mean(&empty)
+    let error = part_029_lesson_06_mean::arithmetic_mean_of_values(&empty)
         // Настраиваем или преобразуем результат предыдущего шага.
         .expect_err("среднее пустого набора должно быть отклонено");
     // Печатаем рассчитанные значения для проверки примера.

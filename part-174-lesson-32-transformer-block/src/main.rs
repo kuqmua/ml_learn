@@ -140,7 +140,7 @@ fn main() {
                     // Преобразуем каждый элемент последовательности.
                     .map(|key| {
                         // Составляем результат из вычисленных значений в указанном порядке.
-                        lesson_001::multiply_matching_coordinates_then_add(&query, key).unwrap()
+                        part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(&query, key).unwrap()
                                 // Делим значения, получая нормированную величину или среднее.
                                 / approximate_square_root_with_newton_method(2.0)
                     })

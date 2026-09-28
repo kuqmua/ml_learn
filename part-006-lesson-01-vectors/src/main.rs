@@ -7,9 +7,15 @@ fn main() {
     // Задаём учебные значения для `first`.
     let first = [3.0, 4.0];
     // Проверяем ожидаемое свойство учебного примера.
-    assert_eq!(lesson_002::sum_of_absolute_coordinates(&first), 7.0);
+    assert_eq!(
+        part_002_lesson_01_sum_of_absolute_coordinate_values::sum_of_absolute_coordinates(&first),
+        7.0
+    );
     // Проверяем ожидаемое свойство учебного примера.
-    assert_eq!(lesson_003::euclidean_norm(&first), 5.0);
+    assert_eq!(
+        part_003_lesson_01_euclidean_vector_length::euclidean_norm(&first),
+        5.0
+    );
     // Печатаем рассчитанные значения для проверки примера.
     println!("вектор {first:?}: L1=7, L2=5");
 
@@ -27,13 +33,14 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, other, expected_sum, expected_cosine) in cases {
         // Сохраняем результат этого шага в `sum`.
-        let sum = lesson_001::multiply_matching_coordinates_then_add(&first, other)
+        let sum = part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(&first, other)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("у этих векторов одинаковое число координат");
         // Сохраняем результат этого шага в `distance`.
-        let distance = lesson_004::distance(&first, other).unwrap();
+        let distance =
+            part_004_lesson_01_distance::euclidean_distance_between_points(&first, other).unwrap();
         // Сохраняем результат этого шага в `cosine`.
-        let cosine = lesson_005::cosine_similarity(&first, other).ok();
+        let cosine = part_005_lesson_01_cosine_similarity::cosine_similarity(&first, other).ok();
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(sum, expected_sum);
         // Выбираем дальнейший шаг по выполнению условия.
@@ -46,7 +53,8 @@ fn main() {
             assert_eq!(cosine, expected_cosine);
         }
         // Сохраняем результат этого шага в `reverse_distance`.
-        let reverse_distance = lesson_004::distance(other, &first).unwrap();
+        let reverse_distance =
+            part_004_lesson_01_distance::euclidean_distance_between_points(other, &first).unwrap();
         // Проверяем ожидаемое свойство учебного примера.
         assert!((distance - reverse_distance).abs() < 1e-10);
         // Печатаем рассчитанные значения для проверки примера.
@@ -56,7 +64,10 @@ fn main() {
     // Задаём учебные значения для `too_short`.
     let too_short = [1.0];
     // Сохраняем результат этого шага в `error`.
-    let error = lesson_001::multiply_matching_coordinates_then_add(&first, &too_short)
+    let error =
+        part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(
+            &first, &too_short,
+        )
         // Настраиваем или преобразуем результат предыдущего шага.
         .expect_err("векторы разной длины нужно отклонить");
     // Печатаем рассчитанные значения для проверки примера.

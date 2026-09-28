@@ -1,0 +1,7 @@
+[package]
+name = "part-134-lesson-25-recurrent-neural-network-state"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-visualization = { path = "../lesson-visualization" }

@@ -52,8 +52,8 @@
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
 | 1 | Урок 01.1. Умножение координат попарно и сложение результатов | `part-001-lesson-01-multiply-coordinates-and-add` |
-| 2 | Урок 01.2. Норма L1 | `part-002-lesson-01-l1-norm` |
-| 3 | Урок 01.3. Евклидова норма L2 | `part-003-lesson-01-l2-norm` |
+| 2 | Урок 01.2. Норма L1 | `part-002-lesson-01-sum-of-absolute-coordinate-values` |
+| 3 | Урок 01.3. Евклидова норма L2 | `part-003-lesson-01-euclidean-vector-length` |
 | 4 | Урок 01.4. Евклидово расстояние между точками | `part-004-lesson-01-distance` |
 | 5 | Урок 01.5. Косинусное сходство | `part-005-lesson-01-cosine-similarity` |
 
@@ -77,8 +77,8 @@
 |---:|---|---|
 | 1 | Форма матрицы | `part-007-lesson-02-matrix-shape` |
 | 2 | Транспонирование матрицы | `part-008-lesson-02-transpose` |
-| 3 | Умножение матрицы на вектор | `part-009-lesson-02-matvec` |
-| 4 | Умножение матриц | `part-010-lesson-02-matmul` |
+| 3 | Умножение матрицы на вектор | `part-009-lesson-02-matrix-vector-multiplication` |
+| 4 | Умножение матриц | `part-010-lesson-02-matrix-matrix-multiplication` |
 | 5 | Система двух линейных уравнений | `part-011-lesson-02-linear-system` |
 
 ##### Сводная практика — `part-012-lesson-02-matrices`
@@ -204,7 +204,7 @@
 | 1 | Случайный seed | `part-043-lesson-08-seed` |
 | 2 | Базовая модель | `part-044-lesson-08-baseline` |
 | 3 | Конфигурация запуска | `part-045-lesson-08-configuration` |
-| 4 | Журнал метрик | `part-046-lesson-08-metric-log` |
+| 4 | Журнал метрик | `part-046-lesson-08-metric-history` |
 | 5 | Версия данных | `part-047-lesson-08-data-version` |
 
 ##### Сводная практика — `part-048-lesson-08-experiment`
@@ -222,8 +222,8 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Среднеквадратичная ошибка | `part-049-lesson-09-mse` |
-| 2 | Средняя абсолютная ошибка | `part-050-lesson-09-mae` |
+| 1 | Среднеквадратичная ошибка | `part-049-lesson-09-mean-squared-error` |
+| 2 | Средняя абсолютная ошибка | `part-050-lesson-09-mean-absolute-error` |
 | 3 | Коэффициенты линейной модели | `part-051-lesson-09-coefficients` |
 | 4 | Регуляризация коэффициентов | `part-052-lesson-09-regularization` |
 | 5 | Качество на отложенных данных | `part-053-lesson-09-heldout-quality` |
@@ -242,7 +242,7 @@
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
 | 1 | Сигмоидная функция | `part-055-lesson-10-sigmoid` |
-| 2 | Логарифмическая ошибка | `part-056-lesson-10-log-loss` |
+| 2 | Логарифмическая ошибка | `part-056-lesson-10-logarithmic-loss` |
 | 3 | Вероятность класса | `part-057-lesson-10-probability` |
 | 4 | Порог классификации | `part-058-lesson-10-threshold` |
 
@@ -262,9 +262,9 @@
 | 1 | Матрица ошибок классификации | `part-060-lesson-11-confusion-matrix` |
 | 2 | Точность положительных прогнозов | `part-061-lesson-11-precision` |
 | 3 | Полнота положительного класса | `part-062-lesson-11-recall` |
-| 4 | Мера F1 | `part-063-lesson-11-f1` |
-| 5 | Площадь под ROC-кривой | `part-064-lesson-11-roc-auc` |
-| 6 | Площадь под PR-кривой | `part-065-lesson-11-pr-auc` |
+| 4 | Мера F1 | `part-063-lesson-11-harmonic-mean-of-precision-and-recall` |
+| 5 | Площадь под ROC-кривой | `part-064-lesson-11-area-under-receiver-operating-characteristic-curve` |
+| 6 | Площадь под PR-кривой | `part-065-lesson-11-area-under-precision-recall-curve` |
 
 ![Матрица ошибок классификации](docs/illustrations/11-confusion-matrix.svg)
 
@@ -285,10 +285,10 @@
 |---:|---|---|
 | 1 | Расстояния для ближайших соседей | `part-067-lesson-12-distances` |
 | 2 | Масштабирование признаков | `part-068-lesson-12-feature-scaling` |
-| 3 | Выбор числа соседей k | `part-069-lesson-12-choose-k` |
+| 3 | Выбор числа соседей k | `part-069-lesson-12-choose-number-of-neighbors` |
 | 4 | Стоимость прогноза kNN | `part-070-lesson-12-prediction-cost` |
 
-##### Сводная практика — `part-071-lesson-12-knn`
+##### Сводная практика — `part-071-lesson-12-nearest-neighbor-classification`
 
 - **Повторить вместе:** расстояния, масштабирование признаков, выбор k, стоимость предсказания.
 - **Практика:** Напиши k-NN классификатор с явным правилом разрешения ничьей.
@@ -371,7 +371,7 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | K-fold кросс-валидация | `part-091-lesson-17-k-fold` |
+| 1 | K-fold кросс-валидация | `part-091-lesson-17-multiple-fold-cross-validation` |
 | 2 | Стратифицированное разбиение | `part-092-lesson-17-stratification` |
 | 3 | Вложенная оценка | `part-093-lesson-17-nested-evaluation` |
 | 4 | Утечка при подготовке признаков | `part-094-lesson-17-preprocessing-leakage` |
@@ -392,7 +392,7 @@
 | 1 | Центроиды кластеров | `part-096-lesson-18-centroids` |
 | 2 | Инициализация k-means | `part-097-lesson-18-initialization` |
 | 3 | Инерция кластеризации | `part-098-lesson-18-inertia` |
-| 4 | Выбор числа кластеров | `part-099-lesson-18-choose-k` |
+| 4 | Выбор числа кластеров | `part-099-lesson-18-choose-number-of-clusters` |
 
 ##### Сводная практика — `part-100-lesson-18-clustering`
 
@@ -412,7 +412,7 @@
 | 3 | Главное направление PCA | `part-103-lesson-19-principal-direction` |
 | 4 | Объяснённая дисперсия | `part-104-lesson-19-explained-variance` |
 
-##### Сводная практика — `part-105-lesson-19-pca`
+##### Сводная практика — `part-105-lesson-19-principal-component-analysis`
 
 - **Повторить вместе:** центрирование, ковариация, собственные направления, объяснённая дисперсия.
 - **Практика:** Реализуй PCA для 2D через ковариационную матрицу и проекцию на главную ось.
@@ -450,7 +450,7 @@
 | 4 | Инициализация весов | `part-113-lesson-21-initialization` |
 | 5 | Mini-batch обучение | `part-114-lesson-21-mini-batch` |
 
-##### Сводная практика — `part-115-lesson-21-mlp`
+##### Сводная практика — `part-115-lesson-21-multilayer-perceptron`
 
 - **Повторить вместе:** слои, параметры, активации, инициализация, mini-batch.
 - **Практика:** Обучи MLP на XOR с ручным backprop или графом предыдущего урока.
@@ -468,7 +468,7 @@
 | 3 | Broadcasting | `part-118-lesson-22-broadcasting` |
 | 4 | Проверка градиента | `part-119-lesson-22-gradient-check` |
 
-##### Сводная практика — `part-120-lesson-22-autodiff`
+##### Сводная практика — `part-120-lesson-22-automatic-differentiation`
 
 - **Повторить вместе:** reverse mode, тензорные формы, broadcasting, проверка градиента.
 - **Практика:** Расширь скалярный граф или создай минимальный Tensor для elementwise и matmul.
@@ -481,9 +481,9 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Стохастический градиентный спуск | `part-121-lesson-23-sgd` |
+| 1 | Стохастический градиентный спуск | `part-121-lesson-23-stochastic-gradient-descent` |
 | 2 | Импульс momentum | `part-122-lesson-23-momentum` |
-| 3 | Обновление Adam | `part-123-lesson-23-adam` |
+| 3 | Обновление Adam | `part-123-lesson-23-adaptive-moment-estimation` |
 | 4 | Нормализация признаков | `part-124-lesson-23-normalization` |
 | 5 | Ограничение градиента | `part-125-lesson-23-clipping` |
 | 6 | Ранняя остановка | `part-126-lesson-23-early-stopping` |
@@ -518,10 +518,10 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Скрытое состояние RNN | `part-134-lesson-25-rnn-state` |
-| 2 | Градиент через время (BPTT) | `part-135-lesson-25-bptt` |
-| 3 | Ячейка LSTM | `part-136-lesson-25-lstm-cell` |
-| 4 | Ячейка GRU | `part-137-lesson-25-gru-cell` |
+| 1 | Скрытое состояние RNN | `part-134-lesson-25-recurrent-neural-network-state` |
+| 2 | Градиент через время (BPTT) | `part-135-lesson-25-backpropagation-through-time` |
+| 3 | Ячейка LSTM | `part-136-lesson-25-long-short-term-memory-cell` |
+| 4 | Ячейка GRU | `part-137-lesson-25-gated-recurrent-unit-cell` |
 
 Проверь причинность состояния и сравни аналитический градиент BPTT с численным. Затем сравни способы хранения и сброса памяти.
 Источник: [LSTM](https://www.bioinf.jku.at/publications/older/2604.pdf), [GRU](https://arxiv.org/abs/1406.1078).
@@ -549,9 +549,9 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Символы, байты и токены | `part-143-lesson-27-utf8-bytes` |
-| 2 | Обучение byte-level BPE | `part-144-lesson-27-bpe-training` |
-| 3 | Кодирование и декодирование BPE | `part-145-lesson-27-bpe-encode-decode` |
+| 1 | Символы, байты и токены | `part-143-lesson-27-unicode-transformation-format-eight-bit-bytes` |
+| 2 | Обучение byte-level BPE | `part-144-lesson-27-byte-pair-encoding-training` |
+| 3 | Кодирование и декодирование BPE | `part-145-lesson-27-byte-pair-encoding-encode-decode` |
 | 4 | Служебные токены и роли | `part-146-lesson-27-control-tokens` |
 | 5 | Проверка токенизатора на новых строках | `part-147-lesson-27-tokenizer-evaluation` |
 
@@ -604,9 +604,9 @@
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
 | 1 | Лексический поиск | `part-158-lesson-30-lexical-search` |
-| 2 | TF-IDF | `part-159-lesson-30-tf-idf` |
+| 2 | TF-IDF | `part-159-lesson-30-term-frequency-inverse-document-frequency` |
 | 3 | Косинусное сходство документов | `part-160-lesson-30-cosine` |
-| 4 | Возврат top-k документов | `part-161-lesson-30-top-k` |
+| 4 | Возврат top-k документов | `part-161-lesson-30-select-highest-ranked-results` |
 
 ##### Сводная практика — `part-162-lesson-30-retrieval`
 
@@ -647,7 +647,7 @@
 |---:|---|---|
 | 1 | Self-attention | `part-170-lesson-32-self-attention` |
 | 2 | Остаточная связь | `part-171-lesson-32-residual` |
-| 3 | Layer normalization | `part-172-lesson-32-layer-norm` |
+| 3 | Layer normalization | `part-172-lesson-32-layer-normalization` |
 | 4 | Feed-forward слой | `part-173-lesson-32-feed-forward` |
 
 ##### Сводная практика — `part-174-lesson-32-transformer-block`
@@ -663,9 +663,9 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Патчи изображения | `part-175-lesson-33-vit-patches` |
-| 2 | Глобальное внимание между патчами | `part-176-lesson-33-vit-global-attention` |
-| 3 | CLS-токен для классификации | `part-177-lesson-33-vit-class-token` |
+| 1 | Патчи изображения | `part-175-lesson-33-vision-transformer-patches` |
+| 2 | Глобальное внимание между патчами | `part-176-lesson-33-vision-transformer-global-attention` |
+| 3 | CLS-токен для классификации | `part-177-lesson-33-vision-transformer-class-token` |
 
 Проследи форму патчей и убедись, что первый патч может читать последний. CLS-токен собирает признаки для классификации.
 Источник: [ViT](https://arxiv.org/abs/2010.11929).
@@ -690,8 +690,8 @@
 | 3 | Несколько голов внимания | `part-183-lesson-35-multi-head-attention` |
 | 4 | Pre-norm decoder block | `part-184-lesson-35-decoder-block` |
 | 5 | Потери при предсказании следующего токена | `part-185-lesson-35-next-token-loss` |
-| 6 | Учебный прямой проход GPT | `part-186-lesson-35-tiny-gpt-forward` |
-| 7 | Обучение выходной головы tiny GPT | `part-187-lesson-35-gpt-readout-training` |
+| 6 | Учебный прямой проход GPT | `part-186-lesson-35-tiny-generative-pretrained-transformer-forward` |
+| 7 | Обучение выходной головы tiny GPT | `part-187-lesson-35-generative-pretrained-transformer-readout-training` |
 
 Отдельно проследи формы входа, маску причинности и сдвиг цели на один токен.
 Прямой проход использует фиксированные веса; следующий урок обучает только выходную голову и сравнивает качество на отложенных данных.
@@ -703,12 +703,12 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | RMSNorm перед подслоем | `part-188-lesson-36-rmsnorm` |
-| 2 | Вращательные позиционные признаки RoPE | `part-189-lesson-36-rope` |
+| 1 | RMSNorm перед подслоем | `part-188-lesson-36-root-mean-square-normalization` |
+| 2 | Вращательные позиционные признаки RoPE | `part-189-lesson-36-rotary-position-embedding` |
 | 3 | Grouped-query attention | `part-190-lesson-36-grouped-query-attention` |
-| 4 | QK-Norm перед attention | `part-191-lesson-36-qk-norm` |
-| 5 | SwiGLU в feed-forward слое | `part-192-lesson-36-swiglu` |
-| 6 | KV-cache при генерации | `part-193-lesson-36-kv-cache` |
+| 4 | QK-Norm перед attention | `part-191-lesson-36-query-key-normalization` |
+| 5 | SwiGLU в feed-forward слое | `part-192-lesson-36-swish-gated-linear-unit` |
+| 6 | KV-cache при генерации | `part-193-lesson-36-key-value-cache` |
 | 7 | Маршрутизация Mixture-of-Experts | `part-194-lesson-36-mixture-of-experts` |
 | 8 | Учебный блок по мотивам Qwen3 | `part-195-lesson-36-qwen-inspired-block` |
 
@@ -723,7 +723,7 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Низкоранговая адаптация LoRA | `part-196-lesson-37-lora` |
+| 1 | Низкоранговая адаптация LoRA | `part-196-lesson-37-low-rank-adaptation` |
 | 2 | Симметричное INT8 квантование | `part-197-lesson-37-weight-quantization` |
 
 Сравни число обучаемых параметров с полной матрицей и погрешность восстановления весов после квантования. INT8 пример показывает принцип, не полный LLM.int8().
@@ -740,7 +740,7 @@
 | 3 | Цитирование источника | `part-200-lesson-38-citation` |
 | 4 | Проверка источника | `part-201-lesson-38-source-check` |
 
-##### Сводная практика — `part-202-lesson-38-rag`
+##### Сводная практика — `part-202-lesson-38-retrieval-augmented-generation`
 
 - **Повторить вместе:** контекст, ограничения длины, цитирование, проверка источника.
 - **Практика:** Собери прототип: retrieval из урока 30 плюс формирование ответа по найденным фрагментам; генератор можно заменить шаблоном.
@@ -768,7 +768,7 @@
 |---:|---|---|
 | 1 | Фиксированное состояние | `part-206-lesson-40-state-space-model` |
 | 2 | Селективное обновление | `part-207-lesson-40-selective-state-space` |
-| 3 | Сравнение постоянной и выборочной памяти | `part-208-lesson-40-selective-vs-fixed-memory` |
+| 3 | Сравнение постоянной и выборочной памяти | `part-208-lesson-40-selective-versus-fixed-memory` |
 
 Покажи, как вход может управлять забыванием. Примеры иллюстрируют идею selective SSM и не реализуют полный Mamba.
 Источник: [Mamba](https://arxiv.org/abs/2312.00752).
@@ -836,12 +836,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Контракт ввода и вывода CLI | `part-225-lesson-44-io-contract` |
+| 1 | Контракт ввода и вывода CLI | `part-225-lesson-44-input-output-contract` |
 | 2 | Пакетный инференс | `part-226-lesson-44-batch-processing` |
 | 3 | Ошибки входных данных | `part-227-lesson-44-errors` |
 | 4 | Производительность инференса | `part-228-lesson-44-performance` |
 
-##### Сводная практика — `part-229-lesson-44-inference-cli`
+##### Сводная практика — `part-229-lesson-44-inference-command-line-interface`
 
 - **Повторить вместе:** контракт входа/выхода, пакетная обработка, ошибки, производительность.
 - **Практика:** Сделай CLI для пакетных прогнозов по CSV или JSONL с явным форматом результата.

@@ -1,6 +1,0 @@
-[package]
-name = "part-137-lesson-25-gru-cell"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

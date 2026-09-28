@@ -209,7 +209,7 @@ fn main() {
                 / cases.len() as f64
         };
         // Строим график по рассчитанным значениям и сохраняем его как SVG.
-        let chart = lesson_visualization::bars(
+        let chart = lesson_visualization::bar_chart(
             // Передаём путь к каталогу текущего урока.
             env!("CARGO_MANIFEST_DIR"),
             // Указываем имя SVG-файла.

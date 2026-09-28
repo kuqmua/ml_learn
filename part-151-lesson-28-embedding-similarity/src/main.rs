@@ -16,7 +16,7 @@ fn main() {
     // Умножаем значения и сохраняем результат в `sum_after_multiplying_coordinates`.
     let sum_after_multiplying_coordinates =
         // Используем подготовленное значение в следующем шаге примера.
-        lesson_001::multiply_matching_coordinates_then_add(&first, &second)
+        part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(&first, &second)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("представления имеют одинаковую размерность");
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.

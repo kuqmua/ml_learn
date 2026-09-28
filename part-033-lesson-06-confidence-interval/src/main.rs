@@ -12,9 +12,9 @@ fn main() {
     // Создаём набор значений `values` для следующего шага примера.
     let values = [2.0, 4.0, 6.0, 8.0];
     // Сохраняем результат этого шага в `mean`.
-    let mean = lesson_029::mean(&values).unwrap();
+    let mean = part_029_lesson_06_mean::arithmetic_mean_of_values(&values).unwrap();
     // Сохраняем результат этого шага в `sample_variance`.
-    let sample_variance = lesson_031::sample_variance(&values).unwrap();
+    let sample_variance = part_031_lesson_06_variance::sample_variance(&values).unwrap();
     // Считаем количество элементов и сохраняем его в `standard_error_squared`.
     let standard_error_squared = sample_variance / values.len() as f64;
     // Создаём изменяемое значение `standard_error` для следующих операций.

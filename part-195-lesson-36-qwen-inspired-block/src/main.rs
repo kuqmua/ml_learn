@@ -2,11 +2,11 @@
 // Собираем pre-RMSNorm, QK-Norm, RoPE, GQA, residual и SwiGLU без реальных весов Qwen.
 
 use part_182_lesson_35_causal_self_attention::softmax;
-use part_188_lesson_36_rmsnorm::root_mean_square_normalization;
-use part_189_lesson_36_rope::rotate_pair;
-use part_192_lesson_36_swiglu::swish_gated_linear_unit;
+use part_188_lesson_36_root_mean_square_normalization::root_mean_square_normalization;
+use part_189_lesson_36_rotary_position_embedding::rotate_coordinate_pair_by_position;
+use part_192_lesson_36_swish_gated_linear_unit::swish_gated_linear_unit;
 
-fn block(states: &[[f64; 2]]) -> Vec<[f64; 2]> {
+fn apply_qwen_inspired_transformer_block(states: &[[f64; 2]]) -> Vec<[f64; 2]> {
     let gamma = [1.0, 1.0];
     let norm: Vec<[f64; 2]> = states
         .iter()
@@ -22,7 +22,7 @@ fn block(states: &[[f64; 2]]) -> Vec<[f64; 2]> {
         .enumerate()
         .map(|(position, input_value)| {
             let key = root_mean_square_normalization(input_value, &gamma, 1e-6).unwrap();
-            rotate_pair([key[0], key[1]], position, 0.1)
+            rotate_coordinate_pair_by_position([key[0], key[1]], position, 0.1)
         })
         .collect();
     let mut output = Vec::new();
@@ -36,7 +36,7 @@ fn block(states: &[[f64; 2]]) -> Vec<[f64; 2]> {
                 [norm[index][1], -norm[index][0]]
             };
             let query = root_mean_square_normalization(&raw_query, &gamma, 1e-6).unwrap();
-            let query = rotate_pair([query[0], query[1]], index, 0.1);
+            let query = rotate_coordinate_pair_by_position([query[0], query[1]], index, 0.1);
             // Оценку модели до преобразования в вероятность называют logit.
             let raw_model_scores: Vec<f64> = (0..=index)
                 .map(|past| (query[0] * keys[past][0] + query[1] * keys[past][1]) / 2.0_f64.sqrt())
@@ -63,8 +63,11 @@ fn block(states: &[[f64; 2]]) -> Vec<[f64; 2]> {
 }
 fn main() {
     let states = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    let output = block(&states);
-    assert_eq!(block(&states[..1])[0], output[0]);
+    let output = apply_qwen_inspired_transformer_block(&states);
+    assert_eq!(
+        apply_qwen_inspired_transformer_block(&states[..1])[0],
+        output[0]
+    );
     println!("выход учебного блока: {output:?}");
     // Реальный Qwen3 имеет многомерные проекции, обученные веса и масштабные данные.
 }

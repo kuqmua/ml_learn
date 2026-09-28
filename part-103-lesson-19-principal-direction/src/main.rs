@@ -18,7 +18,7 @@ fn main() {
         // Умножаем значения и сохраняем результат в `projection`.
         let projection =
             // Используем подготовленное значение в следующем шаге примера.
-            lesson_001::multiply_matching_coordinates_then_add(&point, &principal_axis).unwrap();
+            part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(&point, &principal_axis).unwrap();
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("точка={point:?}, координата на главной оси={projection}");
     }

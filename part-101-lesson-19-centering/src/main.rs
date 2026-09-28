@@ -19,7 +19,7 @@ fn main() {
         "для центрирования нужно хотя бы одно значение"
     );
     // Преобразуем входные данные и сохраняем полученную коллекцию в `mean`.
-    let mean = lesson_029::mean(&values).unwrap();
+    let mean = part_029_lesson_06_mean::arithmetic_mean_of_values(&values).unwrap();
     // Преобразуем входные данные и сохраняем полученную коллекцию в `centered`.
     let centered: Vec<_> = values.iter().map(|&value| value - mean).collect();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.

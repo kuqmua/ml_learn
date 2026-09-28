@@ -102,7 +102,7 @@ fn main() {
                     // Обрабатываем случай, когда предыдущее условие не выполнено.
                     } else {
                         // Составляем результат из вычисленных значений в указанном порядке.
-                        lesson_001::multiply_matching_coordinates_then_add(query, key).unwrap()
+                        part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(query, key).unwrap()
                             // Делим значения, получая нормированную величину или среднее.
                             / (|| -> f64 {
         // Обновляем значение результатом текущего вычисления.

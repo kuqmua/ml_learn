@@ -27,7 +27,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(training_data: &[i32], validation: &[i32], test: &[i32]) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bars(
+    let chart = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

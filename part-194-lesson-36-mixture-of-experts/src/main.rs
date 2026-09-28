@@ -30,7 +30,7 @@ fn visualize(scores: &[f64; 4]) {
         ("expert 2", scores[2]),
         ("expert 3", scores[3]),
     ];
-    let path = lesson_visualization::bars(
+    let path = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "router",
         "Оценки маршрутизатора",

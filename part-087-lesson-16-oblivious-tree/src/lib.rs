@@ -9,7 +9,10 @@ pub struct ObliviousTree {
 
 impl ObliviousTree {
     /// Биты результатов проверок образуют индекс листа.
-    pub fn predict(&self, features: &[f64]) -> Result<f64, &'static str> {
+    pub fn predict_with_oblivious_decision_tree(
+        &self,
+        features: &[f64],
+    ) -> Result<f64, &'static str> {
         if self.leaves.len() != 1 << self.splits.len() {
             return Err("число листьев должно быть 2^depth");
         }
@@ -31,10 +34,22 @@ mod tests {
             splits: vec![(0, 0.5), (1, 0.5)],
             leaves: vec![0.0, 1.0, 2.0, 3.0],
         };
-        assert_eq!(tree.predict(&[0.0, 0.0]), Ok(0.0));
-        assert_eq!(tree.predict(&[0.0, 1.0]), Ok(1.0));
-        assert_eq!(tree.predict(&[1.0, 0.0]), Ok(2.0));
-        assert_eq!(tree.predict(&[1.0, 1.0]), Ok(3.0));
-        assert!(tree.predict(&[1.0]).is_err());
+        assert_eq!(
+            tree.predict_with_oblivious_decision_tree(&[0.0, 0.0]),
+            Ok(0.0)
+        );
+        assert_eq!(
+            tree.predict_with_oblivious_decision_tree(&[0.0, 1.0]),
+            Ok(1.0)
+        );
+        assert_eq!(
+            tree.predict_with_oblivious_decision_tree(&[1.0, 0.0]),
+            Ok(2.0)
+        );
+        assert_eq!(
+            tree.predict_with_oblivious_decision_tree(&[1.0, 1.0]),
+            Ok(3.0)
+        );
+        assert!(tree.predict_with_oblivious_decision_tree(&[1.0]).is_err());
     }
 }

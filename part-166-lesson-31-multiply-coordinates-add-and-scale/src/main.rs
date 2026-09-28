@@ -16,7 +16,7 @@ fn main() {
     // Умножаем соответствующие координаты запроса и ключа, затем складываем результаты.
     let sum_after_multiplying_coordinates =
         // Используем подготовленное значение в следующем шаге примера.
-        lesson_001::multiply_matching_coordinates_then_add(&query, &key)
+        part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(&query, &key)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("запрос и ключ имеют одинаковую размерность");
     // Сохраняем рассчитанное значение `dimension` для следующих операций.

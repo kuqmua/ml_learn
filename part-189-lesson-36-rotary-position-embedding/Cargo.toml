@@ -1,0 +1,7 @@
+[package]
+name = "part-189-lesson-36-rotary-position-embedding"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-visualization = { path = "../lesson-visualization" }

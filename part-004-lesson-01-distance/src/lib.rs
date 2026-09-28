@@ -1,7 +1,10 @@
 //! Вычисления и примеры урока part-004-lesson-01-distance.
 
 /// Сумма квадратов покоординатных разностей.
-pub fn squared_distance(left: &[f64], right: &[f64]) -> Result<f64, &'static str> {
+pub fn squared_euclidean_distance_between_points(
+    left: &[f64],
+    right: &[f64],
+) -> Result<f64, &'static str> {
     // Выбираем дальнейший шаг по выполнению условия.
     if left.len() != right.len() {
         // Прерываем вычисление и возвращаем причину ошибки.
@@ -21,7 +24,7 @@ pub fn squared_distance(left: &[f64], right: &[f64]) -> Result<f64, &'static str
 }
 
 /// Расстояние — длина вектора разностей; используем норму из урока 01.3.
-pub fn distance(left: &[f64], right: &[f64]) -> Result<f64, &'static str> {
+pub fn euclidean_distance_between_points(left: &[f64], right: &[f64]) -> Result<f64, &'static str> {
     // Выбираем дальнейший шаг по выполнению условия.
     if left.len() != right.len() {
         // Прерываем вычисление и возвращаем причину ошибки.
@@ -34,5 +37,7 @@ pub fn distance(left: &[f64], right: &[f64]) -> Result<f64, &'static str> {
         .map(|(&first_value, &second_value)| first_value - second_value)
         .collect();
     // Возвращаем успешный результат.
-    Ok(lesson_003::euclidean_norm(&differences))
+    Ok(part_003_lesson_01_euclidean_vector_length::euclidean_norm(
+        &differences,
+    ))
 }

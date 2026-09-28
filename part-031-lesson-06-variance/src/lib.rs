@@ -8,7 +8,7 @@ pub fn sample_variance(values: &[f64]) -> Result<f64, &'static str> {
         return Err("для выборочной дисперсии нужны хотя бы два значения");
     }
     // Сохраняем результат этого шага в `average`.
-    let average = lesson_029::mean(values)?;
+    let average = part_029_lesson_06_mean::arithmetic_mean_of_values(values)?;
     // Сохраняем результат этого шага в `squared_deviation_sum`.
     let mut squared_deviation_sum = 0.0;
     // Повторяем расчёт для каждого элемента последовательности.

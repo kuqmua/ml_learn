@@ -37,7 +37,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(cases: [(&str, f64, f64, f64, bool); 3]) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bars(
+    let chart = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

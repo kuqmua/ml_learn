@@ -44,7 +44,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(bias: f64, variance: f64) {
     // Сравниваем компоненты ошибки на том же наборе прогнозов.
-    let chart = lesson_visualization::bars(
+    let chart = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

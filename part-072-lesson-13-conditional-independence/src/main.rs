@@ -37,7 +37,7 @@ fn visualize(
     joint_score: f64,
 ) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bars(
+    let chart = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

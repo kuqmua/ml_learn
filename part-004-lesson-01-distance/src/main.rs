@@ -16,9 +16,12 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, first_point, second_point, expected) in cases {
         // Общая функция проверяет размерности и вычисляет расстояние.
-        let distance = part_004_lesson_01_distance::distance(first_point, second_point)
-            // Используем результат, ожидая успешного выполнения шага.
-            .expect("точки в этом примере имеют одинаковую размерность");
+        let distance = part_004_lesson_01_distance::euclidean_distance_between_points(
+            first_point,
+            second_point,
+        )
+        // Используем результат, ожидая успешного выполнения шага.
+        .expect("точки в этом примере имеют одинаковую размерность");
         // Проверяем ожидаемое свойство учебного примера.
         assert!((distance - expected).abs() < 1e-10);
         // Печатаем рассчитанные значения для проверки примера.
@@ -29,9 +32,10 @@ fn main() {
     // Задаём учебные значения для `too_short`.
     let too_short = [3.0];
     // Сохраняем результат этого шага в `error`.
-    let error = part_004_lesson_01_distance::distance(&first_point, &too_short)
-        // Настраиваем или преобразуем результат предыдущего шага.
-        .expect_err("точки разной размерности нужно отклонить");
+    let error =
+        part_004_lesson_01_distance::euclidean_distance_between_points(&first_point, &too_short)
+            // Настраиваем или преобразуем результат предыдущего шага.
+            .expect_err("точки разной размерности нужно отклонить");
     // Печатаем рассчитанные значения для проверки примера.
     println!("разная размерность: {error}");
 
@@ -51,8 +55,11 @@ fn visualize() {
                 // Используем подготовленное значение в следующем шаге примера.
                 horizontal_value,
                 // Задаём именованное поле или параметр.
-                part_004_lesson_01_distance::distance(&[0.0, 0.0], &[horizontal_value, 4.0])
-                    .unwrap(),
+                part_004_lesson_01_distance::euclidean_distance_between_points(
+                    &[0.0, 0.0],
+                    &[horizontal_value, 4.0],
+                )
+                .unwrap(),
             )
         })
         // Собираем результаты в коллекцию.

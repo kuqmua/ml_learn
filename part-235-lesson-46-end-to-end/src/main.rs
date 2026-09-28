@@ -59,7 +59,7 @@ fn main() {
         // Собираем результаты в коллекцию.
         .collect();
     // Сохраняем результат этого шага в `baseline`.
-    let baseline = lesson_029::mean(&training_targets).unwrap();
+    let baseline = part_029_lesson_06_mean::arithmetic_mean_of_values(&training_targets).unwrap();
 
     // Учебные реализации математических операций для этого урока.
 
@@ -86,7 +86,7 @@ fn main() {
             // Собираем результаты в коллекцию.
             .collect();
         // Используем подготовленное значение в следующем шаге примера.
-        lesson_048::mean_absolute_error(&targets, &predictions).unwrap()
+        part_050_lesson_09_mean_absolute_error::mean_absolute_error(&targets, &predictions).unwrap()
     }
 
     // Шаг: Обучаем линейную модель и сравниваем её с baseline на validation и test.

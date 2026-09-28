@@ -51,7 +51,8 @@ fn main() {
         // Собираем результаты в коллекцию.
         .collect();
     // Сохраняем результат этого шага в `mean_squared_error_value`.
-    let mean_squared_error_value = lesson_047::mean_squared_error(&targets, &predictions).unwrap();
+    let mean_squared_error_value =
+        part_049_lesson_09_mean_squared_error::mean_squared_error(&targets, &predictions).unwrap();
     // Печатаем рассчитанные значения для проверки примера.
     println!("test MSE = {mean_squared_error_value}");
 

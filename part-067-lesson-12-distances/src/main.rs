@@ -16,7 +16,10 @@ fn main() {
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for candidate in candidates {
         // Для поиска ближайшего кандидата нужен квадрат расстояния из урока 01.4.
-        let squared_distance = lesson_004::squared_distance(&query, &candidate)
+        let squared_distance =
+            part_004_lesson_01_distance::squared_euclidean_distance_between_points(
+                &query, &candidate,
+            )
             // Используем результат, ожидая успешного выполнения шага.
             .expect("запрос и кандидат имеют одинаковое число координат");
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.

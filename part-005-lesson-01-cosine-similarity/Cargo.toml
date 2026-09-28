@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-lesson_001 = { package = "part-001-lesson-01-multiply-coordinates-and-add", path = "../part-001-lesson-01-multiply-coordinates-and-add" }
-lesson_003 = { package = "part-003-lesson-01-l2-norm", path = "../part-003-lesson-01-l2-norm" }
+part_001_lesson_01_multiply_coordinates_and_add = { package = "part-001-lesson-01-multiply-coordinates-and-add", path = "../part-001-lesson-01-multiply-coordinates-and-add" }
+part_003_lesson_01_euclidean_vector_length = { package = "part-003-lesson-01-euclidean-vector-length", path = "../part-003-lesson-01-euclidean-vector-length" }
 
 lesson-visualization = { path = "../lesson-visualization" }

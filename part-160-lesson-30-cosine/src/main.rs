@@ -14,7 +14,7 @@ fn main() {
     // Создаём набор значений `document` для следующего шага примера.
     let document = [2.0, 0.0];
     // Тот же косинус из урока 01.5 теперь сравнивает векторы слов документов.
-    let similarity = lesson_005::cosine_similarity(&query, &document)
+    let similarity = part_005_lesson_01_cosine_similarity::cosine_similarity(&query, &document)
         // Используем результат, ожидая успешного выполнения шага.
         .expect("ненулевые векторы слов одинаковой размерности");
     // Печатаем рассчитанные значения для проверки примера.
@@ -40,7 +40,8 @@ fn visualize(query: [f64; 2]) {
                 // Используем подготовленное значение в следующем шаге примера.
                 degrees as f64,
                 // Задаём именованное поле или параметр.
-                lesson_005::cosine_similarity(&query, &rotated_document).unwrap(),
+                part_005_lesson_01_cosine_similarity::cosine_similarity(&query, &rotated_document)
+                    .unwrap(),
             )
         })
         // Собираем результаты в коллекцию.

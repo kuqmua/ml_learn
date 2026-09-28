@@ -20,7 +20,11 @@ fn main() {
     let mut after = 0.0;
     for (index, (&feature, &target)) in category_target_mean_values.iter().zip(&targets).enumerate()
     {
-        let prediction = base + learning_rate * tree.predict(&[feature]).unwrap();
+        let prediction = base
+            + learning_rate
+                * tree
+                    .predict_with_oblivious_decision_tree(&[feature])
+                    .unwrap();
         before += (base - target).powi(2);
         after += (prediction - target).powi(2);
         println!("строка {index}: target={target}, код={feature:.3}, prediction={prediction:.3}");
@@ -30,7 +34,7 @@ fn main() {
 }
 
 fn visualize(before: f64, after: f64) {
-    let path = lesson_visualization::bars(
+    let path = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "mse",
         "Ошибка учебной схемы",

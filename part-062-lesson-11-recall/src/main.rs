@@ -16,7 +16,7 @@ fn main() {
         ("положительных объектов нет", 0, 0, None),
     ] {
         // Сохраняем результат этого шага в `counts`.
-        let counts = lesson_058::Counts {
+        let counts = part_060_lesson_11_confusion_matrix::Counts {
             // Используем подготовленное значение в следующем шаге примера.
             true_positives,
             // Задаём именованное поле или параметр.

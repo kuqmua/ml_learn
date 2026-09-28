@@ -15,7 +15,10 @@ pub struct Counts {
 }
 
 /// Сопоставляем метку с прогнозом и считаем четыре исхода.
-pub fn count_outcomes(truth: &[bool], predicted: &[bool]) -> Result<Counts, &'static str> {
+pub fn count_binary_classification_outcomes(
+    truth: &[bool],
+    predicted: &[bool],
+) -> Result<Counts, &'static str> {
     // Выбираем дальнейший шаг по выполнению условия.
     if truth.len() != predicted.len() {
         // Прерываем вычисление и возвращаем причину ошибки.
@@ -51,7 +54,7 @@ pub fn count_outcomes(truth: &[bool], predicted: &[bool]) -> Result<Counts, &'st
 }
 
 /// Порог превращает оценки в метки перед подсчётом исходов.
-pub fn count_outcomes_at_threshold(
+pub fn count_binary_classification_outcomes_at_probability_threshold(
     // Задаём именованное поле или параметр.
     truth: &[bool],
     // Задаём именованное поле или параметр.
@@ -68,11 +71,11 @@ pub fn count_outcomes_at_threshold(
     // Собираем значения для `predicted` в коллекцию.
     let predicted: Vec<bool> = scores.iter().map(|&score| score >= threshold).collect();
     // Используем подготовленное значение в следующем шаге примера.
-    count_outcomes(truth, &predicted)
+    count_binary_classification_outcomes(truth, &predicted)
 }
 
 /// Общая доля верных прогнозов.
-pub fn accuracy(counts: Counts) -> Option<f64> {
+pub fn calculate_classification_accuracy(counts: Counts) -> Option<f64> {
     // Сохраняем результат этого шага в `total`.
     let total = counts.true_positives
         // Используем подготовленное значение в следующем шаге примера.
@@ -103,7 +106,7 @@ mod tests {
         // Сохраняем результат этого шага в `counts`.
         let counts =
             // Используем подготовленное значение в следующем шаге примера.
-            super::count_outcomes(&[true, false, true, false], &[true, true, false, false])
+            super::count_binary_classification_outcomes(&[true, false, true, false], &[true, true, false, false])
                 // Используем результат, ожидая успешного выполнения шага.
                 .unwrap();
         // Проверяем ожидаемое свойство учебного примера.
@@ -122,8 +125,8 @@ mod tests {
             (1, 1, 1, 1)
         );
         // Проверяем ожидаемое свойство учебного примера.
-        assert_eq!(super::accuracy(counts), Some(0.5));
+        assert_eq!(super::calculate_classification_accuracy(counts), Some(0.5));
         // Проверяем ожидаемое свойство учебного примера.
-        assert!(super::count_outcomes(&[true], &[]).is_err());
+        assert!(super::count_binary_classification_outcomes(&[true], &[]).is_err());
     }
 }

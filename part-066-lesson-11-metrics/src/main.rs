@@ -12,15 +12,15 @@ fn main() {
     // Задаём учебные значения для `scores`.
     let scores = [0.1, 0.2, 0.3, 0.1, 0.2, 0.4, 0.1, 0.3, 0.2, 0.8];
     // Сохраняем результат этого шага в `counts`.
-    let counts = lesson_058::count_outcomes_at_threshold(&labels, &scores, 0.5).unwrap();
+    let counts = part_060_lesson_11_confusion_matrix::count_binary_classification_outcomes_at_probability_threshold(&labels, &scores, 0.5).unwrap();
     // Сохраняем результат этого шага в `precision`.
-    let precision = lesson_059::precision(counts);
+    let precision = part_061_lesson_11_precision::precision(counts);
     // Сохраняем результат этого шага в `recall`.
-    let recall = lesson_060::recall(counts);
+    let recall = part_062_lesson_11_recall::recall(counts);
     // Сохраняем результат этого шага в `harmonic_mean_of_precision_and_recall`.
-    let harmonic_mean_score = lesson_061::harmonic_mean_of_precision_and_recall(precision, recall);
+    let harmonic_mean_score = part_063_lesson_11_harmonic_mean_of_precision_and_recall::harmonic_mean_of_precision_and_recall(precision, recall);
     // Сохраняем результат этого шага в `accuracy`.
-    let accuracy = lesson_058::accuracy(counts);
+    let accuracy = part_060_lesson_11_confusion_matrix::calculate_classification_accuracy(counts);
     // Печатаем рассчитанные значения для проверки примера.
     println!(
         // Передаём подпись или текстовое значение для следующего шага.
@@ -32,11 +32,12 @@ fn main() {
     // Сохраняем результат этого шага в `useless`.
     let useless =
         // Используем подготовленное значение в следующем шаге примера.
-        lesson_058::count_outcomes_at_threshold(&labels, &all_negative_scores, 0.5).unwrap();
+        part_060_lesson_11_confusion_matrix::count_binary_classification_outcomes_at_probability_threshold(&labels, &all_negative_scores, 0.5).unwrap();
     // Сохраняем результат этого шага в `useless_accuracy`.
-    let useless_accuracy = lesson_058::accuracy(useless);
+    let useless_accuracy =
+        part_060_lesson_11_confusion_matrix::calculate_classification_accuracy(useless);
     // Сохраняем результат этого шага в `useless_recall`.
-    let useless_recall = lesson_060::recall(useless);
+    let useless_recall = part_062_lesson_11_recall::recall(useless);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(useless_accuracy.unwrap() > 0.8);
     // Проверяем ожидаемое свойство учебного примера.
@@ -55,7 +56,7 @@ fn visualize(
     accuracy: core::option::Option<f64>,
 ) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bars(
+    let chart = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

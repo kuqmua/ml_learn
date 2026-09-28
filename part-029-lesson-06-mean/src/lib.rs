@@ -1,7 +1,7 @@
 //! Вычисления и примеры урока part-029-lesson-06-mean.
 
 /// Среднее непустого набора.
-pub fn mean(values: &[f64]) -> Result<f64, &'static str> {
+pub fn arithmetic_mean_of_values(values: &[f64]) -> Result<f64, &'static str> {
     // Выбираем дальнейший шаг по выполнению условия.
     if values.is_empty() {
         // Прерываем вычисление и возвращаем причину ошибки.

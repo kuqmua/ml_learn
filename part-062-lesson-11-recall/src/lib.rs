@@ -1,7 +1,7 @@
 //! Вычисления и примеры урока part-062-lesson-11-recall.
 
 /// Доля найденных среди действительно положительных объектов.
-pub fn recall(counts: lesson_058::Counts) -> Option<f64> {
+pub fn recall(counts: part_060_lesson_11_confusion_matrix::Counts) -> Option<f64> {
     // Сохраняем результат этого шага в `actual_positives`.
     let actual_positives = counts.true_positives + counts.false_negatives;
     // Выбираем дальнейший шаг по выполнению условия.

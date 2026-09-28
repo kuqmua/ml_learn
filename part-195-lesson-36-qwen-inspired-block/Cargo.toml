@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-part-188-lesson-36-rmsnorm = { path = "../part-188-lesson-36-rmsnorm" }
-part-189-lesson-36-rope = { path = "../part-189-lesson-36-rope" }
-part-192-lesson-36-swiglu = { path = "../part-192-lesson-36-swiglu" }
+part-188-lesson-36-root-mean-square-normalization = { path = "../part-188-lesson-36-root-mean-square-normalization" }
+part-189-lesson-36-rotary-position-embedding = { path = "../part-189-lesson-36-rotary-position-embedding" }
+part-192-lesson-36-swish-gated-linear-unit = { path = "../part-192-lesson-36-swish-gated-linear-unit" }
 part-182-lesson-35-causal-self-attention = { path = "../part-182-lesson-35-causal-self-attention" }

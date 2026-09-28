@@ -17,7 +17,7 @@ fn main() {
         "обучающая выборка не должна быть пустой"
     );
     // Преобразуем входные данные и сохраняем полученную коллекцию в `mean`.
-    let mean = lesson_029::mean(&training_data).unwrap();
+    let mean = part_029_lesson_06_mean::arithmetic_mean_of_values(&training_data).unwrap();
     // Преобразуем входные данные и сохраняем полученную коллекцию в `centered`.
     let centered: Vec<_> = training_data.iter().map(|&value| value - mean).collect();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.

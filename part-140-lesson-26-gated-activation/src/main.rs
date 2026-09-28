@@ -4,13 +4,13 @@
 fn sigmoid(value: f64) -> f64 {
     1.0 / (1.0 + (-value).exp())
 }
-fn gated(filter: f64, gate: f64) -> f64 {
+fn calculate_gated_activation(filter: f64, gate: f64) -> f64 {
     filter.tanh() * sigmoid(gate)
 }
 fn main() {
     let filter = 1.5;
-    let open = gated(filter, 5.0);
-    let closed = gated(filter, -5.0);
+    let open = calculate_gated_activation(filter, 5.0);
+    let closed = calculate_gated_activation(filter, -5.0);
     assert!(open > closed);
     assert!(closed >= 0.0);
     println!("закрытый gate={closed:.4}; открытый gate={open:.4}");
@@ -21,7 +21,7 @@ fn visualize(filter: f64) {
     let points: Vec<_> = (-50..=50)
         .map(|plot_step_index| {
             let gate = plot_step_index as f64 / 10.0;
-            (gate, gated(filter, gate))
+            (gate, calculate_gated_activation(filter, gate))
         })
         .collect();
     let path = lesson_visualization::line_chart(

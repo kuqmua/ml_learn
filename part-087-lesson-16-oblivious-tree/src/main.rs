@@ -8,6 +8,9 @@ fn main() {
         leaves: vec![0.0, 1.0, 2.0, 3.0],
     };
     for input in [[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]] {
-        println!("{input:?} -> {}", tree.predict(&input).unwrap());
+        println!(
+            "{input:?} -> {}",
+            tree.predict_with_oblivious_decision_tree(&input).unwrap()
+        );
     }
 }

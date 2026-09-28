@@ -161,7 +161,7 @@ fn main() {
     // Строим график по результатам урока.
     fn visualize(reference: [f64; 6], stable: [f64; 6], shifted: [f64; 6]) {
         // Наглядное сравнение результатов сводной практики.
-        let chart = lesson_visualization::bars(
+        let chart = lesson_visualization::bar_chart(
             // Передаём путь к каталогу текущего урока.
             env!("CARGO_MANIFEST_DIR"),
             // Указываем имя SVG-файла.

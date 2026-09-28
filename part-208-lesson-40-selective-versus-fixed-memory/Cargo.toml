@@ -1,0 +1,8 @@
+[package]
+name = "part-208-lesson-40-selective-versus-fixed-memory"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-206-lesson-40-state-space-model = { path = "../part-206-lesson-40-state-space-model" }
+lesson-visualization = { path = "../lesson-visualization" }

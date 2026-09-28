@@ -1,0 +1,8 @@
+[package]
+name = "part-176-lesson-33-vision-transformer-global-attention"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-175-lesson-33-vision-transformer-patches = { path = "../part-175-lesson-33-vision-transformer-patches" }
+lesson-visualization = { path = "../lesson-visualization" }

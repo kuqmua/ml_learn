@@ -38,7 +38,7 @@ fn visualize(
     combined_rate_of_change: f64,
 ) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bars(
+    let chart = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -1,7 +1,7 @@
 // Урок 40.2. Селективное обновление состояния.
 // Вход управляет коэффициентом забывания; это учебная идея selective SSM, не реализация Mamba.
 
-fn selective_scan(input: &[(f64, bool)]) -> Vec<f64> {
+fn calculate_selective_state_sequence(input: &[(f64, bool)]) -> Vec<f64> {
     let mut state = 0.0;
     input
         .iter()
@@ -15,7 +15,7 @@ fn selective_scan(input: &[(f64, bool)]) -> Vec<f64> {
 }
 fn main() {
     let sequence = [(1.0, false), (0.0, false), (2.0, true), (0.0, false)];
-    let states = selective_scan(&sequence);
+    let states = calculate_selective_state_sequence(&sequence);
     assert_eq!(states[0], 1.0);
     assert_eq!(states[2], 2.0); // reset удаляет прошлый контекст.
     println!("селективное состояние: {states:?}");

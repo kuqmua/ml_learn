@@ -10,7 +10,7 @@ fn layer_normalization(input_value: [f64; 2]) -> [f64; 2] {
         (input_value[1] - mean) / (variance + 1e-5).sqrt(),
     ]
 }
-fn block(input: &[[f64; 2]]) -> Vec<[f64; 2]> {
+fn apply_transformer_decoder_block(input: &[[f64; 2]]) -> Vec<[f64; 2]> {
     let normalized: Vec<_> = input.iter().copied().map(layer_normalization).collect();
     let attention = causal_attention(&normalized, &normalized, &normalized).unwrap();
     input
@@ -30,7 +30,7 @@ fn block(input: &[[f64; 2]]) -> Vec<[f64; 2]> {
 }
 fn main() {
     let states = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    let output = block(&states);
+    let output = apply_transformer_decoder_block(&states);
     assert_eq!(output.len(), states.len());
     println!("после decoder block: {output:?}");
 }

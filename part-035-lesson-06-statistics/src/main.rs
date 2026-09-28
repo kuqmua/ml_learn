@@ -30,9 +30,9 @@ fn main() {
     values.sort_by(f64::total_cmp);
 
     // Сохраняем результат этого шага в `mean`.
-    let mean = lesson_029::mean(&values).unwrap();
+    let mean = part_029_lesson_06_mean::arithmetic_mean_of_values(&values).unwrap();
     // Сохраняем результат этого шага в `sample_variance`.
-    let sample_variance = lesson_031::sample_variance(&values).unwrap();
+    let sample_variance = part_031_lesson_06_variance::sample_variance(&values).unwrap();
     // Определяем размер данных и сохраняем его в `middle`.
     let middle = values.len() / 2;
     // Определяем размер данных и сохраняем его в `median`.

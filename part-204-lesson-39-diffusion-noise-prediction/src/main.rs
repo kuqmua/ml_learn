@@ -1,7 +1,7 @@
 // Урок 39.2. Обучение предсказателя шума.
 // На синтетической паре учим линейный предсказатель epsilon по x_t и исходному условию.
 
-use part_203_lesson_39_diffusion_forward::add_noise;
+use part_203_lesson_39_diffusion_forward::add_noise_to_clean_signal;
 fn main() {
     let alpha: f64 = 0.64;
     let training = [(1.0, -1.0), (1.0, 0.0), (1.0, 1.0), (1.0, 2.0)];
@@ -11,7 +11,7 @@ fn main() {
         .iter()
         .map(|&(clean, noise)| {
             (
-                add_noise(clean, noise, alpha).unwrap() - alpha.sqrt() * clean,
+                add_noise_to_clean_signal(clean, noise, alpha).unwrap() - alpha.sqrt() * clean,
                 noise,
             )
         })
@@ -37,7 +37,7 @@ fn main() {
         .iter()
         .map(|&(clean, noise)| {
             (
-                add_noise(clean, noise, alpha).unwrap() - alpha.sqrt() * clean,
+                add_noise_to_clean_signal(clean, noise, alpha).unwrap() - alpha.sqrt() * clean,
                 noise,
             )
         })

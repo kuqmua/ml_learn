@@ -1,7 +1,7 @@
 // Урок 27.5.191: Проверка токенизатора на новых строках.
 // Сравниваем длину byte-level и BPE кодирования на train и новых строках.
 
-use part_144_lesson_27_bpe_training::BytePairEncoding;
+use part_144_lesson_27_byte_pair_encoding_training::BytePairEncoding;
 
 fn main() {
     // Новые строки не участвуют в выборе слияний.
@@ -11,12 +11,23 @@ fn main() {
     let rows: Vec<(&str, usize, usize)> = training_data
         .iter()
         .chain(validation.iter())
-        .map(|&text| (text, text.len(), model.encode(text).len()))
+        .map(|&text| {
+            (
+                text,
+                text.len(),
+                model.encode_text_as_byte_pair_tokens(text).len(),
+            )
+        })
         .collect();
     // Единицу текста, которую модель обрабатывает как одно целое, называют token.
     for &(text, bytes, text_units) in &rows {
         assert!(text_units <= bytes);
-        assert_eq!(model.decode(&model.encode(text)).unwrap(), text);
+        assert_eq!(
+            model
+                .decode_byte_pair_tokens_to_text(&model.encode_text_as_byte_pair_tokens(text))
+                .unwrap(),
+            text
+        );
         println!("{text:?}: байтов={bytes}, BPE-токенов={text_units}");
     }
     visualize(&rows);
@@ -28,7 +39,7 @@ fn visualize(rows: &[(&str, usize, usize)]) {
         .iter()
         .map(|(text, _, count)| (*text, *count as f64))
         .collect();
-    let path = lesson_visualization::bars(
+    let path = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "token-count",
         "Длина BPE-кодирования",

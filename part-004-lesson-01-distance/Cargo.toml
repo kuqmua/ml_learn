@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-lesson_003 = { package = "part-003-lesson-01-l2-norm", path = "../part-003-lesson-01-l2-norm" }
+part_003_lesson_01_euclidean_vector_length = { package = "part-003-lesson-01-euclidean-vector-length", path = "../part-003-lesson-01-euclidean-vector-length" }
 
 lesson-visualization = { path = "../lesson-visualization" }

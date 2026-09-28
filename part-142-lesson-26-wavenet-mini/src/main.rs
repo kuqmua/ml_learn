@@ -7,7 +7,7 @@ fn sigmoid(input_value: f64) -> f64 {
 }
 
 // Текущий вход содержит только уже известные отсчёты.
-fn next_probability(history: &[u8]) -> f64 {
+fn calculate_probability_of_next_sound_sample(history: &[u8]) -> f64 {
     let input: Vec<f64> = history
         .iter()
         .map(|&sample| f64::from(sample) * 2.0 - 1.0)
@@ -31,7 +31,7 @@ fn next_probability(history: &[u8]) -> f64 {
 fn main() {
     let mut samples = vec![1, 0, 1, 1];
     for _ in 0..4 {
-        let probability = next_probability(&samples);
+        let probability = calculate_probability_of_next_sound_sample(&samples);
         let next = u8::from(probability >= 0.5);
         samples.push(next);
         println!("P(следующий отсчёт=1)={probability:.3}; выбор={next}");

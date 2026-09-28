@@ -33,7 +33,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(patch: [[f64; 2]; 2], response: f64) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bars(
+    let chart = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

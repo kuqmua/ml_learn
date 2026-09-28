@@ -13,7 +13,10 @@ fn main() {
     // Создаём набор значений `key` для следующего шага примера.
     let key = [0.8, 0.2];
     // Умножаем значения и сохраняем результат в `score`.
-    let score = lesson_001::multiply_matching_coordinates_then_add(&query, &key)
+    let score =
+        part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(
+            &query, &key,
+        )
         // Используем результат, ожидая успешного выполнения шага.
         .expect("запрос и ключ имеют одинаковую размерность");
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -26,7 +29,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(query: [f64; 2], key: [f64; 2], score: f64) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bars(
+    let chart = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

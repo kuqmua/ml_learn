@@ -9,9 +9,11 @@ fn main() {
     // Задаём учебные значения для `predicted`.
     let predicted = [true, true, false, false];
     // Сохраняем результат этого шага в `counts`.
-    let counts = part_060_lesson_11_confusion_matrix::count_outcomes(&truth, &predicted)
-        // Используем результат, ожидая успешного выполнения шага.
-        .expect("у каждого ответа есть прогноз");
+    let counts = part_060_lesson_11_confusion_matrix::count_binary_classification_outcomes(
+        &truth, &predicted,
+    )
+    // Используем результат, ожидая успешного выполнения шага.
+    .expect("у каждого ответа есть прогноз");
     // Повторяем расчёт для каждого элемента последовательности.
     for index in 0..truth.len() {
         // Сохраняем результат этого шага в `description`.
@@ -60,7 +62,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize(counts: part_060_lesson_11_confusion_matrix::Counts) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bars(
+    let chart = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

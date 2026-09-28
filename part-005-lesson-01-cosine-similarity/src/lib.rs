@@ -3,9 +3,13 @@
 /// Сходство направлений использует вычисление 01.1 и длину 01.3.
 pub fn cosine_similarity(left: &[f64], right: &[f64]) -> Result<f64, &'static str> {
     // Сохраняем результат этого шага в `numerator`.
-    let numerator = lesson_001::multiply_matching_coordinates_then_add(left, right)?;
+    let numerator =
+        part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(
+            left, right,
+        )?;
     // Сохраняем результат этого шага в `denominator`.
-    let denominator = lesson_003::euclidean_norm(left) * lesson_003::euclidean_norm(right);
+    let denominator = part_003_lesson_01_euclidean_vector_length::euclidean_norm(left)
+        * part_003_lesson_01_euclidean_vector_length::euclidean_norm(right);
     // Выбираем дальнейший шаг по выполнению условия.
     if denominator == 0.0 {
         // Прерываем вычисление и возвращаем причину ошибки.

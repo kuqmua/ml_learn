@@ -1,7 +1,7 @@
 //! Прямой процесс диффузии.
 
 /// Прямой шаг диффузии при заранее выбранном шуме epsilon.
-pub fn add_noise(
+pub fn add_noise_to_clean_signal(
     clean: f64,
     epsilon: f64,
     // Долю (fraction) дисперсии исходного сигнала обозначают alpha_bar; её сохранение называют retention.
