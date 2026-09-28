@@ -1,0 +1,6 @@
+[package]
+name = "part-002-lesson-01-l1-norm"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

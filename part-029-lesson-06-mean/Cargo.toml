@@ -1,0 +1,6 @@
+[package]
+name = "part-029-lesson-06-mean"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

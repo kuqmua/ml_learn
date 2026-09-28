@@ -1,0 +1,6 @@
+[package]
+name = "part-010-lesson-02-matmul"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

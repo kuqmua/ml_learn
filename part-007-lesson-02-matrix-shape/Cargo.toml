@@ -1,0 +1,6 @@
+[package]
+name = "part-007-lesson-02-matrix-shape"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

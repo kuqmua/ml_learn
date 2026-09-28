@@ -1,0 +1,6 @@
+[package]
+name = "part-023-lesson-04-optimization"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

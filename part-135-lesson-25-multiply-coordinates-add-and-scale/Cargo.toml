@@ -1,0 +1,6 @@
+[package]
+name = "part-135-lesson-25-multiply-coordinates-add-and-scale"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

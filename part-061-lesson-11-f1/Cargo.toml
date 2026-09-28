@@ -1,0 +1,6 @@
+[package]
+name = "part-061-lesson-11-f1"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

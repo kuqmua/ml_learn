@@ -1,0 +1,6 @@
+[package]
+name = "part-053-lesson-10-sigmoid"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

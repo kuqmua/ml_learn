@@ -1,0 +1,6 @@
+[package]
+name = "part-113-lesson-21-clipping"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

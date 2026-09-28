@@ -1,0 +1,6 @@
+[package]
+name = "part-126-lesson-23-convolution"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

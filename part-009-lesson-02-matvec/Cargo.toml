@@ -1,0 +1,6 @@
+[package]
+name = "part-009-lesson-02-matvec"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

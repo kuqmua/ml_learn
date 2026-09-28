@@ -1,0 +1,6 @@
+[package]
+name = "part-044-lesson-08-metric-log"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

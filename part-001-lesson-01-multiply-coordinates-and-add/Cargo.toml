@@ -1,0 +1,6 @@
+[package]
+name = "part-001-lesson-01-multiply-coordinates-and-add"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

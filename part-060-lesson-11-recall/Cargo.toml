@@ -1,0 +1,6 @@
+[package]
+name = "part-060-lesson-11-recall"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

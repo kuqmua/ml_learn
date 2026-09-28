@@ -1,0 +1,6 @@
+[package]
+name = "part-112-lesson-21-normalization"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

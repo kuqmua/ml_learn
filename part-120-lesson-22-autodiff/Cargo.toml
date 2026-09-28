@@ -1,0 +1,6 @@
+[package]
+name = "part-120-lesson-22-autodiff"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

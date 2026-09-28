@@ -1,0 +1,6 @@
+[package]
+name = "part-092-lesson-17-choose-k"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
