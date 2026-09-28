@@ -117,7 +117,9 @@ fn main() {
 
     // Шаг: Пропускаем его через attention, residual, нормализацию и feed-forward.
     let transformer_output = (|| -> Vec<[f64; 2]> {
+        // Используем подготовленное значение в следующем шаге примера.
         /* Собираем causal self-attention, остаточные связи, нормализацию и feed-forward. */
+        // Сохраняем результат этого шага в `input_values`.
         let input_values: &[[f64; 2]] = &input_values;
         // Используем ранее рассчитанное значение `input_values` в текущем выражении.
         input_values
@@ -144,7 +146,9 @@ fn main() {
                     .collect();
                 // Выполняем встроенный расчёт один раз и сохраняем результат в `attention_weights`.
                 let attention_weights = (|| -> Vec<f64> {
+                    // Используем подготовленное значение в следующем шаге примера.
                     /* Вычитаем максимум для устойчивости, затем нормируем экспоненты. */
+                    // Сохраняем результат этого шага в `input_values`.
                     let input_values: &[f64] = &logits;
                     // Создаём изменяемое значение `maximum_value` для следующих операций.
                     let mut maximum_value = f64::NEG_INFINITY;
@@ -213,15 +217,24 @@ fn main() {
             // Собираем элементы итератора в итоговую коллекцию.
             .collect()
     })();
+    // Печатаем рассчитанные значения для проверки примера.
     println!("transformer block: {transformer_output:?}");
+    // Собираем значения для `input_matrix` в коллекцию.
     let input_matrix: Vec<Vec<f64>> = input_values.iter().map(|row| row.to_vec()).collect();
+    // Собираем значения для `output_matrix` в коллекцию.
     let output_matrix: Vec<Vec<f64>> = transformer_output.iter().map(|row| row.to_vec()).collect();
+    // Повторяем расчёт для каждого элемента последовательности.
     for (name, title, values) in [
+        // Добавляем пару значений для сравнения или построения графика.
         ("input", "Вход блока Transformer", &input_matrix),
+        // Добавляем пару значений для сравнения или построения графика.
         ("output", "Выход блока Transformer", &output_matrix),
     ] {
+        // Строим график по рассчитанным значениям и сохраняем его как SVG.
         let chart = lesson_visualization::heatmap(env!("CARGO_MANIFEST_DIR"), name, title, values)
+            // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
             .expect("не удалось сохранить график");
+        // Печатаем путь к созданному SVG, чтобы его можно было открыть.
         println!("график: {}", chart.display());
     }
 }

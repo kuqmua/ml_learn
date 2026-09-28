@@ -34,6 +34,7 @@ fn main() {
             cols: usize,
             // `data` задаёт соответствующее входное значение или поле структуры.
             data: Vec<f64>,
+            // Указываем тип возвращаемого значения.
         ) -> Result<Self, &'static str> {
             // Число элементов обязано совпадать с заявленной формой матрицы.
             if rows * cols != data.len() {
@@ -60,12 +61,18 @@ fn main() {
     let mut output_vector = Vec::with_capacity(left_matrix.rows);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for row_index in 0..left_matrix.rows {
+        // Сохраняем результат этого шага в `row_start`.
         let row_start = row_index * left_matrix.cols;
+        // Сохраняем результат этого шага в `row_end`.
         let row_end = row_start + left_matrix.cols;
+        // Сохраняем результат этого шага в `row_result`.
         let row_result = lesson_001::multiply_matching_coordinates_then_add(
+            // Используем подготовленное значение в следующем шаге примера.
             &left_matrix.data[row_start..row_end],
+            // Используем подготовленное значение в следующем шаге примера.
             &input_vector,
         )
+        // Используем результат, ожидая успешного выполнения шага.
         .expect("длина строки совпадает с длиной вектора");
         // Сохраняем очередной рассчитанный элемент в коллекции.
         output_vector.push(row_result);
@@ -104,15 +111,24 @@ fn main() {
     for row_index in 0..transposed_matrix.rows {
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for column_index in 0..left_matrix.cols {
+            // Сохраняем результат этого шага в `row_start`.
             let row_start = row_index * transposed_matrix.cols;
+            // Сохраняем результат этого шага в `row_end`.
             let row_end = row_start + transposed_matrix.cols;
+            // Собираем значения для `column_values` в коллекцию.
             let column_values: Vec<_> = (0..left_matrix.rows)
+                // Преобразуем каждый элемент в новое значение.
                 .map(|shared_index| left_matrix.value_at_row_and_column(shared_index, column_index))
+                // Собираем результаты в коллекцию.
                 .collect();
+            // Сохраняем результат этого шага в `cell_value`.
             let cell_value = lesson_001::multiply_matching_coordinates_then_add(
+                // Используем подготовленное значение в следующем шаге примера.
                 &transposed_matrix.data[row_start..row_end],
+                // Используем подготовленное значение в следующем шаге примера.
                 &column_values,
             )
+            // Используем результат, ожидая успешного выполнения шага.
             .expect("внутренние размеры матриц совпадают");
             // Сохраняем очередной рассчитанный элемент в коллекции.
             result_elements.push(cell_value);
@@ -128,15 +144,25 @@ fn main() {
     println!("A*x={:?}, A^T*A={:?}", output_vector, result_matrix);
     // Значения ячеек видны по цвету и подписи.
     let chart = lesson_visualization::heatmap(
+        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
+        // Указываем имя SVG-файла.
         "lesson-chart",
+        // Указываем заголовок тепловой карты.
         "Матрица AᵀA",
+        // Используем подготовленное значение в следующем шаге примера.
         &result_matrix
+            // Настраиваем или преобразуем результат предыдущего шага.
             .data
+            // Настраиваем или преобразуем результат предыдущего шага.
             .chunks(result_matrix.cols)
+            // Преобразуем каждый элемент в новое значение.
             .map(|row| row.to_vec())
+            // Настраиваем или преобразуем результат предыдущего шага.
             .collect::<Vec<_>>(),
     )
+    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить тепловую карту");
+    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
     println!("график: {}", chart.display());
 }
