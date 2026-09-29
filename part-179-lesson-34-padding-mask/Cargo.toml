@@ -1,7 +1,0 @@
-[package]
-name = "part-179-lesson-34-padding-mask"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-part-178-lesson-34-bidirectional-encoder = { path = "../part-178-lesson-34-bidirectional-encoder" }

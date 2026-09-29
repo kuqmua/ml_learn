@@ -1,0 +1,6 @@
+[package]
+name = "part-047-lesson-08-fingerprint-dataset-content-for-versioning"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

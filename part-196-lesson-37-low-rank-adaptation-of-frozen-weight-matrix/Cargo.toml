@@ -1,0 +1,6 @@
+[package]
+name = "part-196-lesson-37-low-rank-adaptation-of-frozen-weight-matrix"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

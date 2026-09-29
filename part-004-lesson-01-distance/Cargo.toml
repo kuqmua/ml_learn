@@ -1,9 +1,0 @@
-[package]
-name = "part-004-lesson-01-distance"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-part_003_lesson_01_euclidean_vector_length = { package = "part-003-lesson-01-euclidean-vector-length", path = "../part-003-lesson-01-euclidean-vector-length" }
-
-lesson-visualization = { path = "../lesson-visualization" }

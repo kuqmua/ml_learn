@@ -1,0 +1,7 @@
+[package]
+name = "part-088-lesson-16-ordered-category-target-mean-without-current-label"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-visualization = { path = "../lesson-visualization" }

@@ -1,0 +1,8 @@
+[package]
+name = "part-071-lesson-12-practice-knn-classification-with-scaled-features-and-chosen-k"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

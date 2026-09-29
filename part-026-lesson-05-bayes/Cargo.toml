@@ -1,8 +1,0 @@
-[package]
-name = "part-026-lesson-05-bayes"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

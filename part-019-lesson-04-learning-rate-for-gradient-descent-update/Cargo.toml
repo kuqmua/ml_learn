@@ -1,0 +1,8 @@
+[package]
+name = "part-019-lesson-04-learning-rate-for-gradient-descent-update"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

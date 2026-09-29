@@ -26,7 +26,7 @@ python3 scripts/prepare_open_datasets.py iris
 cargo run -p lesson-datasets --example iris_classification
 ```
 
-В [примере](lesson-datasets/examples/iris_classification.rs) четыре измерения цветка сразу передаются в функцию `squared_euclidean_distance_between_points` из урока 01.4. Метка — один из трёх видов. Пример разделяет каждый класс на train/validation/test с фиксированным seed и классифицирует по ближайшему обучающему цветку. Исходный файл отсортирован по видам, поэтому нельзя брать первые 70% строк как train.
+В [примере](lesson-datasets/examples/iris_classification.rs) четыре измерения цветка сразу передаются в функцию `squared_euclidean_distance_between_two_points` из урока 01.4. Метка — один из трёх видов. Пример разделяет каждый класс на train/validation/test с фиксированным seed и классифицирует по ближайшему обучающему цветку. Исходный файл отсортирован по видам, поэтому нельзя брать первые 70% строк как train.
 
 Источник: [Iris, UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/53/iris), Fisher (1936). Лицензия, указанная UCI: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). В архиве 150 строк с четырьмя признаками и классом.
 
@@ -37,7 +37,7 @@ python3 scripts/prepare_open_datasets.py wine_quality_red
 cargo run -p lesson-datasets --example wine_quality_regression
 ```
 
-В [примере](lesson-datasets/examples/wine_quality_regression.rs) одиннадцать числовых признаков преобразуются в `[f64; 11]`, а оценка качества — в `f64`. Обучающий набор задаёт средний прогноз и коэффициенты простой модели по содержанию алкоголя. `arithmetic_mean_of_values`, `mean_absolute_error` и `mean_squared_error` вызываются из уже пройденных пакетов; validation и test не участвуют в подгонке. Порядок признаков: fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulphates, alcohol.
+В [примере](lesson-datasets/examples/wine_quality_regression.rs) одиннадцать числовых признаков преобразуются в `[f64; 11]`, а оценка качества — в `f64`. Обучающий набор задаёт средний прогноз и коэффициенты простой модели по содержанию алкоголя. `arithmetic_mean_of_numeric_values`, `mean_absolute_error_between_targets_and_predictions` и `mean_squared_error_between_targets_and_predictions` вызываются из уже пройденных пакетов; validation и test не участвуют в подгонке. Порядок признаков: fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulphates, alcohol.
 
 Источник: [Wine Quality, UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/186/wine+quality), Cortez и соавт. (2009). Лицензия, указанная UCI: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Скрипт выбирает только красное вино: 1599 строк.
 
@@ -48,7 +48,7 @@ python3 scripts/prepare_open_datasets.py sms_spam
 cargo run -p lesson-datasets --example sms_spam_classification
 ```
 
-В [примере](lesson-datasets/examples/sms_spam_classification.rs) метка `spam` становится `true`, `ham` — `false`, сообщение остаётся строкой UTF-8. Разделение сохраняет долю каждого класса. Прогноз большинства, выученный на train, оценивается функциями уроков 11.1 и 11.3. Сравни `accuracy` и `recall`: высокая доля верных ответов здесь возможна даже при пропуске всего спама. Следующий шаг — заменить прогноз большинства классификатором из блока 13 и использовать те же индексы разделения.
+В [примере](lesson-datasets/examples/sms_spam_classification.rs) метка `spam` становится `true`, `ham` — `false`, сообщение остаётся строкой UTF-8. Разделение сохраняет долю каждого класса. Прогноз большинства, выученный на train, оценивается функциями уроков 11.1 и 11.3. Сравни `accuracy` и `recall_from_binary_classification_counts`: высокая доля верных ответов здесь возможна даже при пропуске всего спама. Следующий шаг — заменить прогноз большинства классификатором из блока 13 и использовать те же индексы разделения.
 
 Источник: [SMS Spam Collection, UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/228/sms+spam+collection), Almeida и Hidalgo (2011). Лицензия, указанная UCI: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Проверенный ZIP содержит 5572 сообщения; на странице каталога UCI указано 5574, поэтому скрипт проверяет содержимое конкретного архива.
 

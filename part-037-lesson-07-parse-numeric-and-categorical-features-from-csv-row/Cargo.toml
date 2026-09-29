@@ -1,0 +1,6 @@
+[package]
+name = "part-037-lesson-07-parse-numeric-and-categorical-features-from-csv-row"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

@@ -1,6 +1,0 @@
-[package]
-name = "part-039-lesson-07-train-only-imputation"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

@@ -1,0 +1,8 @@
+[package]
+name = "part-167-lesson-31-normalize-attention-scores-into-weights-with-softmax"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

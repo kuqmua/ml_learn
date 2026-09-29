@@ -1,0 +1,8 @@
+[package]
+name = "part-214-lesson-41-practice-reinforcement-learning-with-state-action-reward-and-policy"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

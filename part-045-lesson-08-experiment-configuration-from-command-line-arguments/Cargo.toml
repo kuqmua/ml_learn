@@ -1,0 +1,6 @@
+[package]
+name = "part-045-lesson-08-experiment-configuration-from-command-line-arguments"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

@@ -1,0 +1,6 @@
+[package]
+name = "part-226-lesson-44-run-model-inference-over-multiple-csv-rows"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

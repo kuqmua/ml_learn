@@ -1,6 +1,0 @@
-[package]
-name = "part-045-lesson-08-configuration"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

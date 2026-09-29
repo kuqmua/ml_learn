@@ -1,0 +1,8 @@
+[package]
+name = "part-078-lesson-14-greedy-threshold-split-for-decision-tree"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

@@ -1,8 +1,0 @@
-[package]
-name = "part-201-lesson-38-source-check"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

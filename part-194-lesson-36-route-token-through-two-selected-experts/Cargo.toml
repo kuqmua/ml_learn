@@ -1,0 +1,8 @@
+[package]
+name = "part-194-lesson-36-route-token-through-two-selected-experts"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-182-lesson-35-causal-self-attention-over-prefix-of-tokens = { path = "../part-182-lesson-35-causal-self-attention-over-prefix-of-tokens" }
+lesson-visualization = { path = "../lesson-visualization" }

@@ -1,0 +1,7 @@
+[package]
+name = "part-179-lesson-34-exclude-padding-tokens-from-encoder-attention"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-178-lesson-34-bidirectional-self-attention-in-encoder = { path = "../part-178-lesson-34-bidirectional-self-attention-in-encoder" }

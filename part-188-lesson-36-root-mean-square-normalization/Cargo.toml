@@ -1,6 +1,0 @@
-[package]
-name = "part-188-lesson-36-root-mean-square-normalization"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

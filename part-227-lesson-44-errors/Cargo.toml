@@ -1,6 +1,0 @@
-[package]
-name = "part-227-lesson-44-errors"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

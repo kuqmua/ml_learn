@@ -1,9 +1,0 @@
-[package]
-name = "part-215-lesson-42-distribution-shift"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-part_029_lesson_06_mean = { package = "part-029-lesson-06-mean", path = "../part-029-lesson-06-mean" }
-
-lesson-visualization = { path = "../lesson-visualization" }

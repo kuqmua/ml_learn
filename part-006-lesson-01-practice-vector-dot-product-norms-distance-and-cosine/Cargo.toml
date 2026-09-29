@@ -1,0 +1,13 @@
+[package]
+name = "part-006-lesson-01-practice-vector-dot-product-norms-distance-and-cosine"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add = { package = "part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add", path = "../part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add" }
+part_002_lesson_01_sum_absolute_values_of_vector_coordinates = { package = "part-002-lesson-01-sum-absolute-values-of-vector-coordinates", path = "../part-002-lesson-01-sum-absolute-values-of-vector-coordinates" }
+part_003_lesson_01_calculate_euclidean_length_of_one_vector = { package = "part-003-lesson-01-calculate-euclidean-length-of-one-vector", path = "../part-003-lesson-01-calculate-euclidean-length-of-one-vector" }
+part_004_lesson_01_euclidean_distance_between_two_points = { package = "part-004-lesson-01-euclidean-distance-between-two-points", path = "../part-004-lesson-01-euclidean-distance-between-two-points" }
+part_005_lesson_01_cosine_similarity_between_two_vectors = { package = "part-005-lesson-01-cosine-similarity-between-two-vectors", path = "../part-005-lesson-01-cosine-similarity-between-two-vectors" }
+
+lesson-visualization = { path = "../lesson-visualization" }

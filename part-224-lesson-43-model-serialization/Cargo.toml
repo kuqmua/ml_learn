@@ -1,6 +1,0 @@
-[package]
-name = "part-224-lesson-43-model-serialization"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

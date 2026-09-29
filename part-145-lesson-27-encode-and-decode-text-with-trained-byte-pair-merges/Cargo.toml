@@ -1,0 +1,7 @@
+[package]
+name = "part-145-lesson-27-encode-and-decode-text-with-trained-byte-pair-merges"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-144-lesson-27-train-byte-level-bpe-merges-from-training-corpus = { path = "../part-144-lesson-27-train-byte-level-bpe-merges-from-training-corpus" }

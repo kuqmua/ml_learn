@@ -1,0 +1,8 @@
+[package]
+name = "part-093-lesson-17-nested-cross-validation-for-selection-and-evaluation"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

@@ -1,8 +1,0 @@
-[package]
-name = "part-139-lesson-26-dilation-receptive-field"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-part-138-lesson-26-causal-convolution = { path = "../part-138-lesson-26-causal-convolution" }
-lesson-visualization = { path = "../lesson-visualization" }

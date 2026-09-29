@@ -1,0 +1,9 @@
+[package]
+name = "part-004-lesson-01-euclidean-distance-between-two-points"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part_003_lesson_01_calculate_euclidean_length_of_one_vector = { package = "part-003-lesson-01-calculate-euclidean-length-of-one-vector", path = "../part-003-lesson-01-calculate-euclidean-length-of-one-vector" }
+
+lesson-visualization = { path = "../lesson-visualization" }

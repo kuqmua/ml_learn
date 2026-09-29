@@ -1,0 +1,8 @@
+[package]
+name = "part-147-lesson-27-evaluate-byte-level-and-bpe-tokenizers-on-new-strings"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-144-lesson-27-train-byte-level-bpe-merges-from-training-corpus = { path = "../part-144-lesson-27-train-byte-level-bpe-merges-from-training-corpus" }
+lesson-visualization = { path = "../lesson-visualization" }

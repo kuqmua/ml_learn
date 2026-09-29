@@ -1,9 +1,0 @@
-[package]
-name = "part-062-lesson-11-recall"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-part_060_lesson_11_confusion_matrix = { package = "part-060-lesson-11-confusion-matrix", path = "../part-060-lesson-11-confusion-matrix" }
-
-lesson-visualization = { path = "../lesson-visualization" }

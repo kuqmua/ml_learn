@@ -1,0 +1,10 @@
+[package]
+name = "part-035-lesson-06-practice-mean-median-and-sample-variance-from-csv"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part_029_lesson_06_arithmetic_mean_of_numeric_values = { package = "part-029-lesson-06-arithmetic-mean-of-numeric-values", path = "../part-029-lesson-06-arithmetic-mean-of-numeric-values" }
+part_031_lesson_06_sample_variance_of_numeric_values = { package = "part-031-lesson-06-sample-variance-of-numeric-values", path = "../part-031-lesson-06-sample-variance-of-numeric-values" }
+
+lesson-visualization = { path = "../lesson-visualization" }

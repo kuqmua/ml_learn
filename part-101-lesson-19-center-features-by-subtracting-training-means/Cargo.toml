@@ -1,0 +1,9 @@
+[package]
+name = "part-101-lesson-19-center-features-by-subtracting-training-means"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part_029_lesson_06_arithmetic_mean_of_numeric_values = { package = "part-029-lesson-06-arithmetic-mean-of-numeric-values", path = "../part-029-lesson-06-arithmetic-mean-of-numeric-values" }
+
+lesson-visualization = { path = "../lesson-visualization" }

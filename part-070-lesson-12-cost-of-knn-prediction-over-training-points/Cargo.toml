@@ -1,0 +1,8 @@
+[package]
+name = "part-070-lesson-12-cost-of-knn-prediction-over-training-points"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

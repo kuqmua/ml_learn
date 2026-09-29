@@ -1,8 +1,0 @@
-[package]
-name = "part-024-lesson-05-conditional-probability"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

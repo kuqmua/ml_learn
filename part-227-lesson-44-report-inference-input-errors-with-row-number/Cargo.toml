@@ -1,0 +1,6 @@
+[package]
+name = "part-227-lesson-44-report-inference-input-errors-with-row-number"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

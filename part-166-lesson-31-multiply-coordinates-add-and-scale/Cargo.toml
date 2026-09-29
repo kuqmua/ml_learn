@@ -1,9 +1,0 @@
-[package]
-name = "part-166-lesson-31-multiply-coordinates-add-and-scale"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-part_001_lesson_01_multiply_coordinates_and_add = { package = "part-001-lesson-01-multiply-coordinates-and-add", path = "../part-001-lesson-01-multiply-coordinates-and-add" }
-
-lesson-visualization = { path = "../lesson-visualization" }

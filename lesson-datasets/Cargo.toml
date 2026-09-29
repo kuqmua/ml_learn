@@ -6,9 +6,9 @@ edition = "2024"
 [dependencies]
 
 [dev-dependencies]
-part-004-lesson-01-distance = { path = "../part-004-lesson-01-distance" }
-part-029-lesson-06-mean = { path = "../part-029-lesson-06-mean" }
-part-049-lesson-09-mean-squared-error = { path = "../part-049-lesson-09-mean-squared-error" }
-part-050-lesson-09-mean-absolute-error = { path = "../part-050-lesson-09-mean-absolute-error" }
-part-060-lesson-11-confusion-matrix = { path = "../part-060-lesson-11-confusion-matrix" }
-part-062-lesson-11-recall = { path = "../part-062-lesson-11-recall" }
+part-004-lesson-01-euclidean-distance-between-two-points = { path = "../part-004-lesson-01-euclidean-distance-between-two-points" }
+part-029-lesson-06-arithmetic-mean-of-numeric-values = { path = "../part-029-lesson-06-arithmetic-mean-of-numeric-values" }
+part-049-lesson-09-mean-squared-error-between-targets-and-predictions = { path = "../part-049-lesson-09-mean-squared-error-between-targets-and-predictions" }
+part-050-lesson-09-mean-absolute-error-between-targets-and-predictions = { path = "../part-050-lesson-09-mean-absolute-error-between-targets-and-predictions" }
+part-060-lesson-11-binary-classification-confusion-matrix-from-true-and-predicted-labels = { path = "../part-060-lesson-11-binary-classification-confusion-matrix-from-true-and-predicted-labels" }
+part-062-lesson-11-recall-from-binary-classification-counts = { path = "../part-062-lesson-11-recall-from-binary-classification-counts" }

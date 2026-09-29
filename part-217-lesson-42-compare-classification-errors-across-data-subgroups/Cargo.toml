@@ -1,0 +1,8 @@
+[package]
+name = "part-217-lesson-42-compare-classification-errors-across-data-subgroups"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

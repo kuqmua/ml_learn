@@ -1,8 +1,0 @@
-[package]
-name = "part-099-lesson-18-choose-number-of-clusters"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

@@ -1,0 +1,8 @@
+[package]
+name = "part-095-lesson-17-practice-stratified-nested-cross-validation-without-preprocessing-leakage"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

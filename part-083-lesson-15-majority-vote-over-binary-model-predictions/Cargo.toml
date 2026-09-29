@@ -1,0 +1,8 @@
+[package]
+name = "part-083-lesson-15-majority-vote-over-binary-model-predictions"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

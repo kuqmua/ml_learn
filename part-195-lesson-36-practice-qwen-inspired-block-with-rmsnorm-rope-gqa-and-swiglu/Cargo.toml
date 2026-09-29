@@ -1,0 +1,10 @@
+[package]
+name = "part-195-lesson-36-practice-qwen-inspired-block-with-rmsnorm-rope-gqa-and-swiglu"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-188-lesson-36-normalize-token-vector-by-root-mean-square = { path = "../part-188-lesson-36-normalize-token-vector-by-root-mean-square" }
+part-189-lesson-36-rotate-query-and-key-coordinate-pairs-by-position = { path = "../part-189-lesson-36-rotate-query-and-key-coordinate-pairs-by-position" }
+part-192-lesson-36-apply-swiglu-gate-and-up-projection-in-feed-forward-layer = { path = "../part-192-lesson-36-apply-swiglu-gate-and-up-projection-in-feed-forward-layer" }
+part-182-lesson-35-causal-self-attention-over-prefix-of-tokens = { path = "../part-182-lesson-35-causal-self-attention-over-prefix-of-tokens" }

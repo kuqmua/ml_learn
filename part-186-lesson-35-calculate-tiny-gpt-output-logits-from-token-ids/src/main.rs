@@ -1,0 +1,22 @@
+// Урок 35.6. Вычисление выходных логитов учебной GPT по идентификаторам токенов.
+// Собираем токены, позиции, причинное внимание и выходные логиты в один decoder-only проход.
+
+fn main() {
+    let prefix = [0, 1];
+    // Оценку модели до преобразования в вероятность называют logit.
+    let raw_model_scores = part_186_lesson_35_calculate_tiny_gpt_output_logits_from_token_ids::calculate_decoder_output_logits_for_token_ids(&prefix);
+    let last = raw_model_scores.last().unwrap();
+    let next = last
+        .iter()
+        .enumerate()
+        .max_by(|first_candidate, second_candidate| first_candidate.1.total_cmp(second_candidate.1))
+        .unwrap()
+        .0;
+    // Изменение будущего токена не меняет предыдущие позиции.
+    assert_eq!(
+        part_186_lesson_35_calculate_tiny_gpt_output_logits_from_token_ids::calculate_decoder_output_logits_for_token_ids(&[0])[0],
+        raw_model_scores[0]
+    );
+    println!("префикс: {prefix:?}; logits: {last:?}; следующий ID: {next}");
+    // Весов из GPT здесь нет: это минимальный прямой проход с фиксированными параметрами.
+}

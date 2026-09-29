@@ -1,6 +1,0 @@
-[package]
-name = "part-087-lesson-16-oblivious-tree"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

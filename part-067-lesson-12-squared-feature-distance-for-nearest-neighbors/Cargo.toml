@@ -1,0 +1,9 @@
+[package]
+name = "part-067-lesson-12-squared-feature-distance-for-nearest-neighbors"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part_004_lesson_01_euclidean_distance_between_two_points = { package = "part-004-lesson-01-euclidean-distance-between-two-points", path = "../part-004-lesson-01-euclidean-distance-between-two-points" }
+
+lesson-visualization = { path = "../lesson-visualization" }

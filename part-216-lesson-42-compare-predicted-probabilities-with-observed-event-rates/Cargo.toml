@@ -1,0 +1,8 @@
+[package]
+name = "part-216-lesson-42-compare-predicted-probabilities-with-observed-event-rates"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

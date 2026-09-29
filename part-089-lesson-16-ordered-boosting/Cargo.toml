@@ -1,6 +1,0 @@
-[package]
-name = "part-089-lesson-16-ordered-boosting"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

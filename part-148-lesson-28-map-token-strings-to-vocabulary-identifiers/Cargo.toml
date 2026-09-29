@@ -1,0 +1,6 @@
+[package]
+name = "part-148-lesson-28-map-token-strings-to-vocabulary-identifiers"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

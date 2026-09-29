@@ -17,10 +17,10 @@ fn report_error(
         .collect();
     println!(
         "{name}: baseline MAE={:.3}, MSE={:.3}; alcohol model MAE={:.3}, MSE={:.3}",
-        part_050_lesson_09_mean_absolute_error::mean_absolute_error(&targets, &baseline)?,
-        part_049_lesson_09_mean_squared_error::mean_squared_error(&targets, &baseline)?,
-        part_050_lesson_09_mean_absolute_error::mean_absolute_error(&targets, &predictions)?,
-        part_049_lesson_09_mean_squared_error::mean_squared_error(&targets, &predictions)?
+        part_050_lesson_09_mean_absolute_error_between_targets_and_predictions::mean_absolute_error_between_targets_and_predictions(&targets, &baseline)?,
+        part_049_lesson_09_mean_squared_error_between_targets_and_predictions::mean_squared_error_between_targets_and_predictions(&targets, &baseline)?,
+        part_050_lesson_09_mean_absolute_error_between_targets_and_predictions::mean_absolute_error_between_targets_and_predictions(&targets, &predictions)?,
+        part_049_lesson_09_mean_squared_error_between_targets_and_predictions::mean_squared_error_between_targets_and_predictions(&targets, &predictions)?
     );
     Ok(())
 }
@@ -38,8 +38,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .iter()
         .map(|&index| records[index].features[10])
         .collect();
-    let target_mean = part_029_lesson_06_mean::arithmetic_mean_of_values(&training_targets)?;
-    let alcohol_mean = part_029_lesson_06_mean::arithmetic_mean_of_values(&training_alcohol)?;
+    let target_mean =
+        part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
+            &training_targets,
+        )?;
+    let alcohol_mean =
+        part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
+            &training_alcohol,
+        )?;
     let covariance: f64 = training_alcohol
         .iter()
         .zip(&training_targets)

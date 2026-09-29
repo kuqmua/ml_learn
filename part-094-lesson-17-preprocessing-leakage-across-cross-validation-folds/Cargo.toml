@@ -1,0 +1,8 @@
+[package]
+name = "part-094-lesson-17-preprocessing-leakage-across-cross-validation-folds"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

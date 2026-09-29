@@ -1,0 +1,8 @@
+[package]
+name = "part-017-lesson-03-approximate-function-derivative-with-central-difference"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

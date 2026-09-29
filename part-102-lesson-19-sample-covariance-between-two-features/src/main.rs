@@ -1,0 +1,92 @@
+// Урок 19.2. Выборочная ковариация двух признаков.
+//
+// Что изучаем: Ковариация.
+// Зачем это нужно: Ковариация показывает, меняются ли два признака вместе. Для выборки делим сумму
+// результатов умножения отклонений на n−1.
+// Что делает пример: на небольших проверяемых данных вычисляет результат этой темы и печатает его.
+// Как проверить понимание: предскажи вывод до запуска, затем измени одно входное значение и объясни
+// изменение результата.
+
+// Точка входа: все определения и шаги примера выполняются внутри этой функции.
+fn main() {
+    // Создаём набор значений `first_feature_values` для следующего шага примера.
+    let first_feature_values = [1.0, 2.0, 3.0];
+    // Создаём набор значений `second_feature_values` для следующего шага примера.
+    let second_feature_values = [2.0, 4.0, 6.0];
+    // Преобразуем входные данные и сохраняем полученную коллекцию в `mean_horizontal_coordinate`.
+    // Для каждой пары наблюдений нужны обе координаты; выборочная оценка требует хотя бы две пары.
+    assert_eq!(
+        first_feature_values.len(),
+        second_feature_values.len(),
+        "оба ряда должны иметь одинаковую длину"
+    );
+    // Проверяем ожидаемое свойство учебного примера.
+    assert!(
+        // Обновляем значение результатом текущего вычисления.
+        first_feature_values.len() >= 2,
+        // Передаём подпись или текстовое значение для следующего шага.
+        "для выборочной ковариации нужны хотя бы две пары"
+    );
+    // Вычисляем `mean_horizontal_coordinate` по элементам исходной коллекции.
+    let mean_horizontal_coordinate =
+        first_feature_values.iter().sum::<f64>() / first_feature_values.len() as f64;
+    // Преобразуем входные данные и сохраняем полученную коллекцию в `mean_vertical_coordinate`.
+    let mean_vertical_coordinate =
+        second_feature_values.iter().sum::<f64>() / second_feature_values.len() as f64;
+    // Инициализируем изменяемый накопитель `sum` начальным состоянием.
+    let mut sum = 0.0;
+    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    for index in 0..first_feature_values.len() {
+        // Прибавляем очередной вклад к ранее накопленному результату.
+        sum += (first_feature_values[index] - mean_horizontal_coordinate)
+            * (second_feature_values[index] - mean_vertical_coordinate);
+    }
+    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    println!(
+        "выборочная ковариация={}",
+        sum / (first_feature_values.len() - 1) as f64
+    );
+
+    // Построение графика вынесено из основного кода урока.
+    visualize_sample_covariance_between_two_features(first_feature_values, second_feature_values);
+}
+
+// Строим график по результатам урока.
+fn visualize_sample_covariance_between_two_features(
+    horizontal_value: [f64; 3],
+    vertical_value: [f64; 3],
+) {
+    // Значения из этого урока на графике.
+    // Совместное изменение двух величин описывают через covariance.
+    let joint_variation_points: Vec<(f64, f64)> = horizontal_value
+        .iter()
+        .zip(vertical_value.iter())
+        .map(|(&first_feature_value, &second_feature_value)| {
+            (first_feature_value, second_feature_value)
+        })
+        .collect();
+    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    let chart = lesson_visualization::scatter_chart(
+        // Передаём путь к каталогу текущего урока.
+        env!("CARGO_MANIFEST_DIR"),
+        // Указываем имя SVG-файла.
+        "lesson-chart",
+        // Указываем заголовок диаграммы.
+        "Ковариация: совместное изменение",
+        // Указываем подпись горизонтальной оси.
+        "x",
+        // Указываем подпись вертикальной оси.
+        "y",
+        // Передаём ряды или значения для отрисовки графика.
+        &[lesson_visualization::Series {
+            // Указываем подпись этого ряда в легенде.
+            name: "наблюдения",
+            // Передаём рассчитанные координаты точек.
+            points: &joint_variation_points,
+        }],
+    )
+    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
+    .expect("не удалось сохранить график");
+    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    println!("график: {}", chart.display());
+}

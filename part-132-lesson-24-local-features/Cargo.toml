@@ -1,8 +1,0 @@
-[package]
-name = "part-132-lesson-24-local-features"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

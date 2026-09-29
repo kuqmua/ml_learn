@@ -1,0 +1,8 @@
+[package]
+name = "part-139-lesson-26-dilated-causal-convolution-receptive-field"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+part-138-lesson-26-causal-convolution-over-one-dimensional-signal = { path = "../part-138-lesson-26-causal-convolution-over-one-dimensional-signal" }
+lesson-visualization = { path = "../lesson-visualization" }
