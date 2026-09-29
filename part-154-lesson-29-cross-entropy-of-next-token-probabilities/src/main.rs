@@ -38,6 +38,7 @@ fn main() {
         // Повторяем расчёт для каждого элемента последовательности.
         for &probability in probabilities {
             lesson_trace::trace_step!(probability);
+            // Учебный аналог `f64::ln`: ряд показывает шаги вычисления, но может быть медленнее и менее точным.
             // ln(x) ≈ 2·(t+t³/3+t⁵/5+...), где t=(x−1)/(x+1).
             let ratio: f64 = (probability - 1.0) / (probability + 1.0);
             lesson_trace::trace_step!(ratio);

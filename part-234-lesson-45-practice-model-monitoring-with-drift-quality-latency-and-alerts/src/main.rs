@@ -26,6 +26,7 @@ fn main() {
     // Учебные реализации математических операций для этого урока.
 
     /// Выбираем большее из двух чисел для формул softmax, log-loss и Q-learning.
+    /// Аналог `first.max(second)` для обычных чисел; при NaN результат может отличаться.
     fn choose_larger_number(first: f64, second: f64) -> f64 {
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if first > second { first } else { second }
@@ -141,6 +142,7 @@ fn main() {
                         power_of_two -= 1;
                         lesson_trace::trace_step!(power_of_two);
                     }
+                    // Этот ряд — учебное раскрытие `value.ln()`; он может работать медленнее и отличаться по точности.
                     // Объявляем повторно используемое вычисление `sum_logarithm_series_terms`; параметры ниже задают его входы.
                     fn sum_logarithm_series_terms(value: f64) -> f64 {
                         // Нормируем или усредняем величину делением и сохраняем её в `ratio`.

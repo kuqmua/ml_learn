@@ -136,6 +136,7 @@ fn main() {
                         power_of_two -= 1;
                         lesson_trace::trace_step!(power_of_two);
                     }
+                    // Этот ряд — учебное раскрытие `value.ln()`; он может работать медленнее и отличаться по точности.
                     // Объявляем повторно используемое вычисление `sum_logarithm_series_terms`; параметры ниже задают его входы.
                     fn sum_logarithm_series_terms(value: f64) -> f64 {
                         // Нормируем или усредняем величину делением и сохраняем её в `ratio`.
