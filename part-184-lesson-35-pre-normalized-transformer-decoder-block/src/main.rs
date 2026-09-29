@@ -2,6 +2,7 @@
 // Нормализация, причинное внимание, residual, FFN и второй residual образуют блок.
 
 fn layer_normalize_token_vector(input_value: [f64; 2]) -> [f64; 2] {
+    // Среднее и дисперсию считаем по двум координатам токена; 10⁻⁵ не даёт делить на ноль.
     let mean: f64 = (input_value[0] + input_value[1]) / 2.0;
     let variance: f64 = ((input_value[0] - mean).powi(2) + (input_value[1] - mean).powi(2)) / 2.0;
     [

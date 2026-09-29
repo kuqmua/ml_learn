@@ -20,6 +20,7 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert!((0.0..=1.0).contains(&both));
         // Сохраняем результат этого шага в `independent`.
+        // 10⁻¹⁰ допускает округление f64 при проверке равенства P(A∩B)=P(A)·P(B).
         let independent: bool = (both - first * second).abs() < 1e-10;
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(independent, expected);

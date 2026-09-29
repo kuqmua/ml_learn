@@ -29,6 +29,8 @@ pub fn causal_self_attention_over_query_key_value_sequences(
     }
     let mut output: Vec<[f64; 2]> = Vec::with_capacity(query_vector.len());
     for index in 0..query_vector.len() {
+        // Ключи после index скрыты причинной маской; 2 под корнем — размерность Q и K.
+        // Деление на √2 удерживает величину dot product при переходе к softmax.
         let raw_model_scores: Vec<f64> = (0..=index)
             .map(|past| {
                 (query_vector[index][0] * key_vector[past][0]

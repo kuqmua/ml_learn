@@ -7,6 +7,7 @@ fn main() {
         part_188_lesson_36_normalize_token_vector_by_root_mean_square::normalize_vector_by_root_mean_square(
             &input_component,
             &[1.0, 1.0],
+            // ε=10⁻⁸ защищает от нулевого RMS и почти не меняет обычный ненулевой вектор.
             1e-8,
         )
         .unwrap();

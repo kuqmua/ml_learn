@@ -13,6 +13,7 @@ pub fn bidirectional_self_attention_over_visible_states(
     }
     let mut result: Vec<[f64; 2]> = Vec::new();
     for query in states {
+        // Делим Q·K на √2, потому что у каждого вектора две координаты.
         let scores: Vec<f64> = states
             .iter()
             .enumerate()

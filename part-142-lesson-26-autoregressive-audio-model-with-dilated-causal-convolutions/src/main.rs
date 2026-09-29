@@ -45,8 +45,10 @@ fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f6
 }
 fn main() {
     let mut samples: Vec<u8> = vec![1, 0, 1, 1];
+    // Начальная история содержит четыре отсчёта; генерируем ещё четыре для короткого примера.
     for _ in 0..4 {
         let probability: f64 = calculate_probability_of_next_sound_sample_from_history(&samples);
+        // 0.5 — порог бинарного решения: вероятность не ниже половины даёт отсчёт 1.
         let next: u8 = u8::from(probability >= 0.5);
         samples.push(next);
         println!("P(следующий отсчёт=1)={probability:.3}; выбор={next}");

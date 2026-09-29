@@ -2,6 +2,7 @@
 // Нормируем Q и K отдельно до сравнения, затем применяем позиционное вращение.
 
 fn main() {
+    // ε=10⁻⁶ добавляется к среднему квадрату координат Q и K, чтобы RMSNorm был определён и для нуля.
     let query_vector: Vec<f64> =
         part_188_lesson_36_normalize_token_vector_by_root_mean_square::normalize_vector_by_root_mean_square(
             &[2.0, 1.0],

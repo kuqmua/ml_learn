@@ -14,6 +14,7 @@ fn binary_cross_entropy_for_gpt_readout_prediction(
     // Оценку модели до преобразования в вероятность называют logit.
     let raw_model_score: f64 =
         weight[0] * final_hidden_state[0] + weight[1] * final_hidden_state[1];
+    // Ограничиваем p интервалом [10⁻¹², 1−10⁻¹²], чтобы ln(p) и ln(1−p) были конечными.
     let probability: f64 =
         sigmoid_activation_of_raw_score(raw_model_score).clamp(1e-12, 1.0 - 1e-12);
     -sample.1 * probability.ln() - (1.0 - sample.1) * (1.0 - probability).ln()
@@ -27,6 +28,8 @@ fn main() {
         .map(|&sample| binary_cross_entropy_for_gpt_readout_prediction(&weight, sample))
         .sum::<f64>()
         / validation.len() as f64;
+    // Обновляем только обучаемый выходной слой 100 раз; декодер в этом опыте заморожен.
+    // Число шагов ограничивает учебное обучение и позволяет затем сравнить ошибку.
     for _ in 0..100 {
         // Производную функции по параметру или вектор таких производных называют gradient.
         let mut rate_of_change: [f64; 2] = [0.0; 2];

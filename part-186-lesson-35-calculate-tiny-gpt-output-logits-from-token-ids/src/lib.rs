@@ -5,8 +5,9 @@
 pub fn calculate_decoder_hidden_states_for_token_ids(
     text_unit_identifiers: &[usize],
 ) -> Vec<[f64; 2]> {
-    // Плотное числовое представление объекта называют embedding.
+    // Три двумерных embedding заданы вручную: так весь прямой проход можно просчитать на бумаге.
     let dense_numeric_representation: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
+    // Позиционный вклад 0.1·position добавляем только к первой координате для наглядного примера.
     let states: Vec<[f64; 2]> = text_unit_identifiers
         .iter()
         .enumerate()
@@ -34,6 +35,7 @@ pub fn calculate_decoder_hidden_states_for_token_ids(
 pub fn calculate_decoder_output_logits_for_token_ids(
     text_unit_identifiers: &[usize],
 ) -> Vec<[f64; 3]> {
+    // Третий logit — среднее двух координат (веса 0.5 и 0.5) фиксированной выходной проекции.
     calculate_decoder_hidden_states_for_token_ids(text_unit_identifiers)
         .into_iter()
         .map(|hidden| [hidden[0], hidden[1], (hidden[0] + hidden[1]) * 0.5])

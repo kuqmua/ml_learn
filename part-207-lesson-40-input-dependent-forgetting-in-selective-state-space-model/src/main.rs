@@ -7,6 +7,7 @@ fn calculate_state_sequence_with_input_dependent_reset(input: &[(f64, bool)]) ->
         .iter()
         .map(|&(value, reset)| {
             // Долю (fraction) предыдущего состояния, сохраняемую на следующем шаге, называют retention.
+            // При reset полностью забываем прошлое (0); иначе сохраняем 90% прежнего состояния.
             let previous_state_share_kept: f64 = if reset { 0.0 } else { 0.9 };
             state = previous_state_share_kept * state + value;
             state

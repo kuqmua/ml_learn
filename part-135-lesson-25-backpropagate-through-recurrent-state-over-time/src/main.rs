@@ -41,6 +41,7 @@ fn main() {
         recurrent_weight_loss_rate_of_change += preactivation_loss_rate_of_change * previous;
         hidden_state_loss_rate_of_change = preactivation_loss_rate_of_change * recurrent_weight;
     }
+    // ε=10⁻⁵ сдвигает рекуррентный вес в обе стороны для численной проверки градиента.
     let epsilon: f64 = 1e-5;
     let numerically_estimated_rate_of_change: f64 =
         (half_squared_error_of_last_recurrent_state_against_target(

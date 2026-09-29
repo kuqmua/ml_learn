@@ -11,13 +11,13 @@
 fn main() {
     // Сохраняем рассчитанное значение `input_value` для следующих операций.
     let input_value: f64 = 3.0;
-    // Инициализируем значение `step` начальным состоянием.
+    // h = 0.0001 достаточно мал для приближения производной и достаточно велик для f64.
     let step: f64 = 0.0001;
     // Для f(x)=x² считаем значения в x+h и x−h.
     let right: f64 = (input_value + step) * (input_value + step);
     // Умножаем значения и сохраняем результат в `left`.
     let left: f64 = (input_value - step) * (input_value - step);
-    // Нормируем или усредняем величину делением и сохраняем её в `numerical_derivative`.
+    // Делим разность f(x+h)−f(x−h) на расстояние между точками: (x+h)−(x−h)=2h.
     let numerical_derivative: f64 = (right - left) / (2.0 * step);
     // Умножаем значения и сохраняем результат в `analytical_derivative`.
     let analytical_derivative: f64 = 2.0 * input_value;

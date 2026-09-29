@@ -6,6 +6,7 @@ fn main() {
     let targets: [f64; 4] = [0.0, 0.0, 2.0, 2.0];
     let mut predictions: [f64; 4] = [1.0; 4];
     let mut history: Vec<f64> = vec![1.0];
+    // Два раунда позволяют увидеть, как второй маленький «деревянный» шаг исправляет первый.
     for round in 0..2 {
         // Для квадратичной ошибки отрицательный градиент равен y - prediction.
         // Разность целевого значения и прогноза называют residual (остатком).
@@ -17,6 +18,7 @@ fn main() {
             (target_minus_prediction_values[0] + target_minus_prediction_values[1]) / 2.0;
         let right: f64 =
             (target_minus_prediction_values[2] + target_minus_prediction_values[3]) / 2.0;
+        // Берём половину предсказанного остатка (shrinkage = 0.5), чтобы исправлять ошибку постепенно.
         for (index, value) in predictions.iter_mut().enumerate() {
             *value += 0.5 * if index < 2 { left } else { right };
         }

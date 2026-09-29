@@ -58,6 +58,7 @@ impl BytePairEncoding {
             text.bytes().map(usize::from).collect::<Vec<_>>();
         for (offset, &pair) in self.merges.iter().enumerate() {
             text_unit_identifiers =
+                // 0..255 заняты одиночными байтами; новое слияние получает ID 256 + его номер.
                 merge_adjacent_byte_pair_token_ids(&text_unit_identifiers, pair, 256 + offset);
         }
         text_unit_identifiers

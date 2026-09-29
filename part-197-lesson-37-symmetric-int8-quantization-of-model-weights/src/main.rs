@@ -4,10 +4,12 @@
 fn main() {
     let weights: [f64; 5] = [-1.0, -0.5, 0.0, 0.25, 1.0];
     let maximum: f64 = weights.iter().copied().map(f64::abs).fold(0.0, f64::max);
+    // 127 — наибольший положительный i8: масштаб переводит максимальный |вес| в код ±127.
     let scale: f64 = maximum / 127.0;
     // Представление весов целыми числами меньшей точности называют quantization.
     let reduced_precision_weights: Vec<i8> = weights
         .iter()
+        // Симметричный диапазон −127..127 оставляет ноль точным и не использует лишний код −128.
         .map(|&weight_value| (weight_value / scale).round().clamp(-127.0, 127.0) as i8)
         .collect();
     let reconstructed: Vec<f64> = reduced_precision_weights

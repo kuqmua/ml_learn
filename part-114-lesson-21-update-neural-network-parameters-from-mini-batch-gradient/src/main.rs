@@ -24,7 +24,7 @@ fn main() {
         rates_of_change.iter().sum::<f64>() / rates_of_change.len() as f64;
     // Сохраняем рассчитанное значение `old_weight` для следующих операций.
     let old_weight: f64 = 1.0;
-    // Инициализируем значение `learning_rate` начальным состоянием.
+    // Скорость 0.1 означает, что из веса вычитается десятая часть среднего градиента мини-батча.
     let learning_rate: f64 = 0.1;
     // Умножаем значения и сохраняем результат в `new_weight`.
     let new_weight: f64 = old_weight - learning_rate * small_batch_loss_rate_of_change;

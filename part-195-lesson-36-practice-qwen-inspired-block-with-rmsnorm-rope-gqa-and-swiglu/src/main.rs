@@ -1,6 +1,7 @@
 // Урок 36.8. Блок по мотивам Qwen с RMSNorm, RoPE, GQA и SwiGLU.
 // Собираем pre-RMSNorm, QK-Norm, RoPE, GQA, residual и SwiGLU без реальных весов Qwen.
 
+// Во всех вызовах RMSNorm в блоке ε=10⁻⁶ защищает от нулевого среднего квадрата координат.
 fn apply_qwen_inspired_transformer_block(states: &[[f64; 2]]) -> Vec<[f64; 2]> {
     let gamma: [f64; 2] = [1.0, 1.0];
     let norm: Vec<[f64; 2]> = states

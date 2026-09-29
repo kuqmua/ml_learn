@@ -14,6 +14,7 @@ pub fn normalize_vector_by_root_mean_square(
         .map(|input_component| input_component * input_component)
         .sum::<f64>()
         / input.len() as f64;
+    // epsilon добавляем до корня, чтобы RMS не оказался нулём для нулевого вектора.
     let scale: f64 = 1.0 / (mean_square + epsilon).sqrt();
     Ok(input
         .iter()
