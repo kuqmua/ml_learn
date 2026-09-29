@@ -1,0 +1,9 @@
+[package]
+name = "part-125-lesson-23-prevent-large-updates-by-clamping-error-slopes-to-symmetric-interval"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

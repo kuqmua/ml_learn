@@ -1,8 +1,0 @@
-[package]
-name = "part-135-lesson-25-pass-error-changes-back-through-earlier-memory-states"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-part-134-lesson-25-update-memory-from-weighted-input-and-previous-memory = { path = "../part-134-lesson-25-update-memory-from-weighted-input-and-previous-memory" }

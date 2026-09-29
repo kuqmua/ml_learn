@@ -1,9 +1,0 @@
-[package]
-name = "part-074-lesson-13-add-one-to-word-counts-before-calculating-probabilities"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

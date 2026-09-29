@@ -1,0 +1,12 @@
+[package]
+name = "part-063-lesson-11-calculate-f1-score-as-twice-precision-times-recall-over-their-sum"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part_060_lesson_11_count_correct_and_incorrect_positive_and_negative_predictions = { package = "part-060-lesson-11-count-correct-and-incorrect-positive-and-negative-predictions", path = "../part-060-lesson-11-count-correct-and-incorrect-positive-and-negative-predictions" }
+part_061_lesson_11_calculate_positive_prediction_precision_as_true_positives_over_positive_predictions = { package = "part-061-lesson-11-calculate-positive-prediction-precision-as-true-positives-over-positive-predictions", path = "../part-061-lesson-11-calculate-positive-prediction-precision-as-true-positives-over-positive-predictions" }
+part_062_lesson_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives = { package = "part-062-lesson-11-calculate-positive-detection-recall-as-found-positives-over-actual-positives", path = "../part-062-lesson-11-calculate-positive-detection-recall-as-found-positives-over-actual-positives" }
+
+lesson-visualization = { path = "../lesson-visualization" }

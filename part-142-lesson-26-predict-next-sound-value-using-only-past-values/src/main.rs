@@ -22,13 +22,13 @@ fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f6
         .collect();
     lesson_trace::trace_step!(input);
     let filter_one: Vec<f64> =
-        part_138_lesson_26_sum_weighted_current_and_past_signal_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+        part_138_lesson_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &input, 0.8, 0.4, 1,
         )
         .unwrap();
     lesson_trace::trace_step!(filter_one);
     let gate_one: Vec<f64> =
-        part_138_lesson_26_sum_weighted_current_and_past_signal_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+        part_138_lesson_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &input, 0.2, -0.3, 1,
         )
         .unwrap();
@@ -46,13 +46,13 @@ fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f6
         .collect();
     lesson_trace::trace_step!(layer_one);
     let filter_two: Vec<f64> =
-        part_138_lesson_26_sum_weighted_current_and_past_signal_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+        part_138_lesson_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &layer_one, 1.0, 0.5, 2,
         )
         .unwrap();
     lesson_trace::trace_step!(filter_two);
     let gate_two: Vec<f64> =
-        part_138_lesson_26_sum_weighted_current_and_past_signal_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+        part_138_lesson_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &layer_one, 0.1, 0.6, 2,
         )
         .unwrap();

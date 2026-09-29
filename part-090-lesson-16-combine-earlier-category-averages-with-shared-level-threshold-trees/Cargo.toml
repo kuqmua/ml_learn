@@ -5,6 +5,6 @@ edition = "2024"
 
 [dependencies]
 lesson-trace = { path = "../lesson-trace" }
-part-087-lesson-16-use-same-threshold-test-at-each-tree-level = { path = "../part-087-lesson-16-use-same-threshold-test-at-each-tree-level" }
-part-088-lesson-16-average-earlier-targets-for-category-without-current-answer = { path = "../part-088-lesson-16-average-earlier-targets-for-category-without-current-answer" }
+part-087-lesson-16-build-symmetric-tree-using-shared-threshold-test-at-each-level = { path = "../part-087-lesson-16-build-symmetric-tree-using-shared-threshold-test-at-each-level" }
+part-088-lesson-16-encode-category-by-averaging-earlier-targets-without-current-answer = { path = "../part-088-lesson-16-encode-category-by-averaging-earlier-targets-without-current-answer" }
 lesson-visualization = { path = "../lesson-visualization" }

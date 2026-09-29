@@ -1,9 +1,0 @@
-[package]
-name = "part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

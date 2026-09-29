@@ -26,7 +26,7 @@ pub fn calculate_text_context_vectors_by_adding_position_and_weighted_past_conte
         return Vec::new();
     }
     let context: Vec<[f64; 2]> =
-        part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(&states, &states, &states)
+        part_182_lesson_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(&states, &states, &states)
             .unwrap();
     lesson_trace::trace_step!(context);
     states

@@ -42,12 +42,12 @@ fn main() {
 
     // Сохраняем результат этого шага в `mean`.
     let mean: f64 =
-        part_029_lesson_06_sum_values_and_divide_by_count::calculate_mean_by_summing_values_and_dividing_by_count(&values)
+        part_029_lesson_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(&values)
             .unwrap();
     lesson_trace::trace_step!(mean);
     // Сохраняем результат этого шага в `sample_variance`.
     let sample_variance: f64 =
-        part_031_lesson_06_sum_squared_deviations_from_mean_and_divide_by_count_minus_one::calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(
+        part_031_lesson_06_calculate_sample_variance_as_squared_deviation_sum_over_count_minus_one::calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(
             &values,
         )
         .unwrap();

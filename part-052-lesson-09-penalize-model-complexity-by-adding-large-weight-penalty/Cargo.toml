@@ -1,0 +1,9 @@
+[package]
+name = "part-052-lesson-09-penalize-model-complexity-by-adding-large-weight-penalty"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

@@ -1,7 +1,0 @@
-[package]
-name = "part-141-lesson-26-add-transformation-to-input-and-pass-it-to-output-separately"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

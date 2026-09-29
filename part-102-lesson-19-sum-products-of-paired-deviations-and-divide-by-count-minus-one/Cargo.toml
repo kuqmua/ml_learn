@@ -1,9 +1,0 @@
-[package]
-name = "part-102-lesson-19-sum-products-of-paired-deviations-and-divide-by-count-minus-one"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

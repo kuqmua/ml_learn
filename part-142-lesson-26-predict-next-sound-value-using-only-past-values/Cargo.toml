@@ -5,5 +5,5 @@ edition = "2024"
 
 [dependencies]
 lesson-trace = { path = "../lesson-trace" }
-part-138-lesson-26-sum-weighted-current-and-past-signal-values = { path = "../part-138-lesson-26-sum-weighted-current-and-past-signal-values" }
+part-138-lesson-26-calculate-causal-filter-output-by-summing-weighted-current-and-past-values = { path = "../part-138-lesson-26-calculate-causal-filter-output-by-summing-weighted-current-and-past-values" }
 lesson-visualization = { path = "../lesson-visualization" }

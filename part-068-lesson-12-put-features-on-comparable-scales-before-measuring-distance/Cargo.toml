@@ -5,6 +5,6 @@ edition = "2024"
 
 [dependencies]
 lesson-trace = { path = "../lesson-trace" }
-part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences = { package = "part-004-lesson-01-square-root-of-sum-of-squared-coordinate-differences", path = "../part-004-lesson-01-square-root-of-sum-of-squared-coordinate-differences" }
+part_004_lesson_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum = { package = "part-004-lesson-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum", path = "../part-004-lesson-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum" }
 
 lesson-visualization = { path = "../lesson-visualization" }

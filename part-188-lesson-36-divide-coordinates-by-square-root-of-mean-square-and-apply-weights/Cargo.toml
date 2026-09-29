@@ -1,7 +1,0 @@
-[package]
-name = "part-188-lesson-36-divide-coordinates-by-square-root-of-mean-square-and-apply-weights"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

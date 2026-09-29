@@ -36,7 +36,7 @@ fn main() {
     let reset: [bool; 4] = [false, false, true, false];
     lesson_trace::trace_step!(reset);
     let fixed: Vec<f64> =
-        part_206_lesson_40_repeatedly_add_weighted_input_to_retained_previous_state::calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
+        part_206_lesson_40_calculate_memory_states_by_adding_weighted_input_to_retained_previous_state::calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
             &values, 0.8, 1.0,
         );
     lesson_trace::trace_step!(fixed);

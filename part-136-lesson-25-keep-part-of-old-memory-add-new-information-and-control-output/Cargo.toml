@@ -1,7 +1,0 @@
-[package]
-name = "part-136-lesson-25-keep-part-of-old-memory-add-new-information-and-control-output"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

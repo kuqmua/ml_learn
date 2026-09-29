@@ -5,4 +5,4 @@ edition = "2024"
 
 [dependencies]
 lesson-trace = { path = "../lesson-trace" }
-part-203-lesson-39-mix-signal-and-noise-using-square-roots-of-variance-shares = { path = "../part-203-lesson-39-mix-signal-and-noise-using-square-roots-of-variance-shares" }
+part-203-lesson-39-calculate-noisy-signal-by-mixing-signal-and-noise-with-root-variance-share-weights = { path = "../part-203-lesson-39-calculate-noisy-signal-by-mixing-signal-and-noise-with-root-variance-share-weights" }

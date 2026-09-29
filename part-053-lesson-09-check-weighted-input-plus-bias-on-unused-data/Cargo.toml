@@ -5,6 +5,6 @@ edition = "2024"
 
 [dependencies]
 lesson-trace = { path = "../lesson-trace" }
-part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count = { package = "part-049-lesson-09-sum-squared-prediction-errors-and-divide-by-count", path = "../part-049-lesson-09-sum-squared-prediction-errors-and-divide-by-count" }
+part_049_lesson_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count = { package = "part-049-lesson-09-calculate-mean-squared-error-as-squared-error-sum-divided-by-count", path = "../part-049-lesson-09-calculate-mean-squared-error-as-squared-error-sum-divided-by-count" }
 
 lesson-visualization = { path = "../lesson-visualization" }

@@ -28,7 +28,7 @@ fn main() {
     assert!(!reference.is_empty());
     // Сохраняем результат этого шага в `reference_mean`.
     let reference_mean: f64 =
-        part_029_lesson_06_sum_values_and_divide_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
+        part_029_lesson_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
             &reference,
         )
         .unwrap();
@@ -42,7 +42,7 @@ fn main() {
         assert!(!current.is_empty());
         // Сохраняем результат этого шага в `current_mean`.
         let current_mean: f64 =
-            part_029_lesson_06_sum_values_and_divide_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
+            part_029_lesson_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
                 &current,
             )
             .unwrap();

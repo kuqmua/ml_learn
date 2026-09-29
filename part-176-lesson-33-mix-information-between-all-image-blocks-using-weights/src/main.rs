@@ -36,7 +36,7 @@ fn main() {
     let image: Vec<Vec<f64>> = vec![vec![1.0, 0.0], vec![0.0, 1.0]];
     lesson_trace::trace_step!(image);
     let patches: Vec<Vec<f64>> =
-        part_175_lesson_33_split_square_image_into_nonoverlapping_square_blocks::extract_nonoverlapping_square_patches_from_square_image(&image, 1).unwrap();
+        part_175_lesson_33_create_image_block_sequence_by_splitting_image_into_nonoverlapping_squares::extract_nonoverlapping_square_patches_from_square_image(&image, 1).unwrap();
     lesson_trace::trace_step!(patches);
     // Упрощённая проекция одномерного патча в двухмерный токен.
     // Представление патча изображения для трансформера называют visual token.

@@ -1,9 +1,0 @@
-[package]
-name = "part-064-lesson-11-share-of-positive-negative-pairs-ranked-in-correct-order"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

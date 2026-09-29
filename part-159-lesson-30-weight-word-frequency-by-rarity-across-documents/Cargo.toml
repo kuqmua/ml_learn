@@ -1,9 +1,0 @@
-[package]
-name = "part-159-lesson-30-weight-word-frequency-by-rarity-across-documents"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

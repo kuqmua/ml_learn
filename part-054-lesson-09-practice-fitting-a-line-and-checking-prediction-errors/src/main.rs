@@ -125,12 +125,12 @@ fn main() {
     lesson_trace::trace_step!(baseline_predictions);
     // Сохраняем результат этого шага в `model_mean_squared_error`.
     let model_mean_squared_error: f64 =
-        part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &model_predictions)
+        part_049_lesson_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &model_predictions)
             .unwrap();
     lesson_trace::trace_step!(model_mean_squared_error);
     // Сохраняем результат этого шага в `baseline_mean_squared_error`.
     let baseline_mean_squared_error: f64 =
-        part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &baseline_predictions)
+        part_049_lesson_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &baseline_predictions)
             .unwrap();
     lesson_trace::trace_step!(baseline_mean_squared_error);
     // Печатаем рассчитанные значения для проверки примера.

@@ -72,7 +72,7 @@ fn main() {
     lesson_trace::trace_step!(training_targets);
     // Сохраняем результат этого шага в `baseline`.
     let baseline: f64 =
-        part_029_lesson_06_sum_values_and_divide_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
+        part_029_lesson_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
             &training_targets,
         )
         .unwrap();
@@ -106,7 +106,7 @@ fn main() {
             .collect();
         lesson_trace::trace_step!(predictions);
         // Используем подготовленное значение в следующем шаге примера.
-        part_050_lesson_09_sum_absolute_prediction_errors_and_divide_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(&targets, &predictions).unwrap()
+        part_050_lesson_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(&targets, &predictions).unwrap()
     }
 
     // Шаг: Обучаем линейную модель и сравниваем её с baseline на validation и test.

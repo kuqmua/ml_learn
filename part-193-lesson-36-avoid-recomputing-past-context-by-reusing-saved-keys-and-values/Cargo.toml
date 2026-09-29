@@ -1,0 +1,8 @@
+[package]
+name = "part-193-lesson-36-avoid-recomputing-past-context-by-reusing-saved-keys-and-values"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part-182-lesson-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights = { path = "../part-182-lesson-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights" }

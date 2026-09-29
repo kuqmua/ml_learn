@@ -5,5 +5,5 @@ edition = "2024"
 
 [dependencies]
 lesson-trace = { path = "../lesson-trace" }
-part-175-lesson-33-split-square-image-into-nonoverlapping-square-blocks = { path = "../part-175-lesson-33-split-square-image-into-nonoverlapping-square-blocks" }
+part-175-lesson-33-create-image-block-sequence-by-splitting-image-into-nonoverlapping-squares = { path = "../part-175-lesson-33-create-image-block-sequence-by-splitting-image-into-nonoverlapping-squares" }
 lesson-visualization = { path = "../lesson-visualization" }

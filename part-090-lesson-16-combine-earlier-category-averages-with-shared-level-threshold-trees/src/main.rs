@@ -16,7 +16,7 @@ fn main() {
     lesson_trace::trace_step!(targets);
     // Замену категорий числами, рассчитанными по целям, называют target encoding.
     let category_target_mean_values: Vec<f64> =
-        part_088_lesson_16_average_earlier_targets_for_category_without_current_answer::encode_categories_as_average_previous_targets_with_prior_weight(
+        part_088_lesson_16_encode_category_by_averaging_earlier_targets_without_current_answer::encode_categories_as_average_previous_targets_with_prior_weight(
             &categories,
             &targets,
             0.5,
@@ -25,8 +25,8 @@ fn main() {
         .unwrap();
     lesson_trace::trace_step!(category_target_mean_values);
     // Порог фиксирован для прозрачности примера; настоящий алгоритм выбирает split по данным.
-    let tree: part_087_lesson_16_use_same_threshold_test_at_each_tree_level::ObliviousTree =
-        part_087_lesson_16_use_same_threshold_test_at_each_tree_level::ObliviousTree {
+    let tree: part_087_lesson_16_build_symmetric_tree_using_shared_threshold_test_at_each_level::ObliviousTree =
+        part_087_lesson_16_build_symmetric_tree_using_shared_threshold_test_at_each_level::ObliviousTree {
             splits: vec![(0, 0.5)],
             leaves: vec![-0.25, 0.25],
         };

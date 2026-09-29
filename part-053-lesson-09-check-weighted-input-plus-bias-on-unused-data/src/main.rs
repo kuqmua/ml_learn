@@ -62,7 +62,7 @@ fn main() {
     lesson_trace::trace_step!(predictions);
     // Сохраняем результат этого шага в `mean_squared_error_value`.
     let mean_squared_error_value: f64 =
-        part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &predictions).unwrap();
+        part_049_lesson_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &predictions).unwrap();
     lesson_trace::trace_step!(mean_squared_error_value);
     // Печатаем рассчитанные значения для проверки примера.
     println!("test MSE = {mean_squared_error_value}");

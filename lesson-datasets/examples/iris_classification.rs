@@ -7,13 +7,13 @@ fn predict_species_from_nearest_training_record(
         .iter()
         .min_by(|&&left, &&right| {
             let left_distance =
-                part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+                part_004_lesson_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_squared_point_distance_by_summing_squared_coordinate_differences(
                     &example.features,
                     &records[left].features,
                 )
                 .unwrap();
             let right_distance =
-                part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+                part_004_lesson_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_squared_point_distance_by_summing_squared_coordinate_differences(
                     &example.features,
                     &records[right].features,
                 )

@@ -1,0 +1,10 @@
+[package]
+name = "part-031-lesson-06-calculate-sample-variance-as-squared-deviation-sum-over-count-minus-one"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part_029_lesson_06_calculate_mean_by_summing_values_and_dividing_by_count = { package = "part-029-lesson-06-calculate-mean-by-summing-values-and-dividing-by-count", path = "../part-029-lesson-06-calculate-mean-by-summing-values-and-dividing-by-count" }
+
+lesson-visualization = { path = "../lesson-visualization" }

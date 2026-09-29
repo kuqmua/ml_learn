@@ -5,4 +5,4 @@ edition = "2024"
 
 [dependencies]
 lesson-trace = { path = "../lesson-trace" }
-part-182-lesson-35-sum-current-and-past-values-with-query-key-match-weights = { path = "../part-182-lesson-35-sum-current-and-past-values-with-query-key-match-weights" }
+part-182-lesson-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights = { path = "../part-182-lesson-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights" }

@@ -20,7 +20,7 @@ fn main() {
         .iter()
         .map(|&(clean, noise)| {
             (
-                part_203_lesson_39_mix_signal_and_noise_using_square_roots_of_variance_shares::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+                part_203_lesson_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
                     clean, noise, alpha,
                 )
                 .unwrap()
@@ -58,7 +58,7 @@ fn main() {
         .iter()
         .map(|&(clean, noise)| {
             (
-                part_203_lesson_39_mix_signal_and_noise_using_square_roots_of_variance_shares::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+                part_203_lesson_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
                     clean, noise, alpha,
                 )
                 .unwrap()

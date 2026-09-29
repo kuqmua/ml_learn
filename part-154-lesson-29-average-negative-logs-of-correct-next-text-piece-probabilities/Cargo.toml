@@ -1,9 +1,0 @@
-[package]
-name = "part-154-lesson-29-average-negative-logs-of-correct-next-text-piece-probabilities"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

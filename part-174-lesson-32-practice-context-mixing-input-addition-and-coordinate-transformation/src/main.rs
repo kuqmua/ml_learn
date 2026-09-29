@@ -179,7 +179,7 @@ fn main() {
                     // Преобразуем каждый элемент последовательности.
                     .map(|key| {
                         // Составляем результат из вычисленных значений в указанном порядке.
-                        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&query, key).unwrap()
+                        part_001_lesson_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&query, key).unwrap()
                                 // Делим значения, получая нормированную величину или среднее.
                                 / approximate_square_root_by_repeated_averaging(2.0)
                     })

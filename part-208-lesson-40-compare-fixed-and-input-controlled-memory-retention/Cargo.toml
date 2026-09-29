@@ -5,5 +5,5 @@ edition = "2024"
 
 [dependencies]
 lesson-trace = { path = "../lesson-trace" }
-part-206-lesson-40-repeatedly-add-weighted-input-to-retained-previous-state = { path = "../part-206-lesson-40-repeatedly-add-weighted-input-to-retained-previous-state" }
+part-206-lesson-40-calculate-memory-states-by-adding-weighted-input-to-retained-previous-state = { path = "../part-206-lesson-40-calculate-memory-states-by-adding-weighted-input-to-retained-previous-state" }
 lesson-visualization = { path = "../lesson-visualization" }

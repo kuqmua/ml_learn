@@ -19,7 +19,7 @@ fn report_majority_baseline(
             counts
         )
         .unwrap(),
-        part_062_lesson_11_divide_detected_positives_by_all_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(counts).unwrap(),
+        part_062_lesson_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(counts).unwrap(),
         counts.false_negatives
     );
     Ok(())

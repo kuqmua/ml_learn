@@ -11,7 +11,7 @@ fn main() {
     lesson_trace::enable();
     // ε=10⁻⁶ добавляется к среднему квадрату координат Q и K, чтобы RMSNorm был определён и для нуля.
     let query_vector: Vec<f64> =
-        part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
+        part_188_lesson_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
             &[2.0, 1.0],
             &[1.0, 1.0],
             1e-6,
@@ -19,7 +19,7 @@ fn main() {
         .unwrap();
     lesson_trace::trace_step!(query_vector);
     let key_vector: Vec<f64> =
-        part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
+        part_188_lesson_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
             &[1.0, 3.0],
             &[1.0, 1.0],
             1e-6,
@@ -27,14 +27,14 @@ fn main() {
         .unwrap();
     lesson_trace::trace_step!(key_vector);
     let query_vector: [f64; 2] =
-        part_189_lesson_36_rotate_query_and_key_coordinate_pairs_by_text_position::rotate_vector_coordinate_pair_by_token_position(
+        part_189_lesson_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position(
             [query_vector[0], query_vector[1]],
             2,
             0.1,
         );
     lesson_trace::trace_step!(query_vector);
     let key_vector: [f64; 2] =
-        part_189_lesson_36_rotate_query_and_key_coordinate_pairs_by_text_position::rotate_vector_coordinate_pair_by_token_position(
+        part_189_lesson_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position(
             [key_vector[0], key_vector[1]],
             1,
             0.1,

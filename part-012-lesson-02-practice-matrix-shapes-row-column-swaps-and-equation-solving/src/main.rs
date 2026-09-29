@@ -90,7 +90,7 @@ fn main() {
         let row_end: usize = row_start + left_matrix.column_count;
         lesson_trace::trace_step!(row_end);
         // Сохраняем результат этого шага в `row_result`.
-        let row_result: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+        let row_result: f64 = part_001_lesson_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             // Используем подготовленное значение в следующем шаге примера.
             &left_matrix.data[row_start..row_end],
             // Используем подготовленное значение в следующем шаге примера.
@@ -158,7 +158,7 @@ fn main() {
                 .collect();
             lesson_trace::trace_step!(column_values);
             // Сохраняем результат этого шага в `cell_value`.
-            let cell_value: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+            let cell_value: f64 = part_001_lesson_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
                 // Используем подготовленное значение в следующем шаге примера.
                 &transposed_matrix.data[row_start..row_end],
                 // Используем подготовленное значение в следующем шаге примера.

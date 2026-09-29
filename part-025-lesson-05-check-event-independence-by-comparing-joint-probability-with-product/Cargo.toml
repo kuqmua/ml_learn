@@ -1,0 +1,9 @@
+[package]
+name = "part-025-lesson-05-check-event-independence-by-comparing-joint-probability-with-product"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

@@ -5,5 +5,5 @@ edition = "2024"
 
 [dependencies]
 lesson-trace = { path = "../lesson-trace" }
-part-188-lesson-36-divide-coordinates-by-square-root-of-mean-square-and-apply-weights = { path = "../part-188-lesson-36-divide-coordinates-by-square-root-of-mean-square-and-apply-weights" }
-part-189-lesson-36-rotate-query-and-key-coordinate-pairs-by-text-position = { path = "../part-189-lesson-36-rotate-query-and-key-coordinate-pairs-by-text-position" }
+part-188-lesson-36-normalize-vector-scale-by-dividing-by-root-mean-square-and-applying-weights = { path = "../part-188-lesson-36-normalize-vector-scale-by-dividing-by-root-mean-square-and-applying-weights" }
+part-189-lesson-36-encode-text-position-by-rotating-query-and-key-coordinate-pairs = { path = "../part-189-lesson-36-encode-text-position-by-rotating-query-and-key-coordinate-pairs" }
