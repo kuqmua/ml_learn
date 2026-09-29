@@ -10,11 +10,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `first` для следующего шага примера.
-    let first = [1.0, 1000.0];
+    let first: [f64; 2] = [1.0, 1000.0];
     // Создаём набор значений `second` для следующего шага примера.
-    let second = [2.0, 1010.0];
+    let second: [f64; 2] = [2.0, 1010.0];
     // Создаём набор значений `scale` для следующего шага примера.
-    let scale = [1.0, 1000.0];
+    let scale: [f64; 2] = [1.0, 1000.0];
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -23,15 +23,15 @@ fn main() {
         "масштабы должны быть положительными"
     );
     // Сохраняем результат этого шага в `raw_squared`.
-    let raw_squared =
+    let raw_squared: f64 =
         part_004_lesson_01_euclidean_distance_between_two_points::squared_euclidean_distance_between_two_points(&first, &second)
             .unwrap();
     // Задаём учебные значения для `scaled_first`.
-    let scaled_first = [first[0] / scale[0], first[1] / scale[1]];
+    let scaled_first: [f64; 2] = [first[0] / scale[0], first[1] / scale[1]];
     // Задаём учебные значения для `scaled_second`.
-    let scaled_second = [second[0] / scale[0], second[1] / scale[1]];
+    let scaled_second: [f64; 2] = [second[0] / scale[0], second[1] / scale[1]];
     // Сохраняем результат этого шага в `scaled_squared`.
-    let scaled_squared = part_004_lesson_01_euclidean_distance_between_two_points::squared_euclidean_distance_between_two_points(
+    let scaled_squared: f64 = part_004_lesson_01_euclidean_distance_between_two_points::squared_euclidean_distance_between_two_points(
         &scaled_first,
         &scaled_second,
     )
@@ -49,7 +49,7 @@ fn visualize_scale_features_before_nearest_neighbor_distance(
     scaled_squared: f64,
 ) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

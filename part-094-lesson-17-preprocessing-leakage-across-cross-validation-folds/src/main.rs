@@ -10,18 +10,18 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `training_data` для следующего шага примера.
-    let training_data = [1.0, 2.0, 3.0];
+    let training_data: [f64; 3] = [1.0, 2.0, 3.0];
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         !training_data.is_empty(),
         "обучающая выборка не должна быть пустой"
     );
     // Создаём набор значений `validation` для следующего шага примера.
-    let validation = [100.0];
+    let validation: [f64; 1] = [100.0];
     // Преобразуем входные данные и сохраняем полученную коллекцию в `training_mean`.
-    let training_mean = training_data.iter().sum::<f64>() / training_data.len() as f64;
+    let training_mean: f64 = training_data.iter().sum::<f64>() / training_data.len() as f64;
     // Комбинируем исходные величины и сохраняем результат в `validation_centered`.
-    let validation_centered = validation[0] - training_mean;
+    let validation_centered: f64 = validation[0] - training_mean;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("среднее train={training_mean}, validation после центрирования={validation_centered}");
 
@@ -38,7 +38,7 @@ fn visualize_preprocessing_leakage_across_cross_validation_folds(
     validation_centered: f64,
 ) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

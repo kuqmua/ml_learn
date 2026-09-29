@@ -12,7 +12,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Шаг: Задаём размеченные точки двух классов.
-    let training_examples = [
+    let training_examples: [([f64; 2], bool); 4] = [
         // Составляем результат из вычисленных значений в указанном порядке.
         ([0., 0.], false),
         // Составляем результат из вычисленных значений в указанном порядке.
@@ -50,30 +50,31 @@ fn main() {
                 // Проверяем обязательное условие до дальнейшего вычисления.
                 assert!(neighbor_count > 0 && neighbor_count <= training_examples.len());
                 // Создаём изменяемое значение `nearest_neighbor_vote_uses_selected_count` для следующих операций.
-                let mut nearest_neighbor_vote_uses_selected_count: Vec<_> = training_examples
-                    // Перебираем элементы по ссылке, не копируя исходную коллекцию.
-                    .iter()
-                    // Преобразуем каждый элемент последовательности.
-                    .map(|&(features, label)| {
-                        // Составляем результат из вычисленных значений в указанном порядке.
-                        (
+                let mut nearest_neighbor_vote_uses_selected_count: Vec<(f64, bool)> =
+                    training_examples
+                        // Перебираем элементы по ссылке, не копируя исходную коллекцию.
+                        .iter()
+                        // Преобразуем каждый элемент последовательности.
+                        .map(|&(features, label)| {
                             // Составляем результат из вычисленных значений в указанном порядке.
-                            (multiply_number_by_itself(features[0] - query_point[0])
+                            (
+                                // Составляем результат из вычисленных значений в указанном порядке.
+                                (multiply_number_by_itself(features[0] - query_point[0])
                                 // Складываем или вычитаем величины согласно используемой формуле.
                                 + multiply_number_by_itself(features[1] - query_point[1])),
-                            // Используем ранее рассчитанное значение `label` в текущем выражении.
-                            label,
-                        )
-                    })
-                    // Собираем элементы итератора в итоговую коллекцию.
-                    .collect();
+                                // Используем ранее рассчитанное значение `label` в текущем выражении.
+                                label,
+                            )
+                        })
+                        // Собираем элементы итератора в итоговую коллекцию.
+                        .collect();
                 // Сортируем значения в порядке, заданном функцией сравнения.
                 nearest_neighbor_vote_uses_selected_count.sort_by(
                     // Задаём параметры короткого локального вычисления.
                     |left_neighbor, right_neighbor| left_neighbor.0.total_cmp(&right_neighbor.0),
                 );
                 // Сохраняем рассчитанное значение `votes` для следующих операций.
-                let votes = nearest_neighbor_vote_uses_selected_count
+                let votes: usize = nearest_neighbor_vote_uses_selected_count
                     // Перебираем элементы по ссылке, не копируя исходную коллекцию.
                     .iter()
                     // Оставляем только заданное число лучших элементов.
@@ -117,9 +118,9 @@ fn visualize_practice_knn_classification_with_scaled_features_and_chosen_k(
         // Собираем результаты в коллекцию.
         .collect();
     // Задаём учебные значения для `query_point`.
-    let query_point = [(1.8, 2.1)];
+    let query_point: [(f64, f64); 1] = [(1.8, 2.1)];
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::scatter_chart(
+    let chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

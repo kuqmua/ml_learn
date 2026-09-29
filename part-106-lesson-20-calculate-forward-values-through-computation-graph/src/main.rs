@@ -10,11 +10,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `input_value` для следующих операций.
-    let input_value = 2.0;
+    let input_value: f64 = 2.0;
     // Умножаем значения и сохраняем результат в `square`.
-    let square = input_value * input_value;
+    let square: f64 = input_value * input_value;
     // Комбинируем исходные величины и сохраняем результат в `doubled_square`.
-    let doubled_square = square + square;
+    let doubled_square: f64 = square + square;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("x={input_value}, x²={square}, 2x²={doubled_square}");
 
@@ -29,7 +29,7 @@ fn visualize_calculate_forward_values_through_computation_graph() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, horizontal_value * horizontal_value)
         })
@@ -40,14 +40,14 @@ fn visualize_calculate_forward_values_through_computation_graph() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, 2.0 * horizontal_value * horizontal_value)
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

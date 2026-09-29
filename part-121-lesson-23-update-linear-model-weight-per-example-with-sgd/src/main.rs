@@ -10,16 +10,16 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `examples` для следующего шага примера.
-    let examples = [(1.0, 2.0), (2.0, 4.0)];
+    let examples: [(f64, f64); 2] = [(1.0, 2.0), (2.0, 4.0)];
     // Инициализируем изменяемый накопитель `weight` начальным состоянием.
-    let mut weight = 0.0;
+    let mut weight: f64 = 0.0;
     // Собираем значения для `weight_history` в коллекцию.
-    let mut weight_history = vec![(0.0, weight)];
+    let mut weight_history: Vec<(f64, f64)> = vec![(0.0, weight)];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (step, (feature, target)) in examples.into_iter().enumerate() {
         // Умножаем значения и сохраняем результат в `rate_of_change`.
         // Производную функции по параметру или вектор таких производных называют gradient.
-        let rate_of_change = 2.0 * (weight * feature - target) * feature;
+        let rate_of_change: f64 = 2.0 * (weight * feature - target) * feature;
         // Вычитаем очередной вклад из текущего значения параметра.
         weight -= 0.1 * rate_of_change;
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -37,7 +37,7 @@ fn visualize_update_linear_model_weight_per_example_with_sgd(
     weight_history: std::vec::Vec<(f64, f64)>,
 ) {
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

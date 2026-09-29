@@ -13,7 +13,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Шаг: Составляем маленький размеченный корпус положительных и отрицательных текстов.
-    let training_examples = [
+    let training_examples: [(&str, bool); 4] = [
         // Составляем результат из вычисленных значений в указанном порядке.
         ("хороший фильм", true),
         // Составляем результат из вычисленных значений в указанном порядке.
@@ -41,9 +41,9 @@ fn main() {
             return f64::INFINITY;
         }
         // Создаём изменяемое значение `scaled` для следующих операций.
-        let mut scaled = value;
+        let mut scaled: f64 = value;
         // Инициализируем изменяемый накопитель `power_of_two` начальным состоянием.
-        let mut power_of_two = 0i32;
+        let mut power_of_two: i32 = 0i32;
         // Повторяем вычисление, пока выполняется указанное условие.
         while scaled >= 2.0 {
             // Масштабируем текущую величину делением.
@@ -61,13 +61,13 @@ fn main() {
         // Объявляем повторно используемое вычисление `sum_logarithm_series_terms`; параметры ниже задают его входы.
         fn sum_logarithm_series_terms(value: f64) -> f64 {
             // Нормируем или усредняем величину делением и сохраняем её в `ratio`.
-            let ratio = (value - 1.0) / (value + 1.0);
+            let ratio: f64 = (value - 1.0) / (value + 1.0);
             // Умножаем значения и сохраняем результат в `ratio_squared`.
-            let ratio_squared = ratio * ratio;
+            let ratio_squared: f64 = ratio * ratio;
             // Создаём изменяемое значение `term` для следующих операций.
-            let mut term = ratio;
+            let mut term: f64 = ratio;
             // Инициализируем изменяемый накопитель `result` начальным состоянием.
-            let mut result = 0.0;
+            let mut result: f64 = 0.0;
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for term_index in 0..40 {
                 // Прибавляем очередной вклад к ранее накопленному результату.
@@ -79,7 +79,7 @@ fn main() {
             2.0 * result
         }
         // Сохраняем рассчитанное значение `logarithm_of_two` для следующих операций.
-        let logarithm_of_two = sum_logarithm_series_terms(2.0);
+        let logarithm_of_two: f64 = sum_logarithm_series_terms(2.0);
         // Умножаем величины согласно используемой формуле.
         sum_logarithm_series_terms(scaled) + power_of_two as f64 * logarithm_of_two
     }
@@ -94,7 +94,7 @@ fn main() {
     ) -> (bool, [f64; 2]) {
         // Словарь задаёт все слова, встреченные во время обучения.
         // Набор известных модели текстовых единиц называют vocabulary.
-        let known_text_units: std::collections::HashSet<_> = training_examples
+        let known_text_units: std::collections::HashSet<&str> = training_examples
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
             .iter()
             // Разделяем текст по пробельным символам на отдельные слова.
@@ -102,11 +102,11 @@ fn main() {
             // Собираем элементы итератора в итоговую коллекцию.
             .collect();
         // Создаём набор значений `scores` для следующего шага примера.
-        let mut scores = [0.; 2];
+        let mut scores: [f64; 2] = [0.; 2];
         // Для каждого класса собираем частоты слов отдельно.
         for (class, score) in scores.iter_mut().enumerate() {
             // Сохраняем рассчитанное значение `class_documents` для следующих операций.
-            let class_documents: Vec<_> = training_examples
+            let class_documents: Vec<&(&str, bool)> = training_examples
                 // Перебираем элементы по ссылке, не копируя исходную коллекцию.
                 .iter()
                 // Оставляем только элементы, прошедшие указанную проверку.
@@ -115,9 +115,10 @@ fn main() {
                 .collect();
             // Инициализируем изменяемый накопитель `text_unit_counts` начальным состоянием.
             // Единицу текста, которую модель обрабатывает как одно целое, называют token.
-            let mut text_unit_counts = std::collections::HashMap::new();
+            let mut text_unit_counts: std::collections::HashMap<&str, usize> =
+                std::collections::HashMap::new();
             // Инициализируем изменяемый накопитель `total_text_units` начальным состоянием.
-            let mut total_text_units = 0;
+            let mut total_text_units: usize = 0;
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for (document_text, _) in &class_documents {
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
@@ -175,7 +176,7 @@ fn visualize_practice_naive_bayes_with_class_priors_and_laplace_smoothing(
     training_examples: [(&str, bool); 4],
 ) {
     // Наглядное сравнение результатов сводной практики.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

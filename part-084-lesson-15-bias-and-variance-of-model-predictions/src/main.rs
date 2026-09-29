@@ -10,7 +10,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `predictions` для следующего шага примера.
-    let predictions = [2.0, 4.0, 6.0];
+    let predictions: [f64; 3] = [2.0, 4.0, 6.0];
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -19,13 +19,13 @@ fn main() {
         "для оценки разброса нужен хотя бы один прогноз"
     );
     // Сохраняем рассчитанное значение `target` для следующих операций.
-    let target = 5.0;
+    let target: f64 = 5.0;
     // Преобразуем входные данные и сохраняем полученную коллекцию в `mean`.
-    let mean = predictions.iter().sum::<f64>() / predictions.len() as f64;
+    let mean: f64 = predictions.iter().sum::<f64>() / predictions.len() as f64;
     // Комбинируем исходные величины и сохраняем результат в `bias`.
-    let bias = mean - target;
+    let bias: f64 = mean - target;
     // Сохраняем рассчитанное значение `variance` для следующих операций.
-    let variance = predictions
+    let variance: f64 = predictions
         // Перебираем элементы по ссылке, не копируя исходную коллекцию.
         .iter()
         // Преобразуем каждый элемент последовательности.
@@ -44,7 +44,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_bias_and_variance_of_model_predictions(bias: f64, variance: f64) {
     // Сравниваем компоненты ошибки на том же наборе прогнозов.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

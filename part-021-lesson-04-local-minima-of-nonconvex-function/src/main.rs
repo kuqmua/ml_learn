@@ -12,17 +12,18 @@ fn main() {
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for start in [-0.5, 0.5] {
         // Создаём изменяемое значение `input_value` для следующих операций.
-        let mut input_value = start;
+        let mut input_value: f64 = start;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for _ in 0..100 {
             // Производная равна 4x³−4x; шагаем против её знака.
             // Производную функции по параметру или вектор таких производных называют gradient.
-            let rate_of_change = 4.0 * input_value * input_value * input_value - 4.0 * input_value;
+            let rate_of_change: f64 =
+                4.0 * input_value * input_value * input_value - 4.0 * input_value;
             // Вычитаем очередной вклад из текущего значения параметра.
             input_value -= 0.1 * rate_of_change;
         }
         // Умножаем значения и сохраняем результат в `loss`.
-        let loss =
+        let loss: f64 =
             input_value * input_value * input_value * input_value - 2.0 * input_value * input_value;
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("старт={start}, найдено x={input_value:.3}, f(x)={loss:.3}");
@@ -39,7 +40,7 @@ fn visualize_local_minima_of_nonconvex_function() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 100.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
             (
                 horizontal_value,
@@ -50,7 +51,7 @@ fn visualize_local_minima_of_nonconvex_function() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -9,12 +9,12 @@ pub fn normalize_vector_by_root_mean_square(
     if input.is_empty() || input.len() != gamma.len() || epsilon <= 0.0 {
         return Err("неверная форма или epsilon");
     }
-    let mean_square = input
+    let mean_square: f64 = input
         .iter()
         .map(|input_component| input_component * input_component)
         .sum::<f64>()
         / input.len() as f64;
-    let scale = 1.0 / (mean_square + epsilon).sqrt();
+    let scale: f64 = 1.0 / (mean_square + epsilon).sqrt();
     Ok(input
         .iter()
         .zip(gamma)
@@ -25,7 +25,7 @@ pub fn normalize_vector_by_root_mean_square(
 mod tests {
     #[test]
     fn shape_and_scale() {
-        let output =
+        let output: Vec<f64> =
             super::normalize_vector_by_root_mean_square(&[3.0, 4.0], &[1.0, 1.0], 1e-8).unwrap();
         assert!(((output[0] * output[0] + output[1] * output[1]) / 2.0 - 1.0).abs() < 1e-7);
         assert!(super::normalize_vector_by_root_mean_square(&[1.0], &[], 1e-8).is_err());

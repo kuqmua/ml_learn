@@ -2,9 +2,9 @@
 // Масштабируем веса в i8 и измеряем погрешность после восстановления.
 
 fn main() {
-    let weights = [-1.0, -0.5, 0.0, 0.25, 1.0];
-    let maximum = weights.iter().copied().map(f64::abs).fold(0.0, f64::max);
-    let scale = maximum / 127.0;
+    let weights: [f64; 5] = [-1.0, -0.5, 0.0, 0.25, 1.0];
+    let maximum: f64 = weights.iter().copied().map(f64::abs).fold(0.0, f64::max);
+    let scale: f64 = maximum / 127.0;
     // Представление весов целыми числами меньшей точности называют quantization.
     let reduced_precision_weights: Vec<i8> = weights
         .iter()
@@ -14,7 +14,7 @@ fn main() {
         .iter()
         .map(|&reduced_precision_weight| f64::from(reduced_precision_weight) * scale)
         .collect();
-    let error = weights
+    let error: f64 = weights
         .iter()
         .zip(&reconstructed)
         .map(|(first_value, second_value)| (first_value - second_value).abs())

@@ -11,12 +11,12 @@
 fn main() {
     // Инициализируем значение `predicted_probability_error` начальным состоянием.
     // Ошибку предсказанного распределения вероятностей называют cross-entropy.
-    let predicted_probability_error = 0.7;
+    let predicted_probability_error: f64 = 0.7;
     // Создаём изменяемое значение `term` для следующих операций.
-    let mut term = 1.0;
+    let mut term: f64 = 1.0;
     // Создаём изменяемое значение `effective_choice_count` для следующих операций.
     // Эффективное число вариантов, соответствующее ошибке языковой модели, называют perplexity.
-    let mut effective_choice_count = 1.0;
+    let mut effective_choice_count: f64 = 1.0;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for order in 1..=30 {
         // Умножаем накопленное значение на очередной множитель.
@@ -38,14 +38,14 @@ fn visualize_perplexity_from_average_language_model_cross_entropy() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `loss_value`.
-            let loss_value = plot_step_index as f64 / 10.0;
+            let loss_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (loss_value, loss_value.exp())
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

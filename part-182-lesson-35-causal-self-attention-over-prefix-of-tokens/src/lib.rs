@@ -3,7 +3,7 @@
 /// Устойчивый softmax для конечных логитов.
 // Оценку модели до преобразования в вероятность называют logit.
 pub fn softmax_probabilities_from_raw_model_scores(raw_model_scores: &[f64]) -> Vec<f64> {
-    let maximum = raw_model_scores
+    let maximum: f64 = raw_model_scores
         .iter()
         .copied()
         .fold(f64::NEG_INFINITY, f64::max);
@@ -27,7 +27,7 @@ pub fn causal_self_attention_over_query_key_value_sequences(
     {
         return Err("неверная форма Q/K/V");
     }
-    let mut output = Vec::with_capacity(query_vector.len());
+    let mut output: Vec<[f64; 2]> = Vec::with_capacity(query_vector.len());
     for index in 0..query_vector.len() {
         let raw_model_scores: Vec<f64> = (0..=index)
             .map(|past| {
@@ -36,8 +36,8 @@ pub fn causal_self_attention_over_query_key_value_sequences(
                     / 2.0_f64.sqrt()
             })
             .collect();
-        let weights = softmax_probabilities_from_raw_model_scores(&raw_model_scores);
-        let mut state = [0.0; 2];
+        let weights: Vec<f64> = softmax_probabilities_from_raw_model_scores(&raw_model_scores);
+        let mut state: [f64; 2] = [0.0; 2];
         for (past, &weight) in weights.iter().enumerate() {
             for feature in 0..2 {
                 state[feature] += weight * value_vectors[past][feature];
@@ -52,15 +52,15 @@ pub fn causal_self_attention_over_query_key_value_sequences(
 mod tests {
     #[test]
     fn first_output_ignores_future_values() {
-        let query_vector = [[1.0, 0.0], [0.0, 1.0]];
-        let key_vector = query_vector;
-        let first = super::causal_self_attention_over_query_key_value_sequences(
+        let query_vector: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
+        let key_vector: [[f64; 2]; 2] = query_vector;
+        let first: Vec<[f64; 2]> = super::causal_self_attention_over_query_key_value_sequences(
             &query_vector,
             &key_vector,
             &[[2.0, 3.0], [4.0, 5.0]],
         )
         .unwrap();
-        let second = super::causal_self_attention_over_query_key_value_sequences(
+        let second: Vec<[f64; 2]> = super::causal_self_attention_over_query_key_value_sequences(
             &query_vector,
             &key_vector,
             &[[2.0, 3.0], [999.0, 999.0]],

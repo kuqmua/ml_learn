@@ -10,13 +10,13 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Инициализируем значение `prior_positive` начальным состоянием.
-    let prior_positive = 0.5;
+    let prior_positive: f64 = 0.5;
     // Инициализируем значение `word_one_given_positive` начальным состоянием.
-    let word_one_given_positive = 0.8;
+    let word_one_given_positive: f64 = 0.8;
     // Инициализируем значение `word_two_given_positive` начальным состоянием.
-    let word_two_given_positive = 0.6;
+    let word_two_given_positive: f64 = 0.6;
     // Умножаем значения и сохраняем результат в `joint_score`.
-    let joint_score = prior_positive * word_one_given_positive * word_two_given_positive;
+    let joint_score: f64 = prior_positive * word_one_given_positive * word_two_given_positive;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("оценка положительного класса = {joint_score}");
 
@@ -37,7 +37,7 @@ fn visualize_conditional_independence_of_features_given_class(
     joint_score: f64,
 ) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

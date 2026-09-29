@@ -5,7 +5,7 @@
 
 fn main() {
     // Задаём учебные значения для `matrix`.
-    let matrix = [[1.0, 2.0], [3.0, 4.0]];
+    let matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, vector, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -14,7 +14,7 @@ fn main() {
         ("нулевой вектор", [0.0, 0.0], [0.0, 0.0]),
     ] {
         // Задаём учебные значения для `result`.
-        let mut result = [0.0; 2];
+        let mut result: [f64; 2] = [0.0; 2];
         // Повторяем расчёт для каждого элемента последовательности.
         for row in 0..matrix.len() {
             // Урок 01.1 теперь работает и для каждой строки матрицы.
@@ -28,9 +28,9 @@ fn main() {
         println!("{description}: {vector:?} → {result:?}");
     }
     // Задаём учебные значения для `too_short`.
-    let too_short = [5.0];
+    let too_short: [f64; 1] = [5.0];
     // Сохраняем результат этого шага в `error`.
-    let error =
+    let error: &str =
         part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
             &matrix[0], &too_short,
         )
@@ -46,7 +46,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_multiply_matrix_by_vector_using_row_dot_products(matrix: [[f64; 2]; 2]) {
     // Значения ячеек видны по цвету и подписи.
-    let chart = lesson_visualization::heatmap(
+    let chart: std::path::PathBuf = lesson_visualization::heatmap(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

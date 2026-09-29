@@ -2,17 +2,18 @@
 // Residual переносит состояние через слои, skip собирает вклады для выхода.
 
 fn apply_wavenet_block_with_residual_and_skip_outputs(input: f64, transform: f64) -> (f64, f64) {
-    let activation = (input * transform).tanh();
+    let activation: f64 = (input * transform).tanh();
     // Добавление входа блока к его преобразованному выходу называют residual connection.
-    let input_plus_transformed_value = input + activation;
-    let skip = activation;
+    let input_plus_transformed_value: f64 = input + activation;
+    let skip: f64 = activation;
     (input_plus_transformed_value, skip)
 }
 fn main() {
-    let mut state = 0.5;
-    let mut skip_sum = 0.0;
+    let mut state: f64 = 0.5;
+    let mut skip_sum: f64 = 0.0;
     for transform in [0.2, -0.4, 0.8] {
-        let (next, skip) = apply_wavenet_block_with_residual_and_skip_outputs(state, transform);
+        let (next, skip): (f64, f64) =
+            apply_wavenet_block_with_residual_and_skip_outputs(state, transform);
         state = next;
         skip_sum += skip;
     }

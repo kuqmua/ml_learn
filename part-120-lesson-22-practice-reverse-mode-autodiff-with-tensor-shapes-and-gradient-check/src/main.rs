@@ -13,13 +13,13 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Шаг: Задаём две малые матрицы, результат умножения можно проверить вручную.
-    let left_matrix = vec![vec![1., 2.]];
+    let left_matrix: Vec<Vec<f64>> = vec![vec![1., 2.]];
     // Создаём набор значений `right_matrix` для следующего шага примера.
-    let right_matrix = vec![vec![3.], vec![4.]];
+    let right_matrix: Vec<Vec<f64>> = vec![vec![3.], vec![4.]];
 
     // Шаг: Вычисляем производные суммы элементов результата по обеим матрицам.
     // Производную функции по параметру или вектор таких производных называют gradient.
-    let (left_input_rates_of_change, right_input_rates_of_change) =
+    let (left_input_rates_of_change, right_input_rates_of_change): (Vec<Vec<f64>>, Vec<Vec<f64>>) =
         (|| -> (Vec<Vec<f64>>, Vec<Vec<f64>>) {
             // Используем подготовленное значение в следующем шаге примера.
             /* Для суммы элементов результата умножения матриц вычисляем производные по обоим входам. */
@@ -28,10 +28,10 @@ fn main() {
             // Сохраняем рассчитанное значение `right_matrix` для следующих операций.
             let right_matrix: &[Vec<f64>] = &right_matrix;
             // Создаём набор значений `left_input_rates_of_change` для следующего шага примера.
-            let mut left_input_rates_of_change =
+            let mut left_input_rates_of_change: Vec<Vec<f64>> =
                 vec![vec![0.0; right_matrix.len()]; left_matrix.len()];
             // Создаём набор значений `right_input_rates_of_change` для следующего шага примера.
-            let mut right_input_rates_of_change =
+            let mut right_input_rates_of_change: Vec<Vec<f64>> =
                 vec![vec![0.0; right_matrix[0].len()]; right_matrix.len()];
             // Производная суммы элементов A·B по A[i,k] — сумма строки B[k,*].
             for row_index in 0..left_matrix.len() {
@@ -76,7 +76,7 @@ fn main() {
             // Сохраняем рассчитанное значение `right_matrix` для следующих операций.
             let right_matrix: &[Vec<f64>] = &right_matrix;
             // Выполняем встроенный расчёт один раз и сохраняем результат в `result`.
-            let result = (|| -> Result<Vec<Vec<f64>>, &'static str> {
+            let result: Vec<Vec<f64>> = (|| -> Result<Vec<Vec<f64>>, &'static str> {
                 // Обновляем значение результатом текущего вычисления.
                 /* Для L=sum(A*B) обратный проход: dA=1*B^T, dB=A^T*1. */
                 // Собираем значения для `left_matrix` в коллекцию.
@@ -104,7 +104,8 @@ fn main() {
                     return Err("несовместимые формы");
                 }
                 // Создаём набор значений `result` для следующего шага примера.
-                let mut result = vec![vec![0.0; right_matrix[0].len()]; left_matrix.len()];
+                let mut result: Vec<Vec<f64>> =
+                    vec![vec![0.0; right_matrix[0].len()]; left_matrix.len()];
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for row_index in 0..left_matrix.len() {
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
@@ -126,7 +127,7 @@ fn main() {
             // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
             .unwrap();
             // Инициализируем изменяемый накопитель `output_sum` начальным состоянием.
-            let mut output_sum = 0.0;
+            let mut output_sum: f64 = 0.0;
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for row in &result {
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
@@ -172,9 +173,10 @@ fn visualize_practice_reverse_mode_autodiff_with_tensor_shapes_and_gradient_chec
         ),
     ] {
         // Строим график по рассчитанным значениям и сохраняем его как SVG.
-        let chart = lesson_visualization::heatmap(env!("CARGO_MANIFEST_DIR"), name, title, values)
-            // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
-            .expect("не удалось сохранить график градиента");
+        let chart: std::path::PathBuf =
+            lesson_visualization::heatmap(env!("CARGO_MANIFEST_DIR"), name, title, values)
+                // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
+                .expect("не удалось сохранить график градиента");
         // Печатаем путь к созданному SVG, чтобы его можно было открыть.
         println!("график: {}", chart.display());
     }

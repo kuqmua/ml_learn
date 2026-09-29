@@ -6,7 +6,7 @@ pub fn calculate_decoder_hidden_states_for_token_ids(
     text_unit_identifiers: &[usize],
 ) -> Vec<[f64; 2]> {
     // Плотное числовое представление объекта называют embedding.
-    let dense_numeric_representation = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
+    let dense_numeric_representation: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
     let states: Vec<[f64; 2]> = text_unit_identifiers
         .iter()
         .enumerate()
@@ -20,7 +20,7 @@ pub fn calculate_decoder_hidden_states_for_token_ids(
     if states.is_empty() {
         return Vec::new();
     }
-    let context =
+    let context: Vec<[f64; 2]> =
         part_182_lesson_35_causal_self_attention_over_prefix_of_tokens::causal_self_attention_over_query_key_value_sequences(&states, &states, &states)
             .unwrap();
     states

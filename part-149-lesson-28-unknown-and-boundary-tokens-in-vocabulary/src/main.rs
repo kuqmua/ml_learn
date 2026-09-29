@@ -9,15 +9,15 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Инициализируем значение `unknown_identifier` начальным состоянием.
-    let unknown_identifier = 0;
+    let unknown_identifier: i32 = 0;
     // Сохраняем рассчитанное значение `begin_identifier` для следующих операций.
-    let begin_identifier = 1;
+    let begin_identifier: i32 = 1;
     // Сохраняем рассчитанное значение `end_identifier` для следующих операций.
-    let end_identifier = 2;
+    let end_identifier: i32 = 2;
     // Сохраняем рассчитанное значение `known_word_identifier` для следующих операций.
-    let known_word_identifier = 3;
+    let known_word_identifier: i32 = 3;
     // Создаём набор значений `sequence` для следующего шага примера.
-    let sequence = [
+    let sequence: [i32; 4] = [
         begin_identifier,
         known_word_identifier,
         unknown_identifier,

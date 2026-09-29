@@ -5,9 +5,9 @@
 
 fn main() {
     // Задаём учебные значения для `reference`.
-    let reference = [1.0, 2.0, 3.0];
+    let reference: [f64; 3] = [1.0, 2.0, 3.0];
     // Задаём учебные значения для `cases`.
-    let cases = [
+    let cases: [(&str, [f64; 3], f64); 3] = [
         // Добавляем пару значений для сравнения или построения графика.
         ("без сдвига среднего", [3.0, 2.0, 1.0], 0.0),
         // Добавляем пару значений для сравнения или построения графика.
@@ -18,7 +18,7 @@ fn main() {
     // Проверяем ожидаемое свойство учебного примера.
     assert!(!reference.is_empty());
     // Сохраняем результат этого шага в `reference_mean`.
-    let reference_mean =
+    let reference_mean: f64 =
         part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
             &reference,
         )
@@ -28,13 +28,13 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert!(!current.is_empty());
         // Сохраняем результат этого шага в `current_mean`.
-        let current_mean =
+        let current_mean: f64 =
             part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
                 &current,
             )
             .unwrap();
         // Сохраняем результат этого шага в `difference`.
-        let difference = current_mean - reference_mean;
+        let difference: f64 = current_mean - reference_mean;
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(difference, expected_difference);
         // Печатаем рассчитанные значения для проверки примера.
@@ -88,7 +88,7 @@ fn visualize_compare_feature_means_for_distribution_shift(
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

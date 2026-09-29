@@ -16,7 +16,7 @@ pub fn causal_convolution_of_one_dimensional_signal(
         .iter()
         .enumerate()
         .map(|(index, &current)| {
-            let previous = index
+            let previous: f64 = index
                 .checked_sub(filter_spacing)
                 .map_or(0.0, |past| input[past]);
             weight_current * current + weight_previous * previous
@@ -28,9 +28,9 @@ pub fn causal_convolution_of_one_dimensional_signal(
 mod tests {
     #[test]
     fn future_does_not_change_past_outputs() {
-        let short =
+        let short: Vec<f64> =
             super::causal_convolution_of_one_dimensional_signal(&[1.0, 2.0], 1.0, 2.0, 1).unwrap();
-        let long =
+        let long: Vec<f64> =
             super::causal_convolution_of_one_dimensional_signal(&[1.0, 2.0, 999.0], 1.0, 2.0, 1)
                 .unwrap();
         assert_eq!(short, long[..2]);

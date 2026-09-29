@@ -5,7 +5,7 @@
 
 fn main() {
     // Задаём учебные значения для `cases`.
-    let cases = [
+    let cases: [(&str, [f64; 4], [i32; 2]); 3] = [
         // Добавляем пару значений для сравнения или построения графика.
         ("эталон", [0.1, 0.2, 0.8, 0.9], [2, 2]),
         // Добавляем пару значений для сравнения или построения графика.
@@ -16,11 +16,11 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, values, expected) in cases {
         // Задаём учебные значения для `bins`.
-        let mut bins = [0; 2];
+        let mut bins: [i32; 2] = [0; 2];
         // Повторяем расчёт для каждого элемента последовательности.
         for value in values {
             // Сохраняем результат этого шага в `index`.
-            let index = if value < 0.5 { 0 } else { 1 };
+            let index: usize = if value < 0.5 { 0 } else { 1 };
             // Обновляем значение результатом текущего вычисления.
             bins[index] += 1;
         }
@@ -37,7 +37,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_compare_binned_feature_distributions_before_and_after_release() {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -10,17 +10,17 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `input_value` для следующих операций.
-    let input_value = 3.0;
+    let input_value: f64 = 3.0;
     // Инициализируем значение `step` начальным состоянием.
-    let step = 0.0001;
+    let step: f64 = 0.0001;
     // Для f(x)=x² считаем значения в x+h и x−h.
-    let right = (input_value + step) * (input_value + step);
+    let right: f64 = (input_value + step) * (input_value + step);
     // Умножаем значения и сохраняем результат в `left`.
-    let left = (input_value - step) * (input_value - step);
+    let left: f64 = (input_value - step) * (input_value - step);
     // Нормируем или усредняем величину делением и сохраняем её в `numerical_derivative`.
-    let numerical_derivative = (right - left) / (2.0 * step);
+    let numerical_derivative: f64 = (right - left) / (2.0 * step);
     // Умножаем значения и сохраняем результат в `analytical_derivative`.
-    let analytical_derivative = 2.0 * input_value;
+    let analytical_derivative: f64 = 2.0 * input_value;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("численно={numerical_derivative}, точно={analytical_derivative}");
 
@@ -41,9 +41,9 @@ fn visualize_approximate_function_derivative_with_central_difference(
         // Преобразуем каждый элемент в новое значение.
         .map(|step_exponent| {
             // Сохраняем результат этого шага в `step_size`.
-            let step_size = 10f64.powi(-step_exponent);
+            let step_size: f64 = 10f64.powi(-step_exponent);
             // Сохраняем результат этого шага в `numeric`.
-            let numeric = ((horizontal_value + step_size) * (horizontal_value + step_size)
+            let numeric: f64 = ((horizontal_value + step_size) * (horizontal_value + step_size)
                 - (horizontal_value - step_size) * (horizontal_value - step_size))
                 / (2.0 * step_size);
             // Добавляем пару значений для сравнения или построения графика.
@@ -55,7 +55,7 @@ fn visualize_approximate_function_derivative_with_central_difference(
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

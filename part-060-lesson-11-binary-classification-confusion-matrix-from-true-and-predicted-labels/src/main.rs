@@ -5,11 +5,11 @@
 
 fn main() {
     // Задаём учебные значения для `truth`.
-    let truth = [true, false, true, false];
+    let truth: [bool; 4] = [true, false, true, false];
     // Задаём учебные значения для `predicted`.
-    let predicted = [true, true, false, false];
+    let predicted: [bool; 4] = [true, true, false, false];
     // Сохраняем результат этого шага в `counts`.
-    let counts = part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::count_binary_classification_outcomes_from_true_and_predicted_labels(
+    let counts: part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::BinaryClassificationCounts = part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::count_binary_classification_outcomes_from_true_and_predicted_labels(
         &truth, &predicted,
     )
     // Используем результат, ожидая успешного выполнения шага.
@@ -17,7 +17,7 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for index in 0..truth.len() {
         // Сохраняем результат этого шага в `description`.
-        let description = match (truth[index], predicted[index]) {
+        let description: &str = match (truth[index], predicted[index]) {
             // Выполняем действие для этого варианта данных.
             (true, true) => "TP: верно найден положительный класс",
             // Выполняем действие для этого варианта данных.
@@ -64,7 +64,7 @@ fn visualize_binary_classification_confusion_matrix_from_true_and_predicted_labe
     counts: part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::BinaryClassificationCounts,
 ) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

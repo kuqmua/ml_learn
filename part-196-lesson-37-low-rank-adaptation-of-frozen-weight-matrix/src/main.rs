@@ -2,16 +2,16 @@
 // Замороженную матрицу дополняют произведением маленьких обучаемых матриц.
 
 fn main() {
-    let frozen = [
+    let frozen: [[f64; 4]; 4] = [
         [1.0, 0.0, 0.0, 0.0],
         [0.0, 1.0, 0.0, 0.0],
         [0.0, 0.0, 1.0, 0.0],
         [0.0, 0.0, 0.0, 1.0],
     ];
     // Rank 1: A имеет форму 4x1, B — 1x4.
-    let adapter_output_weights = [0.1, 0.2, 0.3, 0.4];
-    let adapter_input_weights = [1.0, 0.0, -1.0, 0.0];
-    let input = [1.0, 2.0, 3.0, 4.0];
+    let adapter_output_weights: [f64; 4] = [0.1, 0.2, 0.3, 0.4];
+    let adapter_input_weights: [f64; 4] = [1.0, 0.0, -1.0, 0.0];
+    let input: [f64; 4] = [1.0, 2.0, 3.0, 4.0];
     let projected_input: f64 = adapter_input_weights
         .iter()
         .zip(input)

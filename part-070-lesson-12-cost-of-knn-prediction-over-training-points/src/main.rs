@@ -12,9 +12,9 @@ fn main() {
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for training_size in [10, 100, 1000] {
         // Сохраняем рассчитанное значение `feature_count` для следующих операций.
-        let feature_count = 4;
+        let feature_count: i32 = 4;
         // Умножаем значения и сохраняем результат в `coordinate_comparisons`.
-        let coordinate_comparisons = training_size * feature_count;
+        let coordinate_comparisons: i32 = training_size * feature_count;
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("объектов={training_size}, сравнений координат={coordinate_comparisons}");
     }
@@ -30,14 +30,14 @@ fn visualize_cost_of_knn_prediction_over_training_points() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `sample_count`.
-            let sample_count = (plot_step_index * 10) as f64;
+            let sample_count: f64 = (plot_step_index * 10) as f64;
             // Добавляем пару значений для сравнения или построения графика.
             (sample_count, 2.0 * sample_count)
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

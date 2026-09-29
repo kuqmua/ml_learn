@@ -10,7 +10,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `losses` для следующего шага примера.
-    let losses = [1.0, 0.6, 0.4];
+    let losses: [f64; 3] = [1.0, 0.6, 0.4];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (epoch, loss) in losses.into_iter().enumerate() {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -34,7 +34,7 @@ fn visualize_record_training_metric_by_epoch(losses: [f64; 3]) {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

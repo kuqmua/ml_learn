@@ -9,14 +9,14 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `weight` для следующих операций.
-    let weight = 2.0;
+    let weight: f64 = 2.0;
     // Сохраняем рассчитанное значение `bias` для следующих операций.
-    let bias = 1.0;
+    let bias: f64 = 1.0;
     // Сохраняем рассчитанное значение `saved_model_text` для следующих операций.
     // Преобразование параметров модели в текст называют serialization.
-    let saved_model_text = format!("{weight}\n{bias}\n");
+    let saved_model_text: String = format!("{weight}\n{bias}\n");
     // Создаём изменяемое значение `lines` для следующих операций.
-    let mut lines = saved_model_text.lines();
+    let mut lines: std::str::Lines<'_> = saved_model_text.lines();
     // Читаем или разбираем входные данные в значение `loaded_weight`.
     let loaded_weight: f64 = lines.next().unwrap().parse().unwrap();
     // Читаем или разбираем входные данные в значение `loaded_bias`.
@@ -34,7 +34,7 @@ fn visualize_serialize_model_weights_with_defined_field_format(
     loaded_bias: f64,
 ) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

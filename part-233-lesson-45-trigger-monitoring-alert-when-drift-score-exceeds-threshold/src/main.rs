@@ -5,7 +5,7 @@
 
 fn main() {
     // Сохраняем результат этого шага в `alert_threshold`.
-    let alert_threshold = 0.2;
+    let alert_threshold: f64 = 0.2;
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, drift_score, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -18,7 +18,7 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert!(drift_score >= 0.0);
         // Сохраняем результат этого шага в `alert`.
-        let alert = drift_score > alert_threshold;
+        let alert: bool = drift_score > alert_threshold;
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(alert, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -32,7 +32,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_trigger_monitoring_alert_when_drift_score_exceeds_threshold(alert_threshold: f64) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

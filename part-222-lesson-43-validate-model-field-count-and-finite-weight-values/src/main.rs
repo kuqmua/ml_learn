@@ -18,9 +18,9 @@ fn main() {
         ("бесконечный вес", "inf\n1.0\n", false),
     ] {
         // Собираем значения для `values` в коллекцию.
-        let values: Vec<_> = saved_model_text.lines().collect();
+        let values: Vec<&str> = saved_model_text.lines().collect();
         // Определяем размер данных и сохраняем его в `result`.
-        let result = if values.len() != 2 {
+        let result: Result<(f64, f64), &str> = if values.len() != 2 {
             // Возвращаем описание ошибки.
             Err("нужно ровно два параметра")
         // Обрабатываем случай, когда предыдущее условие не выполнено.

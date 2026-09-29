@@ -104,7 +104,7 @@ fn main() {
     // Шаг: Разделяем набор по подгруппам.
     for group in ["A", "B"] {
         // Сохраняем рассчитанное значение `group_cases` для следующих операций.
-        let group_cases: Vec<_> = EVALUATION_CASES
+        let group_cases: Vec<EvaluationCase> = EVALUATION_CASES
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
             .iter()
             // Копируем значения из ссылок, чтобы получить самостоятельные элементы.
@@ -159,11 +159,11 @@ fn main() {
                 // Сохраняем результат этого шага в `data`.
                 let data: &[EvaluationCase] = &group_cases;
                 // Инициализируем изменяемый накопитель `squared_error_sum` начальным состоянием.
-                let mut squared_error_sum = 0.0;
+                let mut squared_error_sum: f64 = 0.0;
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for case in data {
                     // Сохраняем рассчитанное значение `target` для следующих операций.
-                    let target = if case.truth { 1.0 } else { 0.0 };
+                    let target: f64 = if case.truth { 1.0 } else { 0.0 };
                     // Прибавляем очередной вклад к ранее накопленному результату.
                     squared_error_sum += (|| -> f64 {
                         // Используем подготовленное значение в следующем шаге примера.
@@ -188,9 +188,9 @@ fn main() {
     // Строим график по результатам урока.
     fn visualize_practice_model_safety_with_shift_calibration_and_subgroup_errors() {
         // Сравниваем качество по группам, используя те же оценочные примеры.
-        let group_accuracy = |group: &str| {
+        let group_accuracy: &dyn Fn(&str) -> f64 = &|group: &str| {
             // Собираем значения для `cases` в коллекцию.
-            let cases: Vec<_> = EVALUATION_CASES
+            let cases: Vec<&EvaluationCase> = EVALUATION_CASES
                 // Просматриваем элементы коллекции по ссылке.
                 .iter()
                 // Оставляем элементы, отвечающие условию.
@@ -209,7 +209,7 @@ fn main() {
                 / cases.len() as f64
         };
         // Строим график по рассчитанным значениям и сохраняем его как SVG.
-        let chart = lesson_visualization::bar_chart(
+        let chart: std::path::PathBuf = lesson_visualization::bar_chart(
             // Передаём путь к каталогу текущего урока.
             env!("CARGO_MANIFEST_DIR"),
             // Указываем имя SVG-файла.

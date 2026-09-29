@@ -5,7 +5,7 @@
 
 fn main() {
     // Задаём учебные значения для `values`.
-    let mut values = [9, 1, 7, 3, 5];
+    let mut values: [i32; 5] = [9, 1, 7, 3, 5];
     // Проверяем ожидаемое свойство учебного примера.
     assert!(!values.is_empty(), "для квантиля нужна непустая выборка");
     // Используем подготовленное значение в следующем шаге примера.
@@ -30,10 +30,10 @@ fn main() {
             "доля должна быть от 0 до 1"
         );
         // Определяем размер данных и сохраняем его в `index`.
-        let index = ((values.len() - 1) as f64 * target_share_below_cutoff) as usize;
+        let index: usize = ((values.len() - 1) as f64 * target_share_below_cutoff) as usize;
         // Сохраняем результат этого шага в `distribution_cutoff_value`.
         // Границу, ниже которой лежит заданная доля наблюдений, называют quantile.
-        let distribution_cutoff_value = values[index];
+        let distribution_cutoff_value: i32 = values[index];
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(distribution_cutoff_value, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -51,7 +51,7 @@ fn visualize_quantile_of_sorted_numeric_values() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `probability`.
-            let probability = plot_step_index as f64 / 100.0;
+            let probability: f64 = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
             (
                 probability,
@@ -61,7 +61,7 @@ fn visualize_quantile_of_sorted_numeric_values() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

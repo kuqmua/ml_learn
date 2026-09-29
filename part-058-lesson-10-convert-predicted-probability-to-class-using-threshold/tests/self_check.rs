@@ -3,8 +3,8 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question = "Примени два порога к одним и тем же оценкам объектов.";
-    let choices = [
+    let question: &str = "Примени два порога к одним и тем же оценкам объектов.";
+    let choices: [&str; 3] = [
         "Составь таблицу изменившихся решений и объясни, почему вероятности не меняются.",
         "Проверь, как знак коэффициента меняет порядок вероятностей.",
         "Запиши ошибку до и после обучения и вручную проверь вероятность одного объекта.",
@@ -14,7 +14,8 @@ fn choose_correct_check_for_lesson() {
         println!("{}. {choice}", choice_number + 1);
     }
     let selected_choice: Option<usize> = None;
-    let selected_choice = selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
+    let selected_choice: usize =
+        selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
     assert!(
         (1..=3).contains(&selected_choice),
         "номер варианта должен быть от 1 до 3"

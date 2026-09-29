@@ -10,10 +10,10 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `image` для следующего шага примера.
-    let image = [1.0, 3.0, 2.0, 5.0];
+    let image: [f64; 4] = [1.0, 3.0, 2.0, 5.0];
     // Создаём набор значений `filter_weights` для следующего шага примера.
     // Небольшой набор весов свёрточного фильтра называют kernel.
-    let filter_weights = [-1.0, 1.0];
+    let filter_weights: [f64; 2] = [-1.0, 1.0];
     // Формула ниже использует ровно два коэффициента ядра и два соседних пикселя.
     assert_eq!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -33,7 +33,7 @@ fn main() {
     // Повторяем следующий блок для каждого положения окна.
     for start in 0..=image.len() - filter_weights.len() {
         // Умножаем значения и сохраняем результат в `response`.
-        let response = image[start] * filter_weights[0] + image[start + 1] * filter_weights[1];
+        let response: f64 = image[start] * filter_weights[0] + image[start + 1] * filter_weights[1];
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("позиция={start}, отклик на границу={response}");
     }
@@ -60,7 +60,7 @@ fn visualize_detect_local_image_features_with_shared_filter(
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

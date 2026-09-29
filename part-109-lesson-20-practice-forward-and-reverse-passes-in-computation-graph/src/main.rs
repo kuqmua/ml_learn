@@ -31,9 +31,9 @@ fn main() {
             return 1.0 / approximate_exponential_with_taylor_series(-value);
         }
         // Создаём изменяемое значение `reduced` для следующих операций.
-        let mut reduced = value;
+        let mut reduced: f64 = value;
         // Инициализируем изменяемый накопитель `halving_count` начальным состоянием.
-        let mut halving_count = 0;
+        let mut halving_count: i32 = 0;
         // Повторяем вычисление, пока выполняется указанное условие.
         while reduced > 0.5 {
             // Масштабируем текущую величину делением.
@@ -42,9 +42,9 @@ fn main() {
             halving_count += 1;
         }
         // Создаём изменяемое значение `term` для следующих операций.
-        let mut term = 1.0;
+        let mut term: f64 = 1.0;
         // Создаём изменяемое значение `result` для следующих операций.
-        let mut result = 1.0;
+        let mut result: f64 = 1.0;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for term_index in 1..=30 {
             // Умножаем накопленное значение на очередной множитель.
@@ -74,7 +74,7 @@ fn main() {
             return 1.0;
         }
         // Умножаем значения и сохраняем результат в `exponential_value`.
-        let exponential_value = approximate_exponential_with_taylor_series(2.0 * value);
+        let exponential_value: f64 = approximate_exponential_with_taylor_series(2.0 * value);
         // Составляем результат из вычисленных значений в указанном порядке.
         (exponential_value - 1.0) / (exponential_value + 1.0)
     }
@@ -111,7 +111,7 @@ fn main() {
         // Объявляем повторно используемое вычисление `append_input_node`; параметры ниже задают его входы.
         fn append_input_value_node_to_computation_graph(&mut self, value: f64) -> usize {
             // Считаем количество элементов и сохраняем его в `node_index`.
-            let node_index = self.0.len();
+            let node_index: usize = self.0.len();
             // Обновляем состояние объекта результатом текущей операции.
             self.0.push(Node {
                 // Используем ранее рассчитанное значение `value` в текущем выражении.
@@ -127,22 +127,22 @@ fn main() {
     }
 
     // Шаг: Создаём пустой граф скалярных операций.
-    let mut graph = Graph(vec![]);
+    let mut graph: Graph = Graph(vec![]);
     // Шаг: Строим прямой проход: x, x², 2x² и tanh(2x²).
-    let input_index = graph.append_input_value_node_to_computation_graph(2.);
+    let input_index: usize = graph.append_input_value_node_to_computation_graph(2.);
     // Умножение x на x создаёт узел с двумя ребрами к одному входу.
-    let squared_index =
+    let squared_index: usize =
         // Обновляем состояние объекта результатом текущей операции.
         graph.append_input_value_node_to_computation_graph(graph.0[input_index].value * graph.0[input_index].value);
     // Обновляем состояние объекта результатом текущей операции.
     graph.0[squared_index].operation = Operation::Mul(input_index, input_index);
     // Складываем полученный квадрат с самим собой.
-    let doubled_square_index =
+    let doubled_square_index: usize =
         graph.append_input_value_node_to_computation_graph(graph.0[squared_index].value * 2.0);
     // Обновляем состояние объекта результатом текущей операции.
     graph.0[doubled_square_index].operation = Operation::Add(squared_index, squared_index);
     // Применяем tanh к результату и запоминаем его вход для обратного прохода.
-    let output_index = graph.append_input_value_node_to_computation_graph(
+    let output_index: usize = graph.append_input_value_node_to_computation_graph(
         calculate_hyperbolic_tangent_from_exponentials(
             // Обновляем состояние объекта результатом текущей операции.
             graph.0[doubled_square_index].value,
@@ -156,7 +156,7 @@ fn main() {
     for node_index in (0..=output_index).rev() {
         // Сохраняем рассчитанное значение `incoming_loss_rate_of_change` для следующих операций.
         // Производную функции по параметру или вектор таких производных называют gradient.
-        let incoming_loss_rate_of_change = graph.0[node_index].gradient;
+        let incoming_loss_rate_of_change: f64 = graph.0[node_index].gradient;
         // Разбираем каждый возможный вариант значения отдельно.
         match graph.0[node_index].operation {
             // Обрабатываем этот вариант структуры данных отдельным правилом.
@@ -180,7 +180,7 @@ fn main() {
             // Обрабатываем этот вариант структуры данных отдельным правилом.
             Operation::Tanh(left_index) => {
                 // Производная tanh(z) равна 1 − tanh(z)².
-                let output_value = graph.0[node_index].value;
+                let output_value: f64 = graph.0[node_index].value;
                 // Накапливаем вклад текущего шага в состояние модели или графа.
                 graph.0[left_index].gradient +=
                     // Умножаем величины согласно используемой формуле.
@@ -216,7 +216,7 @@ fn main() {
             // Собираем результаты в коллекцию.
             .collect();
         // Строим график по рассчитанным значениям и сохраняем его как SVG.
-        let chart = lesson_visualization::line_chart(
+        let chart: std::path::PathBuf = lesson_visualization::line_chart(
             // Передаём путь к каталогу текущего урока.
             env!("CARGO_MANIFEST_DIR"),
             // Указываем имя SVG-файла.

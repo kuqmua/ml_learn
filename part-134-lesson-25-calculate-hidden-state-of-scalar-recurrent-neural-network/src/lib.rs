@@ -6,7 +6,7 @@ pub fn calculate_recurrent_hidden_states_from_input_sequence(
     input_weight: f64,
     recurrent_weight: f64,
 ) -> Vec<f64> {
-    let mut hidden_state = 0.0;
+    let mut hidden_state: f64 = 0.0;
     input
         .iter()
         .map(|&input_value| {
@@ -19,9 +19,9 @@ pub fn calculate_recurrent_hidden_states_from_input_sequence(
 mod tests {
     #[test]
     fn future_does_not_change_past() {
-        let short =
+        let short: Vec<f64> =
             super::calculate_recurrent_hidden_states_from_input_sequence(&[1.0, 2.0], 0.4, 0.6);
-        let long = super::calculate_recurrent_hidden_states_from_input_sequence(
+        let long: Vec<f64> = super::calculate_recurrent_hidden_states_from_input_sequence(
             &[1.0, 2.0, 999.0],
             0.4,
             0.6,

@@ -31,9 +31,9 @@ fn main() {
             return 1.0 / approximate_exponential_with_taylor_series(-value);
         }
         // Создаём изменяемое значение `reduced` для следующих операций.
-        let mut reduced = value;
+        let mut reduced: f64 = value;
         // Инициализируем изменяемый накопитель `halving_count` начальным состоянием.
-        let mut halving_count = 0;
+        let mut halving_count: i32 = 0;
         // Повторяем вычисление, пока выполняется указанное условие.
         while reduced > 0.5 {
             // Масштабируем текущую величину делением.
@@ -42,9 +42,9 @@ fn main() {
             halving_count += 1;
         }
         // Создаём изменяемое значение `term` для следующих операций.
-        let mut term = 1.0;
+        let mut term: f64 = 1.0;
         // Создаём изменяемое значение `result` для следующих операций.
-        let mut result = 1.0;
+        let mut result: f64 = 1.0;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for term_index in 1..=30 {
             // Умножаем накопленное значение на очередной множитель.
@@ -88,12 +88,12 @@ fn main() {
         // Указываем тип возвращаемого значения.
     ) -> f64 {
         // Инициализируем изменяемый накопитель `loss_sum` начальным состоянием.
-        let mut loss_sum = 0.0;
+        let mut loss_sum: f64 = 0.0;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(feature_value, target_label) in data {
             // Умножаем значения и сохраняем результат в `raw_model_score`.
             // Оценку модели до преобразования в вероятность называют logit.
-            let raw_model_score = weight * feature_value + bias;
+            let raw_model_score: f64 = weight * feature_value + bias;
             // Прибавляем очередной вклад к ранее накопленному результату.
             loss_sum += (|| -> f64 {
                 // Используем подготовленное значение в следующем шаге примера.
@@ -134,9 +134,9 @@ fn main() {
                         return f64::INFINITY;
                     }
                     // Создаём изменяемое значение `scaled` для следующих операций.
-                    let mut scaled = value;
+                    let mut scaled: f64 = value;
                     // Инициализируем изменяемый накопитель `power_of_two` начальным состоянием.
-                    let mut power_of_two = 0i32;
+                    let mut power_of_two: i32 = 0i32;
                     // Повторяем вычисление, пока выполняется указанное условие.
                     while scaled >= 2.0 {
                         // Масштабируем текущую величину делением.
@@ -154,13 +154,13 @@ fn main() {
                     // Объявляем повторно используемое вычисление `sum_logarithm_series_terms`; параметры ниже задают его входы.
                     fn sum_logarithm_series_terms(value: f64) -> f64 {
                         // Нормируем или усредняем величину делением и сохраняем её в `ratio`.
-                        let ratio = (value - 1.0) / (value + 1.0);
+                        let ratio: f64 = (value - 1.0) / (value + 1.0);
                         // Умножаем значения и сохраняем результат в `ratio_squared`.
-                        let ratio_squared = ratio * ratio;
+                        let ratio_squared: f64 = ratio * ratio;
                         // Создаём изменяемое значение `term` для следующих операций.
-                        let mut term = ratio;
+                        let mut term: f64 = ratio;
                         // Инициализируем изменяемый накопитель `result` начальным состоянием.
-                        let mut result = 0.0;
+                        let mut result: f64 = 0.0;
                         // Повторяем следующий блок для каждого элемента указанной последовательности.
                         for term_index in 0..40 {
                             // Прибавляем очередной вклад к ранее накопленному результату.
@@ -172,7 +172,7 @@ fn main() {
                         2.0 * result
                     }
                     // Сохраняем рассчитанное значение `logarithm_of_two` для следующих операций.
-                    let logarithm_of_two = sum_logarithm_series_terms(2.0);
+                    let logarithm_of_two: f64 = sum_logarithm_series_terms(2.0);
                     // Умножаем величины согласно используемой формуле.
                     sum_logarithm_series_terms(scaled) + power_of_two as f64 * logarithm_of_two
                 })();
@@ -182,7 +182,7 @@ fn main() {
     }
 
     // Шаг: Измеряем loss модели с нулевыми коэффициентами.
-    let before = calculate_binary_cross_entropy_from_logits(&TRAINING_EXAMPLES, 0., 0.);
+    let before: f64 = calculate_binary_cross_entropy_from_logits(&TRAINING_EXAMPLES, 0., 0.);
     // Объявляем повторно используемое вычисление `convert_logit_to_probability`; параметры ниже задают его входы.
     fn convert_logit_to_probability(raw_model_score: f64) -> f64 {
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -192,7 +192,7 @@ fn main() {
         // Обрабатываем случай, когда предыдущее условие не выполнено.
         } else {
             // Сохраняем рассчитанное значение `prediction_error` для следующих операций.
-            let prediction_error = approximate_exponential_with_taylor_series(raw_model_score);
+            let prediction_error: f64 = approximate_exponential_with_taylor_series(raw_model_score);
             // Делим значения, получая нормированную величину или среднее.
             prediction_error / (1. + prediction_error)
         }
@@ -200,45 +200,47 @@ fn main() {
     // Устойчивая формула log-loss избегает прямого вычисления log(0).
 
     // Шаг: Подбираем параметры градиентным спуском.
-    let (weight, bias) = (|| -> (f64, f64) {
+    let (weight, bias): (f64, f64) = (|| -> (f64, f64) {
         // Используем подготовленное значение в следующем шаге примера.
         /* Обновляем вес и смещение по градиенту логистической ошибки. */
         // Сохраняем результат этого шага в промежуточный результат.
-        let (mut weight, mut bias) = (0., 0.);
+        let (mut weight, mut bias): (f64, f64) = (0., 0.);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for _ in 0..300 {
             // Выполняем встроенный расчёт один раз и сохраняем результат в `(weight_gradient, bias_gradient)`.
             // Производную функции по параметру или вектор таких производных называют gradient.
-            let (weight_loss_rate_of_change, bias_loss_rate_of_change) = (|| -> (f64, f64) {
-                // Используем подготовленное значение в следующем шаге примера.
-                /* Для log-loss производная по logit равна sigmoid_activation_of_raw_score(logit) − правильная метка. */
-                // Сохраняем результат этого шага в `data`.
-                let data: &[(f64, f64)] = &TRAINING_EXAMPLES;
-                // Сохраняем рассчитанное значение `weight` для следующих операций.
-                let weight: f64 = weight;
-                // Сохраняем рассчитанное значение `bias` для следующих операций.
-                let bias: f64 = bias;
-                // Сохраняем рассчитанное значение `(mut weight_gradient, mut bias_gradient)` для следующих операций.
-                let (mut weight_loss_rate_of_change, mut bias_loss_rate_of_change) = (0.0, 0.0);
-                // Повторяем следующий блок для каждого элемента указанной последовательности.
-                for &(feature_value, target_label) in data {
-                    // Сохраняем рассчитанное значение `prediction_error` для следующих операций.
-                    let prediction_error =
+            let (weight_loss_rate_of_change, bias_loss_rate_of_change): (f64, f64) =
+                (|| -> (f64, f64) {
+                    // Используем подготовленное значение в следующем шаге примера.
+                    /* Для log-loss производная по logit равна sigmoid_activation_of_raw_score(logit) − правильная метка. */
+                    // Сохраняем результат этого шага в `data`.
+                    let data: &[(f64, f64)] = &TRAINING_EXAMPLES;
+                    // Сохраняем рассчитанное значение `weight` для следующих операций.
+                    let weight: f64 = weight;
+                    // Сохраняем рассчитанное значение `bias` для следующих операций.
+                    let bias: f64 = bias;
+                    // Сохраняем рассчитанное значение `(mut weight_gradient, mut bias_gradient)` для следующих операций.
+                    let (mut weight_loss_rate_of_change, mut bias_loss_rate_of_change): (f64, f64) =
+                        (0.0, 0.0);
+                    // Повторяем следующий блок для каждого элемента указанной последовательности.
+                    for &(feature_value, target_label) in data {
+                        // Сохраняем рассчитанное значение `prediction_error` для следующих операций.
+                        let prediction_error: f64 =
                         // Умножаем величины согласно используемой формуле.
                         convert_logit_to_probability(weight * feature_value + bias) - target_label;
-                    // Прибавляем очередной вклад к ранее накопленному результату.
-                    weight_loss_rate_of_change += prediction_error * feature_value;
-                    // Прибавляем очередной вклад к ранее накопленному результату.
-                    bias_loss_rate_of_change += prediction_error;
-                }
-                // Составляем результат из вычисленных значений в указанном порядке.
-                (
-                    // Делим значения, получая нормированную величину или среднее.
-                    weight_loss_rate_of_change / data.len() as f64,
-                    // Делим значения, получая нормированную величину или среднее.
-                    bias_loss_rate_of_change / data.len() as f64,
-                )
-            })();
+                        // Прибавляем очередной вклад к ранее накопленному результату.
+                        weight_loss_rate_of_change += prediction_error * feature_value;
+                        // Прибавляем очередной вклад к ранее накопленному результату.
+                        bias_loss_rate_of_change += prediction_error;
+                    }
+                    // Составляем результат из вычисленных значений в указанном порядке.
+                    (
+                        // Делим значения, получая нормированную величину или среднее.
+                        weight_loss_rate_of_change / data.len() as f64,
+                        // Делим значения, получая нормированную величину или среднее.
+                        bias_loss_rate_of_change / data.len() as f64,
+                    )
+                })();
             // Вычитаем очередной вклад из текущего значения параметра.
             weight -= 0.1 * weight_loss_rate_of_change;
             // Вычитаем очередной вклад из текущего значения параметра.
@@ -270,7 +272,7 @@ fn main() {
             // Преобразуем каждый элемент в новое значение.
             .map(|plot_step_index| {
                 // Сохраняем результат этого шага в `horizontal_value`.
-                let horizontal_value = plot_step_index as f64 / 10.0;
+                let horizontal_value: f64 = plot_step_index as f64 / 10.0;
                 // Добавляем пару значений для сравнения или построения графика.
                 (
                     horizontal_value,
@@ -285,7 +287,7 @@ fn main() {
             .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
             .collect();
         // Строим график по рассчитанным значениям и сохраняем его как SVG.
-        let chart = lesson_visualization::line_chart(
+        let chart: std::path::PathBuf = lesson_visualization::line_chart(
             // Передаём путь к каталогу текущего урока.
             env!("CARGO_MANIFEST_DIR"),
             // Указываем имя SVG-файла.

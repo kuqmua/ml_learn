@@ -11,11 +11,11 @@
 fn main() {
     // Создаём набор значений `text_unit` для следующего шага примера.
     // Единицу текста, которую модель обрабатывает как одно целое, называют token.
-    let text_unit = [1.0, 2.0];
+    let text_unit: [f64; 2] = [1.0, 2.0];
     // Создаём набор значений `query_weights` для следующего шага примера.
-    let query_weights = [[1.0, 0.0], [0.0, 0.5]];
+    let query_weights: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 0.5]];
     // Создаём набор значений `query` для следующего шага примера.
-    let query = [
+    let query: [f64; 2] = [
         // Умножаем величины согласно используемой формуле.
         query_weights[0][0] * text_unit[0] + query_weights[0][1] * text_unit[1],
         // Умножаем величины согласно используемой формуле.
@@ -31,7 +31,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_query_vector_for_attention_position(query: [f64; 2]) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

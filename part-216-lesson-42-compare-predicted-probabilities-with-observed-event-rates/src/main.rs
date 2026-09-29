@@ -5,7 +5,7 @@
 
 fn main() {
     // Задаём учебные значения для `observed_labels`.
-    let observed_labels = [true, true, true, false, true];
+    let observed_labels: [bool; 5] = [true, true, true, false, true];
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -14,7 +14,7 @@ fn main() {
         "для частоты нужна хотя бы одна метка"
     );
     // Вычисляем `observed_frequency` по элементам исходной коллекции.
-    let observed_frequency = observed_labels.iter().filter(|&&label| label).count() as f64
+    let observed_frequency: f64 = observed_labels.iter().filter(|&&label| label).count() as f64
         // Используем подготовленное значение в следующем шаге примера.
         / observed_labels.len() as f64;
     // Повторяем расчёт для каждого элемента последовательности.
@@ -29,7 +29,7 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert!((0.0..=1.0).contains(&predicted_probability));
         // Сохраняем результат этого шага в `gap`.
-        let gap = (predicted_probability - observed_frequency).abs();
+        let gap: f64 = (predicted_probability - observed_frequency).abs();
         // Проверяем ожидаемое свойство учебного примера.
         assert!((gap - expected_gap).abs() < 1e-10);
         // Печатаем рассчитанные значения для проверки примера.
@@ -51,7 +51,7 @@ fn visualize_compare_predicted_probabilities_with_observed_event_rates(observed_
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `probability`.
-            let probability = plot_step_index as f64 / 10.0;
+            let probability: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (probability, probability)
         })
@@ -62,7 +62,7 @@ fn visualize_compare_predicted_probabilities_with_observed_event_rates(observed_
         // Задаём значения следующей строки или последовательности.
         [(0.0, observed_frequency), (1.0, observed_frequency)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

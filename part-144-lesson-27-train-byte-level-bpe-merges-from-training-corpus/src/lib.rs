@@ -16,15 +16,16 @@ impl BytePairEncoding {
         merge_count: usize,
     ) -> Self {
         // Начальный словарь покрывает любой UTF-8 текст.
-        let mut pieces = (0..=255).map(|byte| vec![byte as u8]).collect::<Vec<_>>();
-        let mut rows = corpus
+        let mut pieces: Vec<Vec<u8>> = (0..=255).map(|byte| vec![byte as u8]).collect::<Vec<_>>();
+        let mut rows: Vec<Vec<usize>> = corpus
             .iter()
             .map(|text| text.bytes().map(usize::from).collect::<Vec<_>>())
             .collect::<Vec<_>>();
-        let mut merges = Vec::new();
+        let mut merges: Vec<(usize, usize)> = Vec::new();
         for _ in 0..merge_count {
             // Частоты считаем только у соседних токенов внутри одной строки.
-            let mut frequencies = std::collections::BTreeMap::<(usize, usize), usize>::new();
+            let mut frequencies: std::collections::BTreeMap<(usize, usize), usize> =
+                std::collections::BTreeMap::<(usize, usize), usize>::new();
             for row in &rows {
                 for pair in row.windows(2) {
                     *frequencies.entry((pair[0], pair[1])).or_default() += 1;
@@ -38,8 +39,8 @@ impl BytePairEncoding {
                 break;
             };
             // Единицу текста, которую модель обрабатывает как одно целое, называют token.
-            let text_unit_identifier = pieces.len();
-            let mut joined = pieces[pair.0].clone();
+            let text_unit_identifier: usize = pieces.len();
+            let mut joined: Vec<u8> = pieces[pair.0].clone();
             joined.extend_from_slice(&pieces[pair.1]);
             pieces.push(joined);
             merges.push(pair);
@@ -53,7 +54,8 @@ impl BytePairEncoding {
 
     /// Применяет сохранённые слияния к новому тексту в порядке обучения.
     pub fn encode_text_as_byte_pair_tokens(&self, text: &str) -> Vec<usize> {
-        let mut text_unit_identifiers = text.bytes().map(usize::from).collect::<Vec<_>>();
+        let mut text_unit_identifiers: Vec<usize> =
+            text.bytes().map(usize::from).collect::<Vec<_>>();
         for (offset, &pair) in self.merges.iter().enumerate() {
             text_unit_identifiers =
                 merge_adjacent_byte_pair_token_ids(&text_unit_identifiers, pair, 256 + offset);
@@ -66,9 +68,9 @@ impl BytePairEncoding {
         &self,
         text_unit_identifiers: &[usize],
     ) -> Result<String, String> {
-        let mut bytes = Vec::new();
+        let mut bytes: Vec<u8> = Vec::new();
         for &text_unit_identifier in text_unit_identifiers {
-            let piece = self
+            let piece: &Vec<u8> = self
                 .pieces
                 .get(text_unit_identifier)
                 .ok_or("неизвестный ID токена")?;
@@ -84,8 +86,8 @@ fn merge_adjacent_byte_pair_token_ids(
     pair: (usize, usize),
     new_identifier: usize,
 ) -> Vec<usize> {
-    let mut result = Vec::new();
-    let mut index = 0;
+    let mut result: Vec<usize> = Vec::new();
+    let mut index: usize = 0;
     while index < text_unit_identifiers.len() {
         if text_unit_identifiers.get(index) == Some(&pair.0)
             && text_unit_identifiers.get(index + 1) == Some(&pair.1)
@@ -104,10 +106,11 @@ fn merge_adjacent_byte_pair_token_ids(
 mod tests {
     #[test]
     fn roundtrip_and_unseen_unicode_transformation_format_eight_bit_text() {
-        let model = super::BytePairEncoding::train_byte_pair_encoding_merges_from_corpus(
-            &["мама мыла", "мама дома"],
-            12,
-        );
+        let model: super::BytePairEncoding =
+            super::BytePairEncoding::train_byte_pair_encoding_merges_from_corpus(
+                &["мама мыла", "мама дома"],
+                12,
+            );
         for text in ["мама", "кот 🐈", "", "\0"] {
             assert_eq!(
                 model

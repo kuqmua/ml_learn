@@ -10,19 +10,19 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `query` для следующего шага примера.
-    let query = [1.0, 1.0];
+    let query: [f64; 2] = [1.0, 1.0];
     // Создаём набор значений `key` для следующего шага примера.
-    let key = [2.0, 2.0];
+    let key: [f64; 2] = [2.0, 2.0];
     // Умножаем соответствующие координаты запроса и ключа, затем складываем результаты.
-    let sum_after_multiplying_coordinates =
+    let sum_after_multiplying_coordinates: f64 =
         // Используем подготовленное значение в следующем шаге примера.
         part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&query, &key)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("запрос и ключ имеют одинаковую размерность");
     // Сохраняем рассчитанное значение `dimension` для следующих операций.
-    let dimension = 2.0;
+    let dimension: f64 = 2.0;
     // Создаём изменяемое значение `scale` для следующих операций.
-    let mut scale = dimension;
+    let mut scale: f64 = dimension;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for _ in 0..80 {
         // Присваиваем вычисленное значение соответствующей переменной или полю.
@@ -54,7 +54,7 @@ fn visualize_scale_dot_product_of_query_and_key_vectors() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -10,19 +10,19 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `term_frequency` для следующих операций.
-    let term_frequency = 3.0;
+    let term_frequency: f64 = 3.0;
     // Сохраняем рассчитанное значение `document_count` для следующих операций.
-    let document_count = 10.0;
+    let document_count: f64 = 10.0;
     // Сохраняем рассчитанное значение `documents_with_term` для следующих операций.
-    let documents_with_term = 2.0;
+    let documents_with_term: f64 = 2.0;
     // Нормируем или усредняем величину делением и сохраняем её в `rarity_ratio`.
-    let rarity_ratio = (document_count + 1.0) / (documents_with_term + 1.0);
+    let rarity_ratio: f64 = (document_count + 1.0) / (documents_with_term + 1.0);
     // IDF — логарифм отношения; вычисляем его рядом для положительного аргумента.
-    let normalized = (rarity_ratio - 1.0) / (rarity_ratio + 1.0);
+    let normalized: f64 = (rarity_ratio - 1.0) / (rarity_ratio + 1.0);
     // Создаём изменяемое значение `term` для следующих операций.
-    let mut term = normalized;
+    let mut term: f64 = normalized;
     // Инициализируем изменяемый накопитель `logarithm` начальным состоянием.
-    let mut logarithm = 0.0;
+    let mut logarithm: f64 = 0.0;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for odd_divisor in (1..=99).step_by(2) {
         // Прибавляем очередной вклад к ранее накопленному результату.
@@ -31,9 +31,9 @@ fn main() {
         term *= normalized * normalized;
     }
     // Умножаем значения и сохраняем результат в `inverse_document_frequency`.
-    let inverse_document_frequency = 2.0 * logarithm;
+    let inverse_document_frequency: f64 = 2.0 * logarithm;
     // Умножаем значения и сохраняем результат в `score`.
-    let score = term_frequency * inverse_document_frequency;
+    let score: f64 = term_frequency * inverse_document_frequency;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("частота={term_frequency}, IDF={inverse_document_frequency:.3}, TF-IDF={score:.3}");
 
@@ -48,14 +48,14 @@ fn visualize_weight_document_terms_by_tf_idf(inverse_document_frequency: f64) {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `term_frequency`.
-            let term_frequency = plot_step_index as f64 / 10.0;
+            let term_frequency: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (term_frequency, term_frequency * inverse_document_frequency)
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

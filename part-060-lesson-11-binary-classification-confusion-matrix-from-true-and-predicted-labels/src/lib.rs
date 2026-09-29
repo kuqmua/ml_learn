@@ -25,7 +25,7 @@ pub fn count_binary_classification_outcomes_from_true_and_predicted_labels(
         return Err("число прогнозов должно совпадать с числом ответов");
     }
     // Сохраняем результат этого шага в `counts`.
-    let mut counts = BinaryClassificationCounts {
+    let mut counts: BinaryClassificationCounts = BinaryClassificationCounts {
         // Задаём именованное поле или параметр.
         true_positives: 0,
         // Задаём именованное поле или параметр.
@@ -79,7 +79,7 @@ pub fn calculate_accuracy_from_binary_classification_counts(
     counts: BinaryClassificationCounts,
 ) -> Option<f64> {
     // Сохраняем результат этого шага в `total`.
-    let total = counts.true_positives
+    let total: usize = counts.true_positives
         // Используем подготовленное значение в следующем шаге примера.
         + counts.false_positives
         // Используем подготовленное значение в следующем шаге примера.
@@ -106,7 +106,7 @@ mod tests {
     // Определяем вычисление `separates_all_four_classification_outcomes` для этого примера.
     fn separates_all_four_classification_outcomes() {
         // Сохраняем результат этого шага в `counts`.
-        let counts =
+        let counts: crate::BinaryClassificationCounts =
             // Используем подготовленное значение в следующем шаге примера.
             super::count_binary_classification_outcomes_from_true_and_predicted_labels(&[true, false, true, false], &[true, true, false, false])
                 // Используем результат, ожидая успешного выполнения шага.

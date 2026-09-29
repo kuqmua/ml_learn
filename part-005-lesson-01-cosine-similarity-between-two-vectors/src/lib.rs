@@ -6,12 +6,12 @@ pub fn cosine_similarity_between_two_vectors(
     right: &[f64],
 ) -> Result<f64, &'static str> {
     // Сохраняем результат этого шага в `numerator`.
-    let numerator =
+    let numerator: f64 =
         part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
             left, right,
         )?;
     // Сохраняем результат этого шага в `denominator`.
-    let denominator =
+    let denominator: f64 =
         part_003_lesson_01_calculate_euclidean_length_of_one_vector::euclidean_norm_of_vector(left)
             * part_003_lesson_01_calculate_euclidean_length_of_one_vector::euclidean_norm_of_vector(
                 right,

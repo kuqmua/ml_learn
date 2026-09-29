@@ -9,16 +9,16 @@ fn calculate_long_short_term_memory_cell_output(
     previous_cell: f64,
     forget_bias: f64,
 ) -> (f64, f64) {
-    let forget = sigmoid_activation_of_raw_score(forget_bias);
-    let insert = sigmoid_activation_of_raw_score(input);
-    let candidate = input.tanh();
-    let cell = forget * previous_cell + insert * candidate;
-    let hidden = sigmoid_activation_of_raw_score(input) * cell.tanh();
+    let forget: f64 = sigmoid_activation_of_raw_score(forget_bias);
+    let insert: f64 = sigmoid_activation_of_raw_score(input);
+    let candidate: f64 = input.tanh();
+    let cell: f64 = forget * previous_cell + insert * candidate;
+    let hidden: f64 = sigmoid_activation_of_raw_score(input) * cell.tanh();
     (cell, hidden)
 }
 fn main() {
-    let remembered = calculate_long_short_term_memory_cell_output(0.0, 1.0, 5.0).0;
-    let forgotten = calculate_long_short_term_memory_cell_output(0.0, 1.0, -5.0).0;
+    let remembered: f64 = calculate_long_short_term_memory_cell_output(0.0, 1.0, 5.0).0;
+    let forgotten: f64 = calculate_long_short_term_memory_cell_output(0.0, 1.0, -5.0).0;
     assert!(remembered > forgotten);
     println!("ячейка при открытом forget={remembered:.3}, при закрытом={forgotten:.3}");
 }

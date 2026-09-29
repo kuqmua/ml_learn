@@ -5,12 +5,12 @@
 
 fn main() {
     // Задаём учебные значения для `raw_weights`.
-    let raw_weights = [0.2, 0.3, 0.5];
+    let raw_weights: [f64; 3] = [0.2, 0.3, 0.5];
     // Повторяем расчёт для каждого элемента последовательности.
     for current_position in 0..raw_weights.len() {
         // Задаём учебные значения для `future_position_filtered_weights`.
         // Запрет внимания к будущим позициям называют causal mask.
-        let mut future_position_filtered_weights = [0.0; 3];
+        let mut future_position_filtered_weights: [f64; 3] = [0.0; 3];
         // Вычисляем `allowed_sum` по элементам исходной коллекции.
         let allowed_sum: f64 = raw_weights[..=current_position].iter().sum();
         // Проверяем ожидаемое свойство учебного примера.
@@ -72,7 +72,7 @@ fn visualize_block_future_token_attention_with_causal_mask(raw_weights: [f64; 3]
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::heatmap(
+    let chart: std::path::PathBuf = lesson_visualization::heatmap(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

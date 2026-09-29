@@ -20,9 +20,9 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert!(!votes.is_empty(), "для решения нужен хотя бы один голос");
         // Вычисляем `positives` по элементам исходной коллекции.
-        let positives = votes.iter().filter(|&&vote| vote).count();
+        let positives: usize = votes.iter().filter(|&&vote| vote).count();
         // Определяем размер данных и сохраняем его в `result`.
-        let result = positives * 2 > votes.len();
+        let result: bool = positives * 2 > votes.len();
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(result, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -36,7 +36,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_majority_vote_over_binary_model_predictions() {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

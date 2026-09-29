@@ -5,7 +5,7 @@
 
 fn main() {
     // Задаём учебные значения для `first`.
-    let first = [3.0, 4.0];
+    let first: [f64; 2] = [3.0, 4.0];
     // Проверяем ожидаемое свойство учебного примера.
     assert_eq!(
         part_002_lesson_01_sum_absolute_values_of_vector_coordinates::sum_absolute_values_of_vector_coordinates(&first),
@@ -35,14 +35,14 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, other, expected_sum, expected_cosine) in cases {
         // Сохраняем результат этого шага в `sum`.
-        let sum = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&first, other)
+        let sum: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&first, other)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("у этих векторов одинаковое число координат");
         // Сохраняем результат этого шага в `distance`.
-        let distance =
+        let distance: f64 =
             part_004_lesson_01_euclidean_distance_between_two_points::euclidean_distance_between_two_points(&first, other).unwrap();
         // Сохраняем результат этого шага в `cosine`.
-        let cosine = part_005_lesson_01_cosine_similarity_between_two_vectors::cosine_similarity_between_two_vectors(&first, other).ok();
+        let cosine: Option<f64> = part_005_lesson_01_cosine_similarity_between_two_vectors::cosine_similarity_between_two_vectors(&first, other).ok();
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(sum, expected_sum);
         // Выбираем дальнейший шаг по выполнению условия.
@@ -55,7 +55,7 @@ fn main() {
             assert_eq!(cosine, expected_cosine);
         }
         // Сохраняем результат этого шага в `reverse_distance`.
-        let reverse_distance =
+        let reverse_distance: f64 =
             part_004_lesson_01_euclidean_distance_between_two_points::euclidean_distance_between_two_points(other, &first).unwrap();
         // Проверяем ожидаемое свойство учебного примера.
         assert!((distance - reverse_distance).abs() < 1e-10);
@@ -64,9 +64,9 @@ fn main() {
     }
 
     // Задаём учебные значения для `too_short`.
-    let too_short = [1.0];
+    let too_short: [f64; 1] = [1.0];
     // Сохраняем результат этого шага в `error`.
-    let error =
+    let error: &str =
         part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
             &first, &too_short,
         )
@@ -86,7 +86,7 @@ fn visualize_practice_vector_dot_product_norms_distance_and_cosine() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, horizontal_value.abs() + 4.0)
         })
@@ -97,7 +97,7 @@ fn visualize_practice_vector_dot_product_norms_distance_and_cosine() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (
                 horizontal_value,
@@ -107,7 +107,7 @@ fn visualize_practice_vector_dot_product_norms_distance_and_cosine() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -4,7 +4,7 @@
 // Нормируем оценки всех патчей в вероятностные веса.
 // Оценку модели до преобразования в вероятность называют logit.
 fn softmax_probabilities_from_raw_model_scores(raw_model_scores: &[f64]) -> Vec<f64> {
-    let maximum = raw_model_scores
+    let maximum: f64 = raw_model_scores
         .iter()
         .copied()
         .fold(f64::NEG_INFINITY, f64::max);
@@ -19,8 +19,8 @@ fn softmax_probabilities_from_raw_model_scores(raw_model_scores: &[f64]) -> Vec<
         .collect()
 }
 fn main() {
-    let image = vec![vec![1.0, 0.0], vec![0.0, 1.0]];
-    let patches =
+    let image: Vec<Vec<f64>> = vec![vec![1.0, 0.0], vec![0.0, 1.0]];
+    let patches: Vec<Vec<f64>> =
         part_175_lesson_33_split_square_image_into_nonoverlapping_vit_patches::extract_nonoverlapping_square_patches_from_square_image(&image, 1).unwrap();
     // Упрощённая проекция одномерного патча в двухмерный токен.
     // Представление патча изображения для трансформера называют visual token.
@@ -28,12 +28,12 @@ fn main() {
         .iter()
         .map(|patch| [patch[0], 1.0 - patch[0]])
         .collect();
-    let first = image_patch_representations[0];
+    let first: [f64; 2] = image_patch_representations[0];
     let raw_model_scores: Vec<f64> = image_patch_representations
         .iter()
         .map(|key| first[0] * key[0] + first[1] * key[1])
         .collect();
-    let weights = softmax_probabilities_from_raw_model_scores(&raw_model_scores);
+    let weights: Vec<f64> = softmax_probabilities_from_raw_model_scores(&raw_model_scores);
     assert_eq!(weights.len(), 4);
     assert!(weights[3] > 0.0); // Последний патч виден первому.
     println!("веса внимания первого патча ко всем патчам: {weights:?}");
@@ -41,13 +41,13 @@ fn main() {
 }
 
 fn visualize_global_self_attention_among_vit_image_patches(weights: &[f64]) {
-    let labels = ["patch 0", "patch 1", "patch 2", "patch 3"];
-    let values: Vec<_> = labels
+    let labels: [&str; 4] = ["patch 0", "patch 1", "patch 2", "patch 3"];
+    let values: Vec<(&str, f64)> = labels
         .iter()
         .zip(weights)
         .map(|(&label, &weight)| (label, weight))
         .collect();
-    let path = lesson_visualization::bar_chart(
+    let path: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "vit-attention",
         "Внимание первого патча",

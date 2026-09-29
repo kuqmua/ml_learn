@@ -3,9 +3,9 @@
 
 fn main() {
     // Новые строки не участвуют в выборе слияний.
-    let training_data = ["кот спит", "кот ест", "пёс спит"];
-    let validation = ["кот играет", "🐈 спит"];
-    let model = part_144_lesson_27_train_byte_level_bpe_merges_from_training_corpus::BytePairEncoding::train_byte_pair_encoding_merges_from_corpus(
+    let training_data: [&str; 3] = ["кот спит", "кот ест", "пёс спит"];
+    let validation: [&str; 2] = ["кот играет", "🐈 спит"];
+    let model: part_144_lesson_27_train_byte_level_bpe_merges_from_training_corpus::BytePairEncoding = part_144_lesson_27_train_byte_level_bpe_merges_from_training_corpus::BytePairEncoding::train_byte_pair_encoding_merges_from_corpus(
         &training_data,
         30,
     );
@@ -40,7 +40,7 @@ fn visualize_evaluate_byte_level_and_bpe_tokenizers_on_new_strings(rows: &[(&str
         .iter()
         .map(|(text, _, count)| (*text, *count as f64))
         .collect();
-    let path = lesson_visualization::bar_chart(
+    let path: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "token-count",
         "Длина BPE-кодирования",

@@ -12,49 +12,51 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Шаг: Создаём корпус из двух коротких предложений.
-    let corpus = ["кот спит", "пёс спит"];
+    let corpus: [&str; 2] = ["кот спит", "пёс спит"];
 
     // Шаг: Назначаем индекс каждому слову и резервируем индекс для неизвестных слов.
     // Набор известных модели текстовых единиц называют vocabulary.
-    let known_text_units = (|| -> std::collections::BTreeMap<String, usize> {
-        // Используем подготовленное значение в следующем шаге примера.
-        /* Нумеруем слова корпуса; нулевой индекс оставляем неизвестному токену. */
-        // Сохраняем результат этого шага в `corpus`.
-        let corpus: &[&str] = &corpus;
-        // Инициализируем изменяемый накопитель `known_text_units` начальным состоянием.
-        let mut known_text_units = std::collections::BTreeMap::new();
-        // Выполняем очередное действие, после которого продолжаем следующий шаг.
-        known_text_units.insert("<unk>".into(), 0);
-        // Повторяем следующий блок для каждого элемента указанной последовательности.
-        for word in corpus
-            // Перебираем элементы по ссылке, не копируя исходную коллекцию.
-            .iter()
-            // Разделяем текст по пробельным символам на отдельные слова.
-            .flat_map(|sentence| sentence.split_whitespace())
-        {
-            // Проверяем условие и выбираем соответствующую ветку алгоритма.
-            if !known_text_units.contains_key(word) {
-                // Считаем количество элементов и сохраняем его в `text_unit_identifier`.
-                // Единицу текста, которую модель обрабатывает как одно целое, называют token.
-                let text_unit_identifier = known_text_units.len();
-                // Выполняем очередное действие, после которого продолжаем следующий шаг.
-                known_text_units.insert(word.into(), text_unit_identifier);
+    let known_text_units: std::collections::BTreeMap<String, usize> =
+        (|| -> std::collections::BTreeMap<String, usize> {
+            // Используем подготовленное значение в следующем шаге примера.
+            /* Нумеруем слова корпуса; нулевой индекс оставляем неизвестному токену. */
+            // Сохраняем результат этого шага в `corpus`.
+            let corpus: &[&str] = &corpus;
+            // Инициализируем изменяемый накопитель `known_text_units` начальным состоянием.
+            let mut known_text_units: std::collections::BTreeMap<String, usize> =
+                std::collections::BTreeMap::new();
+            // Выполняем очередное действие, после которого продолжаем следующий шаг.
+            known_text_units.insert("<unk>".into(), 0);
+            // Повторяем следующий блок для каждого элемента указанной последовательности.
+            for word in corpus
+                // Перебираем элементы по ссылке, не копируя исходную коллекцию.
+                .iter()
+                // Разделяем текст по пробельным символам на отдельные слова.
+                .flat_map(|sentence| sentence.split_whitespace())
+            {
+                // Проверяем условие и выбираем соответствующую ветку алгоритма.
+                if !known_text_units.contains_key(word) {
+                    // Считаем количество элементов и сохраняем его в `text_unit_identifier`.
+                    // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+                    let text_unit_identifier: usize = known_text_units.len();
+                    // Выполняем очередное действие, после которого продолжаем следующий шаг.
+                    known_text_units.insert(word.into(), text_unit_identifier);
+                }
             }
-        }
-        // Используем ранее рассчитанное значение `known_text_units` в текущем выражении.
-        known_text_units
-    })();
+            // Используем ранее рассчитанное значение `known_text_units` в текущем выражении.
+            known_text_units
+        })();
 
     // Шаг: Создаём таблицу векторов и читаем строки по индексам токенов.
     // Плотное числовое представление объекта называют embedding.
-    let mut dense_numeric_representations = vec![[0., 0.]; known_text_units.len()];
+    let mut dense_numeric_representations: Vec<[f64; 2]> = vec![[0., 0.]; known_text_units.len()];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (text_unit_index, row) in dense_numeric_representations.iter_mut().enumerate() {
         // Передаём данные по ссылке или разыменовываем их для следующей операции.
         *row = [text_unit_index as f64 * 0.1, text_unit_index as f64 * 0.2];
     }
     // Выполняем встроенный расчёт один раз и сохраняем результат в `text_unit_indices`.
-    let text_unit_indices = (|| -> Vec<usize> {
+    let text_unit_indices: Vec<usize> = (|| -> Vec<usize> {
         // Используем подготовленное значение в следующем шаге примера.
         /* Каждое слово превращаем в индекс словаря, неизвестным словам даём нулевой индекс. */
         // Сохраняем результат этого шага в `text`.
@@ -95,7 +97,7 @@ fn visualize_practice_token_vocabulary_and_dense_word_embeddings(
     text_unit_indices: std::vec::Vec<usize>,
 ) {
     // Наглядное сравнение результатов сводной практики.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

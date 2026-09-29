@@ -10,16 +10,16 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Инициализируем значение `parameter` начальным состоянием.
-    let parameter = 0.0;
+    let parameter: f64 = 0.0;
     // Умножаем значения и сохраняем результат в `rate_of_change`.
     // Производную функции по параметру или вектор таких производных называют gradient.
-    let rate_of_change = 2.0 * (parameter - 3.0);
+    let rate_of_change: f64 = 2.0 * (parameter - 3.0);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for rate in [0.1, 1.0, 2.0] {
         // Делаем ровно одно обновление, чтобы изолировать влияние скорости.
-        let updated = parameter - rate * rate_of_change;
+        let updated: f64 = parameter - rate * rate_of_change;
         // Умножаем значения и сохраняем результат в `error`.
-        let error = (updated - 3.0) * (updated - 3.0);
+        let error: f64 = (updated - 3.0) * (updated - 3.0);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("rate={rate}: параметр={updated}, ошибка={error}");
     }
@@ -31,7 +31,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_learning_rate_for_gradient_descent_update(parameter: f64, rate_of_change: f64) {
     // Задаём учебные значения для `learning_rates`.
-    let learning_rates = [0.1, 1.0, 2.0];
+    let learning_rates: [f64; 3] = [0.1, 1.0, 2.0];
     // Собираем значения для `errors` в коллекцию.
     let errors: Vec<(f64, f64)> = learning_rates
         // Передаём элементы коллекции в итератор.
@@ -39,14 +39,14 @@ fn visualize_learning_rate_for_gradient_descent_update(parameter: f64, rate_of_c
         // Преобразуем каждый элемент в новое значение.
         .map(|rate| {
             // Сохраняем результат этого шага в `updated`.
-            let updated = parameter - rate * rate_of_change;
+            let updated: f64 = parameter - rate * rate_of_change;
             // Добавляем пару значений для сравнения или построения графика.
             (rate, (updated - 3.0) * (updated - 3.0))
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

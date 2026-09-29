@@ -4,7 +4,7 @@
 
 fn main() {
     // Сохраняем результат этого шага в `minimum_reliable_score`.
-    let minimum_reliable_score = 0.5;
+    let minimum_reliable_score: f64 = 0.5;
     // Повторяем расчёт для каждого элемента последовательности.
     // Поиск подходящих документов и оценку их релевантности называют retrieval.
     for (description, document_relevance_score, expected_answer) in [
@@ -18,7 +18,7 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert!((0.0..=1.0).contains(&document_relevance_score));
         // Сохраняем результат этого шага в `answer`.
-        let answer = if document_relevance_score >= minimum_reliable_score {
+        let answer: &str = if document_relevance_score >= minimum_reliable_score {
             // Передаём подпись или текстовое значение для следующего шага.
             "подтверждённый ответ"
         // Обрабатываем случай, когда предыдущее условие не выполнено.
@@ -39,7 +39,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_reject_rag_answer_when_source_score_below_threshold(minimum_reliable_score: f64) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

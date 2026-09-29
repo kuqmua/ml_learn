@@ -31,9 +31,9 @@ fn main() {
             return 1.0 / approximate_exponential_with_taylor_series(-value);
         }
         // Создаём изменяемое значение `reduced` для следующих операций.
-        let mut reduced = value;
+        let mut reduced: f64 = value;
         // Инициализируем изменяемый накопитель `halving_count` начальным состоянием.
-        let mut halving_count = 0;
+        let mut halving_count: i32 = 0;
         // Повторяем вычисление, пока выполняется указанное условие.
         while reduced > 0.5 {
             // Масштабируем текущую величину делением.
@@ -42,9 +42,9 @@ fn main() {
             halving_count += 1;
         }
         // Создаём изменяемое значение `term` для следующих операций.
-        let mut term = 1.0;
+        let mut term: f64 = 1.0;
         // Создаём изменяемое значение `result` для следующих операций.
-        let mut result = 1.0;
+        let mut result: f64 = 1.0;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for term_index in 1..=30 {
             // Умножаем накопленное значение на очередной множитель.
@@ -94,11 +94,11 @@ fn main() {
     }
 
     // Шаг: Обучаем сеть с двумя скрытыми нейронами на таблице XOR.
-    let network = (|| -> NeuralNetwork {
+    let network: NeuralNetwork = (|| -> NeuralNetwork {
         // Используем подготовленное значение в следующем шаге примера.
         /* Обучаем сеть на всех комбинациях XOR повторяющимися шагами градиента. */
         // Начальные веса задают воспроизводимый старт обучения.
-        let mut network = NeuralNetwork {
+        let mut network: NeuralNetwork = NeuralNetwork {
             // Задаём начальные веса двух нейронов скрытого слоя.
             hidden_weights: [[0.8, -0.5, 0.2], [-0.3, 0.9, -0.1]],
             // Задаём начальные веса выходного нейрона и его смещение.
@@ -109,9 +109,9 @@ fn main() {
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for &(features, expected_output) in &XOR {
                 // Один шаг обучения: прямой проход, градиенты и обновление весов.
-                let learning_rate = 0.5;
+                let learning_rate: f64 = 0.5;
                 // Прямой проход: сначала два скрытых нейрона, затем выходная вероятность.
-                let hidden_outputs = [
+                let hidden_outputs: [f64; 2] = [
                     // Вызываем нужное вычисление с подготовленными аргументами.
                     convert_logit_to_probability(
                         // Обновляем состояние объекта результатом текущей операции.
@@ -132,7 +132,7 @@ fn main() {
                     ),
                 ];
                 // Сохраняем рассчитанное значение `output_probability` для следующих операций.
-                let output_probability = convert_logit_to_probability(
+                let output_probability: f64 = convert_logit_to_probability(
                     // Обновляем состояние объекта результатом текущей операции.
                     network.output_weights[0] * hidden_outputs[0]
                         // Умножаем величины согласно используемой формуле.
@@ -142,7 +142,7 @@ fn main() {
                 );
                 // Правило цепочки даёт градиент ошибки для выхода и каждого скрытого нейрона.
                 // Производную функции по параметру или вектор таких производных называют gradient.
-                let output_loss_rate_of_change = (|| -> f64 {
+                let output_loss_rate_of_change: f64 = (|| -> f64 {
                     // Используем подготовленное значение в следующем шаге примера.
                     /* Для квадратичной ошибки 1/2*(prediction−target)² производная по prediction — разность. */
                     // Сохраняем результат этого шага в `prediction`.
@@ -152,12 +152,13 @@ fn main() {
                     // Складываем или вычитаем величины согласно используемой формуле.
                     prediction - target
                     // Вычисляем значение по указанной формуле.
-                })() * calculate_sigmoid_derivative_from_output(
-                    // Используем ранее рассчитанное значение `output_probability` в текущем выражении.
-                    output_probability,
-                );
+                })()
+                    * calculate_sigmoid_derivative_from_output(
+                        // Используем ранее рассчитанное значение `output_probability` в текущем выражении.
+                        output_probability,
+                    );
                 // Создаём набор значений `hidden_layer_loss_rates_of_change` для следующего шага примера.
-                let hidden_layer_loss_rates_of_change = [
+                let hidden_layer_loss_rates_of_change: [f64; 2] = [
                     // Используем ранее рассчитанное значение `output_loss_rate_of_change` в текущем выражении.
                     output_loss_rate_of_change
                         // Добавляем этот член в составное арифметическое выражение.
@@ -201,9 +202,9 @@ fn main() {
     // Шаг: Проверяем все четыре комбинации входных битов.
     for (features, expected_output) in XOR {
         // Считаем выход двух скрытых нейронов и итоговую вероятность.
-        let output_probability = {
+        let output_probability: f64 = {
             // Создаём набор значений `hidden_outputs` для следующего шага примера.
-            let hidden_outputs = [
+            let hidden_outputs: [f64; 2] = [
                 // Вызываем нужное вычисление с подготовленными аргументами.
                 convert_logit_to_probability(
                     // Обновляем состояние объекта результатом текущей операции.
@@ -253,7 +254,7 @@ fn visualize_practice_multilayer_perceptron_with_layers_activations_and_mini_bat
     // Собираем значения для `class_one_points` в коллекцию.
     let class_one_points: Vec<(f64, f64)> = [(0.0, 1.0), (1.0, 0.0)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::scatter_chart(
+    let chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -10,18 +10,18 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `training_data` для следующего шага примера.
-    let training_data = [1.0, 2.0, 3.0];
+    let training_data: [f64; 3] = [1.0, 2.0, 3.0];
     // Создаём набор значений `test` для следующего шага примера.
-    let test = [100.0];
+    let test: [f64; 1] = [100.0];
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         !training_data.is_empty(),
         "обучающая выборка не должна быть пустой"
     );
     // Преобразуем входные данные и сохраняем полученную коллекцию в `training_mean`.
-    let training_mean = training_data.iter().sum::<f64>() / training_data.len() as f64;
+    let training_mean: f64 = training_data.iter().sum::<f64>() / training_data.len() as f64;
     // Сохраняем рассчитанное значение `contaminated_mean` для следующих операций.
-    let contaminated_mean =
+    let contaminated_mean: f64 =
         // Составляем результат из вычисленных значений в указанном порядке.
         (training_data.iter().sum::<f64>() + test.iter().sum::<f64>()) / (training_data.len() + test.len()) as f64;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -34,7 +34,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_data_leakage_from_test_set_into_training(training_mean: f64, contaminated_mean: f64) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

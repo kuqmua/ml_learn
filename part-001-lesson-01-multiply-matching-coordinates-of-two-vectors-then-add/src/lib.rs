@@ -14,7 +14,7 @@ pub fn multiply_matching_coordinates_of_two_vectors_then_add(
         return Err("векторы должны быть одинаковой длины");
     }
     // Сохраняем результат этого шага в `sum`.
-    let mut sum = 0.0;
+    let mut sum: f64 = 0.0;
     // Повторяем расчёт для каждого элемента последовательности.
     for index in 0..left.len() {
         // Обновляем значение результатом текущего вычисления.

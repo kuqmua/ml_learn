@@ -10,9 +10,9 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `training_error` для следующего шага примера.
-    let training_error = [0.25, 0.05, 0.0];
+    let training_error: [f64; 3] = [0.25, 0.05, 0.0];
     // Создаём набор значений `validation_error` для следующего шага примера.
-    let validation_error = [0.30, 0.15, 0.35];
+    let validation_error: [f64; 3] = [0.30, 0.15, 0.35];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for depth in 1..=3 {
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -56,7 +56,7 @@ fn visualize_overfitting_from_excessive_decision_tree_depth(
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

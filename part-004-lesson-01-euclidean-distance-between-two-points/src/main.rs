@@ -16,7 +16,7 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, first_point, second_point, expected) in cases {
         // Общая функция проверяет размерности и вычисляет расстояние.
-        let distance = part_004_lesson_01_euclidean_distance_between_two_points::euclidean_distance_between_two_points(
+        let distance: f64 = part_004_lesson_01_euclidean_distance_between_two_points::euclidean_distance_between_two_points(
             first_point,
             second_point,
         )
@@ -28,11 +28,11 @@ fn main() {
         println!("{description}: {first_point:?} и {second_point:?} → {distance}");
     }
     // Задаём учебные значения для `first_point`.
-    let first_point = [0.0, 0.0];
+    let first_point: [f64; 2] = [0.0, 0.0];
     // Задаём учебные значения для `too_short`.
-    let too_short = [3.0];
+    let too_short: [f64; 1] = [3.0];
     // Сохраняем результат этого шага в `error`.
-    let error =
+    let error: &str =
         part_004_lesson_01_euclidean_distance_between_two_points::euclidean_distance_between_two_points(&first_point, &too_short)
             // Настраиваем или преобразуем результат предыдущего шага.
             .expect_err("точки разной размерности нужно отклонить");
@@ -50,7 +50,7 @@ fn visualize_euclidean_distance_between_two_points() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             (
                 // Используем подготовленное значение в следующем шаге примера.
                 horizontal_value,
@@ -65,7 +65,7 @@ fn visualize_euclidean_distance_between_two_points() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

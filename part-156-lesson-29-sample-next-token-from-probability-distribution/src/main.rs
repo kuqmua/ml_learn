@@ -10,12 +10,12 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `words` для следующего шага примера.
-    let words = ["кот", "пёс", "мир"];
+    let words: [&str; 3] = ["кот", "пёс", "мир"];
     // Создаём набор значений `probabilities` для следующего шага примера.
     let probabilities: [f64; 3] = [0.5, 0.3, 0.2];
     // Инициализируем значение `random_number_between_zero_and_one` начальным состоянием.
     // Число от 0 до 1 задаёт долю единичного интервала; такую долю называют fraction.
-    let random_number_between_zero_and_one = 0.65;
+    let random_number_between_zero_and_one: f64 = 0.65;
     // Инициализируем изменяемый накопитель `cumulative` начальным состоянием.
     // Каждому слову соответствует одна неотрицательная вероятность.
     assert_eq!(
@@ -54,7 +54,7 @@ fn main() {
         "случайное число должно быть от 0 до 1, не включая 1"
     );
     // Сохраняем результат этого шага в `cumulative`.
-    let mut cumulative = 0.0;
+    let mut cumulative: f64 = 0.0;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for index in 0..words.len() {
         // Прибавляем очередной вклад к ранее накопленному результату.
@@ -75,7 +75,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_sample_next_token_from_probability_distribution(probabilities: [f64; 3]) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

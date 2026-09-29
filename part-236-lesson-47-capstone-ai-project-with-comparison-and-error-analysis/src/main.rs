@@ -38,7 +38,7 @@ fn main() {
         "для baseline нужны обучающие примеры"
     );
     // Шаг: Считаем частоту большинства как простую исходную точку.
-    let baseline = TRAINING_EXAMPLES
+    let baseline: f64 = TRAINING_EXAMPLES
         // Перебираем элементы по ссылке, не копируя исходную коллекцию.
         .iter()
         // Оставляем только элементы, прошедшие указанную проверку.
@@ -72,9 +72,11 @@ fn main() {
     ) -> (&'static str, usize) {
         // Выделяем уникальные слова запроса для сравнения с обучающими фразами.
         // Единицу текста, которую модель обрабатывает как одно целое, называют token.
-        let query_text_units = collect_unique_words_from_text(query);
+        let query_text_units: std::collections::BTreeSet<&str> =
+            collect_unique_words_from_text(query);
         // Создаём изменяемое значение `scores` для следующих операций.
-        let mut scores = std::collections::BTreeMap::from([("code", 0usize), ("ml", 0)]);
+        let mut scores: std::collections::BTreeMap<&str, usize> =
+            std::collections::BTreeMap::from([("code", 0usize), ("ml", 0)]);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(sample_text, label) in training_examples {
             // Прибавляем очередной вклад к ранее накопленному результату.
@@ -85,9 +87,9 @@ fn main() {
                 .count();
         }
         // Сохраняем рассчитанное значение `code_score` для следующих операций.
-        let code_score = scores["code"];
+        let code_score: usize = scores["code"];
         // Сохраняем рассчитанное значение `machine_learning_score` для следующих операций.
-        let machine_learning_score = scores["ml"];
+        let machine_learning_score: usize = scores["ml"];
         // Составляем результат из вычисленных значений в указанном порядке.
         (
             // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -112,7 +114,7 @@ fn main() {
     }
 
     // Шаг: Оцениваем классификатор на фразах вне обучения.
-    let correct = TEST_EXAMPLES
+    let correct: usize = TEST_EXAMPLES
         // Перебираем элементы по ссылке, не копируя исходную коллекцию.
         .iter()
         // Оставляем только элементы, прошедшие указанную проверку.
@@ -134,7 +136,7 @@ fn main() {
     // Шаг: Разбираем каждый прогноз вместе с истинной темой и числом совпавших слов.
     for &(sample_text, expected_topic) in &TEST_EXAMPLES {
         // Сохраняем рассчитанное значение `(predicted_topic, overlap_count)` для следующих операций.
-        let (predicted_topic, overlap_count) =
+        let (predicted_topic, overlap_count): (&str, usize) =
             // Вызываем нужное вычисление с подготовленными аргументами.
             choose_topic_and_count_matching_training_words(sample_text, &TRAINING_EXAMPLES);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -153,7 +155,7 @@ fn main() {
         correct: usize,
     ) {
         // Наглядное сравнение результатов сводной практики.
-        let chart = lesson_visualization::bar_chart(
+        let chart: std::path::PathBuf = lesson_visualization::bar_chart(
             // Передаём путь к каталогу текущего урока.
             env!("CARGO_MANIFEST_DIR"),
             // Указываем имя SVG-файла.

@@ -3,8 +3,8 @@
 
 fn main() {
     // Сравниваем три разных размера одной и той же строки.
-    let text = "кот 🐈";
-    let bytes = text.as_bytes();
+    let text: &str = "кот 🐈";
+    let bytes: &[u8] = text.as_bytes();
     let characters: Vec<char> = text.chars().collect();
     assert_eq!(String::from_utf8(bytes.to_vec()).unwrap(), text);
     assert!(bytes.len() > characters.len());

@@ -5,7 +5,7 @@
 
 fn main() {
     // Задаём учебные значения для `targets`.
-    let targets = [2.0, 4.0, 6.0];
+    let targets: [f64; 3] = [2.0, 4.0, 6.0];
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &[f64], f64); 4] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -20,7 +20,7 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, predictions, expected) in cases {
         // Сохраняем результат этого шага в `mean_absolute_error_value`.
-        let mean_absolute_error_value =
+        let mean_absolute_error_value: f64 =
             part_050_lesson_09_mean_absolute_error_between_targets_and_predictions::mean_absolute_error_between_targets_and_predictions(&targets, predictions)
                 // Используем результат, ожидая успешного выполнения шага.
                 .expect("у каждого прогноза есть правильный ответ");
@@ -41,7 +41,7 @@ fn visualize_mean_absolute_error_between_targets_and_predictions() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `prediction_difference`.
-            let prediction_difference = plot_step_index as f64 / 10.0;
+            let prediction_difference: f64 = plot_step_index as f64 / 10.0;
             (
                 // Используем подготовленное значение в следующем шаге примера.
                 prediction_difference,
@@ -63,7 +63,7 @@ fn visualize_mean_absolute_error_between_targets_and_predictions() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

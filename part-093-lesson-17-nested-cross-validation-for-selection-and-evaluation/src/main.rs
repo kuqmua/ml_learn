@@ -19,7 +19,7 @@ fn main() {
         "для выбора k нужна хотя бы одна оценка"
     );
     // Сохраняем рассчитанное значение `best` для следующих операций.
-    let best = inner_scores
+    let best: &(usize, f64) = inner_scores
         // Перебираем элементы по ссылке, не копируя исходную коллекцию.
         .iter()
         // Выбираем k с максимальной оценкой на внутренней проверке.
@@ -29,9 +29,9 @@ fn main() {
         // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
         .unwrap();
     // Внешние метки не участвовали в выборе k: они нужны только для итоговой оценки.
-    let outer_truth = [true, false, true, false];
+    let outer_truth: [bool; 4] = [true, false, true, false];
     // Создаём набор значений `outer_predictions` для следующего шага примера.
-    let outer_predictions = [true, false, false, false];
+    let outer_predictions: [bool; 4] = [true, false, false, false];
     // Проверяем ожидаемое свойство учебного примера.
     assert_eq!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -49,13 +49,13 @@ fn main() {
         "для внешней оценки нужен хотя бы один пример"
     );
     // Считаем количество элементов и сохраняем его в `outer_correct`.
-    let outer_correct = (0..outer_truth.len())
+    let outer_correct: usize = (0..outer_truth.len())
         // Оставляем только элементы, прошедшие указанную проверку.
         .filter(|&index| outer_truth[index] == outer_predictions[index])
         // Подсчитываем число элементов после отбора.
         .count();
     // Считаем количество элементов и сохраняем его в `outer_test_accuracy`.
-    let outer_test_accuracy = outer_correct as f64 / outer_truth.len() as f64;
+    let outer_test_accuracy: f64 = outer_correct as f64 / outer_truth.len() as f64;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Присваиваем вычисленное значение соответствующей переменной или полю.
@@ -79,7 +79,7 @@ fn visualize_nested_cross_validation_for_selection_and_evaluation(inner_scores: 
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

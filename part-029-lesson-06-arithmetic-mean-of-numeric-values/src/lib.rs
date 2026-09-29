@@ -8,7 +8,7 @@ pub fn arithmetic_mean_of_numeric_values(values: &[f64]) -> Result<f64, &'static
         return Err("для среднего нужно хотя бы одно значение");
     }
     // Сохраняем результат этого шага в `sum`.
-    let mut sum = 0.0;
+    let mut sum: f64 = 0.0;
     // Повторяем расчёт для каждого элемента последовательности.
     for &value in values {
         // Обновляем значение результатом текущего вычисления.

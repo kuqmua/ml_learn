@@ -3,10 +3,10 @@
 
 fn main() {
     let alpha: f64 = 0.64;
-    let training = [(1.0, -1.0), (1.0, 0.0), (1.0, 1.0), (1.0, 2.0)];
-    let validation = [(2.0, -0.5), (-1.0, 0.5)];
+    let training: [(f64, f64); 4] = [(1.0, -1.0), (1.0, 0.0), (1.0, 1.0), (1.0, 2.0)];
+    let validation: [(f64, f64); 2] = [(2.0, -0.5), (-1.0, 0.5)];
     // Условный предсказатель получает известное clean: пример изолирует MSE обучения.
-    let inputs: Vec<_> = training
+    let inputs: Vec<(f64, f64)> = training
         .iter()
         .map(|&(clean, noise)| {
             (
@@ -19,24 +19,24 @@ fn main() {
             )
         })
         .collect();
-    let mut weight = 0.0;
+    let mut weight: f64 = 0.0;
     for _ in 0..100 {
         // Производную функции по параметру или вектор таких производных называют gradient.
-        let rate_of_change = inputs
+        let rate_of_change: f64 = inputs
             .iter()
             .map(|&(input_value, target)| 2.0 * (weight * input_value - target) * input_value)
             .sum::<f64>()
             / inputs.len() as f64;
         weight -= 0.2 * rate_of_change;
     }
-    let loss = inputs
+    let loss: f64 = inputs
         .iter()
         .map(|&(input_value, target)| (weight * input_value - target).powi(2))
         .sum::<f64>()
         / inputs.len() as f64;
     assert!(loss < 1e-6);
     // Отложенные пары не участвовали в изменении веса.
-    let held_out: Vec<_> = validation
+    let held_out: Vec<(f64, f64)> = validation
         .iter()
         .map(|&(clean, noise)| {
             (
@@ -49,15 +49,15 @@ fn main() {
             )
         })
         .collect();
-    let mean_squared_error_value = |candidate: f64| {
+    let mean_squared_error_value: &dyn Fn(f64) -> f64 = &|candidate: f64| {
         held_out
             .iter()
             .map(|&(input_value, target)| (candidate * input_value - target).powi(2))
             .sum::<f64>()
             / held_out.len() as f64
     };
-    let baseline = mean_squared_error_value(0.0);
-    let validation_loss = mean_squared_error_value(weight);
+    let baseline: f64 = mean_squared_error_value(0.0);
+    let validation_loss: f64 = mean_squared_error_value(weight);
     assert!(validation_loss < baseline);
     println!(
         "вес={weight:.3}; train MSE={loss:.8}; validation MSE={validation_loss:.8}; baseline={baseline:.3}"

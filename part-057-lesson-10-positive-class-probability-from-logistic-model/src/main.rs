@@ -10,9 +10,9 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Инициализируем значение `probability_positive` начальным состоянием.
-    let probability_positive = 0.7;
+    let probability_positive: f64 = 0.7;
     // Комбинируем исходные величины и сохраняем результат в `probability_negative`.
-    let probability_negative = 1.0 - probability_positive;
+    let probability_negative: f64 = 1.0 - probability_positive;
     // Проверяем обязательное условие до дальнейшего вычисления.
     assert!(probability_positive >= 0.0 && probability_positive <= 1.0);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -29,7 +29,7 @@ fn visualize_positive_class_probability_from_logistic_model() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `probability`.
-            let probability = plot_step_index as f64 / 100.0;
+            let probability: f64 = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
             (probability, probability)
         })
@@ -40,14 +40,14 @@ fn visualize_positive_class_probability_from_logistic_model() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `probability`.
-            let probability = plot_step_index as f64 / 100.0;
+            let probability: f64 = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
             (probability, 1.0 - probability)
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -3,7 +3,7 @@
 /// Складываем модули координат.
 pub fn sum_absolute_values_of_vector_coordinates(vector: &[f64]) -> f64 {
     // Сохраняем результат этого шага в `sum`.
-    let mut sum = 0.0;
+    let mut sum: f64 = 0.0;
     // Повторяем расчёт для каждого элемента последовательности.
     for &coordinate in vector {
         // Обновляем значение результатом текущего вычисления.

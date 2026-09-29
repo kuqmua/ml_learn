@@ -9,11 +9,12 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `transitions` для следующего шага примера.
-    let transitions = [("я", "учу", 3), ("я", "пишу", 1), ("учу", "rust", 2)];
+    let transitions: [(&str, &str, i32); 3] =
+        [("я", "учу", 3), ("я", "пишу", 1), ("учу", "rust", 2)];
     // Сохраняем рассчитанное значение `current` для следующих операций.
-    let current = "я";
+    let current: &str = "я";
     // Создаём изменяемое значение `best` для следующих операций.
-    let mut best = ("", 0);
+    let mut best: (&str, i32) = ("", 0);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (previous, next, count) in transitions {
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -32,7 +33,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_predict_next_token_from_bigram_counts() {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

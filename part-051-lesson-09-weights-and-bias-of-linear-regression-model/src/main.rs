@@ -10,13 +10,13 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `weight` для следующих операций.
-    let weight = 2.0;
+    let weight: f64 = 2.0;
     // Сохраняем рассчитанное значение `bias` для следующих операций.
-    let bias = 1.0;
+    let bias: f64 = 1.0;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for feature in [0.0, 1.0, 3.0] {
         // Умножаем значения и сохраняем результат в `prediction`.
-        let prediction = weight * feature + bias;
+        let prediction: f64 = weight * feature + bias;
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("x={feature} -> y={prediction}");
     }
@@ -32,14 +32,14 @@ fn visualize_weights_and_bias_of_linear_regression_model() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, 2.0 * horizontal_value + 1.0)
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

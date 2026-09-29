@@ -5,7 +5,7 @@ pub fn recall_from_binary_classification_counts(
     counts: part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::BinaryClassificationCounts,
 ) -> Option<f64> {
     // Сохраняем результат этого шага в `actual_positives`.
-    let actual_positives = counts.true_positives + counts.false_negatives;
+    let actual_positives: usize = counts.true_positives + counts.false_negatives;
     // Выбираем дальнейший шаг по выполнению условия.
     if actual_positives == 0 {
         // Отмечаем отсутствие подходящего значения.

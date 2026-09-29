@@ -26,15 +26,15 @@ fn main() {
         ("каждая эпоха лучше", &[0.8, 0.7, 0.6, 0.5], None),
     ];
     // Сохраняем результат этого шага в `patience`.
-    let patience = 2;
+    let patience: i32 = 2;
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, validation_losses, expected_stop) in cases {
         // Сохраняем результат этого шага в `best`.
-        let mut best = f64::INFINITY;
+        let mut best: f64 = f64::INFINITY;
         // Сохраняем результат этого шага в `bad_epochs`.
-        let mut bad_epochs = 0;
+        let mut bad_epochs: i32 = 0;
         // Сохраняем результат этого шага в `stopped_at`.
-        let mut stopped_at = None;
+        let mut stopped_at: Option<usize> = None;
         // Повторяем расчёт для каждого элемента последовательности.
         for (epoch, &loss) in validation_losses.iter().enumerate() {
             // Выбираем дальнейший шаг по выполнению условия.
@@ -83,7 +83,7 @@ fn visualize_stop_training_after_validation_loss_stagnates(
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

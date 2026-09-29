@@ -10,7 +10,7 @@ fn square_root_with_newton_method(value: f64) -> f64 {
         return 0.0;
     }
     // Сохраняем результат этого шага в `estimate`.
-    let mut estimate = if value > 1.0 { value } else { 1.0 };
+    let mut estimate: f64 = if value > 1.0 { value } else { 1.0 };
     // Повторяем расчёт для каждого элемента последовательности.
     for _ in 0..80 {
         // Обновляем значение результатом текущего вычисления.
@@ -23,7 +23,7 @@ fn square_root_with_newton_method(value: f64) -> f64 {
 /// Длина вектора использует вычисление из урока 01.1.
 pub fn euclidean_norm_of_vector(vector: &[f64]) -> f64 {
     // Сохраняем результат этого шага в `squared_length`.
-    let squared_length =
+    let squared_length: f64 =
         part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
             vector, vector,
         )

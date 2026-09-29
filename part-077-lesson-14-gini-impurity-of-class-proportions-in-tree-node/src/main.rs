@@ -13,9 +13,9 @@ fn main() {
     // Долю объектов одного класса среди всех объектов называют fraction.
     for positive_class_share in [0.0, 0.5, 1.0] {
         // Комбинируем исходные величины и сохраняем результат в `negative_class_share`.
-        let negative_class_share = 1.0 - positive_class_share;
+        let negative_class_share: f64 = 1.0 - positive_class_share;
         // Сохраняем рассчитанное значение `gini` для следующих операций.
-        let gini =
+        let gini: f64 =
             // Умножаем величины согласно используемой формуле.
             1.0 - positive_class_share * positive_class_share - negative_class_share * negative_class_share;
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -33,14 +33,14 @@ fn visualize_gini_impurity_of_class_proportions_in_tree_node() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `probability`.
-            let probability = plot_step_index as f64 / 100.0;
+            let probability: f64 = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
             (probability, 2.0 * probability * (1.0 - probability))
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

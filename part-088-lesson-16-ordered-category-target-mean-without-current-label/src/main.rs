@@ -2,9 +2,9 @@
 // Метка текущей строки не попадает в её закодированный признак.
 
 fn main() {
-    let categories = ["A", "B", "A", "A", "B"];
-    let targets = [1.0, 0.0, 0.0, 1.0, 1.0];
-    let values = part_088_lesson_16_ordered_category_target_mean_without_current_label::ordered_category_target_mean_using_prior_rows(
+    let categories: [&str; 5] = ["A", "B", "A", "A", "B"];
+    let targets: [f64; 5] = [1.0, 0.0, 0.0, 1.0, 1.0];
+    let values: Vec<f64> = part_088_lesson_16_ordered_category_target_mean_without_current_label::ordered_category_target_mean_using_prior_rows(
         &categories,
         &targets,
         0.5,
@@ -23,12 +23,12 @@ fn main() {
 }
 
 fn visualize_ordered_category_target_mean_without_current_label(values: &[f64]) {
-    let points: Vec<_> = values
+    let points: Vec<(f64, f64)> = values
         .iter()
         .enumerate()
         .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
         .collect();
-    let path = lesson_visualization::line_chart(
+    let path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "ordered-stats",
         "Префиксная статистика",

@@ -10,10 +10,10 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // f(x,y)=(x−2)²+3(y+1)².
-    let (input_value, second_input_value) = (0.0, 0.0);
+    let (input_value, second_input_value): (f64, f64) = (0.0, 0.0);
     // Создаём набор значений `rate_of_change` для следующего шага примера.
     // Производную функции по параметру или вектор таких производных называют gradient.
-    let rate_of_change = [2.0 * (input_value - 2.0), 6.0 * (second_input_value + 1.0)];
+    let rate_of_change: [f64; 2] = [2.0 * (input_value - 2.0), 6.0 * (second_input_value + 1.0)];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("градиент в (0,0) = {rate_of_change:?}");
 
@@ -28,14 +28,14 @@ fn visualize_gradient_of_two_variable_function() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, 2.0 * (horizontal_value - 3.0))
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

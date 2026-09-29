@@ -13,7 +13,7 @@ fn main() {
         ("несовместимые формы", (2, 3), (2, 4), None),
     ] {
         // Сохраняем результат этого шага в `result_shape`.
-        let result_shape = if left_shape.1 == right_shape.0 {
+        let result_shape: Option<(i32, i32)> = if left_shape.1 == right_shape.0 {
             // Возвращаем присутствующее значение.
             Some((left_shape.0, right_shape.1))
         // Обрабатываем случай, когда предыдущее условие не выполнено.
@@ -34,7 +34,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_check_matrix_multiplication_shapes_and_result_shape() {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

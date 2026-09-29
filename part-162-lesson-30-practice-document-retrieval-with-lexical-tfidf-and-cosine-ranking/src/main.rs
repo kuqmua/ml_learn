@@ -36,29 +36,30 @@ fn main() {
     }
 
     // Шаг: Токенизируем запрос, рассчитываем TF-IDF по документам и возвращаем top-k источников.
-    let highest_ranked_items = (|| -> Vec<(&'static str, f64)> {
+    let highest_ranked_items: Vec<(&str, f64)> = (|| -> Vec<(&'static str, f64)> {
         // Используем подготовленное значение в следующем шаге примера.
         /* Оцениваем совпадения слов запроса и документов с поправкой на частоту слова. */
         // Сохраняем результат этого шага в `query`.
         let query: &str = "модель данные";
         // Один и тот же разбор текста используем для запроса и документов.
         // Единицу текста, которую модель обрабатывает как одно целое, называют token.
-        let query_text_units = split_text_into_lowercase_words(query);
+        let query_text_units: Vec<String> = split_text_into_lowercase_words(query);
         // Создаём набор значений `ranked_results` для следующего шага примера.
-        let mut ranked_results = vec![];
+        let mut ranked_results: Vec<(&str, f64)> = vec![];
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(document_identifier, document_text) in &DOCUMENTS {
             // Сохраняем рассчитанное значение `document_text_units` для следующих операций.
-            let document_text_units = split_text_into_lowercase_words(document_text);
+            let document_text_units: Vec<String> = split_text_into_lowercase_words(document_text);
             // Частота слова внутри документа составляет компонент TF.
-            let mut text_unit_counts = std::collections::BTreeMap::new();
+            let mut text_unit_counts: std::collections::BTreeMap<&String, usize> =
+                std::collections::BTreeMap::new();
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for text_unit in &document_text_units {
                 // Прибавляем очередной вклад к ранее накопленному результату.
                 *text_unit_counts.entry(text_unit).or_insert(0usize) += 1;
             }
             // Инициализируем изменяемый накопитель `relevance_score` начальным состоянием.
-            let mut relevance_score = 0.;
+            let mut relevance_score: f64 = 0.;
             // Редкие во всём корпусе слова получают больший вес IDF.
             for word in query_text_units
                 // Перебираем слова запроса без копирования строк.
@@ -67,7 +68,7 @@ fn main() {
                 .collect::<std::collections::BTreeSet<_>>()
             {
                 // Сохраняем рассчитанное значение `document_frequency` для следующих операций.
-                let document_frequency = DOCUMENTS
+                let document_frequency: usize = DOCUMENTS
                     // Перебираем элементы по ссылке, не копируя исходную коллекцию.
                     .iter()
                     // Оставляем только элементы, прошедшие указанную проверку.
@@ -78,7 +79,7 @@ fn main() {
                     // Подсчитываем число элементов после отбора.
                     .count();
                 // Выполняем встроенный расчёт один раз и сохраняем результат в `inverse_document_frequency`.
-                let inverse_document_frequency = (|| -> f64 {
+                let inverse_document_frequency: f64 = (|| -> f64 {
                     // Обновляем значение результатом текущего вычисления.
                     /* ln(x) через ряд 2 * (t + t³/3 + t⁵/5 + ...), t=(x-1)/(x+1). */
                     // Сохраняем результат этого шага в `value`.
@@ -98,9 +99,9 @@ fn main() {
                         return f64::INFINITY;
                     }
                     // Создаём изменяемое значение `scaled` для следующих операций.
-                    let mut scaled = value;
+                    let mut scaled: f64 = value;
                     // Инициализируем изменяемый накопитель `power_of_two` начальным состоянием.
-                    let mut power_of_two = 0i32;
+                    let mut power_of_two: i32 = 0i32;
                     // Повторяем вычисление, пока выполняется указанное условие.
                     while scaled >= 2.0 {
                         // Масштабируем текущую величину делением.
@@ -118,13 +119,13 @@ fn main() {
                     // Объявляем повторно используемое вычисление `sum_logarithm_series_terms`; параметры ниже задают его входы.
                     fn sum_logarithm_series_terms(value: f64) -> f64 {
                         // Нормируем или усредняем величину делением и сохраняем её в `ratio`.
-                        let ratio = (value - 1.0) / (value + 1.0);
+                        let ratio: f64 = (value - 1.0) / (value + 1.0);
                         // Умножаем значения и сохраняем результат в `ratio_squared`.
-                        let ratio_squared = ratio * ratio;
+                        let ratio_squared: f64 = ratio * ratio;
                         // Создаём изменяемое значение `term` для следующих операций.
-                        let mut term = ratio;
+                        let mut term: f64 = ratio;
                         // Инициализируем изменяемый накопитель `result` начальным состоянием.
-                        let mut result = 0.0;
+                        let mut result: f64 = 0.0;
                         // Повторяем следующий блок для каждого элемента указанной последовательности.
                         for term_index in 0..40 {
                             // Прибавляем очередной вклад к ранее накопленному результату.
@@ -136,7 +137,7 @@ fn main() {
                         2.0 * result
                     }
                     // Сохраняем рассчитанное значение `logarithm_of_two` для следующих операций.
-                    let logarithm_of_two = sum_logarithm_series_terms(2.0);
+                    let logarithm_of_two: f64 = sum_logarithm_series_terms(2.0);
                     // Умножаем величины согласно используемой формуле.
                     sum_logarithm_series_terms(scaled) + power_of_two as f64 * logarithm_of_two
                     // Вычисляем значение по указанной формуле.
@@ -186,7 +187,7 @@ fn visualize_practice_document_retrieval_with_lexical_tfidf_and_cosine_ranking(
         .map(|(document_identifier, score)| (*document_identifier, *score))
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

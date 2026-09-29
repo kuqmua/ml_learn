@@ -11,26 +11,26 @@
 fn main() {
     // Сохраняем рассчитанное значение `rate_of_change` для следующих операций.
     // Производную функции по параметру или вектор таких производных называют gradient.
-    let rate_of_change = 2.0;
+    let rate_of_change: f64 = 2.0;
     // Инициализируем значение `first_moment` начальным состоянием.
-    let first_moment = 0.9 * 0.0 + 0.1 * rate_of_change;
+    let first_moment: f64 = 0.9 * 0.0 + 0.1 * rate_of_change;
     // Инициализируем значение `second_moment` начальным состоянием.
-    let second_moment = 0.999 * 0.0 + 0.001 * rate_of_change * rate_of_change;
+    let second_moment: f64 = 0.999 * 0.0 + 0.001 * rate_of_change * rate_of_change;
     // Нормируем или усредняем величину делением и сохраняем её в `corrected_first`.
-    let corrected_first = first_moment / (1.0 - 0.9);
+    let corrected_first: f64 = first_moment / (1.0 - 0.9);
     // Нормируем или усредняем величину делением и сохраняем её в `corrected_second`.
-    let corrected_second = second_moment / (1.0 - 0.999);
+    let corrected_second: f64 = second_moment / (1.0 - 0.999);
     // Создаём изменяемое значение `root` для следующих операций.
-    let mut root = corrected_second;
+    let mut root: f64 = corrected_second;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for _ in 0..80 {
         // Присваиваем вычисленное значение соответствующей переменной или полю.
         root = (root + corrected_second / root) / 2.0;
     }
     // Сохраняем рассчитанное значение `old_weight` для следующих операций.
-    let old_weight = 1.0;
+    let old_weight: f64 = 1.0;
     // Нормируем или усредняем величину делением и сохраняем её в `updated`.
-    let updated = old_weight - 0.01 * corrected_first / (root + 0.00000001);
+    let updated: f64 = old_weight - 0.01 * corrected_first / (root + 0.00000001);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("вес после первого шага Adam = {updated}");
 
@@ -51,7 +51,7 @@ fn visualize_adam_update_from_gradient_moment_estimates(
     updated: f64,
 ) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

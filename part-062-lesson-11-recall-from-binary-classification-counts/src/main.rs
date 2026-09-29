@@ -16,7 +16,7 @@ fn main() {
         ("положительных объектов нет", 0, 0, None),
     ] {
         // Сохраняем результат этого шага в `counts`.
-        let counts = part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::BinaryClassificationCounts {
+        let counts: part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::BinaryClassificationCounts = part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::BinaryClassificationCounts {
             // Используем подготовленное значение в следующем шаге примера.
             true_positives,
             // Задаём именованное поле или параметр.
@@ -27,7 +27,7 @@ fn main() {
             false_negatives,
         };
         // Сохраняем результат этого шага в `recall`.
-        let recall = part_062_lesson_11_recall_from_binary_classification_counts::recall_from_binary_classification_counts(counts);
+        let recall: Option<f64> = part_062_lesson_11_recall_from_binary_classification_counts::recall_from_binary_classification_counts(counts);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(recall, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -52,7 +52,7 @@ fn visualize_recall_from_binary_classification_counts() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

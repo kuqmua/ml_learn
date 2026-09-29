@@ -5,7 +5,7 @@
 
 fn main() {
     // Задаём учебные значения для `cases`.
-    let cases = [
+    let cases: [(&str, [f64; 2]); 4] = [
         // Добавляем пару значений для сравнения или построения графика.
         ("равные оценки", [0.0, 0.0]),
         // Добавляем пару значений для сравнения или построения графика.
@@ -16,18 +16,18 @@ fn main() {
         ("к обеим прибавили 1", [1.0, 2.0]),
     ];
     // Задаём учебные значения для `reference_weights`.
-    let mut reference_weights = [0.0; 2];
+    let mut reference_weights: [f64; 2] = [0.0; 2];
     // Повторяем расчёт для каждого элемента последовательности.
     // Оценку модели до преобразования в вероятность называют logit.
     for (description, raw_model_scores) in cases {
         // Задаём учебные значения для `exponentials`.
-        let mut exponentials = [0.0; 2];
+        let mut exponentials: [f64; 2] = [0.0; 2];
         // Повторяем расчёт для каждого элемента последовательности.
         for index in 0..2 {
             // Считаем exp(x) первыми 30 членами ряда Тейлора для малых учебных оценок.
-            let mut term = 1.0;
+            let mut term: f64 = 1.0;
             // Сохраняем результат этого шага в `sum`.
-            let mut sum = 1.0;
+            let mut sum: f64 = 1.0;
             // Повторяем расчёт для каждого элемента последовательности.
             for order in 1..=30 {
                 // Обновляем значение результатом текущего вычисления.
@@ -39,7 +39,7 @@ fn main() {
             exponentials[index] = sum;
         }
         // Сохраняем результат этого шага в `denominator`.
-        let denominator = exponentials[0] + exponentials[1];
+        let denominator: f64 = exponentials[0] + exponentials[1];
         // Проверяем ожидаемое свойство учебного примера.
         assert!(
             // Используем подготовленное значение в следующем шаге примера.
@@ -48,7 +48,7 @@ fn main() {
             "сумма экспонент должна быть положительной"
         );
         // Задаём учебные значения для `weights`.
-        let weights = [exponentials[0] / denominator, exponentials[1] / denominator];
+        let weights: [f64; 2] = [exponentials[0] / denominator, exponentials[1] / denominator];
         // Проверяем ожидаемое свойство учебного примера.
         assert!((weights[0] + weights[1] - 1.0).abs() < 1e-10);
         // Проверяем ожидаемое свойство учебного примера.
@@ -92,14 +92,14 @@ fn visualize_normalize_attention_scores_into_weights_with_softmax() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `distance_value`.
-            let distance_value = plot_step_index as f64 / 10.0;
+            let distance_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (distance_value, 1.0 / (1.0 + (-distance_value).exp()))
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

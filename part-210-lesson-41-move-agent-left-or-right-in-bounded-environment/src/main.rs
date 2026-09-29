@@ -5,7 +5,7 @@
 
 fn main() {
     // Сохраняем результат этого шага в `last_state`.
-    let last_state = 4;
+    let last_state: i32 = 4;
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, state, action, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -22,7 +22,7 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert!(action == -1 || action == 1);
         // Сохраняем результат этого шага в `next_state`.
-        let next_state = (state + action).clamp(0, last_state);
+        let next_state: i32 = (state + action).clamp(0, last_state);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(next_state, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -40,7 +40,7 @@ fn visualize_move_agent_left_or_right_in_bounded_environment() {
         .map(|plot_step_index| (plot_step_index as f64, (plot_step_index + 1) as f64))
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

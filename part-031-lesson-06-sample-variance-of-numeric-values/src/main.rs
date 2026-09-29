@@ -16,7 +16,7 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, values, expected) in cases {
         // Сохраняем результат этого шага в `variance`.
-        let variance = part_031_lesson_06_sample_variance_of_numeric_values::sample_variance_of_numeric_values(values)
+        let variance: f64 = part_031_lesson_06_sample_variance_of_numeric_values::sample_variance_of_numeric_values(values)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("для этой выборки дисперсия определена");
         // Проверяем ожидаемое свойство учебного примера.
@@ -25,7 +25,7 @@ fn main() {
         println!("{description}: {values:?} → дисперсия {variance}");
     }
     // Сохраняем результат этого шага в `error`.
-    let error =
+    let error: &str =
         part_031_lesson_06_sample_variance_of_numeric_values::sample_variance_of_numeric_values(&[
             4.0,
         ])
@@ -45,7 +45,7 @@ fn visualize_sample_variance_of_numeric_values() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (
                 horizontal_value,
@@ -55,7 +55,7 @@ fn visualize_sample_variance_of_numeric_values() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

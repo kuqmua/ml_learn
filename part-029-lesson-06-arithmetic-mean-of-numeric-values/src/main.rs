@@ -16,7 +16,7 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, values, expected) in cases {
         // Общая функция среднего повторно понадобится в дисперсии и нормализации.
-        let mean =
+        let mean: f64 =
             part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(values)
                 .expect("в этой строке есть значения");
         // Проверяем ожидаемое свойство учебного примера.
@@ -27,7 +27,7 @@ fn main() {
     // Задаём учебные значения для `empty`.
     let empty: [f64; 0] = [];
     // Сохраняем результат этого шага в `error`.
-    let error =
+    let error: &str =
         part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
             &empty,
         )
@@ -47,7 +47,7 @@ fn visualize_arithmetic_mean_of_numeric_values() {
     // Собираем значения для `mean_points` в коллекцию.
     let mean_points: Vec<(f64, f64)> = [(1.0, 4.0), (3.0, 4.0)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

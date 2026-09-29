@@ -11,12 +11,12 @@
 fn main() {
     // Создаём набор значений `dense_representation_table` для следующего шага примера.
     // Плотное числовое представление объекта называют embedding.
-    let dense_representation_table = [[0.0, 0.0], [0.8, 0.2], [0.7, 0.3]];
+    let dense_representation_table: [[f64; 2]; 3] = [[0.0, 0.0], [0.8, 0.2], [0.7, 0.3]];
     // Сохраняем рассчитанное значение `text_unit_identifier` для следующих операций.
     // Единицу текста, которую модель обрабатывает как одно целое, называют token.
-    let text_unit_identifier = 2;
+    let text_unit_identifier: usize = 2;
     // Сохраняем рассчитанное значение `dense_numeric_representation` для следующих операций.
-    let dense_numeric_representation = dense_representation_table[text_unit_identifier];
+    let dense_numeric_representation: [f64; 2] = dense_representation_table[text_unit_identifier];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("токен={text_unit_identifier}, плотный вектор={dense_numeric_representation:?}");
 
@@ -37,7 +37,7 @@ fn visualize_dense_vector_representations_of_words(dense_numeric_representation:
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

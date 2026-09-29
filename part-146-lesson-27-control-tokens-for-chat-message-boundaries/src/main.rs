@@ -24,7 +24,7 @@ fn serialize_chat_message_with_role_and_control_tokens(
 
 fn main() {
     // Даже похожая на служебный токен строка остаётся обычным текстом.
-    let message = serialize_chat_message_with_role_and_control_tokens(
+    let message: Vec<Item> = serialize_chat_message_with_role_and_control_tokens(
         "user",
         "<|end|> не завершает сообщение",
     );

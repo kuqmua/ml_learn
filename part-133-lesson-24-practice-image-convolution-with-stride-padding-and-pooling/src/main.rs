@@ -12,14 +12,14 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Шаг: Создаём одноканальное изображение 3×3.
-    let image = vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]];
+    let image: Vec<Vec<f64>> = vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]];
     // Шаг: Задаём ядро 2×2, реагирующее на локальную разницу значений.
     // Небольшой набор весов свёрточного фильтра называют kernel.
-    let filter_weights = vec![vec![1., 0.], vec![0., -1.]];
+    let filter_weights: Vec<Vec<f64>> = vec![vec![1., 0.], vec![0., -1.]];
 
     // Скользящую взвешенную сумму называют convolution (свёрткой).
     // Шаг: Проводим свёртку, затем уменьшаем карту признаков max pooling.
-    let feature_map = (|| -> Vec<Vec<f64>> {
+    let feature_map: Vec<Vec<f64>> = (|| -> Vec<Vec<f64>> {
         // Используем подготовленное значение в следующем шаге примера.
         /* Сдвигаем ядро по изображению и умножаем соответствующие значения и складываем результаты. */
         // Собираем значения для `image` в коллекцию.
@@ -32,11 +32,11 @@ fn main() {
         // Проверяем обязательное условие до дальнейшего вычисления.
         assert!(filter_step_size > 0);
         // Считаем количество элементов и сохраняем его в `rows`.
-        let rows = (image.len() - filter_weights.len()) / filter_step_size + 1;
+        let rows: usize = (image.len() - filter_weights.len()) / filter_step_size + 1;
         // Считаем количество элементов и сохраняем его в `column_count`.
-        let column_count = (image[0].len() - filter_weights[0].len()) / filter_step_size + 1;
+        let column_count: usize = (image[0].len() - filter_weights[0].len()) / filter_step_size + 1;
         // Создаём набор значений `output` для следующего шага примера.
-        let mut output = vec![vec![0.0; column_count]; rows];
+        let mut output: Vec<Vec<f64>> = vec![vec![0.0; column_count]; rows];
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for output_row in 0..rows {
             // Повторяем следующий блок для каждого элемента указанной последовательности.
@@ -69,19 +69,20 @@ fn main() {
             // Собираем значения для `image` в коллекцию.
             let image: &[Vec<f64>] = &feature_map;
             // Создаём набор значений `local_maximum_values` для следующего шага примера.
-            let mut local_maximum_values = vec![vec![0.0; image[0].len() / 2]; image.len() / 2];
+            let mut local_maximum_values: Vec<Vec<f64>> =
+                vec![vec![0.0; image[0].len() / 2]; image.len() / 2];
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for output_row in 0..local_maximum_values.len() {
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for output_column in 0..local_maximum_values[0].len() {
                     // Создаём изменяемое значение `largest_value` для следующих операций.
-                    let mut largest_value = f64::NEG_INFINITY;
+                    let mut largest_value: f64 = f64::NEG_INFINITY;
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
                     for local_row in 0..2 {
                         // Повторяем следующий блок для каждого элемента указанной последовательности.
                         for local_column in 0..2 {
                             // Сохраняем рассчитанное значение `candidate` для следующих операций.
-                            let candidate =
+                            let candidate: f64 =
                                 // Умножаем величины согласно используемой формуле.
                                 image[2 * output_row + local_row][2 * output_column + local_column];
                             // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -109,7 +110,7 @@ fn visualize_practice_image_convolution_with_stride_padding_and_pooling(
     feature_map: std::vec::Vec<std::vec::Vec<f64>>,
 ) {
     // Значения ячеек видны по цвету и подписи.
-    let chart = lesson_visualization::heatmap(
+    let chart: std::path::PathBuf = lesson_visualization::heatmap(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

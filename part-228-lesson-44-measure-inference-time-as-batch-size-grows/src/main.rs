@@ -10,11 +10,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `features` для следующего шага примера.
-    let features = vec![1.0; 1000];
+    let features: Vec<f64> = vec![1.0; 1000];
     // Сохраняем рассчитанное значение `start` для следующих операций.
-    let start = std::time::Instant::now();
+    let start: std::time::Instant = std::time::Instant::now();
     // Сохраняем рассчитанное значение `predictions` для следующих операций.
-    let predictions: Vec<_> = features
+    let predictions: Vec<f64> = features
         // Перебираем элементы по ссылке, не копируя исходную коллекцию.
         .iter()
         // Преобразуем каждый элемент последовательности.
@@ -42,14 +42,14 @@ fn visualize_measure_inference_time_as_batch_size_grows() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `sample_count`.
-            let sample_count = (plot_step_index * 10) as f64;
+            let sample_count: f64 = (plot_step_index * 10) as f64;
             // Добавляем пару значений для сравнения или построения графика.
             (sample_count, 2.0 * sample_count)
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

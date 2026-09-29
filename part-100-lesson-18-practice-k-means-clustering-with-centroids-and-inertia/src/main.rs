@@ -12,7 +12,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Шаг: Задаём две визуально разделимые группы точек.
-    let dataset = [[0., 0.], [0., 1.], [10., 10.], [10., 11.]];
+    let dataset: [[f64; 2]; 4] = [[0., 0.], [0., 1.], [10., 10.], [10., 11.]];
 
     // Учебные реализации математических операций для этого урока.
 
@@ -51,13 +51,13 @@ fn main() {
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for _ in 0..100 {
                 // Создаём набор значений `coordinate_sums` для следующего шага примера.
-                let mut coordinate_sums = vec![[0., 0.]; centers.len()];
+                let mut coordinate_sums: Vec<[f64; 2]> = vec![[0., 0.]; centers.len()];
                 // Создаём набор значений `cluster_sizes` для следующего шага примера.
-                let mut cluster_sizes = vec![0; centers.len()];
+                let mut cluster_sizes: Vec<i32> = vec![0; centers.len()];
                 // Назначаем каждую точку ближайшему центру и собираем суммы координат.
                 for &point in data {
                     // Считаем количество элементов и сохраняем его в `center_index`.
-                    let center_index = (0..centers.len())
+                    let center_index: usize = (0..centers.len())
                         // Сравниваем кандидатов и оставляем наименьшее расстояние.
                         .min_by(|&first_center_index, &second_center_index| {
                             // Вызываем нужное вычисление с подготовленными аргументами.
@@ -88,7 +88,7 @@ fn main() {
                     cluster_sizes[center_index] += 1;
                 }
                 // Сохраняем рассчитанное значение `previous_centers` для следующих операций.
-                let previous_centers = centers.clone();
+                let previous_centers: Vec<[f64; 2]> = centers.clone();
                 // Новый центр каждого непустого кластера — среднее его точек.
                 for center_index in 0..centers.len() {
                     // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -109,15 +109,15 @@ fn main() {
                 }
             }
             // Инерция суммирует квадраты расстояний до ближайших центров.
-            let mut inertia = 0.0;
+            let mut inertia: f64 = 0.0;
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for &point in data {
                 // Создаём изменяемое значение `nearest_squared_distance` для следующих операций.
-                let mut nearest_squared_distance = f64::INFINITY;
+                let mut nearest_squared_distance: f64 = f64::INFINITY;
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for &center in &centers {
                     // Сохраняем рассчитанное значение `candidate_distance` для следующих операций.
-                    let candidate_distance =
+                    let candidate_distance: f64 =
                         // Вызываем нужное вычисление с подготовленными аргументами.
                         calculate_squared_distance_between_points(point, center);
                     // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -147,7 +147,7 @@ fn visualize_practice_k_means_clustering_with_centroids_and_inertia(dataset: [[f
         .map(|data_point| (data_point[0], data_point[1]))
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::scatter_chart(
+    let chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

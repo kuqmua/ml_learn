@@ -10,9 +10,9 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `training` для следующего шага примера.
-    let training = [(1.0, 3.0), (2.0, 5.0)];
+    let training: [(f64, f64); 2] = [(1.0, 3.0), (2.0, 5.0)];
     // Создаём набор значений `test` для следующего шага примера.
-    let test = [(3.0, 7.0), (4.0, 9.0)];
+    let test: [(f64, f64); 2] = [(3.0, 7.0), (4.0, 9.0)];
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Обновляем значение результатом текущего вычисления.
@@ -37,13 +37,13 @@ fn main() {
         "для MSE нужен хотя бы один тестовый пример"
     );
     // Нормируем или усредняем величину делением и сохраняем её в `weight`.
-    let weight = (training[1].1 - training[0].1) / (training[1].0 - training[0].0);
+    let weight: f64 = (training[1].1 - training[0].1) / (training[1].0 - training[0].0);
     // Умножаем значения и сохраняем результат в `bias`.
-    let bias = training[0].1 - weight * training[0].0;
+    let bias: f64 = training[0].1 - weight * training[0].0;
     // Собираем значения для `targets` в коллекцию.
-    let targets: Vec<_> = test.iter().map(|&(_, target)| target).collect();
+    let targets: Vec<f64> = test.iter().map(|&(_, target)| target).collect();
     // Собираем значения для `predictions` в коллекцию.
-    let predictions: Vec<_> = test
+    let predictions: Vec<f64> = test
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Преобразуем каждый элемент в новое значение.
@@ -51,7 +51,7 @@ fn main() {
         // Собираем результаты в коллекцию.
         .collect();
     // Сохраняем результат этого шага в `mean_squared_error_value`.
-    let mean_squared_error_value =
+    let mean_squared_error_value: f64 =
         part_049_lesson_09_mean_squared_error_between_targets_and_predictions::mean_squared_error_between_targets_and_predictions(&targets, &predictions).unwrap();
     // Печатаем рассчитанные значения для проверки примера.
     println!("test MSE = {mean_squared_error_value}");
@@ -82,14 +82,14 @@ fn visualize_evaluate_linear_regression_on_heldout_data(
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, weight * horizontal_value + bias)
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

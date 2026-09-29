@@ -20,13 +20,13 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert!(!source.is_empty(), "медиана пустого набора не определена");
         // Сохраняем результат этого шага в `values`.
-        let mut values = source.to_vec();
+        let mut values: Vec<f64> = source.to_vec();
         // Используем подготовленное значение в следующем шаге примера.
         values.sort_by(f64::total_cmp);
         // Определяем размер данных и сохраняем его в `middle`.
-        let middle = values.len() / 2;
+        let middle: usize = values.len() / 2;
         // Определяем размер данных и сохраняем его в `median`.
-        let median = if values.len() % 2 == 0 {
+        let median: f64 = if values.len() % 2 == 0 {
             // Вычисляем значение по указанной формуле.
             (values[middle - 1] + values[middle]) / 2.0
         // Обрабатываем случай, когда предыдущее условие не выполнено.
@@ -51,7 +51,7 @@ fn visualize_median_of_numeric_values() {
     // Собираем значения для `median_points` в коллекцию.
     let median_points: Vec<(f64, f64)> = [(1.0, 3.0), (3.0, 3.0)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

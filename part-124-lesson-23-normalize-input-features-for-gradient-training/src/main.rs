@@ -10,20 +10,20 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `training_data` для следующего шага примера.
-    let training_data = [10.0, 20.0, 30.0];
+    let training_data: [f64; 3] = [10.0, 20.0, 30.0];
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         !training_data.is_empty(),
         "обучающая выборка не должна быть пустой"
     );
     // Преобразуем входные данные и сохраняем полученную коллекцию в `mean`.
-    let mean =
+    let mean: f64 =
         part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
             &training_data,
         )
         .unwrap();
     // Преобразуем входные данные и сохраняем полученную коллекцию в `centered`.
-    let centered: Vec<_> = training_data.iter().map(|&value| value - mean).collect();
+    let centered: Vec<f64> = training_data.iter().map(|&value| value - mean).collect();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("среднее train={mean}, центрировано={centered:?}");
 
@@ -57,7 +57,7 @@ fn visualize_normalize_input_features_for_gradient_training(
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -5,7 +5,7 @@
 
 fn main() {
     // Сохраняем результат этого шага в `limit`.
-    let limit = 1.0;
+    let limit: f64 = 1.0;
     // Проверяем ожидаемое свойство учебного примера.
     assert!(limit > 0.0);
     // Повторяем расчёт для каждого элемента последовательности.
@@ -23,7 +23,7 @@ fn main() {
         ("слишком большой отрицательный", -12.0, -1.0),
     ] {
         // Сохраняем результат этого шага в `clipped`.
-        let clipped = if rate_of_change > limit {
+        let clipped: f64 = if rate_of_change > limit {
             // Используем подготовленное значение в следующем шаге примера.
             limit
         // Используем подготовленное значение в следующем шаге примера.
@@ -53,14 +53,14 @@ fn visualize_clip_gradient_components_to_symmetric_interval() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `rate_of_change_value`.
-            let rate_of_change_value = plot_step_index as f64 / 10.0;
+            let rate_of_change_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (rate_of_change_value, rate_of_change_value.clamp(-1.0, 1.0))
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

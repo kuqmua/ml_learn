@@ -11,11 +11,11 @@
 fn main() {
     // Создаём набор значений `text_units` для следующего шага примера.
     // Единицу текста, которую модель обрабатывает как одно целое, называют token.
-    let text_units = [1.0, 3.0];
+    let text_units: [f64; 2] = [1.0, 3.0];
     // Создаём набор значений `weights` для следующего шага примера.
-    let weights = [[0.8, 0.2], [0.4, 0.6]];
+    let weights: [[f64; 2]; 2] = [[0.8, 0.2], [0.4, 0.6]];
     // Создаём набор значений `context` для следующего шага примера.
-    let context = [
+    let context: [f64; 2] = [
         // Умножаем величины согласно используемой формуле.
         weights[0][0] * text_units[0] + weights[0][1] * text_units[1],
         // Умножаем величины согласно используемой формуле.
@@ -31,7 +31,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_self_attention_among_tokens_of_one_sequence(context: [f64; 2]) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -3,7 +3,7 @@
 #[ignore = "заполни ответы и запусти тест с --ignored"]
 fn calculate_matrix_vector_product() {
     let result: Option<[i32; 2]> = None; // [[1, 2], [3, 4]] · [5, 6]
-    let result = result.expect("впиши оба числа в Some([..., ...])");
+    let result: [i32; 2] = result.expect("впиши оба числа в Some([..., ...])");
     assert_eq!(result, [17, 39]);
 
     // Почему умножение матрицы 2×2 на вектор из трёх чисел недопустимо?

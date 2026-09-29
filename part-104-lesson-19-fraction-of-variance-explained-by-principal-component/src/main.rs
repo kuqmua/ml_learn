@@ -25,10 +25,10 @@ fn main() {
             "дисперсия не может быть отрицательной"
         );
         // Сохраняем результат этого шага в `total_variance`.
-        let total_variance = eigenvalues[0] + eigenvalues[1];
+        let total_variance: f64 = eigenvalues[0] + eigenvalues[1];
         // Сохраняем результат этого шага в `variance_share_explained_by_first_axis`.
         // Долю общей дисперсии, объяснённую осью, называют explained variance fraction.
-        let variance_share_explained_by_first_axis = if total_variance == 0.0 {
+        let variance_share_explained_by_first_axis: Option<f64> = if total_variance == 0.0 {
             // Отмечаем отсутствие подходящего значения.
             None
         // Обрабатываем случай, когда предыдущее условие не выполнено.
@@ -55,14 +55,14 @@ fn visualize_fraction_of_variance_explained_by_principal_component() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `loss_value`.
-            let loss_value = plot_step_index as f64 / 10.0;
+            let loss_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (loss_value, loss_value / (loss_value + 1.0))
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

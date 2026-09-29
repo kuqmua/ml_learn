@@ -10,11 +10,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `input` для следующего шага примера.
-    let input = [1.0, 2.0];
+    let input: [f64; 2] = [1.0, 2.0];
     // Создаём набор значений `transformed` для следующего шага примера.
-    let transformed = [0.2, -0.5];
+    let transformed: [f64; 2] = [0.2, -0.5];
     // Создаём набор значений `output` для следующего шага примера.
-    let output = [input[0] + transformed[0], input[1] + transformed[1]];
+    let output: [f64; 2] = [input[0] + transformed[0], input[1] + transformed[1]];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("вход={input:?}, после residual={output:?}");
 
@@ -25,7 +25,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_add_block_input_through_residual_connection(input: [f64; 2], output: [f64; 2]) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

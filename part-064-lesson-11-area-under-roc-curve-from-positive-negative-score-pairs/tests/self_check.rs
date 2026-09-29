@@ -3,9 +3,9 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question =
+    let question: &str =
         "Упорядочи четыре объекта по оценке и вручную сравни пары положительных и отрицательных.";
-    let choices = [
+    let choices: [&str; 3] = [
         "Проверь, что идеальное ранжирование даёт ROC-AUC 1, а обратное — 0.",
         "Получается примерно 0.667; объясни, почему это не обычное среднее 0.75.",
         "Укажи, в каких шагах добавление ложноположительного объекта уменьшает precision.",
@@ -15,7 +15,8 @@ fn choose_correct_check_for_lesson() {
         println!("{}. {choice}", choice_number + 1);
     }
     let selected_choice: Option<usize> = None;
-    let selected_choice = selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
+    let selected_choice: usize =
+        selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
     assert!(
         (1..=3).contains(&selected_choice),
         "номер варианта должен быть от 1 до 3"

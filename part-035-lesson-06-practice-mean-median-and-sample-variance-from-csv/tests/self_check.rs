@@ -3,9 +3,9 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question =
+    let question: &str =
         "Добавь в небольшой CSV пропуск и ошибочное число, затем построй статистический отчёт.";
-    let choices = [
+    let choices: [&str; 3] = [
         "Убедись, что выборки имеют ту же длину, допускают повторы и дают воспроизводимый результат.",
         "Отчёт явно сообщает об ошибках либо обоснованно пропускает строки; среднее и медиана проверены вручную.",
         "Сравни ширину интервалов и объясни роль размера выборки.",
@@ -15,7 +15,8 @@ fn choose_correct_check_for_lesson() {
         println!("{}. {choice}", choice_number + 1);
     }
     let selected_choice: Option<usize> = None;
-    let selected_choice = selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
+    let selected_choice: usize =
+        selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
     assert!(
         (1..=3).contains(&selected_choice),
         "номер варианта должен быть от 1 до 3"

@@ -3,18 +3,18 @@
 
 fn main() {
     // Четырём Q-головам соответствуют две K/V-головы.
-    let queries = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [-1.0, 1.0]];
-    let keys = [[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [1.0, 0.0]]];
-    let values = [[[1.0, 0.0], [0.0, 1.0]], [[0.2, 0.8], [0.8, 0.2]]];
-    let mut output = Vec::new();
+    let queries: [[f64; 2]; 4] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [-1.0, 1.0]];
+    let keys: [[[f64; 2]; 2]; 2] = [[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [1.0, 0.0]]];
+    let values: [[[f64; 2]; 2]; 2] = [[[1.0, 0.0], [0.0, 1.0]], [[0.2, 0.8], [0.8, 0.2]]];
+    let mut output: Vec<[f64; 2]> = Vec::new();
     for (head, &query) in queries.iter().enumerate() {
-        let group = head / 2;
+        let group: usize = head / 2;
         // Оценку модели до преобразования в вероятность называют logit.
-        let raw_model_scores: Vec<_> = keys[group]
+        let raw_model_scores: Vec<f64> = keys[group]
             .iter()
             .map(|key_vector| query[0] * key_vector[0] + query[1] * key_vector[1])
             .collect();
-        let weights =
+        let weights: Vec<f64> =
             part_182_lesson_35_causal_self_attention_over_prefix_of_tokens::softmax_probabilities_from_raw_model_scores(
                 &raw_model_scores,
             );

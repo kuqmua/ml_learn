@@ -10,14 +10,14 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Инициализируем изменяемый накопитель `parameter` начальным состоянием.
-    let mut parameter = 0.0;
+    let mut parameter: f64 = 0.0;
     // Инициализируем значение `rate` начальным состоянием.
-    let rate = 0.2;
+    let rate: f64 = 0.2;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for epoch in 0..100 {
         // Умножаем значения и сохраняем результат в `rate_of_change`.
         // Производную функции по параметру или вектор таких производных называют gradient.
-        let rate_of_change = 2.0 * (parameter - 3.0);
+        let rate_of_change: f64 = 2.0 * (parameter - 3.0);
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if rate_of_change > -0.000001 && rate_of_change < 0.000001 {
             // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -40,7 +40,7 @@ fn visualize_convergence_of_gradient_descent_steps() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = 3.0 * (1.0 - 0.6_f64.powi(plot_step_index));
+            let horizontal_value: f64 = 3.0 * (1.0 - 0.6_f64.powi(plot_step_index));
             // Добавляем пару значений для сравнения или построения графика.
             (
                 plot_step_index as f64,
@@ -50,7 +50,7 @@ fn visualize_convergence_of_gradient_descent_steps() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -5,11 +5,11 @@
 
 fn main() {
     // Задаём учебные значения для `left`.
-    let left = [[1.0, 2.0], [3.0, 4.0]];
+    let left: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
     // Задаём учебные значения для `identity`.
-    let identity = [[1.0, 0.0], [0.0, 1.0]];
+    let identity: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
     // Задаём учебные значения для `right`.
-    let right = [[5.0, 6.0], [7.0, 8.0]];
+    let right: [[f64; 2]; 2] = [[5.0, 6.0], [7.0, 8.0]];
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, first, second, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -39,13 +39,13 @@ fn main() {
             "внутренние размеры матриц должны совпадать"
         );
         // Задаём учебные значения для `result`.
-        let mut result = [[0.0; 2]; 2];
+        let mut result: [[f64; 2]; 2] = [[0.0; 2]; 2];
         // Повторяем расчёт для каждого элемента последовательности.
         for row in 0..first.len() {
             // Повторяем расчёт для каждого элемента последовательности.
             for column in 0..second[0].len() {
                 // Задаём учебные значения для `column_values`.
-                let column_values = [second[0][column], second[1][column]];
+                let column_values: [f64; 2] = [second[0][column], second[1][column]];
                 // Строка × столбец — то же попарное умножение и сложение из урока 01.1.
                 result[row][column] =
                     // Используем подготовленное значение в следующем шаге примера.
@@ -60,9 +60,9 @@ fn main() {
         println!("{description}: {result:?}");
     }
     // Сохраняем результат этого шага в `incompatible_left_shape`.
-    let incompatible_left_shape = (2, 3);
+    let incompatible_left_shape: (i32, i32) = (2, 3);
     // Сохраняем результат этого шага в `incompatible_right_shape`.
-    let incompatible_right_shape = (2, 2);
+    let incompatible_right_shape: (i32, i32) = (2, 2);
     // Выбираем дальнейший шаг по выполнению условия.
     if incompatible_left_shape.1 != incompatible_right_shape.0 {
         // Печатаем рассчитанные значения для проверки примера.
@@ -79,7 +79,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_multiply_two_matrices_using_row_column_dot_products() {
     // Значения ячеек видны по цвету и подписи.
-    let chart = lesson_visualization::heatmap(
+    let chart: std::path::PathBuf = lesson_visualization::heatmap(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

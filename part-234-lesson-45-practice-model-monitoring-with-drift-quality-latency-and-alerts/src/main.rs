@@ -13,11 +13,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Шаг: Задаём эталонное распределение признака.
-    let reference = [-1., -0.5, 0.1, 0.2, 1.2, 1.5];
+    let reference: [f64; 6] = [-1., -0.5, 0.1, 0.2, 1.2, 1.5];
     // Шаг: Готовим контрольный набор без сдвига и набор с сильным сдвигом.
-    let stable = reference;
+    let stable: [f64; 6] = reference;
     // Создаём набор значений `shifted` для следующего шага примера.
-    let shifted = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6];
+    let shifted: [f64; 6] = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6];
 
     // Учебные реализации математических операций для этого урока.
 
@@ -31,11 +31,11 @@ fn main() {
     // Долю значений, попавших в одну группу, называют fraction этой группы.
     fn calculate_shares_of_feature_values_in_three_bins(data: &[f64]) -> [f64; 3] {
         // Создаём набор значений `bin_counts` для следующего шага примера.
-        let mut bin_counts = [0.; 3];
+        let mut bin_counts: [f64; 3] = [0.; 3];
         // Одни и те же границы интервалов используются для обоих наборов данных.
         for &feature_value in data {
             // Сохраняем рассчитанное значение `histogram_bin` для следующих операций.
-            let histogram_bin = if feature_value < 0. {
+            let histogram_bin: usize = if feature_value < 0. {
                 // Используем фиксированное значение для этого варианта примера.
                 0
             // Используем подготовленное значение в следующем шаге примера.
@@ -64,18 +64,21 @@ fn main() {
         current: &[f64],
     ) -> f64 {
         // Сохраняем рассчитанное значение `reference_group_shares` для следующих операций.
-        let reference_group_shares = calculate_shares_of_feature_values_in_three_bins(reference);
+        let reference_group_shares: [f64; 3] =
+            calculate_shares_of_feature_values_in_three_bins(reference);
         // Сохраняем рассчитанное значение `current_group_shares` для следующих операций.
-        let current_group_shares = calculate_shares_of_feature_values_in_three_bins(current);
+        let current_group_shares: [f64; 3] =
+            calculate_shares_of_feature_values_in_three_bins(current);
         // Инициализируем изменяемый накопитель `stability_index` начальным состоянием.
-        let mut stability_index = 0.0;
+        let mut stability_index: f64 = 0.0;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for bin_index in 0..reference_group_shares.len() {
             // Малое положительное значение предотвращает деление на ноль и log(0).
-            let reference_group_share =
+            let reference_group_share: f64 =
                 choose_larger_number(reference_group_shares[bin_index], 1e-6);
             // Комбинируем исходные величины и сохраняем результат в `current_group_share`.
-            let current_group_share = choose_larger_number(current_group_shares[bin_index], 1e-6);
+            let current_group_share: f64 =
+                choose_larger_number(current_group_shares[bin_index], 1e-6);
             // Прибавляем очередной вклад к ранее накопленному результату.
             stability_index += (current_group_share - reference_group_share)
                 // Добавляем этот член в составное арифметическое выражение.
@@ -97,9 +100,9 @@ fn main() {
                         return f64::INFINITY;
                     }
                     // Создаём изменяемое значение `scaled` для следующих операций.
-                    let mut scaled = value;
+                    let mut scaled: f64 = value;
                     // Инициализируем изменяемый накопитель `power_of_two` начальным состоянием.
-                    let mut power_of_two = 0i32;
+                    let mut power_of_two: i32 = 0i32;
                     // Повторяем вычисление, пока выполняется указанное условие.
                     while scaled >= 2.0 {
                         // Масштабируем текущую величину делением.
@@ -117,13 +120,13 @@ fn main() {
                     // Объявляем повторно используемое вычисление `sum_logarithm_series_terms`; параметры ниже задают его входы.
                     fn sum_logarithm_series_terms(value: f64) -> f64 {
                         // Нормируем или усредняем величину делением и сохраняем её в `ratio`.
-                        let ratio = (value - 1.0) / (value + 1.0);
+                        let ratio: f64 = (value - 1.0) / (value + 1.0);
                         // Умножаем значения и сохраняем результат в `ratio_squared`.
-                        let ratio_squared = ratio * ratio;
+                        let ratio_squared: f64 = ratio * ratio;
                         // Создаём изменяемое значение `term` для следующих операций.
-                        let mut term = ratio;
+                        let mut term: f64 = ratio;
                         // Инициализируем изменяемый накопитель `result` начальным состоянием.
-                        let mut result = 0.0;
+                        let mut result: f64 = 0.0;
                         // Повторяем следующий блок для каждого элемента указанной последовательности.
                         for term_index in 0..40 {
                             // Прибавляем очередной вклад к ранее накопленному результату.
@@ -135,7 +138,7 @@ fn main() {
                         2.0 * result
                     }
                     // Сохраняем рассчитанное значение `logarithm_of_two` для следующих операций.
-                    let logarithm_of_two = sum_logarithm_series_terms(2.0);
+                    let logarithm_of_two: f64 = sum_logarithm_series_terms(2.0);
                     // Умножаем величины согласно используемой формуле.
                     sum_logarithm_series_terms(scaled) + power_of_two as f64 * logarithm_of_two
                 })();
@@ -170,7 +173,7 @@ fn main() {
         shifted: [f64; 6],
     ) {
         // Наглядное сравнение результатов сводной практики.
-        let chart = lesson_visualization::bar_chart(
+        let chart: std::path::PathBuf = lesson_visualization::bar_chart(
             // Передаём путь к каталогу текущего урока.
             env!("CARGO_MANIFEST_DIR"),
             // Указываем имя SVG-файла.

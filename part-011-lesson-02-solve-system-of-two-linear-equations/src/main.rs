@@ -5,7 +5,7 @@
 
 fn main() {
     // Задаём учебные значения для `cases`.
-    let cases = [
+    let cases: [(&str, [f64; 4], [f64; 2]); 5] = [
         // Добавляем пару значений для сравнения или построения графика.
         ("одно решение", [2.0, 1.0, 1.0, -1.0], [5.0, 1.0]),
         // Добавляем пару значений для сравнения или построения графика.
@@ -30,16 +30,16 @@ fn main() {
     ) in cases
     {
         // Сохраняем результат этого шага в `determinant`.
-        let determinant = first_row_first_coefficient * second_row_second_coefficient
+        let determinant: f64 = first_row_first_coefficient * second_row_second_coefficient
             - first_row_second_coefficient * second_row_first_coefficient;
         // Выбираем дальнейший шаг по выполнению условия.
         if determinant != 0.0 {
             // Сохраняем результат этого шага в `first_unknown`.
-            let first_unknown = (first_right_hand_side * second_row_second_coefficient
+            let first_unknown: f64 = (first_right_hand_side * second_row_second_coefficient
                 - first_row_second_coefficient * second_right_hand_side)
                 / determinant;
             // Сохраняем результат этого шага в `second_unknown`.
-            let second_unknown = (first_row_first_coefficient * second_right_hand_side
+            let second_unknown: f64 = (first_row_first_coefficient * second_right_hand_side
                 - first_right_hand_side * second_row_first_coefficient)
                 / determinant;
             // Печатаем рассчитанные значения для проверки примера.
@@ -47,25 +47,25 @@ fn main() {
         // Обрабатываем случай, когда предыдущее условие не выполнено.
         } else {
             // Если замена столбца правой частью тоже даёт ноль, обе строки описывают одну прямую.
-            let first_replaced = first_right_hand_side * second_row_second_coefficient
+            let first_replaced: f64 = first_right_hand_side * second_row_second_coefficient
                 - first_row_second_coefficient * second_right_hand_side;
             // Сохраняем результат этого шага в `second_replaced`.
-            let second_replaced = first_row_first_coefficient * second_right_hand_side
+            let second_replaced: f64 = first_row_first_coefficient * second_right_hand_side
                 - first_right_hand_side * second_row_first_coefficient;
             // Сохраняем результат этого шага в `impossible_zero_row`.
-            let impossible_zero_row = (first_row_first_coefficient == 0.0 && first_row_second_coefficient == 0.0 && first_right_hand_side != 0.0)
+            let impossible_zero_row: bool = (first_row_first_coefficient == 0.0 && first_row_second_coefficient == 0.0 && first_right_hand_side != 0.0)
                 // Задаём преобразование для элементов коллекции.
                 || (second_row_first_coefficient == 0.0 && second_row_second_coefficient == 0.0 && second_right_hand_side != 0.0);
             // Сохраняем результат этого шага в `actual`.
-            let actual = if first_replaced == 0.0 && second_replaced == 0.0 && !impossible_zero_row
-            {
-                // Передаём подпись или текстовое значение для следующего шага.
-                "бесконечно много решений"
-            // Обрабатываем случай, когда предыдущее условие не выполнено.
-            } else {
-                // Передаём подпись или текстовое значение для следующего шага.
-                "решений нет"
-            };
+            let actual: &str =
+                if first_replaced == 0.0 && second_replaced == 0.0 && !impossible_zero_row {
+                    // Передаём подпись или текстовое значение для следующего шага.
+                    "бесконечно много решений"
+                // Обрабатываем случай, когда предыдущее условие не выполнено.
+                } else {
+                    // Передаём подпись или текстовое значение для следующего шага.
+                    "решений нет"
+                };
             // Проверяем ожидаемое свойство учебного примера.
             assert_eq!(actual, description);
             // Печатаем рассчитанные значения для проверки примера.
@@ -84,7 +84,7 @@ fn visualize_solve_system_of_two_linear_equations() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, 5.0 - 2.0 * horizontal_value)
         })
@@ -95,14 +95,14 @@ fn visualize_solve_system_of_two_linear_equations() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, horizontal_value - 1.0)
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

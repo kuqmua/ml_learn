@@ -5,7 +5,7 @@
 
 fn main() {
     // Задаём учебные значения для `elements`.
-    let elements = [1, 2, 3, 4, 5, 6];
+    let elements: [i32; 6] = [1, 2, 3, 4, 5, 6];
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, rows, columns, row, column) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -37,7 +37,7 @@ fn main() {
             continue;
         }
         // Сохраняем результат этого шага в `value`.
-        let value = elements[row * columns + column];
+        let value: i32 = elements[row * columns + column];
         // Печатаем рассчитанные значения для проверки примера.
         println!("{description}: ячейка [{row}, {column}] = {value}");
     }
@@ -49,7 +49,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_validate_matrix_element_count_and_row_column_indices() {
     // Значения ячеек видны по цвету и подписи.
-    let chart = lesson_visualization::heatmap(
+    let chart: std::path::PathBuf = lesson_visualization::heatmap(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

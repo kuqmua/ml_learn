@@ -10,15 +10,15 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `prediction_error` для следующих операций.
-    let prediction_error = 1.0;
+    let prediction_error: f64 = 1.0;
     // Сохраняем рассчитанное значение `weight` для следующих операций.
-    let weight = 3.0;
+    let weight: f64 = 3.0;
     // Инициализируем значение `penalty_strength` начальным состоянием.
-    let penalty_strength = 0.2;
+    let penalty_strength: f64 = 0.2;
     // Умножаем значения и сохраняем результат в `squared_weight`.
-    let squared_weight = weight * weight;
+    let squared_weight: f64 = weight * weight;
     // Умножаем значения и сохраняем результат в `objective`.
-    let objective = prediction_error + penalty_strength * squared_weight;
+    let objective: f64 = prediction_error + penalty_strength * squared_weight;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Присваиваем вычисленное значение соответствующей переменной или полю.
@@ -43,14 +43,14 @@ fn visualize_regularization_penalty_for_linear_model_weight() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `weight_value`.
-            let weight_value = plot_step_index as f64 / 10.0;
+            let weight_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (weight_value, 1.0 + weight_value * weight_value)
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

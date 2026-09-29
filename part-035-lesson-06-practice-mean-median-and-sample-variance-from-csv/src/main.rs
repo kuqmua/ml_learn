@@ -7,7 +7,7 @@ fn main() {
     // Задаём неизменяемые учебные данные.
     const SAMPLE_COMMA_SEPARATED_VALUES: &str = "value\n2\n4\n\n6\n8\n";
     // Сохраняем результат этого шага в `values`.
-    let mut values = Vec::new();
+    let mut values: Vec<f64> = Vec::new();
     // Повторяем расчёт для каждого элемента последовательности.
     for (line_index, line) in SAMPLE_COMMA_SEPARATED_VALUES.lines().enumerate().skip(1) {
         // Выбираем дальнейший шаг по выполнению условия.
@@ -30,21 +30,21 @@ fn main() {
     values.sort_by(f64::total_cmp);
 
     // Сохраняем результат этого шага в `mean`.
-    let mean =
+    let mean: f64 =
         part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
             &values,
         )
         .unwrap();
     // Сохраняем результат этого шага в `sample_variance`.
-    let sample_variance =
+    let sample_variance: f64 =
         part_031_lesson_06_sample_variance_of_numeric_values::sample_variance_of_numeric_values(
             &values,
         )
         .unwrap();
     // Определяем размер данных и сохраняем его в `middle`.
-    let middle = values.len() / 2;
+    let middle: usize = values.len() / 2;
     // Определяем размер данных и сохраняем его в `median`.
-    let median = if values.len() % 2 == 0 {
+    let median: f64 = if values.len() % 2 == 0 {
         // Вычисляем значение по указанной формуле.
         (values[middle - 1] + values[middle]) / 2.0
     // Обрабатываем случай, когда предыдущее условие не выполнено.
@@ -85,7 +85,7 @@ fn visualize_practice_mean_median_and_sample_variance_from_csv(
     // Собираем значения для `median_points` в коллекцию.
     let median_points: Vec<(f64, f64)> = [(1.0, median), (values.len() as f64, median)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

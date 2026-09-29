@@ -5,7 +5,7 @@
 
 fn main() {
     // Задаём учебные значения для `cases`.
-    let cases = [
+    let cases: [(&str, [f64; 2], f64); 4] = [
         // Добавляем пару значений для сравнения или построения графика.
         ("положительные координаты", [3.0, 4.0], 7.0),
         // Добавляем пару значений для сравнения или построения графика.
@@ -18,7 +18,7 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, vector, expected) in cases {
         // Формула из общей библиотеки пригодится и в сводной практике.
-        let sum_absolute_values_of_vector_coordinates =
+        let sum_absolute_values_of_vector_coordinates: f64 =
             part_002_lesson_01_sum_absolute_values_of_vector_coordinates::sum_absolute_values_of_vector_coordinates(
                 &vector,
             );
@@ -39,7 +39,7 @@ fn visualize_sum_absolute_values_of_vector_coordinates() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (
                 horizontal_value,
@@ -51,7 +51,7 @@ fn visualize_sum_absolute_values_of_vector_coordinates() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

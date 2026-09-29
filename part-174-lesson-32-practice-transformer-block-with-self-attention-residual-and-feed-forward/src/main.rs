@@ -12,7 +12,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Шаг: Создаём вход из двух токенов с двумерными признаками.
-    let input_values = [[1., 0.], [0., 1.]];
+    let input_values: [[f64; 2]; 2] = [[1., 0.], [0., 1.]];
 
     // Учебные реализации математических операций для этого урока.
 
@@ -32,7 +32,7 @@ fn main() {
             return 0.0;
         }
         // Создаём изменяемое значение `estimate` для следующих операций.
-        let mut estimate = if value > 1.0 { value } else { 1.0 };
+        let mut estimate: f64 = if value > 1.0 { value } else { 1.0 };
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for _ in 0..80 {
             // Обновляем `estimate` результатом текущего шага.
@@ -60,9 +60,9 @@ fn main() {
             return 1.0 / approximate_exponential_with_taylor_series(-value);
         }
         // Создаём изменяемое значение `reduced` для следующих операций.
-        let mut reduced = value;
+        let mut reduced: f64 = value;
         // Инициализируем изменяемый накопитель `halving_count` начальным состоянием.
-        let mut halving_count = 0;
+        let mut halving_count: i32 = 0;
         // Повторяем вычисление, пока выполняется указанное условие.
         while reduced > 0.5 {
             // Масштабируем текущую величину делением.
@@ -71,9 +71,9 @@ fn main() {
             halving_count += 1;
         }
         // Создаём изменяемое значение `term` для следующих операций.
-        let mut term = 1.0;
+        let mut term: f64 = 1.0;
         // Создаём изменяемое значение `result` для следующих операций.
-        let mut result = 1.0;
+        let mut result: f64 = 1.0;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for term_index in 1..=30 {
             // Умножаем накопленное значение на очередной множитель.
@@ -99,9 +99,9 @@ fn main() {
     // Объявляем повторно используемое вычисление `normalize_two_feature_vector`; параметры ниже задают его входы.
     fn layer_normalize_two_feature_vector(input_values: [f64; 2]) -> [f64; 2] {
         // Нормируем или усредняем величину делением и сохраняем её в `mean`.
-        let mean = (input_values[0] + input_values[1]) / 2.;
+        let mean: f64 = (input_values[0] + input_values[1]) / 2.;
         // Комбинируем исходные величины и сохраняем результат в `variance`.
-        let variance = (multiply_number_by_itself(input_values[0] - mean)
+        let variance: f64 = (multiply_number_by_itself(input_values[0] - mean)
             // Складываем или вычитаем величины согласно используемой формуле.
             + multiply_number_by_itself(input_values[1] - mean))
             // Делим значения, получая нормированную величину или среднее.
@@ -116,7 +116,7 @@ fn main() {
     }
 
     // Шаг: Пропускаем его через attention, residual, нормализацию и feed-forward.
-    let transformer_output = (|| -> Vec<[f64; 2]> {
+    let transformer_output: Vec<[f64; 2]> = (|| -> Vec<[f64; 2]> {
         // Используем подготовленное значение в следующем шаге примера.
         /* Собираем causal self-attention, остаточные связи, нормализацию и feed-forward. */
         // Сохраняем результат этого шага в `input_values`.
@@ -132,7 +132,7 @@ fn main() {
             .map(|(text_unit_index, &query)| {
                 // Причинная маска оставляет текущему токену только предшествующие ключи.
                 // Оценку модели до преобразования в вероятность называют logit.
-                let raw_model_scores: Vec<_> = input_values
+                let raw_model_scores: Vec<f64> = input_values
                     // Перебираем элементы по ссылке, не копируя исходную коллекцию.
                     .iter()
                     // Складываем или вычитаем величины согласно используемой формуле.
@@ -147,13 +147,13 @@ fn main() {
                     // Собираем элементы итератора в итоговую коллекцию.
                     .collect();
                 // Выполняем встроенный расчёт один раз и сохраняем результат в `attention_weights`.
-                let attention_weights = (|| -> Vec<f64> {
+                let attention_weights: Vec<f64> = (|| -> Vec<f64> {
                     // Используем подготовленное значение в следующем шаге примера.
                     /* Вычитаем максимум для устойчивости, затем нормируем экспоненты. */
                     // Сохраняем результат этого шага в `input_values`.
                     let input_values: &[f64] = &raw_model_scores;
                     // Создаём изменяемое значение `maximum_value` для следующих операций.
-                    let mut maximum_value = f64::NEG_INFINITY;
+                    let mut maximum_value: f64 = f64::NEG_INFINITY;
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
                     for &value in input_values {
                         // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -163,13 +163,13 @@ fn main() {
                         }
                     }
                     // Считаем количество элементов и сохраняем его в `exponentials`.
-                    let mut exponentials = Vec::with_capacity(input_values.len());
+                    let mut exponentials: Vec<f64> = Vec::with_capacity(input_values.len());
                     // Инициализируем изменяемый накопитель `normalizer` начальным состоянием.
-                    let mut normalizer = 0.0;
+                    let mut normalizer: f64 = 0.0;
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
                     for &value in input_values {
                         // Сохраняем рассчитанное значение `exponential_value` для следующих операций.
-                        let exponential_value =
+                        let exponential_value: f64 =
                                 // Складываем или вычитаем величины согласно используемой формуле.
                                 approximate_exponential_with_taylor_series(value - maximum_value);
                         // Сохраняем очередной рассчитанный элемент в коллекции.
@@ -186,7 +186,7 @@ fn main() {
                     exponentials
                 })();
                 // Смешиваем value-векторы по рассчитанным весам внимания.
-                let mut attended = [0.0, 0.0];
+                let mut attended: [f64; 2] = [0.0, 0.0];
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for key_index in 0..attention_weights.len() {
                     // Прибавляем очередной вклад к ранее накопленному результату.
@@ -195,14 +195,14 @@ fn main() {
                     attended[1] += attention_weights[key_index] * input_values[key_index][1];
                 }
                 // После первой остаточной связи применяем нормализацию и простую feed-forward функцию.
-                let normalized_values = layer_normalize_two_feature_vector([
+                let normalized_values: [f64; 2] = layer_normalize_two_feature_vector([
                     // Складываем или вычитаем величины согласно используемой формуле.
                     query[0] + attended[0],
                     // Складываем или вычитаем величины согласно используемой формуле.
                     query[1] + attended[1],
                 ]);
                 // Создаём набор значений `feed_forward_values` для следующего шага примера.
-                let feed_forward_values = [
+                let feed_forward_values: [f64; 2] = [
                     // Вызываем нужное вычисление с подготовленными аргументами.
                     choose_larger_number(normalized_values[0], 0.),
                     // Вызываем нужное вычисление с подготовленными аргументами.
@@ -246,9 +246,10 @@ fn visualize_practice_transformer_block_with_self_attention_residual_and_feed_fo
         ("output", "Выход блока Transformer", &output_matrix),
     ] {
         // Строим график по рассчитанным значениям и сохраняем его как SVG.
-        let chart = lesson_visualization::heatmap(env!("CARGO_MANIFEST_DIR"), name, title, values)
-            // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
-            .expect("не удалось сохранить график");
+        let chart: std::path::PathBuf =
+            lesson_visualization::heatmap(env!("CARGO_MANIFEST_DIR"), name, title, values)
+                // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
+                .expect("не удалось сохранить график");
         // Печатаем путь к созданному SVG, чтобы его можно было открыть.
         println!("график: {}", chart.display());
     }

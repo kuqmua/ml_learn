@@ -10,13 +10,13 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `row` для следующих операций.
-    let row = "3.5,red";
+    let row: &str = "3.5,red";
     // Сохраняем рассчитанное значение `(number_text, category)` для следующих операций.
-    let (number_text, category) = row.split_once(',').expect("две колонки");
+    let (number_text, category): (&str, &str) = row.split_once(',').expect("две колонки");
     // Читаем или разбираем входные данные в значение `numeric_feature`.
     let numeric_feature: f64 = number_text.parse().expect("число");
     // Сохраняем рассчитанное значение `categorical_feature` для следующих операций.
-    let categorical_feature = category;
+    let categorical_feature: &str = category;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("число={numeric_feature}, категория={categorical_feature}");
 }

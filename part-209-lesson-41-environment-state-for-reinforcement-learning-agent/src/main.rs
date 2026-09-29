@@ -9,11 +9,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `current_cell` для следующих операций.
-    let current_cell = 2;
+    let current_cell: i32 = 2;
     // Сохраняем рассчитанное значение `goal_cell` для следующих операций.
-    let goal_cell = 4;
+    let goal_cell: i32 = 4;
     // Комбинируем исходные величины и сохраняем результат в `distance_to_goal`.
-    let distance_to_goal = goal_cell - current_cell;
+    let distance_to_goal: i32 = goal_cell - current_cell;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("состояние: клетка={current_cell}, до цели={distance_to_goal}");
 
@@ -28,7 +28,7 @@ fn visualize_environment_state_for_reinforcement_learning_agent() {
         .map(|plot_step_index| (plot_step_index as f64, (5 - plot_step_index) as f64))
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

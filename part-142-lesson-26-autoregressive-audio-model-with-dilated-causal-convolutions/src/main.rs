@@ -11,12 +11,12 @@ fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f6
         .iter()
         .map(|&sample| f64::from(sample) * 2.0 - 1.0)
         .collect();
-    let filter_one =
+    let filter_one: Vec<f64> =
         part_138_lesson_26_causal_convolution_over_one_dimensional_signal::causal_convolution_of_one_dimensional_signal(
             &input, 0.8, 0.4, 1,
         )
         .unwrap();
-    let gate_one =
+    let gate_one: Vec<f64> =
         part_138_lesson_26_causal_convolution_over_one_dimensional_signal::causal_convolution_of_one_dimensional_signal(
             &input, 0.2, -0.3, 1,
         )
@@ -29,25 +29,25 @@ fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f6
             filter_value.tanh() * sigmoid_activation_of_raw_score(rate_of_change_value)
         })
         .collect();
-    let filter_two =
+    let filter_two: Vec<f64> =
         part_138_lesson_26_causal_convolution_over_one_dimensional_signal::causal_convolution_of_one_dimensional_signal(
             &layer_one, 1.0, 0.5, 2,
         )
         .unwrap();
-    let gate_two =
+    let gate_two: Vec<f64> =
         part_138_lesson_26_causal_convolution_over_one_dimensional_signal::causal_convolution_of_one_dimensional_signal(
             &layer_one, 0.1, 0.6, 2,
         )
         .unwrap();
-    let last = history.len() - 1;
-    let output = filter_two[last].tanh() * sigmoid_activation_of_raw_score(gate_two[last]);
+    let last: usize = history.len() - 1;
+    let output: f64 = filter_two[last].tanh() * sigmoid_activation_of_raw_score(gate_two[last]);
     sigmoid_activation_of_raw_score(2.0 * output)
 }
 fn main() {
-    let mut samples = vec![1, 0, 1, 1];
+    let mut samples: Vec<u8> = vec![1, 0, 1, 1];
     for _ in 0..4 {
-        let probability = calculate_probability_of_next_sound_sample_from_history(&samples);
-        let next = u8::from(probability >= 0.5);
+        let probability: f64 = calculate_probability_of_next_sound_sample_from_history(&samples);
+        let next: u8 = u8::from(probability >= 0.5);
         samples.push(next);
         println!("P(следующий отсчёт=1)={probability:.3}; выбор={next}");
     }
@@ -58,12 +58,12 @@ fn main() {
 }
 
 fn visualize_autoregressive_audio_model_with_dilated_causal_convolutions(samples: &[u8]) {
-    let points: Vec<_> = samples
+    let points: Vec<(f64, f64)> = samples
         .iter()
         .enumerate()
         .map(|(item_index, &horizontal_value)| (item_index as f64, f64::from(horizontal_value)))
         .collect();
-    let path = lesson_visualization::line_chart(
+    let path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "samples",
         "Дискретные отсчёты",

@@ -29,13 +29,13 @@ fn main() {
     }
 
     // Шаг: Фиксируем начальное состояние генератора для повторяемого моделирования.
-    let mut generator = PseudorandomGenerator(42);
+    let mut generator: PseudorandomGenerator = PseudorandomGenerator(42);
     // Инициализируем изменяемый накопитель `positive_test_count` начальным состоянием.
-    let mut positive_test_count = 0;
+    let mut positive_test_count: i32 = 0;
     // Инициализируем изменяемый накопитель `true_positive_count` начальным состоянием.
-    let mut true_positive_count = 0;
+    let mut true_positive_count: i32 = 0;
     // Инициализируем изменяемый накопитель `heads_count` начальным состоянием.
-    let mut heads_count = 0;
+    let mut heads_count: i32 = 0;
     // Шаг: Моделируем монету, истинное заболевание и результат теста.
     for _ in 0..100_000 {
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -44,9 +44,9 @@ fn main() {
             heads_count += 1;
         }
         // Сохраняем рассчитанное значение `has_disease` для следующих операций.
-        let has_disease = generator.generate_random_number_between_zero_and_one() < 0.01;
+        let has_disease: bool = generator.generate_random_number_between_zero_and_one() < 0.01;
         // Сохраняем рассчитанное значение `test_is_positive` для следующих операций.
-        let test_is_positive = if has_disease {
+        let test_is_positive: bool = if has_disease {
             // Для больного моделируем положительный тест с чувствительностью 90%.
             generator.generate_random_number_between_zero_and_one() < 0.9
         // Обрабатываем случай, когда предыдущее условие не выполнено.
@@ -83,7 +83,7 @@ fn main() {
             // Инициализируем значение `specificity` начальным состоянием.
             let specificity: f64 = 0.95;
             // Умножаем значения и сохраняем результат в `true_positive_probability`.
-            let true_positive_probability = prevalence * sensitivity;
+            let true_positive_probability: f64 = prevalence * sensitivity;
             // Возвращаем булев результат для этого случая.
             true_positive_probability
                 // Делим значения, получая нормированную величину или среднее.
@@ -122,7 +122,7 @@ fn visualize_practice_conditional_probability_bayes_and_expected_value(
     // Настраиваем или преобразуем результат предыдущего шага.
     .to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

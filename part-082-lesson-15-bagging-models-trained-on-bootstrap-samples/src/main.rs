@@ -10,12 +10,12 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `model_predictions` для следующего шага примера.
-    let model_predictions = [true, false, true, true, false];
+    let model_predictions: [bool; 5] = [true, false, true, true, false];
     // Преобразуем входные данные и сохраняем полученную коллекцию в `positive_votes`.
-    let positive_votes = model_predictions.iter().filter(|&&vote| vote).count();
+    let positive_votes: usize = model_predictions.iter().filter(|&&vote| vote).count();
     // Считаем количество элементов и сохраняем его в `majority_vote_from_models`.
     // Объединение моделей, обученных на разных выборках, называют bagging.
-    let majority_vote_from_models = positive_votes * 2 > model_predictions.len();
+    let majority_vote_from_models: bool = positive_votes * 2 > model_predictions.len();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("голосов за класс 1: {positive_votes}; ансамбль={majority_vote_from_models}");
 
@@ -29,7 +29,7 @@ fn visualize_bagging_models_trained_on_bootstrap_samples(
     positive_votes: usize,
 ) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -4,16 +4,19 @@
 fn main() {
     // Простая регрессия без случайности позволяет проверить каждый шаг вручную.
     let targets: [f64; 4] = [0.0, 0.0, 2.0, 2.0];
-    let mut predictions = [1.0; 4];
-    let mut history = vec![1.0];
+    let mut predictions: [f64; 4] = [1.0; 4];
+    let mut history: Vec<f64> = vec![1.0];
     for round in 0..2 {
         // Для квадратичной ошибки отрицательный градиент равен y - prediction.
         // Разность целевого значения и прогноза называют residual (остатком).
-        let target_minus_prediction_values = std::array::from_fn::<_, 4, _>(|step_index| {
-            targets[step_index] - predictions[step_index]
-        });
-        let left = (target_minus_prediction_values[0] + target_minus_prediction_values[1]) / 2.0;
-        let right = (target_minus_prediction_values[2] + target_minus_prediction_values[3]) / 2.0;
+        let target_minus_prediction_values: [f64; 4] =
+            std::array::from_fn::<_, 4, _>(|step_index| {
+                targets[step_index] - predictions[step_index]
+            });
+        let left: f64 =
+            (target_minus_prediction_values[0] + target_minus_prediction_values[1]) / 2.0;
+        let right: f64 =
+            (target_minus_prediction_values[2] + target_minus_prediction_values[3]) / 2.0;
         for (index, value) in predictions.iter_mut().enumerate() {
             *value += 0.5 * if index < 2 { left } else { right };
         }
@@ -34,12 +37,12 @@ fn main() {
 }
 
 fn visualize_fit_next_boosting_tree_to_current_residuals(losses: &[f64]) {
-    let points: Vec<_> = losses
+    let points: Vec<(f64, f64)> = losses
         .iter()
         .enumerate()
         .map(|(item_index, &loss)| (item_index as f64, loss))
         .collect();
-    let path = lesson_visualization::line_chart(
+    let path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "boosting-error",
         "Ошибка после каждого дерева",

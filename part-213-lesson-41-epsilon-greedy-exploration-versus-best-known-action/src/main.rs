@@ -5,9 +5,9 @@
 
 fn main() {
     // Сохраняем результат этого шага в `exploration_probability`.
-    let exploration_probability = 0.1;
+    let exploration_probability: f64 = 0.1;
     // Сохраняем результат этого шага в `best_known_action`.
-    let best_known_action = "вправо";
+    let best_known_action: &str = "вправо";
     // Повторяем расчёт для каждого элемента последовательности.
     // Число от 0 до 1 задаёт долю единичного интервала; такую долю называют fraction.
     for (description, random_number_between_zero_and_one, expected_action) in [
@@ -21,7 +21,7 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert!((0.0..1.0).contains(&random_number_between_zero_and_one));
         // Сохраняем результат этого шага в `action`.
-        let action = if random_number_between_zero_and_one < exploration_probability {
+        let action: &str = if random_number_between_zero_and_one < exploration_probability {
             // Передаём подпись или текстовое значение для следующего шага.
             "влево"
         // Обрабатываем случай, когда предыдущее условие не выполнено.
@@ -48,14 +48,14 @@ fn visualize_epsilon_greedy_exploration_versus_best_known_action() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `random_value`.
-            let random_value = plot_step_index as f64 / 100.0;
+            let random_value: f64 = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
             (random_value, if random_value < 0.2 { 1.0 } else { 0.0 })
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -13,11 +13,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Шаг: Задаём маленький корпус для подсчёта биграмм.
-    let training_sentences = ["кот спит", "кот ест", "пёс спит"];
+    let training_sentences: [&str; 3] = ["кот спит", "кот ест", "пёс спит"];
 
     // Шаг: Считаем частоты переходов и словарь возможных следующих токенов.
     // Набор известных модели текстовых единиц называют vocabulary.
-    let (bigram_counts, known_text_units) =
+    let (bigram_counts, known_text_units): (std::collections::BTreeMap<(String, String), usize>, std::collections::BTreeSet<String>) =
         // Составляем результат из вычисленных значений в указанном порядке.
         (|| -> (std::collections::BTreeMap<(String, String), usize>, std::collections::BTreeSet<String>) {
             // Используем подготовленное значение в следующем шаге примера.
@@ -25,13 +25,13 @@ fn main() {
             // Сохраняем результат этого шага в `sentences`.
             let sentences: &[&str] = &training_sentences;
             // Инициализируем изменяемый накопитель `counts` начальным состоянием.
-            let mut counts = std::collections::BTreeMap::new();
+            let mut counts: std::collections::BTreeMap<(String, String), usize> = std::collections::BTreeMap::new();
             // Создаём изменяемое значение `known_text_units` для следующих операций.
-            let mut known_text_units = std::collections::BTreeSet::new();
+            let mut known_text_units: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for sentence in sentences {
                 // Создаём изменяемое значение `previous` для следующих операций.
-                let mut previous = "<s>";
+                let mut previous: &str = "<s>";
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for word in sentence.split_whitespace().chain(["</s>"]) {
                     // Прибавляем очередной вклад к ранее накопленному результату.
@@ -66,9 +66,9 @@ fn main() {
             return 1.0 / approximate_exponential_with_taylor_series(-value);
         }
         // Создаём изменяемое значение `reduced` для следующих операций.
-        let mut reduced = value;
+        let mut reduced: f64 = value;
         // Инициализируем изменяемый накопитель `halving_count` начальным состоянием.
-        let mut halving_count = 0;
+        let mut halving_count: i32 = 0;
         // Повторяем вычисление, пока выполняется указанное условие.
         while reduced > 0.5 {
             // Масштабируем текущую величину делением.
@@ -77,9 +77,9 @@ fn main() {
             halving_count += 1;
         }
         // Создаём изменяемое значение `term` для следующих операций.
-        let mut term = 1.0;
+        let mut term: f64 = 1.0;
         // Создаём изменяемое значение `result` для следующих операций.
-        let mut result = 1.0;
+        let mut result: f64 = 1.0;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for term_index in 1..=30 {
             // Умножаем накопленное значение на очередной множитель.
@@ -110,7 +110,7 @@ fn main() {
         // Указываем тип возвращаемого значения.
     ) -> f64 {
         // Инициализируем изменяемый накопитель `total` начальным состоянием.
-        let mut total = 0;
+        let mut total: usize = 0;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for ((previous_context, _), &text_unit_count) in counts {
             // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -142,11 +142,11 @@ fn main() {
         // Указываем тип возвращаемого значения.
     ) -> f64 {
         // Сохраняем рассчитанное значение `(mut token_count, mut negative_log_likelihood)` для следующих операций.
-        let (mut text_unit_count, mut negative_log_likelihood) = (0, 0.);
+        let (mut text_unit_count, mut negative_log_likelihood): (i32, f64) = (0, 0.);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for sentence in sentences {
             // Создаём изменяемое значение `previous_text_unit` для следующих операций.
-            let mut previous_text_unit = "<s>";
+            let mut previous_text_unit: &str = "<s>";
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for word in sentence.split_whitespace().chain(["</s>"]) {
                 // Вычитаем очередной вклад из текущего значения параметра.
@@ -177,9 +177,9 @@ fn main() {
                         return f64::INFINITY;
                     }
                     // Создаём изменяемое значение `scaled` для следующих операций.
-                    let mut scaled = value;
+                    let mut scaled: f64 = value;
                     // Инициализируем изменяемый накопитель `power_of_two` начальным состоянием.
-                    let mut power_of_two = 0i32;
+                    let mut power_of_two: i32 = 0i32;
                     // Повторяем вычисление, пока выполняется указанное условие.
                     while scaled >= 2.0 {
                         // Масштабируем текущую величину делением.
@@ -197,13 +197,13 @@ fn main() {
                     // Объявляем повторно используемое вычисление `sum_logarithm_series_terms`; параметры ниже задают его входы.
                     fn sum_logarithm_series_terms(value: f64) -> f64 {
                         // Нормируем или усредняем величину делением и сохраняем её в `ratio`.
-                        let ratio = (value - 1.0) / (value + 1.0);
+                        let ratio: f64 = (value - 1.0) / (value + 1.0);
                         // Умножаем значения и сохраняем результат в `ratio_squared`.
-                        let ratio_squared = ratio * ratio;
+                        let ratio_squared: f64 = ratio * ratio;
                         // Создаём изменяемое значение `term` для следующих операций.
-                        let mut term = ratio;
+                        let mut term: f64 = ratio;
                         // Инициализируем изменяемый накопитель `result` начальным состоянием.
-                        let mut result = 0.0;
+                        let mut result: f64 = 0.0;
                         // Повторяем следующий блок для каждого элемента указанной последовательности.
                         for term_index in 0..40 {
                             // Прибавляем очередной вклад к ранее накопленному результату.
@@ -215,7 +215,7 @@ fn main() {
                         2.0 * result
                     }
                     // Сохраняем рассчитанное значение `logarithm_of_two` для следующих операций.
-                    let logarithm_of_two = sum_logarithm_series_terms(2.0);
+                    let logarithm_of_two: f64 = sum_logarithm_series_terms(2.0);
                     // Умножаем величины согласно используемой формуле.
                     sum_logarithm_series_terms(scaled) + power_of_two as f64 * logarithm_of_two
                 })();
@@ -239,13 +239,13 @@ fn main() {
         calculate_perplexity_of_sentences(&["пёс ест"], &bigram_counts, &known_text_units)
     );
     // Шаг: Генерируем цепочку, каждый раз выбирая наиболее вероятный следующий токен.
-    let mut previous_text_unit = "<s>";
+    let mut previous_text_unit: &str = "<s>";
     // Создаём набор значений `generated_text_units` для следующего шага примера.
-    let mut generated_text_units = vec![];
+    let mut generated_text_units: Vec<&str> = vec![];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for _ in 0..5 {
         // Сохраняем рассчитанное значение `next_text_unit` для следующих операций.
-        let next_text_unit = known_text_units
+        let next_text_unit: &String = known_text_units
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
             .iter()
             // Сравниваем кандидатов и оставляем наибольший результат.
@@ -309,7 +309,7 @@ fn visualize_practice_bigram_language_model_with_loss_perplexity_and_sampling(
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

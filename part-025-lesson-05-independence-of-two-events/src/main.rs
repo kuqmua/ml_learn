@@ -20,7 +20,7 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert!((0.0..=1.0).contains(&both));
         // Сохраняем результат этого шага в `independent`.
-        let independent = (both - first * second).abs() < 1e-10;
+        let independent: bool = (both - first * second).abs() < 1e-10;
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(independent, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -37,7 +37,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_independence_of_two_events(cases: [(&str, f64, f64, f64, bool); 3]) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

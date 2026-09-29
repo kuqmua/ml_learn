@@ -10,7 +10,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `candidates` для следующего шага примера.
-    let candidates = [(1, 52.0), (2, 4.0), (3, 3.5), (4, 3.0)];
+    let candidates: [(i32, f64); 4] = [(1, 52.0), (2, 4.0), (3, 3.5), (4, 3.0)];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     // Сумму квадратов расстояний до центров кластеров называют inertia.
     for (cluster_count, total_squared_distance_to_cluster_centers) in candidates {
@@ -42,7 +42,7 @@ fn visualize_choose_number_of_k_means_clusters_from_inertia(candidates: [(i32, f
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

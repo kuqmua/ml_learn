@@ -9,17 +9,17 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `image_width` для следующих операций.
-    let image_width = 5;
+    let image_width: i32 = 5;
     // Сохраняем рассчитанное значение `filter_width` для следующих операций.
     // Небольшой набор весов свёрточного фильтра называют kernel.
-    let filter_width = 2;
+    let filter_width: i32 = 2;
     // Сохраняем рассчитанное значение `filter_step_size` для следующих операций.
     // Шаг перемещения фильтра по входу называют stride.
-    let filter_step_size = 2;
+    let filter_step_size: i32 = 2;
     // Нормируем или усредняем величину делением и сохраняем её в `output_width`.
-    let output_width = (image_width - filter_width) / filter_step_size + 1;
+    let output_width: i32 = (image_width - filter_width) / filter_step_size + 1;
     // Преобразуем входные данные и сохраняем полученную коллекцию в `positions`.
-    let positions: Vec<_> = (0..output_width)
+    let positions: Vec<i32> = (0..output_width)
         .map(|index| index * filter_step_size)
         .collect();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -32,7 +32,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_move_convolution_kernel_by_stride_pixels(positions: std::vec::Vec<i32>) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -2,7 +2,7 @@
 // Дилатации 1, 2, 4 расширяют область прошлого без длинных фильтров.
 
 fn main() {
-    let mut signal = vec![0.0; 9];
+    let mut signal: Vec<f64> = vec![0.0; 9];
     signal[0] = 1.0;
     // Промежуток между используемыми точками фильтра называют dilation.
     for filter_spacing in [1, 2, 4] {
@@ -23,12 +23,12 @@ fn main() {
 }
 
 fn visualize_dilated_causal_convolution_receptive_field(signal: &[f64]) {
-    let points: Vec<_> = signal
+    let points: Vec<(f64, f64)> = signal
         .iter()
         .enumerate()
         .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
         .collect();
-    let path = lesson_visualization::line_chart(
+    let path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "receptive-field",
         "Отклик на импульс",

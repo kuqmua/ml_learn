@@ -10,7 +10,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `values` для следующего шага примера.
-    let values = [1.0, 2.0, 3.0];
+    let values: [f64; 3] = [1.0, 2.0, 3.0];
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -19,13 +19,13 @@ fn main() {
         "для центрирования нужно хотя бы одно значение"
     );
     // Преобразуем входные данные и сохраняем полученную коллекцию в `mean`.
-    let mean =
+    let mean: f64 =
         part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
             &values,
         )
         .unwrap();
     // Преобразуем входные данные и сохраняем полученную коллекцию в `centered`.
-    let centered: Vec<_> = values.iter().map(|&value| value - mean).collect();
+    let centered: Vec<f64> = values.iter().map(|&value| value - mean).collect();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("среднее={mean}, центрированные значения={centered:?}");
 
@@ -59,7 +59,7 @@ fn visualize_center_features_by_subtracting_training_means(
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

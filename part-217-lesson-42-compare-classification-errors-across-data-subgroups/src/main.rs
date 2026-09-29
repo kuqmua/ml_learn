@@ -9,7 +9,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `groups` для следующего шага примера.
-    let groups = [
+    let groups: [(&str, bool, bool); 4] = [
         // Составляем результат из вычисленных значений в указанном порядке.
         ("A", true, true),
         // Составляем результат из вычисленных значений в указанном порядке.
@@ -22,7 +22,7 @@ fn main() {
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for group_name in ["A", "B"] {
         // Сохраняем рассчитанное значение `matching` для следующих операций.
-        let matching: Vec<_> = groups
+        let matching: Vec<&(&str, bool, bool)> = groups
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
             .iter()
             // Оставляем только элементы, прошедшие указанную проверку.
@@ -37,7 +37,7 @@ fn main() {
             "для оценки группы нужен хотя бы один пример"
         );
         // Сохраняем рассчитанное значение `correct` для следующих операций.
-        let correct = matching
+        let correct: usize = matching
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
             .iter()
             // Оставляем только элементы, прошедшие указанную проверку.
@@ -60,9 +60,9 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_compare_classification_errors_across_data_subgroups(groups: [(&str, bool, bool); 4]) {
     // Сохраняем результат этого шага в `group_accuracy`.
-    let group_accuracy = |name: &str| {
+    let group_accuracy: &dyn Fn(&str) -> f64 = &|name: &str| {
         // Собираем значения для `examples` в коллекцию.
-        let examples: Vec<_> = groups
+        let examples: Vec<&(&str, bool, bool)> = groups
             // Просматриваем элементы коллекции по ссылке.
             .iter()
             // Оставляем элементы, отвечающие условию.
@@ -81,7 +81,7 @@ fn visualize_compare_classification_errors_across_data_subgroups(groups: [(&str,
             / examples.len() as f64
     };
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

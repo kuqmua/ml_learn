@@ -16,7 +16,7 @@ fn main() {
         ("положительных прогнозов нет", 0, 0, None),
     ] {
         // Сохраняем результат этого шага в `counts`.
-        let counts = part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::BinaryClassificationCounts {
+        let counts: part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::BinaryClassificationCounts = part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::BinaryClassificationCounts {
             // Используем подготовленное значение в следующем шаге примера.
             true_positives,
             // Используем подготовленное значение в следующем шаге примера.
@@ -27,7 +27,7 @@ fn main() {
             false_negatives: 0,
         };
         // Сохраняем результат этого шага в `precision`.
-        let precision =
+        let precision: Option<f64> =
             part_061_lesson_11_precision_from_binary_classification_counts::precision_from_binary_classification_counts(counts);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(precision, expected);
@@ -53,7 +53,7 @@ fn visualize_precision_from_binary_classification_counts() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

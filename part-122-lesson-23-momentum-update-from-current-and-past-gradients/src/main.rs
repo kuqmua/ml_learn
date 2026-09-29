@@ -10,15 +10,15 @@
 fn main() {
     // Создаём набор значений `rates_of_change` для следующего шага примера.
     // Производную функции по параметру или вектор таких производных называют gradient.
-    let rates_of_change = [2.0, 1.0, -0.5];
+    let rates_of_change: [f64; 3] = [2.0, 1.0, -0.5];
     // Инициализируем изменяемый накопитель `velocity` начальным состоянием.
-    let mut velocity = 0.0;
+    let mut velocity: f64 = 0.0;
     // Создаём изменяемое значение `weight` для следующих операций.
-    let mut weight = 1.0;
+    let mut weight: f64 = 1.0;
     // Собираем значения для `weight_history` в коллекцию.
-    let mut weight_history = vec![(0.0, weight)];
+    let mut weight_history: Vec<(f64, f64)> = vec![(0.0, weight)];
     // Собираем значения для `velocity_history` в коллекцию.
-    let mut velocity_history = vec![(0.0, velocity)];
+    let mut velocity_history: Vec<(f64, f64)> = vec![(0.0, velocity)];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (step, rate_of_change) in rates_of_change.into_iter().enumerate() {
         // Присваиваем вычисленное значение соответствующей переменной или полю.
@@ -43,7 +43,7 @@ fn visualize_momentum_update_from_current_and_past_gradients(
     velocity_history: std::vec::Vec<(f64, f64)>,
 ) {
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

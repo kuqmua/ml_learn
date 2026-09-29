@@ -10,30 +10,30 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `values` для следующего шага примера.
-    let values = [2.0, 4.0, 6.0, 8.0];
+    let values: [f64; 4] = [2.0, 4.0, 6.0, 8.0];
     // Сохраняем результат этого шага в `mean`.
-    let mean =
+    let mean: f64 =
         part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
             &values,
         )
         .unwrap();
     // Сохраняем результат этого шага в `sample_variance`.
-    let sample_variance =
+    let sample_variance: f64 =
         part_031_lesson_06_sample_variance_of_numeric_values::sample_variance_of_numeric_values(
             &values,
         )
         .unwrap();
     // Считаем количество элементов и сохраняем его в `standard_error_squared`.
-    let standard_error_squared = sample_variance / values.len() as f64;
+    let standard_error_squared: f64 = sample_variance / values.len() as f64;
     // Создаём изменяемое значение `standard_error` для следующих операций.
-    let mut standard_error = standard_error_squared;
+    let mut standard_error: f64 = standard_error_squared;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for _ in 0..80 {
         // Присваиваем вычисленное значение соответствующей переменной или полю.
         standard_error = (standard_error + standard_error_squared / standard_error) / 2.0;
     }
     // Умножаем значения и сохраняем результат в `margin`.
-    let margin = 1.96 * standard_error;
+    let margin: f64 = 1.96 * standard_error;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Подставляем результаты в этот шаблон вывода или текстового значения.
@@ -61,13 +61,13 @@ fn visualize_confidence_interval_for_population_mean(values: [f64; 4], mean: f64
         // Собираем результаты в коллекцию.
         .collect();
     // Определяем размер данных и сохраняем его в `mean_line`.
-    let mean_line = [(1.0, mean), (values.len() as f64, mean)];
+    let mean_line: [(f64, f64); 2] = [(1.0, mean), (values.len() as f64, mean)];
     // Определяем размер данных и сохраняем его в `lower`.
-    let lower = [(1.0, mean - margin), (values.len() as f64, mean - margin)];
+    let lower: [(f64, f64); 2] = [(1.0, mean - margin), (values.len() as f64, mean - margin)];
     // Определяем размер данных и сохраняем его в `upper`.
-    let upper = [(1.0, mean + margin), (values.len() as f64, mean + margin)];
+    let upper: [(f64, f64); 2] = [(1.0, mean + margin), (values.len() as f64, mean + margin)];
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

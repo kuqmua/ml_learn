@@ -10,7 +10,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `probabilities` для следующего шага примера.
-    let probabilities = [0.2, 0.55, 0.8];
+    let probabilities: [f64; 3] = [0.2, 0.55, 0.8];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for threshold in [0.5, 0.7] {
         // Преобразуем входные данные и сохраняем полученную коллекцию в `predictions`.
@@ -33,7 +33,7 @@ fn visualize_convert_predicted_probability_to_class_using_threshold() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `threshold_value`.
-            let threshold_value = plot_step_index as f64 / 100.0;
+            let threshold_value: f64 = plot_step_index as f64 / 100.0;
             (
                 // Используем подготовленное значение в следующем шаге примера.
                 threshold_value,
@@ -47,7 +47,7 @@ fn visualize_convert_predicted_probability_to_class_using_threshold() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

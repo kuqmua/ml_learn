@@ -10,16 +10,16 @@ fn calculate_gated_recurrent_unit_state_from_input_and_previous_state(
     previous: f64,
     update_gate_raw_score: f64,
 ) -> f64 {
-    let reset = sigmoid_activation_of_raw_score(input);
-    let candidate = (input + reset * previous).tanh();
-    let update = sigmoid_activation_of_raw_score(update_gate_raw_score);
+    let reset: f64 = sigmoid_activation_of_raw_score(input);
+    let candidate: f64 = (input + reset * previous).tanh();
+    let update: f64 = sigmoid_activation_of_raw_score(update_gate_raw_score);
     (1.0 - update) * previous + update * candidate
 }
 fn main() {
-    let previous = 0.8;
-    let keep =
+    let previous: f64 = 0.8;
+    let keep: f64 =
         calculate_gated_recurrent_unit_state_from_input_and_previous_state(-0.2, previous, -5.0);
-    let replace =
+    let replace: f64 =
         calculate_gated_recurrent_unit_state_from_input_and_previous_state(-0.2, previous, 5.0);
     assert!((keep - previous).abs() < (replace - previous).abs());
     println!("keep={keep:.3}; replace={replace:.3}");

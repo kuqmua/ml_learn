@@ -3,7 +3,7 @@
 #[ignore = "заполни ответы и запусти тест с --ignored"]
 fn calculate_one_gradient_step() {
     let next_x: Option<f64> = None; // x=2, rate=0.1
-    let next_x = next_x.expect("вычисли новый x и впиши Some(...)");
+    let next_x: f64 = next_x.expect("вычисли новый x и впиши Some(...)");
     assert!((next_x - 1.6).abs() < 1e-12);
     assert!(next_x * next_x < 4.0);
 

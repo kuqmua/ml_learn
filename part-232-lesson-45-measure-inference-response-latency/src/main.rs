@@ -10,14 +10,14 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `start` для следующих операций.
-    let start = std::time::Instant::now();
+    let start: std::time::Instant = std::time::Instant::now();
     // Сохраняем рассчитанное значение `feature` для следующих операций.
-    let feature = 3.0;
+    let feature: f64 = 3.0;
     // Умножаем значения и сохраняем результат в `prediction`.
-    let prediction = 2.0 * feature + 1.0;
+    let prediction: f64 = 2.0 * feature + 1.0;
     // Сохраняем рассчитанное значение `response_delay` для следующих операций.
     // Время ожидания ответа после запроса называют latency.
-    let response_delay = start.elapsed();
+    let response_delay: std::time::Duration = start.elapsed();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("прогноз={prediction}, задержка={response_delay:?}");
 }

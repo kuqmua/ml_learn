@@ -15,9 +15,9 @@ fn main() {
         ("положительный", 2.0, 1),
     ] {
         // Сохраняем результат этого шага в `term`.
-        let mut term = 1.0;
+        let mut term: f64 = 1.0;
         // Сохраняем результат этого шага в `exponential`.
-        let mut exponential = 1.0;
+        let mut exponential: f64 = 1.0;
         // Повторяем расчёт для каждого элемента последовательности.
         for index in 1..=30 {
             // Обновляем значение результатом текущего вычисления.
@@ -26,11 +26,11 @@ fn main() {
             exponential += term;
         }
         // Сохраняем результат этого шага в `probability`.
-        let probability = 1.0 / (1.0 + exponential);
+        let probability: f64 = 1.0 / (1.0 + exponential);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(probability > 0.0 && probability < 1.0);
         // Сохраняем результат этого шага в `side`.
-        let side = if probability < 0.5 {
+        let side: i32 = if probability < 0.5 {
             // Используем подготовленное значение в следующем шаге примера.
             -1
         // Используем подготовленное значение в следующем шаге примера.
@@ -59,14 +59,14 @@ fn visualize_sigmoid_map_from_logit_to_class_probability() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, 1.0 / (1.0 + (-horizontal_value).exp()))
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

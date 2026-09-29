@@ -10,15 +10,15 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // f(x)=(2x+1)²: внутренняя функция u=2x+1, внешняя u².
-    let input_value = 3.0;
+    let input_value: f64 = 3.0;
     // Умножаем значения и сохраняем результат в `inner`.
-    let inner = 2.0 * input_value + 1.0;
+    let inner: f64 = 2.0 * input_value + 1.0;
     // Умножаем значения и сохраняем результат в `outer_derivative`.
-    let outer_derivative = 2.0 * inner;
+    let outer_derivative: f64 = 2.0 * inner;
     // Сохраняем рассчитанное значение `inner_derivative` для следующих операций.
-    let inner_derivative = 2.0;
+    let inner_derivative: f64 = 2.0;
     // Умножаем значения и сохраняем результат в `derivative`.
-    let derivative = outer_derivative * inner_derivative;
+    let derivative: f64 = outer_derivative * inner_derivative;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("f'(3)={derivative}");
 
@@ -33,7 +33,7 @@ fn visualize_chain_rule_for_derivative_of_composed_functions() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (
                 horizontal_value,
@@ -47,7 +47,7 @@ fn visualize_chain_rule_for_derivative_of_composed_functions() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (
                 horizontal_value,
@@ -57,7 +57,7 @@ fn visualize_chain_rule_for_derivative_of_composed_functions() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

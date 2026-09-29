@@ -16,7 +16,7 @@ fn main() {
         ("обе равны нулю", 0.0, 0.0, None),
     ] {
         // Сохраняем результат этого шага в `harmonic_mean_of_precision_and_recall`.
-        let harmonic_mean_score = part_063_lesson_11_harmonic_mean_of_binary_classification_precision_and_recall::harmonic_mean_of_precision_and_recall(
+        let harmonic_mean_score: Option<f64> = part_063_lesson_11_harmonic_mean_of_binary_classification_precision_and_recall::harmonic_mean_of_precision_and_recall(
             Some(precision),
             Some(recall),
         );
@@ -39,7 +39,7 @@ fn visualize_harmonic_mean_of_binary_classification_precision_and_recall() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `recall_value`.
-            let recall_value = plot_step_index as f64 / 100.0;
+            let recall_value: f64 = plot_step_index as f64 / 100.0;
             (
                 // Используем подготовленное значение в следующем шаге примера.
                 recall_value,
@@ -57,7 +57,7 @@ fn visualize_harmonic_mean_of_binary_classification_precision_and_recall() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

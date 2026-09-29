@@ -12,7 +12,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Шаг: Выбираем временный файл для учебного примера.
-    let model_path =
+    let model_path: std::path::PathBuf =
         // Берём системный каталог временных файлов и добавляем имя с ID процесса.
         std::env::temp_dir().join(format!("ml_learn_model_{}.txt", std::process::id()));
     // Автоматически получаем стандартные реализации перечисленных трейтов для этого типа.
@@ -26,7 +26,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // Шаг: Создаём модель и сохраняем её вместе с версией формата.
-    let model = Model {
+    let model: Model = Model {
         // Заполняем поле `weight` соответствующим рассчитанным значением.
         weight: 2.,
         // Заполняем поле `bias` соответствующим рассчитанным значением.
@@ -43,32 +43,33 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Шаг: Читаем модель заново и используем её для прогноза.
     // Проверяем версию, оба числовых поля и отсутствие лишних данных.
     // Текстовое представление модели получают с помощью serialization.
-    let saved_model_text_content = std::fs::read_to_string(&model_path)?;
+    let saved_model_text_content: String = std::fs::read_to_string(&model_path)?;
     // Выполняем встроенный расчёт один раз и сохраняем результат в `loaded_model`.
-    let loaded_model = (|| -> Result<Model, String> {
+    let loaded_model: Model = (|| -> Result<Model, String> {
         // Создаём изменяемое значение `saved_model_lines` для следующих операций.
         // Построчное чтение сохранённой модели относится к serialization.
-        let mut saved_model_lines = saved_model_text_content.lines();
+        let mut saved_model_lines: std::str::Lines<'_> = saved_model_text_content.lines();
         // Разбираем наличие значения перед использованием результата.
         if saved_model_lines.next() != Some("ml_learn_v1") {
             // Прерываем расчёт и явно сообщаем причину некорректного входа.
             return Err("неизвестная версия".into());
         }
         // Сохраняем рассчитанное значение `parse_parameter` для следующих операций.
-        let parse_parameter = |field_text: Option<&str>| {
-            // Используем ранее рассчитанное значение `field_text` в текущем выражении.
-            field_text
-                // Если поле отсутствует, возвращаем понятную ошибку разбора.
-                .ok_or("нет параметра".to_string())?
-                // Преобразуем текстовое поле CSV в число с плавающей точкой.
-                .parse::<f64>()
-                // Превращаем ошибку разбора числа в строку для общего формата ошибок.
-                .map_err(|parse_error| parse_error.to_string())
-        };
+        let parse_parameter: fn(Option<&str>) -> Result<f64, String> =
+            |field_text: Option<&str>| {
+                // Используем ранее рассчитанное значение `field_text` в текущем выражении.
+                field_text
+                    // Если поле отсутствует, возвращаем понятную ошибку разбора.
+                    .ok_or("нет параметра".to_string())?
+                    // Преобразуем текстовое поле CSV в число с плавающей точкой.
+                    .parse::<f64>()
+                    // Превращаем ошибку разбора числа в строку для общего формата ошибок.
+                    .map_err(|parse_error| parse_error.to_string())
+            };
         // Читаем или разбираем входные данные в значение `weight`.
-        let weight = parse_parameter(saved_model_lines.next())?;
+        let weight: f64 = parse_parameter(saved_model_lines.next())?;
         // Читаем или разбираем входные данные в значение `bias`.
-        let bias = parse_parameter(saved_model_lines.next())?;
+        let bias: f64 = parse_parameter(saved_model_lines.next())?;
         // Отсекаем бесконечные и неопределённые числовые значения.
         if !weight.is_finite() || !bias.is_finite() || saved_model_lines.next().is_some() {
             // Прерываем расчёт и явно сообщаем причину некорректного входа.
@@ -79,7 +80,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Используем подготовленное значение в следующем шаге примера.
     })()?;
     // Линейный прогноз равен весу, умноженному на признак, плюс смещение.
-    let prediction = loaded_model.weight * 3. + loaded_model.bias;
+    let prediction: f64 = loaded_model.weight * 3. + loaded_model.bias;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("path={}, prediction={}", model_path.display(), prediction);
     // Шаг: Удаляем временный файл после проверки.

@@ -10,11 +10,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // f(x,y)=x²+3y².
-    let (input_value, second_input_value) = (2.0, -1.0);
+    let (input_value, second_input_value): (f64, f64) = (2.0, -1.0);
     // Умножаем значения и сохраняем результат в `derivative_by_horizontal_coordinate`.
-    let derivative_by_horizontal_coordinate = 2.0 * input_value;
+    let derivative_by_horizontal_coordinate: f64 = 2.0 * input_value;
     // Умножаем значения и сохраняем результат в `derivative_by_vertical_coordinate`.
-    let derivative_by_vertical_coordinate = 6.0 * second_input_value;
+    let derivative_by_vertical_coordinate: f64 = 6.0 * second_input_value;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         "∂f/∂x={derivative_by_horizontal_coordinate}, ∂f/∂y={derivative_by_vertical_coordinate}"
@@ -31,7 +31,7 @@ fn visualize_partial_derivative_of_two_variable_function() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, horizontal_value * horizontal_value + 4.0)
         })
@@ -42,14 +42,14 @@ fn visualize_partial_derivative_of_two_variable_function() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `vertical_value`.
-            let vertical_value = plot_step_index as f64 / 10.0;
+            let vertical_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (vertical_value, 4.0 + vertical_value * vertical_value)
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

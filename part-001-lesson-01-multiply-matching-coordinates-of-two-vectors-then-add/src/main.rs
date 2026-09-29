@@ -9,7 +9,7 @@
 
 fn main() {
     // Для всех примеров слева используем один вектор, чтобы было проще сравнивать ответы.
-    let left = [1.0, 2.0];
+    let left: [f64; 2] = [1.0, 2.0];
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &[f64], f64); 6] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -29,7 +29,7 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, right, expected) in cases {
         // Реализация находится в библиотеке этого урока; её используют и следующие уроки.
-        let sum_after_multiplying_coordinates =
+        let sum_after_multiplying_coordinates: f64 =
             // Используем подготовленное значение в следующем шаге примера.
             part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&left, right)
                 // Используем результат, ожидая успешного выполнения шага.
@@ -41,9 +41,9 @@ fn main() {
     }
 
     // Неполную пару отклоняем до вычисления: иначе лишнее значение потеряется.
-    let too_short = [3.0];
+    let too_short: [f64; 1] = [3.0];
     // Сохраняем результат этого шага в `error`.
-    let error =
+    let error: &str =
         // Используем подготовленное значение в следующем шаге примера.
         part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
             // Используем подготовленное значение в следующем шаге примера.
@@ -65,9 +65,9 @@ fn visualize_multiply_matching_coordinates_of_two_vectors_then_add(left: &[f64; 
     let chart_points: Vec<(f64, f64)> = (-40..=40)
         // Превращаем целые числа в значения x с шагом 0,1.
         .map(|plot_step_index| {
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Вычисляем скалярное произведение той же функцией, что использовали выше.
-            let product = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+            let product: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
                 left,
                 &[1.0, horizontal_value],
             )
@@ -76,7 +76,7 @@ fn visualize_multiply_matching_coordinates_of_two_vectors_then_add(left: &[f64; 
         })
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

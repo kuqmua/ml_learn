@@ -15,7 +15,7 @@ fn main() {
         second_candidate.1.total_cmp(&first_candidate.1)
     });
     // Сохраняем рассчитанное значение `highest_ranked_items` для следующих операций.
-    let highest_ranked_items = &ranked[..2];
+    let highest_ranked_items: &[(&str, f64)] = &ranked[..2];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("лучшие источники: {highest_ranked_items:?}");
 
@@ -36,7 +36,7 @@ fn visualize_select_top_k_ranked_documents(highest_ranked_items: &[(&str, f64)])
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

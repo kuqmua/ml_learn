@@ -19,20 +19,20 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert!((0.0..=1.0).contains(&positive_class_share));
         // Сохраняем результат этого шага в `negative_class_share`.
-        let negative_class_share = 1.0 - positive_class_share;
+        let negative_class_share: f64 = 1.0 - positive_class_share;
         // Сохраняем результат этого шага в `uncertainty_measure`.
         // Меру неопределённости распределения называют entropy.
-        let mut uncertainty_measure = 0.0;
+        let mut uncertainty_measure: f64 = 0.0;
         // Повторяем расчёт для каждого элемента последовательности.
         for probability in [positive_class_share, negative_class_share] {
             // Выбираем дальнейший шаг по выполнению условия.
             if probability > 0.0 {
                 // Сохраняем результат этого шага в `ratio`.
-                let ratio = (probability - 1.0) / (probability + 1.0);
+                let ratio: f64 = (probability - 1.0) / (probability + 1.0);
                 // Сохраняем результат этого шага в `term`.
-                let mut term = ratio;
+                let mut term: f64 = ratio;
                 // Сохраняем результат этого шага в `logarithm`.
-                let mut logarithm = 0.0;
+                let mut logarithm: f64 = 0.0;
                 // Повторяем расчёт для каждого элемента последовательности.
                 for odd_divisor in (1..=99).step_by(2) {
                     // Обновляем значение результатом текущего вычисления.
@@ -71,7 +71,7 @@ fn visualize_entropy_of_class_proportions_in_tree_node() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `probability`.
-            let probability = plot_step_index as f64 / 100.0;
+            let probability: f64 = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
             (
                 probability,
@@ -82,7 +82,7 @@ fn visualize_entropy_of_class_proportions_in_tree_node() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

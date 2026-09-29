@@ -10,15 +10,15 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `labels` для следующего шага примера.
-    let labels = [false, false, true, false, true];
+    let labels: [bool; 5] = [false, false, true, false, true];
     // Проверяем ожидаемое свойство учебного примера.
     assert!(!labels.is_empty(), "для baseline нужна хотя бы одна метка");
     // Преобразуем входные данные и сохраняем полученную коллекцию в `positive_count`.
-    let positive_count = labels.iter().filter(|&&label| label).count();
+    let positive_count: usize = labels.iter().filter(|&&label| label).count();
     // Считаем количество элементов и сохраняем его в `majority_label`.
-    let majority_label = positive_count * 2 > labels.len();
+    let majority_label: bool = positive_count * 2 > labels.len();
     // Сохраняем рассчитанное значение `accuracy` для следующих операций.
-    let accuracy = labels
+    let accuracy: f64 = labels
         // Перебираем элементы по ссылке, не копируя исходную коллекцию.
         .iter()
         // Оставляем только элементы, прошедшие указанную проверку.
@@ -37,7 +37,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_majority_class_baseline_classifier(labels: [bool; 5], positive_count: usize) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

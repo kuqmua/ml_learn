@@ -5,7 +5,7 @@
 
 fn main() {
     // Задаём учебные значения для `cases`.
-    let cases = [
+    let cases: [(&str, &str); 3] = [
         // Добавляем пару значений для сравнения или построения графика.
         ("исходные данные", "1,0\n2,1\n"),
         // Добавляем пару значений для сравнения или построения графика.
@@ -14,11 +14,12 @@ fn main() {
         ("изменилась одна метка", "1,0\n2,0\n"),
     ];
     // Задаём учебные значения для `fingerprints`.
-    let mut fingerprints = [0; 3];
+    let mut fingerprints: [u64; 3] = [0; 3];
     // Повторяем расчёт для каждого элемента последовательности.
     for (index, (description, data)) in cases.into_iter().enumerate() {
         // Сохраняем результат этого шага в `hasher`.
-        let mut hasher = std::collections::hash_map::DefaultHasher::new();
+        let mut hasher: std::collections::hash_map::DefaultHasher =
+            std::collections::hash_map::DefaultHasher::new();
         // Используем подготовленное значение в следующем шаге примера.
         std::hash::Hash::hash(data, &mut hasher);
         // Обновляем значение результатом текущего вычисления.

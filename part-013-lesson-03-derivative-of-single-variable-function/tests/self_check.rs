@@ -3,7 +3,7 @@
 #[ignore = "заполни ответы и запусти тест с --ignored"]
 fn calculate_slopes() {
     let slopes_at_minus_two_zero_and_three: Option<[i32; 3]> = None;
-    let slopes =
+    let slopes: [i32; 3] =
         slopes_at_minus_two_zero_and_three.expect("впиши три наклона в Some([..., ..., ...])");
     assert_eq!(slopes, [-4, 0, 6]);
 

@@ -9,13 +9,13 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `cluster` для следующего шага примера.
-    let cluster = [[1.0, 2.0], [3.0, 4.0]];
+    let cluster: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
     // Создаём набор значений `cluster_center` для следующего шага примера.
     // Среднее пустого кластера не определено.
     assert!(!cluster.is_empty(), "для центра нужна хотя бы одна точка");
     // Задаём учебные значения для `cluster_center`.
     // Центр группы точек называют centroid.
-    let mut cluster_center = [0.0, 0.0];
+    let mut cluster_center: [f64; 2] = [0.0, 0.0];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for point in cluster {
         // Прибавляем очередной вклад к ранее накопленному результату.
@@ -47,7 +47,7 @@ fn visualize_compute_centroid_as_mean_of_cluster_points(
     // Собираем значения для `cluster_center_points` в коллекцию.
     let cluster_center_points: Vec<(f64, f64)> = vec![(cluster_center[0], cluster_center[1])];
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::scatter_chart(
+    let chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

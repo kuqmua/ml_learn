@@ -11,7 +11,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Шаг: Создаём точки, лежащие на одной прямой.
-    let data = [[1., 1.], [2., 2.], [3., 3.], [4., 4.]];
+    let data: [[f64; 2]; 4] = [[1., 1.], [2., 2.], [3., 3.], [4., 4.]];
 
     // Учебные реализации математических операций для этого урока.
 
@@ -31,7 +31,7 @@ fn main() {
             return 0.0;
         }
         // Создаём изменяемое значение `estimate` для следующих операций.
-        let mut estimate = if value > 1.0 { value } else { 1.0 };
+        let mut estimate: f64 = if value > 1.0 { value } else { 1.0 };
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for _ in 0..80 {
             // Обновляем `estimate` результатом текущего шага.
@@ -43,111 +43,112 @@ fn main() {
 
     // Шаг: Находим среднее, главную ось и долю объяснённой дисперсии.
     // Долю общей дисперсии, объяснённую осью, называют explained variance fraction.
-    let (mean, axis, variance_share_explained_by_first_axis) = (|| -> ([f64; 2], [f64; 2], f64) {
-        // Используем подготовленное значение в следующем шаге примера.
-        /* Находим главную ось двумерной ковариационной матрицы. */
-        // Сохраняем результат этого шага в `data`.
-        let data: &[[f64; 2]] = &data;
-        // Считаем количество элементов и сохраняем его в `sample_count`.
-        let sample_count = data.len() as f64;
-        // Создаём набор значений `coordinate_sums` для следующего шага примера.
-        let mut coordinate_sums = [0.0, 0.0];
-        // Повторяем следующий блок для каждого элемента указанной последовательности.
-        for point in data {
-            // Прибавляем очередной вклад к ранее накопленному результату.
-            coordinate_sums[0] += point[0];
-            // Прибавляем очередной вклад к ранее накопленному результату.
-            coordinate_sums[1] += point[1];
-        }
-        // Создаём набор значений `mean` для следующего шага примера.
-        let mean = [
-            // Делим значения, получая нормированную величину или среднее.
-            coordinate_sums[0] / sample_count,
-            // Делим значения, получая нормированную величину или среднее.
-            coordinate_sums[1] / sample_count,
-        ];
-        // Сохраняем рассчитанное значение `(mut first_variance_sum, mut cross_covariance_sum, mut second_variance_sum)` для следующих операций.
-        // Совместное изменение двух величин описывают через covariance.
-        let (mut first_variance_sum, mut cross_deviation_product_sum, mut second_variance_sum) =
+    let (mean, axis, variance_share_explained_by_first_axis): ([f64; 2], [f64; 2], f64) =
+        (|| -> ([f64; 2], [f64; 2], f64) {
+            // Используем подготовленное значение в следующем шаге примера.
+            /* Находим главную ось двумерной ковариационной матрицы. */
+            // Сохраняем результат этого шага в `data`.
+            let data: &[[f64; 2]] = &data;
+            // Считаем количество элементов и сохраняем его в `sample_count`.
+            let sample_count: f64 = data.len() as f64;
+            // Создаём набор значений `coordinate_sums` для следующего шага примера.
+            let mut coordinate_sums: [f64; 2] = [0.0, 0.0];
+            // Повторяем следующий блок для каждого элемента указанной последовательности.
+            for point in data {
+                // Прибавляем очередной вклад к ранее накопленному результату.
+                coordinate_sums[0] += point[0];
+                // Прибавляем очередной вклад к ранее накопленному результату.
+                coordinate_sums[1] += point[1];
+            }
+            // Создаём набор значений `mean` для следующего шага примера.
+            let mean: [f64; 2] = [
+                // Делим значения, получая нормированную величину или среднее.
+                coordinate_sums[0] / sample_count,
+                // Делим значения, получая нормированную величину или среднее.
+                coordinate_sums[1] / sample_count,
+            ];
+            // Сохраняем рассчитанное значение `(mut first_variance_sum, mut cross_covariance_sum, mut second_variance_sum)` для следующих операций.
+            // Совместное изменение двух величин описывают через covariance.
+            let (mut first_variance_sum, mut cross_deviation_product_sum, mut second_variance_sum): (f64, f64, f64) =
             // Составляем результат из вычисленных значений в указанном порядке.
             (0.0, 0.0, 0.0);
-        // Повторяем следующий блок для каждого элемента указанной последовательности.
-        for point in data {
-            // Комбинируем исходные величины и сохраняем результат в `centered_first`.
-            let centered_first = point[0] - mean[0];
-            // Комбинируем исходные величины и сохраняем результат в `centered_second`.
-            let centered_second = point[1] - mean[1];
-            // Прибавляем очередной вклад к ранее накопленному результату.
-            first_variance_sum += multiply_number_by_itself(centered_first);
-            // Прибавляем очередной вклад к ранее накопленному результату.
-            cross_deviation_product_sum += centered_first * centered_second;
-            // Прибавляем очередной вклад к ранее накопленному результату.
-            second_variance_sum += multiply_number_by_itself(centered_second);
-        }
-        // Для симметричной матрицы [[a,b],[b,c]] большее собственное значение
-        // равно (a+c+sqrt((a-c)^2+4b^2))/2. Его собственный вектор — [b, lambda-a].
-        let discriminant = multiply_number_by_itself(first_variance_sum - second_variance_sum)
+            // Повторяем следующий блок для каждого элемента указанной последовательности.
+            for point in data {
+                // Комбинируем исходные величины и сохраняем результат в `centered_first`.
+                let centered_first: f64 = point[0] - mean[0];
+                // Комбинируем исходные величины и сохраняем результат в `centered_second`.
+                let centered_second: f64 = point[1] - mean[1];
+                // Прибавляем очередной вклад к ранее накопленному результату.
+                first_variance_sum += multiply_number_by_itself(centered_first);
+                // Прибавляем очередной вклад к ранее накопленному результату.
+                cross_deviation_product_sum += centered_first * centered_second;
+                // Прибавляем очередной вклад к ранее накопленному результату.
+                second_variance_sum += multiply_number_by_itself(centered_second);
+            }
+            // Для симметричной матрицы [[a,b],[b,c]] большее собственное значение
+            // равно (a+c+sqrt((a-c)^2+4b^2))/2. Его собственный вектор — [b, lambda-a].
+            let discriminant: f64 = multiply_number_by_itself(first_variance_sum - second_variance_sum)
             // Умножаем величины согласно используемой формуле.
             + 4.0 * multiply_number_by_itself(cross_deviation_product_sum);
-        // Сохраняем рассчитанное значение `largest_eigenvalue` для следующих операций.
-        let largest_eigenvalue = (first_variance_sum
+            // Сохраняем рассчитанное значение `largest_eigenvalue` для следующих операций.
+            let largest_eigenvalue: f64 = (first_variance_sum
             // Складываем или вычитаем величины согласно используемой формуле.
             + second_variance_sum
             // Складываем или вычитаем величины согласно используемой формуле.
             + approximate_square_root_with_newton_method(discriminant))
             // Делим значения, получая нормированную величину или среднее.
             / 2.0;
-        // Комбинируем исходные величины и сохраняем результат в `axis`.
-        let axis = if (|| -> f64 {
-            // Используем подготовленное значение в следующем шаге примера.
-            /* Модуль числа по определению: меняем знак только у отрицательного числа. */
-            // Сохраняем результат этого шага в `value`.
-            let value: f64 = cross_deviation_product_sum;
-            // Проверяем условие и выбираем соответствующую ветку алгоритма.
-            if value < 0.0 { -value } else { value }
-            // Используем подготовленное значение в следующем шаге примера.
-        })() < 1e-12
-        {
-            // Проверяем условие и выбираем соответствующую ветку алгоритма.
-            if first_variance_sum >= second_variance_sum {
-                // Составляем результат из вычисленных значений в указанном порядке.
-                [1.0, 0.0]
+            // Комбинируем исходные величины и сохраняем результат в `axis`.
+            let axis: [f64; 2] = if (|| -> f64 {
+                // Используем подготовленное значение в следующем шаге примера.
+                /* Модуль числа по определению: меняем знак только у отрицательного числа. */
+                // Сохраняем результат этого шага в `value`.
+                let value: f64 = cross_deviation_product_sum;
+                // Проверяем условие и выбираем соответствующую ветку алгоритма.
+                if value < 0.0 { -value } else { value }
+                // Используем подготовленное значение в следующем шаге примера.
+            })() < 1e-12
+            {
+                // Проверяем условие и выбираем соответствующую ветку алгоритма.
+                if first_variance_sum >= second_variance_sum {
+                    // Составляем результат из вычисленных значений в указанном порядке.
+                    [1.0, 0.0]
+                // Обрабатываем случай, когда предыдущее условие не выполнено.
+                } else {
+                    // Составляем результат из вычисленных значений в указанном порядке.
+                    [0.0, 1.0]
+                }
             // Обрабатываем случай, когда предыдущее условие не выполнено.
             } else {
-                // Составляем результат из вычисленных значений в указанном порядке.
-                [0.0, 1.0]
-            }
-        // Обрабатываем случай, когда предыдущее условие не выполнено.
-        } else {
-            // Создаём набор значений `unnormalized_axis` для следующего шага примера.
-            let unnormalized_axis = [
-                // Используем ранее рассчитанное значение `cross_deviation_product_sum` в текущем выражении.
-                cross_deviation_product_sum,
-                // Складываем или вычитаем величины согласно используемой формуле.
-                largest_eigenvalue - first_variance_sum,
-            ];
-            // Сохраняем рассчитанное значение `axis_length` для следующих операций.
-            let axis_length = approximate_square_root_with_newton_method(
-                // Вызываем нужное вычисление с подготовленными аргументами.
-                multiply_number_by_itself(unnormalized_axis[0])
+                // Создаём набор значений `unnormalized_axis` для следующего шага примера.
+                let unnormalized_axis: [f64; 2] = [
+                    // Используем ранее рассчитанное значение `cross_deviation_product_sum` в текущем выражении.
+                    cross_deviation_product_sum,
+                    // Складываем или вычитаем величины согласно используемой формуле.
+                    largest_eigenvalue - first_variance_sum,
+                ];
+                // Сохраняем рассчитанное значение `axis_length` для следующих операций.
+                let axis_length: f64 = approximate_square_root_with_newton_method(
+                    // Вызываем нужное вычисление с подготовленными аргументами.
+                    multiply_number_by_itself(unnormalized_axis[0])
                     // Складываем или вычитаем величины согласно используемой формуле.
                     + multiply_number_by_itself(unnormalized_axis[1]),
-            );
+                );
+                // Составляем результат из вычисленных значений в указанном порядке.
+                [
+                    // Делим значения, получая нормированную величину или среднее.
+                    unnormalized_axis[0] / axis_length,
+                    // Делим значения, получая нормированную величину или среднее.
+                    unnormalized_axis[1] / axis_length,
+                ]
+            };
+            // Нормируем или усредняем величину делением и сохраняем её в `variance`.
+            let variance: f64 = largest_eigenvalue / (first_variance_sum + second_variance_sum);
             // Составляем результат из вычисленных значений в указанном порядке.
-            [
-                // Делим значения, получая нормированную величину или среднее.
-                unnormalized_axis[0] / axis_length,
-                // Делим значения, получая нормированную величину или среднее.
-                unnormalized_axis[1] / axis_length,
-            ]
-        };
-        // Нормируем или усредняем величину делением и сохраняем её в `variance`.
-        let variance = largest_eigenvalue / (first_variance_sum + second_variance_sum);
-        // Составляем результат из вычисленных значений в указанном порядке.
-        (mean, axis, variance)
-    })();
+            (mean, axis, variance)
+        })();
     // Шаг: Проецируем исходные точки на найденную ось.
-    let projections: Vec<_> = data
+    let projections: Vec<f64> = data
         // Перебираем элементы по ссылке, не копируя исходную коллекцию.
         .iter()
         // Преобразуем каждый элемент последовательности.
@@ -179,7 +180,7 @@ fn visualize_practice_pca_with_centering_covariance_and_explained_variance(
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

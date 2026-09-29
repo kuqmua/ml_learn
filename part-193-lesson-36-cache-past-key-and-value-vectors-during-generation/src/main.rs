@@ -2,13 +2,13 @@
 // Сохраняем K/V прошлых токенов и сверяем последний выход с полным причинным пересчётом.
 
 fn main() {
-    let states = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    let full =
+    let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
+    let full: Vec<[f64; 2]> =
         part_182_lesson_35_causal_self_attention_over_prefix_of_tokens::causal_self_attention_over_query_key_value_sequences(&states, &states, &states)
             .unwrap();
-    let mut cached_keys = Vec::new();
-    let mut cached_values = Vec::new();
-    let mut cached_outputs = Vec::new();
+    let mut cached_keys: Vec<[f64; 2]> = Vec::new();
+    let mut cached_values: Vec<[f64; 2]> = Vec::new();
+    let mut cached_outputs: Vec<[f64; 2]> = Vec::new();
     for &new_state in &states {
         cached_keys.push(new_state);
         cached_values.push(new_state);
@@ -17,11 +17,11 @@ fn main() {
             .iter()
             .map(|key| (new_state[0] * key[0] + new_state[1] * key[1]) / 2.0_f64.sqrt())
             .collect();
-        let weights =
+        let weights: Vec<f64> =
             part_182_lesson_35_causal_self_attention_over_prefix_of_tokens::softmax_probabilities_from_raw_model_scores(
                 &raw_model_scores,
             );
-        let output = weights.iter().zip(&cached_values).fold(
+        let output: [f64; 2] = weights.iter().zip(&cached_values).fold(
             [0.0; 2],
             |mut output_state, (&weight_value, cached_value)| {
                 output_state[0] += weight_value * cached_value[0];

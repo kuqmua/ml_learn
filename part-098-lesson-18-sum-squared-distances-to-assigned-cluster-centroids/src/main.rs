@@ -10,11 +10,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `points` для следующего шага примера.
-    let points = [[0.0, 0.0], [1.0, 0.0], [5.0, 0.0], [6.0, 0.0]];
+    let points: [[f64; 2]; 4] = [[0.0, 0.0], [1.0, 0.0], [5.0, 0.0], [6.0, 0.0]];
     // Создаём набор значений `centers` для следующего шага примера.
-    let centers = [[0.5, 0.0], [5.5, 0.0]];
+    let centers: [[f64; 2]; 2] = [[0.5, 0.0], [5.5, 0.0]];
     // Создаём набор значений `assignments` для следующего шага примера.
-    let assignments = [0, 0, 1, 1];
+    let assignments: [usize; 4] = [0, 0, 1, 1];
     // Инициализируем изменяемый накопитель `total_squared_distance_to_cluster_centers` начальным состоянием.
     // Каждой точке нужен индекс существующего центра.
     assert_eq!(
@@ -34,11 +34,11 @@ fn main() {
     );
     // Сохраняем результат этого шага в `total_squared_distance_to_cluster_centers`.
     // Сумму квадратов расстояний до центров кластеров называют inertia.
-    let mut total_squared_distance_to_cluster_centers = 0.0;
+    let mut total_squared_distance_to_cluster_centers: f64 = 0.0;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for index in 0..points.len() {
         // Комбинируем исходные величины и сохраняем результат в `delta`.
-        let delta = points[index][0] - centers[assignments[index]][0];
+        let delta: f64 = points[index][0] - centers[assignments[index]][0];
         // Прибавляем очередной вклад к ранее накопленному результату.
         total_squared_distance_to_cluster_centers += delta * delta;
     }
@@ -56,7 +56,7 @@ fn visualize_sum_squared_distances_to_assigned_cluster_centroids() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (
                 horizontal_value,
@@ -67,7 +67,7 @@ fn visualize_sum_squared_distances_to_assigned_cluster_centroids() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

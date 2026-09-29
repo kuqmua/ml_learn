@@ -10,7 +10,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `labels` для следующего шага примера.
-    let labels = ["code", "code", "code", "ml"];
+    let labels: [&str; 4] = ["code", "code", "code", "ml"];
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -19,11 +19,11 @@ fn main() {
         "для частоты класса нужна хотя бы одна метка"
     );
     // Преобразуем входные данные и сохраняем полученную коллекцию в `code_count`.
-    let code_count = labels.iter().filter(|&&label| label == "code").count();
+    let code_count: usize = labels.iter().filter(|&&label| label == "code").count();
     // Считаем количество элементов и сохраняем его в `code_prior`.
-    let code_prior = code_count as f64 / labels.len() as f64;
+    let code_prior: f64 = code_count as f64 / labels.len() as f64;
     // Комбинируем исходные величины и сохраняем результат в `machine_learning_prior`.
-    let machine_learning_prior = 1.0 - code_prior;
+    let machine_learning_prior: f64 = 1.0 - code_prior;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("P(code)={code_prior}, P(ml)={machine_learning_prior}");
 
@@ -37,7 +37,7 @@ fn visualize_prior_probabilities_of_classes_in_training_data(
     machine_learning_prior: f64,
 ) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

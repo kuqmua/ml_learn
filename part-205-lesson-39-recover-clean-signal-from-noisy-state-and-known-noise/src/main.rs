@@ -11,19 +11,19 @@ fn reconstruct_clean_signal_from_noisy_sample(
         / original_signal_variance_share.sqrt()
 }
 fn main() {
-    let clean = 2.0;
-    let noise = -0.7;
-    let original_signal_variance_share = 0.36;
-    let noisy =
+    let clean: f64 = 2.0;
+    let noise: f64 = -0.7;
+    let original_signal_variance_share: f64 = 0.36;
+    let noisy: f64 =
         part_203_lesson_39_mix_clean_signal_with_noise_in_forward_diffusion::add_scaled_noise_to_clean_signal_for_diffusion_step(
             clean,
             noise,
             original_signal_variance_share,
         )
         .unwrap();
-    let exact =
+    let exact: f64 =
         reconstruct_clean_signal_from_noisy_sample(noisy, noise, original_signal_variance_share);
-    let mistaken = reconstruct_clean_signal_from_noisy_sample(
+    let mistaken: f64 = reconstruct_clean_signal_from_noisy_sample(
         noisy,
         noise + 0.2,
         original_signal_variance_share,

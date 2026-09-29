@@ -18,7 +18,7 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, vector, expected) in cases {
         // В библиотеке длина строится на вычислении из первого урока.
-        let length =
+        let length: f64 =
             part_003_lesson_01_calculate_euclidean_length_of_one_vector::euclidean_norm_of_vector(
                 &vector,
             );
@@ -39,7 +39,7 @@ fn visualize_calculate_euclidean_length_of_one_vector() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (
                 horizontal_value,
@@ -52,7 +52,7 @@ fn visualize_calculate_euclidean_length_of_one_vector() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

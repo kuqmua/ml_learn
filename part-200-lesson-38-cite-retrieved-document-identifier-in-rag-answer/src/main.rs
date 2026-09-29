@@ -10,9 +10,9 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `source_identifier` для следующих операций.
-    let source_identifier = "docs/rust/cargo";
+    let source_identifier: &str = "docs/rust/cargo";
     // Сохраняем рассчитанное значение `fact` для следующих операций.
-    let fact = "Cargo собирает проект";
+    let fact: &str = "Cargo собирает проект";
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("{fact} [источник: {source_identifier}]");
 }

@@ -13,7 +13,7 @@ fn main() {
     // Оценку модели до преобразования в вероятность называют logit.
     for raw_model_score in [-2.0, 0.0, 2.0] {
         // ReLU оставляет положительные значения и обнуляет отрицательные.
-        let rectified_linear_output = if raw_model_score > 0.0 {
+        let rectified_linear_output: f64 = if raw_model_score > 0.0 {
             raw_model_score
         } else {
             0.0
@@ -33,14 +33,14 @@ fn visualize_apply_nonlinear_activation_in_neural_network_layer() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, horizontal_value.max(0.0))
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

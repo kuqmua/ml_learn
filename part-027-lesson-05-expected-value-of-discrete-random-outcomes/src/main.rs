@@ -9,7 +9,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `outcomes` для следующего шага примера.
-    let outcomes = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0];
+    let outcomes: [f64; 6] = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0];
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -18,9 +18,9 @@ fn main() {
         "для среднего нужен хотя бы один исход"
     );
     // Считаем количество элементов и сохраняем его в `probability`.
-    let probability = 1.0 / outcomes.len() as f64;
+    let probability: f64 = 1.0 / outcomes.len() as f64;
     // Инициализируем изменяемый накопитель `expectation` начальным состоянием.
-    let mut expectation = 0.0;
+    let mut expectation: f64 = 0.0;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for outcome in outcomes {
         // Прибавляем очередной вклад к ранее накопленному результату.
@@ -36,7 +36,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_expected_value_of_discrete_random_outcomes() {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

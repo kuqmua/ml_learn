@@ -10,16 +10,16 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Инициализируем значение `observed_count` начальным состоянием.
-    let observed_count = 0.0;
+    let observed_count: f64 = 0.0;
     // Сохраняем рассчитанное значение `total_words_in_class` для следующих операций.
-    let total_words_in_class = 8.0;
+    let total_words_in_class: f64 = 8.0;
     // Сохраняем рассчитанное значение `known_text_unit_count` для следующих операций.
     // Набор известных модели текстовых единиц называют vocabulary.
-    let known_text_unit_count = 4.0;
+    let known_text_unit_count: f64 = 4.0;
     // Нормируем или усредняем величину делением и сохраняем её в `unsmoothed`.
-    let unsmoothed = observed_count / total_words_in_class;
+    let unsmoothed: f64 = observed_count / total_words_in_class;
     // Нормируем или усредняем величину делением и сохраняем её в `smoothed`.
-    let smoothed = (observed_count + 1.0) / (total_words_in_class + known_text_unit_count);
+    let smoothed: f64 = (observed_count + 1.0) / (total_words_in_class + known_text_unit_count);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("без сглаживания={unsmoothed}, со сглаживанием={smoothed}");
 
@@ -40,7 +40,7 @@ fn visualize_laplace_smoothing_of_class_conditional_word_counts() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

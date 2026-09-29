@@ -9,9 +9,9 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `documents` для следующего шага примера.
-    let documents = [("rust cargo", "guide"), ("машинное обучение", "ml")];
+    let documents: [(&str, &str); 2] = [("rust cargo", "guide"), ("машинное обучение", "ml")];
     // Сохраняем рассчитанное значение `query` для следующих операций.
-    let query = "cargo";
+    let query: &str = "cargo";
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (text, document_identifier) in documents {
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -28,7 +28,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_lexical_match_between_query_and_documents(documents: [(&str, &str); 2], query: &str) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

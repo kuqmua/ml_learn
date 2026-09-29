@@ -26,11 +26,11 @@ pub fn mean_absolute_error_between_targets_and_predictions(
     // Используем подготовленное значение в следующем шаге примера.
     validate_equal_lengths_of_targets_and_predictions(targets, predictions)?;
     // Сохраняем результат этого шага в `absolute_sum`.
-    let mut absolute_sum = 0.0;
+    let mut absolute_sum: f64 = 0.0;
     // Повторяем расчёт для каждого элемента последовательности.
     for index in 0..targets.len() {
         // Сохраняем результат этого шага в `error`.
-        let error = predictions[index] - targets[index];
+        let error: f64 = predictions[index] - targets[index];
         // Обновляем значение результатом текущего вычисления.
         absolute_sum += if error < 0.0 { -error } else { error };
     }

@@ -4,10 +4,10 @@
 fn main() {
     // Строки таблиц — обучаемые параметры; здесь числа фиксированы для проверки.
     // Плотное числовое представление объекта называют embedding.
-    let text_unit_dense_representation = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
-    let position_dense_representation = [[0.0, 0.0], [0.1, 0.0], [0.2, 0.0]];
+    let text_unit_dense_representation: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
+    let position_dense_representation: [[f64; 2]; 3] = [[0.0, 0.0], [0.1, 0.0], [0.2, 0.0]];
     // Единицу текста, которую модель обрабатывает как одно целое, называют token.
-    let text_unit_identifiers = [0, 1, 0];
+    let text_unit_identifiers: [usize; 3] = [0, 1, 0];
     let states: Vec<[f64; 2]> = text_unit_identifiers
         .iter()
         .enumerate()

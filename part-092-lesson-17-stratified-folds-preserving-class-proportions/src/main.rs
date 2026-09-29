@@ -5,17 +5,17 @@
 
 fn main() {
     // Задаём учебные значения для `positive`.
-    let positive = [1, 3, 5, 7];
+    let positive: [i32; 4] = [1, 3, 5, 7];
     // Задаём учебные значения для `negative`.
-    let negative = [0, 2, 4, 6];
+    let negative: [i32; 4] = [0, 2, 4, 6];
     // Сохраняем результат этого шага в `bad_first`.
-    let bad_first = positive;
+    let bad_first: [i32; 4] = positive;
     // Сохраняем результат этого шага в `bad_second`.
-    let bad_second = negative;
+    let bad_second: [i32; 4] = negative;
     // Задаём учебные значения для `first_fold`.
-    let first_fold = [positive[0], positive[1], negative[0], negative[1]];
+    let first_fold: [i32; 4] = [positive[0], positive[1], negative[0], negative[1]];
     // Задаём учебные значения для `second_fold`.
-    let second_fold = [positive[2], positive[3], negative[2], negative[3]];
+    let second_fold: [i32; 4] = [positive[2], positive[3], negative[2], negative[3]];
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, first_fold, second_fold, expected_positive) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -24,7 +24,7 @@ fn main() {
         ("стратификация", first_fold, second_fold, [2, 2]),
     ] {
         // Задаём учебные значения для `counts`.
-        let counts = [
+        let counts: [usize; 2] = [
             // Обновляем значение результатом текущего вычисления.
             first_fold.iter().filter(|&&value| value % 2 == 1).count(),
             // Обновляем значение результатом текущего вычисления.
@@ -43,7 +43,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_stratified_folds_preserving_class_proportions() {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

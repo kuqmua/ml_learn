@@ -12,7 +12,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Шаг: Создаём одномерную задачу с явной границей классов.
-    let data = [(1., false), (2., false), (3., true), (4., true)];
+    let data: [(f64, bool); 4] = [(1., false), (2., false), (3., true), (4., true)];
 
     // Автоматически получаем стандартные реализации перечисленных трейтов для этого типа.
     #[derive(Debug)]
@@ -40,7 +40,7 @@ fn main() {
         }
         // Сохраняем рассчитанное значение `positive_class_share` для следующих операций.
         // Долю объектов одного класса среди всех объектов называют fraction.
-        let positive_class_share =
+        let positive_class_share: f64 =
             // Делим значения, получая нормированную величину или среднее.
             data.iter().filter(|(_, label)| *label).count() as f64 / data.len() as f64;
         // Умножаем величины согласно используемой формуле.
@@ -49,18 +49,18 @@ fn main() {
     // Ищем порог с минимальной взвешенной нечистотой и строим дочерние узлы.
     fn build_numeric_decision_tree(data: &[(f64, bool)], remaining_depth: usize) -> Tree {
         // Считаем число положительных меток, чтобы проверить чистоту узла.
-        let positive_count = data.iter().filter(|(_, label)| *label).count();
+        let positive_count: usize = data.iter().filter(|(_, label)| *label).count();
         // Чистый узел или достигнутый предел глубины превращаем в лист.
         if remaining_depth == 0 || positive_count == 0 || positive_count == data.len() {
             // Завершаем текущий расчёт и возвращаем найденное значение.
             return Tree::Leaf(positive_count * 2 >= data.len());
         }
         // Извлекаем значения признака и сортируем их для поиска возможных порогов.
-        let mut sorted_feature_values: Vec<_> = data.iter().map(|sample| sample.0).collect();
+        let mut sorted_feature_values: Vec<f64> = data.iter().map(|sample| sample.0).collect();
         // Сортируем значения в порядке, заданном функцией сравнения.
         sorted_feature_values.sort_by(f64::total_cmp);
         // Инициализируем изменяемый накопитель `best_split` начальным состоянием.
-        let mut best_split = None;
+        let mut best_split: Option<(f64, f64)> = None;
         // Кандидатами служат середины между соседними значениями признака.
         for pair in sorted_feature_values.windows(2) {
             // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -69,9 +69,9 @@ fn main() {
                 continue;
             }
             // Нормируем или усредняем величину делением и сохраняем её в `candidate_threshold`.
-            let candidate_threshold = (pair[0] + pair[1]) / 2.;
+            let candidate_threshold: f64 = (pair[0] + pair[1]) / 2.;
             // Сохраняем рассчитанное значение `left_samples` для следующих операций.
-            let left_samples: Vec<_> = data
+            let left_samples: Vec<(f64, bool)> = data
                 // Перебираем элементы по ссылке, не копируя исходную коллекцию.
                 .iter()
                 // Копируем значения из ссылок, чтобы получить самостоятельные элементы.
@@ -81,7 +81,7 @@ fn main() {
                 // Собираем элементы итератора в итоговую коллекцию.
                 .collect();
             // Сохраняем рассчитанное значение `right_samples` для следующих операций.
-            let right_samples: Vec<_> = data
+            let right_samples: Vec<(f64, bool)> = data
                 // Перебираем элементы по ссылке, не копируя исходную коллекцию.
                 .iter()
                 // Копируем значения из ссылок, чтобы получить самостоятельные элементы.
@@ -91,7 +91,7 @@ fn main() {
                 // Собираем элементы итератора в итоговую коллекцию.
                 .collect();
             // Считаем количество элементов и сохраняем его в `score`.
-            let score = (left_samples.len() as f64
+            let score: f64 = (left_samples.len() as f64
                 // Добавляем этот член в составное арифметическое выражение.
                 * calculate_gini_impurity_of_labels(&left_samples)
                 // Умножаем величины согласно используемой формуле.
@@ -107,7 +107,7 @@ fn main() {
         // По лучшему порогу рекурсивно строим два дочерних поддерева.
         if let Some((_, threshold)) = best_split {
             // Сохраняем рассчитанное значение `left_samples` для следующих операций.
-            let left_samples: Vec<_> = data
+            let left_samples: Vec<(f64, bool)> = data
                 // Перебираем элементы по ссылке, не копируя исходную коллекцию.
                 .iter()
                 // Копируем значения из ссылок, чтобы получить самостоятельные элементы.
@@ -117,7 +117,7 @@ fn main() {
                 // Собираем элементы итератора в итоговую коллекцию.
                 .collect();
             // Сохраняем рассчитанное значение `right_samples` для следующих операций.
-            let right_samples: Vec<_> = data
+            let right_samples: Vec<(f64, bool)> = data
                 // Перебираем элементы по ссылке, не копируя исходную коллекцию.
                 .iter()
                 // Копируем значения из ссылок, чтобы получить самостоятельные элементы.
@@ -153,7 +153,7 @@ fn main() {
     }
 
     // Шаг: Обучаем дерево, выбирая порог по уменьшению неоднородности.
-    let tree = build_numeric_decision_tree(&data, 2);
+    let tree: Tree = build_numeric_decision_tree(&data, 2);
     // Объявляем повторно используемое вычисление `classify_feature_with_decision_tree`; параметры ниже задают его входы.
     fn classify_feature_with_decision_tree(tree: &Tree, feature_value: f64) -> bool {
         // Разбираем каждый возможный вариант значения отдельно.
@@ -203,7 +203,7 @@ fn main() {
             // Преобразуем каждый элемент в новое значение.
             .map(|plot_step_index| {
                 // Сохраняем результат этого шага в `horizontal_value`.
-                let horizontal_value = plot_step_index as f64 / 10.0;
+                let horizontal_value: f64 = plot_step_index as f64 / 10.0;
                 // Добавляем пару значений для сравнения или построения графика.
                 (
                     horizontal_value,
@@ -213,7 +213,7 @@ fn main() {
             // Собираем результаты в коллекцию.
             .collect();
         // Строим график по рассчитанным значениям и сохраняем его как SVG.
-        let chart = lesson_visualization::line_chart(
+        let chart: std::path::PathBuf = lesson_visualization::line_chart(
             // Передаём путь к каталогу текущего урока.
             env!("CARGO_MANIFEST_DIR"),
             // Указываем имя SVG-файла.

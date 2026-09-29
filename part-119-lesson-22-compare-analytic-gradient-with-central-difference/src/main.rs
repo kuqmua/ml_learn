@@ -10,17 +10,17 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `input_value` для следующих операций.
-    let input_value = 3.0;
+    let input_value: f64 = 3.0;
     // Инициализируем значение `step_size` начальным состоянием.
-    let step_size = 0.0001;
+    let step_size: f64 = 0.0001;
     // Умножаем значения и сохраняем результат в `analytical`.
-    let analytical = 2.0 * input_value;
+    let analytical: f64 = 2.0 * input_value;
     // Умножаем значения и сохраняем результат в `right`.
-    let right = (input_value + step_size) * (input_value + step_size);
+    let right: f64 = (input_value + step_size) * (input_value + step_size);
     // Умножаем значения и сохраняем результат в `left`.
-    let left = (input_value - step_size) * (input_value - step_size);
+    let left: f64 = (input_value - step_size) * (input_value - step_size);
     // Нормируем или усредняем величину делением и сохраняем её в `numerical`.
-    let numerical = (right - left) / (2.0 * step_size);
+    let numerical: f64 = (right - left) / (2.0 * step_size);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("аналитически={analytical}, численно={numerical}");
 
@@ -36,7 +36,7 @@ fn visualize_compare_analytic_gradient_with_central_difference() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `step_size`.
-            let step_size = plot_step_index as f64 / 100.0;
+            let step_size: f64 = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
             (
                 step_size,
@@ -46,7 +46,7 @@ fn visualize_compare_analytic_gradient_with_central_difference() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

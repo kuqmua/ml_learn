@@ -6,7 +6,7 @@
 
 fn main() {
     // Задаём учебные значения для `left`.
-    let left = [1.0, 0.0];
+    let left: [f64; 2] = [1.0, 0.0];
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &[f64], f64); 5] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -24,7 +24,7 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, right, expected) in cases {
         // Числитель и длины уже изучены; общий код соединяет их в косинусное сходство.
-        let similarity = part_005_lesson_01_cosine_similarity_between_two_vectors::cosine_similarity_between_two_vectors(&left, right)
+        let similarity: f64 = part_005_lesson_01_cosine_similarity_between_two_vectors::cosine_similarity_between_two_vectors(&left, right)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("оба вектора ненулевые и одинаковой длины");
         // Проверяем ожидаемое свойство учебного примера.
@@ -41,7 +41,7 @@ fn main() {
         ("разная длина", &[1.0][..]),
     ] {
         // Сохраняем результат этого шага в `error`.
-        let error = part_005_lesson_01_cosine_similarity_between_two_vectors::cosine_similarity_between_two_vectors(&left, right)
+        let error: &str = part_005_lesson_01_cosine_similarity_between_two_vectors::cosine_similarity_between_two_vectors(&left, right)
             // Настраиваем или преобразуем результат предыдущего шага.
             .expect_err("этот вход должен быть отклонён");
         // Печатаем рассчитанные значения для проверки примера.
@@ -61,7 +61,7 @@ fn visualize_cosine_similarity_between_two_vectors() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `angle`.
-            let angle = (plot_step_index as f64).to_radians();
+            let angle: f64 = (plot_step_index as f64).to_radians();
             (
                 // Используем подготовленное значение в следующем шаге примера.
                 plot_step_index as f64,
@@ -79,7 +79,7 @@ fn visualize_cosine_similarity_between_two_vectors() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

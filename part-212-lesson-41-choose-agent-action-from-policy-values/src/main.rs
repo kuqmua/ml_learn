@@ -9,11 +9,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Инициализируем значение `left_action_value` начальным состоянием.
-    let left_action_value = 0.2;
+    let left_action_value: f64 = 0.2;
     // Инициализируем значение `right_action_value` начальным состоянием.
-    let right_action_value = 0.8;
+    let right_action_value: f64 = 0.8;
     // Сохраняем рассчитанное значение `action` для следующих операций.
-    let action = if right_action_value > left_action_value {
+    let action: &str = if right_action_value > left_action_value {
         // Подставляем результаты в этот шаблон вывода или текстового значения.
         "вправо"
     // Обрабатываем случай, когда предыдущее условие не выполнено.
@@ -34,7 +34,7 @@ fn visualize_choose_agent_action_from_policy_values(
     right_action_value: f64,
 ) {
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

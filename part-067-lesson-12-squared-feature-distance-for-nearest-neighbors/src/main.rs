@@ -10,13 +10,13 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `query` для следующего шага примера.
-    let query = [1.0, 2.0];
+    let query: [f64; 2] = [1.0, 2.0];
     // Создаём набор значений `candidates` для следующего шага примера.
-    let candidates = [[2.0, 2.0], [4.0, 6.0]];
+    let candidates: [[f64; 2]; 2] = [[2.0, 2.0], [4.0, 6.0]];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for candidate in candidates {
         // Для поиска ближайшего кандидата нужен квадрат расстояния из урока 01.4.
-        let squared_distance =
+        let squared_distance: f64 =
             part_004_lesson_01_euclidean_distance_between_two_points::squared_euclidean_distance_between_two_points(
                 &query, &candidate,
             )
@@ -37,7 +37,7 @@ fn visualize_squared_feature_distance_for_nearest_neighbors() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (
                 horizontal_value,
@@ -47,7 +47,7 @@ fn visualize_squared_feature_distance_for_nearest_neighbors() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

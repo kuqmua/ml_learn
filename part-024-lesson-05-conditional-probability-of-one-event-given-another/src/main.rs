@@ -25,7 +25,7 @@ fn main() {
             "совместных случаев не может быть больше всех случаев B"
         );
         // Сохраняем результат этого шага в `probability`.
-        let probability = if positive_tests == 0.0 {
+        let probability: Option<f64> = if positive_tests == 0.0 {
             // Отмечаем отсутствие подходящего значения.
             None
         // Обрабатываем случай, когда предыдущее условие не выполнено.
@@ -46,7 +46,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_conditional_probability_of_one_event_given_another() {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

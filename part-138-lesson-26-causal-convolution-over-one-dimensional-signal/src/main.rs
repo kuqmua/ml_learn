@@ -2,8 +2,8 @@
 // Выход в момент t зависит от текущего и прошлых элементов, но не от будущего.
 
 fn main() {
-    let signal = [1.0, 2.0, 3.0, 4.0];
-    let output =
+    let signal: [f64; 4] = [1.0, 2.0, 3.0, 4.0];
+    let output: Vec<f64> =
         part_138_lesson_26_causal_convolution_over_one_dimensional_signal::causal_convolution_of_one_dimensional_signal(
             &signal, 1.0, 2.0, 1,
         )
@@ -13,17 +13,17 @@ fn main() {
     visualize_causal_convolution_over_one_dimensional_signal(&signal, &output);
 }
 fn visualize_causal_convolution_over_one_dimensional_signal(input: &[f64], output: &[f64]) {
-    let first_plot_points: Vec<_> = input
+    let first_plot_points: Vec<(f64, f64)> = input
         .iter()
         .enumerate()
         .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
         .collect();
-    let second_plot_points: Vec<_> = output
+    let second_plot_points: Vec<(f64, f64)> = output
         .iter()
         .enumerate()
         .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
         .collect();
-    let path = lesson_visualization::line_chart(
+    let path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "causal-conv",
         "Причинная свёртка",

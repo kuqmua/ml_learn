@@ -56,9 +56,9 @@ fn main() {
     }
 
     // Шаг: Создаём матрицу 2×2 с известными элементами.
-    let left_matrix = Matrix::from_row_major_elements(2, 2, vec![1., 2., 3., 4.]).unwrap();
+    let left_matrix: Matrix = Matrix::from_row_major_elements(2, 2, vec![1., 2., 3., 4.]).unwrap();
     // Шаг: Умножаем матрицу на вектор: каждая координата ответа — сумма после попарного умножения элементов строки.
-    let input_vector = [1., 1.];
+    let input_vector: [f64; 2] = [1., 1.];
     // Проверяем, что сравниваемые размерности или значения действительно совпадают.
     assert_eq!(
         left_matrix.column_count,
@@ -66,15 +66,15 @@ fn main() {
         "несовместимые формы"
     );
     // Создаём изменяемое значение `output_vector` для следующих операций.
-    let mut output_vector = Vec::with_capacity(left_matrix.rows);
+    let mut output_vector: Vec<f64> = Vec::with_capacity(left_matrix.rows);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for row_index in 0..left_matrix.rows {
         // Сохраняем результат этого шага в `row_start`.
-        let row_start = row_index * left_matrix.column_count;
+        let row_start: usize = row_index * left_matrix.column_count;
         // Сохраняем результат этого шага в `row_end`.
-        let row_end = row_start + left_matrix.column_count;
+        let row_end: usize = row_start + left_matrix.column_count;
         // Сохраняем результат этого шага в `row_result`.
-        let row_result = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+        let row_result: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
             // Используем подготовленное значение в следующем шаге примера.
             &left_matrix.data[row_start..row_end],
             // Используем подготовленное значение в следующем шаге примера.
@@ -86,7 +86,7 @@ fn main() {
         output_vector.push(row_result);
     }
     // Шаг: Транспонируем матрицу, меняя строки и столбцы местами.
-    let mut transposed_elements = Vec::with_capacity(left_matrix.data.len());
+    let mut transposed_elements: Vec<f64> = Vec::with_capacity(left_matrix.data.len());
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for column_index in 0..left_matrix.column_count {
         // Повторяем следующий блок для каждого элемента указанной последовательности.
@@ -96,7 +96,7 @@ fn main() {
         }
     }
     // Сохраняем рассчитанное значение `transposed_matrix` для следующих операций.
-    let transposed_matrix = Matrix {
+    let transposed_matrix: Matrix = Matrix {
         // `rows` задаёт соответствующее входное значение или поле структуры.
         rows: left_matrix.column_count,
         // `column_count` задаёт соответствующее входное значение или поле структуры.
@@ -114,23 +114,24 @@ fn main() {
         "несовместимые формы"
     );
     // Умножаем значения и сохраняем результат в `result_elements`.
-    let mut result_elements = Vec::with_capacity(transposed_matrix.rows * left_matrix.column_count);
+    let mut result_elements: Vec<f64> =
+        Vec::with_capacity(transposed_matrix.rows * left_matrix.column_count);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for row_index in 0..transposed_matrix.rows {
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for column_index in 0..left_matrix.column_count {
             // Сохраняем результат этого шага в `row_start`.
-            let row_start = row_index * transposed_matrix.column_count;
+            let row_start: usize = row_index * transposed_matrix.column_count;
             // Сохраняем результат этого шага в `row_end`.
-            let row_end = row_start + transposed_matrix.column_count;
+            let row_end: usize = row_start + transposed_matrix.column_count;
             // Собираем значения для `column_values` в коллекцию.
-            let column_values: Vec<_> = (0..left_matrix.rows)
+            let column_values: Vec<f64> = (0..left_matrix.rows)
                 // Преобразуем каждый элемент в новое значение.
                 .map(|shared_index| left_matrix.value_at_row_and_column(shared_index, column_index))
                 // Собираем результаты в коллекцию.
                 .collect();
             // Сохраняем результат этого шага в `cell_value`.
-            let cell_value = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+            let cell_value: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
                 // Используем подготовленное значение в следующем шаге примера.
                 &transposed_matrix.data[row_start..row_end],
                 // Используем подготовленное значение в следующем шаге примера.
@@ -143,7 +144,7 @@ fn main() {
         }
     }
     // Сохраняем рассчитанное значение `result_matrix` для следующих операций.
-    let result_matrix =
+    let result_matrix: Matrix =
         // Собираем матрицу после умножения с рассчитанными размерностями и элементами.
         Matrix::from_row_major_elements(transposed_matrix.rows, left_matrix.column_count, result_elements)
             // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
@@ -159,7 +160,7 @@ fn main() {
         result_matrix: Matrix,
     ) {
         // Значения ячеек видны по цвету и подписи.
-        let chart = lesson_visualization::heatmap(
+        let chart: std::path::PathBuf = lesson_visualization::heatmap(
             // Передаём путь к каталогу текущего урока.
             env!("CARGO_MANIFEST_DIR"),
             // Указываем имя SVG-файла.

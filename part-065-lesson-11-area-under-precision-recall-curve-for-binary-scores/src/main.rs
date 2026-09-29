@@ -10,13 +10,13 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Оценки уже отсортированы от большей к меньшей.
-    let ranked_labels = [true, false, true, false];
+    let ranked_labels: [bool; 4] = [true, false, true, false];
     // Преобразуем входные данные и сохраняем полученную коллекцию в `positive_count`.
-    let positive_count = ranked_labels.iter().filter(|&&label| label).count() as f64;
+    let positive_count: f64 = ranked_labels.iter().filter(|&&label| label).count() as f64;
     // Инициализируем изменяемый накопитель `found_positive` начальным состоянием.
-    let mut found_positive = 0.0;
+    let mut found_positive: f64 = 0.0;
     // Инициализируем изменяемый накопитель `area` начальным состоянием.
-    let mut area = 0.0;
+    let mut area: f64 = 0.0;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (rank, label) in ranked_labels.into_iter().enumerate() {
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -24,7 +24,7 @@ fn main() {
             // Прибавляем очередной вклад к ранее накопленному результату.
             found_positive += 1.0;
             // Нормируем или усредняем величину делением и сохраняем её в `precision`.
-            let precision = found_positive / (rank + 1) as f64;
+            let precision: f64 = found_positive / (rank + 1) as f64;
             // Прибавляем очередной вклад к ранее накопленному результату.
             area += precision / positive_count;
         }
@@ -44,7 +44,7 @@ fn visualize_area_under_precision_recall_curve_for_binary_scores() {
     let precision_recall_area_under_curve_points: Vec<(f64, f64)> =
         [(0.0, 1.0), (0.5, 1.0), (1.0, 2.0 / 3.0)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

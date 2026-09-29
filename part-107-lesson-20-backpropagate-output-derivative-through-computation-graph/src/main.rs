@@ -9,17 +9,17 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `input_value` для следующих операций.
-    let input_value = 2.0;
+    let input_value: f64 = 2.0;
     // Умножаем значения и сохраняем результат в `square`.
-    let square = input_value * input_value;
+    let square: f64 = input_value * input_value;
     // Умножаем значения и сохраняем результат в `output`.
-    let output = 2.0 * square;
+    let output: f64 = 2.0 * square;
     // Сохраняем рассчитанное значение `derivative_output_by_square` для следующих операций.
-    let derivative_output_by_square = 2.0;
+    let derivative_output_by_square: f64 = 2.0;
     // Умножаем значения и сохраняем результат в `derivative_square_by_input`.
-    let derivative_square_by_input = 2.0 * input_value;
+    let derivative_square_by_input: f64 = 2.0 * input_value;
     // Умножаем значения и сохраняем результат в `derivative_output_by_input`.
-    let derivative_output_by_input = derivative_output_by_square * derivative_square_by_input;
+    let derivative_output_by_input: f64 = derivative_output_by_square * derivative_square_by_input;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("f(x)={output}, df/dx={derivative_output_by_input}");
 
@@ -34,7 +34,7 @@ fn visualize_backpropagate_output_derivative_through_computation_graph() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, 2.0 * horizontal_value * horizontal_value)
         })
@@ -45,14 +45,14 @@ fn visualize_backpropagate_output_derivative_through_computation_graph() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, 4.0 * horizontal_value)
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

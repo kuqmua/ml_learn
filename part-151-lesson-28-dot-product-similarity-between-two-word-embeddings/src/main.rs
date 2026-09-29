@@ -10,11 +10,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `first` для следующего шага примера.
-    let first = [0.8, 0.2];
+    let first: [f64; 2] = [0.8, 0.2];
     // Создаём набор значений `second` для следующего шага примера.
-    let second = [0.7, 0.3];
+    let second: [f64; 2] = [0.7, 0.3];
     // Умножаем значения и сохраняем результат в `sum_after_multiplying_coordinates`.
-    let sum_after_multiplying_coordinates =
+    let sum_after_multiplying_coordinates: f64 =
         // Используем подготовленное значение в следующем шаге примера.
         part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&first, &second)
             // Используем результат, ожидая успешного выполнения шага.
@@ -37,7 +37,7 @@ fn visualize_dot_product_similarity_between_two_word_embeddings(first: [f64; 2],
     // Собираем значения для `second_dense_representation_points` в коллекцию.
     let second_dense_representation_points: Vec<(f64, f64)> = vec![(second[0], second[1])];
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::scatter_chart(
+    let chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

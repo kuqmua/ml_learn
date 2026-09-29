@@ -10,13 +10,13 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `centered_points` для следующего шага примера.
-    let centered_points = [[-2.0, 0.0], [-1.0, 0.0], [1.0, 0.0], [2.0, 0.0]];
+    let centered_points: [[f64; 2]; 4] = [[-2.0, 0.0], [-1.0, 0.0], [1.0, 0.0], [2.0, 0.0]];
     // Создаём набор значений `principal_axis` для следующего шага примера.
-    let principal_axis = [1.0, 0.0];
+    let principal_axis: [f64; 2] = [1.0, 0.0];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for point in centered_points {
         // Умножаем значения и сохраняем результат в `projection`.
-        let projection =
+        let projection: f64 =
             // Используем подготовленное значение в следующем шаге примера.
             part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&point, &principal_axis).unwrap();
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -35,7 +35,7 @@ fn visualize_principal_component_direction_of_maximum_variance(centered_points: 
         .map(|data_point| (data_point[0], data_point[1]))
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::scatter_chart(
+    let chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -3,14 +3,14 @@
 
 fn main() {
     // Для каждого объекта строим константную модель только на предшествующих метках.
-    let targets = [1.0, 0.0, 1.0, 1.0];
-    let prior = 0.5;
-    let mut prefix_sum = 0.0;
+    let targets: [f64; 4] = [1.0, 0.0, 1.0, 1.0];
+    let prior: f64 = 0.5;
+    let mut prefix_sum: f64 = 0.0;
     // Производную функции по параметру или вектор таких производных называют gradient.
-    let mut rates_of_change = Vec::new();
+    let mut rates_of_change: Vec<f64> = Vec::new();
     for (index, &target) in targets.iter().enumerate() {
-        let prediction = (prefix_sum + prior) / (index as f64 + 1.0);
-        let rate_of_change = prediction - target;
+        let prediction: f64 = (prefix_sum + prior) / (index as f64 + 1.0);
+        let rate_of_change: f64 = prediction - target;
         rates_of_change.push(rate_of_change);
         println!("объект {index}: prediction={prediction:.3}, gradient={rate_of_change:.3}");
         prefix_sum += target;

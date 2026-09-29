@@ -11,24 +11,24 @@
 fn main() {
     // Создаём набор значений `text_unit` для следующего шага примера.
     // Единицу текста, которую модель обрабатывает как одно целое, называют token.
-    let text_unit = [1.0, 3.0];
+    let text_unit: [f64; 2] = [1.0, 3.0];
     // Нормируем или усредняем величину делением и сохраняем её в `mean`.
-    let mean = (text_unit[0] + text_unit[1]) / 2.0;
+    let mean: f64 = (text_unit[0] + text_unit[1]) / 2.0;
     // Сохраняем рассчитанное значение `variance` для следующих операций.
-    let variance =
+    let variance: f64 =
         // Составляем результат из вычисленных значений в указанном порядке.
         ((text_unit[0] - mean) * (text_unit[0] - mean) + (text_unit[1] - mean) * (text_unit[1] - mean)) / 2.0;
     // Комбинируем исходные величины и сохраняем результат в `squared_scale`.
-    let squared_scale = variance + 0.00001;
+    let squared_scale: f64 = variance + 0.00001;
     // Создаём изменяемое значение `scale` для следующих операций.
-    let mut scale = squared_scale;
+    let mut scale: f64 = squared_scale;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for _ in 0..80 {
         // Присваиваем вычисленное значение соответствующей переменной или полю.
         scale = (scale + squared_scale / scale) / 2.0;
     }
     // Создаём набор значений `normalized` для следующего шага примера.
-    let normalized = [(text_unit[0] - mean) / scale, (text_unit[1] - mean) / scale];
+    let normalized: [f64; 2] = [(text_unit[0] - mean) / scale, (text_unit[1] - mean) / scale];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("нормализованный токен = {normalized:?}");
 
@@ -49,7 +49,7 @@ fn visualize_normalize_coordinates_of_one_token_with_layer_norm(normalized: [f64
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

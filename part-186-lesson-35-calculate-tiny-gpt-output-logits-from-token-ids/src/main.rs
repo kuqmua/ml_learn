@@ -2,11 +2,11 @@
 // Собираем токены, позиции, причинное внимание и выходные логиты в один decoder-only проход.
 
 fn main() {
-    let prefix = [0, 1];
+    let prefix: [usize; 2] = [0, 1];
     // Оценку модели до преобразования в вероятность называют logit.
-    let raw_model_scores = part_186_lesson_35_calculate_tiny_gpt_output_logits_from_token_ids::calculate_decoder_output_logits_for_token_ids(&prefix);
-    let last = raw_model_scores.last().unwrap();
-    let next = last
+    let raw_model_scores: Vec<[f64; 3]> = part_186_lesson_35_calculate_tiny_gpt_output_logits_from_token_ids::calculate_decoder_output_logits_for_token_ids(&prefix);
+    let last: &[f64; 3] = raw_model_scores.last().unwrap();
+    let next: usize = last
         .iter()
         .enumerate()
         .max_by(|first_candidate, second_candidate| first_candidate.1.total_cmp(second_candidate.1))

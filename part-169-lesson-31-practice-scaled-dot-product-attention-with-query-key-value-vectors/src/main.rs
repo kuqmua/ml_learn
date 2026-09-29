@@ -13,7 +13,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Шаг: Задаём короткую последовательность двумерных векторов.
-    let sequence = [[1., 0.], [0., 1.], [1., 1.]];
+    let sequence: [[f64; 2]; 3] = [[1., 0.], [0., 1.], [1., 1.]];
 
     // Учебные реализации математических операций для этого урока.
 
@@ -35,9 +35,9 @@ fn main() {
             return 1.0 / approximate_exponential_with_taylor_series(-value);
         }
         // Создаём изменяемое значение `reduced` для следующих операций.
-        let mut reduced = value;
+        let mut reduced: f64 = value;
         // Инициализируем изменяемый накопитель `halving_count` начальным состоянием.
-        let mut halving_count = 0;
+        let mut halving_count: i32 = 0;
         // Повторяем вычисление, пока выполняется указанное условие.
         while reduced > 0.5 {
             // Масштабируем текущую величину делением.
@@ -46,9 +46,9 @@ fn main() {
             halving_count += 1;
         }
         // Создаём изменяемое значение `term` для следующих операций.
-        let mut term = 1.0;
+        let mut term: f64 = 1.0;
         // Создаём изменяемое значение `result` для следующих операций.
-        let mut result = 1.0;
+        let mut result: f64 = 1.0;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for term_index in 1..=30 {
             // Умножаем накопленное значение на очередной множитель.
@@ -66,29 +66,30 @@ fn main() {
     }
 
     // Шаг: Считаем маскированное внимание и получаем новый вектор для каждой позиции.
-    let (attended_output, attention_weights) = (|| -> (Vec<[f64; 2]>, Vec<Vec<f64>>) {
-        // Используем подготовленное значение в следующем шаге примера.
-        /* Веса внимания получаем из Q·K, нормализуем softmax и применяем к V. */
-        // Сохраняем результат этого шага в `queries`.
-        let queries: &[[f64; 2]] = &sequence;
-        // Сохраняем рассчитанное значение `keys` для следующих операций.
-        let keys: &[[f64; 2]] = &sequence;
-        // Сохраняем рассчитанное значение `values` для следующих операций.
-        let values: &[[f64; 2]] = &sequence;
-        // Сохраняем рассчитанное значение `past_only_attention` для следующих операций.
-        // Ограничение доступа к будущим значениям называют causal mask.
-        let past_only_attention: bool = true;
-        // Проверяем, что сравниваемые размерности или значения действительно совпадают.
-        assert_eq!(keys.len(), values.len());
-        // Создаём набор значений `outputs` для следующего шага примера.
-        let mut outputs = vec![];
-        // Создаём набор значений `weights` для следующего шага примера.
-        let mut weights = vec![];
-        // Повторяем следующий блок для каждого элемента указанной последовательности.
-        for (query_index, query) in queries.iter().enumerate() {
-            // Маска исключает будущие ключи до softmax.
-            // Оценку модели до преобразования в вероятность называют logit.
-            let raw_model_scores: Vec<f64> = keys
+    let (attended_output, attention_weights): (Vec<[f64; 2]>, Vec<Vec<f64>>) =
+        (|| -> (Vec<[f64; 2]>, Vec<Vec<f64>>) {
+            // Используем подготовленное значение в следующем шаге примера.
+            /* Веса внимания получаем из Q·K, нормализуем softmax и применяем к V. */
+            // Сохраняем результат этого шага в `queries`.
+            let queries: &[[f64; 2]] = &sequence;
+            // Сохраняем рассчитанное значение `keys` для следующих операций.
+            let keys: &[[f64; 2]] = &sequence;
+            // Сохраняем рассчитанное значение `values` для следующих операций.
+            let values: &[[f64; 2]] = &sequence;
+            // Сохраняем рассчитанное значение `past_only_attention` для следующих операций.
+            // Ограничение доступа к будущим значениям называют causal mask.
+            let past_only_attention: bool = true;
+            // Проверяем, что сравниваемые размерности или значения действительно совпадают.
+            assert_eq!(keys.len(), values.len());
+            // Создаём набор значений `outputs` для следующего шага примера.
+            let mut outputs: Vec<[f64; 2]> = vec![];
+            // Создаём набор значений `weights` для следующего шага примера.
+            let mut weights: Vec<Vec<f64>> = vec![];
+            // Повторяем следующий блок для каждого элемента указанной последовательности.
+            for (query_index, query) in queries.iter().enumerate() {
+                // Маска исключает будущие ключи до softmax.
+                // Оценку модели до преобразования в вероятность называют logit.
+                let raw_model_scores: Vec<f64> = keys
                 // Перебираем элементы по ссылке, не копируя исходную коллекцию.
                 .iter()
                 // Добавляем порядковый индекс к каждому элементу обхода.
@@ -117,7 +118,7 @@ fn main() {
             return 0.0;
         }
         // Создаём изменяемое значение `estimate` для следующих операций.
-        let mut estimate = if value > 1.0 { value } else { 1.0 };
+        let mut estimate: f64 = if value > 1.0 { value } else { 1.0 };
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for _ in 0..80 {
             // Обновляем `estimate` результатом текущего шага.
@@ -131,62 +132,62 @@ fn main() {
                 })
                 // Собираем элементы итератора в итоговую коллекцию.
                 .collect();
-            // Отдельная функция вычитает максимум, считает экспоненты и нормирует их сумму.
-            let attention_weights = (|| -> Vec<f64> {
-                // Используем подготовленное значение в следующем шаге примера.
-                /* Превращаем оценки внимания в веса с суммой, равной единице. */
-                // Сохраняем результат этого шага в `raw_model_scores`.
-                let raw_model_scores: &[f64] = &raw_model_scores;
-                // Создаём изменяемое значение `maximum_raw_model_score` для следующих операций.
-                let mut maximum_raw_model_score = f64::NEG_INFINITY;
-                // Повторяем следующий блок для каждого элемента указанной последовательности.
-                for &raw_model_score in raw_model_scores {
-                    // Проверяем условие и выбираем соответствующую ветку алгоритма.
-                    if raw_model_score > maximum_raw_model_score {
-                        // Обновляем `maximum_raw_model_score` результатом текущего шага.
-                        maximum_raw_model_score = raw_model_score;
+                // Отдельная функция вычитает максимум, считает экспоненты и нормирует их сумму.
+                let attention_weights: Vec<f64> = (|| -> Vec<f64> {
+                    // Используем подготовленное значение в следующем шаге примера.
+                    /* Превращаем оценки внимания в веса с суммой, равной единице. */
+                    // Сохраняем результат этого шага в `raw_model_scores`.
+                    let raw_model_scores: &[f64] = &raw_model_scores;
+                    // Создаём изменяемое значение `maximum_raw_model_score` для следующих операций.
+                    let mut maximum_raw_model_score: f64 = f64::NEG_INFINITY;
+                    // Повторяем следующий блок для каждого элемента указанной последовательности.
+                    for &raw_model_score in raw_model_scores {
+                        // Проверяем условие и выбираем соответствующую ветку алгоритма.
+                        if raw_model_score > maximum_raw_model_score {
+                            // Обновляем `maximum_raw_model_score` результатом текущего шага.
+                            maximum_raw_model_score = raw_model_score;
+                        }
                     }
-                }
-                // Считаем количество элементов и сохраняем его в `exponentials`.
-                let mut exponentials = Vec::with_capacity(raw_model_scores.len());
-                // Инициализируем изменяемый накопитель `normalizer` начальным состоянием.
-                let mut normalizer = 0.0;
-                // Повторяем следующий блок для каждого элемента указанной последовательности.
-                for &raw_model_score in raw_model_scores {
-                    // Сохраняем рассчитанное значение `exponential_value` для следующих операций.
-                    let exponential_value =
+                    // Считаем количество элементов и сохраняем его в `exponentials`.
+                    let mut exponentials: Vec<f64> = Vec::with_capacity(raw_model_scores.len());
+                    // Инициализируем изменяемый накопитель `normalizer` начальным состоянием.
+                    let mut normalizer: f64 = 0.0;
+                    // Повторяем следующий блок для каждого элемента указанной последовательности.
+                    for &raw_model_score in raw_model_scores {
+                        // Сохраняем рассчитанное значение `exponential_value` для следующих операций.
+                        let exponential_value: f64 =
                         // Складываем или вычитаем величины согласно используемой формуле.
                         approximate_exponential_with_taylor_series(raw_model_score - maximum_raw_model_score);
-                    // Сохраняем очередной рассчитанный элемент в коллекции.
-                    exponentials.push(exponential_value);
-                    // Прибавляем очередной вклад к ранее накопленному результату.
-                    normalizer += exponential_value;
-                }
+                        // Сохраняем очередной рассчитанный элемент в коллекции.
+                        exponentials.push(exponential_value);
+                        // Прибавляем очередной вклад к ранее накопленному результату.
+                        normalizer += exponential_value;
+                    }
+                    // Повторяем следующий блок для каждого элемента указанной последовательности.
+                    for exponential_value in &mut exponentials {
+                        // Масштабируем текущую величину делением.
+                        *exponential_value /= normalizer;
+                    }
+                    // Используем ранее рассчитанное значение `exponentials` в текущем выражении.
+                    exponentials
+                })();
+                // Взвешенная сумма value-векторов становится выходом текущего токена.
+                let mut attended_vector: [f64; 2] = [0.0, 0.0];
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
-                for exponential_value in &mut exponentials {
-                    // Масштабируем текущую величину делением.
-                    *exponential_value /= normalizer;
+                for value_index in 0..values.len() {
+                    // Прибавляем очередной вклад к ранее накопленному результату.
+                    attended_vector[0] += attention_weights[value_index] * values[value_index][0];
+                    // Прибавляем очередной вклад к ранее накопленному результату.
+                    attended_vector[1] += attention_weights[value_index] * values[value_index][1];
                 }
-                // Используем ранее рассчитанное значение `exponentials` в текущем выражении.
-                exponentials
-            })();
-            // Взвешенная сумма value-векторов становится выходом текущего токена.
-            let mut attended_vector = [0.0, 0.0];
-            // Повторяем следующий блок для каждого элемента указанной последовательности.
-            for value_index in 0..values.len() {
-                // Прибавляем очередной вклад к ранее накопленному результату.
-                attended_vector[0] += attention_weights[value_index] * values[value_index][0];
-                // Прибавляем очередной вклад к ранее накопленному результату.
-                attended_vector[1] += attention_weights[value_index] * values[value_index][1];
+                // Сохраняем очередной рассчитанный элемент в коллекции.
+                outputs.push(attended_vector);
+                // Сохраняем очередной рассчитанный элемент в коллекции.
+                weights.push(attention_weights);
             }
-            // Сохраняем очередной рассчитанный элемент в коллекции.
-            outputs.push(attended_vector);
-            // Сохраняем очередной рассчитанный элемент в коллекции.
-            weights.push(attention_weights);
-        }
-        // Составляем результат из вычисленных значений в указанном порядке.
-        (outputs, weights)
-    })();
+            // Составляем результат из вычисленных значений в указанном порядке.
+            (outputs, weights)
+        })();
     // Шаг: Печатаем веса, чтобы увидеть запрет доступа к будущим токенам.
     println!("weights={attention_weights:?}, output={attended_output:?}");
 
@@ -199,7 +200,7 @@ fn visualize_practice_scaled_dot_product_attention_with_query_key_value_vectors(
     attention_weights: std::vec::Vec<std::vec::Vec<f64>>,
 ) {
     // Значения ячеек видны по цвету и подписи.
-    let chart = lesson_visualization::heatmap(
+    let chart: std::path::PathBuf = lesson_visualization::heatmap(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

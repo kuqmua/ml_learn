@@ -9,19 +9,19 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `input` для следующих операций.
-    let input = 2.0;
+    let input: f64 = 2.0;
     // Инициализируем изменяемый накопитель `weight` начальным состоянием.
-    let mut weight = 0.5;
+    let mut weight: f64 = 0.5;
     // Инициализируем изменяемый накопитель `bias` начальным состоянием.
-    let mut bias = 0.1;
+    let mut bias: f64 = 0.1;
     // Умножаем значения и сохраняем результат в `before`.
-    let before = weight * input + bias;
+    let before: f64 = weight * input + bias;
     // Прибавляем очередной вклад к ранее накопленному результату.
     weight += 0.2;
     // Вычитаем очередной вклад из текущего значения параметра.
     bias -= 0.1;
     // Умножаем значения и сохраняем результат в `after`.
-    let after = weight * input + bias;
+    let after: f64 = weight * input + bias;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("до={before}, после обновления={after}");
 
@@ -32,7 +32,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_weights_and_biases_as_neural_network_parameters(before: f64, after: f64) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

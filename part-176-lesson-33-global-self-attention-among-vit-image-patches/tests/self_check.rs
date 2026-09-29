@@ -3,8 +3,8 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question = "Измени последний патч и пересчитай глобальное внимание первого.";
-    let choices = [
+    let question: &str = "Измени последний патч и пересчитай глобальное внимание первого.";
+    let choices: [&str; 3] = [
         "Получается четыре патча; каждый исходный пиксель встречается ровно в одном.",
         "Первый патч может обратить внимание на последний; объясни отличие от причинной маски.",
         "Представление для классификации меняется, хотя специальный начальный вектор прежний.",
@@ -14,7 +14,8 @@ fn choose_correct_check_for_lesson() {
         println!("{}. {choice}", choice_number + 1);
     }
     let selected_choice: Option<usize> = None;
-    let selected_choice = selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
+    let selected_choice: usize =
+        selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
     assert!(
         (1..=3).contains(&selected_choice),
         "номер варианта должен быть от 1 до 3"

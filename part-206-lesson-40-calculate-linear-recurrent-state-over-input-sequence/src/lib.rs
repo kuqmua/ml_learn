@@ -7,7 +7,7 @@ pub fn calculate_linear_recurrent_state_sequence_from_inputs(
     previous_state_share_kept: f64,
     input_factor: f64,
 ) -> Vec<f64> {
-    let mut state = 0.0;
+    let mut state: f64 = 0.0;
     input
         .iter()
         .map(|&value| {

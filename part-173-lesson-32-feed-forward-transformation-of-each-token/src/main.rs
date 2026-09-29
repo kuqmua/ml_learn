@@ -11,16 +11,16 @@
 fn main() {
     // Создаём набор значений `text_unit` для следующего шага примера.
     // Единицу текста, которую модель обрабатывает как одно целое, называют token.
-    let text_unit = [1.0, 2.0];
+    let text_unit: [f64; 2] = [1.0, 2.0];
     // Создаём набор значений `linear` для следующего шага примера.
-    let linear = [
+    let linear: [f64; 2] = [
         // Умножаем величины согласно используемой формуле.
         0.5 * text_unit[0] - 0.2 * text_unit[1],
         // Умножаем величины согласно используемой формуле.
         0.3 * text_unit[0] + 0.4 * text_unit[1],
     ];
     // Создаём набор значений `activated` для следующего шага примера.
-    let activated = [
+    let activated: [f64; 2] = [
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if linear[0] > 0.0 { linear[0] } else { 0.0 },
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -36,7 +36,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_feed_forward_transformation_of_each_token(activated: [f64; 2]) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

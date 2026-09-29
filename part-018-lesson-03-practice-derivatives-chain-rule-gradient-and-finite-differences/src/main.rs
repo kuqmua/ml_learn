@@ -36,7 +36,7 @@ fn main() {
         // Указываем тип возвращаемого значения.
     ) -> f64 {
         // Комбинируем исходные величины и сохраняем результат в `shifted_first`.
-        let shifted_first = first_parameter - 2.0;
+        let shifted_first: f64 = first_parameter - 2.0;
         // Делим значения, получая нормированную величину или среднее.
         shifted_first * shifted_first * shifted_first / 3.0
             // Умножаем величины согласно используемой формуле.
@@ -110,9 +110,9 @@ fn main() {
         );
     }
     // Производная первообразной по первому параметру должна возвращать исходную функцию.
-    let step_size = 1e-5;
+    let step_size: f64 = 1e-5;
     // Сохраняем рассчитанное значение `recovered_value` для следующих операций.
-    let recovered_value =
+    let recovered_value: f64 =
         // Составляем результат из вычисленных значений в указанном порядке.
         (calculate_antiderivative_with_respect_to_first_parameter(0.3 + step_size, 2.0)
             // Складываем или вычитаем величины согласно используемой формуле.
@@ -137,9 +137,9 @@ fn main() {
             // Преобразуем каждый элемент в новое значение.
             .map(|step_exponent| {
                 // Сохраняем результат этого шага в `step_size`.
-                let step_size = 10f64.powi(-step_exponent);
+                let step_size: f64 = 10f64.powi(-step_exponent);
                 // Сохраняем результат этого шага в `numeric`.
-                let numeric = (calculate_quadratic_function_value(0.3 + step_size, 2.0)
+                let numeric: f64 = (calculate_quadratic_function_value(0.3 + step_size, 2.0)
                     // Вычисляем значение по указанной формуле.
                     - calculate_quadratic_function_value(0.3 - step_size, 2.0))
                     // Вычисляем значение по указанной формуле.
@@ -150,7 +150,7 @@ fn main() {
             // Собираем результаты в коллекцию.
             .collect();
         // Строим график по рассчитанным значениям и сохраняем его как SVG.
-        let chart = lesson_visualization::line_chart(
+        let chart: std::path::PathBuf = lesson_visualization::line_chart(
             // Передаём путь к каталогу текущего урока.
             env!("CARGO_MANIFEST_DIR"),
             // Указываем имя SVG-файла.

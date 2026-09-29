@@ -10,15 +10,15 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `data` для следующего шага примера.
-    let data = [(1.0, false), (2.0, false), (3.0, true), (4.0, true)];
+    let data: [(f64, bool); 4] = [(1.0, false), (2.0, false), (3.0, true), (4.0, true)];
     // Создаём изменяемое значение `best` для следующих операций.
-    let mut best = (f64::INFINITY, 0.0);
+    let mut best: (f64, f64) = (f64::INFINITY, 0.0);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for threshold in [1.5, 2.5, 3.5] {
         // Преобразуем входные данные и сохраняем полученную коллекцию в `left`.
-        let left: Vec<_> = data.iter().filter(|sample| sample.0 < threshold).collect();
+        let left: Vec<&(f64, bool)> = data.iter().filter(|sample| sample.0 < threshold).collect();
         // Преобразуем входные данные и сохраняем полученную коллекцию в `right`.
-        let right: Vec<_> = data.iter().filter(|sample| sample.0 >= threshold).collect();
+        let right: Vec<&(f64, bool)> = data.iter().filter(|sample| sample.0 >= threshold).collect();
         // Проверяем ожидаемое свойство учебного примера.
         assert!(
             // Используем подготовленное значение в следующем шаге примера.
@@ -27,19 +27,19 @@ fn main() {
             "порог должен оставлять примеры с обеих сторон"
         );
         // Сохраняем рассчитанное значение `left_positive` для следующих операций.
-        let left_positive =
+        let left_positive: f64 =
             // Делим значения, получая нормированную величину или среднее.
             left.iter().filter(|sample| sample.1).count() as f64 / left.len() as f64;
         // Сохраняем рассчитанное значение `right_positive` для следующих операций.
-        let right_positive =
+        let right_positive: f64 =
             // Делим значения, получая нормированную величину или среднее.
             right.iter().filter(|sample| sample.1).count() as f64 / right.len() as f64;
         // Умножаем значения и сохраняем результат в `left_gini`.
-        let left_gini = 2.0 * left_positive * (1.0 - left_positive);
+        let left_gini: f64 = 2.0 * left_positive * (1.0 - left_positive);
         // Умножаем значения и сохраняем результат в `right_gini`.
-        let right_gini = 2.0 * right_positive * (1.0 - right_positive);
+        let right_gini: f64 = 2.0 * right_positive * (1.0 - right_positive);
         // Сохраняем рассчитанное значение `score` для следующих операций.
-        let score =
+        let score: f64 =
             // Составляем результат из вычисленных значений в указанном порядке.
             (left.len() as f64 * left_gini + right.len() as f64 * right_gini) / data.len() as f64;
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -61,7 +61,7 @@ fn visualize_greedy_threshold_split_for_decision_tree() {
     let greedy_split_points: Vec<(f64, f64)> =
         [(1.5, 1.0 / 3.0), (2.5, 0.0), (3.5, 1.0 / 3.0)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

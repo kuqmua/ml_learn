@@ -10,11 +10,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `query` для следующего шага примера.
-    let query = [1.0, 0.0];
+    let query: [f64; 2] = [1.0, 0.0];
     // Создаём набор значений `document` для следующего шага примера.
-    let document = [2.0, 0.0];
+    let document: [f64; 2] = [2.0, 0.0];
     // Тот же косинус из урока 01.5 теперь сравнивает векторы слов документов.
-    let similarity = part_005_lesson_01_cosine_similarity_between_two_vectors::cosine_similarity_between_two_vectors(&query, &document)
+    let similarity: f64 = part_005_lesson_01_cosine_similarity_between_two_vectors::cosine_similarity_between_two_vectors(&query, &document)
         // Используем результат, ожидая успешного выполнения шага.
         .expect("ненулевые векторы слов одинаковой размерности");
     // Печатаем рассчитанные значения для проверки примера.
@@ -33,9 +33,9 @@ fn visualize_cosine_similarity_between_query_and_document_vectors(query: [f64; 2
         // Преобразуем каждый элемент в новое значение.
         .map(|degrees| {
             // Сохраняем результат этого шага в `angle`.
-            let angle = (degrees as f64).to_radians();
+            let angle: f64 = (degrees as f64).to_radians();
             // Задаём учебные значения для `rotated_document`.
-            let rotated_document = [angle.cos(), angle.sin()];
+            let rotated_document: [f64; 2] = [angle.cos(), angle.sin()];
             (
                 // Используем подготовленное значение в следующем шаге примера.
                 degrees as f64,
@@ -47,7 +47,7 @@ fn visualize_cosine_similarity_between_query_and_document_vectors(query: [f64; 2
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

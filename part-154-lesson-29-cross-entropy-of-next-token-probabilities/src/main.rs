@@ -14,7 +14,7 @@ fn main() {
         ("правильные токены маловероятны", &[0.2, 0.1]),
     ];
     // Сохраняем результат этого шага в `previous_error`.
-    let mut previous_error = 0.0;
+    let mut previous_error: f64 = 0.0;
     // Повторяем расчёт для каждого элемента последовательности.
     for (index, (description, probabilities)) in cases.into_iter().enumerate() {
         // Проверяем ожидаемое свойство учебного примера.
@@ -27,15 +27,15 @@ fn main() {
             "вероятность должна быть больше 0 и не больше 1"
         );
         // Сохраняем результат этого шага в `negative_log_sum`.
-        let mut negative_log_sum = 0.0;
+        let mut negative_log_sum: f64 = 0.0;
         // Повторяем расчёт для каждого элемента последовательности.
         for &probability in probabilities {
             // ln(x) ≈ 2·(t+t³/3+t⁵/5+...), где t=(x−1)/(x+1).
-            let ratio = (probability - 1.0) / (probability + 1.0);
+            let ratio: f64 = (probability - 1.0) / (probability + 1.0);
             // Сохраняем результат этого шага в `term`.
-            let mut term = ratio;
+            let mut term: f64 = ratio;
             // Сохраняем результат этого шага в `logarithm`.
-            let mut logarithm = 0.0;
+            let mut logarithm: f64 = 0.0;
             // Повторяем расчёт для каждого элемента последовательности.
             for odd_divisor in (1..=99).step_by(2) {
                 // Обновляем значение результатом текущего вычисления.
@@ -47,7 +47,7 @@ fn main() {
             negative_log_sum -= 2.0 * logarithm;
         }
         // Определяем размер данных и сохраняем его в `error`.
-        let error = negative_log_sum / probabilities.len() as f64;
+        let error: f64 = negative_log_sum / probabilities.len() as f64;
         // Выбираем дальнейший шаг по выполнению условия.
         if index > 0 {
             // Проверяем ожидаемое свойство учебного примера.
@@ -59,7 +59,7 @@ fn main() {
         println!("{description}: {probabilities:?} → cross-entropy {error:.3}");
     }
     // Задаём учебные значения для `invalid`.
-    let invalid = [0.0, 0.5];
+    let invalid: [f64; 2] = [0.0, 0.5];
     // Выбираем дальнейший шаг по выполнению условия.
     if invalid.iter().any(|&probability| probability <= 0.0) {
         // Печатаем рассчитанные значения для проверки примера.
@@ -78,14 +78,14 @@ fn visualize_cross_entropy_of_next_token_probabilities() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `probability`.
-            let probability = plot_step_index as f64 / 100.0;
+            let probability: f64 = plot_step_index as f64 / 100.0;
             // Добавляем пару значений для сравнения или построения графика.
             (probability, -probability.ln())
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

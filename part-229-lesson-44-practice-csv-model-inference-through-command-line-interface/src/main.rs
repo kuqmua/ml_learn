@@ -12,7 +12,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Шаг: Считываем CSV из стандартного ввода.
-    let mut input_comma_separated_values = String::new();
+    let mut input_comma_separated_values: String = String::new();
     // Читаем весь CSV из стандартного ввода через трейт `Read`.
     std::io::Read::read_to_string(&mut std::io::stdin(), &mut input_comma_separated_values)?;
     // Шаг: При пустом stdin запускаем встроенный демонстрационный набор.
@@ -28,14 +28,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Сохраняем результат этого шага в `input_comma_separated_values`.
         let input_comma_separated_values: &str = &input_comma_separated_values;
         // Создаём изменяемое значение `lines` для следующих операций.
-        let mut lines = input_comma_separated_values.lines();
+        let mut lines: std::str::Lines<'_> = input_comma_separated_values.lines();
         // Разбираем наличие значения перед использованием результата.
         if lines.next() != Some("feature") {
             // Прерываем расчёт и явно сообщаем причину некорректного входа.
             return Err("ожидается заголовок feature".into());
         }
         // Создаём изменяемое значение `output_comma_separated_values` для следующих операций.
-        let mut output_comma_separated_values = String::from("prediction\n");
+        let mut output_comma_separated_values: String = String::from("prediction\n");
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for (row_index, line) in lines.enumerate() {
             // Сохраняем рассчитанное значение `feature_value` для следующих операций.

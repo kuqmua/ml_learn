@@ -3,8 +3,8 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question = "Вычисли первые два шага Adam для заданных небольших производных.";
-    let choices = [
+    let question: &str = "Вычисли первые два шага Adam для заданных небольших производных.";
+    let choices: [&str; 3] = [
         "Второй шаг учитывает предыдущую скорость; сравни с обновлением без импульса.",
         "Среднее train после преобразования близко к нулю; новое значение не меняет статистики train.",
         "Покажи скользящие оценки первого и второго моментов и поправку на начальный сдвиг.",
@@ -14,7 +14,8 @@ fn choose_correct_check_for_lesson() {
         println!("{}. {choice}", choice_number + 1);
     }
     let selected_choice: Option<usize> = None;
-    let selected_choice = selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
+    let selected_choice: usize =
+        selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
     assert!(
         (1..=3).contains(&selected_choice),
         "номер варианта должен быть от 1 до 3"

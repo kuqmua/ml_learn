@@ -3,8 +3,8 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question = "Сгенерируй два токена с кешем ключей и значений и без кеша.";
-    let choices = [
+    let question: &str = "Сгенерируй два токена с кешем ключей и значений и без кеша.";
+    let choices: [&str; 3] = [
         "Ответы совпадают; перечисли, какие старые ключи и значения повторно не вычисляются.",
         "Выход ослабляется или усиливается согласно воротам; размер выхода не меняется.",
         "Только выбранные эксперты участвуют в смеси; веса их вкладов корректно нормированы.",
@@ -14,7 +14,8 @@ fn choose_correct_check_for_lesson() {
         println!("{}. {choice}", choice_number + 1);
     }
     let selected_choice: Option<usize> = None;
-    let selected_choice = selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
+    let selected_choice: usize =
+        selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
     assert!(
         (1..=3).contains(&selected_choice),
         "номер варианта должен быть от 1 до 3"

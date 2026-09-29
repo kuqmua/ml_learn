@@ -10,13 +10,13 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `rows` для следующего шага примера.
-    let rows = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    let rows: [i32; 10] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     // Сохраняем рассчитанное значение `training_data` для следующих операций.
-    let training_data = &rows[..6];
+    let training_data: &[i32] = &rows[..6];
     // Сохраняем рассчитанное значение `validation` для следующих операций.
-    let validation = &rows[6..8];
+    let validation: &[i32] = &rows[6..8];
     // Сохраняем рассчитанное значение `test` для следующих операций.
-    let test = &rows[8..];
+    let test: &[i32] = &rows[8..];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("train={training_data:?}, validation={validation:?}, test={test:?}");
 
@@ -31,7 +31,7 @@ fn visualize_split_dataset_into_training_validation_and_test_sets(
     test: &[i32],
 ) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

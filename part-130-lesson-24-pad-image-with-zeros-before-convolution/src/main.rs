@@ -9,10 +9,10 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `image` для следующего шага примера.
-    let image = [[1, 2], [3, 4]];
+    let image: [[i32; 2]; 2] = [[1, 2], [3, 4]];
     // Создаём набор значений `image_with_zero_border` для следующего шага примера.
     // Добавление нулевой рамки к изображению называют padding.
-    let mut image_with_zero_border = [[0; 4]; 4];
+    let mut image_with_zero_border: [[i32; 4]; 4] = [[0; 4]; 4];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for row in 0..2 {
         // Повторяем следующий блок для каждого элемента указанной последовательности.
@@ -31,7 +31,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_pad_image_with_zeros_before_convolution(image_with_zero_border: [[i32; 4]; 4]) {
     // Значения ячеек видны по цвету и подписи.
-    let chart = lesson_visualization::heatmap(
+    let chart: std::path::PathBuf = lesson_visualization::heatmap(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

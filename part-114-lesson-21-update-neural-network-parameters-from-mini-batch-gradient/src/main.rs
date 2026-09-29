@@ -11,7 +11,7 @@
 fn main() {
     // Создаём набор значений `rates_of_change` для следующего шага примера.
     // Производную функции по параметру или вектор таких производных называют gradient.
-    let rates_of_change = [2.0, 4.0];
+    let rates_of_change: [f64; 2] = [2.0, 4.0];
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -20,14 +20,14 @@ fn main() {
         "мини-пакет градиентов не должен быть пустым"
     );
     // Преобразуем входные данные и сохраняем полученную коллекцию в `small_batch_loss_rate_of_change`.
-    let small_batch_loss_rate_of_change =
+    let small_batch_loss_rate_of_change: f64 =
         rates_of_change.iter().sum::<f64>() / rates_of_change.len() as f64;
     // Сохраняем рассчитанное значение `old_weight` для следующих операций.
-    let old_weight = 1.0;
+    let old_weight: f64 = 1.0;
     // Инициализируем значение `learning_rate` начальным состоянием.
-    let learning_rate = 0.1;
+    let learning_rate: f64 = 0.1;
     // Умножаем значения и сохраняем результат в `new_weight`.
-    let new_weight = old_weight - learning_rate * small_batch_loss_rate_of_change;
+    let new_weight: f64 = old_weight - learning_rate * small_batch_loss_rate_of_change;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("средний градиент={small_batch_loss_rate_of_change}, новый вес={new_weight}");
 
@@ -41,7 +41,7 @@ fn visualize_update_neural_network_parameters_from_mini_batch_gradient(
     new_weight: f64,
 ) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

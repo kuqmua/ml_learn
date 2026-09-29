@@ -25,7 +25,7 @@ fn main() {
             "для ROC-AUC нужны оба класса"
         );
         // Сохраняем результат этого шага в `ordered_pairs`.
-        let mut ordered_pairs = 0.0;
+        let mut ordered_pairs: f64 = 0.0;
         // Повторяем расчёт для каждого элемента последовательности.
         for &positive in positive_scores {
             // Повторяем расчёт для каждого элемента последовательности.
@@ -46,9 +46,9 @@ fn main() {
             }
         }
         // Определяем размер данных и сохраняем его в `pair_count`.
-        let pair_count = (positive_scores.len() * negative_scores.len()) as f64;
+        let pair_count: f64 = (positive_scores.len() * negative_scores.len()) as f64;
         // Сохраняем результат этого шага в `area_under_curve`.
-        let area_under_curve = ordered_pairs / pair_count;
+        let area_under_curve: f64 = ordered_pairs / pair_count;
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(area_under_curve, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -68,7 +68,7 @@ fn visualize_area_under_roc_curve_from_positive_negative_score_pairs() {
     let random_receiver_operating_characteristic_points: Vec<(f64, f64)> =
         [(0.0, 0.0), (1.0, 1.0)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -10,17 +10,17 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Инициализируем значение `prevalence` начальным состоянием.
-    let prevalence = 0.01;
+    let prevalence: f64 = 0.01;
     // Инициализируем значение `sensitivity` начальным состоянием.
-    let sensitivity = 0.90;
+    let sensitivity: f64 = 0.90;
     // Инициализируем значение `specificity` начальным состоянием.
-    let specificity = 0.95;
+    let specificity: f64 = 0.95;
     // Умножаем значения и сохраняем результат в `true_positive`.
-    let true_positive = prevalence * sensitivity;
+    let true_positive: f64 = prevalence * sensitivity;
     // Умножаем значения и сохраняем результат в `false_positive`.
-    let false_positive = (1.0 - prevalence) * (1.0 - specificity);
+    let false_positive: f64 = (1.0 - prevalence) * (1.0 - specificity);
     // Нормируем или усредняем величину делением и сохраняем её в `posterior`.
-    let posterior = true_positive / (true_positive + false_positive);
+    let posterior: f64 = true_positive / (true_positive + false_positive);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("P(болен | положительный тест) = {posterior:.3}");
 
@@ -31,7 +31,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_bayes_update_of_event_probability_after_observation(posterior: f64) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

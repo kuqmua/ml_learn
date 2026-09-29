@@ -9,14 +9,14 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `input_value` для следующих операций.
-    let input_value = 3.0;
+    let input_value: f64 = 3.0;
     // f(x)=x*x: вход x участвует как левый и правый множитель.
     // Производную функции по параметру или вектор таких производных называют gradient.
-    let left_path_rate_of_change = input_value;
+    let left_path_rate_of_change: f64 = input_value;
     // Сохраняем рассчитанное значение `right_path_rate_of_change` для следующих операций.
-    let right_path_rate_of_change = input_value;
+    let right_path_rate_of_change: f64 = input_value;
     // Комбинируем исходные величины и сохраняем результат в `combined_rate_of_change`.
-    let combined_rate_of_change = left_path_rate_of_change + right_path_rate_of_change;
+    let combined_rate_of_change: f64 = left_path_rate_of_change + right_path_rate_of_change;
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Присваиваем вычисленное значение соответствующей переменной или полю.
@@ -38,7 +38,7 @@ fn visualize_sum_gradient_contributions_from_multiple_graph_paths(
     combined_rate_of_change: f64,
 ) {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -14,7 +14,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Шаг: Берём seed из аргумента командной строки или используем фиксированное значение.
-    let seed = std::env::args()
+    let seed: u64 = std::env::args()
         // Берём элемент с указанным порядковым номером.
         .nth(1)
         // Преобразуем каждый элемент последовательности.
@@ -25,15 +25,15 @@ fn main() {
     const SAMPLE_DATA: &str = "1,0\n2,0\n3,1\n4,1\n";
 
     // Шаг: Запускаем повторяемый эксперимент и считаем простую базовую метрику.
-    let (random_state, baseline_accuracy) = (|| -> (u64, f64) {
+    let (random_state, baseline_accuracy): (u64, f64) = (|| -> (u64, f64) {
         // Используем подготовленное значение в следующем шаге примера.
         /* Из одного seed получаем то же состояние генератора и ту же базовую метрику. */
         // Сохраняем результат этого шага в `seed`.
         let seed: u64 = seed;
         // Сохраняем рассчитанное значение `state` для следующих операций.
-        let state = seed.wrapping_mul(6364136223846793005).wrapping_add(1);
+        let state: u64 = seed.wrapping_mul(6364136223846793005).wrapping_add(1);
         // Сохраняем рассчитанное значение `baseline_accuracy` для следующих операций.
-        let baseline_accuracy = SAMPLE_DATA
+        let baseline_accuracy: f64 = SAMPLE_DATA
             // Разбиваем текст на строки для последовательной обработки.
             .lines()
             // Оставляем только элементы, прошедшие указанную проверку.
@@ -57,7 +57,8 @@ fn main() {
             // Сохраняем результат этого шага в `data`.
             let data: &str = SAMPLE_DATA;
             // Создаём хешер, чтобы получить воспроизводимый отпечаток данных.
-            let mut hasher = std::collections::hash_map::DefaultHasher::new();
+            let mut hasher: std::collections::hash_map::DefaultHasher =
+                std::collections::hash_map::DefaultHasher::new();
             // Добавляем байты входных данных в состояние хешера.
             std::hash::Hash::hash(data, &mut hasher);
             // Завершаем хеширование и получаем числовой отпечаток.

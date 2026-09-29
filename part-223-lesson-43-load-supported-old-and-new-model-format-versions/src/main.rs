@@ -25,7 +25,7 @@ fn main() {
         ),
     ] {
         // Сохраняем результат этого шага в `explanation`.
-        let explanation = match saved_model_text.lines().next() {
+        let explanation: &str = match saved_model_text.lines().next() {
             // Возвращаем присутствующее значение.
             Some("model_v1") => "вес и смещение",
             // Возвращаем присутствующее значение.

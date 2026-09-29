@@ -5,7 +5,7 @@
 
 fn main() {
     // Задаём учебные значения для `targets`.
-    let targets = [2.0, 4.0, 6.0];
+    let targets: [f64; 3] = [2.0, 4.0, 6.0];
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &[f64], f64); 3] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -18,7 +18,7 @@ fn main() {
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, predictions, expected) in cases {
         // Сохраняем результат этого шага в `mean_squared_error_value`.
-        let mean_squared_error_value =
+        let mean_squared_error_value: f64 =
             part_049_lesson_09_mean_squared_error_between_targets_and_predictions::mean_squared_error_between_targets_and_predictions(&targets, predictions)
                 // Используем результат, ожидая успешного выполнения шага.
                 .expect("у каждого прогноза есть правильный ответ");
@@ -28,7 +28,7 @@ fn main() {
         println!("{description}: {predictions:?} → MSE {mean_squared_error_value:.3}");
     }
     // Сохраняем результат этого шага в `error`.
-    let error = part_049_lesson_09_mean_squared_error_between_targets_and_predictions::mean_squared_error_between_targets_and_predictions(&targets, &[2.0, 4.0])
+    let error: &str = part_049_lesson_09_mean_squared_error_between_targets_and_predictions::mean_squared_error_between_targets_and_predictions(&targets, &[2.0, 4.0])
         // Настраиваем или преобразуем результат предыдущего шага.
         .expect_err("длины должны совпадать");
     // Печатаем рассчитанные значения для проверки примера.
@@ -45,7 +45,7 @@ fn visualize_mean_squared_error_between_targets_and_predictions() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `prediction_difference`.
-            let prediction_difference = plot_step_index as f64 / 10.0;
+            let prediction_difference: f64 = plot_step_index as f64 / 10.0;
             (
                 // Используем подготовленное значение в следующем шаге примера.
                 prediction_difference,
@@ -67,7 +67,7 @@ fn visualize_mean_squared_error_between_targets_and_predictions() {
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

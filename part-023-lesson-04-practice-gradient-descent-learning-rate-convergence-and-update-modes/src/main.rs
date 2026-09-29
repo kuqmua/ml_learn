@@ -30,7 +30,7 @@ fn main() {
     // Шаг: Запускаем спуск с тремя скоростями обучения.
     for learning_rate in [0.01, 0.2, 1.1] {
         // Шаг: Сохраняем loss после каждого обновления параметра.
-        let history = (|| -> Vec<f64> {
+        let history: Vec<f64> = (|| -> Vec<f64> {
             // Используем подготовленное значение в следующем шаге примера.
             /* Обновляем параметр против градиента и сохраняем историю ошибки. */
             // Сохраняем результат этого шага в `learning_rate`.
@@ -38,16 +38,16 @@ fn main() {
             // Сохраняем рассчитанное значение `steps` для следующих операций.
             let steps: usize = 30;
             // Инициализируем изменяемый накопитель `parameter` начальным состоянием.
-            let mut parameter = 0.0;
+            let mut parameter: f64 = 0.0;
             // Создаём набор значений `history` для следующего шага примера.
-            let mut history = vec![calculate_squared_distance_of_parameter_from_three(
+            let mut history: Vec<f64> = vec![calculate_squared_distance_of_parameter_from_three(
                 parameter,
             )];
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for _ in 0..steps {
                 // Выполняем встроенный расчёт один раз и сохраняем результат в `rate_of_change`.
                 // Производную функции по параметру или вектор таких производных называют gradient.
-                let rate_of_change = (|| -> f64 {
+                let rate_of_change: f64 = (|| -> f64 {
                     // Используем подготовленное значение в следующем шаге примера.
                     /* Для квадратичной ошибки берём производную 2(x−3). */
                     // Сохраняем результат этого шага в `parameter`.
@@ -109,16 +109,16 @@ fn main() {
             // Преобразуем каждый элемент в новое значение.
             .map(|rate| {
                 // Сохраняем результат этого шага в `parameter`.
-                let mut parameter = 0.0;
+                let mut parameter: f64 = 0.0;
                 // Собираем значения для `points` в коллекцию.
-                let mut points = vec![(
+                let mut points: Vec<(f64, f64)> = vec![(
                     0.0,
                     (calculate_squared_distance_of_parameter_from_three(parameter) + 1e-12).log10(),
                 )];
                 // Повторяем расчёт для каждого элемента последовательности.
                 for step in 1..=30 {
                     // Сохраняем результат этого шага в `rate_of_change`.
-                    let rate_of_change = 2.0 * (parameter - 3.0);
+                    let rate_of_change: f64 = 2.0 * (parameter - 3.0);
                     // Обновляем значение результатом текущего вычисления.
                     parameter -= rate * rate_of_change;
                     // Используем подготовленное значение в следующем шаге примера.
@@ -136,7 +136,7 @@ fn main() {
             // Собираем результаты в коллекцию.
             .collect();
         // Строим график по рассчитанным значениям и сохраняем его как SVG.
-        let chart = lesson_visualization::line_chart(
+        let chart: std::path::PathBuf = lesson_visualization::line_chart(
             // Передаём путь к каталогу текущего урока.
             env!("CARGO_MANIFEST_DIR"),
             // Указываем имя SVG-файла.

@@ -2,8 +2,8 @@
 // Последовательность обрабатывается линейным сканированием с компактным состоянием.
 
 fn main() {
-    let input = [1.0, 0.0, 0.0, 0.0];
-    let states =
+    let input: [f64; 4] = [1.0, 0.0, 0.0, 0.0];
+    let states: Vec<f64> =
         part_206_lesson_40_calculate_linear_recurrent_state_over_input_sequence::calculate_linear_recurrent_state_sequence_from_inputs(
             &input, 0.5, 1.0,
         );
@@ -13,12 +13,12 @@ fn main() {
 }
 
 fn visualize_calculate_linear_recurrent_state_over_input_sequence(states: &[f64]) {
-    let points: Vec<_> = states
+    let points: Vec<(f64, f64)> = states
         .iter()
         .enumerate()
         .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
         .collect();
-    let path = lesson_visualization::line_chart(
+    let path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "state-space",
         "Затухание состояния",

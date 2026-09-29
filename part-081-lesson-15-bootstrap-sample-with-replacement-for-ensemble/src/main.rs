@@ -10,11 +10,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `data` для следующего шага примера.
-    let data = ["A", "B", "C", "D"];
+    let data: [&str; 4] = ["A", "B", "C", "D"];
     // Создаём набор значений `sampled_indices` для следующего шага примера.
-    let sampled_indices = [0, 2, 2, 3];
+    let sampled_indices: [usize; 4] = [0, 2, 2, 3];
     // Преобразуем входные данные и сохраняем полученную коллекцию в `sample`.
-    let sample: Vec<_> = sampled_indices.iter().map(|&index| data[index]).collect();
+    let sample: Vec<&str> = sampled_indices.iter().map(|&index| data[index]).collect();
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("исходные={data:?}, bootstrap={sample:?}");
 
@@ -25,7 +25,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_bootstrap_sample_with_replacement_for_ensemble(sample: std::vec::Vec<&str>) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -2,11 +2,11 @@
 // При уменьшении доли исходного сигнала смесь становится ближе к шуму.
 
 fn main() {
-    let clean = 2.0;
-    let noise = -1.0;
+    let clean: f64 = 2.0;
+    let noise: f64 = -1.0;
     // Долю (fraction) дисперсии исходного сигнала обозначают alpha_bar; её сохранение называют retention.
     for original_signal_variance_share in [1.0, 0.75, 0.25, 0.0] {
-        let noisy = part_203_lesson_39_mix_clean_signal_with_noise_in_forward_diffusion::add_scaled_noise_to_clean_signal_for_diffusion_step(
+        let noisy: f64 = part_203_lesson_39_mix_clean_signal_with_noise_in_forward_diffusion::add_scaled_noise_to_clean_signal_for_diffusion_step(
             clean,
             noise,
             original_signal_variance_share,
@@ -32,9 +32,9 @@ fn main() {
 }
 
 fn visualize_mix_clean_signal_with_noise_in_forward_diffusion(clean: f64, noise: f64) {
-    let points: Vec<_> = (0..=100)
+    let points: Vec<(f64, f64)> = (0..=100)
         .map(|plot_step_index| {
-            let original_signal_variance_share = plot_step_index as f64 / 100.0;
+            let original_signal_variance_share: f64 = plot_step_index as f64 / 100.0;
             (
                 original_signal_variance_share,
                 part_203_lesson_39_mix_clean_signal_with_noise_in_forward_diffusion::add_scaled_noise_to_clean_signal_for_diffusion_step(
@@ -46,7 +46,7 @@ fn visualize_mix_clean_signal_with_noise_in_forward_diffusion(clean: f64, noise:
             )
         })
         .collect();
-    let path = lesson_visualization::line_chart(
+    let path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "diffusion-forward",
         "Смесь сигнала и шума",

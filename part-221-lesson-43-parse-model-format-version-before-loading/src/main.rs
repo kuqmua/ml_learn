@@ -19,7 +19,7 @@ fn main() {
         ("пустой файл", "", "нет версии"),
     ] {
         // Сохраняем результат этого шага в `status`.
-        let status = match saved_model_text.lines().next() {
+        let status: &str = match saved_model_text.lines().next() {
             // Возвращаем присутствующее значение.
             Some("model_v1") => "model_v1",
             // Возвращаем присутствующее значение.

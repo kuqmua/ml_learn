@@ -7,7 +7,7 @@ fn half_squared_error_of_last_recurrent_state_against_target(
     recurrent_weight: f64,
     target: f64,
 ) -> f64 {
-    let last = *part_134_lesson_25_calculate_hidden_state_of_scalar_recurrent_neural_network::calculate_recurrent_hidden_states_from_input_sequence(
+    let last: f64 = *part_134_lesson_25_calculate_hidden_state_of_scalar_recurrent_neural_network::calculate_recurrent_hidden_states_from_input_sequence(
         input,
         input_weight,
         recurrent_weight,
@@ -17,23 +17,23 @@ fn half_squared_error_of_last_recurrent_state_against_target(
     0.5 * (last - target).powi(2)
 }
 fn main() {
-    let input = [1.0, 0.5, -0.2];
-    let input_weight = 0.3;
-    let recurrent_weight = 0.4;
-    let target = 0.7;
-    let history = part_134_lesson_25_calculate_hidden_state_of_scalar_recurrent_neural_network::calculate_recurrent_hidden_states_from_input_sequence(
+    let input: [f64; 3] = [1.0, 0.5, -0.2];
+    let input_weight: f64 = 0.3;
+    let recurrent_weight: f64 = 0.4;
+    let target: f64 = 0.7;
+    let history: Vec<f64> = part_134_lesson_25_calculate_hidden_state_of_scalar_recurrent_neural_network::calculate_recurrent_hidden_states_from_input_sequence(
         &input,
         input_weight,
         recurrent_weight,
     );
     // Производную функции по параметру или вектор таких производных называют gradient.
-    let mut hidden_state_loss_rate_of_change = history.last().unwrap() - target;
-    let mut recurrent_weight_loss_rate_of_change = 0.0;
+    let mut hidden_state_loss_rate_of_change: f64 = history.last().unwrap() - target;
+    let mut recurrent_weight_loss_rate_of_change: f64 = 0.0;
     for time_index in (0..input.len()).rev() {
-        let hidden_state = history[time_index];
-        let preactivation_loss_rate_of_change =
+        let hidden_state: f64 = history[time_index];
+        let preactivation_loss_rate_of_change: f64 =
             hidden_state_loss_rate_of_change * (1.0 - hidden_state * hidden_state);
-        let previous = if time_index == 0 {
+        let previous: f64 = if time_index == 0 {
             0.0
         } else {
             history[time_index - 1]
@@ -41,8 +41,8 @@ fn main() {
         recurrent_weight_loss_rate_of_change += preactivation_loss_rate_of_change * previous;
         hidden_state_loss_rate_of_change = preactivation_loss_rate_of_change * recurrent_weight;
     }
-    let epsilon = 1e-5;
-    let numerically_estimated_rate_of_change =
+    let epsilon: f64 = 1e-5;
+    let numerically_estimated_rate_of_change: f64 =
         (half_squared_error_of_last_recurrent_state_against_target(
             &input,
             input_weight,

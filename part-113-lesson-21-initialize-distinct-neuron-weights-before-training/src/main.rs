@@ -5,9 +5,9 @@
 
 fn main() {
     // Задаём учебные значения для `input`.
-    let input = [1.0, 2.0];
+    let input: [f64; 2] = [1.0, 2.0];
     // Задаём учебные значения для `cases`.
-    let cases = [
+    let cases: [(&str, [f64; 2], [f64; 2], bool); 2] = [
         // Добавляем пару значений для сравнения или построения графика.
         ("одинаковые веса", [0.2, -0.3], [0.2, -0.3], true),
         // Добавляем пару значений для сравнения или построения графика.
@@ -20,9 +20,9 @@ fn main() {
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(second_neuron.len(), input.len());
         // Сохраняем результат этого шага в `first_output`.
-        let first_output = first_neuron[0] * input[0] + first_neuron[1] * input[1];
+        let first_output: f64 = first_neuron[0] * input[0] + first_neuron[1] * input[1];
         // Сохраняем результат этого шага в `second_output`.
-        let second_output = second_neuron[0] * input[0] + second_neuron[1] * input[1];
+        let second_output: f64 = second_neuron[0] * input[0] + second_neuron[1] * input[1];
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(first_output == second_output, should_match);
         // Печатаем рассчитанные значения для проверки примера.
@@ -36,7 +36,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_initialize_distinct_neuron_weights_before_training() {
     // Сравнение величин из этого урока.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

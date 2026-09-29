@@ -34,7 +34,7 @@ fn main() {
     // Ответ формируется только по найденному локальному фрагменту с указанием источника.
     fn answer_from_matching_document_or_abstain(question: &str) -> String {
         // Убираем пунктуацию и слишком короткие слова вопроса.
-        let query_terms: Vec<_> = question
+        let query_terms: Vec<String> = question
             // Приводим текст к нижнему регистру для одинакового сравнения слов.
             .to_lowercase()
             // Разделяем текст по пробельным символам на отдельные слова.
@@ -53,15 +53,15 @@ fn main() {
             // Собираем элементы итератора в итоговую коллекцию.
             .collect();
         // Выбираем фрагмент с наибольшим числом совпавших слов.
-        let best_match = DOCUMENTS
+        let best_match: (usize, &str, &str) = DOCUMENTS
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
             .iter()
             // Преобразуем каждый элемент последовательности.
             .map(|&(source_identifier, document)| {
                 // Сохраняем рассчитанное значение `lower` для следующих операций.
-                let lower = document.to_lowercase();
+                let lower: String = document.to_lowercase();
                 // Сохраняем рассчитанное значение `score` для следующих операций.
-                let score = query_terms
+                let score: usize = query_terms
                     // Перебираем элементы по ссылке, не копируя исходную коллекцию.
                     .iter()
                     // Оставляем только элементы, прошедшие указанную проверку.

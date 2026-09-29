@@ -10,11 +10,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `points` для следующего шага примера.
-    let points = [[0.0, 0.0], [0.1, 0.0], [5.0, 5.0], [5.1, 5.0]];
+    let points: [[f64; 2]; 4] = [[0.0, 0.0], [0.1, 0.0], [5.0, 5.0], [5.1, 5.0]];
     // Создаём набор значений `first_start` для следующего шага примера.
-    let first_start = [points[0], points[2]];
+    let first_start: [[f64; 2]; 2] = [points[0], points[2]];
     // Создаём набор значений `second_start` для следующего шага примера.
-    let second_start = [points[0], points[1]];
+    let second_start: [[f64; 2]; 2] = [points[0], points[1]];
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("разнесённые центры={first_start:?}; соседние центры={second_start:?}");
 
@@ -45,7 +45,7 @@ fn visualize_initialize_centroids_for_k_means_clustering(
         .map(|data_point| (data_point[0], data_point[1]))
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::scatter_chart(
+    let chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

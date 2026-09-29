@@ -3,8 +3,8 @@
 
 fn main() {
     // Повторяющийся корпус даёт устойчивые кандидаты на слияние.
-    let corpus = ["мама мыла", "мама дома", "мама мыла"];
-    let model = part_144_lesson_27_train_byte_level_bpe_merges_from_training_corpus::BytePairEncoding::train_byte_pair_encoding_merges_from_corpus(
+    let corpus: [&str; 3] = ["мама мыла", "мама дома", "мама мыла"];
+    let model: part_144_lesson_27_train_byte_level_bpe_merges_from_training_corpus::BytePairEncoding = part_144_lesson_27_train_byte_level_bpe_merges_from_training_corpus::BytePairEncoding::train_byte_pair_encoding_merges_from_corpus(
         &corpus, 16,
     );
     assert!(!model.merges.is_empty());

@@ -11,8 +11,8 @@ fn cross_entropy_loss_for_target_token_from_logits(raw_model_scores: &[f64], tar
 fn main() {
     // BOS, A, B, EOS: на последней позиции нет следующей цели.
     // Единицу текста, которую модель обрабатывает как одно целое, называют token.
-    let text_unit_identifiers = [0, 1, 2, 3];
-    let raw_model_scores = [
+    let text_unit_identifiers: [usize; 4] = [0, 1, 2, 3];
+    let raw_model_scores: [[f64; 4]; 3] = [
         [0.2, 2.0, 0.1, 0.0],
         [0.1, 0.2, 2.0, 0.0],
         [0.0, 0.1, 0.2, 2.0],
@@ -25,8 +25,8 @@ fn main() {
             )
         })
         .collect();
-    let average = losses.iter().sum::<f64>() / losses.len() as f64;
-    let wrong = cross_entropy_loss_for_target_token_from_logits(
+    let average: f64 = losses.iter().sum::<f64>() / losses.len() as f64;
+    let wrong: f64 = cross_entropy_loss_for_target_token_from_logits(
         &[2.0, 0.2, 0.1, 0.0],
         text_unit_identifiers[1],
     );
@@ -35,12 +35,12 @@ fn main() {
     visualize_cross_entropy_loss_for_next_token_prediction(&losses);
 }
 fn visualize_cross_entropy_loss_for_next_token_prediction(losses: &[f64]) {
-    let points: Vec<_> = losses
+    let points: Vec<(f64, f64)> = losses
         .iter()
         .enumerate()
         .map(|(item_index, &loss)| (item_index as f64, loss))
         .collect();
-    let path = lesson_visualization::line_chart(
+    let path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "next-token-loss",
         "Потери по позициям",

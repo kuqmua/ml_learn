@@ -11,11 +11,11 @@ pub fn squared_euclidean_distance_between_two_points(
         return Err("точки должны иметь одинаковое число координат");
     }
     // Сохраняем результат этого шага в `squared_sum`.
-    let mut squared_sum = 0.0;
+    let mut squared_sum: f64 = 0.0;
     // Повторяем расчёт для каждого элемента последовательности.
     for index in 0..left.len() {
         // Сохраняем результат этого шага в `difference`.
-        let difference = left[index] - right[index];
+        let difference: f64 = left[index] - right[index];
         // Обновляем значение результатом текущего вычисления.
         squared_sum += difference * difference;
     }

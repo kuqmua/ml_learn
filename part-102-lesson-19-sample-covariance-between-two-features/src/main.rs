@@ -10,9 +10,9 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `first_feature_values` для следующего шага примера.
-    let first_feature_values = [1.0, 2.0, 3.0];
+    let first_feature_values: [f64; 3] = [1.0, 2.0, 3.0];
     // Создаём набор значений `second_feature_values` для следующего шага примера.
-    let second_feature_values = [2.0, 4.0, 6.0];
+    let second_feature_values: [f64; 3] = [2.0, 4.0, 6.0];
     // Преобразуем входные данные и сохраняем полученную коллекцию в `mean_horizontal_coordinate`.
     // Для каждой пары наблюдений нужны обе координаты; выборочная оценка требует хотя бы две пары.
     assert_eq!(
@@ -28,13 +28,13 @@ fn main() {
         "для выборочной ковариации нужны хотя бы две пары"
     );
     // Вычисляем `mean_horizontal_coordinate` по элементам исходной коллекции.
-    let mean_horizontal_coordinate =
+    let mean_horizontal_coordinate: f64 =
         first_feature_values.iter().sum::<f64>() / first_feature_values.len() as f64;
     // Преобразуем входные данные и сохраняем полученную коллекцию в `mean_vertical_coordinate`.
-    let mean_vertical_coordinate =
+    let mean_vertical_coordinate: f64 =
         second_feature_values.iter().sum::<f64>() / second_feature_values.len() as f64;
     // Инициализируем изменяемый накопитель `sum` начальным состоянием.
-    let mut sum = 0.0;
+    let mut sum: f64 = 0.0;
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for index in 0..first_feature_values.len() {
         // Прибавляем очередной вклад к ранее накопленному результату.
@@ -66,7 +66,7 @@ fn visualize_sample_covariance_between_two_features(
         })
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::scatter_chart(
+    let chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

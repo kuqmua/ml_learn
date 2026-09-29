@@ -10,16 +10,16 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Соседи отсортированы от ближайшего к дальнему.
-    let neighbor_labels = [true, false, false, true, true];
+    let neighbor_labels: [bool; 5] = [true, false, false, true, true];
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for neighbor_count in [1, 3, 5] {
         // Преобразуем входные данные и сохраняем полученную коллекцию в `positive`.
-        let positive = neighbor_labels[..neighbor_count]
+        let positive: usize = neighbor_labels[..neighbor_count]
             .iter()
             .filter(|&&label| label)
             .count();
         // Умножаем значения и сохраняем результат в `prediction`.
-        let prediction = positive * 2 > neighbor_count;
+        let prediction: bool = positive * 2 > neighbor_count;
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("k={neighbor_count}: прогноз={prediction}");
     }
@@ -52,7 +52,7 @@ fn visualize_choose_number_of_neighbors_for_knn_classification(neighbor_labels: 
     // Собираем значения для `decision_boundary_points` в коллекцию.
     let decision_boundary_points: Vec<(f64, f64)> = [(1.0, 0.5), (5.0, 0.5)].to_vec();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -9,11 +9,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `query` для следующего шага примера.
-    let query = [1.0, 0.5];
+    let query: [f64; 2] = [1.0, 0.5];
     // Создаём набор значений `key` для следующего шага примера.
-    let key = [0.8, 0.2];
+    let key: [f64; 2] = [0.8, 0.2];
     // Умножаем значения и сохраняем результат в `score`.
-    let score =
+    let score: f64 =
         part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
             &query, &key,
         )
@@ -29,7 +29,7 @@ fn main() {
 // Строим график по результатам урока.
 fn visualize_key_vector_for_attention_position(query: [f64; 2], key: [f64; 2], score: f64) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -10,9 +10,9 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Сохраняем рассчитанное значение `input_value` для следующих операций.
-    let input_value = 3.0;
+    let input_value: f64 = 3.0;
     // Умножаем значения и сохраняем результат в `derivative`.
-    let derivative = 2.0 * input_value;
+    let derivative: f64 = 2.0 * input_value;
     // При x=3 малое увеличение аргумента меняет x² примерно в шесть раз быстрее.
     println!("f(x)=x²; f'(3)={derivative}");
 
@@ -27,7 +27,7 @@ fn visualize_derivative_of_single_variable_function() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, horizontal_value * horizontal_value)
         })
@@ -38,14 +38,14 @@ fn visualize_derivative_of_single_variable_function() {
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, 9.0 + 6.0 * (horizontal_value - 3.0))
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

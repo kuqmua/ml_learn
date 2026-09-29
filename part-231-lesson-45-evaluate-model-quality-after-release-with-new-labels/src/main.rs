@@ -10,9 +10,9 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     // Создаём набор значений `truth` для следующего шага примера.
-    let truth = [true, false, true];
+    let truth: [bool; 3] = [true, false, true];
     // Создаём набор значений `predicted` для следующего шага примера.
-    let predicted = [true, true, true];
+    let predicted: [bool; 3] = [true, true, true];
     // Проверяем ожидаемое свойство учебного примера.
     assert_eq!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -30,7 +30,7 @@ fn main() {
         "для accuracy нужна хотя бы одна пара значений"
     );
     // Считаем количество элементов и сохраняем его в `correct`.
-    let correct = (0..truth.len())
+    let correct: usize = (0..truth.len())
         // Оставляем только элементы, прошедшие указанную проверку.
         .filter(|&index| truth[index] == predicted[index])
         // Подсчитываем число элементов после отбора.
@@ -53,7 +53,7 @@ fn visualize_evaluate_model_quality_after_release_with_new_labels(
     correct: usize,
 ) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

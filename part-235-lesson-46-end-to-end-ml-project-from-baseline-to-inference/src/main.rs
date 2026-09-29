@@ -44,14 +44,14 @@ fn main() {
         "для разделения нужны train, validation и test"
     );
     // Сохраняем результат этого шага в `training_examples`.
-    let training_examples = &EXAMPLE_DATA[..6];
+    let training_examples: &[(f64, f64)] = &EXAMPLE_DATA[..6];
     // Сохраняем рассчитанное значение `validation` для следующих операций.
-    let validation = &EXAMPLE_DATA[6..8];
+    let validation: &[(f64, f64)] = &EXAMPLE_DATA[6..8];
     // Сохраняем рассчитанное значение `test` для следующих операций.
-    let test = &EXAMPLE_DATA[8..];
+    let test: &[(f64, f64)] = &EXAMPLE_DATA[8..];
 
     // Шаг: Считаем константный прогноз только по train.
-    let training_targets: Vec<_> = training_examples
+    let training_targets: Vec<f64> = training_examples
         // Просматриваем элементы коллекции по ссылке.
         .iter()
         // Преобразуем каждый элемент в новое значение.
@@ -59,7 +59,7 @@ fn main() {
         // Собираем результаты в коллекцию.
         .collect();
     // Сохраняем результат этого шага в `baseline`.
-    let baseline =
+    let baseline: f64 =
         part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
             &training_targets,
         )
@@ -80,9 +80,9 @@ fn main() {
         // Указываем тип возвращаемого значения.
     ) -> f64 {
         // Собираем значения для `targets` в коллекцию.
-        let targets: Vec<_> = data.iter().map(|&(_, target)| target).collect();
+        let targets: Vec<f64> = data.iter().map(|&(_, target)| target).collect();
         // Собираем значения для `predictions` в коллекцию.
-        let predictions: Vec<_> = data
+        let predictions: Vec<f64> = data
             // Просматриваем элементы коллекции по ссылке.
             .iter()
             // Преобразуем каждый элемент в новое значение.
@@ -94,15 +94,15 @@ fn main() {
     }
 
     // Шаг: Обучаем линейную модель и сравниваем её с baseline на validation и test.
-    let (weight, bias) = (|| -> (f64, f64) {
+    let (weight, bias): (f64, f64) = (|| -> (f64, f64) {
         // Используем подготовленное значение в следующем шаге примера.
         /* Оцениваем коэффициенты прямой по ковариации и дисперсии обучающего признака. */
         // Сохраняем результат этого шага в `data`.
         let data: &[(f64, f64)] = training_examples;
         // Считаем количество элементов и сохраняем его в `sample_count`.
-        let sample_count = data.len() as f64;
+        let sample_count: f64 = data.len() as f64;
         // Сохраняем рассчитанное значение `(mut feature_sum, mut target_sum)` для следующих операций.
-        let (mut feature_sum, mut target_sum) = (0.0, 0.0);
+        let (mut feature_sum, mut target_sum): (f64, f64) = (0.0, 0.0);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(feature_value, target_value) in data {
             // Прибавляем очередной вклад к ранее накопленному результату.
@@ -111,12 +111,12 @@ fn main() {
             target_sum += target_value;
         }
         // Нормируем или усредняем величину делением и сохраняем её в `mean_feature`.
-        let mean_feature = feature_sum / sample_count;
+        let mean_feature: f64 = feature_sum / sample_count;
         // Нормируем или усредняем величину делением и сохраняем её в `mean_target`.
-        let mean_target = target_sum / sample_count;
+        let mean_target: f64 = target_sum / sample_count;
         // Сохраняем рассчитанное значение `(mut covariance_sum, mut variance_sum)` для следующих операций.
         // Совместное изменение двух величин описывают через covariance.
-        let (mut joint_deviation_product_sum, mut variance_sum) = (0.0, 0.0);
+        let (mut joint_deviation_product_sum, mut variance_sum): (f64, f64) = (0.0, 0.0);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(feature_value, target_value) in data {
             // Прибавляем очередной вклад к ранее накопленному результату.
@@ -133,7 +133,7 @@ fn main() {
             })();
         }
         // Нормируем или усредняем величину делением и сохраняем её в `weight`.
-        let weight = joint_deviation_product_sum / variance_sum;
+        let weight: f64 = joint_deviation_product_sum / variance_sum;
         // Составляем результат из вычисленных значений в указанном порядке.
         (weight, mean_target - weight * mean_feature)
     })();
@@ -171,14 +171,14 @@ fn visualize_end_to_end_ml_project_from_baseline_to_inference(
         // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
             // Сохраняем результат этого шага в `horizontal_value`.
-            let horizontal_value = plot_step_index as f64 / 10.0;
+            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Добавляем пару значений для сравнения или построения графика.
             (horizontal_value, weight * horizontal_value + bias)
         })
         // Собираем результаты в коллекцию.
         .collect();
     // Строим график по рассчитанным значениям и сохраняем его как SVG.
-    let chart = lesson_visualization::line_chart(
+    let chart: std::path::PathBuf = lesson_visualization::line_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

@@ -16,9 +16,9 @@ impl ObliviousTree {
         if self.leaves.len() != 1 << self.splits.len() {
             return Err("число листьев должно быть 2^depth");
         }
-        let mut leaf = 0;
+        let mut leaf: usize = 0;
         for &(feature, threshold) in &self.splits {
-            let value = *features.get(feature).ok_or("нет признака")?;
+            let value: f64 = *features.get(feature).ok_or("нет признака")?;
             leaf = (leaf << 1) | usize::from(value > threshold);
         }
         Ok(self.leaves[leaf])
@@ -29,7 +29,7 @@ impl ObliviousTree {
 mod tests {
     #[test]
     fn all_four_leaves_and_invalid_shape() {
-        let tree = super::ObliviousTree {
+        let tree: super::ObliviousTree = super::ObliviousTree {
             splits: vec![(0, 0.5), (1, 0.5)],
             leaves: vec![0.0, 1.0, 2.0, 3.0],
         };

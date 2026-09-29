@@ -17,7 +17,7 @@ fn main() {
         "feature,target\n1,0\n2,0\n3,1\n4,1\n5,0\n6,1\n7,0\n8,1\n9,1\n10,0\n";
 
     // Шаг: Читаем учебную таблицу признаков и меток.
-    let records = (|| -> Vec<(f64, u8)> {
+    let records: Vec<(f64, u8)> = (|| -> Vec<(f64, u8)> {
         // Используем подготовленное значение в следующем шаге примера.
         /* Разбираем демонстрационный CSV в пары «признак, метка». */
         // Используем подготовленное значение в следующем шаге примера.
@@ -29,7 +29,7 @@ fn main() {
             // Преобразуем каждый элемент последовательности.
             .map(|line| {
                 // Сохраняем рассчитанное значение `(feature_value, target_value)` для следующих операций.
-                let (feature_value, target_value) = line.split_once(',').unwrap();
+                let (feature_value, target_value): (&str, &str) = line.split_once(',').unwrap();
                 // Составляем результат из вычисленных значений в указанном порядке.
                 (
                     // Преобразуем текстовое поле в требуемый числовой тип.
@@ -49,20 +49,20 @@ fn main() {
         "для разделения нужны строки train, validation и test"
     );
     // Сохраняем результат этого шага в `training_records`.
-    let training_records = &records[..6];
+    let training_records: &[(f64, u8)] = &records[..6];
     // Сохраняем рассчитанное значение `validation_records` для следующих операций.
-    let validation_records = &records[6..8];
+    let validation_records: &[(f64, u8)] = &records[6..8];
     // Сохраняем рассчитанное значение `test_records` для следующих операций.
-    let test_records = &records[8..];
+    let test_records: &[(f64, u8)] = &records[8..];
 
     // Шаг: Считаем среднее только по train: validation и test не влияют на подготовку признаков.
-    let training_mean = (|| -> f64 {
+    let training_mean: f64 = (|| -> f64 {
         // Используем подготовленное значение в следующем шаге примера.
         /* Среднее признака считаем только по обучающим строкам. */
         // Сохраняем результат этого шага в `training_records`.
         let training_records: &[(f64, u8)] = training_records;
         // Инициализируем изменяемый накопитель `feature_sum` начальным состоянием.
-        let mut feature_sum = 0.0;
+        let mut feature_sum: f64 = 0.0;
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(feature_value, _) in training_records {
             // Прибавляем очередной вклад к ранее накопленному результату.
@@ -104,7 +104,7 @@ fn visualize_practice_data_schema_feature_types_splits_and_leakage_free_pipeline
     training_mean: f64,
 ) {
     // Сравниваем величины, вычисленные в примере.
-    let chart = lesson_visualization::bar_chart(
+    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
         // Указываем имя SVG-файла.

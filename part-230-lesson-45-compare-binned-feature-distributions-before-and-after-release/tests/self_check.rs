@@ -3,8 +3,8 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question = "Сравни гистограммы одного признака до и после изменения входных данных.";
-    let choices = [
+    let question: &str = "Сравни гистограммы одного признака до и после изменения входных данных.";
+    let choices: [&str; 3] = [
         "Сравни её с исходной на одинаковом определении метрики и учти задержку появления меток.",
         "Укажи, какой интервал изменился сильнее и почему одного среднего недостаточно.",
         "Сравни среднее и высокий процентиль; объясни, какая величина показывает худший опыт пользователей.",
@@ -14,7 +14,8 @@ fn choose_correct_check_for_lesson() {
         println!("{}. {choice}", choice_number + 1);
     }
     let selected_choice: Option<usize> = None;
-    let selected_choice = selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
+    let selected_choice: usize =
+        selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");
     assert!(
         (1..=3).contains(&selected_choice),
         "номер варианта должен быть от 1 до 3"
