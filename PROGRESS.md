@@ -6,7 +6,7 @@
 
 - [x] [001 · Скалярное произведение: умножение соответствующих координат двух векторов и сложение произведений](001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding/)
 - [x] [002 · Длина пути вдоль осей (норма L1): сложение модулей координат вектора](002-01-calculate-l1-vector-norm-by-summing-absolute-coordinates/)
-- [ ] [003 · Длина вектора: квадратный корень из суммы квадратов координат](003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates/)
+- [x] [003 · Длина вектора: квадратный корень из суммы квадратов координат](003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates/)
 - [ ] [004 · Расстояние между точками: квадратный корень из суммы квадратов разностей координат](004-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum/)
 - [ ] [005 · Сходство направлений векторов: сумма произведений координат, делённая на произведение длин](005-01-calculate-direction-similarity-as-coordinate-product-sum-divided-by-vector-lengths/)
 - [ ] [006 · Практика: произведения координат, длины векторов и расстояния между точками](006-01-practice-coordinate-products-vector-lengths-and-point-distances/)
