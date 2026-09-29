@@ -1,9 +1,0 @@
-[package]
-name = "part-096-lesson-18-compute-centroid-as-mean-of-cluster-points"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

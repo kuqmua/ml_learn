@@ -1,7 +1,0 @@
-[package]
-name = "part-181-lesson-35-add-token-and-position-embeddings-for-decoder-input"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

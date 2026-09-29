@@ -1,0 +1,14 @@
+[package]
+name = "part-006-lesson-01-practice-coordinate-products-vector-lengths-and-point-distances"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add = { package = "part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add", path = "../part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add" }
+part_002_lesson_01_sum_absolute_values_of_vector_coordinates = { package = "part-002-lesson-01-sum-absolute-values-of-vector-coordinates", path = "../part-002-lesson-01-sum-absolute-values-of-vector-coordinates" }
+part_003_lesson_01_square_root_of_sum_of_squared_vector_coordinates = { package = "part-003-lesson-01-square-root-of-sum-of-squared-vector-coordinates", path = "../part-003-lesson-01-square-root-of-sum-of-squared-vector-coordinates" }
+part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences = { package = "part-004-lesson-01-square-root-of-sum-of-squared-coordinate-differences", path = "../part-004-lesson-01-square-root-of-sum-of-squared-coordinate-differences" }
+part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths = { package = "part-005-lesson-01-sum-coordinate-products-and-divide-by-vector-lengths", path = "../part-005-lesson-01-sum-coordinate-products-and-divide-by-vector-lengths" }
+
+lesson-visualization = { path = "../lesson-visualization" }

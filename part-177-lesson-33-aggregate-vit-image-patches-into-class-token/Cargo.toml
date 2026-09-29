@@ -1,8 +1,0 @@
-[package]
-name = "part-177-lesson-33-aggregate-vit-image-patches-into-class-token"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-lesson-visualization = { path = "../lesson-visualization" }

@@ -7,13 +7,13 @@ fn predict_species_from_nearest_training_record(
         .iter()
         .min_by(|&&left, &&right| {
             let left_distance =
-                part_004_lesson_01_euclidean_distance_between_two_points::squared_euclidean_distance_between_two_points(
+                part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::sum_squared_differences_of_matching_coordinates(
                     &example.features,
                     &records[left].features,
                 )
                 .unwrap();
             let right_distance =
-                part_004_lesson_01_euclidean_distance_between_two_points::squared_euclidean_distance_between_two_points(
+                part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::sum_squared_differences_of_matching_coordinates(
                     &example.features,
                     &records[right].features,
                 )

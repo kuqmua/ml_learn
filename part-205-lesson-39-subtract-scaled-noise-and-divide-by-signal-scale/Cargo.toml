@@ -1,0 +1,8 @@
+[package]
+name = "part-205-lesson-39-subtract-scaled-noise-and-divide-by-signal-scale"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part-203-lesson-39-mix-signal-and-noise-using-square-roots-of-variance-shares = { path = "../part-203-lesson-39-mix-signal-and-noise-using-square-roots-of-variance-shares" }

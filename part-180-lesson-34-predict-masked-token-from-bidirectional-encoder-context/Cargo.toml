@@ -1,8 +1,0 @@
-[package]
-name = "part-180-lesson-34-predict-masked-token-from-bidirectional-encoder-context"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-part-178-lesson-34-bidirectional-self-attention-in-encoder = { path = "../part-178-lesson-34-bidirectional-self-attention-in-encoder" }

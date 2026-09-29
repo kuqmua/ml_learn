@@ -1,8 +1,0 @@
-[package]
-name = "part-183-lesson-35-combine-multiple-attention-heads"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-part-182-lesson-35-causal-self-attention-over-prefix-of-tokens = { path = "../part-182-lesson-35-causal-self-attention-over-prefix-of-tokens" }

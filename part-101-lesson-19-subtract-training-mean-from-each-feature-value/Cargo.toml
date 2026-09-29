@@ -1,0 +1,10 @@
+[package]
+name = "part-101-lesson-19-subtract-training-mean-from-each-feature-value"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part_029_lesson_06_sum_values_and_divide_by_count = { package = "part-029-lesson-06-sum-values-and-divide-by-count", path = "../part-029-lesson-06-sum-values-and-divide-by-count" }
+
+lesson-visualization = { path = "../lesson-visualization" }

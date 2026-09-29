@@ -1,0 +1,9 @@
+[package]
+name = "part-091-lesson-17-take-turns-holding-out-each-data-group-for-validation"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

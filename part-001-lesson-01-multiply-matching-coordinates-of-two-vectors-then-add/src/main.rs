@@ -70,11 +70,11 @@ fn main() {
     println!("разная длина: {:?} и {too_short:?} → {error}", left);
     // Показываем зависимость скалярного произведения от второй координаты.
     lesson_trace::disable();
-    visualize_multiply_matching_coordinates_of_two_vectors_then_add(&left);
+    plot_coordinate_product_sum_for_changing_second_coordinate(&left);
 }
 
 // Визуализация вынесена из основного сценария урока.
-fn visualize_multiply_matching_coordinates_of_two_vectors_then_add(left: &[f64; 2]) {
+fn plot_coordinate_product_sum_for_changing_second_coordinate(left: &[f64; 2]) {
     // График показывает, как меняется скалярное произведение [1, 2] · [1, x] = 1 + 2x.
     // По горизонтали откладываем вторую координату правого вектора от −4 до 4 с шагом 0,1;
     // по вертикали — результат умножения координат и сложения. При x = −0,5 результат равен нулю.

@@ -1,9 +1,0 @@
-[package]
-name = "part-027-lesson-05-expected-value-of-discrete-random-outcomes"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

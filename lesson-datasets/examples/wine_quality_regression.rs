@@ -17,10 +17,10 @@ fn report_error(
         .collect();
     println!(
         "{name}: baseline MAE={:.3}, MSE={:.3}; alcohol model MAE={:.3}, MSE={:.3}",
-        part_050_lesson_09_mean_absolute_error_between_targets_and_predictions::mean_absolute_error_between_targets_and_predictions(&targets, &baseline)?,
-        part_049_lesson_09_mean_squared_error_between_targets_and_predictions::mean_squared_error_between_targets_and_predictions(&targets, &baseline)?,
-        part_050_lesson_09_mean_absolute_error_between_targets_and_predictions::mean_absolute_error_between_targets_and_predictions(&targets, &predictions)?,
-        part_049_lesson_09_mean_squared_error_between_targets_and_predictions::mean_squared_error_between_targets_and_predictions(&targets, &predictions)?
+        part_050_lesson_09_sum_absolute_prediction_errors_and_divide_by_count::sum_absolute_prediction_errors_and_divide_by_count(&targets, &baseline)?,
+        part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::sum_squared_prediction_errors_and_divide_by_count(&targets, &baseline)?,
+        part_050_lesson_09_sum_absolute_prediction_errors_and_divide_by_count::sum_absolute_prediction_errors_and_divide_by_count(&targets, &predictions)?,
+        part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::sum_squared_prediction_errors_and_divide_by_count(&targets, &predictions)?
     );
     Ok(())
 }
@@ -39,11 +39,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(|&index| records[index].features[10])
         .collect();
     let target_mean =
-        part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
+        part_029_lesson_06_sum_values_and_divide_by_count::sum_values_and_divide_by_count(
             &training_targets,
         )?;
     let alcohol_mean =
-        part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
+        part_029_lesson_06_sum_values_and_divide_by_count::sum_values_and_divide_by_count(
             &training_alcohol,
         )?;
     let covariance: f64 = training_alcohol

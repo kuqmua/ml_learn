@@ -1,0 +1,9 @@
+[package]
+name = "part-093-lesson-17-choose-settings-on-inner-data-groups-and-check-on-outer-groups"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

@@ -1,9 +1,0 @@
-[package]
-name = "part-126-lesson-23-stop-training-after-validation-loss-stagnates"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

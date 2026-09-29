@@ -1,8 +1,0 @@
-[package]
-name = "part-207-lesson-40-input-dependent-forgetting-in-selective-state-space-model"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-lesson-visualization = { path = "../lesson-visualization" }

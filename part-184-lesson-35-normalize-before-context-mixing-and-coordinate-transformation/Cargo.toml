@@ -1,0 +1,8 @@
+[package]
+name = "part-184-lesson-35-normalize-before-context-mixing-and-coordinate-transformation"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part-182-lesson-35-sum-current-and-past-values-with-query-key-match-weights = { path = "../part-182-lesson-35-sum-current-and-past-values-with-query-key-match-weights" }

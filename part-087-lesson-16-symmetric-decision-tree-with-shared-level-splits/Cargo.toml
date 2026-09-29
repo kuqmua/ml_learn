@@ -1,7 +1,0 @@
-[package]
-name = "part-087-lesson-16-symmetric-decision-tree-with-shared-level-splits"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

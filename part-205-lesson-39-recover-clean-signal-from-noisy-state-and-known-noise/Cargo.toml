@@ -1,8 +1,0 @@
-[package]
-name = "part-205-lesson-39-recover-clean-signal-from-noisy-state-and-known-noise"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-part-203-lesson-39-mix-clean-signal-with-noise-in-forward-diffusion = { path = "../part-203-lesson-39-mix-clean-signal-with-noise-in-forward-diffusion" }

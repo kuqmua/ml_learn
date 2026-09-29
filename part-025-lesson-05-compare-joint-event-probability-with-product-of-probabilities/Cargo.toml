@@ -1,0 +1,9 @@
+[package]
+name = "part-025-lesson-05-compare-joint-event-probability-with-product-of-probabilities"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

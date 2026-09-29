@@ -1,0 +1,9 @@
+[package]
+name = "part-032-lesson-06-select-sorted-value-at-given-fraction-of-sample"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

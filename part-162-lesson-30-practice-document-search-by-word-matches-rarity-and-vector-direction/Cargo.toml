@@ -1,0 +1,10 @@
+[package]
+name = "part-162-lesson-30-practice-document-search-by-word-matches-rarity-and-vector-direction"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+
+lesson-visualization = { path = "../lesson-visualization" }

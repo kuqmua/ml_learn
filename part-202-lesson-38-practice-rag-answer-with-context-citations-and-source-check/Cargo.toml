@@ -1,7 +1,0 @@
-[package]
-name = "part-202-lesson-38-practice-rag-answer-with-context-citations-and-source-check"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

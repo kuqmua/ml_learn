@@ -1,7 +1,0 @@
-[package]
-name = "part-192-lesson-36-apply-swiglu-gate-and-up-projection-in-feed-forward-layer"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

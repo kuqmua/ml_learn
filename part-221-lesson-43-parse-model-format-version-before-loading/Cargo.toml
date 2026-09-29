@@ -1,7 +1,0 @@
-[package]
-name = "part-221-lesson-43-parse-model-format-version-before-loading"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

@@ -1,9 +1,0 @@
-[package]
-name = "part-199-lesson-38-limit-number-of-retrieved-fragments-to-context-window"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

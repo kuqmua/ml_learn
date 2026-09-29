@@ -1,0 +1,9 @@
+[package]
+name = "part-099-lesson-18-compare-squared-distance-sums-for-different-group-counts"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

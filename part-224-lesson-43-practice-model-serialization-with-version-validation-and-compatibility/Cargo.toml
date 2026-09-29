@@ -1,7 +1,0 @@
-[package]
-name = "part-224-lesson-43-practice-model-serialization-with-version-validation-and-compatibility"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

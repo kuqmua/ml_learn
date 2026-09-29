@@ -1,7 +1,0 @@
-[package]
-name = "part-149-lesson-28-unknown-and-boundary-tokens-in-vocabulary"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

@@ -1,0 +1,9 @@
+[package]
+name = "part-142-lesson-26-predict-next-sound-value-using-only-past-values"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part-138-lesson-26-sum-weighted-current-and-past-signal-values = { path = "../part-138-lesson-26-sum-weighted-current-and-past-signal-values" }
+lesson-visualization = { path = "../lesson-visualization" }

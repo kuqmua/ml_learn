@@ -1,9 +1,0 @@
-[package]
-name = "part-107-lesson-20-backpropagate-output-derivative-through-computation-graph"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

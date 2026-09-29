@@ -1,0 +1,9 @@
+[package]
+name = "part-096-lesson-18-average-each-coordinate-of-points-to-find-group-center"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

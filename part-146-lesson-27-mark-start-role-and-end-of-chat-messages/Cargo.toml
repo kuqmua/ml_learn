@@ -1,0 +1,7 @@
+[package]
+name = "part-146-lesson-27-mark-start-role-and-end-of-chat-messages"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }

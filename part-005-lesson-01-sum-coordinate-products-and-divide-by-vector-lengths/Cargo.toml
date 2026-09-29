@@ -1,0 +1,11 @@
+[package]
+name = "part-005-lesson-01-sum-coordinate-products-and-divide-by-vector-lengths"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add = { package = "part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add", path = "../part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add" }
+part_003_lesson_01_square_root_of_sum_of_squared_vector_coordinates = { package = "part-003-lesson-01-square-root-of-sum-of-squared-vector-coordinates", path = "../part-003-lesson-01-square-root-of-sum-of-squared-vector-coordinates" }
+
+lesson-visualization = { path = "../lesson-visualization" }

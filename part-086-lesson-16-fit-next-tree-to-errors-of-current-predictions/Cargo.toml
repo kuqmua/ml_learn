@@ -1,0 +1,8 @@
+[package]
+name = "part-086-lesson-16-fit-next-tree-to-errors-of-current-predictions"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+lesson-visualization = { path = "../lesson-visualization" }

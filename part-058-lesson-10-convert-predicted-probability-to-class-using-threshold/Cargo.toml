@@ -1,9 +1,0 @@
-[package]
-name = "part-058-lesson-10-convert-predicted-probability-to-class-using-threshold"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

@@ -9,17 +9,17 @@ fn report_majority_baseline(
         .map(|&index| records[index].is_spam)
         .collect();
     let predictions = vec![majority_is_spam; indices.len()];
-    let counts = part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::count_binary_classification_outcomes_from_true_and_predicted_labels(
+    let counts = part_060_lesson_11_count_correct_and_incorrect_positive_and_negative_predictions::count_binary_classification_outcomes_from_true_and_predicted_labels(
         &truth,
         &predictions,
     )?;
     println!(
         "{name}: accuracy={:.3}, spam recall={:.3}, missed spam={}",
-        part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::calculate_accuracy_from_binary_classification_counts(
+        part_060_lesson_11_count_correct_and_incorrect_positive_and_negative_predictions::correct_predictions_divided_by_all_predictions(
             counts
         )
         .unwrap(),
-        part_062_lesson_11_recall_from_binary_classification_counts::recall_from_binary_classification_counts(counts).unwrap(),
+        part_062_lesson_11_divide_detected_positives_by_all_actual_positives::true_positives_divided_by_all_actual_positives(counts).unwrap(),
         counts.false_negatives
     );
     Ok(())

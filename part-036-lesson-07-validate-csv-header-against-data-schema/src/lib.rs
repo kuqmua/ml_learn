@@ -1,1 +1,1 @@
-//! Библиотека урока part-036-lesson-07-validate-csv-header-against-data-schema.
+//! Урок 036. Проверка названий столбцов CSV по ожидаемой схеме.

@@ -1,9 +1,0 @@
-[package]
-name = "part-170-lesson-32-self-attention-among-tokens-of-one-sequence"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

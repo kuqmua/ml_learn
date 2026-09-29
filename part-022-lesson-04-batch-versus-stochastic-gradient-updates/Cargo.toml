@@ -1,9 +1,0 @@
-[package]
-name = "part-022-lesson-04-batch-versus-stochastic-gradient-updates"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

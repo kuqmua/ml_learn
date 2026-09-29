@@ -1,8 +1,0 @@
-[package]
-name = "part-206-lesson-40-calculate-linear-recurrent-state-over-input-sequence"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-lesson-visualization = { path = "../lesson-visualization" }

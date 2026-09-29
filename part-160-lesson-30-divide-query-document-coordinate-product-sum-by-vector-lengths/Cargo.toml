@@ -1,0 +1,9 @@
+[package]
+name = "part-160-lesson-30-divide-query-document-coordinate-product-sum-by-vector-lengths"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths = { package = "part-005-lesson-01-sum-coordinate-products-and-divide-by-vector-lengths", path = "../part-005-lesson-01-sum-coordinate-products-and-divide-by-vector-lengths" }
+lesson-visualization = { path = "../lesson-visualization" }

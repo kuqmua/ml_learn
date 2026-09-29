@@ -1,9 +1,0 @@
-[package]
-name = "part-168-lesson-31-block-future-token-attention-with-causal-mask"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

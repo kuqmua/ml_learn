@@ -1,7 +1,0 @@
-[package]
-name = "part-188-lesson-36-normalize-token-vector-by-root-mean-square"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

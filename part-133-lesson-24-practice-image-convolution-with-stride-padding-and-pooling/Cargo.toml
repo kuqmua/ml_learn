@@ -1,9 +1,0 @@
-[package]
-name = "part-133-lesson-24-practice-image-convolution-with-stride-padding-and-pooling"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

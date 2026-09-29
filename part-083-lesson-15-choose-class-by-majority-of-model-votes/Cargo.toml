@@ -1,0 +1,9 @@
+[package]
+name = "part-083-lesson-15-choose-class-by-majority-of-model-votes"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

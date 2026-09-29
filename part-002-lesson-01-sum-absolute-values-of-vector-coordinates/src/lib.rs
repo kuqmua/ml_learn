@@ -1,4 +1,4 @@
-//! Вычисления и примеры урока part-002-lesson-01-sum-absolute-values-of-vector-coordinates.
+//! Урок 002. Сложение модулей координат вектора.
 
 /// Складываем модули координат.
 pub fn sum_absolute_values_of_vector_coordinates(vector: &[f64]) -> f64 {

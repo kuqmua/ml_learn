@@ -1,1 +1,1 @@
-//! Библиотека урока part-007-lesson-02-validate-matrix-element-count-and-row-column-indices.
+//! Урок 007. Проверка числа элементов матрицы и границ строки и столбца.

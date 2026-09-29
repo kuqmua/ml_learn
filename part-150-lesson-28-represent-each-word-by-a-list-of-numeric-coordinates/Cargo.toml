@@ -1,0 +1,9 @@
+[package]
+name = "part-150-lesson-28-represent-each-word-by-a-list-of-numeric-coordinates"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

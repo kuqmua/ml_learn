@@ -1,0 +1,8 @@
+[package]
+name = "part-138-lesson-26-sum-weighted-current-and-past-signal-values"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+lesson-visualization = { path = "../lesson-visualization" }

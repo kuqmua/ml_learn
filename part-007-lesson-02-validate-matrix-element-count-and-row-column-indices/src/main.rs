@@ -58,11 +58,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    visualize_validate_matrix_element_count_and_row_column_indices();
+    plot_matrix_with_two_rows_and_three_columns();
 }
 
 // Строим график по результатам урока.
-fn visualize_validate_matrix_element_count_and_row_column_indices() {
+fn plot_matrix_with_two_rows_and_three_columns() {
     // Значения ячеек видны по цвету и подписи.
     let chart: std::path::PathBuf = lesson_visualization::heatmap(
         // Передаём путь к каталогу текущего урока.

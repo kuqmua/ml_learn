@@ -1,7 +1,0 @@
-[package]
-name = "part-136-lesson-25-calculate-lstm-cell-output-from-input-and-previous-state"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

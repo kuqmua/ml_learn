@@ -8,6 +8,8 @@
 
 **Как работать:** внутри блока запускай узкие пакеты в порядке таблицы, заранее предсказывай вывод и меняй входные данные по одной переменной. В уроке 01.1 сравни случаи с острым, прямым и тупым углом, противоположным направлением и нулевым вектором: одинаковый нулевой ответ возможен по разным причинам. В других уроках также смотри на разные исходы и граничные входы, которые программа выводит рядом. После них запускай сводную практику и объясняй, как изученные части соединяются. Запускай конкретный пакет через `cargo run -p ИМЯ_ПАКЕТА`; весь workspace проверяй `cargo check --workspace` и `cargo fmt --all -- --check`. Результаты и выводы можно записывать в README пакета. Каждая обучаемая модель должна иметь baseline, данные для проверки вне обучения, фиксированный seed там, где есть случайность, и явное описание ошибок.
 
+**Названия:** заголовок урока и имя пакета описывают действия над данными. Принятые математические названия даны в пояснениях к коду; [памятка по функциям](FUNCTION_NAMES.md) связывает действия с формулами.
+
 **Самопроверка:** после каждого пакета выполни [задачу для этого урока](SELF_CHECK.md). Для всех 236 пакетов рядом с задачей указано, как проверить результат и что нужно суметь объяснить своими словами, чтобы считать урок пройденным. Затем поставь галочку в [списке прогресса](PROGRESS.md).
 
 **Перед кодом:** для первых шести блоков прочитай [короткие объяснения, ручные примеры и словарь](FOUNDATIONS.md). После каждого пункта воспроизведи расчёт без подсказки, затем перейди к программе и самопроверке.
@@ -18,7 +20,7 @@
 
 **Математика в примерах:** узкий пакет показывает одну идею на малых числах; сводная практика соединяет идеи блока. Повторно используемые формулы вынесены в публичные функции `src/lib.rs` соответствующего урока; вычисление с единственным местом вызова остаётся прямо в `main`. Когда примеру нужна общая функция своего урока, `main` обращается к ней через библиотеку пакета. Корень считается методом Ньютона, экспонента и логарифм — рядами. Производные и градиенты выделены отдельно от шага обучения. Эти реализации рассчитаны на небольшие учебные входы; проверь их на известных значениях и учитывай численную погрешность.
 
-**Графики:** там, где величины удобно сравнивать визуально, запуск пакета создаёт SVG в его каталоге `visualizations/` и печатает полный путь к файлу. Например, `cargo run -p part-019-lesson-04-learning-rate-for-gradient-descent-update` создаёт график ошибки для разных скоростей обучения. Открой SVG в браузере или редакторе изображений. Графики строятся через общий пакет `lesson-visualization` на основе Plotters; файлы в `visualizations/` не добавляются в Git. Уроки про схемы, конфигурацию, версии файлов и текстовые контракты могут обходиться без графика.
+**Графики:** там, где величины удобно сравнивать визуально, запуск пакета создаёт SVG в его каталоге `visualizations/` и печатает полный путь к файлу. Например, `cargo run -p part-019-lesson-04-subtract-step-size-times-error-slope-from-parameter` создаёт график ошибки для разных скоростей обучения. Открой SVG в браузере или редакторе изображений. Графики строятся через общий пакет `lesson-visualization` на основе Plotters; файлы в `visualizations/` не добавляются в Git. Уроки про схемы, конфигурацию, версии файлов и текстовые контракты могут обходиться без графика.
 
 **Правило оценки:** train служит для подгонки параметров, validation — для выбора гиперпараметров и порога, test — для одного итогового отчёта. Статистики нормализации, словарь и любые преобразования, обучаемые на данных, рассчитывай только по train. Храни размер каждой части, seed и метрику рядом с результатом.
 
@@ -53,17 +55,17 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Урок 01.1. Умножение соответствующих координат двух векторов и сложение произведений | `part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add` |
-| 2 | Урок 01.2. Сумма модулей координат одного вектора (норма L1) | `part-002-lesson-01-sum-absolute-values-of-vector-coordinates` |
-| 3 | Вычисление евклидовой длины одного вектора | `part-003-lesson-01-calculate-euclidean-length-of-one-vector` |
-| 4 | Урок 01.4. Евклидово расстояние между точками | `part-004-lesson-01-euclidean-distance-between-two-points` |
-| 5 | Урок 01.5. Косинусное сходство двух векторов | `part-005-lesson-01-cosine-similarity-between-two-vectors` |
+| 1 | Умножение соответствующих координат двух векторов и сложение произведений | `part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add` |
+| 2 | Сложение модулей координат вектора | `part-002-lesson-01-sum-absolute-values-of-vector-coordinates` |
+| 3 | Квадратный корень из суммы квадратов координат вектора | `part-003-lesson-01-square-root-of-sum-of-squared-vector-coordinates` |
+| 4 | Квадратный корень из суммы квадратов разностей координат двух точек | `part-004-lesson-01-square-root-of-sum-of-squared-coordinate-differences` |
+| 5 | Сумма произведений координат, делённая на произведение длин векторов | `part-005-lesson-01-sum-coordinate-products-and-divide-by-vector-lengths` |
 
 ![Скалярное произведение и угол](docs/illustrations/01-dot-product.svg)
 
 *Проверь себя: почему результат 0 для вектора [-2, 1] не означает, что сам вектор нулевой?*
 
-##### Сводная практика: скалярное произведение, нормы, расстояние и косинус двух векторов — `part-006-lesson-01-practice-vector-dot-product-norms-distance-and-cosine`
+##### Практика: произведения координат, длины векторов и расстояния между точками — `part-006-lesson-01-practice-coordinate-products-vector-lengths-and-point-distances`
 
 - **Повторить вместе:** умножение координат попарно и сложение результатов, нормы L1/L2, расстояние, косинусное сходство.
 - **Практика:** Реализуй Vec<f64>: multiply_matching_coordinates_of_two_vectors_then_add, norm, distance, cosine; опиши ошибки длины и нулевого вектора.
@@ -78,12 +80,12 @@
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
 | 1 | Проверка числа элементов матрицы и границ строки и столбца | `part-007-lesson-02-validate-matrix-element-count-and-row-column-indices` |
-| 2 | Перестановка строк матрицы в столбцы | `part-008-lesson-02-transpose-matrix-rows-into-columns` |
-| 3 | Умножение матрицы на вектор через скалярные произведения строк | `part-009-lesson-02-multiply-matrix-by-vector-using-row-dot-products` |
-| 4 | Умножение двух матриц через скалярные произведения строк и столбцов | `part-010-lesson-02-multiply-two-matrices-using-row-column-dot-products` |
-| 5 | Решение системы двух линейных уравнений | `part-011-lesson-02-solve-system-of-two-linear-equations` |
+| 2 | Перестановка строк матрицы в столбцы | `part-008-lesson-02-turn-matrix-rows-into-columns` |
+| 3 | Умножение координат каждой строки матрицы на координаты вектора и сложение результатов | `part-009-lesson-02-multiply-each-matrix-row-by-vector-coordinates-and-sum` |
+| 4 | Сложение произведений соответствующих элементов строк и столбцов двух матриц | `part-010-lesson-02-sum-matching-products-of-matrix-rows-and-columns` |
+| 5 | Поиск двух неизвестных, удовлетворяющих двум линейным уравнениям | `part-011-lesson-02-solve-system-of-two-linear-equations` |
 
-##### Сводная практика: форма матрицы, транспонирование, произведения и система уравнений — `part-012-lesson-02-practice-matrix-shapes-transpose-products-and-linear-system`
+##### Практика: размеры матриц, перестановка строк в столбцы, умножение и решение уравнений — `part-012-lesson-02-practice-matrix-shapes-row-column-swaps-and-equation-solving`
 
 - **Повторить вместе:** формы матриц, транспонирование, матричное умножение, системы уравнений.
 - **Практика:** Сделай Matrix с проверкой размерностей, transpose, matmul и matvec без внешних библиотек.
@@ -97,13 +99,13 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Производная функции одной переменной | `part-013-lesson-03-derivative-of-single-variable-function` |
-| 2 | Частная производная функции двух переменных | `part-014-lesson-03-partial-derivative-of-two-variable-function` |
-| 3 | Правило цепочки для производной композиции функций | `part-015-lesson-03-chain-rule-for-derivative-of-composed-functions` |
-| 4 | Градиент функции двух переменных | `part-016-lesson-03-gradient-of-two-variable-function` |
-| 5 | Приближение производной функции центральной разностью | `part-017-lesson-03-approximate-function-derivative-with-central-difference` |
+| 1 | Вычисление скорости изменения результата функции при изменении её входа | `part-013-lesson-03-calculate-function-output-change-per-input-change` |
+| 2 | Вычисление скорости изменения функции при изменении одного из двух входов | `part-014-lesson-03-calculate-output-change-while-varying-one-of-two-inputs` |
+| 3 | Умножение скоростей изменения для вложенных функций | `part-015-lesson-03-multiply-rates-of-change-through-nested-functions` |
+| 4 | Сбор скоростей изменения функции по двум входам в один вектор | `part-016-lesson-03-collect-rates-of-change-for-both-function-inputs` |
+| 5 | Оценка скорости изменения по значениям функции слева и справа от точки | `part-017-lesson-03-estimate-rate-of-change-from-two-nearby-function-values` |
 
-##### Сводная практика: производные, правило цепочки, градиент и конечные разности — `part-018-lesson-03-practice-derivatives-chain-rule-gradient-and-finite-differences`
+##### Практика: скорости изменения функции и их проверка по соседним значениям — `part-018-lesson-03-practice-rates-of-change-and-checks-with-nearby-values`
 
 - **Повторить вместе:** производная, частная производная, правило цепочки, градиент, численная разность.
 - **Практика:** Для f(x,y)=(x−2)²+3(y+1)² реализуй аналитический и численный градиенты.
@@ -117,12 +119,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Скорость обучения в шаге градиентного спуска | `part-019-lesson-04-learning-rate-for-gradient-descent-update` |
-| 2 | Сходимость последовательности шагов градиентного спуска | `part-020-lesson-04-convergence-of-gradient-descent-steps` |
-| 3 | Локальные минимумы невыпуклой функции | `part-021-lesson-04-local-minima-of-nonconvex-function` |
-| 4 | Пакетное и стохастическое обновление по градиенту | `part-022-lesson-04-batch-versus-stochastic-gradient-updates` |
+| 1 | Вычитание из параметра произведения размера шага и скорости изменения ошибки | `part-019-lesson-04-subtract-step-size-times-error-slope-from-parameter` |
+| 2 | Повторение обновлений параметра и проверка уменьшения ошибки | `part-020-lesson-04-repeat-parameter-updates-and-check-error-decrease` |
+| 3 | Сравнение минимумов функции при движении из разных начальных точек | `part-021-lesson-04-compare-function-valleys-reached-from-different-starts` |
+| 4 | Сравнение обновлений параметра по всем примерам и по одному примеру | `part-022-lesson-04-compare-updates-from-all-examples-and-one-example` |
 
-##### Сводная практика: скорость обучения, сходимость и режимы градиентного спуска — `part-023-lesson-04-practice-gradient-descent-learning-rate-convergence-and-update-modes`
+##### Практика: выбор размера шага, способа обновления и проверка уменьшения ошибки — `part-023-lesson-04-practice-update-step-sizes-and-error-decrease`
 
 - **Повторить вместе:** скорость обучения, сходимость, локальные минимумы, batch и stochastic updates.
 - **Практика:** Минимизируй квадратичную функцию и запиши историю loss для нескольких learning rate.
@@ -136,16 +138,16 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Условная вероятность одного события при наступлении другого | `part-024-lesson-05-conditional-probability-of-one-event-given-another` |
-| 2 | Независимость двух событий | `part-025-lesson-05-independence-of-two-events` |
-| 3 | Пересчёт вероятности события после наблюдения по формуле Байеса | `part-026-lesson-05-bayes-update-of-event-probability-after-observation` |
-| 4 | Математическое ожидание дискретных случайных исходов | `part-027-lesson-05-expected-value-of-discrete-random-outcomes` |
+| 1 | Деление вероятности совместного наступления событий на вероятность известного события | `part-024-lesson-05-divide-joint-event-probability-by-conditioning-event-probability` |
+| 2 | Сравнение вероятности двух событий вместе с произведением их вероятностей | `part-025-lesson-05-compare-joint-event-probability-with-product-of-probabilities` |
+| 3 | Пересчёт вероятности события с учётом частоты полученного наблюдения | `part-026-lesson-05-update-event-probability-using-observation-rates` |
+| 4 | Сложение значений исходов, умноженных на их вероятности | `part-027-lesson-05-sum-outcome-values-multiplied-by-their-probabilities` |
 
 ![Fraction — доля целого](docs/illustrations/05-fraction.svg)
 
 *Проверь себя: чему равна fraction, если взяты три из четырёх равных частей?*
 
-##### Сводная практика: условная вероятность, формула Байеса и ожидание — `part-028-lesson-05-practice-conditional-probability-bayes-and-expected-value`
+##### Практика: пересчёт вероятностей и сумма исходов с весами по вероятности — `part-028-lesson-05-practice-event-probability-updates-and-weighted-outcome-sums`
 
 - **Повторить вместе:** условная вероятность, независимость, формула Байеса, математическое ожидание.
 - **Практика:** Смоделируй броски монеты и тест болезни с известной чувствительностью и специфичностью.
@@ -159,14 +161,14 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Среднее арифметическое числовых значений | `part-029-lesson-06-arithmetic-mean-of-numeric-values` |
-| 2 | Медиана числовых значений | `part-030-lesson-06-median-of-numeric-values` |
-| 3 | Выборочная дисперсия числовых значений | `part-031-lesson-06-sample-variance-of-numeric-values` |
-| 4 | Квантиль упорядоченных числовых значений | `part-032-lesson-06-quantile-of-sorted-numeric-values` |
-| 5 | Доверительный интервал для среднего генеральной совокупности | `part-033-lesson-06-confidence-interval-for-population-mean` |
-| 6 | Повторные выборки с возвращением из наблюдений | `part-034-lesson-06-bootstrap-resampling-of-observed-values` |
+| 1 | Сложение значений и деление суммы на их количество | `part-029-lesson-06-sum-values-and-divide-by-count` |
+| 2 | Сортировка значений и поиск середины | `part-030-lesson-06-sort-values-and-find-the-middle` |
+| 3 | Сумма квадратов отклонений от среднего, делённая на число значений минус один | `part-031-lesson-06-sum-squared-deviations-from-mean-and-divide-by-count-minus-one` |
+| 4 | Выбор значения на заданной доле упорядоченной выборки | `part-032-lesson-06-select-sorted-value-at-given-fraction-of-sample` |
+| 5 | Оценка границ неопределённости вокруг среднего по выборке | `part-033-lesson-06-estimate-uncertainty-bounds-around-sample-mean` |
+| 6 | Повторный набор выборок с возможностью выбирать одно значение несколько раз | `part-034-lesson-06-draw-repeated-samples-allowing-values-to-repeat` |
 
-##### Сводная практика: среднее, медиана и выборочная дисперсия из CSV — `part-035-lesson-06-practice-mean-median-and-sample-variance-from-csv`
+##### Практика: среднее, середина и квадраты отклонений для данных из CSV — `part-035-lesson-06-practice-mean-middle-and-squared-deviations-from-csv`
 
 - **Повторить вместе:** среднее, медиана, дисперсия, квантили, доверительный интервал, bootstrap.
 - **Практика:** Напиши статистический отчёт по CSV-столбцу; отдельно обработай пропуски и нечисловые значения.
@@ -179,18 +181,18 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Проверка заголовка CSV по схеме данных | `part-036-lesson-07-validate-csv-header-against-data-schema` |
-| 2 | Разбор числового и категориального признаков из строки CSV | `part-037-lesson-07-parse-numeric-and-categorical-features-from-csv-row` |
-| 3 | Разделение набора данных на обучение, валидацию и тест | `part-038-lesson-07-split-dataset-into-training-validation-and-test-sets` |
-| 4 | Заполнение пропусков признака медианой обучающих данных | `part-039-lesson-07-impute-missing-feature-values-using-training-median` |
-| 5 | Кодирование категорий, изученных на обучающих данных | `part-040-lesson-07-encode-categories-learned-from-training-data` |
-| 6 | Утечка информации из тестовых данных в обучение | `part-041-lesson-07-data-leakage-from-test-set-into-training` |
+| 1 | Проверка названий столбцов CSV по ожидаемой схеме | `part-036-lesson-07-validate-csv-header-against-data-schema` |
+| 2 | Чтение числа и категории из строки CSV | `part-037-lesson-07-parse-number-and-category-from-csv-row` |
+| 3 | Разделение данных для обучения, выбора модели и итоговой проверки | `part-038-lesson-07-split-data-for-training-model-selection-and-final-check` |
+| 4 | Заполнение пропусков серединой отсортированных обучающих значений | `part-039-lesson-07-fill-missing-values-with-middle-of-sorted-training-values` |
+| 5 | Назначение числовых номеров категориям из обучающих данных | `part-040-lesson-07-assign-numeric-identifiers-to-training-categories` |
+| 6 | Проверка влияния тестовых данных на статистики, используемые при обучении | `part-041-lesson-07-show-how-test-data-can-contaminate-training-statistics` |
 
 ![Разделение данных без утечки](docs/illustrations/07-data-split.svg)
 
 *Проверь себя: по какой части данных нужно вычислять среднее для заполнения пропусков?*
 
-##### Сводная практика: схема данных, типы признаков, разбиение и подготовка без утечки — `part-042-lesson-07-practice-data-schema-feature-types-splits-and-leakage-free-pipeline`
+##### Практика: проверка данных, разделение и подготовка только по обучающей части — `part-042-lesson-07-practice-data-validation-splitting-and-training-only-preparation`
 
 - **Повторить вместе:** схема данных, типы признаков, заполнение пропусков, категории, train/validation/test, утечка данных.
 - **Практика:** Прочитай локальный CSV, проверь схему, разбей данные с seed; вычисляй параметры нормализации только на train.
@@ -203,13 +205,13 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Начальное число для воспроизводимой псевдослучайной последовательности | `part-043-lesson-08-seed-for-reproducible-random-sequence` |
-| 2 | Базовый классификатор по наиболее частому классу | `part-044-lesson-08-majority-class-baseline-classifier` |
-| 3 | Конфигурация эксперимента из аргументов командной строки | `part-045-lesson-08-experiment-configuration-from-command-line-arguments` |
-| 4 | Запись значения метрики по эпохам обучения | `part-046-lesson-08-record-training-metric-by-epoch` |
-| 5 | Отпечаток содержимого набора данных для контроля версии | `part-047-lesson-08-fingerprint-dataset-content-for-versioning` |
+| 1 | Повторение случайной последовательности из одного начального числа | `part-043-lesson-08-repeat-random-sequence-from-same-starting-number` |
+| 2 | Прогноз самого частого класса из обучающих данных | `part-044-lesson-08-always-predict-most-common-training-class` |
+| 3 | Чтение настроек эксперимента из командной строки | `part-045-lesson-08-read-experiment-settings-from-command-line` |
+| 4 | Запись ошибки после каждого прохода по обучающим данным | `part-046-lesson-08-record-error-after-each-training-pass` |
+| 5 | Вычисление отпечатка содержимого для обнаружения изменений данных | `part-047-lesson-08-calculate-content-fingerprint-to-detect-dataset-changes` |
 
-##### Сводная практика: воспроизводимый эксперимент с базовой моделью и версией данных — `part-048-lesson-08-practice-reproducible-experiment-with-seed-baseline-and-data-version`
+##### Практика: повторяемое обучение, простая модель для сравнения и версия данных — `part-048-lesson-08-practice-repeatable-training-with-simple-comparison-and-data-version`
 
 - **Повторить вместе:** seed, baseline, конфигурация, журнал метрик, версии данных.
 - **Практика:** Создай CLI с параметрами seed и пути к данным; сохрани конфигурацию, метрики и хеш входного файла.
@@ -226,13 +228,13 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Средний квадрат разности правильных ответов и прогнозов | `part-049-lesson-09-mean-squared-error-between-targets-and-predictions` |
-| 2 | Средний модуль разности правильных ответов и прогнозов | `part-050-lesson-09-mean-absolute-error-between-targets-and-predictions` |
-| 3 | Вес и смещение линейной регрессионной модели | `part-051-lesson-09-weights-and-bias-of-linear-regression-model` |
-| 4 | Штраф за большой вес линейной модели | `part-052-lesson-09-regularization-penalty-for-linear-model-weight` |
-| 5 | Оценка линейной регрессии на отложенных данных | `part-053-lesson-09-evaluate-linear-regression-on-heldout-data` |
+| 1 | Сумма квадратов ошибок прогноза, делённая на число примеров | `part-049-lesson-09-sum-squared-prediction-errors-and-divide-by-count` |
+| 2 | Сумма модулей ошибок прогноза, делённая на число примеров | `part-050-lesson-09-sum-absolute-prediction-errors-and-divide-by-count` |
+| 3 | Умножение входного значения на вес и прибавление смещения | `part-051-lesson-09-multiply-input-by-weight-and-add-bias` |
+| 4 | Добавление штрафа за большой вес модели | `part-052-lesson-09-add-penalty-for-large-model-weight` |
+| 5 | Проверка прогноза по прямой на данных, не использованных для обучения | `part-053-lesson-09-check-weighted-input-plus-bias-on-unused-data` |
 
-##### Сводная практика: линейная регрессия, ошибки и оценка на отложенных данных — `part-054-lesson-09-practice-linear-regression-with-errors-coefficients-and-heldout-evaluation`
+##### Практика: подбор прямой и проверка ошибок прогноза — `part-054-lesson-09-practice-fitting-a-line-and-checking-prediction-errors`
 
 - **Повторить вместе:** MSE, MAE, коэффициенты, регуляризация, качество на отложенных данных.
 - **Практика:** Обучи y=wx+b градиентным спуском на синтетических данных; сравни с константным baseline.
@@ -245,12 +247,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Преобразование логита в вероятность класса сигмоидой | `part-055-lesson-10-sigmoid-map-from-logit-to-class-probability` |
-| 2 | Логарифмическая ошибка по правильному ответу и прогнозной вероятности | `part-056-lesson-10-binary-logarithmic-loss-from-target-and-predicted-probability` |
-| 3 | Вероятность положительного класса из логистической модели | `part-057-lesson-10-positive-class-probability-from-logistic-model` |
-| 4 | Преобразование прогнозной вероятности в класс по порогу | `part-058-lesson-10-convert-predicted-probability-to-class-using-threshold` |
+| 1 | Деление единицы на сумму единицы и e в степени, противоположной оценке модели | `part-055-lesson-10-divide-one-by-one-plus-e-to-negative-score` |
+| 2 | Отрицательный логарифм вероятности, назначенной правильному классу | `part-056-lesson-10-negative-log-of-probability-assigned-to-correct-class` |
+| 3 | Преобразование взвешенного входа со смещением в вероятность положительного класса | `part-057-lesson-10-convert-weighted-input-plus-bias-to-positive-class-probability` |
+| 4 | Выбор класса сравнением вероятности с порогом | `part-058-lesson-10-choose-class-by-comparing-probability-with-threshold` |
 
-##### Сводная практика: логистическая регрессия, сигмоида, ошибка и порог — `part-059-lesson-10-practice-logistic-regression-with-sigmoid-loss-and-class-threshold`
+##### Практика: обучение прогнозу вероятности класса и выбор порога — `part-059-lesson-10-practice-learning-class-probabilities-and-choosing-threshold`
 
 - **Повторить вместе:** сигмоида, log-loss, вероятности, порог классификации.
 - **Практика:** Реализуй бинарный классификатор и стабильный расчёт log-loss без log(0).
@@ -263,18 +265,18 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Матрица ошибок бинарной классификации по истинным и прогнозным меткам | `part-060-lesson-11-binary-classification-confusion-matrix-from-true-and-predicted-labels` |
-| 2 | Точность положительных прогнозов по счётчикам бинарной классификации | `part-061-lesson-11-precision-from-binary-classification-counts` |
-| 3 | Полнота положительного класса по счётчикам бинарной классификации | `part-062-lesson-11-recall-from-binary-classification-counts` |
-| 4 | Гармоническое среднее точности и полноты бинарной классификации | `part-063-lesson-11-harmonic-mean-of-binary-classification-precision-and-recall` |
-| 5 | Площадь под ROC кривой по парам положительных и отрицательных оценок | `part-064-lesson-11-area-under-roc-curve-from-positive-negative-score-pairs` |
-| 6 | Площадь под кривой точности и полноты по оценкам бинарного классификатора | `part-065-lesson-11-area-under-precision-recall-curve-for-binary-scores` |
+| 1 | Подсчёт верных и ошибочных положительных и отрицательных прогнозов | `part-060-lesson-11-count-correct-and-incorrect-positive-and-negative-predictions` |
+| 2 | Деление числа верных положительных прогнозов на число всех положительных прогнозов | `part-061-lesson-11-divide-true-positives-by-all-positive-predictions` |
+| 3 | Деление числа найденных положительных примеров на число всех действительно положительных примеров | `part-062-lesson-11-divide-detected-positives-by-all-actual-positives` |
+| 4 | Удвоенное произведение точности положительных прогнозов и полноты, делённое на их сумму | `part-063-lesson-11-twice-precision-times-recall-divided-by-their-sum` |
+| 5 | Доля пар, в которых положительный пример получил оценку выше отрицательного | `part-064-lesson-11-share-of-positive-negative-pairs-ranked-in-correct-order` |
+| 6 | Сложение произведений точности положительных прогнозов на прирост полноты при смене порога | `part-065-lesson-11-sum-precision-times-recall-increases-across-thresholds` |
 
 ![Матрица ошибок классификации](docs/illustrations/11-confusion-matrix.svg)
 
 *Проверь себя: в какую ячейку попадает положительный объект, если модель предсказала отрицательный класс?*
 
-##### Сводная практика: метрики бинарной классификации при дисбалансе классов — `part-066-lesson-11-binary-classification-metrics-under-class-imbalance`
+##### Практика: оценка прогнозов, когда один класс встречается редко — `part-066-lesson-11-practice-checking-predictions-when-one-class-is-rare`
 
 - **Повторить вместе:** confusion matrix, precision, recall, F1, ROC-AUC, PR-AUC.
 - **Практика:** Рассчитай метрики из меток и оценок; добавь подбор порога по validation.
@@ -289,12 +291,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Квадрат расстояния по признакам для поиска ближайших соседей | `part-067-lesson-12-squared-feature-distance-for-nearest-neighbors` |
-| 2 | Масштабирование признаков перед вычислением расстояния до соседей | `part-068-lesson-12-scale-features-before-nearest-neighbor-distance` |
-| 3 | Выбор числа соседей для классификации kNN | `part-069-lesson-12-choose-number-of-neighbors-for-knn-classification` |
-| 4 | Стоимость прогноза kNN при сравнении со всеми обучающими точками | `part-070-lesson-12-cost-of-knn-prediction-over-training-points` |
+| 1 | Сложение квадратов разностей признаков для поиска близких примеров | `part-067-lesson-12-sum-squared-feature-differences-to-find-nearby-examples` |
+| 2 | Приведение признаков к сопоставимым масштабам перед измерением расстояния | `part-068-lesson-12-put-features-on-comparable-scales-before-measuring-distance` |
+| 3 | Выбор числа ближайших примеров, голосующих за класс | `part-069-lesson-12-choose-how-many-nearby-examples-vote-for-class` |
+| 4 | Подсчёт сравнений координат при поиске среди всех обучающих точек | `part-070-lesson-12-count-coordinate-comparisons-when-searching-all-training-points` |
 
-##### Сводная практика: классификация kNN с масштабированием признаков и выбором k — `part-071-lesson-12-practice-knn-classification-with-scaled-features-and-chosen-k`
+##### Практика: выбор класса по ближайшим примерам после изменения масштаба признаков — `part-071-lesson-12-practice-class-voting-by-nearby-examples-after-feature-scaling`
 
 - **Повторить вместе:** расстояния, масштабирование признаков, выбор k, стоимость предсказания.
 - **Практика:** Напиши k-NN классификатор с явным правилом разрешения ничьей.
@@ -309,11 +311,11 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Условная независимость признаков при известном классе | `part-072-lesson-13-conditional-independence-of-features-given-class` |
-| 2 | Априорные вероятности классов по обучающим данным | `part-073-lesson-13-prior-probabilities-of-classes-in-training-data` |
-| 3 | Сглаживание Лапласа для частот слов при известном классе | `part-074-lesson-13-laplace-smoothing-of-class-conditional-word-counts` |
+| 1 | Умножение вероятностей признаков при известном классе | `part-072-lesson-13-multiply-feature-probabilities-within-known-class` |
+| 2 | Деление числа примеров каждого класса на размер обучающего набора | `part-073-lesson-13-divide-class-example-counts-by-training-set-size` |
+| 3 | Добавление единицы к частотам слов перед вычислением вероятностей | `part-074-lesson-13-add-one-to-word-counts-before-calculating-probabilities` |
 
-##### Сводная практика: наивный Байес с априорными вероятностями и сглаживанием — `part-075-lesson-13-practice-naive-bayes-with-class-priors-and-laplace-smoothing`
+##### Практика: выбор класса текста по вероятностям слов — `part-075-lesson-13-practice-choosing-text-class-by-word-probabilities`
 
 - **Повторить вместе:** условная независимость, априорные вероятности, сглаживание Лапласа.
 - **Практика:** Обучи мультиномиальный классификатор коротких текстов по счётчикам слов.
@@ -326,12 +328,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Энтропия долей классов в узле дерева решений | `part-076-lesson-14-entropy-of-class-proportions-in-tree-node` |
-| 2 | Нечистота Джини по долям классов в узле дерева решений | `part-077-lesson-14-gini-impurity-of-class-proportions-in-tree-node` |
-| 3 | Жадный выбор порога для разбиения дерева решений | `part-078-lesson-14-greedy-threshold-split-for-decision-tree` |
-| 4 | Переобучение из-за чрезмерной глубины дерева решений | `part-079-lesson-14-overfitting-from-excessive-decision-tree-depth` |
+| 1 | Отрицательная сумма долей классов, умноженных на их логарифмы | `part-076-lesson-14-negative-sum-of-class-shares-times-their-logarithms` |
+| 2 | Вычитание суммы квадратов долей классов из единицы | `part-077-lesson-14-subtract-sum-of-squared-class-shares-from-one` |
+| 3 | Выбор порога, который лучше всего разделяет классы | `part-078-lesson-14-choose-threshold-that-best-separates-classes` |
+| 4 | Сравнение ошибок на обучающих и новых данных при увеличении глубины дерева | `part-079-lesson-14-compare-training-and-new-data-errors-as-tree-grows` |
 
-##### Сводная практика: дерево решений, меры нечистоты, разбиения и ограничение глубины — `part-080-lesson-14-practice-decision-tree-with-impurity-splits-and-depth-control`
+##### Практика: дерево пороговых проверок с разделением классов и ограничением глубины — `part-080-lesson-14-practice-threshold-tree-with-class-separation-and-depth-limit`
 
 - **Повторить вместе:** энтропия, Gini, жадное разбиение, переобучение.
 - **Практика:** Реализуй дерево для числовых признаков: выбор порога, max_depth, min_samples_leaf.
@@ -344,12 +346,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Выборка с возвращением для обучения ансамбля | `part-081-lesson-15-bootstrap-sample-with-replacement-for-ensemble` |
-| 2 | Обучение моделей на разных выборках с возвращением | `part-082-lesson-15-bagging-models-trained-on-bootstrap-samples` |
-| 3 | Голосование большинства по бинарным прогнозам моделей | `part-083-lesson-15-majority-vote-over-binary-model-predictions` |
-| 4 | Смещение и разброс прогнозов модели | `part-084-lesson-15-bias-and-variance-of-model-predictions` |
+| 1 | Набор обучающих выборок с повторным выбором одних и тех же примеров | `part-081-lesson-15-draw-training-samples-with-repeated-examples` |
+| 2 | Обучение нескольких моделей на разных повторных выборках | `part-082-lesson-15-train-several-models-on-different-resampled-data` |
+| 3 | Выбор класса большинством голосов моделей | `part-083-lesson-15-choose-class-by-majority-of-model-votes` |
+| 4 | Измерение среднего смещения прогнозов и их разброса | `part-084-lesson-15-measure-average-prediction-offset-and-prediction-spread` |
 
-##### Сводная практика: ансамбль с выборками с возвращением и голосованием — `part-085-lesson-15-practice-bootstrap-bagging-and-majority-vote-ensemble`
+##### Практика: обучение моделей на повторных выборках и голосование за класс — `part-085-lesson-15-practice-models-trained-on-resampled-data-and-majority-voting`
 
 - **Повторить вместе:** bagging, bootstrap, majority vote, bias/variance.
 - **Практика:** Собери несколько деревьев на bootstrap-выборках и усредни прогнозы.
@@ -360,11 +362,11 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Обучение следующего дерева на остатках текущей модели | `part-086-lesson-16-fit-next-boosting-tree-to-current-residuals` |
-| 2 | Симметричное дерево решений с общим разбиением на каждом уровне | `part-087-lesson-16-symmetric-decision-tree-with-shared-level-splits` |
-| 3 | Среднее целевых меток категории без метки текущей строки | `part-088-lesson-16-ordered-category-target-mean-without-current-label` |
-| 4 | Упорядоченный бустинг с прогнозами по предыдущим строкам | `part-089-lesson-16-ordered-boosting-with-prefix-model-predictions` |
-| 5 | Учебный бустинг категорий с упорядоченной статистикой и симметричным деревом | `part-090-lesson-16-mini-category-boosting-with-ordered-statistics-and-symmetric-tree` |
+| 1 | Обучение следующего дерева на ошибках текущих прогнозов | `part-086-lesson-16-fit-next-tree-to-errors-of-current-predictions` |
+| 2 | Использование одной и той же пороговой проверки для всех узлов одного уровня дерева | `part-087-lesson-16-use-same-threshold-test-at-each-tree-level` |
+| 3 | Усреднение предыдущих ответов категории без использования ответа текущей строки | `part-088-lesson-16-average-earlier-targets-for-category-without-current-answer` |
+| 4 | Исправление ошибок моделями, обученными только на предыдущих строках | `part-089-lesson-16-correct-errors-using-models-trained-only-on-earlier-rows` |
+| 5 | Объединение средних по предыдущим строкам категории с деревьями общих пороговых проверок | `part-090-lesson-16-combine-earlier-category-averages-with-shared-level-threshold-trees` |
 
 Сравни ошибку до и после одного шага бустинга. Проверь четыре листа симметричного
 дерева. Для категорий измени метку текущей строки и убедись, что её собственный
@@ -379,12 +381,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Поочерёдный выбор каждого блока данных для валидации | `part-091-lesson-17-rotate-validation-fold-across-dataset` |
-| 2 | Стратифицированные блоки с сохранением долей классов | `part-092-lesson-17-stratified-folds-preserving-class-proportions` |
-| 3 | Вложенная кросс-валидация для выбора параметров и оценки качества | `part-093-lesson-17-nested-cross-validation-for-selection-and-evaluation` |
-| 4 | Утечка при подготовке признаков между блоками кросс-валидации | `part-094-lesson-17-preprocessing-leakage-across-cross-validation-folds` |
+| 1 | Поочерёдное выделение каждой группы данных для проверки модели | `part-091-lesson-17-take-turns-holding-out-each-data-group-for-validation` |
+| 2 | Сохранение близких долей классов в разных группах данных | `part-092-lesson-17-keep-class-shares-similar-across-data-groups` |
+| 3 | Выбор настроек на внутренних группах данных и проверка на внешних | `part-093-lesson-17-choose-settings-on-inner-data-groups-and-check-on-outer-groups` |
+| 4 | Расчёт подготовки признаков только по текущей обучающей группе | `part-094-lesson-17-fit-feature-preparation-only-on-current-training-group` |
 
-##### Сводная практика: стратифицированная вложенная кросс-валидация без утечки — `part-095-lesson-17-practice-stratified-nested-cross-validation-without-preprocessing-leakage`
+##### Практика: вложенное разделение данных с сохранением долей классов и без подсказок из проверочных ответов — `part-095-lesson-17-practice-nested-data-splits-with-class-balance-and-no-answer-leakage`
 
 - **Повторить вместе:** k-fold, стратификация, nested evaluation, утечка в preprocessing.
 - **Практика:** Реализуй k-fold подбор одного гиперпараметра для модели из предыдущих уроков.
@@ -397,12 +399,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Вычисление центроида как среднего точек кластера | `part-096-lesson-18-compute-centroid-as-mean-of-cluster-points` |
-| 2 | Выбор начальных центроидов для кластеризации k-means | `part-097-lesson-18-initialize-centroids-for-k-means-clustering` |
-| 3 | Сумма квадратов расстояний до назначенных центроидов | `part-098-lesson-18-sum-squared-distances-to-assigned-cluster-centroids` |
-| 4 | Выбор числа кластеров k-means по инерции | `part-099-lesson-18-choose-number-of-k-means-clusters-from-inertia` |
+| 1 | Усреднение каждой координаты точек для поиска центра группы | `part-096-lesson-18-average-each-coordinate-of-points-to-find-group-center` |
+| 2 | Выбор начальных центров для объединения близких точек в группы | `part-097-lesson-18-choose-starting-centers-for-grouping-nearby-points` |
+| 3 | Сложение квадратов расстояний от точек до центров назначенных им групп | `part-098-lesson-18-sum-squared-distances-from-points-to-assigned-group-centers` |
+| 4 | Сравнение сумм квадратов расстояний при разном числе групп | `part-099-lesson-18-compare-squared-distance-sums-for-different-group-counts` |
 
-##### Сводная практика: кластеризация k-means с центроидами и инерцией — `part-100-lesson-18-practice-k-means-clustering-with-centroids-and-inertia`
+##### Практика: распределение точек по ближайшим центрам и пересчёт центров — `part-100-lesson-18-practice-assigning-points-to-nearest-centers-and-updating-centers`
 
 - **Повторить вместе:** центроиды, инициализация, инерция, выбор k.
 - **Практика:** Реализуй k-means с seed, ограничением итераций и обработкой пустого кластера.
@@ -415,12 +417,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Центрирование признаков вычитанием среднего по обучающим данным | `part-101-lesson-19-center-features-by-subtracting-training-means` |
-| 2 | Выборочная ковариация двух признаков | `part-102-lesson-19-sample-covariance-between-two-features` |
-| 3 | Главное направление PCA с наибольшей дисперсией | `part-103-lesson-19-principal-component-direction-of-maximum-variance` |
-| 4 | Доля дисперсии, объяснённая главной компонентой | `part-104-lesson-19-fraction-of-variance-explained-by-principal-component` |
+| 1 | Вычитание среднего по обучающим данным из каждого значения признака | `part-101-lesson-19-subtract-training-mean-from-each-feature-value` |
+| 2 | Сумма произведений парных отклонений от средних, делённая на число наблюдений минус один | `part-102-lesson-19-sum-products-of-paired-deviations-and-divide-by-count-minus-one` |
+| 3 | Поиск направления с наибольшим разбросом проекций точек | `part-103-lesson-19-find-direction-with-largest-spread-of-projected-points` |
+| 4 | Деление разброса вдоль выбранного направления на общий разброс | `part-104-lesson-19-divide-spread-along-selected-direction-by-total-spread` |
 
-##### Сводная практика: PCA с центрированием, ковариацией и объяснённой дисперсией — `part-105-lesson-19-practice-pca-with-centering-covariance-and-explained-variance`
+##### Практика: вычитание средних и проекция точек на направление наибольшего разброса — `part-105-lesson-19-practice-centering-points-and-projecting-onto-largest-spread-direction`
 
 - **Повторить вместе:** центрирование, ковариация, собственные направления, объяснённая дисперсия.
 - **Практика:** Реализуй PCA для 2D через ковариационную матрицу и проекцию на главную ось.
@@ -435,11 +437,11 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Вычисление значений узлов при прямом проходе вычислительного графа | `part-106-lesson-20-calculate-forward-values-through-computation-graph` |
-| 2 | Передача производной результата назад по вычислительному графу | `part-107-lesson-20-backpropagate-output-derivative-through-computation-graph` |
-| 3 | Сложение вкладов градиента из нескольких путей вычислительного графа | `part-108-lesson-20-sum-gradient-contributions-from-multiple-graph-paths` |
+| 1 | Вычисление промежуточных значений в порядке выполнения операций | `part-106-lesson-20-calculate-intermediate-values-in-operation-order` |
+| 2 | Передача скорости изменения результата назад через последовательность операций | `part-107-lesson-20-pass-output-rate-of-change-back-through-operations` |
+| 3 | Сложение вкладов всех путей от одного входа к результату | `part-108-lesson-20-add-rates-of-change-from-all-paths-to-same-input` |
 
-##### Сводная практика: прямой и обратный проходы вычислительного графа — `part-109-lesson-20-practice-forward-and-reverse-passes-in-computation-graph`
+##### Практика: прямой расчёт значений и обратный расчёт скоростей изменения — `part-109-lesson-20-practice-forward-values-and-backward-rates-of-change`
 
 - **Повторить вместе:** прямой проход, обратное распространение, накопление градиентов.
 - **Практика:** Сделай маленький граф скаляров с операциями +, × и нелинейностью; вычисли backward.
@@ -452,13 +454,13 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Преобразование входного вектора слоем нейронной сети | `part-110-lesson-21-transform-input-vector-through-neural-network-layer` |
-| 2 | Веса и смещения как параметры нейронной сети | `part-111-lesson-21-weights-and-biases-as-neural-network-parameters` |
-| 3 | Нелинейная активация в слое нейронной сети | `part-112-lesson-21-apply-nonlinear-activation-in-neural-network-layer` |
-| 4 | Инициализация разных весов нейронов перед обучением | `part-113-lesson-21-initialize-distinct-neuron-weights-before-training` |
-| 5 | Обновление параметров сети по среднему градиенту мини пакета | `part-114-lesson-21-update-neural-network-parameters-from-mini-batch-gradient` |
+| 1 | Сложение взвешенных входных координат и прибавление смещений | `part-110-lesson-21-sum-weighted-input-coordinates-and-add-biases` |
+| 2 | Выделение весов и смещений сети, которые меняются при обучении | `part-111-lesson-21-identify-adjustable-weights-and-biases-in-network` |
+| 3 | Замена отрицательных выходов слоя нулями | `part-112-lesson-21-replace-negative-layer-outputs-with-zero` |
+| 4 | Назначение разных начальных весов нейронам | `part-113-lesson-21-start-neurons-with-different-weights` |
+| 5 | Обновление сети по средним скоростям изменения ошибки для небольшой группы примеров | `part-114-lesson-21-update-network-using-average-error-slopes-from-small-example-group` |
 
-##### Сводная практика: многослойный перцептрон со слоями, активациями и мини пакетами — `part-115-lesson-21-practice-multilayer-perceptron-with-layers-activations-and-mini-batches`
+##### Практика: обучение нескольких взвешенных слоёв с нелинейным преобразованием выходов — `part-115-lesson-21-practice-training-several-weighted-layers-with-nonlinear-outputs`
 
 - **Повторить вместе:** слои, параметры, активации, инициализация, mini-batch.
 - **Практика:** Обучи MLP на XOR с ручным backprop или графом предыдущего урока.
@@ -471,12 +473,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Градиенты скалярного выхода в обратном режиме дифференцирования | `part-116-lesson-22-reverse-mode-gradients-of-scalar-output` |
-| 2 | Проверка форм матриц до умножения и формы результата | `part-117-lesson-22-check-matrix-multiplication-shapes-and-result-shape` |
-| 3 | Добавление вектора смещений ко всем строкам матрицы | `part-118-lesson-22-broadcast-bias-vector-across-matrix-rows` |
-| 4 | Сравнение аналитического градиента с центральной разностью | `part-119-lesson-22-compare-analytic-gradient-with-central-difference` |
+| 1 | Вычисление влияния каждого входа на результат обратным проходом по операциям | `part-116-lesson-22-calculate-output-change-for-each-input-by-reversing-operations` |
+| 2 | Проверка размеров матриц до и после умножения | `part-117-lesson-22-check-matrix-dimensions-before-and-after-multiplication` |
+| 3 | Добавление одного вектора смещений к каждой строке матрицы | `part-118-lesson-22-add-same-bias-vector-to-every-matrix-row` |
+| 4 | Сравнение скоростей изменения по формуле с оценками по соседним значениям | `part-119-lesson-22-compare-formula-rates-of-change-with-nearby-value-estimates` |
 
-##### Сводная практика: обратный режим дифференцирования и проверка градиента — `part-120-lesson-22-practice-reverse-mode-autodiff-with-tensor-shapes-and-gradient-check`
+##### Практика: обратный проход по операциям и проверка влияния входов на результат — `part-120-lesson-22-practice-reversing-operations-and-checking-input-rates-of-change`
 
 - **Повторить вместе:** reverse mode, тензорные формы, broadcasting, проверка градиента.
 - **Практика:** Расширь скалярный граф или создай минимальный Tensor для elementwise и matmul.
@@ -489,14 +491,14 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Обновление веса линейной модели после каждого примера методом SGD | `part-121-lesson-23-update-linear-model-weight-per-example-with-sgd` |
-| 2 | Обновление параметра с учётом текущего и прошлых градиентов | `part-122-lesson-23-momentum-update-from-current-and-past-gradients` |
-| 3 | Обновление Adam по оценкам моментов градиента | `part-123-lesson-23-adam-update-from-gradient-moment-estimates` |
-| 4 | Нормализация входных признаков для обучения по градиенту | `part-124-lesson-23-normalize-input-features-for-gradient-training` |
-| 5 | Ограничение координат градиента симметричным интервалом | `part-125-lesson-23-clip-gradient-components-to-symmetric-interval` |
-| 6 | Остановка обучения после отсутствия улучшения ошибки валидации | `part-126-lesson-23-stop-training-after-validation-loss-stagnates` |
+| 1 | Обновление веса линейной модели после каждого обучающего примера | `part-121-lesson-23-update-linear-weight-after-each-training-example` |
+| 2 | Объединение текущей скорости изменения ошибки с предыдущим направлением обновления | `part-122-lesson-23-combine-current-error-slope-with-past-update-direction` |
+| 3 | Масштабирование обновления по накопленным средним скоростей изменения ошибки и их квадратов | `part-123-lesson-23-scale-update-using-running-averages-of-slopes-and-squared-slopes` |
+| 4 | Вычитание среднего обучающего признака перед обновлением модели | `part-124-lesson-23-subtract-training-feature-mean-before-updating-model` |
+| 5 | Ограничение каждой скорости изменения ошибки симметричным интервалом | `part-125-lesson-23-limit-each-error-slope-to-symmetric-interval` |
+| 6 | Остановка обучения, когда ошибка на проверочных данных перестаёт улучшаться | `part-126-lesson-23-stop-when-error-on-validation-data-no-longer-improves` |
 
-##### Сводная практика: устойчивое обучение с SGD, momentum, Adam и ранней остановкой — `part-127-lesson-23-practice-robust-training-with-sgd-momentum-adam-and-early-stopping`
+##### Практика: устойчивое обновление весов и остановка по ошибке на проверочных данных — `part-127-lesson-23-practice-stable-weight-updates-and-stopping-on-validation-error`
 
 - **Повторить вместе:** SGD, momentum, Adam, нормализация, clipping, early stopping.
 - **Практика:** Добавь два оптимизатора и контроль нормы градиента к MLP.
@@ -509,13 +511,13 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Применение ядра свёртки к локальному участку изображения | `part-128-lesson-24-apply-convolution-kernel-to-local-image-region` |
-| 2 | Сдвиг ядра свёртки по изображению на заданное число пикселей | `part-129-lesson-24-move-convolution-kernel-by-stride-pixels` |
-| 3 | Дополнение изображения нулями перед свёрткой | `part-130-lesson-24-pad-image-with-zeros-before-convolution` |
-| 4 | Выбор максимума в локальных окнах изображения | `part-131-lesson-24-max-pool-local-image-windows` |
-| 5 | Поиск локальных признаков изображения одним фильтром | `part-132-lesson-24-detect-local-image-features-with-shared-filter` |
+| 1 | Умножение пикселей участка изображения на веса фильтра и сложение результатов | `part-128-lesson-24-multiply-local-image-pixels-by-filter-weights-and-sum` |
+| 2 | Перемещение фильтра по изображению с заданным шагом | `part-129-lesson-24-move-pixel-filter-by-fixed-step-across-image` |
+| 3 | Окружение изображения нулями перед применением фильтра | `part-130-lesson-24-surround-image-with-zeros-before-applying-filter` |
+| 4 | Выбор наибольшего значения в каждом окне изображения | `part-131-lesson-24-take-largest-value-in-each-local-image-window` |
+| 5 | Поиск локальных особенностей изображения одним и тем же фильтром | `part-132-lesson-24-reuse-same-pixel-filter-to-find-local-image-patterns` |
 
-##### Сводная практика: свёртка изображения с шагом, дополнением и pooling — `part-133-lesson-24-practice-image-convolution-with-stride-padding-and-pooling`
+##### Практика: перемещение фильтра по изображению, нулевые края и выбор локальных максимумов — `part-133-lesson-24-practice-sliding-image-filter-zero-borders-and-local-maxima`
 
 - **Повторить вместе:** ядро, stride, padding, pooling, локальные признаки.
 - **Практика:** Реализуй 2D свёртку для одноканального изображения и max pooling.
@@ -526,10 +528,10 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Вычисление скрытого состояния скалярной рекуррентной сети | `part-134-lesson-25-calculate-hidden-state-of-scalar-recurrent-neural-network` |
-| 2 | Обратное распространение градиента через рекуррентные состояния во времени | `part-135-lesson-25-backpropagate-through-recurrent-state-over-time` |
-| 3 | Вычисление выхода ячейки LSTM по входу и предыдущему состоянию | `part-136-lesson-25-calculate-lstm-cell-output-from-input-and-previous-state` |
-| 4 | Вычисление выхода ячейки GRU по входу и предыдущему состоянию | `part-137-lesson-25-calculate-gru-cell-output-from-input-and-previous-state` |
+| 1 | Обновление памяти по взвешенному входу и предыдущему состоянию | `part-134-lesson-25-update-memory-from-weighted-input-and-previous-memory` |
+| 2 | Передача изменений ошибки назад через предыдущие состояния памяти | `part-135-lesson-25-pass-error-changes-back-through-earlier-memory-states` |
+| 3 | Сохранение части старой памяти, добавление новой информации и управление выходом | `part-136-lesson-25-keep-part-of-old-memory-add-new-information-and-control-output` |
+| 4 | Смешивание предыдущего состояния и нового кандидата с управляемыми долями | `part-137-lesson-25-mix-previous-state-and-new-candidate-with-controlled-fractions` |
 
 Проверь причинность состояния и сравни аналитический градиент BPTT с численным. Затем сравни способы хранения и сброса памяти.
 Источник: [LSTM](https://www.bioinf.jku.at/publications/older/2604.pdf), [GRU](https://arxiv.org/abs/1406.1078).
@@ -538,11 +540,11 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Причинная свёртка одномерного сигнала | `part-138-lesson-26-causal-convolution-over-one-dimensional-signal` |
-| 2 | Рецептивное поле причинной свёртки с дилатацией | `part-139-lesson-26-dilated-causal-convolution-receptive-field` |
-| 3 | Управляемая активация с ветками tanh и sigmoid | `part-140-lesson-26-gated-activation-with-tanh-and-sigmoid-branches` |
-| 4 | Остаточные и сквозные связи в блоке WaveNet | `part-141-lesson-26-residual-and-skip-connections-in-wavenet-block` |
-| 5 | Авторегрессионная модель звука с дилатированными причинными свёртками | `part-142-lesson-26-autoregressive-audio-model-with-dilated-causal-convolutions` |
+| 1 | Сложение взвешенных текущего и прошлого значений сигнала | `part-138-lesson-26-sum-weighted-current-and-past-signal-values` |
+| 2 | Увеличение промежутков между прошлыми значениями сигнала, используемыми фильтром | `part-139-lesson-26-increase-gaps-between-past-signal-values-used-by-filter` |
+| 3 | Умножение ограниченного сигнала на долю, задаваемую второй ветвью | `part-140-lesson-26-multiply-bounded-signal-by-fraction-controlled-by-second-branch` |
+| 4 | Прибавление преобразования ко входу и отдельная передача преобразования на выход | `part-141-lesson-26-add-transformation-to-input-and-pass-it-to-output-separately` |
+| 5 | Прогноз следующего значения звука только по предыдущим значениям | `part-142-lesson-26-predict-next-sound-value-using-only-past-values` |
 
 ![Причинная свёртка](docs/illustrations/26-causal-convolution.svg)
 
@@ -557,11 +559,11 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Кодирование символов Unicode в байты UTF-8 | `part-143-lesson-27-encode-unicode-characters-as-utf8-bytes` |
-| 2 | Обучение слияний байтового BPE по обучающему корпусу | `part-144-lesson-27-train-byte-level-bpe-merges-from-training-corpus` |
-| 3 | Кодирование и декодирование текста обученными слияниями BPE | `part-145-lesson-27-encode-and-decode-text-with-trained-byte-pair-merges` |
-| 4 | Управляющие токены для границ сообщений чата | `part-146-lesson-27-control-tokens-for-chat-message-boundaries` |
-| 5 | Оценка байтового и BPE токенизаторов на новых строках | `part-147-lesson-27-evaluate-byte-level-and-bpe-tokenizers-on-new-strings` |
+| 1 | Представление символов текста байтами UTF-8 | `part-143-lesson-27-encode-unicode-characters-as-utf8-bytes` |
+| 2 | Выделение частей текста объединением самых частых соседних пар, начиная с байтов | `part-144-lesson-27-learn-text-units-by-merging-most-frequent-adjacent-byte-pairs` |
+| 3 | Кодирование и восстановление текста с помощью выученных объединений пар | `part-145-lesson-27-encode-and-decode-text-using-learned-pair-merges` |
+| 4 | Обозначение начала, роли и конца сообщений чата | `part-146-lesson-27-mark-start-role-and-end-of-chat-messages` |
+| 5 | Сравнение разбиения на байты и выученные части текста на новых строках | `part-147-lesson-27-compare-byte-splitting-and-learned-text-pieces-on-new-strings` |
 
 Сначала сравни символы и байты, затем обучи BPE только на train, проверь
 `decode(encode(text)) == text` на незнакомом UTF-8 и сравни число токенов.
@@ -575,12 +577,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Соответствие строк токенов идентификаторам словаря | `part-148-lesson-28-map-token-strings-to-vocabulary-identifiers` |
-| 2 | Токены неизвестного слова и границ последовательности в словаре | `part-149-lesson-28-unknown-and-boundary-tokens-in-vocabulary` |
-| 3 | Плотные векторные представления слов | `part-150-lesson-28-dense-vector-representations-of-words` |
-| 4 | Скалярное произведение двух эмбеддингов слов как мера сходства | `part-151-lesson-28-dot-product-similarity-between-two-word-embeddings` |
+| 1 | Назначение номеров из словаря частям текста | `part-148-lesson-28-assign-vocabulary-identifiers-to-text-pieces` |
+| 2 | Выделение номеров для неизвестных слов и границ последовательности | `part-149-lesson-28-reserve-identifiers-for-unknown-words-and-sequence-boundaries` |
+| 3 | Представление каждого слова списком числовых координат | `part-150-lesson-28-represent-each-word-by-a-list-of-numeric-coordinates` |
+| 4 | Сложение произведений соответствующих координат двух векторов слов | `part-151-lesson-28-sum-matching-coordinate-products-of-two-word-vectors` |
 
-##### Сводная практика: словарь токенов и плотные эмбеддинги слов — `part-152-lesson-28-practice-token-vocabulary-and-dense-word-embeddings`
+##### Практика: номера частей текста и векторы координат слов — `part-152-lesson-28-practice-text-piece-identifiers-and-word-coordinate-vectors`
 
 - **Повторить вместе:** словарь, специальные токены, плотные представления, сходство.
 - **Практика:** Построй токенизатор по словам и обучаемую таблицу эмбеддингов для малого корпуса.
@@ -593,12 +595,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Прогноз следующего токена по частотам биграмм | `part-153-lesson-29-predict-next-token-from-bigram-counts` |
-| 2 | Кросс энтропия вероятностей правильных следующих токенов | `part-154-lesson-29-cross-entropy-of-next-token-probabilities` |
-| 3 | Perplexity из средней кросс энтропии языковой модели | `part-155-lesson-29-perplexity-from-average-language-model-cross-entropy` |
-| 4 | Выбор следующего токена из распределения вероятностей | `part-156-lesson-29-sample-next-token-from-probability-distribution` |
+| 1 | Прогноз следующей части текста по частотам соседних пар | `part-153-lesson-29-predict-next-text-piece-from-adjacent-pair-counts` |
+| 2 | Усреднение отрицательных логарифмов вероятностей правильных следующих частей текста | `part-154-lesson-29-average-negative-logs-of-correct-next-text-piece-probabilities` |
+| 3 | Возведение e в степень среднего отрицательного логарифма вероятности | `part-155-lesson-29-raise-e-to-average-negative-log-probability` |
+| 4 | Случайный выбор следующей части текста согласно вероятностям | `part-156-lesson-29-randomly-choose-next-text-piece-according-to-probabilities` |
 
-##### Сводная практика: биграммная языковая модель с ошибкой и выборкой токенов — `part-157-lesson-29-practice-bigram-language-model-with-loss-perplexity-and-sampling`
+##### Практика: модель текста по частотам пар, оценка ошибки и генерация продолжения — `part-157-lesson-29-practice-pair-count-language-model-error-and-text-generation`
 
 - **Повторить вместе:** предсказание следующего токена, cross-entropy, perplexity, sampling.
 - **Практика:** Обучи маленькую n-gram модель или tiny decoder на игрушечном корпусе; реализуй генерацию.
@@ -611,12 +613,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Совпадение слов запроса и документов при лексическом поиске | `part-158-lesson-30-lexical-match-between-query-and-documents` |
-| 2 | Взвешивание слов документа методом TF-IDF | `part-159-lesson-30-weight-document-terms-by-tf-idf` |
-| 3 | Косинусное сходство векторов запроса и документа | `part-160-lesson-30-cosine-similarity-between-query-and-document-vectors` |
-| 4 | Выбор k документов с наивысшими оценками | `part-161-lesson-30-select-top-k-ranked-documents` |
+| 1 | Поиск документов, содержащих слова запроса | `part-158-lesson-30-find-documents-containing-query-words` |
+| 2 | Умножение частоты слова на меру его редкости среди документов | `part-159-lesson-30-weight-word-frequency-by-rarity-across-documents` |
+| 3 | Деление суммы произведений координат запроса и документа на произведение длин их векторов | `part-160-lesson-30-divide-query-document-coordinate-product-sum-by-vector-lengths` |
+| 4 | Выбор документов с наибольшими оценками | `part-161-lesson-30-select-documents-with-highest-scores` |
 
-##### Сводная практика: поиск документов с лексическим поиском, TF-IDF и косинусным ранжированием — `part-162-lesson-30-practice-document-retrieval-with-lexical-tfidf-and-cosine-ranking`
+##### Практика: поиск документов по совпадениям слов, их редкости и направлениям векторов — `part-162-lesson-30-practice-document-search-by-word-matches-rarity-and-vector-direction`
 
 - **Повторить вместе:** лексический поиск, TF-IDF, косинусное сходство, top-k.
 - **Практика:** Индексируй локальный набор документов и возвращай top-k с оценками и источниками.
@@ -629,18 +631,18 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Вектор запроса Q для позиции механизма внимания | `part-163-lesson-31-query-vector-for-attention-position` |
-| 2 | Вектор ключа K для позиции механизма внимания | `part-164-lesson-31-key-vector-for-attention-position` |
-| 3 | Вектор значения V для позиции механизма внимания | `part-165-lesson-31-value-vector-for-attention-position` |
-| 4 | Масштабирование скалярного произведения векторов запроса и ключа | `part-166-lesson-31-scale-dot-product-of-query-and-key-vectors` |
-| 5 | Преобразование оценок внимания в веса с помощью softmax | `part-167-lesson-31-normalize-attention-scores-into-weights-with-softmax` |
-| 6 | Запрет внимания к будущим токенам причинной маской | `part-168-lesson-31-block-future-token-attention-with-causal-mask` |
+| 1 | Преобразование координат позиции в вектор запроса для поиска подходящего контекста | `part-163-lesson-31-transform-position-coordinates-into-search-query-vector` |
+| 2 | Сравнение запроса с ключом позиции через умножение соответствующих координат | `part-164-lesson-31-compare-query-with-position-key-by-multiplying-coordinates` |
+| 3 | Объединение векторов значений с весами выбранного контекста | `part-165-lesson-31-combine-value-vectors-using-context-weights` |
+| 4 | Деление суммы произведений координат запроса и ключа на корень из числа координат | `part-166-lesson-31-divide-query-key-product-sum-by-square-root-of-coordinate-count` |
+| 5 | Вычисление экспонент оценок и деление каждой на их сумму | `part-167-lesson-31-exponentiate-scores-and-divide-by-sum-of-exponentials` |
+| 6 | Запрет использования будущих позиций текста при сборе контекста | `part-168-lesson-31-forbid-using-future-text-positions-in-context` |
 
 ![Как работает причинное внимание](docs/illustrations/31-attention.svg)
 
 *Проверь себя: какие веса второй позиции всегда равны нулю из-за маски?*
 
-##### Сводная практика: масштабированное внимание с векторами запроса, ключа и значения — `part-169-lesson-31-practice-scaled-dot-product-attention-with-query-key-value-vectors`
+##### Практика: сравнение запросов с ключами и взвешенное сложение значений — `part-169-lesson-31-practice-query-key-matching-and-weighted-sums-of-values`
 
 - **Повторить вместе:** Q, K, V, попарное умножение координат с последующим сложением и масштабированием, softmax, causal mask.
 - **Практика:** Реализуй single-head attention для короткой последовательности без готового слоя.
@@ -653,12 +655,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Внимание между токенами одной последовательности | `part-170-lesson-32-self-attention-among-tokens-of-one-sequence` |
-| 2 | Добавление входа блока через остаточную связь | `part-171-lesson-32-add-block-input-through-residual-connection` |
-| 3 | Нормализация координат одного токена в слое LayerNorm | `part-172-lesson-32-normalize-coordinates-of-one-token-with-layer-norm` |
-| 4 | Преобразование каждого токена полносвязным слоем | `part-173-lesson-32-feed-forward-transformation-of-each-token` |
+| 1 | Построение контекста каждой позиции по позициям той же последовательности | `part-170-lesson-32-build-each-position-context-from-other-positions-in-sequence` |
+| 2 | Прибавление исходного входа к результату преобразования | `part-171-lesson-32-add-original-input-to-transformed-output` |
+| 3 | Вычитание среднего из координат и деление на корень из среднего квадрата отклонений | `part-172-lesson-32-subtract-coordinate-mean-and-divide-by-root-mean-squared-deviation` |
+| 4 | Взвешенное преобразование координат каждой позиции | `part-173-lesson-32-apply-weighted-coordinate-transformation-to-each-position` |
 
-##### Сводная практика: блок Transformer с вниманием, остаточными связями и полносвязным слоем — `part-174-lesson-32-practice-transformer-block-with-self-attention-residual-and-feed-forward`
+##### Практика: сбор контекста, прибавление входа и преобразование координат — `part-174-lesson-32-practice-context-mixing-input-addition-and-coordinate-transformation`
 
 - **Повторить вместе:** self-attention, residual, layer norm, feed-forward.
 - **Практика:** Собери один блок на малых тензорах и опиши порядок операций.
@@ -671,9 +673,9 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Разбиение квадратного изображения на неперекрывающиеся патчи ViT | `part-175-lesson-33-split-square-image-into-nonoverlapping-vit-patches` |
-| 2 | Глобальное внимание между патчами изображения ViT | `part-176-lesson-33-global-self-attention-among-vit-image-patches` |
-| 3 | Сбор сведений о патчах изображения ViT в токене класса | `part-177-lesson-33-aggregate-vit-image-patches-into-class-token` |
+| 1 | Разбиение квадратного изображения на неперекрывающиеся квадратные участки | `part-175-lesson-33-split-square-image-into-nonoverlapping-square-blocks` |
+| 2 | Обмен информацией между всеми участками изображения через взвешенное сложение | `part-176-lesson-33-mix-information-between-all-image-blocks-using-weights` |
+| 3 | Объединение информации об участках изображения в один итоговый вектор | `part-177-lesson-33-combine-image-block-information-into-one-summary-vector` |
 
 Проследи форму патчей и убедись, что первый патч может читать последний. CLS-токен собирает признаки для классификации.
 Источник: [ViT](https://arxiv.org/abs/2010.11929).
@@ -682,9 +684,9 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Двунаправленное внимание между токенами в encoder | `part-178-lesson-34-bidirectional-self-attention-in-encoder` |
-| 2 | Исключение PAD токенов из внимания encoder | `part-179-lesson-34-exclude-padding-tokens-from-encoder-attention` |
-| 3 | Предсказание скрытого токена по двустороннему контексту encoder | `part-180-lesson-34-predict-masked-token-from-bidirectional-encoder-context` |
+| 1 | Построение контекста текста по предыдущим и следующим позициям | `part-178-lesson-34-build-text-context-from-both-earlier-and-later-positions` |
+| 2 | Исключение добавленных пустых позиций из взвешенного контекста | `part-179-lesson-34-exclude-padding-positions-from-weighted-context` |
+| 3 | Прогноз скрытой части текста по окружающему контексту | `part-180-lesson-34-predict-hidden-text-piece-from-surrounding-context` |
 
 Отличи двунаправленное внимание от причинного decoder. PAD не должен менять реальные выходы; loss считается на скрытых позициях.
 Источник: [BERT](https://arxiv.org/abs/1810.04805).
@@ -693,13 +695,13 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Сложение токенных и позиционных эмбеддингов на входе decoder | `part-181-lesson-35-add-token-and-position-embeddings-for-decoder-input` |
-| 2 | Причинное внимание по предыдущим токенам последовательности | `part-182-lesson-35-causal-self-attention-over-prefix-of-tokens` |
-| 3 | Объединение нескольких голов внимания | `part-183-lesson-35-combine-multiple-attention-heads` |
-| 4 | Блок Transformer decoder с нормализацией перед подслоями | `part-184-lesson-35-pre-normalized-transformer-decoder-block` |
-| 5 | Кросс энтропия прогноза следующего токена | `part-185-lesson-35-cross-entropy-loss-for-next-token-prediction` |
-| 6 | Вычисление выходных логитов учебной GPT по идентификаторам токенов | `part-186-lesson-35-calculate-tiny-gpt-output-logits-from-token-ids` |
-| 7 | Обучение выходной головы учебной GPT при замороженном decoder | `part-187-lesson-35-train-tiny-gpt-readout-with-frozen-decoder` |
+| 1 | Сложение векторов частей текста и векторов их позиций | `part-181-lesson-35-add-text-piece-vectors-and-position-vectors` |
+| 2 | Сложение текущих и прошлых значений с весами по совпадению запросов и ключей | `part-182-lesson-35-sum-current-and-past-values-with-query-key-match-weights` |
+| 3 | Объединение контекстов от нескольких способов сравнения запросов и ключей | `part-183-lesson-35-combine-contexts-from-several-query-key-comparisons` |
+| 4 | Нормализация перед сбором контекста и преобразованием координат | `part-184-lesson-35-normalize-before-context-mixing-and-coordinate-transformation` |
+| 5 | Отрицательный логарифм вероятности правильной следующей части текста | `part-185-lesson-35-negative-log-probability-of-correct-next-text-piece` |
+| 6 | Преобразование номеров частей текста в контекст и оценки следующей части | `part-186-lesson-35-convert-text-identifiers-to-context-and-next-piece-scores` |
+| 7 | Обучение выходных весов при неизменной модели построения контекста | `part-187-lesson-35-train-output-weights-while-keeping-context-model-fixed` |
 
 Отдельно проследи формы входа, маску причинности и сдвиг цели на один токен.
 Прямой проход использует фиксированные веса; следующий урок обучает только выходную голову и сравнивает качество на отложенных данных.
@@ -711,14 +713,14 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Нормализация вектора токена по среднеквадратичному значению | `part-188-lesson-36-normalize-token-vector-by-root-mean-square` |
-| 2 | Вращение пар координат запроса и ключа по позиции токена | `part-189-lesson-36-rotate-query-and-key-coordinate-pairs-by-position` |
-| 3 | Совместное использование голов ключей и значений несколькими головами запросов | `part-190-lesson-36-share-key-value-heads-across-query-heads` |
-| 4 | Нормализация векторов запроса и ключа перед вычислением внимания | `part-191-lesson-36-normalize-query-and-key-vectors-before-attention` |
-| 5 | Применение SwiGLU к gate и up проекциям полносвязного слоя | `part-192-lesson-36-apply-swiglu-gate-and-up-projection-in-feed-forward-layer` |
-| 6 | Кэширование векторов ключей и значений прошлых токенов при генерации | `part-193-lesson-36-cache-past-key-and-value-vectors-during-generation` |
-| 7 | Маршрутизация токена через двух выбранных экспертов | `part-194-lesson-36-route-token-through-two-selected-experts` |
-| 8 | Сводная практика: блок по мотивам Qwen с RMSNorm, RoPE, GQA и SwiGLU | `part-195-lesson-36-practice-qwen-inspired-block-with-rmsnorm-rope-gqa-and-swiglu` |
+| 1 | Деление координат на корень из среднего квадрата и умножение на веса | `part-188-lesson-36-divide-coordinates-by-square-root-of-mean-square-and-apply-weights` |
+| 2 | Поворот пар координат запроса и ключа в зависимости от позиции в тексте | `part-189-lesson-36-rotate-query-and-key-coordinate-pairs-by-text-position` |
+| 3 | Использование общих векторов ключей и значений для нескольких групп запросов | `part-190-lesson-36-reuse-key-and-value-vectors-for-several-query-groups` |
+| 4 | Масштабирование запросов и ключей по корню из среднего квадрата координат | `part-191-lesson-36-scale-query-and-key-vectors-by-their-root-mean-square` |
+| 5 | Умножение двух ветвей с плавным управлением вкладом одной из них | `part-192-lesson-36-multiply-two-branches-and-control-output-with-smooth-gate` |
+| 6 | Повторное использование сохранённых прошлых ключей и значений при генерации | `part-193-lesson-36-reuse-saved-past-key-and-value-vectors-during-generation` |
+| 7 | Выбор двух ветвей обработки и объединение их результатов | `part-194-lesson-36-choose-two-processing-branches-and-combine-their-outputs` |
+| 8 | Объединение масштабирования координат, поворотов, общего контекста и управляемых ветвей | `part-195-lesson-36-combine-coordinate-scaling-rotation-shared-context-and-gated-branches` |
 
 Сначала проверь свойства каждого компонента: RMSNorm задаёт масштаб, RoPE
 сохраняет норму пары, GQA разделяет K/V между Q-головами, KV-cache даёт тот же
@@ -731,8 +733,8 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Низкоранговая адаптация замороженной матрицы весов | `part-196-lesson-37-low-rank-adaptation-of-frozen-weight-matrix` |
-| 2 | Симметричное квантование весов модели в INT8 | `part-197-lesson-37-symmetric-int8-quantization-of-model-weights` |
+| 1 | Прибавление произведения двух небольших матриц к неизменной матрице весов | `part-196-lesson-37-add-product-of-two-small-matrices-to-fixed-weight-matrix` |
+| 2 | Масштабирование и округление весов модели до восьмибитных целых чисел | `part-197-lesson-37-scale-and-round-model-weights-to-eight-bit-integers` |
 
 Сравни число обучаемых параметров с полной матрицей и погрешность восстановления весов после квантования. INT8 пример показывает принцип, не полный LLM.int8().
 Источник: [LoRA](https://arxiv.org/abs/2106.09685), [LLM.int8()](https://arxiv.org/abs/2208.07339).
@@ -743,12 +745,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Передача найденного фрагмента документа как контекста ответа RAG | `part-198-lesson-38-provide-retrieved-document-context-for-rag-answer` |
-| 2 | Ограничение числа найденных фрагментов длиной контекстного окна | `part-199-lesson-38-limit-number-of-retrieved-fragments-to-context-window` |
-| 3 | Указание идентификатора найденного документа в ответе RAG | `part-200-lesson-38-cite-retrieved-document-identifier-in-rag-answer` |
-| 4 | Отказ от ответа RAG при низкой оценке источника | `part-201-lesson-38-reject-rag-answer-when-source-score-below-threshold` |
+| 1 | Передача найденного фрагмента документа как контекста для ответа | `part-198-lesson-38-provide-found-document-fragment-as-answer-context` |
+| 2 | Ограничение числа найденных фрагментов для размещения в контексте ответа | `part-199-lesson-38-limit-found-fragment-count-to-fit-answer-context` |
+| 3 | Добавление номера исходного документа в ответ | `part-200-lesson-38-include-source-document-identifier-in-answer` |
+| 4 | Отказ от ответа при слишком низкой оценке соответствия источника | `part-201-lesson-38-decline-answer-when-source-match-score-is-too-low` |
 
-##### Сводная практика: ответ RAG с контекстом, ссылками и проверкой источника — `part-202-lesson-38-practice-rag-answer-with-context-citations-and-source-check`
+##### Практика: ответы по найденным документам с указанием и проверкой источника — `part-202-lesson-38-practice-answers-from-found-documents-with-source-checks`
 
 - **Повторить вместе:** контекст, ограничения длины, цитирование, проверка источника.
 - **Практика:** Собери прототип: retrieval из урока 30 плюс формирование ответа по найденным фрагментам; генератор можно заменить шаблоном.
@@ -759,9 +761,9 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Смешивание исходного сигнала с шумом при прямой диффузии | `part-203-lesson-39-mix-clean-signal-with-noise-in-forward-diffusion` |
-| 2 | Обучение линейной модели предсказанию шума в зашумлённом сигнале | `part-204-lesson-39-train-linear-predictor-of-noise-in-diffused-signal` |
-| 3 | Восстановление исходного сигнала из зашумлённого состояния и известного шума | `part-205-lesson-39-recover-clean-signal-from-noisy-state-and-known-noise` |
+| 1 | Смешивание сигнала и шума с весами из корней их долей в разбросе | `part-203-lesson-39-mix-signal-and-noise-using-square-roots-of-variance-shares` |
+| 2 | Обучение модели взвешенного входа прогнозу добавленного шума | `part-204-lesson-39-train-weighted-input-model-to-predict-added-noise` |
+| 3 | Вычитание взвешенного шума и деление на масштаб исходного сигнала | `part-205-lesson-39-subtract-scaled-noise-and-divide-by-signal-scale` |
 
 ![От сигнала к шуму](docs/illustrations/39-diffusion.svg)
 
@@ -774,9 +776,9 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Вычисление линейного рекуррентного состояния по последовательности входов | `part-206-lesson-40-calculate-linear-recurrent-state-over-input-sequence` |
-| 2 | Забывание состояния с коэффициентом, зависящим от входа | `part-207-lesson-40-input-dependent-forgetting-in-selective-state-space-model` |
-| 3 | Сравнение зависящего от входа и постоянного забывания состояния | `part-208-lesson-40-compare-input-dependent-and-fixed-state-forgetting` |
+| 1 | Последовательное прибавление взвешенного входа к сохранённой доле прошлого состояния | `part-206-lesson-40-repeatedly-add-weighted-input-to-retained-previous-state` |
+| 2 | Выбор сохраняемой доли предыдущего состояния по текущему входу | `part-207-lesson-40-choose-how-much-previous-state-to-keep-from-current-input` |
+| 3 | Сравнение постоянной и управляемой входом доли сохраняемой памяти | `part-208-lesson-40-compare-fixed-and-input-controlled-memory-retention` |
 
 Покажи, как вход может управлять забыванием. Примеры иллюстрируют идею selective SSM и не реализуют полный Mamba.
 Источник: [Mamba](https://arxiv.org/abs/2312.00752).
@@ -787,13 +789,13 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Состояние среды для агента обучения с подкреплением | `part-209-lesson-41-environment-state-for-reinforcement-learning-agent` |
-| 2 | Перемещение агента влево или вправо в ограниченной среде | `part-210-lesson-41-move-agent-left-or-right-in-bounded-environment` |
-| 3 | Награда за переход агента между состояниями | `part-211-lesson-41-reward-for-agent-transition-between-states` |
-| 4 | Выбор действия агента по оценкам политики | `part-212-lesson-41-choose-agent-action-from-policy-values` |
-| 5 | Исследование случайного действия и выбор лучшего известного действия | `part-213-lesson-41-epsilon-greedy-exploration-versus-best-known-action` |
+| 1 | Описание положения агента и возможных состояний среды | `part-209-lesson-41-describe-agent-position-and-available-world-states` |
+| 2 | Перемещение агента влево или вправо в границах среды | `part-210-lesson-41-move-agent-left-or-right-within-world-boundaries` |
+| 3 | Назначение награды за переход агента между состояниями | `part-211-lesson-41-assign-reward-to-agent-state-transition` |
+| 4 | Выбор действия с наибольшей оценкой ожидаемой награды | `part-212-lesson-41-choose-action-with-highest-estimated-reward` |
+| 5 | Периодический выбор случайного действия вместо лучшего известного | `part-213-lesson-41-sometimes-try-random-action-instead-of-best-known-action` |
 
-##### Сводная практика — `part-214-lesson-41-practice-reinforcement-learning-with-state-action-reward-and-policy`
+##### Практика: обучение оценкам действий по перемещениям и наградам — `part-214-lesson-41-practice-learning-action-values-from-movement-and-rewards`
 
 - **Повторить вместе:** состояние, действие, награда, политика, exploration/exploitation.
 - **Практика:** Сделай GridWorld и tabular Q-learning с epsilon-greedy политикой.
@@ -806,12 +808,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Сравнение средних признаков для обнаружения сдвига распределения | `part-215-lesson-42-compare-feature-means-for-distribution-shift` |
-| 2 | Сравнение прогнозных вероятностей с частотой события | `part-216-lesson-42-compare-predicted-probabilities-with-observed-event-rates` |
-| 3 | Сравнение ошибок классификации по подгруппам данных | `part-217-lesson-42-compare-classification-errors-across-data-subgroups` |
-| 4 | Ограничения оценки модели по малой выборке | `part-218-lesson-42-report-model-evaluation-limits-from-small-sample` |
+| 1 | Сравнение средних значений признаков для обнаружения изменений данных | `part-215-lesson-42-compare-feature-means-to-detect-changed-data` |
+| 2 | Сравнение прогнозных вероятностей с наблюдаемой частотой событий | `part-216-lesson-42-compare-predicted-probabilities-with-observed-event-frequencies` |
+| 3 | Сравнение ошибок прогноза в разных подгруппах данных | `part-217-lesson-42-compare-prediction-errors-across-data-subgroups` |
+| 4 | Определение выводов, которые нельзя сделать по малому проверочному набору | `part-218-lesson-42-explain-what-small-test-samples-cannot-establish` |
 
-##### Сводная практика — `part-219-lesson-42-practice-model-safety-with-shift-calibration-and-subgroup-errors`
+##### Практика: проверка изменений данных, вероятностей и ошибок по подгруппам — `part-219-lesson-42-practice-checking-data-changes-probabilities-and-subgroup-errors`
 
 - **Повторить вместе:** сдвиг распределения, калибровка, ошибки подгрупп, ограничения модели.
 - **Практика:** Составь набор сложных случаев для одного классификатора и отчёт по подгруппам.
@@ -826,12 +828,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Сохранение весов модели в формате с заданными полями | `part-220-lesson-43-serialize-model-weights-with-defined-field-format` |
-| 2 | Чтение версии формата модели перед загрузкой | `part-221-lesson-43-parse-model-format-version-before-loading` |
-| 3 | Проверка числа полей и конечности весов загружаемой модели | `part-222-lesson-43-validate-model-field-count-and-finite-weight-values` |
-| 4 | Загрузка поддерживаемых старой и новой версий формата модели | `part-223-lesson-43-load-supported-old-and-new-model-format-versions` |
+| 1 | Сохранение весов модели в заданных полях файла | `part-220-lesson-43-save-model-weights-in-defined-file-fields` |
+| 2 | Чтение версии файла модели перед загрузкой весов | `part-221-lesson-43-read-model-file-version-before-loading-weights` |
+| 3 | Проверка числа полей модели и отклонение бесконечных и неопределённых весов | `part-222-lesson-43-validate-model-field-count-and-reject-nonfinite-weights` |
+| 4 | Загрузка поддерживаемых старой и новой версий файла модели | `part-223-lesson-43-load-both-supported-old-and-new-model-file-versions` |
 
-##### Сводная практика: сохранение модели с версией, проверкой и совместимостью — `part-224-lesson-43-practice-model-serialization-with-version-validation-and-compatibility`
+##### Практика: сохранение, загрузка и проверка версий файлов модели — `part-224-lesson-43-practice-saving-loading-and-validating-versioned-model-files`
 
 - **Повторить вместе:** формат весов, версия схемы, валидация входа, обратная совместимость.
 - **Практика:** Сохрани обученную модель и метаданные; загрузи её в отдельном процессе.
@@ -844,12 +846,12 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Контракт CSV ввода и вывода для консольного инференса | `part-225-lesson-44-define-csv-input-output-contract-for-inference-cli` |
-| 2 | Инференс модели для нескольких строк CSV за один запуск | `part-226-lesson-44-run-model-inference-over-multiple-csv-rows` |
-| 3 | Сообщение ошибок ввода инференса с номером строки | `part-227-lesson-44-report-inference-input-errors-with-row-number` |
-| 4 | Измерение времени инференса при росте числа строк | `part-228-lesson-44-measure-inference-time-as-batch-size-grows` |
+| 1 | Определение столбцов входного CSV и выходных прогнозов | `part-225-lesson-44-define-csv-input-and-prediction-output-columns` |
+| 2 | Получение прогнозов для нескольких строк CSV за один запуск | `part-226-lesson-44-predict-values-for-several-csv-rows-in-one-run` |
+| 3 | Сообщение об ошибочных входных данных с номером строки | `part-227-lesson-44-report-invalid-input-with-its-row-number` |
+| 4 | Измерение времени получения прогнозов при увеличении числа строк | `part-228-lesson-44-measure-prediction-time-for-increasing-row-counts` |
 
-##### Сводная практика: инференс модели из CSV через командную строку — `part-229-lesson-44-practice-csv-model-inference-through-command-line-interface`
+##### Практика: чтение CSV и получение прогнозов из командной строки — `part-229-lesson-44-practice-reading-csv-and-producing-predictions-from-command-line`
 
 - **Повторить вместе:** контракт входа/выхода, пакетная обработка, ошибки, производительность.
 - **Практика:** Сделай CLI для пакетных прогнозов по CSV или JSONL с явным форматом результата.
@@ -862,19 +864,19 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Сравнение распределений признака до и после выпуска модели | `part-230-lesson-45-compare-binned-feature-distributions-before-and-after-release` |
-| 2 | Оценка качества модели после выпуска по новым истинным меткам | `part-231-lesson-45-evaluate-model-quality-after-release-with-new-labels` |
-| 3 | Измерение задержки ответа инференса | `part-232-lesson-45-measure-inference-response-latency` |
-| 4 | Предупреждение при превышении порога оценкой дрейфа | `part-233-lesson-45-trigger-monitoring-alert-when-drift-score-exceeds-threshold` |
+| 1 | Сравнение числа значений в интервалах признака до и после выпуска модели | `part-230-lesson-45-compare-feature-interval-counts-before-and-after-release` |
+| 2 | Проверка прогнозов выпущенной модели по новым известным ответам | `part-231-lesson-45-check-released-model-predictions-against-new-known-answers` |
+| 3 | Измерение времени от запроса прогноза до ответа | `part-232-lesson-45-measure-time-from-prediction-request-to-response` |
+| 4 | Предупреждение при превышении порога оценки изменения данных | `part-233-lesson-45-warn-when-data-change-score-exceeds-threshold` |
 
-##### Сводная практика: мониторинг дрейфа, качества, задержки и предупреждений — `part-234-lesson-45-practice-model-monitoring-with-drift-quality-latency-and-alerts`
+##### Практика: наблюдение за изменениями данных, ошибками, временем ответа и предупреждениями — `part-234-lesson-45-practice-monitoring-data-changes-errors-response-time-and-alerts`
 
 - **Повторить вместе:** распределения признаков, качество после релиза, латентность, алерты.
 - **Практика:** Сравни эталонные и новые данные, рассчитай простую метрику дрейфа и статистику ошибок.
 - **Готово, когда:** Проверь сценарий без дрейфа и искусственный сдвиг; отчёт указывает размер выборки.
 - **Артефакт:** код пакета, короткий README с входными данными, командой запуска, результатом и тем, что осталось непонятным.
 
-#### 46. Итоговый проект: Сквозной ML-проект — `part-235-lesson-46-end-to-end-ml-project-from-baseline-to-inference`
+#### 46. Итоговый проект: сравнение, обучение и запуск модели прогнозирования — `part-235-lesson-46-project-compare-train-and-run-prediction-model`
 
 Готовый вход для проекта: [Wine Quality для регрессии или Iris для классификации](DATASETS.md).
 
@@ -883,7 +885,7 @@
 - **Готово, когда:** Один документ фиксирует метрику, split, baseline, лучший результат, ошибки и команду воспроизведения.
 - **Артефакт:** код пакета, короткий README с входными данными, командой запуска, результатом и тем, что осталось непонятным.
 
-#### 47. Итоговый проект: Итоговый AI-проект — `part-236-lesson-47-capstone-ai-project-with-comparison-and-error-analysis`
+#### 47. Итоговый проект: сравнение способов решения задачи и разбор ошибок — `part-236-lesson-47-project-compare-solution-methods-and-explain-errors`
 
 - **Повторить вместе:** самостоятельный дизайн, сравнение подходов, анализ ошибок, презентация результата.
 - **Практика:** Сделай прикладной проект: классификатор, поиск по документам или небольшой генератор; обоснуй выбор и оформи README.

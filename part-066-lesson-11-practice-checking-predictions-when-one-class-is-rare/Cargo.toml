@@ -1,0 +1,13 @@
+[package]
+name = "part-066-lesson-11-practice-checking-predictions-when-one-class-is-rare"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part_060_lesson_11_count_correct_and_incorrect_positive_and_negative_predictions = { package = "part-060-lesson-11-count-correct-and-incorrect-positive-and-negative-predictions", path = "../part-060-lesson-11-count-correct-and-incorrect-positive-and-negative-predictions" }
+part_061_lesson_11_divide_true_positives_by_all_positive_predictions = { package = "part-061-lesson-11-divide-true-positives-by-all-positive-predictions", path = "../part-061-lesson-11-divide-true-positives-by-all-positive-predictions" }
+part_062_lesson_11_divide_detected_positives_by_all_actual_positives = { package = "part-062-lesson-11-divide-detected-positives-by-all-actual-positives", path = "../part-062-lesson-11-divide-detected-positives-by-all-actual-positives" }
+part_063_lesson_11_twice_precision_times_recall_divided_by_their_sum = { package = "part-063-lesson-11-twice-precision-times-recall-divided-by-their-sum", path = "../part-063-lesson-11-twice-precision-times-recall-divided-by-their-sum" }
+
+lesson-visualization = { path = "../lesson-visualization" }

@@ -1,0 +1,11 @@
+[package]
+name = "part-033-lesson-06-estimate-uncertainty-bounds-around-sample-mean"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part_029_lesson_06_sum_values_and_divide_by_count = { package = "part-029-lesson-06-sum-values-and-divide-by-count", path = "../part-029-lesson-06-sum-values-and-divide-by-count" }
+part_031_lesson_06_sum_squared_deviations_from_mean_and_divide_by_count_minus_one = { package = "part-031-lesson-06-sum-squared-deviations-from-mean-and-divide-by-count-minus-one", path = "../part-031-lesson-06-sum-squared-deviations-from-mean-and-divide-by-count-minus-one" }
+
+lesson-visualization = { path = "../lesson-visualization" }

@@ -1,7 +1,0 @@
-[package]
-name = "part-039-lesson-07-impute-missing-feature-values-using-training-median"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

@@ -59,12 +59,12 @@ dependencies = [
 name = "lesson-datasets"
 version = "0.1.0"
 dependencies = [
- "part-004-lesson-01-euclidean-distance-between-two-points",
- "part-029-lesson-06-arithmetic-mean-of-numeric-values",
- "part-049-lesson-09-mean-squared-error-between-targets-and-predictions",
- "part-050-lesson-09-mean-absolute-error-between-targets-and-predictions",
- "part-060-lesson-11-binary-classification-confusion-matrix-from-true-and-predicted-labels",
- "part-062-lesson-11-recall-from-binary-classification-counts",
+ "part-004-lesson-01-square-root-of-sum-of-squared-coordinate-differences",
+ "part-029-lesson-06-sum-values-and-divide-by-count",
+ "part-049-lesson-09-sum-squared-prediction-errors-and-divide-by-count",
+ "part-050-lesson-09-sum-absolute-prediction-errors-and-divide-by-count",
+ "part-060-lesson-11-count-correct-and-incorrect-positive-and-negative-predictions",
+ "part-062-lesson-11-divide-detected-positives-by-all-actual-positives",
 ]
 
 [[package]]
@@ -110,7 +110,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-003-lesson-01-calculate-euclidean-length-of-one-vector"
+name = "part-003-lesson-01-square-root-of-sum-of-squared-vector-coordinates"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -119,35 +119,35 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-004-lesson-01-euclidean-distance-between-two-points"
+name = "part-004-lesson-01-square-root-of-sum-of-squared-coordinate-differences"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
  "lesson-visualization",
- "part-003-lesson-01-calculate-euclidean-length-of-one-vector",
+ "part-003-lesson-01-square-root-of-sum-of-squared-vector-coordinates",
 ]
 
 [[package]]
-name = "part-005-lesson-01-cosine-similarity-between-two-vectors"
+name = "part-005-lesson-01-sum-coordinate-products-and-divide-by-vector-lengths"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
  "lesson-visualization",
  "part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add",
- "part-003-lesson-01-calculate-euclidean-length-of-one-vector",
+ "part-003-lesson-01-square-root-of-sum-of-squared-vector-coordinates",
 ]
 
 [[package]]
-name = "part-006-lesson-01-practice-vector-dot-product-norms-distance-and-cosine"
+name = "part-006-lesson-01-practice-coordinate-products-vector-lengths-and-point-distances"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
  "lesson-visualization",
  "part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add",
  "part-002-lesson-01-sum-absolute-values-of-vector-coordinates",
- "part-003-lesson-01-calculate-euclidean-length-of-one-vector",
- "part-004-lesson-01-euclidean-distance-between-two-points",
- "part-005-lesson-01-cosine-similarity-between-two-vectors",
+ "part-003-lesson-01-square-root-of-sum-of-squared-vector-coordinates",
+ "part-004-lesson-01-square-root-of-sum-of-squared-coordinate-differences",
+ "part-005-lesson-01-sum-coordinate-products-and-divide-by-vector-lengths",
 ]
 
 [[package]]
@@ -159,7 +159,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-008-lesson-02-transpose-matrix-rows-into-columns"
+name = "part-008-lesson-02-turn-matrix-rows-into-columns"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -167,7 +167,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-009-lesson-02-multiply-matrix-by-vector-using-row-dot-products"
+name = "part-009-lesson-02-multiply-each-matrix-row-by-vector-coordinates-and-sum"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -176,7 +176,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-010-lesson-02-multiply-two-matrices-using-row-column-dot-products"
+name = "part-010-lesson-02-sum-matching-products-of-matrix-rows-and-columns"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -193,7 +193,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-012-lesson-02-practice-matrix-shapes-transpose-products-and-linear-system"
+name = "part-012-lesson-02-practice-matrix-shapes-row-column-swaps-and-equation-solving"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -202,7 +202,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-013-lesson-03-derivative-of-single-variable-function"
+name = "part-013-lesson-03-calculate-function-output-change-per-input-change"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -210,7 +210,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-014-lesson-03-partial-derivative-of-two-variable-function"
+name = "part-014-lesson-03-calculate-output-change-while-varying-one-of-two-inputs"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -218,7 +218,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-015-lesson-03-chain-rule-for-derivative-of-composed-functions"
+name = "part-015-lesson-03-multiply-rates-of-change-through-nested-functions"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -226,7 +226,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-016-lesson-03-gradient-of-two-variable-function"
+name = "part-016-lesson-03-collect-rates-of-change-for-both-function-inputs"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -234,7 +234,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-017-lesson-03-approximate-function-derivative-with-central-difference"
+name = "part-017-lesson-03-estimate-rate-of-change-from-two-nearby-function-values"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -242,7 +242,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-018-lesson-03-practice-derivatives-chain-rule-gradient-and-finite-differences"
+name = "part-018-lesson-03-practice-rates-of-change-and-checks-with-nearby-values"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -250,7 +250,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-019-lesson-04-learning-rate-for-gradient-descent-update"
+name = "part-019-lesson-04-subtract-step-size-times-error-slope-from-parameter"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -258,7 +258,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-020-lesson-04-convergence-of-gradient-descent-steps"
+name = "part-020-lesson-04-repeat-parameter-updates-and-check-error-decrease"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -266,7 +266,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-021-lesson-04-local-minima-of-nonconvex-function"
+name = "part-021-lesson-04-compare-function-valleys-reached-from-different-starts"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -274,7 +274,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-022-lesson-04-batch-versus-stochastic-gradient-updates"
+name = "part-022-lesson-04-compare-updates-from-all-examples-and-one-example"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -282,7 +282,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-023-lesson-04-practice-gradient-descent-learning-rate-convergence-and-update-modes"
+name = "part-023-lesson-04-practice-update-step-sizes-and-error-decrease"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -290,7 +290,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-024-lesson-05-conditional-probability-of-one-event-given-another"
+name = "part-024-lesson-05-divide-joint-event-probability-by-conditioning-event-probability"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -298,7 +298,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-025-lesson-05-independence-of-two-events"
+name = "part-025-lesson-05-compare-joint-event-probability-with-product-of-probabilities"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -306,7 +306,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-026-lesson-05-bayes-update-of-event-probability-after-observation"
+name = "part-026-lesson-05-update-event-probability-using-observation-rates"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -314,7 +314,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-027-lesson-05-expected-value-of-discrete-random-outcomes"
+name = "part-027-lesson-05-sum-outcome-values-multiplied-by-their-probabilities"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -322,7 +322,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-028-lesson-05-practice-conditional-probability-bayes-and-expected-value"
+name = "part-028-lesson-05-practice-event-probability-updates-and-weighted-outcome-sums"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -330,7 +330,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-029-lesson-06-arithmetic-mean-of-numeric-values"
+name = "part-029-lesson-06-sum-values-and-divide-by-count"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -338,7 +338,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-030-lesson-06-median-of-numeric-values"
+name = "part-030-lesson-06-sort-values-and-find-the-middle"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -346,34 +346,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-031-lesson-06-sample-variance-of-numeric-values"
+name = "part-031-lesson-06-sum-squared-deviations-from-mean-and-divide-by-count-minus-one"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
  "lesson-visualization",
- "part-029-lesson-06-arithmetic-mean-of-numeric-values",
+ "part-029-lesson-06-sum-values-and-divide-by-count",
 ]
 
 [[package]]
-name = "part-032-lesson-06-quantile-of-sorted-numeric-values"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-033-lesson-06-confidence-interval-for-population-mean"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
- "part-029-lesson-06-arithmetic-mean-of-numeric-values",
- "part-031-lesson-06-sample-variance-of-numeric-values",
-]
-
-[[package]]
-name = "part-034-lesson-06-bootstrap-resampling-of-observed-values"
+name = "part-032-lesson-06-select-sorted-value-at-given-fraction-of-sample"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -381,13 +363,31 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-035-lesson-06-practice-mean-median-and-sample-variance-from-csv"
+name = "part-033-lesson-06-estimate-uncertainty-bounds-around-sample-mean"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
  "lesson-visualization",
- "part-029-lesson-06-arithmetic-mean-of-numeric-values",
- "part-031-lesson-06-sample-variance-of-numeric-values",
+ "part-029-lesson-06-sum-values-and-divide-by-count",
+ "part-031-lesson-06-sum-squared-deviations-from-mean-and-divide-by-count-minus-one",
+]
+
+[[package]]
+name = "part-034-lesson-06-draw-repeated-samples-allowing-values-to-repeat"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-035-lesson-06-practice-mean-middle-and-squared-deviations-from-csv"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+ "part-029-lesson-06-sum-values-and-divide-by-count",
+ "part-031-lesson-06-sum-squared-deviations-from-mean-and-divide-by-count-minus-one",
 ]
 
 [[package]]
@@ -398,36 +398,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-037-lesson-07-parse-numeric-and-categorical-features-from-csv-row"
+name = "part-037-lesson-07-parse-number-and-category-from-csv-row"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
 ]
 
 [[package]]
-name = "part-038-lesson-07-split-dataset-into-training-validation-and-test-sets"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-039-lesson-07-impute-missing-feature-values-using-training-median"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-040-lesson-07-encode-categories-learned-from-training-data"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-041-lesson-07-data-leakage-from-test-set-into-training"
+name = "part-038-lesson-07-split-data-for-training-model-selection-and-final-check"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -435,7 +413,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-042-lesson-07-practice-data-schema-feature-types-splits-and-leakage-free-pipeline"
+name = "part-039-lesson-07-fill-missing-values-with-middle-of-sorted-training-values"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-040-lesson-07-assign-numeric-identifiers-to-training-categories"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-041-lesson-07-show-how-test-data-can-contaminate-training-statistics"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -443,14 +435,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-043-lesson-08-seed-for-reproducible-random-sequence"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-044-lesson-08-majority-class-baseline-classifier"
+name = "part-042-lesson-07-practice-data-validation-splitting-and-training-only-preparation"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -458,36 +443,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-045-lesson-08-experiment-configuration-from-command-line-arguments"
+name = "part-043-lesson-08-repeat-random-sequence-from-same-starting-number"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
 ]
 
 [[package]]
-name = "part-046-lesson-08-record-training-metric-by-epoch"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-047-lesson-08-fingerprint-dataset-content-for-versioning"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-048-lesson-08-practice-reproducible-experiment-with-seed-baseline-and-data-version"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-049-lesson-09-mean-squared-error-between-targets-and-predictions"
+name = "part-044-lesson-08-always-predict-most-common-training-class"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -495,7 +458,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-050-lesson-09-mean-absolute-error-between-targets-and-predictions"
+name = "part-045-lesson-08-read-experiment-settings-from-command-line"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-046-lesson-08-record-error-after-each-training-pass"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -503,7 +473,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-051-lesson-09-weights-and-bias-of-linear-regression-model"
+name = "part-047-lesson-08-calculate-content-fingerprint-to-detect-dataset-changes"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-048-lesson-08-practice-repeatable-training-with-simple-comparison-and-data-version"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-049-lesson-09-sum-squared-prediction-errors-and-divide-by-count"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -511,7 +495,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-052-lesson-09-regularization-penalty-for-linear-model-weight"
+name = "part-050-lesson-09-sum-absolute-prediction-errors-and-divide-by-count"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -519,25 +503,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-053-lesson-09-evaluate-linear-regression-on-heldout-data"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
- "part-049-lesson-09-mean-squared-error-between-targets-and-predictions",
-]
-
-[[package]]
-name = "part-054-lesson-09-practice-linear-regression-with-errors-coefficients-and-heldout-evaluation"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
- "part-049-lesson-09-mean-squared-error-between-targets-and-predictions",
-]
-
-[[package]]
-name = "part-055-lesson-10-sigmoid-map-from-logit-to-class-probability"
+name = "part-051-lesson-09-multiply-input-by-weight-and-add-bias"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -545,7 +511,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-056-lesson-10-binary-logarithmic-loss-from-target-and-predicted-probability"
+name = "part-052-lesson-09-add-penalty-for-large-model-weight"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -553,7 +519,25 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-057-lesson-10-positive-class-probability-from-logistic-model"
+name = "part-053-lesson-09-check-weighted-input-plus-bias-on-unused-data"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+ "part-049-lesson-09-sum-squared-prediction-errors-and-divide-by-count",
+]
+
+[[package]]
+name = "part-054-lesson-09-practice-fitting-a-line-and-checking-prediction-errors"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+ "part-049-lesson-09-sum-squared-prediction-errors-and-divide-by-count",
+]
+
+[[package]]
+name = "part-055-lesson-10-divide-one-by-one-plus-e-to-negative-score"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -561,7 +545,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-058-lesson-10-convert-predicted-probability-to-class-using-threshold"
+name = "part-056-lesson-10-negative-log-of-probability-assigned-to-correct-class"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -569,7 +553,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-059-lesson-10-practice-logistic-regression-with-sigmoid-loss-and-class-threshold"
+name = "part-057-lesson-10-convert-weighted-input-plus-bias-to-positive-class-probability"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -577,7 +561,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-060-lesson-11-binary-classification-confusion-matrix-from-true-and-predicted-labels"
+name = "part-058-lesson-10-choose-class-by-comparing-probability-with-threshold"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -585,36 +569,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-061-lesson-11-precision-from-binary-classification-counts"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
- "part-060-lesson-11-binary-classification-confusion-matrix-from-true-and-predicted-labels",
-]
-
-[[package]]
-name = "part-062-lesson-11-recall-from-binary-classification-counts"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
- "part-060-lesson-11-binary-classification-confusion-matrix-from-true-and-predicted-labels",
-]
-
-[[package]]
-name = "part-063-lesson-11-harmonic-mean-of-binary-classification-precision-and-recall"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
- "part-060-lesson-11-binary-classification-confusion-matrix-from-true-and-predicted-labels",
- "part-061-lesson-11-precision-from-binary-classification-counts",
- "part-062-lesson-11-recall-from-binary-classification-counts",
-]
-
-[[package]]
-name = "part-064-lesson-11-area-under-roc-curve-from-positive-negative-score-pairs"
+name = "part-059-lesson-10-practice-learning-class-probabilities-and-choosing-threshold"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -622,7 +577,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-065-lesson-11-area-under-precision-recall-curve-for-binary-scores"
+name = "part-060-lesson-11-count-correct-and-incorrect-positive-and-negative-predictions"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -630,45 +585,36 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-066-lesson-11-binary-classification-metrics-under-class-imbalance"
+name = "part-061-lesson-11-divide-true-positives-by-all-positive-predictions"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
  "lesson-visualization",
- "part-060-lesson-11-binary-classification-confusion-matrix-from-true-and-predicted-labels",
- "part-061-lesson-11-precision-from-binary-classification-counts",
- "part-062-lesson-11-recall-from-binary-classification-counts",
- "part-063-lesson-11-harmonic-mean-of-binary-classification-precision-and-recall",
+ "part-060-lesson-11-count-correct-and-incorrect-positive-and-negative-predictions",
 ]
 
 [[package]]
-name = "part-067-lesson-12-squared-feature-distance-for-nearest-neighbors"
+name = "part-062-lesson-11-divide-detected-positives-by-all-actual-positives"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
  "lesson-visualization",
- "part-004-lesson-01-euclidean-distance-between-two-points",
+ "part-060-lesson-11-count-correct-and-incorrect-positive-and-negative-predictions",
 ]
 
 [[package]]
-name = "part-068-lesson-12-scale-features-before-nearest-neighbor-distance"
+name = "part-063-lesson-11-twice-precision-times-recall-divided-by-their-sum"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
  "lesson-visualization",
- "part-004-lesson-01-euclidean-distance-between-two-points",
+ "part-060-lesson-11-count-correct-and-incorrect-positive-and-negative-predictions",
+ "part-061-lesson-11-divide-true-positives-by-all-positive-predictions",
+ "part-062-lesson-11-divide-detected-positives-by-all-actual-positives",
 ]
 
 [[package]]
-name = "part-069-lesson-12-choose-number-of-neighbors-for-knn-classification"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-070-lesson-12-cost-of-knn-prediction-over-training-points"
+name = "part-064-lesson-11-share-of-positive-negative-pairs-ranked-in-correct-order"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -676,7 +622,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-071-lesson-12-practice-knn-classification-with-scaled-features-and-chosen-k"
+name = "part-065-lesson-11-sum-precision-times-recall-increases-across-thresholds"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -684,7 +630,37 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-072-lesson-13-conditional-independence-of-features-given-class"
+name = "part-066-lesson-11-practice-checking-predictions-when-one-class-is-rare"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+ "part-060-lesson-11-count-correct-and-incorrect-positive-and-negative-predictions",
+ "part-061-lesson-11-divide-true-positives-by-all-positive-predictions",
+ "part-062-lesson-11-divide-detected-positives-by-all-actual-positives",
+ "part-063-lesson-11-twice-precision-times-recall-divided-by-their-sum",
+]
+
+[[package]]
+name = "part-067-lesson-12-sum-squared-feature-differences-to-find-nearby-examples"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+ "part-004-lesson-01-square-root-of-sum-of-squared-coordinate-differences",
+]
+
+[[package]]
+name = "part-068-lesson-12-put-features-on-comparable-scales-before-measuring-distance"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+ "part-004-lesson-01-square-root-of-sum-of-squared-coordinate-differences",
+]
+
+[[package]]
+name = "part-069-lesson-12-choose-how-many-nearby-examples-vote-for-class"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -692,7 +668,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-073-lesson-13-prior-probabilities-of-classes-in-training-data"
+name = "part-070-lesson-12-count-coordinate-comparisons-when-searching-all-training-points"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -700,7 +676,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-074-lesson-13-laplace-smoothing-of-class-conditional-word-counts"
+name = "part-071-lesson-12-practice-class-voting-by-nearby-examples-after-feature-scaling"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -708,7 +684,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-075-lesson-13-practice-naive-bayes-with-class-priors-and-laplace-smoothing"
+name = "part-072-lesson-13-multiply-feature-probabilities-within-known-class"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -716,7 +692,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-076-lesson-14-entropy-of-class-proportions-in-tree-node"
+name = "part-073-lesson-13-divide-class-example-counts-by-training-set-size"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -724,7 +700,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-077-lesson-14-gini-impurity-of-class-proportions-in-tree-node"
+name = "part-074-lesson-13-add-one-to-word-counts-before-calculating-probabilities"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -732,7 +708,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-078-lesson-14-greedy-threshold-split-for-decision-tree"
+name = "part-075-lesson-13-practice-choosing-text-class-by-word-probabilities"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -740,7 +716,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-079-lesson-14-overfitting-from-excessive-decision-tree-depth"
+name = "part-076-lesson-14-negative-sum-of-class-shares-times-their-logarithms"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -748,7 +724,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-080-lesson-14-practice-decision-tree-with-impurity-splits-and-depth-control"
+name = "part-077-lesson-14-subtract-sum-of-squared-class-shares-from-one"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -756,7 +732,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-081-lesson-15-bootstrap-sample-with-replacement-for-ensemble"
+name = "part-078-lesson-14-choose-threshold-that-best-separates-classes"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -764,7 +740,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-082-lesson-15-bagging-models-trained-on-bootstrap-samples"
+name = "part-079-lesson-14-compare-training-and-new-data-errors-as-tree-grows"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -772,7 +748,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-083-lesson-15-majority-vote-over-binary-model-predictions"
+name = "part-080-lesson-14-practice-threshold-tree-with-class-separation-and-depth-limit"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -780,7 +756,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-084-lesson-15-bias-and-variance-of-model-predictions"
+name = "part-081-lesson-15-draw-training-samples-with-repeated-examples"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -788,7 +764,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-085-lesson-15-practice-bootstrap-bagging-and-majority-vote-ensemble"
+name = "part-082-lesson-15-train-several-models-on-different-resampled-data"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -796,7 +772,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-086-lesson-16-fit-next-boosting-tree-to-current-residuals"
+name = "part-083-lesson-15-choose-class-by-majority-of-model-votes"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -804,14 +780,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-087-lesson-16-symmetric-decision-tree-with-shared-level-splits"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-088-lesson-16-ordered-category-target-mean-without-current-label"
+name = "part-084-lesson-15-measure-average-prediction-offset-and-prediction-spread"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -819,24 +788,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-089-lesson-16-ordered-boosting-with-prefix-model-predictions"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-090-lesson-16-mini-category-boosting-with-ordered-statistics-and-symmetric-tree"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
- "part-087-lesson-16-symmetric-decision-tree-with-shared-level-splits",
- "part-088-lesson-16-ordered-category-target-mean-without-current-label",
-]
-
-[[package]]
-name = "part-091-lesson-17-rotate-validation-fold-across-dataset"
+name = "part-085-lesson-15-practice-models-trained-on-resampled-data-and-majority-voting"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -844,7 +796,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-092-lesson-17-stratified-folds-preserving-class-proportions"
+name = "part-086-lesson-16-fit-next-tree-to-errors-of-current-predictions"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -852,7 +804,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-093-lesson-17-nested-cross-validation-for-selection-and-evaluation"
+name = "part-087-lesson-16-use-same-threshold-test-at-each-tree-level"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-088-lesson-16-average-earlier-targets-for-category-without-current-answer"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -860,7 +819,24 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-094-lesson-17-preprocessing-leakage-across-cross-validation-folds"
+name = "part-089-lesson-16-correct-errors-using-models-trained-only-on-earlier-rows"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-090-lesson-16-combine-earlier-category-averages-with-shared-level-threshold-trees"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+ "part-087-lesson-16-use-same-threshold-test-at-each-tree-level",
+ "part-088-lesson-16-average-earlier-targets-for-category-without-current-answer",
+]
+
+[[package]]
+name = "part-091-lesson-17-take-turns-holding-out-each-data-group-for-validation"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -868,7 +844,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-095-lesson-17-practice-stratified-nested-cross-validation-without-preprocessing-leakage"
+name = "part-092-lesson-17-keep-class-shares-similar-across-data-groups"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -876,7 +852,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-096-lesson-18-compute-centroid-as-mean-of-cluster-points"
+name = "part-093-lesson-17-choose-settings-on-inner-data-groups-and-check-on-outer-groups"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -884,7 +860,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-097-lesson-18-initialize-centroids-for-k-means-clustering"
+name = "part-094-lesson-17-fit-feature-preparation-only-on-current-training-group"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -892,7 +868,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-098-lesson-18-sum-squared-distances-to-assigned-cluster-centroids"
+name = "part-095-lesson-17-practice-nested-data-splits-with-class-balance-and-no-answer-leakage"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -900,7 +876,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-099-lesson-18-choose-number-of-k-means-clusters-from-inertia"
+name = "part-096-lesson-18-average-each-coordinate-of-points-to-find-group-center"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -908,7 +884,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-100-lesson-18-practice-k-means-clustering-with-centroids-and-inertia"
+name = "part-097-lesson-18-choose-starting-centers-for-grouping-nearby-points"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -916,16 +892,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-101-lesson-19-center-features-by-subtracting-training-means"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
- "part-029-lesson-06-arithmetic-mean-of-numeric-values",
-]
-
-[[package]]
-name = "part-102-lesson-19-sample-covariance-between-two-features"
+name = "part-098-lesson-18-sum-squared-distances-from-points-to-assigned-group-centers"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -933,7 +900,40 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-103-lesson-19-principal-component-direction-of-maximum-variance"
+name = "part-099-lesson-18-compare-squared-distance-sums-for-different-group-counts"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-100-lesson-18-practice-assigning-points-to-nearest-centers-and-updating-centers"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-101-lesson-19-subtract-training-mean-from-each-feature-value"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+ "part-029-lesson-06-sum-values-and-divide-by-count",
+]
+
+[[package]]
+name = "part-102-lesson-19-sum-products-of-paired-deviations-and-divide-by-count-minus-one"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-103-lesson-19-find-direction-with-largest-spread-of-projected-points"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -942,7 +942,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-104-lesson-19-fraction-of-variance-explained-by-principal-component"
+name = "part-104-lesson-19-divide-spread-along-selected-direction-by-total-spread"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -950,7 +950,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-105-lesson-19-practice-pca-with-centering-covariance-and-explained-variance"
+name = "part-105-lesson-19-practice-centering-points-and-projecting-onto-largest-spread-direction"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -958,7 +958,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-106-lesson-20-calculate-forward-values-through-computation-graph"
+name = "part-106-lesson-20-calculate-intermediate-values-in-operation-order"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -966,7 +966,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-107-lesson-20-backpropagate-output-derivative-through-computation-graph"
+name = "part-107-lesson-20-pass-output-rate-of-change-back-through-operations"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -974,7 +974,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-108-lesson-20-sum-gradient-contributions-from-multiple-graph-paths"
+name = "part-108-lesson-20-add-rates-of-change-from-all-paths-to-same-input"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -982,7 +982,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-109-lesson-20-practice-forward-and-reverse-passes-in-computation-graph"
+name = "part-109-lesson-20-practice-forward-values-and-backward-rates-of-change"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -990,7 +990,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-110-lesson-21-transform-input-vector-through-neural-network-layer"
+name = "part-110-lesson-21-sum-weighted-input-coordinates-and-add-biases"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -998,7 +998,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-111-lesson-21-weights-and-biases-as-neural-network-parameters"
+name = "part-111-lesson-21-identify-adjustable-weights-and-biases-in-network"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1006,7 +1006,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-112-lesson-21-apply-nonlinear-activation-in-neural-network-layer"
+name = "part-112-lesson-21-replace-negative-layer-outputs-with-zero"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1014,7 +1014,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-113-lesson-21-initialize-distinct-neuron-weights-before-training"
+name = "part-113-lesson-21-start-neurons-with-different-weights"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1022,7 +1022,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-114-lesson-21-update-neural-network-parameters-from-mini-batch-gradient"
+name = "part-114-lesson-21-update-network-using-average-error-slopes-from-small-example-group"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1030,7 +1030,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-115-lesson-21-practice-multilayer-perceptron-with-layers-activations-and-mini-batches"
+name = "part-115-lesson-21-practice-training-several-weighted-layers-with-nonlinear-outputs"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1038,7 +1038,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-116-lesson-22-reverse-mode-gradients-of-scalar-output"
+name = "part-116-lesson-22-calculate-output-change-for-each-input-by-reversing-operations"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1046,7 +1046,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-117-lesson-22-check-matrix-multiplication-shapes-and-result-shape"
+name = "part-117-lesson-22-check-matrix-dimensions-before-and-after-multiplication"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1054,7 +1054,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-118-lesson-22-broadcast-bias-vector-across-matrix-rows"
+name = "part-118-lesson-22-add-same-bias-vector-to-every-matrix-row"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1062,7 +1062,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-119-lesson-22-compare-analytic-gradient-with-central-difference"
+name = "part-119-lesson-22-compare-formula-rates-of-change-with-nearby-value-estimates"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1070,7 +1070,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-120-lesson-22-practice-reverse-mode-autodiff-with-tensor-shapes-and-gradient-check"
+name = "part-120-lesson-22-practice-reversing-operations-and-checking-input-rates-of-change"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1078,7 +1078,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-121-lesson-23-update-linear-model-weight-per-example-with-sgd"
+name = "part-121-lesson-23-update-linear-weight-after-each-training-example"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1086,7 +1086,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-122-lesson-23-momentum-update-from-current-and-past-gradients"
+name = "part-122-lesson-23-combine-current-error-slope-with-past-update-direction"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1094,7 +1094,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-123-lesson-23-adam-update-from-gradient-moment-estimates"
+name = "part-123-lesson-23-scale-update-using-running-averages-of-slopes-and-squared-slopes"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1102,24 +1102,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-124-lesson-23-normalize-input-features-for-gradient-training"
+name = "part-124-lesson-23-subtract-training-feature-mean-before-updating-model"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
  "lesson-visualization",
- "part-029-lesson-06-arithmetic-mean-of-numeric-values",
+ "part-029-lesson-06-sum-values-and-divide-by-count",
 ]
 
 [[package]]
-name = "part-125-lesson-23-clip-gradient-components-to-symmetric-interval"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-126-lesson-23-stop-training-after-validation-loss-stagnates"
+name = "part-125-lesson-23-limit-each-error-slope-to-symmetric-interval"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1127,7 +1119,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-127-lesson-23-practice-robust-training-with-sgd-momentum-adam-and-early-stopping"
+name = "part-126-lesson-23-stop-when-error-on-validation-data-no-longer-improves"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1135,7 +1127,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-128-lesson-24-apply-convolution-kernel-to-local-image-region"
+name = "part-127-lesson-23-practice-stable-weight-updates-and-stopping-on-validation-error"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1143,7 +1135,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-129-lesson-24-move-convolution-kernel-by-stride-pixels"
+name = "part-128-lesson-24-multiply-local-image-pixels-by-filter-weights-and-sum"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1151,7 +1143,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-130-lesson-24-pad-image-with-zeros-before-convolution"
+name = "part-129-lesson-24-move-pixel-filter-by-fixed-step-across-image"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1159,7 +1151,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-131-lesson-24-max-pool-local-image-windows"
+name = "part-130-lesson-24-surround-image-with-zeros-before-applying-filter"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1167,7 +1159,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-132-lesson-24-detect-local-image-features-with-shared-filter"
+name = "part-131-lesson-24-take-largest-value-in-each-local-image-window"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1175,7 +1167,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-133-lesson-24-practice-image-convolution-with-stride-padding-and-pooling"
+name = "part-132-lesson-24-reuse-same-pixel-filter-to-find-local-image-patterns"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1183,7 +1175,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-134-lesson-25-calculate-hidden-state-of-scalar-recurrent-neural-network"
+name = "part-133-lesson-24-practice-sliding-image-filter-zero-borders-and-local-maxima"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1191,29 +1183,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-135-lesson-25-backpropagate-through-recurrent-state-over-time"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "part-134-lesson-25-calculate-hidden-state-of-scalar-recurrent-neural-network",
-]
-
-[[package]]
-name = "part-136-lesson-25-calculate-lstm-cell-output-from-input-and-previous-state"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-137-lesson-25-calculate-gru-cell-output-from-input-and-previous-state"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-138-lesson-26-causal-convolution-over-one-dimensional-signal"
+name = "part-134-lesson-25-update-memory-from-weighted-input-and-previous-memory"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1221,36 +1191,66 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-139-lesson-26-dilated-causal-convolution-receptive-field"
+name = "part-135-lesson-25-pass-error-changes-back-through-earlier-memory-states"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
- "lesson-visualization",
- "part-138-lesson-26-causal-convolution-over-one-dimensional-signal",
+ "part-134-lesson-25-update-memory-from-weighted-input-and-previous-memory",
 ]
 
 [[package]]
-name = "part-140-lesson-26-gated-activation-with-tanh-and-sigmoid-branches"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-141-lesson-26-residual-and-skip-connections-in-wavenet-block"
+name = "part-136-lesson-25-keep-part-of-old-memory-add-new-information-and-control-output"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
 ]
 
 [[package]]
-name = "part-142-lesson-26-autoregressive-audio-model-with-dilated-causal-convolutions"
+name = "part-137-lesson-25-mix-previous-state-and-new-candidate-with-controlled-fractions"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-138-lesson-26-sum-weighted-current-and-past-signal-values"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
  "lesson-visualization",
- "part-138-lesson-26-causal-convolution-over-one-dimensional-signal",
+]
+
+[[package]]
+name = "part-139-lesson-26-increase-gaps-between-past-signal-values-used-by-filter"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+ "part-138-lesson-26-sum-weighted-current-and-past-signal-values",
+]
+
+[[package]]
+name = "part-140-lesson-26-multiply-bounded-signal-by-fraction-controlled-by-second-branch"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-141-lesson-26-add-transformation-to-input-and-pass-it-to-output-separately"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-142-lesson-26-predict-next-sound-value-using-only-past-values"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+ "part-138-lesson-26-sum-weighted-current-and-past-signal-values",
 ]
 
 [[package]]
@@ -1261,69 +1261,52 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-144-lesson-27-train-byte-level-bpe-merges-from-training-corpus"
+name = "part-144-lesson-27-learn-text-units-by-merging-most-frequent-adjacent-byte-pairs"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
 ]
 
 [[package]]
-name = "part-145-lesson-27-encode-and-decode-text-with-trained-byte-pair-merges"
+name = "part-145-lesson-27-encode-and-decode-text-using-learned-pair-merges"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
- "part-144-lesson-27-train-byte-level-bpe-merges-from-training-corpus",
+ "part-144-lesson-27-learn-text-units-by-merging-most-frequent-adjacent-byte-pairs",
 ]
 
 [[package]]
-name = "part-146-lesson-27-control-tokens-for-chat-message-boundaries"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-147-lesson-27-evaluate-byte-level-and-bpe-tokenizers-on-new-strings"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
- "part-144-lesson-27-train-byte-level-bpe-merges-from-training-corpus",
-]
-
-[[package]]
-name = "part-148-lesson-28-map-token-strings-to-vocabulary-identifiers"
+name = "part-146-lesson-27-mark-start-role-and-end-of-chat-messages"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
 ]
 
 [[package]]
-name = "part-149-lesson-28-unknown-and-boundary-tokens-in-vocabulary"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-150-lesson-28-dense-vector-representations-of-words"
+name = "part-147-lesson-27-compare-byte-splitting-and-learned-text-pieces-on-new-strings"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
  "lesson-visualization",
+ "part-144-lesson-27-learn-text-units-by-merging-most-frequent-adjacent-byte-pairs",
 ]
 
 [[package]]
-name = "part-151-lesson-28-dot-product-similarity-between-two-word-embeddings"
+name = "part-148-lesson-28-assign-vocabulary-identifiers-to-text-pieces"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
- "lesson-visualization",
- "part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add",
 ]
 
 [[package]]
-name = "part-152-lesson-28-practice-token-vocabulary-and-dense-word-embeddings"
+name = "part-149-lesson-28-reserve-identifiers-for-unknown-words-and-sequence-boundaries"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-150-lesson-28-represent-each-word-by-a-list-of-numeric-coordinates"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1331,96 +1314,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-153-lesson-29-predict-next-token-from-bigram-counts"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-154-lesson-29-cross-entropy-of-next-token-probabilities"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-155-lesson-29-perplexity-from-average-language-model-cross-entropy"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-156-lesson-29-sample-next-token-from-probability-distribution"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-157-lesson-29-practice-bigram-language-model-with-loss-perplexity-and-sampling"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-158-lesson-30-lexical-match-between-query-and-documents"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-159-lesson-30-weight-document-terms-by-tf-idf"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-160-lesson-30-cosine-similarity-between-query-and-document-vectors"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
- "part-005-lesson-01-cosine-similarity-between-two-vectors",
-]
-
-[[package]]
-name = "part-161-lesson-30-select-top-k-ranked-documents"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-162-lesson-30-practice-document-retrieval-with-lexical-tfidf-and-cosine-ranking"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-163-lesson-31-query-vector-for-attention-position"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-164-lesson-31-key-vector-for-attention-position"
+name = "part-151-lesson-28-sum-matching-coordinate-products-of-two-word-vectors"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1429,7 +1323,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-165-lesson-31-value-vector-for-attention-position"
+name = "part-152-lesson-28-practice-text-piece-identifiers-and-word-coordinate-vectors"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1437,7 +1331,96 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-166-lesson-31-scale-dot-product-of-query-and-key-vectors"
+name = "part-153-lesson-29-predict-next-text-piece-from-adjacent-pair-counts"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-154-lesson-29-average-negative-logs-of-correct-next-text-piece-probabilities"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-155-lesson-29-raise-e-to-average-negative-log-probability"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-156-lesson-29-randomly-choose-next-text-piece-according-to-probabilities"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-157-lesson-29-practice-pair-count-language-model-error-and-text-generation"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-158-lesson-30-find-documents-containing-query-words"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-159-lesson-30-weight-word-frequency-by-rarity-across-documents"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-160-lesson-30-divide-query-document-coordinate-product-sum-by-vector-lengths"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+ "part-005-lesson-01-sum-coordinate-products-and-divide-by-vector-lengths",
+]
+
+[[package]]
+name = "part-161-lesson-30-select-documents-with-highest-scores"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-162-lesson-30-practice-document-search-by-word-matches-rarity-and-vector-direction"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-163-lesson-31-transform-position-coordinates-into-search-query-vector"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-164-lesson-31-compare-query-with-position-key-by-multiplying-coordinates"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1446,7 +1429,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-167-lesson-31-normalize-attention-scores-into-weights-with-softmax"
+name = "part-165-lesson-31-combine-value-vectors-using-context-weights"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1454,15 +1437,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-168-lesson-31-block-future-token-attention-with-causal-mask"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-169-lesson-31-practice-scaled-dot-product-attention-with-query-key-value-vectors"
+name = "part-166-lesson-31-divide-query-key-product-sum-by-square-root-of-coordinate-count"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1471,7 +1446,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-170-lesson-32-self-attention-among-tokens-of-one-sequence"
+name = "part-167-lesson-31-exponentiate-scores-and-divide-by-sum-of-exponentials"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1479,7 +1454,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-171-lesson-32-add-block-input-through-residual-connection"
+name = "part-168-lesson-31-forbid-using-future-text-positions-in-context"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1487,23 +1462,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-172-lesson-32-normalize-coordinates-of-one-token-with-layer-norm"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-173-lesson-32-feed-forward-transformation-of-each-token"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-174-lesson-32-practice-transformer-block-with-self-attention-residual-and-feed-forward"
+name = "part-169-lesson-31-practice-query-key-matching-and-weighted-sums-of-values"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1512,7 +1471,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-175-lesson-33-split-square-image-into-nonoverlapping-vit-patches"
+name = "part-170-lesson-32-build-each-position-context-from-other-positions-in-sequence"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1520,16 +1479,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-176-lesson-33-global-self-attention-among-vit-image-patches"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
- "part-175-lesson-33-split-square-image-into-nonoverlapping-vit-patches",
-]
-
-[[package]]
-name = "part-177-lesson-33-aggregate-vit-image-patches-into-class-token"
+name = "part-171-lesson-32-add-original-input-to-transformed-output"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1537,37 +1487,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-178-lesson-34-bidirectional-self-attention-in-encoder"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-179-lesson-34-exclude-padding-tokens-from-encoder-attention"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "part-178-lesson-34-bidirectional-self-attention-in-encoder",
-]
-
-[[package]]
-name = "part-180-lesson-34-predict-masked-token-from-bidirectional-encoder-context"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "part-178-lesson-34-bidirectional-self-attention-in-encoder",
-]
-
-[[package]]
-name = "part-181-lesson-35-add-token-and-position-embeddings-for-decoder-input"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-182-lesson-35-causal-self-attention-over-prefix-of-tokens"
+name = "part-172-lesson-32-subtract-coordinate-mean-and-divide-by-root-mean-squared-deviation"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1575,55 +1495,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-183-lesson-35-combine-multiple-attention-heads"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "part-182-lesson-35-causal-self-attention-over-prefix-of-tokens",
-]
-
-[[package]]
-name = "part-184-lesson-35-pre-normalized-transformer-decoder-block"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "part-182-lesson-35-causal-self-attention-over-prefix-of-tokens",
-]
-
-[[package]]
-name = "part-185-lesson-35-cross-entropy-loss-for-next-token-prediction"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
- "part-182-lesson-35-causal-self-attention-over-prefix-of-tokens",
-]
-
-[[package]]
-name = "part-186-lesson-35-calculate-tiny-gpt-output-logits-from-token-ids"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "part-182-lesson-35-causal-self-attention-over-prefix-of-tokens",
-]
-
-[[package]]
-name = "part-187-lesson-35-train-tiny-gpt-readout-with-frozen-decoder"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "part-186-lesson-35-calculate-tiny-gpt-output-logits-from-token-ids",
-]
-
-[[package]]
-name = "part-188-lesson-36-normalize-token-vector-by-root-mean-square"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-189-lesson-36-rotate-query-and-key-coordinate-pairs-by-position"
+name = "part-173-lesson-32-apply-weighted-coordinate-transformation-to-each-position"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1631,80 +1503,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-190-lesson-36-share-key-value-heads-across-query-heads"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "part-182-lesson-35-causal-self-attention-over-prefix-of-tokens",
-]
-
-[[package]]
-name = "part-191-lesson-36-normalize-query-and-key-vectors-before-attention"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "part-188-lesson-36-normalize-token-vector-by-root-mean-square",
- "part-189-lesson-36-rotate-query-and-key-coordinate-pairs-by-position",
-]
-
-[[package]]
-name = "part-192-lesson-36-apply-swiglu-gate-and-up-projection-in-feed-forward-layer"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-193-lesson-36-cache-past-key-and-value-vectors-during-generation"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "part-182-lesson-35-causal-self-attention-over-prefix-of-tokens",
-]
-
-[[package]]
-name = "part-194-lesson-36-route-token-through-two-selected-experts"
+name = "part-174-lesson-32-practice-context-mixing-input-addition-and-coordinate-transformation"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
  "lesson-visualization",
- "part-182-lesson-35-causal-self-attention-over-prefix-of-tokens",
+ "part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add",
 ]
 
 [[package]]
-name = "part-195-lesson-36-practice-qwen-inspired-block-with-rmsnorm-rope-gqa-and-swiglu"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "part-182-lesson-35-causal-self-attention-over-prefix-of-tokens",
- "part-188-lesson-36-normalize-token-vector-by-root-mean-square",
- "part-189-lesson-36-rotate-query-and-key-coordinate-pairs-by-position",
- "part-192-lesson-36-apply-swiglu-gate-and-up-projection-in-feed-forward-layer",
-]
-
-[[package]]
-name = "part-196-lesson-37-low-rank-adaptation-of-frozen-weight-matrix"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-197-lesson-37-symmetric-int8-quantization-of-model-weights"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-198-lesson-38-provide-retrieved-document-context-for-rag-answer"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-199-lesson-38-limit-number-of-retrieved-fragments-to-context-window"
+name = "part-175-lesson-33-split-square-image-into-nonoverlapping-square-blocks"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1712,14 +1520,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-200-lesson-38-cite-retrieved-document-identifier-in-rag-answer"
+name = "part-176-lesson-33-mix-information-between-all-image-blocks-using-weights"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
+ "lesson-visualization",
+ "part-175-lesson-33-split-square-image-into-nonoverlapping-square-blocks",
 ]
 
 [[package]]
-name = "part-201-lesson-38-reject-rag-answer-when-source-score-below-threshold"
+name = "part-177-lesson-33-combine-image-block-information-into-one-summary-vector"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1727,46 +1537,37 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-202-lesson-38-practice-rag-answer-with-context-citations-and-source-check"
+name = "part-178-lesson-34-build-text-context-from-both-earlier-and-later-positions"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
 ]
 
 [[package]]
-name = "part-203-lesson-39-mix-clean-signal-with-noise-in-forward-diffusion"
+name = "part-179-lesson-34-exclude-padding-positions-from-weighted-context"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
- "lesson-visualization",
+ "part-178-lesson-34-build-text-context-from-both-earlier-and-later-positions",
 ]
 
 [[package]]
-name = "part-204-lesson-39-train-linear-predictor-of-noise-in-diffused-signal"
+name = "part-180-lesson-34-predict-hidden-text-piece-from-surrounding-context"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
- "part-203-lesson-39-mix-clean-signal-with-noise-in-forward-diffusion",
+ "part-178-lesson-34-build-text-context-from-both-earlier-and-later-positions",
 ]
 
 [[package]]
-name = "part-205-lesson-39-recover-clean-signal-from-noisy-state-and-known-noise"
+name = "part-181-lesson-35-add-text-piece-vectors-and-position-vectors"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
- "part-203-lesson-39-mix-clean-signal-with-noise-in-forward-diffusion",
 ]
 
 [[package]]
-name = "part-206-lesson-40-calculate-linear-recurrent-state-over-input-sequence"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-207-lesson-40-input-dependent-forgetting-in-selective-state-space-model"
+name = "part-182-lesson-35-sum-current-and-past-values-with-query-key-match-weights"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1774,72 +1575,55 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-208-lesson-40-compare-input-dependent-and-fixed-state-forgetting"
+name = "part-183-lesson-35-combine-contexts-from-several-query-key-comparisons"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "part-182-lesson-35-sum-current-and-past-values-with-query-key-match-weights",
+]
+
+[[package]]
+name = "part-184-lesson-35-normalize-before-context-mixing-and-coordinate-transformation"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "part-182-lesson-35-sum-current-and-past-values-with-query-key-match-weights",
+]
+
+[[package]]
+name = "part-185-lesson-35-negative-log-probability-of-correct-next-text-piece"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
  "lesson-visualization",
- "part-206-lesson-40-calculate-linear-recurrent-state-over-input-sequence",
+ "part-182-lesson-35-sum-current-and-past-values-with-query-key-match-weights",
 ]
 
 [[package]]
-name = "part-209-lesson-41-environment-state-for-reinforcement-learning-agent"
+name = "part-186-lesson-35-convert-text-identifiers-to-context-and-next-piece-scores"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
- "lesson-visualization",
+ "part-182-lesson-35-sum-current-and-past-values-with-query-key-match-weights",
 ]
 
 [[package]]
-name = "part-210-lesson-41-move-agent-left-or-right-in-bounded-environment"
+name = "part-187-lesson-35-train-output-weights-while-keeping-context-model-fixed"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
- "lesson-visualization",
+ "part-186-lesson-35-convert-text-identifiers-to-context-and-next-piece-scores",
 ]
 
 [[package]]
-name = "part-211-lesson-41-reward-for-agent-transition-between-states"
+name = "part-188-lesson-36-divide-coordinates-by-square-root-of-mean-square-and-apply-weights"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
 ]
 
 [[package]]
-name = "part-212-lesson-41-choose-agent-action-from-policy-values"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-213-lesson-41-epsilon-greedy-exploration-versus-best-known-action"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-214-lesson-41-practice-reinforcement-learning-with-state-action-reward-and-policy"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-215-lesson-42-compare-feature-means-for-distribution-shift"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
- "part-029-lesson-06-arithmetic-mean-of-numeric-values",
-]
-
-[[package]]
-name = "part-216-lesson-42-compare-predicted-probabilities-with-observed-event-rates"
+name = "part-189-lesson-36-rotate-query-and-key-coordinate-pairs-by-text-position"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1847,7 +1631,80 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-217-lesson-42-compare-classification-errors-across-data-subgroups"
+name = "part-190-lesson-36-reuse-key-and-value-vectors-for-several-query-groups"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "part-182-lesson-35-sum-current-and-past-values-with-query-key-match-weights",
+]
+
+[[package]]
+name = "part-191-lesson-36-scale-query-and-key-vectors-by-their-root-mean-square"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "part-188-lesson-36-divide-coordinates-by-square-root-of-mean-square-and-apply-weights",
+ "part-189-lesson-36-rotate-query-and-key-coordinate-pairs-by-text-position",
+]
+
+[[package]]
+name = "part-192-lesson-36-multiply-two-branches-and-control-output-with-smooth-gate"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-193-lesson-36-reuse-saved-past-key-and-value-vectors-during-generation"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "part-182-lesson-35-sum-current-and-past-values-with-query-key-match-weights",
+]
+
+[[package]]
+name = "part-194-lesson-36-choose-two-processing-branches-and-combine-their-outputs"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+ "part-182-lesson-35-sum-current-and-past-values-with-query-key-match-weights",
+]
+
+[[package]]
+name = "part-195-lesson-36-combine-coordinate-scaling-rotation-shared-context-and-gated-branches"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "part-182-lesson-35-sum-current-and-past-values-with-query-key-match-weights",
+ "part-188-lesson-36-divide-coordinates-by-square-root-of-mean-square-and-apply-weights",
+ "part-189-lesson-36-rotate-query-and-key-coordinate-pairs-by-text-position",
+ "part-192-lesson-36-multiply-two-branches-and-control-output-with-smooth-gate",
+]
+
+[[package]]
+name = "part-196-lesson-37-add-product-of-two-small-matrices-to-fixed-weight-matrix"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-197-lesson-37-scale-and-round-model-weights-to-eight-bit-integers"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-198-lesson-38-provide-found-document-fragment-as-answer-context"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-199-lesson-38-limit-found-fragment-count-to-fit-answer-context"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1855,22 +1712,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-218-lesson-42-report-model-evaluation-limits-from-small-sample"
+name = "part-200-lesson-38-include-source-document-identifier-in-answer"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
 ]
 
 [[package]]
-name = "part-219-lesson-42-practice-model-safety-with-shift-calibration-and-subgroup-errors"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-220-lesson-43-serialize-model-weights-with-defined-field-format"
+name = "part-201-lesson-38-decline-answer-when-source-match-score-is-too-low"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1878,56 +1727,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-221-lesson-43-parse-model-format-version-before-loading"
+name = "part-202-lesson-38-practice-answers-from-found-documents-with-source-checks"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
 ]
 
 [[package]]
-name = "part-222-lesson-43-validate-model-field-count-and-finite-weight-values"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-223-lesson-43-load-supported-old-and-new-model-format-versions"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-224-lesson-43-practice-model-serialization-with-version-validation-and-compatibility"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-225-lesson-44-define-csv-input-output-contract-for-inference-cli"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-226-lesson-44-run-model-inference-over-multiple-csv-rows"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-227-lesson-44-report-inference-input-errors-with-row-number"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-228-lesson-44-measure-inference-time-as-batch-size-grows"
+name = "part-203-lesson-39-mix-signal-and-noise-using-square-roots-of-variance-shares"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1935,37 +1742,23 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-229-lesson-44-practice-csv-model-inference-through-command-line-interface"
+name = "part-204-lesson-39-train-weighted-input-model-to-predict-added-noise"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
+ "part-203-lesson-39-mix-signal-and-noise-using-square-roots-of-variance-shares",
 ]
 
 [[package]]
-name = "part-230-lesson-45-compare-binned-feature-distributions-before-and-after-release"
+name = "part-205-lesson-39-subtract-scaled-noise-and-divide-by-signal-scale"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
- "lesson-visualization",
+ "part-203-lesson-39-mix-signal-and-noise-using-square-roots-of-variance-shares",
 ]
 
 [[package]]
-name = "part-231-lesson-45-evaluate-model-quality-after-release-with-new-labels"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
- "lesson-visualization",
-]
-
-[[package]]
-name = "part-232-lesson-45-measure-inference-response-latency"
-version = "0.1.0"
-dependencies = [
- "lesson-trace",
-]
-
-[[package]]
-name = "part-233-lesson-45-trigger-monitoring-alert-when-drift-score-exceeds-threshold"
+name = "part-206-lesson-40-repeatedly-add-weighted-input-to-retained-previous-state"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1973,7 +1766,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-234-lesson-45-practice-model-monitoring-with-drift-quality-latency-and-alerts"
+name = "part-207-lesson-40-choose-how-much-previous-state-to-keep-from-current-input"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
@@ -1981,17 +1774,224 @@ dependencies = [
 ]
 
 [[package]]
-name = "part-235-lesson-46-end-to-end-ml-project-from-baseline-to-inference"
+name = "part-208-lesson-40-compare-fixed-and-input-controlled-memory-retention"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",
  "lesson-visualization",
- "part-029-lesson-06-arithmetic-mean-of-numeric-values",
- "part-050-lesson-09-mean-absolute-error-between-targets-and-predictions",
+ "part-206-lesson-40-repeatedly-add-weighted-input-to-retained-previous-state",
 ]
 
 [[package]]
-name = "part-236-lesson-47-capstone-ai-project-with-comparison-and-error-analysis"
+name = "part-209-lesson-41-describe-agent-position-and-available-world-states"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-210-lesson-41-move-agent-left-or-right-within-world-boundaries"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-211-lesson-41-assign-reward-to-agent-state-transition"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-212-lesson-41-choose-action-with-highest-estimated-reward"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-213-lesson-41-sometimes-try-random-action-instead-of-best-known-action"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-214-lesson-41-practice-learning-action-values-from-movement-and-rewards"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-215-lesson-42-compare-feature-means-to-detect-changed-data"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+ "part-029-lesson-06-sum-values-and-divide-by-count",
+]
+
+[[package]]
+name = "part-216-lesson-42-compare-predicted-probabilities-with-observed-event-frequencies"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-217-lesson-42-compare-prediction-errors-across-data-subgroups"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-218-lesson-42-explain-what-small-test-samples-cannot-establish"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-219-lesson-42-practice-checking-data-changes-probabilities-and-subgroup-errors"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-220-lesson-43-save-model-weights-in-defined-file-fields"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-221-lesson-43-read-model-file-version-before-loading-weights"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-222-lesson-43-validate-model-field-count-and-reject-nonfinite-weights"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-223-lesson-43-load-both-supported-old-and-new-model-file-versions"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-224-lesson-43-practice-saving-loading-and-validating-versioned-model-files"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-225-lesson-44-define-csv-input-and-prediction-output-columns"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-226-lesson-44-predict-values-for-several-csv-rows-in-one-run"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-227-lesson-44-report-invalid-input-with-its-row-number"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-228-lesson-44-measure-prediction-time-for-increasing-row-counts"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-229-lesson-44-practice-reading-csv-and-producing-predictions-from-command-line"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-230-lesson-45-compare-feature-interval-counts-before-and-after-release"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-231-lesson-45-check-released-model-predictions-against-new-known-answers"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-232-lesson-45-measure-time-from-prediction-request-to-response"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+]
+
+[[package]]
+name = "part-233-lesson-45-warn-when-data-change-score-exceeds-threshold"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-234-lesson-45-practice-monitoring-data-changes-errors-response-time-and-alerts"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+]
+
+[[package]]
+name = "part-235-lesson-46-project-compare-train-and-run-prediction-model"
+version = "0.1.0"
+dependencies = [
+ "lesson-trace",
+ "lesson-visualization",
+ "part-029-lesson-06-sum-values-and-divide-by-count",
+ "part-050-lesson-09-sum-absolute-prediction-errors-and-divide-by-count",
+]
+
+[[package]]
+name = "part-236-lesson-47-project-compare-solution-methods-and-explain-errors"
 version = "0.1.0"
 dependencies = [
  "lesson-trace",

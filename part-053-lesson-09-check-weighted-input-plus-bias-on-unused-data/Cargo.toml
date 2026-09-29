@@ -1,0 +1,10 @@
+[package]
+name = "part-053-lesson-09-check-weighted-input-plus-bias-on-unused-data"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count = { package = "part-049-lesson-09-sum-squared-prediction-errors-and-divide-by-count", path = "../part-049-lesson-09-sum-squared-prediction-errors-and-divide-by-count" }
+
+lesson-visualization = { path = "../lesson-visualization" }

@@ -1,9 +1,0 @@
-[package]
-name = "part-176-lesson-33-global-self-attention-among-vit-image-patches"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-part-175-lesson-33-split-square-image-into-nonoverlapping-vit-patches = { path = "../part-175-lesson-33-split-square-image-into-nonoverlapping-vit-patches" }
-lesson-visualization = { path = "../lesson-visualization" }

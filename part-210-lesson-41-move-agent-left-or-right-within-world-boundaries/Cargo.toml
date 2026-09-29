@@ -1,0 +1,9 @@
+[package]
+name = "part-210-lesson-41-move-agent-left-or-right-within-world-boundaries"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

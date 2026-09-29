@@ -1,9 +1,0 @@
-[package]
-name = "part-074-lesson-13-laplace-smoothing-of-class-conditional-word-counts"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

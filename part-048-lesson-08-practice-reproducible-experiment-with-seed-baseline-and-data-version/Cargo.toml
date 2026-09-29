@@ -1,7 +1,0 @@
-[package]
-name = "part-048-lesson-08-practice-reproducible-experiment-with-seed-baseline-and-data-version"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

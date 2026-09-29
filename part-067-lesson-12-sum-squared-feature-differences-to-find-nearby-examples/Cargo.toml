@@ -1,0 +1,10 @@
+[package]
+name = "part-067-lesson-12-sum-squared-feature-differences-to-find-nearby-examples"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences = { package = "part-004-lesson-01-square-root-of-sum-of-squared-coordinate-differences", path = "../part-004-lesson-01-square-root-of-sum-of-squared-coordinate-differences" }
+
+lesson-visualization = { path = "../lesson-visualization" }

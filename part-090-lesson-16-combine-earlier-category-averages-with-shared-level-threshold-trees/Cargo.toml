@@ -1,0 +1,10 @@
+[package]
+name = "part-090-lesson-16-combine-earlier-category-averages-with-shared-level-threshold-trees"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+part-087-lesson-16-use-same-threshold-test-at-each-tree-level = { path = "../part-087-lesson-16-use-same-threshold-test-at-each-tree-level" }
+part-088-lesson-16-average-earlier-targets-for-category-without-current-answer = { path = "../part-088-lesson-16-average-earlier-targets-for-category-without-current-answer" }
+lesson-visualization = { path = "../lesson-visualization" }

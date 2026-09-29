@@ -1,9 +1,0 @@
-[package]
-name = "part-120-lesson-22-practice-reverse-mode-autodiff-with-tensor-shapes-and-gradient-check"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

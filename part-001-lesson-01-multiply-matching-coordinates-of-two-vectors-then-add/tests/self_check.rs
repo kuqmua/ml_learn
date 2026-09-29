@@ -1,6 +1,6 @@
 #[test]
 #[ignore = "заполни три вектора и запусти cargo test -p part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add --test self_check -- --ignored"]
-fn predict_signs_of_scalar_products() {
+fn predict_signs_of_summed_matching_coordinate_products() {
     let fixed_vector: [f64; 2] = [1.0, 2.0];
     let vector_with_negative_result: Option<[f64; 2]> = None; // Заполни: подбери вектор с отрицательным результатом
     let vector_with_negative_result: [f64; 2] =

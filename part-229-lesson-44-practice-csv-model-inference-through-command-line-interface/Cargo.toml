@@ -1,7 +1,0 @@
-[package]
-name = "part-229-lesson-44-practice-csv-model-inference-through-command-line-interface"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

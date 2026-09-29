@@ -1,7 +1,0 @@
-[package]
-name = "part-040-lesson-07-encode-categories-learned-from-training-data"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

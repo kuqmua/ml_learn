@@ -1,0 +1,9 @@
+[package]
+name = "part-077-lesson-14-subtract-sum-of-squared-class-shares-from-one"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

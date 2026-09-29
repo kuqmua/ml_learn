@@ -1,9 +1,0 @@
-[package]
-name = "part-173-lesson-32-feed-forward-transformation-of-each-token"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }
