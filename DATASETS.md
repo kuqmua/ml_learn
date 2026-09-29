@@ -64,13 +64,11 @@ lesson-datasets = { path = "../lesson-datasets" }
 Затем загрузи записи и раздели их **до** обучения преобразований:
 
 ```rust
-use lesson_datasets::{load_iris_records, split_indices_stratified_by_class};
-
-let records = load_iris_records()?;
+let records = lesson_datasets::load_iris_records()?;
 let classes: Vec<u8> = records.iter()
     .map(|record| record.species.class_identifier())
     .collect();
-let split = split_indices_stratified_by_class(&classes, 42)?;
+let split = lesson_datasets::split_indices_stratified_by_class(&classes, 42)?;
 let training_features: Vec<[f64; 4]> = split.training_indices.iter()
     .map(|&index| records[index].features)
     .collect();
