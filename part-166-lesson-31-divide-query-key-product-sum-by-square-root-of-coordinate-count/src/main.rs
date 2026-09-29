@@ -22,7 +22,7 @@ fn main() {
     // Умножаем соответствующие координаты запроса и ключа, затем складываем результаты.
     let sum_after_multiplying_coordinates: f64 =
         // Используем подготовленное значение в следующем шаге примера.
-        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&query, &key)
+        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&query, &key)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("запрос и ключ имеют одинаковую размерность");
     lesson_trace::trace_step!(sum_after_multiplying_coordinates);
@@ -48,11 +48,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_one_divided_by_square_root_of_coordinate_count();
+    plot_attention_scale_as_one_divided_by_square_root_of_coordinate_count();
 }
 
 // Строим график по результатам урока.
-fn plot_one_divided_by_square_root_of_coordinate_count() {
+fn plot_attention_scale_as_one_divided_by_square_root_of_coordinate_count() {
     // График величин и зависимостей, изученных в этом уроке.
     let multiply_coordinates_add_and_scale_points: Vec<(f64, f64)> = (1..=64)
         // Преобразуем каждый элемент в новое значение.

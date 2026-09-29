@@ -11,7 +11,9 @@
 // Нормируем оценки всех патчей в вероятностные веса.
 // Оценку модели до преобразования в вероятность называют logit.
 /// Softmax: вычитаем максимальную оценку, вычисляем экспоненты и делим каждую на их сумму.
-fn exponentiate_shifted_scores_then_divide_by_their_sum(raw_model_scores: &[f64]) -> Vec<f64> {
+fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+    raw_model_scores: &[f64],
+) -> Vec<f64> {
     let maximum: f64 = raw_model_scores
         .iter()
         .copied()
@@ -50,7 +52,10 @@ fn main() {
         .map(|key| first[0] * key[0] + first[1] * key[1])
         .collect();
     lesson_trace::trace_step!(raw_model_scores);
-    let weights: Vec<f64> = exponentiate_shifted_scores_then_divide_by_their_sum(&raw_model_scores);
+    let weights: Vec<f64> =
+        calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+            &raw_model_scores,
+        );
     lesson_trace::trace_step!(weights);
     assert_eq!(weights.len(), 4);
     assert!(weights[3] > 0.0); // Последний патч виден первому.

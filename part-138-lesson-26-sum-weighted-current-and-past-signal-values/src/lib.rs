@@ -4,7 +4,7 @@
 /// Фильтр длины два читает только текущий и предыдущий элементы.
 /// При генерации прогноз после `input` нельзя использовать будущий элемент.
 /// Причинная свёртка: вес текущего отсчёта умножаем на него и прибавляем взвешенный прошлый отсчёт с заданным отступом.
-pub fn sum_weighted_current_and_spaced_past_signal_values(
+pub fn calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
     input: &[f64],
     weight_current: f64,
     weight_previous: f64,
@@ -32,9 +32,9 @@ mod tests {
     #[test]
     fn future_does_not_change_past_outputs() {
         let short: Vec<f64> =
-            super::sum_weighted_current_and_spaced_past_signal_values(&[1.0, 2.0], 1.0, 2.0, 1)
+            super::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(&[1.0, 2.0], 1.0, 2.0, 1)
                 .unwrap();
-        let long: Vec<f64> = super::sum_weighted_current_and_spaced_past_signal_values(
+        let long: Vec<f64> = super::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &[1.0, 2.0, 999.0],
             1.0,
             2.0,

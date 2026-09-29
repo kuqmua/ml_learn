@@ -14,7 +14,7 @@ fn main() {
     lesson_trace::trace_step!(categories);
     let targets: [f64; 5] = [1.0, 0.0, 0.0, 1.0, 1.0];
     lesson_trace::trace_step!(targets);
-    let values: Vec<f64> = part_088_lesson_16_average_earlier_targets_for_category_without_current_answer::average_previous_targets_per_category_with_prior_weight(
+    let values: Vec<f64> = part_088_lesson_16_average_earlier_targets_for_category_without_current_answer::encode_categories_as_average_previous_targets_with_prior_weight(
         &categories,
         &targets,
         0.5,

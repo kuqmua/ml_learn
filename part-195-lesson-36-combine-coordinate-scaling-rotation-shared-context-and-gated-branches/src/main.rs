@@ -10,7 +10,7 @@
 
 // Во всех вызовах RMSNorm в блоке ε=10⁻⁶ защищает от нулевого среднего квадрата координат.
 /// Учебный блок по мотивам Qwen: RMSNorm, поворот координат по позиции, два набора весов внимания с общими ключами и значениями, затем SwiGLU с прибавлением входа.
-fn normalize_and_rotate_vectors_then_mix_past_values_and_gated_features(
+fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and_gated_features(
     states: &[[f64; 2]],
 ) -> Vec<[f64; 2]> {
     let gamma: [f64; 2] = [1.0, 1.0];
@@ -19,7 +19,7 @@ fn normalize_and_rotate_vectors_then_mix_past_values_and_gated_features(
         .iter()
         .map(|input_value| {
             let second_input_value: Vec<f64> =
-                part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::divide_coordinates_by_root_mean_square_then_apply_weights(
+                part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
                     input_value,
                     &gamma,
                     1e-6,
@@ -36,7 +36,7 @@ fn normalize_and_rotate_vectors_then_mix_past_values_and_gated_features(
         .enumerate()
         .map(|(position, input_value)| {
             let key: Vec<f64> =
-                part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::divide_coordinates_by_root_mean_square_then_apply_weights(
+                part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
                     input_value,
                     &gamma,
                     1e-6,
@@ -67,7 +67,7 @@ fn normalize_and_rotate_vectors_then_mix_past_values_and_gated_features(
             };
             lesson_trace::trace_step!(raw_query);
             let query: Vec<f64> =
-                part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::divide_coordinates_by_root_mean_square_then_apply_weights(
+                part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
                     &raw_query, &gamma, 1e-6,
                 )
                 .unwrap();
@@ -84,7 +84,7 @@ fn normalize_and_rotate_vectors_then_mix_past_values_and_gated_features(
                 .map(|past| (query[0] * keys[past][0] + query[1] * keys[past][1]) / 2.0_f64.sqrt())
                 .collect();
             lesson_trace::trace_step!(raw_model_scores);
-            let weights: Vec<f64> = part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::exponentiate_shifted_scores_then_divide_by_their_sum(&raw_model_scores);
+            let weights: Vec<f64> = part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&raw_model_scores);
             lesson_trace::trace_step!(weights);
             for (past, &weight) in weights.iter().enumerate() {
                 lesson_trace::trace_step!(past);
@@ -100,7 +100,7 @@ fn normalize_and_rotate_vectors_then_mix_past_values_and_gated_features(
             [states[index][0] + context[0], states[index][1] + context[1]];
         lesson_trace::trace_step!(input_plus_transformed_value);
         let feed_forward_input: Vec<f64> =
-            part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::divide_coordinates_by_root_mean_square_then_apply_weights(
+            part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
                 &input_plus_transformed_value,
                 &gamma,
                 1e-6,
@@ -110,13 +110,13 @@ fn normalize_and_rotate_vectors_then_mix_past_values_and_gated_features(
         output.push([
             input_plus_transformed_value[0]
                 + 0.1
-                    * part_192_lesson_36_multiply_two_branches_and_control_output_with_smooth_gate::multiply_gate_and_up_value_then_divide_by_one_plus_e_to_negative_gate(
+                    * part_192_lesson_36_multiply_two_branches_and_control_output_with_smooth_gate::calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate(
                         feed_forward_input[0],
                         feed_forward_input[1],
                     ),
             input_plus_transformed_value[1]
                 + 0.1
-                    * part_192_lesson_36_multiply_two_branches_and_control_output_with_smooth_gate::multiply_gate_and_up_value_then_divide_by_one_plus_e_to_negative_gate(
+                    * part_192_lesson_36_multiply_two_branches_and_control_output_with_smooth_gate::calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate(
                         feed_forward_input[1],
                         feed_forward_input[0],
                     ),
@@ -129,10 +129,10 @@ fn main() {
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
     lesson_trace::trace_step!(states);
     let output: Vec<[f64; 2]> =
-        normalize_and_rotate_vectors_then_mix_past_values_and_gated_features(&states);
+        calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and_gated_features(&states);
     lesson_trace::trace_step!(output);
     assert_eq!(
-        normalize_and_rotate_vectors_then_mix_past_values_and_gated_features(&states[..1])[0],
+        calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and_gated_features(&states[..1])[0],
         output[0]
     );
     println!("выход учебного блока: {output:?}");

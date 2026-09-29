@@ -11,7 +11,7 @@ fn main() {
     lesson_trace::enable();
     // ε=10⁻⁶ добавляется к среднему квадрату координат Q и K, чтобы RMSNorm был определён и для нуля.
     let query_vector: Vec<f64> =
-        part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::divide_coordinates_by_root_mean_square_then_apply_weights(
+        part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
             &[2.0, 1.0],
             &[1.0, 1.0],
             1e-6,
@@ -19,7 +19,7 @@ fn main() {
         .unwrap();
     lesson_trace::trace_step!(query_vector);
     let key_vector: Vec<f64> =
-        part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::divide_coordinates_by_root_mean_square_then_apply_weights(
+        part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
             &[1.0, 3.0],
             &[1.0, 1.0],
             1e-6,

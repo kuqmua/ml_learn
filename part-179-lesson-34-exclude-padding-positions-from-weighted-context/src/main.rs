@@ -11,7 +11,7 @@ fn main() {
     let real: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
     lesson_trace::trace_step!(real);
     let base: Vec<[f64; 2]> =
-        part_178_lesson_34_build_text_context_from_both_earlier_and_later_positions::sum_visible_states_weighted_by_exponentiated_coordinate_products(
+        part_178_lesson_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
             &real,
             &[true, true],
         )
@@ -22,7 +22,7 @@ fn main() {
     lesson_trace::trace_step!(input_with_padding_rows);
     // Игнорирование добавленных пустых позиций называют padding mask.
     let output_ignoring_padding: Vec<[f64; 2]> =
-        part_178_lesson_34_build_text_context_from_both_earlier_and_later_positions::sum_visible_states_weighted_by_exponentiated_coordinate_products(
+        part_178_lesson_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
             &input_with_padding_rows,
             &[true, true, false],
         )

@@ -4,7 +4,9 @@
 /// Устойчивый softmax для конечных логитов.
 // Оценку модели до преобразования в вероятность называют logit.
 /// Softmax: вычитаем максимальную оценку, вычисляем экспоненты и делим каждую на их сумму.
-pub fn exponentiate_shifted_scores_then_divide_by_their_sum(raw_model_scores: &[f64]) -> Vec<f64> {
+pub fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+    raw_model_scores: &[f64],
+) -> Vec<f64> {
     let maximum: f64 = raw_model_scores
         .iter()
         .copied()
@@ -22,7 +24,7 @@ pub fn exponentiate_shifted_scores_then_divide_by_their_sum(raw_model_scores: &[
 
 /// Один причинный head. Строка i видит только j <= i.
 /// Причинное внимание: совпадения запроса и ключей делим на sqrt(2), превращаем в веса через softmax и суммируем значения только текущей и прошлых позиций.
-pub fn sum_current_and_past_values_weighted_by_query_key_matches(
+pub fn calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
     query_vector: &[[f64; 2]],
     key_vector: &[[f64; 2]],
     value_vectors: &[[f64; 2]],
@@ -48,7 +50,7 @@ pub fn sum_current_and_past_values_weighted_by_query_key_matches(
             .collect();
         lesson_trace::trace_step!(raw_model_scores);
         let weights: Vec<f64> =
-            exponentiate_shifted_scores_then_divide_by_their_sum(&raw_model_scores);
+            calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&raw_model_scores);
         lesson_trace::trace_step!(weights);
         let mut state: [f64; 2] = [0.0; 2];
         lesson_trace::trace_step!(state);
@@ -73,14 +75,14 @@ mod tests {
         let query_vector: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
         let key_vector: [[f64; 2]; 2] = query_vector;
         let first: Vec<[f64; 2]> =
-            super::sum_current_and_past_values_weighted_by_query_key_matches(
+            super::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
                 &query_vector,
                 &key_vector,
                 &[[2.0, 3.0], [4.0, 5.0]],
             )
             .unwrap();
         let second: Vec<[f64; 2]> =
-            super::sum_current_and_past_values_weighted_by_query_key_matches(
+            super::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
                 &query_vector,
                 &key_vector,
                 &[[2.0, 3.0], [999.0, 999.0]],

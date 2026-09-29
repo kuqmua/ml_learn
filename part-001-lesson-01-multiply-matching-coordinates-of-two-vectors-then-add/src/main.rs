@@ -43,7 +43,7 @@ fn main() {
         // Реализация находится в библиотеке этого урока; её используют и следующие уроки.
         let sum_after_multiplying_coordinates: f64 =
             // Используем подготовленное значение в следующем шаге примера.
-            part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&left, right)
+            part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&left, right)
                 // Используем результат, ожидая успешного выполнения шага.
                 .expect("у этой пары одинаковое число координат");
         lesson_trace::trace_step!(sum_after_multiplying_coordinates);
@@ -59,7 +59,7 @@ fn main() {
     // Сохраняем результат этого шага в `error`.
     let error: &str =
         // Используем подготовленное значение в следующем шаге примера.
-        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             // Используем подготовленное значение в следующем шаге примера.
             &left, &too_short,
         )
@@ -70,11 +70,11 @@ fn main() {
     println!("разная длина: {:?} и {too_short:?} → {error}", left);
     // Показываем зависимость скалярного произведения от второй координаты.
     lesson_trace::disable();
-    plot_coordinate_product_sum_for_changing_second_coordinate(&left);
+    plot_scalar_product_as_coordinate_product_sum_for_changing_second_coordinate(&left);
 }
 
 // Визуализация вынесена из основного сценария урока.
-fn plot_coordinate_product_sum_for_changing_second_coordinate(left: &[f64; 2]) {
+fn plot_scalar_product_as_coordinate_product_sum_for_changing_second_coordinate(left: &[f64; 2]) {
     // График показывает, как меняется скалярное произведение [1, 2] · [1, x] = 1 + 2x.
     // По горизонтали откладываем вторую координату правого вектора от −4 до 4 с шагом 0,1;
     // по вертикали — результат умножения координат и сложения. При x = −0,5 результат равен нулю.
@@ -83,7 +83,7 @@ fn plot_coordinate_product_sum_for_changing_second_coordinate(left: &[f64; 2]) {
         .map(|plot_step_index| {
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             // Вычисляем скалярное произведение той же функцией, что использовали выше.
-            let product: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+            let product: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
                 left,
                 &[1.0, horizontal_value],
             )

@@ -79,7 +79,7 @@ pub fn count_binary_classification_outcomes_from_true_labels_and_scores_at_thres
 
 /// Общая доля верных прогнозов.
 /// Доля правильных прогнозов (accuracy): (верные положительные + верные отрицательные) / все прогнозы.
-pub fn correct_predictions_divided_by_all_predictions(
+pub fn calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(
     counts: BinaryClassificationCounts,
 ) -> Option<f64> {
     // Сохраняем результат этого шага в `total`.
@@ -133,7 +133,9 @@ mod tests {
         );
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(
-            super::correct_predictions_divided_by_all_predictions(counts),
+            super::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(
+                counts
+            ),
             Some(0.5)
         );
         // Проверяем ожидаемое свойство учебного примера.

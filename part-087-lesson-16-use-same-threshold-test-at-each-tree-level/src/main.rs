@@ -18,7 +18,7 @@ fn main() {
         lesson_trace::trace_step!(input);
         println!(
             "{input:?} -> {}",
-            tree.choose_leaf_by_shared_threshold_test_at_each_level(&input)
+            tree.predict_tree_output_by_choosing_leaf_with_shared_threshold_tests(&input)
                 .unwrap()
         );
     }

@@ -11,7 +11,7 @@ pub struct ObliviousTree {
 impl ObliviousTree {
     /// Биты результатов проверок образуют индекс листа.
     /// Симметричное дерево (oblivious tree): на каждом уровне одна проверка порога; её результат задаёт следующий бит номера листа.
-    pub fn choose_leaf_by_shared_threshold_test_at_each_level(
+    pub fn predict_tree_output_by_choosing_leaf_with_shared_threshold_tests(
         &self,
         features: &[f64],
     ) -> Result<f64, &'static str> {
@@ -41,23 +41,23 @@ mod tests {
             leaves: vec![0.0, 1.0, 2.0, 3.0],
         };
         assert_eq!(
-            tree.choose_leaf_by_shared_threshold_test_at_each_level(&[0.0, 0.0]),
+            tree.predict_tree_output_by_choosing_leaf_with_shared_threshold_tests(&[0.0, 0.0]),
             Ok(0.0)
         );
         assert_eq!(
-            tree.choose_leaf_by_shared_threshold_test_at_each_level(&[0.0, 1.0]),
+            tree.predict_tree_output_by_choosing_leaf_with_shared_threshold_tests(&[0.0, 1.0]),
             Ok(1.0)
         );
         assert_eq!(
-            tree.choose_leaf_by_shared_threshold_test_at_each_level(&[1.0, 0.0]),
+            tree.predict_tree_output_by_choosing_leaf_with_shared_threshold_tests(&[1.0, 0.0]),
             Ok(2.0)
         );
         assert_eq!(
-            tree.choose_leaf_by_shared_threshold_test_at_each_level(&[1.0, 1.0]),
+            tree.predict_tree_output_by_choosing_leaf_with_shared_threshold_tests(&[1.0, 1.0]),
             Ok(3.0)
         );
         assert!(
-            tree.choose_leaf_by_shared_threshold_test_at_each_level(&[1.0])
+            tree.predict_tree_output_by_choosing_leaf_with_shared_threshold_tests(&[1.0])
                 .is_err()
         );
     }

@@ -25,7 +25,7 @@ fn main() {
         // Умножаем значения и сохраняем результат в `projection`.
         let projection: f64 =
             // Используем подготовленное значение в следующем шаге примера.
-            part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&point, &principal_axis).unwrap();
+            part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&point, &principal_axis).unwrap();
         lesson_trace::trace_step!(projection);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("точка={point:?}, координата на главной оси={projection}");

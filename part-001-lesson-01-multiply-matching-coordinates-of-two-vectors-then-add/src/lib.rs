@@ -2,7 +2,7 @@
 
 /// Умножаем соответствующие координаты и складываем результаты.
 /// Скалярное произведение: умножаем соответствующие координаты двух векторов и складываем произведения.
-pub fn multiply_matching_coordinates_of_two_vectors_then_add(
+pub fn calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
     // Задаём именованное поле или параметр.
     left: &[f64],
     // Задаём именованное поле или параметр.
@@ -39,14 +39,20 @@ mod tests {
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(
             // Задаём именованное поле или параметр.
-            super::multiply_matching_coordinates_of_two_vectors_then_add(&[1.0, 2.0], &[-2.0, 1.0]),
+            super::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+                &[1.0, 2.0],
+                &[-2.0, 1.0]
+            ),
             // Возвращаем успешный результат.
             Ok(0.0)
         );
         // Проверяем ожидаемое свойство учебного примера.
         assert!(
-            super::multiply_matching_coordinates_of_two_vectors_then_add(&[1.0], &[1.0, 2.0])
-                .is_err()
+            super::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+                &[1.0],
+                &[1.0, 2.0]
+            )
+            .is_err()
         );
     }
 }

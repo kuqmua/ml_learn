@@ -17,12 +17,12 @@ fn main() {
     lesson_trace::trace_step!(first);
     // Проверяем ожидаемое свойство учебного примера.
     assert_eq!(
-        part_002_lesson_01_sum_absolute_values_of_vector_coordinates::sum_absolute_values_of_vector_coordinates(&first),
+        part_002_lesson_01_sum_absolute_values_of_vector_coordinates::calculate_l1_vector_norm_by_summing_absolute_coordinates(&first),
         7.0
     );
     // Проверяем ожидаемое свойство учебного примера.
     assert_eq!(
-        part_003_lesson_01_square_root_of_sum_of_squared_vector_coordinates::square_root_of_sum_of_squared_coordinates(
+        part_003_lesson_01_square_root_of_sum_of_squared_vector_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(
             &first
         ),
         5.0
@@ -49,16 +49,16 @@ fn main() {
         lesson_trace::trace_step!(expected_sum);
         lesson_trace::trace_step!(expected_cosine);
         // Сохраняем результат этого шага в `sum`.
-        let sum: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&first, other)
+        let sum: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&first, other)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("у этих векторов одинаковое число координат");
         lesson_trace::trace_step!(sum);
         // Сохраняем результат этого шага в `distance`.
         let distance: f64 =
-            part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::square_root_of_sum_of_squared_coordinate_differences(&first, other).unwrap();
+            part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(&first, other).unwrap();
         lesson_trace::trace_step!(distance);
         // Сохраняем результат этого шага в `cosine`.
-        let cosine: Option<f64> = part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::sum_coordinate_products_divided_by_vector_lengths(&first, other).ok();
+        let cosine: Option<f64> = part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&first, other).ok();
         lesson_trace::trace_step!(cosine);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(sum, expected_sum);
@@ -73,7 +73,7 @@ fn main() {
         }
         // Сохраняем результат этого шага в `reverse_distance`.
         let reverse_distance: f64 =
-            part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::square_root_of_sum_of_squared_coordinate_differences(other, &first).unwrap();
+            part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(other, &first).unwrap();
         lesson_trace::trace_step!(reverse_distance);
         // Проверяем ожидаемое свойство учебного примера.
         assert!((distance - reverse_distance).abs() < 1e-10);
@@ -86,7 +86,7 @@ fn main() {
     lesson_trace::trace_step!(too_short);
     // Сохраняем результат этого шага в `error`.
     let error: &str =
-        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             &first, &too_short,
         )
         // Настраиваем или преобразуем результат предыдущего шага.
@@ -97,11 +97,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_sum_of_absolute_coordinates_and_square_root_of_squared_sum();
+    plot_l1_and_euclidean_lengths_as_absolute_sum_and_square_root_of_squared_sum();
 }
 
 // Строим график по результатам урока.
-fn plot_sum_of_absolute_coordinates_and_square_root_of_squared_sum() {
+fn plot_l1_and_euclidean_lengths_as_absolute_sum_and_square_root_of_squared_sum() {
     // Наглядное представление величин из этого урока.
     let sum_absolute_values_of_vector_coordinates_points: Vec<(f64, f64)> = (-50..=50)
         // Преобразуем каждый элемент в новое значение.

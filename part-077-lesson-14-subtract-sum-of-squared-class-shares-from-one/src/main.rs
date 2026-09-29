@@ -29,11 +29,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_twice_positive_share_times_negative_share();
+    plot_class_mixing_as_twice_positive_share_times_negative_share();
 }
 
 // Строим график по результатам урока.
-fn plot_twice_positive_share_times_negative_share() {
+fn plot_class_mixing_as_twice_positive_share_times_negative_share() {
     // График величин и зависимостей, изученных в этом уроке.
     let gini_points: Vec<(f64, f64)> = (0..=100)
         // Преобразуем каждый элемент в новое значение.

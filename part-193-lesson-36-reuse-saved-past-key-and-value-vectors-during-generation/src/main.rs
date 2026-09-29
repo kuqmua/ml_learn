@@ -12,7 +12,7 @@ fn main() {
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
     lesson_trace::trace_step!(states);
     let full: Vec<[f64; 2]> =
-        part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::sum_current_and_past_values_weighted_by_query_key_matches(&states, &states, &states)
+        part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(&states, &states, &states)
             .unwrap();
     lesson_trace::trace_step!(full);
     let mut cached_keys: Vec<[f64; 2]> = Vec::new();
@@ -32,7 +32,7 @@ fn main() {
             .collect();
         lesson_trace::trace_step!(raw_model_scores);
         let weights: Vec<f64> =
-            part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::exponentiate_shifted_scores_then_divide_by_their_sum(
+            part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
                 &raw_model_scores,
             );
         lesson_trace::trace_step!(weights);

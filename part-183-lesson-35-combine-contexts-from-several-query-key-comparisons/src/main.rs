@@ -22,14 +22,14 @@ fn main() {
         .map(|input_value| [0.0, input_value[1]])
         .collect();
     lesson_trace::trace_step!(second_attention_head);
-    let first_output: Vec<[f64; 2]> = part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::sum_current_and_past_values_weighted_by_query_key_matches(
+    let first_output: Vec<[f64; 2]> = part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
         &first_attention_head,
         &first_attention_head,
         &first_attention_head,
     )
     .unwrap();
     lesson_trace::trace_step!(first_output);
-    let second_output: Vec<[f64; 2]> = part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::sum_current_and_past_values_weighted_by_query_key_matches(
+    let second_output: Vec<[f64; 2]> = part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
         &second_attention_head,
         &second_attention_head,
         &second_attention_head,

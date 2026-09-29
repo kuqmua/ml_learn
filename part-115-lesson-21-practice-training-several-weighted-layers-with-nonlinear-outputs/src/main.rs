@@ -94,16 +94,20 @@ fn main() {
         ([1., 1.], 0.),
     ];
 
-    // Объявляем повторно используемое вычисление `one_divided_by_one_plus_e_to_negative_score`; параметры ниже задают его входы.
+    // Объявляем повторно используемое вычисление `calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score`; параметры ниже задают его входы.
     // Оценку модели до преобразования в вероятность называют logit.
-    /// Сигмоида: 1 / (1 + e^(−score)); превращает оценку модели в число от 0 до 1.
-    fn one_divided_by_one_plus_e_to_negative_score(raw_model_score: f64) -> f64 {
+    /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
+    fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
+        raw_model_score: f64,
+    ) -> f64 {
         // Делим значения, получая нормированную величину или среднее.
         1. / (1. + approximate_e_to_power_by_summing_power_over_factorial_terms(-raw_model_score))
     }
-    // d one_divided_by_one_plus_e_to_negative_score(z)/dz = one_divided_by_one_plus_e_to_negative_score(z) * (1 − one_divided_by_one_plus_e_to_negative_score(z)).
+    // d calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(z)/dz = calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(z) * (1 − calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(z)).
     /// Производная сигмоиды по её входу: output·(1−output), если output — уже вычисленная сигмоида.
-    fn multiply_output_by_one_minus_output(sigmoid_output: f64) -> f64 {
+    fn calculate_sigmoid_slope_by_multiplying_output_by_one_minus_output(
+        sigmoid_output: f64,
+    ) -> f64 {
         // Умножаем величины согласно используемой формуле.
         sigmoid_output * (1.0 - sigmoid_output)
     }
@@ -142,7 +146,7 @@ fn main() {
                 // Прямой проход: сначала два скрытых нейрона, затем выходная вероятность.
                 let hidden_outputs: [f64; 2] = [
                     // Вызываем нужное вычисление с подготовленными аргументами.
-                    one_divided_by_one_plus_e_to_negative_score(
+                    calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
                         // Обновляем состояние объекта результатом текущей операции.
                         network.hidden_weights[0][0] * features[0]
                             // Умножаем величины согласно используемой формуле.
@@ -151,7 +155,7 @@ fn main() {
                             + network.hidden_weights[0][2],
                     ),
                     // Вызываем нужное вычисление с подготовленными аргументами.
-                    one_divided_by_one_plus_e_to_negative_score(
+                    calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
                         // Обновляем состояние объекта результатом текущей операции.
                         network.hidden_weights[1][0] * features[0]
                             // Умножаем величины согласно используемой формуле.
@@ -162,14 +166,15 @@ fn main() {
                 ];
                 lesson_trace::trace_step!(hidden_outputs);
                 // Сохраняем рассчитанное значение `output_probability` для следующих операций.
-                let output_probability: f64 = one_divided_by_one_plus_e_to_negative_score(
-                    // Обновляем состояние объекта результатом текущей операции.
-                    network.output_weights[0] * hidden_outputs[0]
+                let output_probability: f64 =
+                    calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
+                        // Обновляем состояние объекта результатом текущей операции.
+                        network.output_weights[0] * hidden_outputs[0]
                         // Умножаем величины согласно используемой формуле.
                         + network.output_weights[1] * hidden_outputs[1]
                         // Складываем или вычитаем величины согласно используемой формуле.
                         + network.output_weights[2],
-                );
+                    );
                 lesson_trace::trace_step!(output_probability);
                 // Правило цепочки даёт градиент ошибки для выхода и каждого скрытого нейрона.
                 // Производную функции по параметру или вектор таких производных называют gradient.
@@ -185,10 +190,11 @@ fn main() {
                     // Складываем или вычитаем величины согласно используемой формуле.
                     prediction - target
                     // Вычисляем значение по указанной формуле.
-                })() * multiply_output_by_one_minus_output(
-                    // Используем ранее рассчитанное значение `output_probability` в текущем выражении.
-                    output_probability,
-                );
+                })()
+                    * calculate_sigmoid_slope_by_multiplying_output_by_one_minus_output(
+                        // Используем ранее рассчитанное значение `output_probability` в текущем выражении.
+                        output_probability,
+                    );
                 lesson_trace::trace_step!(output_loss_rate_of_change);
                 // Создаём набор значений `hidden_layer_loss_rates_of_change` для следующего шага примера.
                 let hidden_layer_loss_rates_of_change: [f64; 2] = [
@@ -197,13 +203,13 @@ fn main() {
                         // Добавляем этот член в составное арифметическое выражение.
                         * network.output_weights[0]
                         // Добавляем этот член в составное арифметическое выражение.
-                        * multiply_output_by_one_minus_output(hidden_outputs[0]),
+                        * calculate_sigmoid_slope_by_multiplying_output_by_one_minus_output(hidden_outputs[0]),
                     // Используем ранее рассчитанное значение `output_loss_rate_of_change` в текущем выражении.
                     output_loss_rate_of_change
                         // Добавляем этот член в составное арифметическое выражение.
                         * network.output_weights[1]
                         // Добавляем этот член в составное арифметическое выражение.
-                        * multiply_output_by_one_minus_output(hidden_outputs[1]),
+                        * calculate_sigmoid_slope_by_multiplying_output_by_one_minus_output(hidden_outputs[1]),
                 ];
                 lesson_trace::trace_step!(hidden_layer_loss_rates_of_change);
                 // Обновляем связи и смещения; последний столбец каждой матрицы хранит bias.
@@ -252,7 +258,7 @@ fn main() {
             // Создаём набор значений `hidden_outputs` для следующего шага примера.
             let hidden_outputs: [f64; 2] = [
                 // Вызываем нужное вычисление с подготовленными аргументами.
-                one_divided_by_one_plus_e_to_negative_score(
+                calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
                     // Обновляем состояние объекта результатом текущей операции.
                     network.hidden_weights[0][0] * features[0]
                         // Умножаем величины согласно используемой формуле.
@@ -261,7 +267,7 @@ fn main() {
                         + network.hidden_weights[0][2],
                 ),
                 // Вызываем нужное вычисление с подготовленными аргументами.
-                one_divided_by_one_plus_e_to_negative_score(
+                calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
                     // Обновляем состояние объекта результатом текущей операции.
                     network.hidden_weights[1][0] * features[0]
                         // Умножаем величины согласно используемой формуле.
@@ -272,7 +278,7 @@ fn main() {
             ];
             lesson_trace::trace_step!(hidden_outputs);
             // Вызываем нужное вычисление с подготовленными аргументами.
-            one_divided_by_one_plus_e_to_negative_score(
+            calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
                 // Обновляем состояние объекта результатом текущей операции.
                 network.output_weights[0] * hidden_outputs[0]
                     // Умножаем величины согласно используемой формуле.

@@ -2,7 +2,7 @@
 
 /// Выборочная дисперсия использует среднее из урока 06.1.
 /// Выборочная дисперсия: сумму квадратов отклонений от среднего делим на (число значений − 1).
-pub fn sum_squared_deviations_from_mean_divided_by_count_minus_one(
+pub fn calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(
     values: &[f64],
 ) -> Result<f64, &'static str> {
     // Выбираем дальнейший шаг по выполнению условия.
@@ -12,7 +12,7 @@ pub fn sum_squared_deviations_from_mean_divided_by_count_minus_one(
     }
     // Сохраняем результат этого шага в `average`.
     let average: f64 =
-        part_029_lesson_06_sum_values_and_divide_by_count::sum_values_and_divide_by_count(values)?;
+        part_029_lesson_06_sum_values_and_divide_by_count::calculate_mean_by_summing_values_and_dividing_by_count(values)?;
     lesson_trace::trace_step!(average);
     // Сохраняем результат этого шага в `squared_deviation_sum`.
     let mut squared_deviation_sum: f64 = 0.0;

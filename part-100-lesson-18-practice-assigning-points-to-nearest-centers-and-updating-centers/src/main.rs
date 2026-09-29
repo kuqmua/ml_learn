@@ -27,14 +27,14 @@ fn main() {
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
     /// Само умножение не обязательно медленнее библиотечного метода.
-    fn multiply_number_by_itself(value: f64) -> f64 {
+    fn calculate_square_by_multiplying_number_by_itself(value: f64) -> f64 {
         // Умножаем величины согласно используемой формуле.
         value * value
     }
 
-    // Объявляем повторно используемое вычисление `sum_squared_differences_of_point_coordinates`; параметры ниже задают его входы.
+    // Объявляем повторно используемое вычисление `calculate_squared_point_distance_by_summing_squared_coordinate_differences`; параметры ниже задают его входы.
     /// Квадрат расстояния: складываем квадраты разностей соответствующих координат двух точек.
-    fn sum_squared_differences_of_point_coordinates(
+    fn calculate_squared_point_distance_by_summing_squared_coordinate_differences(
         // `first_point` задаёт соответствующее входное значение или поле структуры.
         first_point: [f64; 2],
         // `second_point` задаёт соответствующее входное значение или поле структуры.
@@ -42,9 +42,9 @@ fn main() {
         // Указываем тип возвращаемого значения.
     ) -> f64 {
         // Складываем или вычитаем величины согласно используемой формуле.
-        multiply_number_by_itself(first_point[0] - second_point[0])
+        calculate_square_by_multiplying_number_by_itself(first_point[0] - second_point[0])
             // Складываем или вычитаем величины согласно используемой формуле.
-            + multiply_number_by_itself(first_point[1] - second_point[1])
+            + calculate_square_by_multiplying_number_by_itself(first_point[1] - second_point[1])
     }
 
     // Шаг: Инициализируем центроиды и выводим итоговые центры с инерцией.
@@ -81,7 +81,7 @@ fn main() {
                         // Сравниваем кандидатов и оставляем наименьшее расстояние.
                         .min_by(|&first_center_index, &second_center_index| {
                             // Вызываем нужное вычисление с подготовленными аргументами.
-                            sum_squared_differences_of_point_coordinates(
+                            calculate_squared_point_distance_by_summing_squared_coordinate_differences(
                                 // Используем ранее рассчитанное значение `point` в текущем выражении.
                                 point,
                                 // Передаём ранее рассчитанное значение в текущую операцию.
@@ -90,7 +90,7 @@ fn main() {
                             // Сравниваем числа с полным порядком, включая специальные значения.
                             .total_cmp(
                                 // Передаём данные по ссылке или разыменовываем их для следующей операции.
-                                &sum_squared_differences_of_point_coordinates(
+                                &calculate_squared_point_distance_by_summing_squared_coordinate_differences(
                                     // Используем ранее рассчитанное значение `point` в текущем выражении.
                                     point,
                                     // Передаём ранее рассчитанное значение в текущую операцию.
@@ -154,7 +154,7 @@ fn main() {
                     // Сохраняем рассчитанное значение `candidate_distance` для следующих операций.
                     let candidate_distance: f64 =
                         // Вызываем нужное вычисление с подготовленными аргументами.
-                        sum_squared_differences_of_point_coordinates(point, center);
+                        calculate_squared_point_distance_by_summing_squared_coordinate_differences(point, center);
                     lesson_trace::trace_step!(candidate_distance);
                     lesson_trace::trace_step!(candidate_distance);
                     // Проверяем условие и выбираем соответствующую ветку алгоритма.

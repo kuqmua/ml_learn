@@ -17,7 +17,7 @@ fn main() {
     for filter_spacing in [1, 2, 4] {
         lesson_trace::trace_step!(filter_spacing);
         signal =
-            part_138_lesson_26_sum_weighted_current_and_past_signal_values::sum_weighted_current_and_spaced_past_signal_values(
+            part_138_lesson_26_sum_weighted_current_and_past_signal_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
                 &signal,
                 1.0,
                 1.0,

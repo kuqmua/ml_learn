@@ -26,7 +26,7 @@ fn main() {
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
     /// Само умножение не обязательно медленнее библиотечного метода.
-    fn multiply_number_by_itself(value: f64) -> f64 {
+    fn calculate_square_by_multiplying_number_by_itself(value: f64) -> f64 {
         // Умножаем величины согласно используемой формуле.
         value * value
     }
@@ -107,20 +107,22 @@ fn main() {
                 let centered_second: f64 = point[1] - mean[1];
                 lesson_trace::trace_step!(centered_second);
                 // Прибавляем очередной вклад к ранее накопленному результату.
-                first_variance_sum += multiply_number_by_itself(centered_first);
+                first_variance_sum +=
+                    calculate_square_by_multiplying_number_by_itself(centered_first);
                 lesson_trace::trace_step!(first_variance_sum);
                 // Прибавляем очередной вклад к ранее накопленному результату.
                 cross_deviation_product_sum += centered_first * centered_second;
                 lesson_trace::trace_step!(cross_deviation_product_sum);
                 // Прибавляем очередной вклад к ранее накопленному результату.
-                second_variance_sum += multiply_number_by_itself(centered_second);
+                second_variance_sum +=
+                    calculate_square_by_multiplying_number_by_itself(centered_second);
                 lesson_trace::trace_step!(second_variance_sum);
             }
             // Для симметричной матрицы [[a,b],[b,c]] большее собственное значение
             // равно (a+c+sqrt((a-c)^2+4b^2))/2. Его собственный вектор — [b, lambda-a].
-            let discriminant: f64 = multiply_number_by_itself(first_variance_sum - second_variance_sum)
+            let discriminant: f64 = calculate_square_by_multiplying_number_by_itself(first_variance_sum - second_variance_sum)
             // Умножаем величины согласно используемой формуле.
-            + 4.0 * multiply_number_by_itself(cross_deviation_product_sum);
+            + 4.0 * calculate_square_by_multiplying_number_by_itself(cross_deviation_product_sum);
             lesson_trace::trace_step!(discriminant);
             // Сохраняем рассчитанное значение `largest_eigenvalue` для следующих операций.
             let largest_eigenvalue: f64 = (first_variance_sum
@@ -166,9 +168,9 @@ fn main() {
                 // Сохраняем рассчитанное значение `axis_length` для следующих операций.
                 let axis_length: f64 = approximate_square_root_by_repeated_averaging(
                     // Вызываем нужное вычисление с подготовленными аргументами.
-                    multiply_number_by_itself(unnormalized_axis[0])
+                    calculate_square_by_multiplying_number_by_itself(unnormalized_axis[0])
                     // Складываем или вычитаем величины согласно используемой формуле.
-                    + multiply_number_by_itself(unnormalized_axis[1]),
+                    + calculate_square_by_multiplying_number_by_itself(unnormalized_axis[1]),
                 );
                 lesson_trace::trace_step!(axis_length);
                 // Составляем результат из вычисленных значений в указанном порядке.

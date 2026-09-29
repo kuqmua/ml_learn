@@ -3,7 +3,7 @@
 
 /// Полное self-attention: каждая позиция видит обе стороны последовательности.
 /// Двунаправленное внимание: для каждого состояния считаем произведения координат с видимыми состояниями, делим на sqrt(2), применяем softmax и суммируем состояния с этими весами.
-pub fn sum_visible_states_weighted_by_exponentiated_coordinate_products(
+pub fn calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
     states: &[[f64; 2]],
     visible: &[bool],
 ) -> Result<Vec<[f64; 2]>, &'static str> {
@@ -61,14 +61,14 @@ mod tests {
     #[test]
     fn masked_padding_does_not_change_real_output() {
         let base: Vec<[f64; 2]> =
-            super::sum_visible_states_weighted_by_exponentiated_coordinate_products(
+            super::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
                 &[[1.0, 0.0]],
                 &[true],
             )
             .unwrap();
         // Добавление пустых позиций к последовательности называют padding.
         let input_with_padding: Vec<[f64; 2]> =
-            super::sum_visible_states_weighted_by_exponentiated_coordinate_products(
+            super::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
                 &[[1.0, 0.0], [999.0, 999.0]],
                 &[true, false],
             )

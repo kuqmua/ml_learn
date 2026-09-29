@@ -9,7 +9,10 @@
 // Сравниваем фиксированное затухание с входозависимым забыванием.
 
 /// Избирательное забывание: прибавляем вход к сохранённой доле состояния; по флагу сброса оставляем только текущий вход.
-fn add_input_to_retained_state_or_reset_state_to_input(values: &[f64], reset: &[bool]) -> Vec<f64> {
+fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(
+    values: &[f64],
+    reset: &[bool],
+) -> Vec<f64> {
     let mut state: f64 = 0.0;
     lesson_trace::trace_step!(state);
     values
@@ -33,11 +36,14 @@ fn main() {
     let reset: [bool; 4] = [false, false, true, false];
     lesson_trace::trace_step!(reset);
     let fixed: Vec<f64> =
-        part_206_lesson_40_repeatedly_add_weighted_input_to_retained_previous_state::repeatedly_add_weighted_input_to_retained_previous_state(
+        part_206_lesson_40_repeatedly_add_weighted_input_to_retained_previous_state::calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
             &values, 0.8, 1.0,
         );
     lesson_trace::trace_step!(fixed);
-    let dynamic: Vec<f64> = add_input_to_retained_state_or_reset_state_to_input(&values, &reset);
+    let dynamic: Vec<f64> =
+        calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(
+            &values, &reset,
+        );
     lesson_trace::trace_step!(dynamic);
     assert!(fixed[2] > dynamic[2]);
     println!("fixed={fixed:?}; selective={dynamic:?}");

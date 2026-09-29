@@ -3,7 +3,7 @@
 
 /// RMSNorm без вычитания среднего; gamma задаётся отдельно для каждой координаты.
 /// RMSNorm: делим координаты на sqrt(среднее квадратов + epsilon), затем умножаем каждую на её вес gamma.
-pub fn divide_coordinates_by_root_mean_square_then_apply_weights(
+pub fn normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
     input: &[f64],
     gamma: &[f64],
     epsilon: f64,
@@ -31,7 +31,7 @@ mod tests {
     #[test]
     /// Проверяем размеры весов и приведение среднего квадрата координат к единице с численным допуском.
     fn rejects_mismatched_weights_and_scales_mean_square_to_one() {
-        let output: Vec<f64> = super::divide_coordinates_by_root_mean_square_then_apply_weights(
+        let output: Vec<f64> = super::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
             &[3.0, 4.0],
             &[1.0, 1.0],
             1e-8,
@@ -39,7 +39,7 @@ mod tests {
         .unwrap();
         assert!(((output[0] * output[0] + output[1] * output[1]) / 2.0 - 1.0).abs() < 1e-7);
         assert!(
-            super::divide_coordinates_by_root_mean_square_then_apply_weights(&[1.0], &[], 1e-8)
+            super::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(&[1.0], &[], 1e-8)
                 .is_err()
         );
     }

@@ -31,7 +31,7 @@ fn main() {
         for row in 0..matrix.len() {
             lesson_trace::trace_step!(row);
             // Урок 01.1 теперь работает и для каждой строки матрицы.
-            result[row] = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&matrix[row], &vector)
+            result[row] = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&matrix[row], &vector)
                 // Используем результат, ожидая успешного выполнения шага.
                 .expect("число столбцов совпадает с длиной вектора");
             lesson_trace::trace_step!(result);
@@ -46,7 +46,7 @@ fn main() {
     lesson_trace::trace_step!(too_short);
     // Сохраняем результат этого шага в `error`.
     let error: &str =
-        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             &matrix[0], &too_short,
         )
         // Настраиваем или преобразуем результат предыдущего шага.

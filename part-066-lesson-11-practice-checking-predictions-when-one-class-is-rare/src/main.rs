@@ -26,17 +26,17 @@ fn main() {
     lesson_trace::trace_step!(counts);
     // Сохраняем результат этого шага в `precision`.
     let precision: Option<f64> =
-        part_061_lesson_11_divide_true_positives_by_all_positive_predictions::true_positives_divided_by_all_positive_predictions(counts);
+        part_061_lesson_11_divide_true_positives_by_all_positive_predictions::calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions(counts);
     lesson_trace::trace_step!(precision);
     // Сохраняем результат этого шага в `recall`.
-    let recall: Option<f64> = part_062_lesson_11_divide_detected_positives_by_all_actual_positives::true_positives_divided_by_all_actual_positives(counts);
+    let recall: Option<f64> = part_062_lesson_11_divide_detected_positives_by_all_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(counts);
     lesson_trace::trace_step!(recall);
-    // Сохраняем результат этого шага в `twice_precision_times_recall_divided_by_their_sum`.
-    let harmonic_mean_score: Option<f64> = part_063_lesson_11_twice_precision_times_recall_divided_by_their_sum::twice_precision_times_recall_divided_by_their_sum(precision, recall);
+    // Сохраняем результат этого шага в `calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum`.
+    let harmonic_mean_score: Option<f64> = part_063_lesson_11_twice_precision_times_recall_divided_by_their_sum::calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum(precision, recall);
     lesson_trace::trace_step!(harmonic_mean_score);
     // Сохраняем результат этого шага в `accuracy`.
     let accuracy: Option<f64> =
-        part_060_lesson_11_count_correct_and_incorrect_positive_and_negative_predictions::correct_predictions_divided_by_all_predictions(
+        part_060_lesson_11_count_correct_and_incorrect_positive_and_negative_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(
             counts,
         );
     lesson_trace::trace_step!(accuracy);
@@ -56,13 +56,13 @@ fn main() {
     lesson_trace::trace_step!(useless);
     // Сохраняем результат этого шага в `useless_accuracy`.
     let useless_accuracy: Option<f64> =
-        part_060_lesson_11_count_correct_and_incorrect_positive_and_negative_predictions::correct_predictions_divided_by_all_predictions(
+        part_060_lesson_11_count_correct_and_incorrect_positive_and_negative_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(
             useless,
         );
     lesson_trace::trace_step!(useless_accuracy);
     // Сохраняем результат этого шага в `useless_recall`.
     let useless_recall: Option<f64> =
-        part_062_lesson_11_divide_detected_positives_by_all_actual_positives::true_positives_divided_by_all_actual_positives(useless);
+        part_062_lesson_11_divide_detected_positives_by_all_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(useless);
     lesson_trace::trace_step!(useless_recall);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(useless_accuracy.unwrap() > 0.8);

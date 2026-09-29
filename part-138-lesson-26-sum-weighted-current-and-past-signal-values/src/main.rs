@@ -12,7 +12,7 @@ fn main() {
     let signal: [f64; 4] = [1.0, 2.0, 3.0, 4.0];
     lesson_trace::trace_step!(signal);
     let output: Vec<f64> =
-        part_138_lesson_26_sum_weighted_current_and_past_signal_values::sum_weighted_current_and_spaced_past_signal_values(
+        part_138_lesson_26_sum_weighted_current_and_past_signal_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &signal, 1.0, 2.0, 1,
         )
         .unwrap();

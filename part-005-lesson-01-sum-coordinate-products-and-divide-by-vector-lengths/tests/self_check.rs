@@ -11,18 +11,18 @@ fn predict_three_directions() {
     let expected_opposite_direction: f64 =
         expected_opposite_direction.expect("заполни ответ перед запуском теста");
     assert_eq!(
-        part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::sum_coordinate_products_divided_by_vector_lengths(&[1.0, 0.0], &[2.0, 0.0]),
+        part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&[1.0, 0.0], &[2.0, 0.0]),
         Ok(expected_same_direction)
     );
     assert_eq!(
-        part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::sum_coordinate_products_divided_by_vector_lengths(&[1.0, 0.0], &[0.0, 1.0]),
+        part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&[1.0, 0.0], &[0.0, 1.0]),
         Ok(expected_right_angle)
     );
     assert_eq!(
-        part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::sum_coordinate_products_divided_by_vector_lengths(&[1.0, 0.0], &[-1.0, 0.0]),
+        part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&[1.0, 0.0], &[-1.0, 0.0]),
         Ok(expected_opposite_direction)
     );
     assert!(
-        part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::sum_coordinate_products_divided_by_vector_lengths(&[1.0, 0.0], &[0.0, 0.0]).is_err()
+        part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&[1.0, 0.0], &[0.0, 0.0]).is_err()
     );
 }

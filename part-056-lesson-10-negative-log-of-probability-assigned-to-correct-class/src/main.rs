@@ -82,11 +82,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_negative_log_probability_for_each_correct_class(losses);
+    plot_classification_loss_as_negative_log_probability_for_each_correct_class(losses);
 }
 
 // Строим график по результатам урока.
-fn plot_negative_log_probability_for_each_correct_class(losses: [f64; 4]) {
+fn plot_classification_loss_as_negative_log_probability_for_each_correct_class(losses: [f64; 4]) {
     // Проверяем ожидаемое свойство учебного примера.
     assert!(losses[0] < losses[1] && losses[1] < losses[2]);
     // Проверяем ожидаемое свойство учебного примера.

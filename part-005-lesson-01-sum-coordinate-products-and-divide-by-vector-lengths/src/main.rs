@@ -37,7 +37,7 @@ fn main() {
         lesson_trace::trace_step!(right);
         lesson_trace::trace_step!(expected);
         // Числитель и длины уже изучены; общий код соединяет их в косинусное сходство.
-        let similarity: f64 = part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::sum_coordinate_products_divided_by_vector_lengths(&left, right)
+        let similarity: f64 = part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&left, right)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("оба вектора ненулевые и одинаковой длины");
         lesson_trace::trace_step!(similarity);
@@ -57,7 +57,7 @@ fn main() {
         lesson_trace::trace_step!(description);
         lesson_trace::trace_step!(right);
         // Сохраняем результат этого шага в `error`.
-        let error: &str = part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::sum_coordinate_products_divided_by_vector_lengths(&left, right)
+        let error: &str = part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&left, right)
             // Настраиваем или преобразуем результат предыдущего шага.
             .expect_err("этот вход должен быть отклонён");
         lesson_trace::trace_step!(error);
@@ -67,11 +67,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_coordinate_product_sum_divided_by_lengths_for_changing_angle();
+    plot_direction_similarity_as_coordinate_product_sum_divided_by_lengths_for_changing_angle();
 }
 
 // Строим график по результатам урока.
-fn plot_coordinate_product_sum_divided_by_lengths_for_changing_angle() {
+fn plot_direction_similarity_as_coordinate_product_sum_divided_by_lengths_for_changing_angle() {
     // Наглядное представление величин из этого урока.
     let cosine_similarity_between_two_vectors_points: Vec<(f64, f64)> = (0..=180)
         // Настраиваем или преобразуем результат предыдущего шага.
@@ -84,7 +84,7 @@ fn plot_coordinate_product_sum_divided_by_lengths_for_changing_angle() {
                 // Используем подготовленное значение в следующем шаге примера.
                 plot_step_index as f64,
                 // Используем подготовленное значение в следующем шаге примера.
-                part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::sum_coordinate_products_divided_by_vector_lengths(
+                part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(
                     // Передаём ряды или значения для отрисовки графика.
                     &[1.0, 0.0],
                     // Передаём ряды или значения для отрисовки графика.

@@ -12,7 +12,7 @@ fn main() {
     // Повторяющийся корпус даёт устойчивые кандидаты на слияние.
     let corpus: [&str; 3] = ["мама мыла", "мама дома", "мама мыла"];
     lesson_trace::trace_step!(corpus);
-    let model: part_144_lesson_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding = part_144_lesson_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding::learn_merges_by_repeatedly_joining_most_frequent_adjacent_pair(
+    let model: part_144_lesson_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding = part_144_lesson_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding::train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair(
         &corpus, 16,
     );
     lesson_trace::trace_step!(model);

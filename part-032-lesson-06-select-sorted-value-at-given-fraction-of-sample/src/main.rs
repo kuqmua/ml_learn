@@ -56,11 +56,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_sorted_value_at_each_fraction_of_sample();
+    plot_quantiles_as_sorted_values_at_each_fraction_of_sample();
 }
 
 // Строим график по результатам урока.
-fn plot_sorted_value_at_each_fraction_of_sample() {
+fn plot_quantiles_as_sorted_values_at_each_fraction_of_sample() {
     // Наглядное представление величин из этого урока.
     let distribution_cutoff_points: Vec<(f64, f64)> = (0..=100)
         // Преобразуем каждый элемент в новое значение.

@@ -30,24 +30,29 @@ fn main() {
         lesson_trace::trace_step!(vector);
         lesson_trace::trace_step!(expected);
         // Формула из общей библиотеки пригодится и в сводной практике.
-        let sum_absolute_values_of_vector_coordinates: f64 =
-            part_002_lesson_01_sum_absolute_values_of_vector_coordinates::sum_absolute_values_of_vector_coordinates(
+        let calculate_l1_vector_norm_by_summing_absolute_coordinates: f64 =
+            part_002_lesson_01_sum_absolute_values_of_vector_coordinates::calculate_l1_vector_norm_by_summing_absolute_coordinates(
                 &vector,
             );
-        lesson_trace::trace_step!(sum_absolute_values_of_vector_coordinates);
+        lesson_trace::trace_step!(calculate_l1_vector_norm_by_summing_absolute_coordinates);
         // Проверяем ожидаемое свойство учебного примера.
-        assert_eq!(sum_absolute_values_of_vector_coordinates, expected);
+        assert_eq!(
+            calculate_l1_vector_norm_by_summing_absolute_coordinates,
+            expected
+        );
         // Печатаем рассчитанные значения для проверки примера.
-        println!("{description}: {vector:?} → L1 = {sum_absolute_values_of_vector_coordinates}");
+        println!(
+            "{description}: {vector:?} → L1 = {calculate_l1_vector_norm_by_summing_absolute_coordinates}"
+        );
     }
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_sum_of_absolute_coordinates_for_changing_first_coordinate();
+    plot_l1_vector_norm_as_absolute_coordinate_sum_for_changing_first_coordinate();
 }
 
 // Строим график по результатам урока.
-fn plot_sum_of_absolute_coordinates_for_changing_first_coordinate() {
+fn plot_l1_vector_norm_as_absolute_coordinate_sum_for_changing_first_coordinate() {
     // Наглядное представление величин из этого урока.
     let sum_absolute_values_of_vector_coordinates_points: Vec<(f64, f64)> = (-50..=50)
         // Преобразуем каждый элемент в новое значение.
@@ -57,7 +62,7 @@ fn plot_sum_of_absolute_coordinates_for_changing_first_coordinate() {
             // Добавляем пару значений для сравнения или построения графика.
             (
                 horizontal_value,
-                part_002_lesson_01_sum_absolute_values_of_vector_coordinates::sum_absolute_values_of_vector_coordinates(
+                part_002_lesson_01_sum_absolute_values_of_vector_coordinates::calculate_l1_vector_norm_by_summing_absolute_coordinates(
                     &[horizontal_value, 4.0],
                 ),
             )

@@ -9,7 +9,7 @@
 // Словарь категорий учим на train; новую категорию на validation отправляем в отдельный ID.
 
 /// Словарь категорий: каждой новой категории обучения назначаем номер, начиная с 1.
-fn assign_identifiers_to_unique_training_categories(
+fn build_category_dictionary_by_assigning_identifiers_to_unique_training_categories(
     training_data: &[&str],
 ) -> std::collections::BTreeMap<String, usize> {
     // Набор известных модели текстовых единиц называют vocabulary.
@@ -27,7 +27,7 @@ fn assign_identifiers_to_unique_training_categories(
     known_text_units
 }
 /// Кодирование категорий: заменяем известные категории номерами, неизвестные — нулём.
-fn replace_categories_with_known_identifiers_or_zero(
+fn encode_categories_by_replacing_with_known_identifiers_or_zero(
     known_text_units: &std::collections::BTreeMap<String, usize>,
     values: &[&str],
 ) -> Vec<usize> {
@@ -39,10 +39,14 @@ fn replace_categories_with_known_identifiers_or_zero(
 fn main() {
     lesson_trace::enable();
     let known_text_units: std::collections::BTreeMap<String, usize> =
-        assign_identifiers_to_unique_training_categories(&["red", "blue", "red"]);
+        build_category_dictionary_by_assigning_identifiers_to_unique_training_categories(&[
+            "red", "blue", "red",
+        ]);
     lesson_trace::trace_step!(known_text_units);
-    let validation: Vec<usize> =
-        replace_categories_with_known_identifiers_or_zero(&known_text_units, &["blue", "green"]);
+    let validation: Vec<usize> = encode_categories_by_replacing_with_known_identifiers_or_zero(
+        &known_text_units,
+        &["blue", "green"],
+    );
     lesson_trace::trace_step!(validation);
     assert_eq!(validation[1], 0);
     println!("словарь train={known_text_units:?}; validation ID={validation:?}; ID 0=unknown");

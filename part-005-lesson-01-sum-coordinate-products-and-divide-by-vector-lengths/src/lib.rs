@@ -2,20 +2,20 @@
 
 /// Сходство направлений использует вычисление 01.1 и длину 01.3.
 /// Косинусное сходство: сумму произведений соответствующих координат делим на произведение длин векторов.
-pub fn sum_coordinate_products_divided_by_vector_lengths(
+pub fn calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(
     left: &[f64],
     right: &[f64],
 ) -> Result<f64, &'static str> {
     // Сохраняем результат этого шага в `numerator`.
     let numerator: f64 =
-        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             left, right,
         )?;
     lesson_trace::trace_step!(numerator);
     // Сохраняем результат этого шага в `denominator`.
     let denominator: f64 =
-        part_003_lesson_01_square_root_of_sum_of_squared_vector_coordinates::square_root_of_sum_of_squared_coordinates(left)
-            * part_003_lesson_01_square_root_of_sum_of_squared_vector_coordinates::square_root_of_sum_of_squared_coordinates(
+        part_003_lesson_01_square_root_of_sum_of_squared_vector_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(left)
+            * part_003_lesson_01_square_root_of_sum_of_squared_vector_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(
                 right,
             );
     lesson_trace::trace_step!(denominator);
@@ -38,19 +38,19 @@ mod tests {
     fn reuses_earlier_lessons_and_rejects_zero_vector() {
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(
-            super::sum_coordinate_products_divided_by_vector_lengths(&[1.0, 0.0], &[0.0, 1.0]),
+            super::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&[1.0, 0.0], &[0.0, 1.0]),
             Ok(0.0)
         );
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(
             // Задаём именованное поле или параметр.
-            super::sum_coordinate_products_divided_by_vector_lengths(&[1.0, 0.0], &[-1.0, 0.0]),
+            super::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&[1.0, 0.0], &[-1.0, 0.0]),
             // Возвращаем успешный результат.
             Ok(-1.0)
         );
         // Проверяем ожидаемое свойство учебного примера.
         assert!(
-            super::sum_coordinate_products_divided_by_vector_lengths(&[1.0, 0.0], &[0.0, 0.0])
+            super::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&[1.0, 0.0], &[0.0, 0.0])
                 .is_err()
         );
     }

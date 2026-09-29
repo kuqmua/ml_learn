@@ -2,7 +2,7 @@
 
 /// Доля верных среди положительных прогнозов.
 /// Точность положительных прогнозов (precision): верные положительные / все положительные прогнозы.
-pub fn true_positives_divided_by_all_positive_predictions(
+pub fn calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions(
     counts: part_060_lesson_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts,
 ) -> Option<f64> {
     // Сохраняем результат этого шага в `predicted_positives`.

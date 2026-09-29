@@ -45,7 +45,7 @@ fn main() {
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
-        "average true_positives_divided_by_all_positive_predictions (ступенчатая PR-AUC) = {area:.3}"
+        "average calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions (ступенчатая PR-AUC) = {area:.3}"
     );
 
     // Построение графика вынесено из основного кода урока.

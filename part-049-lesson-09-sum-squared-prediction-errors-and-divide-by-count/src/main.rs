@@ -29,7 +29,7 @@ fn main() {
         lesson_trace::trace_step!(expected);
         // Сохраняем результат этого шага в `mean_squared_error_value`.
         let mean_squared_error_value: f64 =
-            part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::sum_squared_prediction_errors_and_divide_by_count(&targets, predictions)
+            part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, predictions)
                 // Используем результат, ожидая успешного выполнения шага.
                 .expect("у каждого прогноза есть правильный ответ");
         lesson_trace::trace_step!(mean_squared_error_value);
@@ -39,7 +39,7 @@ fn main() {
         println!("{description}: {predictions:?} → MSE {mean_squared_error_value:.3}");
     }
     // Сохраняем результат этого шага в `error`.
-    let error: &str = part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::sum_squared_prediction_errors_and_divide_by_count(&targets, &[2.0, 4.0])
+    let error: &str = part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &[2.0, 4.0])
         // Настраиваем или преобразуем результат предыдущего шага.
         .expect_err("длины должны совпадать");
     lesson_trace::trace_step!(error);
@@ -63,7 +63,7 @@ fn plot_average_squared_prediction_error_for_changing_offset() {
                 // Используем подготовленное значение в следующем шаге примера.
                 prediction_difference,
                 // Используем подготовленное значение в следующем шаге примера.
-                part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::sum_squared_prediction_errors_and_divide_by_count(
+                part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
                     // Передаём ряды или значения для отрисовки графика.
                     &[2.0, 4.0, 6.0],
                     // Передаём ряды или значения для отрисовки графика.

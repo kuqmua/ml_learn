@@ -13,7 +13,7 @@ pub struct BytePairEncoding {
 impl BytePairEncoding {
     /// Учит пары только на переданном обучающем корпусе.
     /// Обучение BPE: начинаем с байтов и многократно объединяем самую частую соседнюю пару в новую единицу текста.
-    pub fn learn_merges_by_repeatedly_joining_most_frequent_adjacent_pair(
+    pub fn train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair(
         corpus: &[&str],
         merge_count: usize,
     ) -> Self {
@@ -72,7 +72,7 @@ impl BytePairEncoding {
 
     /// Применяет сохранённые слияния к новому тексту в порядке обучения.
     /// Кодирование BPE: переводим байты текста в номера и применяем выученные объединения по порядку.
-    pub fn convert_text_bytes_to_identifiers_and_apply_learned_merges(
+    pub fn encode_text_as_token_identifiers_by_converting_bytes_and_applying_learned_merges(
         &self,
         text: &str,
     ) -> Vec<usize> {
@@ -92,7 +92,7 @@ impl BytePairEncoding {
 
     /// Восстанавливает байты и проверяет корректность UTF-8.
     /// Декодирование BPE: соединяем байты выбранных единиц текста и восстанавливаем строку UTF-8.
-    pub fn join_bytes_for_identifiers_and_decode_text(
+    pub fn restore_text_by_joining_token_bytes_and_decoding_them(
         &self,
         text_unit_identifiers: &[usize],
     ) -> Result<String, String> {
@@ -144,15 +144,15 @@ mod tests {
     /// Проверяем, что кодирование и декодирование возвращают исходный текст, включая незнакомые символы и эмодзи.
     fn encoding_then_decoding_restores_unseen_text_and_emoji() {
         let model: super::BytePairEncoding =
-            super::BytePairEncoding::learn_merges_by_repeatedly_joining_most_frequent_adjacent_pair(
+            super::BytePairEncoding::train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair(
                 &["мама мыла", "мама дома"],
                 12,
             );
         for text in ["мама", "кот 🐈", "", "\0"] {
             assert_eq!(
                 model
-                    .join_bytes_for_identifiers_and_decode_text(
-                        &model.convert_text_bytes_to_identifiers_and_apply_learned_merges(text)
+                    .restore_text_by_joining_token_bytes_and_decoding_them(
+                        &model.encode_text_as_token_identifiers_by_converting_bytes_and_applying_learned_merges(text)
                     )
                     .unwrap(),
                 text

@@ -132,7 +132,7 @@ fn main() {
                     // Обрабатываем случай, когда предыдущее условие не выполнено.
                     } else {
                         // Составляем результат из вычисленных значений в указанном порядке.
-                        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(query, key).unwrap()
+                        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(query, key).unwrap()
                             // Делим значения, получая нормированную величину или среднее.
                             / (|| -> f64 {
         // Обновляем значение результатом текущего вычисления.

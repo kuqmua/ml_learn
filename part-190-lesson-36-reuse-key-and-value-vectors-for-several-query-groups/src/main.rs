@@ -29,7 +29,7 @@ fn main() {
             .collect();
         lesson_trace::trace_step!(raw_model_scores);
         let weights: Vec<f64> =
-            part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::exponentiate_shifted_scores_then_divide_by_their_sum(
+            part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
                 &raw_model_scores,
             );
         lesson_trace::trace_step!(weights);

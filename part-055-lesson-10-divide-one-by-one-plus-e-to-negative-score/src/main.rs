@@ -66,11 +66,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_one_over_one_plus_e_to_negative_score();
+    plot_class_probability_as_one_over_one_plus_e_to_negative_score();
 }
 
 // Строим график по результатам урока.
-fn plot_one_over_one_plus_e_to_negative_score() {
+fn plot_class_probability_as_one_over_one_plus_e_to_negative_score() {
     // График величин и зависимостей, изученных в этом уроке.
     let sigmoid_points: Vec<(f64, f64)> = (-60..=60)
         // Преобразуем каждый элемент в новое значение.

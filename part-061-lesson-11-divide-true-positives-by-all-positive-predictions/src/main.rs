@@ -41,7 +41,7 @@ fn main() {
         lesson_trace::trace_step!(counts);
         // Сохраняем результат этого шага в `precision`.
         let precision: Option<f64> =
-            part_061_lesson_11_divide_true_positives_by_all_positive_predictions::true_positives_divided_by_all_positive_predictions(counts);
+            part_061_lesson_11_divide_true_positives_by_all_positive_predictions::calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions(counts);
         lesson_trace::trace_step!(precision);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(precision, expected);

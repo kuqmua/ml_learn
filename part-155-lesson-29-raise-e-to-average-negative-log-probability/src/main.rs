@@ -39,11 +39,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_e_to_average_negative_log_probability();
+    plot_perplexity_as_e_to_average_negative_log_probability();
 }
 
 // Строим график по результатам урока.
-fn plot_e_to_average_negative_log_probability() {
+fn plot_perplexity_as_e_to_average_negative_log_probability() {
     // График величин и зависимостей, изученных в этом уроке.
     let effective_choice_count_points: Vec<(f64, f64)> = (0..=40)
         // Преобразуем каждый элемент в новое значение.

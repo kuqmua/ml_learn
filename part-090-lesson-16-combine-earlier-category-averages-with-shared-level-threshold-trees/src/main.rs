@@ -16,7 +16,7 @@ fn main() {
     lesson_trace::trace_step!(targets);
     // Замену категорий числами, рассчитанными по целям, называют target encoding.
     let category_target_mean_values: Vec<f64> =
-        part_088_lesson_16_average_earlier_targets_for_category_without_current_answer::average_previous_targets_per_category_with_prior_weight(
+        part_088_lesson_16_average_earlier_targets_for_category_without_current_answer::encode_categories_as_average_previous_targets_with_prior_weight(
             &categories,
             &targets,
             0.5,
@@ -49,7 +49,7 @@ fn main() {
         let prediction: f64 = base
             + learning_rate
                 * tree
-                    .choose_leaf_by_shared_threshold_test_at_each_level(&[feature])
+                    .predict_tree_output_by_choosing_leaf_with_shared_threshold_tests(&[feature])
                     .unwrap();
         lesson_trace::trace_step!(prediction);
         before += (base - target).powi(2);

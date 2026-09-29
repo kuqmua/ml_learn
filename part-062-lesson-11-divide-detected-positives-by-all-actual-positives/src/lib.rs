@@ -2,7 +2,7 @@
 
 /// Доля найденных среди действительно положительных объектов.
 /// Полнота (recall): найденные положительные / все действительно положительные примеры.
-pub fn true_positives_divided_by_all_actual_positives(
+pub fn calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(
     counts: part_060_lesson_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts,
 ) -> Option<f64> {
     // Сохраняем результат этого шага в `actual_positives`.

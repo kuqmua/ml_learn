@@ -10,7 +10,7 @@
 
 // Долю (fraction) дисперсии исходного сигнала обозначают alpha_bar; её сохранение называют retention.
 /// Восстановление сигнала: (noisy − sqrt(1−a)·predicted_noise) / sqrt(a).
-fn subtract_scaled_noise_then_divide_by_signal_scale(
+fn recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
     noisy: f64,
     predicted_noise: f64,
     original_signal_variance_share: f64,
@@ -27,24 +27,25 @@ fn main() {
     let original_signal_variance_share: f64 = 0.36;
     lesson_trace::trace_step!(original_signal_variance_share);
     let noisy: f64 =
-        part_203_lesson_39_mix_signal_and_noise_using_square_roots_of_variance_shares::mix_signal_and_noise_using_square_roots_of_variance_shares(
+        part_203_lesson_39_mix_signal_and_noise_using_square_roots_of_variance_shares::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
             clean,
             noise,
             original_signal_variance_share,
         )
         .unwrap();
     lesson_trace::trace_step!(noisy);
-    let exact: f64 = subtract_scaled_noise_then_divide_by_signal_scale(
+    let exact: f64 = recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
         noisy,
         noise,
         original_signal_variance_share,
     );
     lesson_trace::trace_step!(exact);
-    let mistaken: f64 = subtract_scaled_noise_then_divide_by_signal_scale(
-        noisy,
-        noise + 0.2,
-        original_signal_variance_share,
-    );
+    let mistaken: f64 =
+        recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
+            noisy,
+            noise + 0.2,
+            original_signal_variance_share,
+        );
     lesson_trace::trace_step!(mistaken);
     assert!((exact - clean).abs() < 1e-12);
     assert!((mistaken - clean).abs() > 0.1);

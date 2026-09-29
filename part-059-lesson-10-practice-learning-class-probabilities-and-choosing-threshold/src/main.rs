@@ -97,9 +97,9 @@ fn main() {
         (3., 1.),
     ];
 
-    // Объявляем повторно используемое вычисление `average_negative_log_probability_of_binary_training_labels`; параметры ниже задают его входы.
+    // Объявляем повторно используемое вычисление `calculate_binary_classification_loss_as_average_negative_log_label_probability`; параметры ниже задают его входы.
     /// Бинарная перекрёстная энтропия: среднее −y·ln(p) − (1−y)·ln(1−p), вычисленное устойчиво из оценок линейной модели.
-    fn average_negative_log_probability_of_binary_training_labels(
+    fn calculate_binary_classification_loss_as_average_negative_log_label_probability(
         // Получаем набор наблюдений, по которому считаем ошибку или градиент.
         data: &[(f64, f64)],
         // Параметр `weight` передаёт коэффициент при признаке.
@@ -187,9 +187,9 @@ fn main() {
                         lesson_trace::trace_step!(power_of_two);
                     }
                     // Этот ряд — учебное раскрытие `value.ln()`; он может работать медленнее и отличаться по точности.
-                    // Объявляем повторно используемое вычисление `twice_sum_odd_powers_of_ratio_over_odd_numbers`; параметры ниже задают его входы.
+                    // Объявляем повторно используемое вычисление `approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers`; параметры ниже задают его входы.
                     /// Ряд для ln(x): 2·(t + t³/3 + t⁵/5 + …), где t = (x−1)/(x+1).
-                    fn twice_sum_odd_powers_of_ratio_over_odd_numbers(value: f64) -> f64 {
+                    fn approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(value: f64) -> f64 {
                         // Нормируем или усредняем величину делением и сохраняем её в `ratio`.
                         let ratio: f64 = (value - 1.0) / (value + 1.0);
                         lesson_trace::trace_step!(ratio);
@@ -217,10 +217,10 @@ fn main() {
                         2.0 * result
                     }
                     // Сохраняем рассчитанное значение `logarithm_of_two` для следующих операций.
-                    let logarithm_of_two: f64 = twice_sum_odd_powers_of_ratio_over_odd_numbers(2.0);
+                    let logarithm_of_two: f64 = approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(2.0);
                     lesson_trace::trace_step!(logarithm_of_two);
                     // Умножаем величины согласно используемой формуле.
-                    twice_sum_odd_powers_of_ratio_over_odd_numbers(scaled) + power_of_two as f64 * logarithm_of_two
+                    approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(scaled) + power_of_two as f64 * logarithm_of_two
                 })();
             lesson_trace::trace_step!(loss_sum);
         }
@@ -230,11 +230,17 @@ fn main() {
 
     // Шаг: Измеряем loss модели с нулевыми коэффициентами.
     let before: f64 =
-        average_negative_log_probability_of_binary_training_labels(&TRAINING_EXAMPLES, 0., 0.);
+        calculate_binary_classification_loss_as_average_negative_log_label_probability(
+            &TRAINING_EXAMPLES,
+            0.,
+            0.,
+        );
     lesson_trace::trace_step!(before);
-    // Объявляем повторно используемое вычисление `one_divided_by_one_plus_e_to_negative_score`; параметры ниже задают его входы.
-    /// Сигмоида: 1 / (1 + e^(−score)); превращает оценку модели в число от 0 до 1.
-    fn one_divided_by_one_plus_e_to_negative_score(raw_model_score: f64) -> f64 {
+    // Объявляем повторно используемое вычисление `calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score`; параметры ниже задают его входы.
+    /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
+    fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
+        raw_model_score: f64,
+    ) -> f64 {
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if raw_model_score >= 0. {
             // Делим значения, получая нормированную величину или среднее.
@@ -268,7 +274,7 @@ fn main() {
             let (weight_loss_rate_of_change, bias_loss_rate_of_change): (f64, f64) =
                 (|| -> (f64, f64) {
                     // Используем подготовленное значение в следующем шаге примера.
-                    /* Для log-loss производная по logit равна one_divided_by_one_plus_e_to_negative_score(logit) − правильная метка. */
+                    /* Для log-loss производная по logit равна calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(logit) − правильная метка. */
                     // Сохраняем результат этого шага в `data`.
                     let data: &[(f64, f64)] = &TRAINING_EXAMPLES;
                     lesson_trace::trace_step!(data);
@@ -290,7 +296,7 @@ fn main() {
                         // Сохраняем рассчитанное значение `prediction_error` для следующих операций.
                         let prediction_error: f64 =
                         // Умножаем величины согласно используемой формуле.
-                        one_divided_by_one_plus_e_to_negative_score(weight * feature_value + bias) - target_label;
+                        calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(weight * feature_value + bias) - target_label;
                         lesson_trace::trace_step!(prediction_error);
                         // Прибавляем очередной вклад к ранее накопленному результату.
                         weight_loss_rate_of_change += prediction_error * feature_value;
@@ -317,11 +323,12 @@ fn main() {
             bias -= 0.1 * bias_loss_rate_of_change;
             lesson_trace::trace_step!(bias);
             if matches!(epoch, 0 | 1 | 9 | 99 | 299) {
-                let loss: f64 = average_negative_log_probability_of_binary_training_labels(
-                    &TRAINING_EXAMPLES,
-                    weight,
-                    bias,
-                );
+                let loss: f64 =
+                    calculate_binary_classification_loss_as_average_negative_log_label_probability(
+                        &TRAINING_EXAMPLES,
+                        weight,
+                        bias,
+                    );
                 println!(
                     "после эпохи {}: вес={weight:.4}, смещение={bias:.4}, log-loss={loss:.4}",
                     epoch + 1
@@ -338,13 +345,15 @@ fn main() {
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
         "log-loss: {before:.3} -> {:.3}; P(y=1|x=2)={:.3}",
         // Вызываем нужное вычисление с подготовленными аргументами.
-        average_negative_log_probability_of_binary_training_labels(
+        calculate_binary_classification_loss_as_average_negative_log_label_probability(
             &TRAINING_EXAMPLES,
             weight,
             bias
         ),
         // Умножаем величины согласно используемой формуле.
-        one_divided_by_one_plus_e_to_negative_score(2. * weight + bias)
+        calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
+            2. * weight + bias
+        )
     );
 
     // Построение графика вынесено из основного кода урока.

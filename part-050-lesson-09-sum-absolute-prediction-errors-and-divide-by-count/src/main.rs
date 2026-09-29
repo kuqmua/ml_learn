@@ -34,7 +34,7 @@ fn main() {
         lesson_trace::trace_step!(expected);
         // Сохраняем результат этого шага в `mean_absolute_error_value`.
         let mean_absolute_error_value: f64 =
-            part_050_lesson_09_sum_absolute_prediction_errors_and_divide_by_count::sum_absolute_prediction_errors_and_divide_by_count(&targets, predictions)
+            part_050_lesson_09_sum_absolute_prediction_errors_and_divide_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(&targets, predictions)
                 // Используем результат, ожидая успешного выполнения шага.
                 .expect("у каждого прогноза есть правильный ответ");
         lesson_trace::trace_step!(mean_absolute_error_value);
@@ -61,7 +61,7 @@ fn plot_average_absolute_prediction_error_for_changing_offset() {
                 // Используем подготовленное значение в следующем шаге примера.
                 prediction_difference,
                 // Используем подготовленное значение в следующем шаге примера.
-                part_050_lesson_09_sum_absolute_prediction_errors_and_divide_by_count::sum_absolute_prediction_errors_and_divide_by_count(
+                part_050_lesson_09_sum_absolute_prediction_errors_and_divide_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(
                     // Передаём ряды или значения для отрисовки графика.
                     &[2.0, 4.0, 6.0],
                     // Передаём ряды или значения для отрисовки графика.

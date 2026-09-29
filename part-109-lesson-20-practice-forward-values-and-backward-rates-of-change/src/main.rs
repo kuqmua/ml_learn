@@ -85,11 +85,13 @@ fn main() {
     /// tanh(x) = (e^(2x)-1)/(e^(2x)+1), отдельная формула для отрицательных x.
     /// Учебный аналог `f64::tanh`; явная формула может работать медленнее и давать другое округление.
     /// Гиперболический тангенс tanh(x) = (e^(2x)−1) / (e^(2x)+1); используем симметрию и насыщение для устойчивости.
-    fn e_to_twice_value_minus_one_divided_by_e_to_twice_value_plus_one(value: f64) -> f64 {
+    fn calculate_tanh_as_e_to_twice_value_minus_one_divided_by_e_to_twice_value_plus_one(
+        value: f64,
+    ) -> f64 {
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if value < 0.0 {
             // Завершаем текущий расчёт и возвращаем найденное значение.
-            return -e_to_twice_value_minus_one_divided_by_e_to_twice_value_plus_one(-value);
+            return -calculate_tanh_as_e_to_twice_value_minus_one_divided_by_e_to_twice_value_plus_one(-value);
         }
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if value > 20.0 {
@@ -177,7 +179,7 @@ fn main() {
     lesson_trace::trace_step!(graph);
     // Применяем tanh к результату и запоминаем его вход для обратного прохода.
     let output_index: usize = graph.append_input_value_node_to_computation_graph(
-        e_to_twice_value_minus_one_divided_by_e_to_twice_value_plus_one(
+        calculate_tanh_as_e_to_twice_value_minus_one_divided_by_e_to_twice_value_plus_one(
             // Обновляем состояние объекта результатом текущей операции.
             graph.0[doubled_square_index].value,
         ),

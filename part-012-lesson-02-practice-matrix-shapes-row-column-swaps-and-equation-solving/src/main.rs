@@ -34,9 +34,9 @@ fn main() {
 
     // Группируем методы рядом с типом, к которому они относятся.
     impl Matrix {
-        // Объявляем повторно используемое вычисление `from_elements_listed_row_by_row`; параметры ниже задают его входы.
+        // Объявляем повторно используемое вычисление `create_matrix_from_elements_listed_row_by_row`; параметры ниже задают его входы.
         /// Создаём матрицу из элементов, перечисленных строка за строкой (row-major order).
-        fn from_elements_listed_row_by_row(
+        fn create_matrix_from_elements_listed_row_by_row(
             // `rows` задаёт соответствующее входное значение или поле структуры.
             rows: usize,
             // `column_count` задаёт соответствующее входное значение или поле структуры.
@@ -66,7 +66,7 @@ fn main() {
 
     // Шаг: Создаём матрицу 2×2 с известными элементами.
     let left_matrix: Matrix =
-        Matrix::from_elements_listed_row_by_row(2, 2, vec![1., 2., 3., 4.]).unwrap();
+        Matrix::create_matrix_from_elements_listed_row_by_row(2, 2, vec![1., 2., 3., 4.]).unwrap();
     lesson_trace::trace_step!(left_matrix);
     // Шаг: Умножаем матрицу на вектор: каждая координата ответа — сумма после попарного умножения элементов строки.
     let input_vector: [f64; 2] = [1., 1.];
@@ -90,7 +90,7 @@ fn main() {
         let row_end: usize = row_start + left_matrix.column_count;
         lesson_trace::trace_step!(row_end);
         // Сохраняем результат этого шага в `row_result`.
-        let row_result: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+        let row_result: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             // Используем подготовленное значение в следующем шаге примера.
             &left_matrix.data[row_start..row_end],
             // Используем подготовленное значение в следующем шаге примера.
@@ -158,7 +158,7 @@ fn main() {
                 .collect();
             lesson_trace::trace_step!(column_values);
             // Сохраняем результат этого шага в `cell_value`.
-            let cell_value: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+            let cell_value: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
                 // Используем подготовленное значение в следующем шаге примера.
                 &transposed_matrix.data[row_start..row_end],
                 // Используем подготовленное значение в следующем шаге примера.
@@ -174,7 +174,7 @@ fn main() {
     // Сохраняем рассчитанное значение `result_matrix` для следующих операций.
     let result_matrix: Matrix =
         // Собираем матрицу после умножения с рассчитанными размерностями и элементами.
-        Matrix::from_elements_listed_row_by_row(transposed_matrix.rows, left_matrix.column_count, result_elements)
+        Matrix::create_matrix_from_elements_listed_row_by_row(transposed_matrix.rows, left_matrix.column_count, result_elements)
             // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
             .unwrap();
     lesson_trace::trace_step!(result_matrix);

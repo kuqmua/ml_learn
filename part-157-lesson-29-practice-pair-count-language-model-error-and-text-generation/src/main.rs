@@ -130,7 +130,7 @@ fn main() {
 
     // Сглаживание Лапласа даёт ненулевую вероятность непоказанным биграммам.
     /// Сглаженная вероятность следующего токена: (число пары + 1) / (число переходов из контекста + размер словаря).
-    fn pair_count_plus_one_divided_by_context_count_plus_vocabulary_size(
+    fn calculate_next_token_probability_as_pair_count_plus_one_over_context_count_plus_vocabulary_size(
         // Получаем таблицу частот биграмм для оценки вероятности перехода.
         counts: &std::collections::BTreeMap<(String, String), usize>,
         // `known_text_units` задаёт соответствующее входное значение или поле структуры.
@@ -168,9 +168,9 @@ fn main() {
             / (total + known_text_units.len()) as f64
     }
 
-    // Объявляем повторно используемое вычисление `e_to_average_negative_log_next_word_probability`; параметры ниже задают его входы.
+    // Объявляем повторно используемое вычисление `calculate_perplexity_as_e_to_average_negative_log_next_word_probability`; параметры ниже задают его входы.
     /// Перплексия: e в степени среднего отрицательного логарифма вероятности следующего слова, включая конец строки.
-    fn e_to_average_negative_log_next_word_probability(
+    fn calculate_perplexity_as_e_to_average_negative_log_next_word_probability(
         // `sentences` задаёт соответствующее входное значение или поле структуры.
         sentences: &[&str],
         // Получаем таблицу частот биграмм для оценки вероятности перехода.
@@ -198,7 +198,7 @@ fn main() {
                     /* ln(x) через ряд 2 * (t + t³/3 + t⁵/5 + ...), t=(x-1)/(x+1). */
                     // Сохраняем результат этого шага в `value`.
                     let value: f64 =
-                        pair_count_plus_one_divided_by_context_count_plus_vocabulary_size(
+                        calculate_next_token_probability_as_pair_count_plus_one_over_context_count_plus_vocabulary_size(
                             // Используем ранее рассчитанное значение `counts` в текущем выражении.
                             counts,
                             // Используем ранее рассчитанное значение `known_text_units` в текущем выражении.
@@ -246,9 +246,11 @@ fn main() {
                         lesson_trace::trace_step!(power_of_two);
                     }
                     // Этот ряд — учебное раскрытие `value.ln()`; он может работать медленнее и отличаться по точности.
-                    // Объявляем повторно используемое вычисление `twice_sum_odd_powers_of_ratio_over_odd_numbers`; параметры ниже задают его входы.
+                    // Объявляем повторно используемое вычисление `approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers`; параметры ниже задают его входы.
                     /// Ряд для ln(x): 2·(t + t³/3 + t⁵/5 + …), где t = (x−1)/(x+1).
-                    fn twice_sum_odd_powers_of_ratio_over_odd_numbers(value: f64) -> f64 {
+                    fn approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
+                        value: f64,
+                    ) -> f64 {
                         // Нормируем или усредняем величину делением и сохраняем её в `ratio`.
                         let ratio: f64 = (value - 1.0) / (value + 1.0);
                         lesson_trace::trace_step!(ratio);
@@ -276,11 +278,15 @@ fn main() {
                         2.0 * result
                     }
                     // Сохраняем рассчитанное значение `logarithm_of_two` для следующих операций.
-                    let logarithm_of_two: f64 = twice_sum_odd_powers_of_ratio_over_odd_numbers(2.0);
+                    let logarithm_of_two: f64 =
+                        approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
+                            2.0,
+                        );
                     lesson_trace::trace_step!(logarithm_of_two);
                     // Умножаем величины согласно используемой формуле.
-                    twice_sum_odd_powers_of_ratio_over_odd_numbers(scaled)
-                        + power_of_two as f64 * logarithm_of_two
+                    approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
+                        scaled,
+                    ) + power_of_two as f64 * logarithm_of_two
                 })();
                 lesson_trace::trace_step!(negative_log_likelihood);
                 // Прибавляем очередной вклад к ранее накопленному результату.
@@ -302,13 +308,13 @@ fn main() {
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
         "train perplexity={:.3}, validation perplexity={:.3}",
         // Вызываем нужное вычисление с подготовленными аргументами.
-        e_to_average_negative_log_next_word_probability(
+        calculate_perplexity_as_e_to_average_negative_log_next_word_probability(
             &training_sentences,
             &bigram_counts,
             &known_text_units
         ),
         // Вызываем нужное вычисление с подготовленными аргументами.
-        e_to_average_negative_log_next_word_probability(
+        calculate_perplexity_as_e_to_average_negative_log_next_word_probability(
             &["пёс ест"],
             &bigram_counts,
             &known_text_units
@@ -329,7 +335,7 @@ fn main() {
             // Сравниваем кандидатов и оставляем наибольший результат.
             .max_by(|first_candidate, second_candidate| {
                 // Вызываем нужное вычисление с подготовленными аргументами.
-                pair_count_plus_one_divided_by_context_count_plus_vocabulary_size(
+                calculate_next_token_probability_as_pair_count_plus_one_over_context_count_plus_vocabulary_size(
                     // Передаём данные по ссылке или разыменовываем их для следующей операции.
                     &bigram_counts,
                     // Передаём данные по ссылке или разыменовываем их для следующей операции.
@@ -341,7 +347,7 @@ fn main() {
                 )
                 // Сравниваем числа с полным порядком, включая специальные значения.
                 .total_cmp(
-                    &pair_count_plus_one_divided_by_context_count_plus_vocabulary_size(
+                    &calculate_next_token_probability_as_pair_count_plus_one_over_context_count_plus_vocabulary_size(
                         // Передаём данные по ссылке или разыменовываем их для следующей операции.
                         &bigram_counts,
                         // Передаём данные по ссылке или разыменовываем их для следующей операции.

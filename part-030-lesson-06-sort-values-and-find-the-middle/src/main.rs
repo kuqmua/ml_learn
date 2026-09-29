@@ -55,11 +55,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_values_and_middle_of_sorted_values();
+    plot_values_and_median_as_middle_of_sorted_values();
 }
 
 // Строим график по результатам урока.
-fn plot_values_and_middle_of_sorted_values() {
+fn plot_values_and_median_as_middle_of_sorted_values() {
     // Наглядное представление величин из этого урока.
     let observation_points: Vec<(f64, f64)> = [(1.0, 1.0), (2.0, 3.0), (3.0, 7.0)].to_vec();
     // Собираем значения для `median_points` в коллекцию.

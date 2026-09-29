@@ -12,7 +12,7 @@ fn main() {
     let input_component: [f64; 2] = [3.0, 4.0];
     lesson_trace::trace_step!(input_component);
     let result: Vec<f64> =
-        part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::divide_coordinates_by_root_mean_square_then_apply_weights(
+        part_188_lesson_36_divide_coordinates_by_square_root_of_mean_square_and_apply_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
             &input_component,
             &[1.0, 1.0],
             // ε=10⁻⁸ защищает от нулевого RMS и почти не меняет обычный ненулевой вектор.

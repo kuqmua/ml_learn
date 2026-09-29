@@ -25,7 +25,7 @@ fn main() {
         lesson_trace::trace_step!(candidate);
         // Для поиска ближайшего кандидата нужен квадрат расстояния из урока 01.4.
         let squared_distance: f64 =
-            part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::sum_squared_differences_of_matching_coordinates(
+            part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences(
                 &query, &candidate,
             )
             // Используем результат, ожидая успешного выполнения шага.

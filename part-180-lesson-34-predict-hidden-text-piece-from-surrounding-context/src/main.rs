@@ -24,7 +24,7 @@ fn main() {
     ];
     lesson_trace::trace_step!(visible);
     let context: Vec<[f64; 2]> =
-        part_178_lesson_34_build_text_context_from_both_earlier_and_later_positions::sum_visible_states_weighted_by_exponentiated_coordinate_products(
+        part_178_lesson_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
             &visible, &[true; 3],
         )
         .unwrap();

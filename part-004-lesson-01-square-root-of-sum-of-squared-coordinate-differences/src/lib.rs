@@ -2,7 +2,7 @@
 
 /// Сумма квадратов покоординатных разностей.
 /// Квадрат евклидова расстояния: вычитаем соответствующие координаты, возводим разности в квадрат и складываем.
-pub fn sum_squared_differences_of_matching_coordinates(
+pub fn calculate_squared_point_distance_by_summing_squared_coordinate_differences(
     left: &[f64],
     right: &[f64],
 ) -> Result<f64, &'static str> {
@@ -30,7 +30,7 @@ pub fn sum_squared_differences_of_matching_coordinates(
 
 /// Расстояние — длина вектора разностей; используем норму из урока 01.3.
 /// Евклидово расстояние: берём корень из суммы квадратов разностей соответствующих координат.
-pub fn square_root_of_sum_of_squared_coordinate_differences(
+pub fn calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
     left: &[f64],
     right: &[f64],
 ) -> Result<f64, &'static str> {
@@ -48,7 +48,7 @@ pub fn square_root_of_sum_of_squared_coordinate_differences(
     lesson_trace::trace_step!(differences);
     // Возвращаем успешный результат.
     Ok(
-        part_003_lesson_01_square_root_of_sum_of_squared_vector_coordinates::square_root_of_sum_of_squared_coordinates(
+        part_003_lesson_01_square_root_of_sum_of_squared_vector_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(
             &differences,
         ),
     )

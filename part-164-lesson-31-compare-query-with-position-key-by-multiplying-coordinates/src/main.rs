@@ -20,7 +20,7 @@ fn main() {
     lesson_trace::trace_step!(key);
     // Умножаем значения и сохраняем результат в `score`.
     let score: f64 =
-        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             &query, &key,
         )
         // Используем результат, ожидая успешного выполнения шага.

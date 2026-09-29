@@ -9,7 +9,9 @@
 // Нормализация, причинное внимание, residual, FFN и второй residual образуют блок.
 
 /// Нормализация слоя (LayerNorm): из координат вычитаем среднее и делим на sqrt(среднее квадратов отклонений + epsilon).
-fn subtract_mean_then_divide_by_root_of_mean_squared_deviation(input_value: [f64; 2]) -> [f64; 2] {
+fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
+    input_value: [f64; 2],
+) -> [f64; 2] {
     // Среднее и дисперсию считаем по двум координатам токена; 10⁻⁵ не даёт делить на ноль.
     let mean: f64 = (input_value[0] + input_value[1]) / 2.0;
     lesson_trace::trace_step!(mean);
@@ -21,16 +23,16 @@ fn subtract_mean_then_divide_by_root_of_mean_squared_deviation(input_value: [f64
     ]
 }
 /// Учебный блок декодера: нормализуем вход, прибавляем причинный контекст, снова нормализуем и прибавляем 0.2·max(0, x).
-fn add_weighted_past_context_then_add_transformed_normalized_values(
+fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normalized_values(
     input: &[[f64; 2]],
 ) -> Vec<[f64; 2]> {
     let normalized: Vec<[f64; 2]> = input
         .iter()
         .copied()
-        .map(subtract_mean_then_divide_by_root_of_mean_squared_deviation)
+        .map(normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation)
         .collect();
     lesson_trace::trace_step!(normalized);
-    let attention: Vec<[f64; 2]> = part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::sum_current_and_past_values_weighted_by_query_key_matches(
+    let attention: Vec<[f64; 2]> = part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
         &normalized,
         &normalized,
         &normalized,
@@ -45,7 +47,7 @@ fn add_weighted_past_context_then_add_transformed_normalized_values(
             let input_plus_transformed_value: [f64; 2] =
                 [original[0] + context[0], original[1] + context[1]];
             lesson_trace::trace_step!(input_plus_transformed_value);
-            let norm: [f64; 2] = subtract_mean_then_divide_by_root_of_mean_squared_deviation(
+            let norm: [f64; 2] = normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
                 input_plus_transformed_value,
             );
             lesson_trace::trace_step!(norm);
@@ -62,7 +64,9 @@ fn main() {
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
     lesson_trace::trace_step!(states);
     let output: Vec<[f64; 2]> =
-        add_weighted_past_context_then_add_transformed_normalized_values(&states);
+        calculate_decoder_block_output_by_adding_past_context_and_transformed_normalized_values(
+            &states,
+        );
     lesson_trace::trace_step!(output);
     assert_eq!(output.len(), states.len());
     println!("после decoder block: {output:?}");

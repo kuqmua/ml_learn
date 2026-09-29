@@ -1,7 +1,8 @@
 //! Урок 002. Сложение модулей координат вектора.
 
-/// Складываем модули координат.
-pub fn sum_absolute_values_of_vector_coordinates(vector: &[f64]) -> f64 {
+/// Получаем норму L1: складываем модули координат — длины перемещений вдоль каждой оси.
+/// Для [3, 4] это 7; обычная длина прямого отрезка (норма L2) равна 5.
+pub fn calculate_l1_vector_norm_by_summing_absolute_coordinates(vector: &[f64]) -> f64 {
     // Сохраняем результат этого шага в `sum`.
     let mut sum: f64 = 0.0;
     lesson_trace::trace_step!(sum);

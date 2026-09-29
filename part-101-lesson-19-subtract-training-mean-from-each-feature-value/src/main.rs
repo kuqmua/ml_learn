@@ -25,7 +25,7 @@ fn main() {
     );
     // Преобразуем входные данные и сохраняем полученную коллекцию в `mean`.
     let mean: f64 =
-        part_029_lesson_06_sum_values_and_divide_by_count::sum_values_and_divide_by_count(&values)
+        part_029_lesson_06_sum_values_and_divide_by_count::calculate_mean_by_summing_values_and_dividing_by_count(&values)
             .unwrap();
     lesson_trace::trace_step!(mean);
     // Преобразуем входные данные и сохраняем полученную коллекцию в `centered`.

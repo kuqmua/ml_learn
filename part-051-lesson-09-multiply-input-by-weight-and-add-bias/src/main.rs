@@ -31,11 +31,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_weighted_input_plus_bias();
+    plot_linear_prediction_as_weighted_input_plus_bias();
 }
 
 // Строим график по результатам урока.
-fn plot_weighted_input_plus_bias() {
+fn plot_linear_prediction_as_weighted_input_plus_bias() {
     // График величин и зависимостей, изученных в этом уроке.
     let coefficients_points: Vec<(f64, f64)> = (0..=50)
         // Преобразуем каждый элемент в новое значение.

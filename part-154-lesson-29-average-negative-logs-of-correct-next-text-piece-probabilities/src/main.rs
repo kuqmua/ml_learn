@@ -93,11 +93,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_negative_log_of_correct_next_text_unit_probability();
+    plot_next_token_loss_as_negative_log_of_correct_text_unit_probability();
 }
 
 // Строим график по результатам урока.
-fn plot_negative_log_of_correct_next_text_unit_probability() {
+fn plot_next_token_loss_as_negative_log_of_correct_text_unit_probability() {
     // График величин и зависимостей, изученных в этом уроке.
     // Ошибку предсказанного распределения вероятностей называют cross-entropy.
     let predicted_probability_error_points: Vec<(f64, f64)> = (1..=100)

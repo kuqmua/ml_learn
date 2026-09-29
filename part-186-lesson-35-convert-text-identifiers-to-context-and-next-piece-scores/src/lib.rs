@@ -4,7 +4,7 @@
 /// Возвращает состояния после причинного внимания и residual.
 // Единицу текста, которую модель обрабатывает как одно целое, называют token.
 /// Скрытые состояния учебного декодера: берём векторы по номерам токенов, добавляем позицию и взвешенный контекст без будущих позиций.
-pub fn add_position_to_text_vectors_then_add_weighted_past_context(
+pub fn calculate_text_context_vectors_by_adding_position_and_weighted_past_context(
     text_unit_identifiers: &[usize],
 ) -> Vec<[f64; 2]> {
     // Три двумерных embedding заданы вручную: так весь прямой проход можно просчитать на бумаге.
@@ -26,7 +26,7 @@ pub fn add_position_to_text_vectors_then_add_weighted_past_context(
         return Vec::new();
     }
     let context: Vec<[f64; 2]> =
-        part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::sum_current_and_past_values_weighted_by_query_key_matches(&states, &states, &states)
+        part_182_lesson_35_sum_current_and_past_values_with_query_key_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(&states, &states, &states)
             .unwrap();
     lesson_trace::trace_step!(context);
     states
@@ -42,10 +42,12 @@ pub fn convert_text_identifiers_to_context_then_to_next_token_scores(
     text_unit_identifiers: &[usize],
 ) -> Vec<[f64; 3]> {
     // Третий logit — среднее двух координат (веса 0.5 и 0.5) фиксированной выходной проекции.
-    add_position_to_text_vectors_then_add_weighted_past_context(text_unit_identifiers)
-        .into_iter()
-        .map(|hidden| [hidden[0], hidden[1], (hidden[0] + hidden[1]) * 0.5])
-        .collect()
+    calculate_text_context_vectors_by_adding_position_and_weighted_past_context(
+        text_unit_identifiers,
+    )
+    .into_iter()
+    .map(|hidden| [hidden[0], hidden[1], (hidden[0] + hidden[1]) * 0.5])
+    .collect()
 }
 
 #[cfg(test)]
@@ -54,8 +56,12 @@ mod tests {
     /// Проверяем, что добавление будущего токена не меняет предыдущие состояния и оценки.
     fn future_tokens_do_not_change_earlier_states_or_scores() {
         assert_eq!(
-            super::add_position_to_text_vectors_then_add_weighted_past_context(&[0])[0],
-            super::add_position_to_text_vectors_then_add_weighted_past_context(&[0, 1])[0]
+            super::calculate_text_context_vectors_by_adding_position_and_weighted_past_context(&[
+                0
+            ])[0],
+            super::calculate_text_context_vectors_by_adding_position_and_weighted_past_context(&[
+                0, 1
+            ])[0]
         );
         assert_eq!(
             super::convert_text_identifiers_to_context_then_to_next_token_scores(&[0])[0],

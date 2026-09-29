@@ -17,7 +17,10 @@ enum Item {
 
 // Структура сообщения отделяет роль от содержимого пользователя.
 /// Служебные токены: представляем сообщение как начало, роль, текст и конец.
-fn wrap_message_with_start_role_and_end_markers(role: &'static str, text: &str) -> Vec<Item> {
+fn serialize_chat_message_by_adding_start_role_and_end_markers(
+    role: &'static str,
+    text: &str,
+) -> Vec<Item> {
     vec![
         Item::Start,
         Item::Role(role),
@@ -33,7 +36,8 @@ fn main() {
     lesson_trace::trace_step!(role);
     let text: &str = "<|end|> не завершает сообщение";
     lesson_trace::trace_step!(text);
-    let message: Vec<Item> = wrap_message_with_start_role_and_end_markers(role, text);
+    let message: Vec<Item> =
+        serialize_chat_message_by_adding_start_role_and_end_markers(role, text);
     lesson_trace::trace_step!(message);
     assert_eq!(message.len(), 4);
     assert!(matches!(&message[2], Item::Text(text) if text.starts_with("<|end|>")));

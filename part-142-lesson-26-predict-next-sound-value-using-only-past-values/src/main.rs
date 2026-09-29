@@ -7,8 +7,10 @@
 // Представь: Чтобы предсказать следующий звуковой отсчёт, используем только уже известные отсчёты.
 // Сочетаем причинные дилатированные свёртки, gate и вероятность следующего дискретного отсчёта.
 
-/// Сигмоида: 1 / (1 + e^(−score)); превращает оценку модели в число от 0 до 1.
-fn one_divided_by_one_plus_e_to_negative_score(input_value: f64) -> f64 {
+/// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
+fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
+    input_value: f64,
+) -> f64 {
     1.0 / (1.0 + (-input_value).exp())
 }
 
@@ -20,13 +22,13 @@ fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f6
         .collect();
     lesson_trace::trace_step!(input);
     let filter_one: Vec<f64> =
-        part_138_lesson_26_sum_weighted_current_and_past_signal_values::sum_weighted_current_and_spaced_past_signal_values(
+        part_138_lesson_26_sum_weighted_current_and_past_signal_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &input, 0.8, 0.4, 1,
         )
         .unwrap();
     lesson_trace::trace_step!(filter_one);
     let gate_one: Vec<f64> =
-        part_138_lesson_26_sum_weighted_current_and_past_signal_values::sum_weighted_current_and_spaced_past_signal_values(
+        part_138_lesson_26_sum_weighted_current_and_past_signal_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &input, 0.2, -0.3, 1,
         )
         .unwrap();
@@ -36,28 +38,33 @@ fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f6
         .zip(&gate_one)
         // Производную функции по параметру или вектор таких производных называют gradient.
         .map(|(&filter_value, &rate_of_change_value)| {
-            filter_value.tanh() * one_divided_by_one_plus_e_to_negative_score(rate_of_change_value)
+            filter_value.tanh()
+                * calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
+                    rate_of_change_value,
+                )
         })
         .collect();
     lesson_trace::trace_step!(layer_one);
     let filter_two: Vec<f64> =
-        part_138_lesson_26_sum_weighted_current_and_past_signal_values::sum_weighted_current_and_spaced_past_signal_values(
+        part_138_lesson_26_sum_weighted_current_and_past_signal_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &layer_one, 1.0, 0.5, 2,
         )
         .unwrap();
     lesson_trace::trace_step!(filter_two);
     let gate_two: Vec<f64> =
-        part_138_lesson_26_sum_weighted_current_and_past_signal_values::sum_weighted_current_and_spaced_past_signal_values(
+        part_138_lesson_26_sum_weighted_current_and_past_signal_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &layer_one, 0.1, 0.6, 2,
         )
         .unwrap();
     lesson_trace::trace_step!(gate_two);
     let last: usize = history.len() - 1;
     lesson_trace::trace_step!(last);
-    let output: f64 =
-        filter_two[last].tanh() * one_divided_by_one_plus_e_to_negative_score(gate_two[last]);
+    let output: f64 = filter_two[last].tanh()
+        * calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
+            gate_two[last],
+        );
     lesson_trace::trace_step!(output);
-    one_divided_by_one_plus_e_to_negative_score(2.0 * output)
+    calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(2.0 * output)
 }
 fn main() {
     lesson_trace::enable();

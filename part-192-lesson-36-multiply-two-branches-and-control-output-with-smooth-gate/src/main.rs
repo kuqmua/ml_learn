@@ -14,7 +14,7 @@ fn main() {
     let up_projection: f64 = input[0] + input[1];
     lesson_trace::trace_step!(up_projection);
     let hidden: f64 =
-        part_192_lesson_36_multiply_two_branches_and_control_output_with_smooth_gate::multiply_gate_and_up_value_then_divide_by_one_plus_e_to_negative_gate(gate, up_projection);
+        part_192_lesson_36_multiply_two_branches_and_control_output_with_smooth_gate::calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate(gate, up_projection);
     lesson_trace::trace_step!(hidden);
     let down: f64 = hidden * 0.5;
     lesson_trace::trace_step!(down);

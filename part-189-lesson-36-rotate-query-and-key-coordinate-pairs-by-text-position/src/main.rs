@@ -8,7 +8,7 @@
 // Позиция вращает пары координат Q и K, сохраняя их длину.
 
 /// Скалярное произведение: умножаем соответствующие координаты двух векторов и складываем произведения.
-fn multiply_matching_coordinates_of_two_vectors_then_add(
+fn calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
     first_value: [f64; 2],
     second_value: [f64; 2],
 ) -> f64 {
@@ -20,7 +20,7 @@ fn main() {
     lesson_trace::trace_step!(query_vector);
     let key_vector: [f64; 2] = [1.0, 0.0];
     lesson_trace::trace_step!(key_vector);
-    let same: f64 = multiply_matching_coordinates_of_two_vectors_then_add(
+    let same: f64 = calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
         part_189_lesson_36_rotate_query_and_key_coordinate_pairs_by_text_position::rotate_vector_coordinate_pair_by_token_position(
             query_vector,
             3,
@@ -31,7 +31,7 @@ fn main() {
         ),
     );
     lesson_trace::trace_step!(same);
-    let distant: f64 = multiply_matching_coordinates_of_two_vectors_then_add(
+    let distant: f64 = calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
         part_189_lesson_36_rotate_query_and_key_coordinate_pairs_by_text_position::rotate_vector_coordinate_pair_by_token_position(
             query_vector,
             3,
@@ -67,7 +67,7 @@ fn plot_coordinate_product_sum_for_relative_position_rotations() {
                 );
             (
                 position_index as f64,
-                multiply_matching_coordinates_of_two_vectors_then_add(query_vector, key_vector),
+                calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(query_vector, key_vector),
             )
         })
         .collect();

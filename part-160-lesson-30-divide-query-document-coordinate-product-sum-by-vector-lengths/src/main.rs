@@ -21,7 +21,7 @@ fn main() {
     let document: [f64; 2] = [2.0, 0.0];
     lesson_trace::trace_step!(document);
     // Тот же косинус из урока 01.5 теперь сравнивает векторы слов документов.
-    let similarity: f64 = part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::sum_coordinate_products_divided_by_vector_lengths(&query, &document)
+    let similarity: f64 = part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&query, &document)
         // Используем результат, ожидая успешного выполнения шага.
         .expect("ненулевые векторы слов одинаковой размерности");
     lesson_trace::trace_step!(similarity);
@@ -30,11 +30,13 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_coordinate_product_sum_divided_by_lengths_for_document_angles(query);
+    plot_document_direction_similarity_as_coordinate_product_sum_divided_by_lengths(query);
 }
 
 // Строим график по результатам урока.
-fn plot_coordinate_product_sum_divided_by_lengths_for_document_angles(query: [f64; 2]) {
+fn plot_document_direction_similarity_as_coordinate_product_sum_divided_by_lengths(
+    query: [f64; 2],
+) {
     // Собираем значения для `points` в коллекцию.
     let points: Vec<(f64, f64)> = (0..=180)
         // Настраиваем или преобразуем результат предыдущего шага.
@@ -49,7 +51,7 @@ fn plot_coordinate_product_sum_divided_by_lengths_for_document_angles(query: [f6
                 // Используем подготовленное значение в следующем шаге примера.
                 degrees as f64,
                 // Задаём именованное поле или параметр.
-                part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::sum_coordinate_products_divided_by_vector_lengths(&query, &rotated_document)
+                part_005_lesson_01_sum_coordinate_products_and_divide_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&query, &rotated_document)
                     .unwrap(),
             )
         })

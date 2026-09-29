@@ -78,7 +78,7 @@ fn main() {
     }
     // Сравниваем доли объектов в одинаковых интервалах эталона и новых данных.
     /// Индекс стабильности популяции (PSI): суммируем (current−reference)·ln(current/reference) по долям трёх интервалов, ограничивая доли снизу.
-    fn sum_bin_share_differences_times_log_of_share_ratios(
+    fn calculate_distribution_shift_score_as_sum_of_bin_share_differences_times_log_share_ratios(
         reference: &[f64],
         current: &[f64],
     ) -> f64 {
@@ -151,9 +151,9 @@ fn main() {
                         lesson_trace::trace_step!(power_of_two);
                     }
                     // Этот ряд — учебное раскрытие `value.ln()`; он может работать медленнее и отличаться по точности.
-                    // Объявляем повторно используемое вычисление `twice_sum_odd_powers_of_ratio_over_odd_numbers`; параметры ниже задают его входы.
+                    // Объявляем повторно используемое вычисление `approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers`; параметры ниже задают его входы.
                     /// Ряд для ln(x): 2·(t + t³/3 + t⁵/5 + …), где t = (x−1)/(x+1).
-                    fn twice_sum_odd_powers_of_ratio_over_odd_numbers(value: f64) -> f64 {
+                    fn approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(value: f64) -> f64 {
                         // Нормируем или усредняем величину делением и сохраняем её в `ratio`.
                         let ratio: f64 = (value - 1.0) / (value + 1.0);
                         lesson_trace::trace_step!(ratio);
@@ -181,10 +181,10 @@ fn main() {
                         2.0 * result
                     }
                     // Сохраняем рассчитанное значение `logarithm_of_two` для следующих операций.
-                    let logarithm_of_two: f64 = twice_sum_odd_powers_of_ratio_over_odd_numbers(2.0);
+                    let logarithm_of_two: f64 = approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(2.0);
                     lesson_trace::trace_step!(logarithm_of_two);
                     // Умножаем величины согласно используемой формуле.
-                    twice_sum_odd_powers_of_ratio_over_odd_numbers(scaled) + power_of_two as f64 * logarithm_of_two
+                    approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(scaled) + power_of_two as f64 * logarithm_of_two
                 })();
             lesson_trace::trace_step!(stability_index);
         }
@@ -201,17 +201,23 @@ fn main() {
         // Передаём очередное значение в составе результата или вызова.
         shifted.len(),
         // Вызываем нужное вычисление с подготовленными аргументами.
-        sum_bin_share_differences_times_log_of_share_ratios(&reference, &stable),
+        calculate_distribution_shift_score_as_sum_of_bin_share_differences_times_log_share_ratios(
+            &reference, &stable
+        ),
         // Вызываем нужное вычисление с подготовленными аргументами.
-        sum_bin_share_differences_times_log_of_share_ratios(&reference, &shifted)
+        calculate_distribution_shift_score_as_sum_of_bin_share_differences_times_log_share_ratios(
+            &reference, &shifted
+        )
     );
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_sums_of_interval_share_changes_times_log_share_ratios(reference, stable, shifted);
+    plot_distribution_shift_score_as_sum_of_interval_share_changes_times_log_share_ratios(
+        reference, stable, shifted,
+    );
 
     // Строим график по результатам урока.
-    fn plot_sums_of_interval_share_changes_times_log_share_ratios(
+    fn plot_distribution_shift_score_as_sum_of_interval_share_changes_times_log_share_ratios(
         reference: [f64; 6],
         stable: [f64; 6],
         shifted: [f64; 6],
@@ -232,13 +238,13 @@ fn main() {
                     // Передаём подпись или текстовое значение для следующего шага.
                     "стабильно",
                     // Используем подготовленное значение в следующем шаге примера.
-                    sum_bin_share_differences_times_log_of_share_ratios(&reference, &stable),
+                    calculate_distribution_shift_score_as_sum_of_bin_share_differences_times_log_share_ratios(&reference, &stable),
                 ),
                 (
                     // Передаём подпись или текстовое значение для следующего шага.
                     "сдвиг",
                     // Используем подготовленное значение в следующем шаге примера.
-                    sum_bin_share_differences_times_log_of_share_ratios(&reference, &shifted),
+                    calculate_distribution_shift_score_as_sum_of_bin_share_differences_times_log_share_ratios(&reference, &shifted),
                 ),
             ],
         )

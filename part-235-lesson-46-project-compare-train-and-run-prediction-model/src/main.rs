@@ -72,7 +72,7 @@ fn main() {
     lesson_trace::trace_step!(training_targets);
     // Сохраняем результат этого шага в `baseline`.
     let baseline: f64 =
-        part_029_lesson_06_sum_values_and_divide_by_count::sum_values_and_divide_by_count(
+        part_029_lesson_06_sum_values_and_divide_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
             &training_targets,
         )
         .unwrap();
@@ -84,7 +84,7 @@ fn main() {
 
     // Объявляем повторно используемое вычисление `calculate_mean_absolute_prediction_error`; параметры ниже задают его входы.
     /// Средняя абсолютная ошибка линейной модели: для каждого x считаем weight·x+bias, сравниваем с ответом и усредняем модули ошибок.
-    fn average_absolute_difference_between_linear_predictions_and_targets(
+    fn calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
         // Получаем набор наблюдений, по которому считаем ошибку или градиент.
         data: &[(f64, f64)],
         // Параметр `weight` передаёт коэффициент при признаке.
@@ -106,7 +106,7 @@ fn main() {
             .collect();
         lesson_trace::trace_step!(predictions);
         // Используем подготовленное значение в следующем шаге примера.
-        part_050_lesson_09_sum_absolute_prediction_errors_and_divide_by_count::sum_absolute_prediction_errors_and_divide_by_count(&targets, &predictions).unwrap()
+        part_050_lesson_09_sum_absolute_prediction_errors_and_divide_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(&targets, &predictions).unwrap()
     }
 
     // Шаг: Обучаем линейную модель и сравниваем её с baseline на validation и test.
@@ -178,15 +178,17 @@ fn main() {
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
         "baseline validation MAE={:.3}, model validation MAE={:.3}, test MAE={:.3}, prediction x=10: {:.3}",
         // Вызываем нужное вычисление с подготовленными аргументами.
-        average_absolute_difference_between_linear_predictions_and_targets(
+        calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
             validation, 0., baseline
         ),
         // Вызываем нужное вычисление с подготовленными аргументами.
-        average_absolute_difference_between_linear_predictions_and_targets(
+        calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
             validation, weight, bias
         ),
         // Вызываем нужное вычисление с подготовленными аргументами.
-        average_absolute_difference_between_linear_predictions_and_targets(test, weight, bias),
+        calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
+            test, weight, bias
+        ),
         // Умножаем величины согласно используемой формуле.
         weight * 10. + bias
     );

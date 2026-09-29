@@ -40,7 +40,7 @@ fn main() {
         };
         lesson_trace::trace_step!(counts);
         // Сохраняем результат этого шага в `recall`.
-        let recall: Option<f64> = part_062_lesson_11_divide_detected_positives_by_all_actual_positives::true_positives_divided_by_all_actual_positives(counts);
+        let recall: Option<f64> = part_062_lesson_11_divide_detected_positives_by_all_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(counts);
         lesson_trace::trace_step!(recall);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(recall, expected);

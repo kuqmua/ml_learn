@@ -48,11 +48,14 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_local_weighted_pixel_sums_at_each_position(image, filter_weights);
+    plot_image_filter_response_as_local_weighted_pixel_sums_at_each_position(image, filter_weights);
 }
 
 // Строим график по результатам урока.
-fn plot_local_weighted_pixel_sums_at_each_position(image: [f64; 4], filter_weights: [f64; 2]) {
+fn plot_image_filter_response_as_local_weighted_pixel_sums_at_each_position(
+    image: [f64; 4],
+    filter_weights: [f64; 2],
+) {
     // Значения из этого урока на графике.
     let local_features_points: Vec<(f64, f64)> = (0..=image.len() - filter_weights.len())
         // Преобразуем каждый элемент в новое значение.

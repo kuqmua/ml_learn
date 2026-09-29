@@ -28,9 +28,9 @@ fn main() {
         lesson_trace::trace_step!(description);
         lesson_trace::trace_step!(vector);
         lesson_trace::trace_step!(expected);
-        // В библиотеке длина строится на вычислении из первого урока.
+        // Длина вектора — корень из суммы квадратов координат: для [3, 4] это sqrt(9 + 16) = 5.
         let length: f64 =
-            part_003_lesson_01_square_root_of_sum_of_squared_vector_coordinates::square_root_of_sum_of_squared_coordinates(
+            part_003_lesson_01_square_root_of_sum_of_squared_vector_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(
                 &vector,
             );
         lesson_trace::trace_step!(length);
@@ -56,7 +56,7 @@ fn plot_vector_length_for_changing_first_coordinate() {
             // Добавляем пару значений для сравнения или построения графика.
             (
                 horizontal_value,
-                part_003_lesson_01_square_root_of_sum_of_squared_vector_coordinates::square_root_of_sum_of_squared_coordinates(&[
+                part_003_lesson_01_square_root_of_sum_of_squared_vector_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&[
                     horizontal_value,
                     4.0,
                 ]),

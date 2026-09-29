@@ -80,11 +80,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_negative_sum_of_class_shares_times_their_logarithms();
+    plot_class_entropy_as_negative_sum_of_class_shares_times_their_logarithms();
 }
 
 // Строим график по результатам урока.
-fn plot_negative_sum_of_class_shares_times_their_logarithms() {
+fn plot_class_entropy_as_negative_sum_of_class_shares_times_their_logarithms() {
     // График величин и зависимостей, изученных в этом уроке.
     let uncertainty_measure_points: Vec<(f64, f64)> = (1..100)
         // Преобразуем каждый элемент в новое значение.

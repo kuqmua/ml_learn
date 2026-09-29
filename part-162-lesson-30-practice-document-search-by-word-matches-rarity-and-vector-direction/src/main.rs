@@ -144,9 +144,11 @@ fn main() {
                         lesson_trace::trace_step!(power_of_two);
                     }
                     // Этот ряд — учебное раскрытие `value.ln()`; он может работать медленнее и отличаться по точности.
-                    // Объявляем повторно используемое вычисление `twice_sum_odd_powers_of_ratio_over_odd_numbers`; параметры ниже задают его входы.
+                    // Объявляем повторно используемое вычисление `approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers`; параметры ниже задают его входы.
                     /// Ряд для ln(x): 2·(t + t³/3 + t⁵/5 + …), где t = (x−1)/(x+1).
-                    fn twice_sum_odd_powers_of_ratio_over_odd_numbers(value: f64) -> f64 {
+                    fn approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
+                        value: f64,
+                    ) -> f64 {
                         // Нормируем или усредняем величину делением и сохраняем её в `ratio`.
                         let ratio: f64 = (value - 1.0) / (value + 1.0);
                         lesson_trace::trace_step!(ratio);
@@ -174,11 +176,15 @@ fn main() {
                         2.0 * result
                     }
                     // Сохраняем рассчитанное значение `logarithm_of_two` для следующих операций.
-                    let logarithm_of_two: f64 = twice_sum_odd_powers_of_ratio_over_odd_numbers(2.0);
+                    let logarithm_of_two: f64 =
+                        approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
+                            2.0,
+                        );
                     lesson_trace::trace_step!(logarithm_of_two);
                     // Умножаем величины согласно используемой формуле.
-                    twice_sum_odd_powers_of_ratio_over_odd_numbers(scaled)
-                        + power_of_two as f64 * logarithm_of_two
+                    approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
+                        scaled,
+                    ) + power_of_two as f64 * logarithm_of_two
                     // Вычисляем значение по указанной формуле.
                 })() + 1.;
                 lesson_trace::trace_step!(inverse_document_frequency);

@@ -13,19 +13,19 @@ fn predict_signs_of_summed_matching_coordinate_products() {
         vector_with_positive_result.expect("заполни ответ перед запуском теста");
 
     let negative_result: f64 =
-        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             &fixed_vector,
             &vector_with_negative_result,
         )
         .unwrap();
     let zero_result: f64 =
-        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             &fixed_vector,
             &vector_with_zero_result,
         )
         .unwrap();
     let positive_result: f64 =
-        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             &fixed_vector,
             &vector_with_positive_result,
         )

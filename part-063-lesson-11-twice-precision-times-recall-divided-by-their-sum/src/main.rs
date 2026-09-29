@@ -26,8 +26,8 @@ fn main() {
         lesson_trace::trace_step!(precision);
         lesson_trace::trace_step!(recall);
         lesson_trace::trace_step!(expected);
-        // Сохраняем результат этого шага в `twice_precision_times_recall_divided_by_their_sum`.
-        let harmonic_mean_score: Option<f64> = part_063_lesson_11_twice_precision_times_recall_divided_by_their_sum::twice_precision_times_recall_divided_by_their_sum(
+        // Сохраняем результат этого шага в `calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum`.
+        let harmonic_mean_score: Option<f64> = part_063_lesson_11_twice_precision_times_recall_divided_by_their_sum::calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum(
             Some(precision),
             Some(recall),
         );
@@ -42,11 +42,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_twice_precision_times_recall_over_their_sum();
+    plot_f1_score_as_twice_precision_times_recall_over_their_sum();
 }
 
 // Строим график по результатам урока.
-fn plot_twice_precision_times_recall_over_their_sum() {
+fn plot_f1_score_as_twice_precision_times_recall_over_their_sum() {
     // График величин и зависимостей, изученных в этом уроке.
     let harmonic_mean_score_points: Vec<(f64, f64)> = (0..=100)
         // Преобразуем каждый элемент в новое значение.

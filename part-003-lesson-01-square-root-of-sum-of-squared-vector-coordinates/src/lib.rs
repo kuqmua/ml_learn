@@ -29,11 +29,12 @@ fn approximate_square_root_by_repeated_averaging(value: f64) -> f64 {
 
 /// Берём квадратный корень из суммы квадратов координат: sqrt(v₁² + v₂² + …).
 /// Получаем длину вектора — в математике это евклидова норма (норма L2).
+/// По теореме Пифагора это расстояние от начала координат до конца вектора.
 /// Например, для [3, 4]: sqrt(9 + 16) = 5.
-pub fn square_root_of_sum_of_squared_coordinates(vector: &[f64]) -> f64 {
+pub fn calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(vector: &[f64]) -> f64 {
     // Умножаем каждую координату на саму себя и складываем: получаем сумму квадратов.
     let sum_of_squared_coordinates: f64 =
-        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
+        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             vector, vector,
         )
         // Передаём один вектор дважды, поэтому число координат гарантированно совпадает.

@@ -38,9 +38,11 @@ fn main() {
         },
     }
 
-    // Объявляем повторно используемое вычисление `twice_positive_share_times_negative_share`; параметры ниже задают его входы.
+    // Объявляем повторно используемое вычисление `calculate_class_mixing_as_twice_positive_share_times_negative_share`; параметры ниже задают его входы.
     /// Нечистота Джини для двух классов: 2·p·(1−p), где p — доля положительных меток.
-    fn twice_positive_share_times_negative_share(data: &[(f64, bool)]) -> f64 {
+    fn calculate_class_mixing_as_twice_positive_share_times_negative_share(
+        data: &[(f64, bool)],
+    ) -> f64 {
         // Отдельно обрабатываем пустой набор, чтобы избежать неверного расчёта.
         if data.is_empty() {
             // Завершаем текущий расчёт и возвращаем найденное значение.
@@ -113,9 +115,9 @@ fn main() {
             // Считаем количество элементов и сохраняем его в `score`.
             let score: f64 = (left_samples.len() as f64
                 // Добавляем этот член в составное арифметическое выражение.
-                * twice_positive_share_times_negative_share(&left_samples)
+                * calculate_class_mixing_as_twice_positive_share_times_negative_share(&left_samples)
                 // Умножаем величины согласно используемой формуле.
-                + right_samples.len() as f64 * twice_positive_share_times_negative_share(&right_samples))
+                + right_samples.len() as f64 * calculate_class_mixing_as_twice_positive_share_times_negative_share(&right_samples))
                 // Делим значения, получая нормированную величину или среднее.
                 / data.len() as f64;
             lesson_trace::trace_step!(score);
@@ -179,9 +181,12 @@ fn main() {
     // Шаг: Обучаем дерево, выбирая порог по уменьшению неоднородности.
     let tree: Tree = build_threshold_tree_by_minimizing_weighted_class_mixing(&data, 2);
     lesson_trace::trace_step!(tree);
-    // Объявляем повторно используемое вычисление `follow_threshold_branches_to_leaf_class`; параметры ниже задают его входы.
+    // Объявляем повторно используемое вычисление `predict_class_by_following_threshold_branches_to_leaf`; параметры ниже задают его входы.
     /// Прогноз дерева: сравниваем признак с порогами, идём по ветвям и возвращаем класс листа.
-    fn follow_threshold_branches_to_leaf_class(tree: &Tree, feature_value: f64) -> bool {
+    fn predict_class_by_following_threshold_branches_to_leaf(
+        tree: &Tree,
+        feature_value: f64,
+    ) -> bool {
         // Разбираем каждый возможный вариант значения отдельно.
         match tree {
             // Обрабатываем этот вариант структуры данных отдельным правилом.
@@ -195,7 +200,7 @@ fn main() {
                 // Используем ранее рассчитанное значение `right` в текущем выражении.
                 right,
                 // Выполняем действие для этого варианта данных.
-            } => follow_threshold_branches_to_leaf_class(
+            } => predict_class_by_following_threshold_branches_to_leaf(
                 // Проверяем условие и выбираем соответствующую ветку алгоритма.
                 if feature_value < *threshold {
                     // Используем ранее рассчитанное значение `left` в текущем выражении.
@@ -216,7 +221,7 @@ fn main() {
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
         "{tree:?}; x=3.5 -> {}",
         // Вызываем нужное вычисление с подготовленными аргументами.
-        follow_threshold_branches_to_leaf_class(&tree, 3.5)
+        predict_class_by_following_threshold_branches_to_leaf(&tree, 3.5)
     );
 
     // Построение графика вынесено из основного кода урока.
@@ -234,7 +239,7 @@ fn main() {
                 // Добавляем пару значений для сравнения или построения графика.
                 (
                     horizontal_value,
-                    f64::from(follow_threshold_branches_to_leaf_class(
+                    f64::from(predict_class_by_following_threshold_branches_to_leaf(
                         &tree,
                         horizontal_value,
                     )),

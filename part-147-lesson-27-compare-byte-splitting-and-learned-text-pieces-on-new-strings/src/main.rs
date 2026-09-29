@@ -13,7 +13,7 @@ fn main() {
     lesson_trace::trace_step!(training_data);
     let validation: [&str; 2] = ["кот играет", "🐈 спит"];
     lesson_trace::trace_step!(validation);
-    let model: part_144_lesson_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding = part_144_lesson_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding::learn_merges_by_repeatedly_joining_most_frequent_adjacent_pair(
+    let model: part_144_lesson_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding = part_144_lesson_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding::train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair(
         &training_data,
         30,
     );
@@ -26,7 +26,7 @@ fn main() {
                 text,
                 text.len(),
                 model
-                    .convert_text_bytes_to_identifiers_and_apply_learned_merges(text)
+                    .encode_text_as_token_identifiers_by_converting_bytes_and_applying_learned_merges(text)
                     .len(),
             )
         })
@@ -40,8 +40,8 @@ fn main() {
         assert!(text_units <= bytes);
         assert_eq!(
             model
-                .join_bytes_for_identifiers_and_decode_text(
-                    &model.convert_text_bytes_to_identifiers_and_apply_learned_merges(text)
+                .restore_text_by_joining_token_bytes_and_decoding_them(
+                    &model.encode_text_as_token_identifiers_by_converting_bytes_and_applying_learned_merges(text)
                 )
                 .unwrap(),
             text

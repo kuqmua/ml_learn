@@ -138,11 +138,13 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_image_of_local_weighted_pixel_sums(feature_map);
+    plot_image_feature_map_as_local_weighted_pixel_sums(feature_map);
 }
 
 // Строим график по результатам урока.
-fn plot_image_of_local_weighted_pixel_sums(feature_map: std::vec::Vec<std::vec::Vec<f64>>) {
+fn plot_image_feature_map_as_local_weighted_pixel_sums(
+    feature_map: std::vec::Vec<std::vec::Vec<f64>>,
+) {
     // Значения ячеек видны по цвету и подписи.
     let chart: std::path::PathBuf = lesson_visualization::heatmap(
         // Передаём путь к каталогу текущего урока.

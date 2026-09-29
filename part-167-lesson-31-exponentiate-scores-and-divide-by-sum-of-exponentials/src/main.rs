@@ -103,11 +103,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_second_exponential_divided_by_sum_of_two_exponentials();
+    plot_second_probability_weight_as_its_exponential_divided_by_sum_of_two_exponentials();
 }
 
 // Строим график по результатам урока.
-fn plot_second_exponential_divided_by_sum_of_two_exponentials() {
+fn plot_second_probability_weight_as_its_exponential_divided_by_sum_of_two_exponentials() {
     // График величин и зависимостей, изученных в этом уроке.
     // Преобразование оценок в вероятности с суммой 1 называют softmax.
     let normalized_probability_points: Vec<(f64, f64)> = (-60..=60)

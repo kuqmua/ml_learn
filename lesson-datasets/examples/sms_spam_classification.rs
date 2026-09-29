@@ -15,11 +15,11 @@ fn report_majority_baseline(
     )?;
     println!(
         "{name}: accuracy={:.3}, spam recall={:.3}, missed spam={}",
-        part_060_lesson_11_count_correct_and_incorrect_positive_and_negative_predictions::correct_predictions_divided_by_all_predictions(
+        part_060_lesson_11_count_correct_and_incorrect_positive_and_negative_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(
             counts
         )
         .unwrap(),
-        part_062_lesson_11_divide_detected_positives_by_all_actual_positives::true_positives_divided_by_all_actual_positives(counts).unwrap(),
+        part_062_lesson_11_divide_detected_positives_by_all_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(counts).unwrap(),
         counts.false_negatives
     );
     Ok(())

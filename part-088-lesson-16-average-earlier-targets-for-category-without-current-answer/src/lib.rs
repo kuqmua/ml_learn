@@ -3,7 +3,7 @@
 
 /// Для строки i использует только метки предыдущих строк в заданном порядке.
 /// Упорядоченная статистика категории: (сумма предыдущих ответов + prior·strength) / (их число + strength).
-pub fn average_previous_targets_per_category_with_prior_weight(
+pub fn encode_categories_as_average_previous_targets_with_prior_weight(
     categories: &[&str],
     targets: &[f64],
     prior: f64,
@@ -43,7 +43,7 @@ mod tests {
     #[test]
     fn current_label_cannot_enter_own_encoding() {
         let first_encoding: Vec<f64> =
-            super::average_previous_targets_per_category_with_prior_weight(
+            super::encode_categories_as_average_previous_targets_with_prior_weight(
                 &["a", "a"],
                 &[0.0, 1.0],
                 0.5,
@@ -51,7 +51,7 @@ mod tests {
             )
             .unwrap();
         let second_encoding: Vec<f64> =
-            super::average_previous_targets_per_category_with_prior_weight(
+            super::encode_categories_as_average_previous_targets_with_prior_weight(
                 &["a", "a"],
                 &[0.0, 0.0],
                 0.5,

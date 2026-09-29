@@ -6,7 +6,7 @@ fn predict_distance_and_check_symmetry() {
     let first_point: [f64; 2] = [1.0, 2.0];
     let second_point: [f64; 2] = [4.0, 6.0];
     assert!(
-        (part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::square_root_of_sum_of_squared_coordinate_differences(
+        (part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
             &first_point,
             &second_point
         )
@@ -16,17 +16,17 @@ fn predict_distance_and_check_symmetry() {
             < 1e-10
     );
     assert_eq!(
-        part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::square_root_of_sum_of_squared_coordinate_differences(
+        part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
             &first_point,
             &second_point
         ),
-        part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::square_root_of_sum_of_squared_coordinate_differences(
+        part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
             &second_point,
             &first_point
         )
     );
     assert_eq!(
-        part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::square_root_of_sum_of_squared_coordinate_differences(
+        part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
             &first_point,
             &first_point
         ),

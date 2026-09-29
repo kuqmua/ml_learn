@@ -31,7 +31,7 @@ fn main() {
     );
     // Сохраняем результат этого шага в `raw_squared`.
     let raw_squared: f64 =
-        part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::sum_squared_differences_of_matching_coordinates(&first, &second)
+        part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences(&first, &second)
             .unwrap();
     lesson_trace::trace_step!(raw_squared);
     // Задаём учебные значения для `scaled_first`.
@@ -41,7 +41,7 @@ fn main() {
     let scaled_second: [f64; 2] = [second[0] / scale[0], second[1] / scale[1]];
     lesson_trace::trace_step!(scaled_second);
     // Сохраняем результат этого шага в `scaled_squared`.
-    let scaled_squared: f64 = part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::sum_squared_differences_of_matching_coordinates(
+    let scaled_squared: f64 = part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences(
         &scaled_first,
         &scaled_second,
     )

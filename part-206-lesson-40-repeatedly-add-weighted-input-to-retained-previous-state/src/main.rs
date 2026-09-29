@@ -13,7 +13,7 @@ fn main() {
     let input: [f64; 4] = [1.0, 0.0, 0.0, 0.0];
     lesson_trace::trace_step!(input);
     let states: Vec<f64> =
-        part_206_lesson_40_repeatedly_add_weighted_input_to_retained_previous_state::repeatedly_add_weighted_input_to_retained_previous_state(
+        part_206_lesson_40_repeatedly_add_weighted_input_to_retained_previous_state::calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
             &input, 0.5, 1.0,
         );
     lesson_trace::trace_step!(states);

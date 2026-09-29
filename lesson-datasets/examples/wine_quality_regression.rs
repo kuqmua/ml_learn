@@ -17,10 +17,10 @@ fn report_error(
         .collect();
     println!(
         "{name}: baseline MAE={:.3}, MSE={:.3}; alcohol model MAE={:.3}, MSE={:.3}",
-        part_050_lesson_09_sum_absolute_prediction_errors_and_divide_by_count::sum_absolute_prediction_errors_and_divide_by_count(&targets, &baseline)?,
-        part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::sum_squared_prediction_errors_and_divide_by_count(&targets, &baseline)?,
-        part_050_lesson_09_sum_absolute_prediction_errors_and_divide_by_count::sum_absolute_prediction_errors_and_divide_by_count(&targets, &predictions)?,
-        part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::sum_squared_prediction_errors_and_divide_by_count(&targets, &predictions)?
+        part_050_lesson_09_sum_absolute_prediction_errors_and_divide_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(&targets, &baseline)?,
+        part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &baseline)?,
+        part_050_lesson_09_sum_absolute_prediction_errors_and_divide_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(&targets, &predictions)?,
+        part_049_lesson_09_sum_squared_prediction_errors_and_divide_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &predictions)?
     );
     Ok(())
 }
@@ -39,11 +39,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(|&index| records[index].features[10])
         .collect();
     let target_mean =
-        part_029_lesson_06_sum_values_and_divide_by_count::sum_values_and_divide_by_count(
+        part_029_lesson_06_sum_values_and_divide_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
             &training_targets,
         )?;
     let alcohol_mean =
-        part_029_lesson_06_sum_values_and_divide_by_count::sum_values_and_divide_by_count(
+        part_029_lesson_06_sum_values_and_divide_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
             &training_alcohol,
         )?;
     let covariance: f64 = training_alcohol

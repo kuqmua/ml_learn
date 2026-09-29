@@ -36,7 +36,7 @@ fn main() {
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
     /// Само умножение не обязательно медленнее библиотечного метода.
-    fn multiply_number_by_itself(value: f64) -> f64 {
+    fn calculate_square_by_multiplying_number_by_itself(value: f64) -> f64 {
         // Умножаем величины согласно используемой формуле.
         value * value
     }
@@ -76,9 +76,9 @@ fn main() {
                             // Составляем результат из вычисленных значений в указанном порядке.
                             (
                                 // Составляем результат из вычисленных значений в указанном порядке.
-                                (multiply_number_by_itself(features[0] - query_point[0])
+                                (calculate_square_by_multiplying_number_by_itself(features[0] - query_point[0])
                                 // Складываем или вычитаем величины согласно используемой формуле.
-                                + multiply_number_by_itself(features[1] - query_point[1])),
+                                + calculate_square_by_multiplying_number_by_itself(features[1] - query_point[1])),
                                 // Используем ранее рассчитанное значение `label` в текущем выражении.
                                 label,
                             )

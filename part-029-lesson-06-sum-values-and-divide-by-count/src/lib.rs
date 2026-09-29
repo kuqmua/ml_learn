@@ -2,7 +2,9 @@
 
 /// Среднее непустого набора.
 /// Среднее арифметическое: складываем значения и делим на их количество.
-pub fn sum_values_and_divide_by_count(values: &[f64]) -> Result<f64, &'static str> {
+pub fn calculate_mean_by_summing_values_and_dividing_by_count(
+    values: &[f64],
+) -> Result<f64, &'static str> {
     // Выбираем дальнейший шаг по выполнению условия.
     if values.is_empty() {
         // Прерываем вычисление и возвращаем причину ошибки.

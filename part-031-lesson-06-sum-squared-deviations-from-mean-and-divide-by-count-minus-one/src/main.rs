@@ -27,7 +27,7 @@ fn main() {
         lesson_trace::trace_step!(values);
         lesson_trace::trace_step!(expected);
         // Сохраняем результат этого шага в `variance`.
-        let variance: f64 = part_031_lesson_06_sum_squared_deviations_from_mean_and_divide_by_count_minus_one::sum_squared_deviations_from_mean_divided_by_count_minus_one(values)
+        let variance: f64 = part_031_lesson_06_sum_squared_deviations_from_mean_and_divide_by_count_minus_one::calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(values)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("для этой выборки дисперсия определена");
         lesson_trace::trace_step!(variance);
@@ -38,7 +38,7 @@ fn main() {
     }
     // Сохраняем результат этого шага в `error`.
     let error: &str =
-        part_031_lesson_06_sum_squared_deviations_from_mean_and_divide_by_count_minus_one::sum_squared_deviations_from_mean_divided_by_count_minus_one(&[
+        part_031_lesson_06_sum_squared_deviations_from_mean_and_divide_by_count_minus_one::calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(&[
             4.0,
         ])
         // Настраиваем или преобразуем результат предыдущего шага.

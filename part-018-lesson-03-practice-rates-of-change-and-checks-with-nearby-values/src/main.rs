@@ -24,26 +24,26 @@ fn main() {
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
     /// Само умножение не обязательно медленнее библиотечного метода.
-    fn multiply_number_by_itself(value: f64) -> f64 {
+    fn calculate_square_by_multiplying_number_by_itself(value: f64) -> f64 {
         // Умножаем величины согласно используемой формуле.
         value * value
     }
 
-    // Объявляем повторно используемое вычисление `sum_squared_shifted_parameters_with_second_weighted_by_three`; параметры ниже задают его входы.
+    // Объявляем повторно используемое вычисление `calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three`; параметры ниже задают его входы.
     /// Квадратичная функция: (x − 2)² + 3(y + 1)².
-    fn sum_squared_shifted_parameters_with_second_weighted_by_three(
+    fn calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
         first_parameter: f64,
         second_parameter: f64,
     ) -> f64 {
         // Складываем или вычитаем величины согласно используемой формуле.
-        multiply_number_by_itself(first_parameter - 2.0)
+        calculate_square_by_multiplying_number_by_itself(first_parameter - 2.0)
             // Умножаем величины согласно используемой формуле.
-            + 3.0 * multiply_number_by_itself(second_parameter + 1.0)
+            + 3.0 * calculate_square_by_multiplying_number_by_itself(second_parameter + 1.0)
     }
 
     // Интегрируем по первому параметру, считая второй постоянным; константа интегрирования равна нулю.
     /// Первообразная по x: (x − 2)³ / 3 + 3(y + 1)²x; её производная по x равна исходной функции.
-    fn cube_first_shift_divide_by_three_then_add_second_shift_term(
+    fn calculate_antiderivative_by_cubing_first_shift_dividing_by_three_and_adding_second_shift_term(
         // `first_parameter` задаёт соответствующее входное значение или поле структуры.
         first_parameter: f64,
         // `second_parameter` задаёт соответствующее входное значение или поле структуры.
@@ -56,7 +56,7 @@ fn main() {
         // Делим значения, получая нормированную величину или среднее.
         shifted_first * shifted_first * shifted_first / 3.0
             // Умножаем величины согласно используемой формуле.
-            + 3.0 * multiply_number_by_itself(second_parameter + 1.0) * first_parameter
+            + 3.0 * calculate_square_by_multiplying_number_by_itself(second_parameter + 1.0) * first_parameter
     }
 
     // Сравниваем h=10⁻², 10⁻⁴ и 10⁻⁸: большой h даёт ошибку приближения, слишком малый усиливает округление f64.
@@ -105,13 +105,13 @@ fn main() {
                 // Составляем результат из вычисленных значений в указанном порядке.
                 [
                     // Составляем результат из вычисленных значений в указанном порядке.
-                    (sum_squared_shifted_parameters_with_second_weighted_by_three(
+                    (calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
                         // Складываем или вычитаем величины согласно используемой формуле.
                         first_parameter + step_size,
                         // Используем ранее рассчитанное значение `second_parameter` в текущем выражении.
                         second_parameter,
                         // Вычисляем значение по указанной формуле.
-                    ) - sum_squared_shifted_parameters_with_second_weighted_by_three(
+                    ) - calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
                         // Складываем или вычитаем величины согласно используемой формуле.
                         first_parameter - step_size,
                         // Используем ранее рассчитанное значение `second_parameter` в текущем выражении.
@@ -119,13 +119,13 @@ fn main() {
                         // Вычисляем значение по указанной формуле.
                     )) / (2.0 * step_size),
                     // Составляем результат из вычисленных значений в указанном порядке.
-                    (sum_squared_shifted_parameters_with_second_weighted_by_three(
+                    (calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
                         // Используем ранее рассчитанное значение `first_parameter` в текущем выражении.
                         first_parameter,
                         // Складываем или вычитаем величины согласно используемой формуле.
                         second_parameter + step_size,
                         // Вычисляем значение по указанной формуле.
-                    ) - sum_squared_shifted_parameters_with_second_weighted_by_three(
+                    ) - calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
                         // Используем ранее рассчитанное значение `first_parameter` в текущем выражении.
                         first_parameter,
                         // Складываем или вычитаем величины согласно используемой формуле.
@@ -143,9 +143,9 @@ fn main() {
     // Сохраняем рассчитанное значение `recovered_value` для следующих операций.
     let recovered_value: f64 =
         // Составляем результат из вычисленных значений в указанном порядке.
-        (cube_first_shift_divide_by_three_then_add_second_shift_term(0.3 + step_size, 2.0)
+        (calculate_antiderivative_by_cubing_first_shift_dividing_by_three_and_adding_second_shift_term(0.3 + step_size, 2.0)
             // Складываем или вычитаем величины согласно используемой формуле.
-            - cube_first_shift_divide_by_three_then_add_second_shift_term(0.3 - step_size, 2.0))
+            - calculate_antiderivative_by_cubing_first_shift_dividing_by_three_and_adding_second_shift_term(0.3 - step_size, 2.0))
             // Делим значения, получая нормированную величину или среднее.
             / (2.0 * step_size);
     lesson_trace::trace_step!(recovered_value);
@@ -154,7 +154,9 @@ fn main() {
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
         "f(0.3, 2)={}, производная первообразной={recovered_value}",
         // Вызываем нужное вычисление с подготовленными аргументами.
-        sum_squared_shifted_parameters_with_second_weighted_by_three(0.3, 2.0)
+        calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
+            0.3, 2.0
+        )
     );
 
     // Построение графика вынесено из основного кода урока.
@@ -170,9 +172,9 @@ fn main() {
                 // Сохраняем результат этого шага в `step_size`.
                 let step_size: f64 = 10f64.powi(-step_exponent);
                 // Сохраняем результат этого шага в `numeric`.
-                let numeric: f64 = (sum_squared_shifted_parameters_with_second_weighted_by_three(0.3 + step_size, 2.0)
+                let numeric: f64 = (calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(0.3 + step_size, 2.0)
                     // Вычисляем значение по указанной формуле.
-                    - sum_squared_shifted_parameters_with_second_weighted_by_three(0.3 - step_size, 2.0))
+                    - calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(0.3 - step_size, 2.0))
                     // Вычисляем значение по указанной формуле.
                     / (2.0 * step_size);
                 // Добавляем пару значений для сравнения или построения графика.

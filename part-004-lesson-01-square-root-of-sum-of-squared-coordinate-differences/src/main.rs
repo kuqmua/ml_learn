@@ -29,7 +29,7 @@ fn main() {
         lesson_trace::trace_step!(second_point);
         lesson_trace::trace_step!(expected);
         // Общая функция проверяет размерности и вычисляет расстояние.
-        let distance: f64 = part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::square_root_of_sum_of_squared_coordinate_differences(
+        let distance: f64 = part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
             first_point,
             second_point,
         )
@@ -49,7 +49,7 @@ fn main() {
     lesson_trace::trace_step!(too_short);
     // Сохраняем результат этого шага в `error`.
     let error: &str =
-        part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::square_root_of_sum_of_squared_coordinate_differences(&first_point, &too_short)
+        part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(&first_point, &too_short)
             // Настраиваем или преобразуем результат предыдущего шага.
             .expect_err("точки разной размерности нужно отклонить");
     lesson_trace::trace_step!(error);
@@ -73,7 +73,7 @@ fn plot_distance_from_origin_for_changing_first_coordinate() {
                 // Используем подготовленное значение в следующем шаге примера.
                 horizontal_value,
                 // Задаём именованное поле или параметр.
-                part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::square_root_of_sum_of_squared_coordinate_differences(
+                part_004_lesson_01_square_root_of_sum_of_squared_coordinate_differences::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
                     &[0.0, 0.0],
                     &[horizontal_value, 4.0],
                 )

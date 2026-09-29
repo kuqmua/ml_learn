@@ -47,11 +47,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_coordinates_after_subtracting_mean_and_dividing_by_spread(normalized);
+    plot_normalized_coordinates_after_subtracting_mean_and_dividing_by_spread(normalized);
 }
 
 // Строим график по результатам урока.
-fn plot_coordinates_after_subtracting_mean_and_dividing_by_spread(normalized: [f64; 2]) {
+fn plot_normalized_coordinates_after_subtracting_mean_and_dividing_by_spread(normalized: [f64; 2]) {
     // График величин и зависимостей, изученных в этом уроке.
     let layer_norm_points: Vec<(f64, f64)> = normalized
         // Просматриваем элементы коллекции по ссылке.

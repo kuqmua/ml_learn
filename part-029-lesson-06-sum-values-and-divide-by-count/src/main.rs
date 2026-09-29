@@ -29,7 +29,7 @@ fn main() {
         lesson_trace::trace_step!(expected);
         // Общая функция среднего повторно понадобится в дисперсии и нормализации.
         let mean: f64 =
-            part_029_lesson_06_sum_values_and_divide_by_count::sum_values_and_divide_by_count(
+            part_029_lesson_06_sum_values_and_divide_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
                 values,
             )
             .expect("в этой строке есть значения");
@@ -44,7 +44,7 @@ fn main() {
     lesson_trace::trace_step!(empty);
     // Сохраняем результат этого шага в `error`.
     let error: &str =
-        part_029_lesson_06_sum_values_and_divide_by_count::sum_values_and_divide_by_count(&empty)
+        part_029_lesson_06_sum_values_and_divide_by_count::calculate_mean_by_summing_values_and_dividing_by_count(&empty)
             // Настраиваем или преобразуем результат предыдущего шага.
             .expect_err("среднее пустого набора должно быть отклонено");
     lesson_trace::trace_step!(error);
@@ -53,11 +53,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_values_and_their_sum_divided_by_count();
+    plot_values_and_mean_as_their_sum_divided_by_count();
 }
 
 // Строим график по результатам урока.
-fn plot_values_and_their_sum_divided_by_count() {
+fn plot_values_and_mean_as_their_sum_divided_by_count() {
     // Наглядное представление величин из этого урока.
     let observation_points: Vec<(f64, f64)> = [(1.0, 2.0), (2.0, 4.0), (3.0, 6.0)].to_vec();
     // Собираем значения для `mean_points` в коллекцию.

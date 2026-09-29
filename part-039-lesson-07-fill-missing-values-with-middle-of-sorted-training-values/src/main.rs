@@ -9,7 +9,9 @@
 // Медиану вычисляем только по train, затем применяем к validation.
 
 /// Медиана для нечётного числа значений: сортируем и берём середину. При чётном числе эта реализация берёт верхний средний элемент.
-fn sort_training_values_and_take_upper_middle(values: &[f64]) -> f64 {
+fn choose_missing_value_replacement_by_sorting_training_values_and_taking_upper_middle(
+    values: &[f64],
+) -> f64 {
     let mut sorted: Vec<f64> = values.to_vec();
     lesson_trace::trace_step!(sorted);
     sorted.sort_by(f64::total_cmp);
@@ -23,7 +25,10 @@ fn main() {
     lesson_trace::trace_step!(validation);
     let observed: Vec<f64> = training_data.iter().flatten().copied().collect();
     lesson_trace::trace_step!(observed);
-    let replacement: f64 = sort_training_values_and_take_upper_middle(&observed);
+    let replacement: f64 =
+        choose_missing_value_replacement_by_sorting_training_values_and_taking_upper_middle(
+            &observed,
+        );
     lesson_trace::trace_step!(replacement);
     let training_filled: Vec<f64> = training_data
         .iter()

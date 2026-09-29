@@ -67,7 +67,7 @@ fn main() {
                 // Строка × столбец — то же попарное умножение и сложение из урока 01.1.
                 result[row][column] =
                     // Используем подготовленное значение в следующем шаге примера.
-                    part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&first[row], &column_values)
+                    part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&first[row], &column_values)
                         // Используем результат, ожидая успешного выполнения шага.
                         .expect("внутренние размеры матриц совпадают");
                 lesson_trace::trace_step!(result);
@@ -95,11 +95,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_sums_of_matching_row_and_column_products();
+    plot_matrix_product_as_sums_of_matching_row_and_column_products();
 }
 
 // Строим график по результатам урока.
-fn plot_sums_of_matching_row_and_column_products() {
+fn plot_matrix_product_as_sums_of_matching_row_and_column_products() {
     // Значения ячеек видны по цвету и подписи.
     let chart: std::path::PathBuf = lesson_visualization::heatmap(
         // Передаём путь к каталогу текущего урока.

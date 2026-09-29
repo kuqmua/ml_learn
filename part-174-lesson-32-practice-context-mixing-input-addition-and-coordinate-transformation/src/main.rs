@@ -28,7 +28,7 @@ fn main() {
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
     /// Само умножение не обязательно медленнее библиотечного метода.
-    fn multiply_number_by_itself(value: f64) -> f64 {
+    fn calculate_square_by_multiplying_number_by_itself(value: f64) -> f64 {
         // Умножаем величины согласно используемой формуле.
         value * value
     }
@@ -128,16 +128,16 @@ fn main() {
 
     // Объявляем повторно используемое вычисление `normalize_two_feature_vector`; параметры ниже задают его входы.
     /// Нормализация слоя (LayerNorm): из координат вычитаем среднее и делим на sqrt(среднее квадратов отклонений + epsilon).
-    fn subtract_mean_then_divide_by_root_of_mean_squared_deviation(
+    fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
         input_values: [f64; 2],
     ) -> [f64; 2] {
         // Нормируем или усредняем величину делением и сохраняем её в `mean`.
         let mean: f64 = (input_values[0] + input_values[1]) / 2.;
         lesson_trace::trace_step!(mean);
         // Комбинируем исходные величины и сохраняем результат в `variance`.
-        let variance: f64 = (multiply_number_by_itself(input_values[0] - mean)
+        let variance: f64 = (calculate_square_by_multiplying_number_by_itself(input_values[0] - mean)
             // Складываем или вычитаем величины согласно используемой формуле.
-            + multiply_number_by_itself(input_values[1] - mean))
+            + calculate_square_by_multiplying_number_by_itself(input_values[1] - mean))
             // Делим значения, получая нормированную величину или среднее.
             / 2.;
         lesson_trace::trace_step!(variance);
@@ -179,7 +179,7 @@ fn main() {
                     // Преобразуем каждый элемент последовательности.
                     .map(|key| {
                         // Составляем результат из вычисленных значений в указанном порядке.
-                        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&query, key).unwrap()
+                        part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&query, key).unwrap()
                                 // Делим значения, получая нормированную величину или среднее.
                                 / approximate_square_root_by_repeated_averaging(2.0)
                     })
@@ -251,7 +251,7 @@ fn main() {
                     lesson_trace::trace_step!(attended);
                 }
                 // После первой остаточной связи применяем нормализацию и простую feed-forward функцию.
-                let normalized_values: [f64; 2] = subtract_mean_then_divide_by_root_of_mean_squared_deviation([
+                let normalized_values: [f64; 2] = normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation([
                     // Складываем или вычитаем величины согласно используемой формуле.
                     query[0] + attended[0],
                     // Складываем или вычитаем величины согласно используемой формуле.
@@ -267,7 +267,7 @@ fn main() {
                 ];
                 lesson_trace::trace_step!(feed_forward_values);
                 // Вызываем нужное вычисление с подготовленными аргументами.
-                subtract_mean_then_divide_by_root_of_mean_squared_deviation([
+                normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation([
                     // Складываем или вычитаем величины согласно используемой формуле.
                     normalized_values[0] + feed_forward_values[0],
                     // Складываем или вычитаем величины согласно используемой формуле.

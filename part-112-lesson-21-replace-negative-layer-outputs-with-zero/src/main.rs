@@ -30,11 +30,11 @@ fn main() {
 
     // Построение графика вынесено из основного кода урока.
     lesson_trace::disable();
-    plot_input_with_negative_values_replaced_by_zero();
+    plot_rectified_activation_as_input_with_negative_values_replaced_by_zero();
 }
 
 // Строим график по результатам урока.
-fn plot_input_with_negative_values_replaced_by_zero() {
+fn plot_rectified_activation_as_input_with_negative_values_replaced_by_zero() {
     // График величин и зависимостей, изученных в этом уроке.
     let activation_points: Vec<(f64, f64)> = (-50..=50)
         // Преобразуем каждый элемент в новое значение.

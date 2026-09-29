@@ -13,7 +13,7 @@ fn half_squared_error_of_last_recurrent_state_against_target(
     recurrent_weight: f64,
     target: f64,
 ) -> f64 {
-    let last: f64 = *part_134_lesson_25_update_memory_from_weighted_input_and_previous_memory::apply_tanh_to_weighted_input_plus_weighted_previous_state(
+    let last: f64 = *part_134_lesson_25_update_memory_from_weighted_input_and_previous_memory::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
         input,
         input_weight,
         recurrent_weight,
@@ -33,7 +33,7 @@ fn main() {
     lesson_trace::trace_step!(recurrent_weight);
     let target: f64 = 0.7;
     lesson_trace::trace_step!(target);
-    let history: Vec<f64> = part_134_lesson_25_update_memory_from_weighted_input_and_previous_memory::apply_tanh_to_weighted_input_plus_weighted_previous_state(
+    let history: Vec<f64> = part_134_lesson_25_update_memory_from_weighted_input_and_previous_memory::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
         &input,
         input_weight,
         recurrent_weight,
