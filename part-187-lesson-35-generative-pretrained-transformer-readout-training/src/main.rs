@@ -1,12 +1,11 @@
 // Урок 35.7. Обучение выходной головы tiny GPT.
 // Фиксируем decoder и подгоняем только выходные веса на train; качество проверяем отдельно.
 
-use part_186_lesson_35_tiny_generative_pretrained_transformer_forward::calculate_hidden_states_for_text_units;
 fn sigmoid(input_value: f64) -> f64 {
     1.0 / (1.0 + (-input_value).exp())
 }
 fn calculate_readout_prediction_loss(weight: &[f64; 2], sample: (&[usize], f64)) -> f64 {
-    let final_hidden_state = *calculate_hidden_states_for_text_units(sample.0)
+    let final_hidden_state = *part_186_lesson_35_tiny_generative_pretrained_transformer_forward::calculate_hidden_states_for_text_units(sample.0)
         .last()
         .unwrap();
     // Оценку модели до преобразования в вероятность называют logit.
@@ -28,7 +27,7 @@ fn main() {
         let mut rate_of_change = [0.0; 2];
         // Единицу текста, которую модель обрабатывает как одно целое, называют token.
         for &(text_unit_identifiers, target) in &training_data {
-            let final_hidden_state = *calculate_hidden_states_for_text_units(text_unit_identifiers)
+            let final_hidden_state = *part_186_lesson_35_tiny_generative_pretrained_transformer_forward::calculate_hidden_states_for_text_units(text_unit_identifiers)
                 .last()
                 .unwrap();
             let error =

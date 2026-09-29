@@ -1,10 +1,9 @@
 // Урок 07.5. Кодирование категорий и неизвестное значение.
 // Словарь категорий учим на train; новую категорию на validation отправляем в отдельный ID.
 
-use std::collections::BTreeMap;
-fn build_vocabulary(training_data: &[&str]) -> BTreeMap<String, usize> {
+fn build_vocabulary(training_data: &[&str]) -> std::collections::BTreeMap<String, usize> {
     // Набор известных модели текстовых единиц называют vocabulary.
-    let mut known_text_units = BTreeMap::new();
+    let mut known_text_units = std::collections::BTreeMap::new();
     for &category in training_data {
         if !known_text_units.contains_key(category) {
             let category_identifier = known_text_units.len() + 1;
@@ -14,7 +13,7 @@ fn build_vocabulary(training_data: &[&str]) -> BTreeMap<String, usize> {
     known_text_units
 }
 fn encode_categories_with_known_vocabulary(
-    known_text_units: &BTreeMap<String, usize>,
+    known_text_units: &std::collections::BTreeMap<String, usize>,
     values: &[&str],
 ) -> Vec<usize> {
     values

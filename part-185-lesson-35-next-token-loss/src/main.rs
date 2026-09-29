@@ -1,10 +1,9 @@
 // Урок 35.5. Потери при предсказании следующего токена.
 // Логиты позиции t оцениваются по целевому токену позиции t+1.
 
-use part_182_lesson_35_causal_self_attention::softmax;
 // Оценку модели до преобразования в вероятность называют logit.
 fn cross_entropy(raw_model_scores: &[f64], target: usize) -> f64 {
-    -softmax(raw_model_scores)[target].ln()
+    -part_182_lesson_35_causal_self_attention::softmax(raw_model_scores)[target].ln()
 }
 fn main() {
     // BOS, A, B, EOS: на последней позиции нет следующей цели.

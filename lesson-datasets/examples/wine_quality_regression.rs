@@ -1,17 +1,11 @@
-use lesson_datasets::{WineQualityRedRecord, load_wine_quality_red_records, split_indices};
-use part_029_lesson_06_mean::arithmetic_mean_of_values;
-use part_049_lesson_09_mean_squared_error::mean_squared_error;
-use part_050_lesson_09_mean_absolute_error::mean_absolute_error;
-use std::error::Error;
-
 fn report_error(
     name: &str,
-    records: &[WineQualityRedRecord],
+    records: &[lesson_datasets::WineQualityRedRecord],
     indices: &[usize],
     baseline_quality: f64,
     slope: f64,
     intercept: f64,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<(), Box<dyn std::error::Error>> {
     let targets: Vec<f64> = indices
         .iter()
         .map(|&index| records[index].quality)
@@ -23,17 +17,17 @@ fn report_error(
         .collect();
     println!(
         "{name}: baseline MAE={:.3}, MSE={:.3}; alcohol model MAE={:.3}, MSE={:.3}",
-        mean_absolute_error(&targets, &baseline)?,
-        mean_squared_error(&targets, &baseline)?,
-        mean_absolute_error(&targets, &predictions)?,
-        mean_squared_error(&targets, &predictions)?
+        part_050_lesson_09_mean_absolute_error::mean_absolute_error(&targets, &baseline)?,
+        part_049_lesson_09_mean_squared_error::mean_squared_error(&targets, &baseline)?,
+        part_050_lesson_09_mean_absolute_error::mean_absolute_error(&targets, &predictions)?,
+        part_049_lesson_09_mean_squared_error::mean_squared_error(&targets, &predictions)?
     );
     Ok(())
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
-    let records = load_wine_quality_red_records()?;
-    let split = split_indices(records.len(), 42)?;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let records = lesson_datasets::load_wine_quality_red_records()?;
+    let split = lesson_datasets::split_indices(records.len(), 42)?;
     let training_targets: Vec<f64> = split
         .training_indices
         .iter()
@@ -44,8 +38,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         .iter()
         .map(|&index| records[index].features[10])
         .collect();
-    let target_mean = arithmetic_mean_of_values(&training_targets)?;
-    let alcohol_mean = arithmetic_mean_of_values(&training_alcohol)?;
+    let target_mean = part_029_lesson_06_mean::arithmetic_mean_of_values(&training_targets)?;
+    let alcohol_mean = part_029_lesson_06_mean::arithmetic_mean_of_values(&training_alcohol)?;
     let covariance: f64 = training_alcohol
         .iter()
         .zip(&training_targets)

@@ -1,7 +1,5 @@
 //! Учебный прямой проход GPT с фиксированными весами.
 
-use part_182_lesson_35_causal_self_attention::causal_attention;
-
 /// Возвращает состояния после причинного внимания и residual.
 // Единицу текста, которую модель обрабатывает как одно целое, называют token.
 pub fn calculate_hidden_states_for_text_units(text_unit_identifiers: &[usize]) -> Vec<[f64; 2]> {
@@ -20,7 +18,9 @@ pub fn calculate_hidden_states_for_text_units(text_unit_identifiers: &[usize]) -
     if states.is_empty() {
         return Vec::new();
     }
-    let context = causal_attention(&states, &states, &states).unwrap();
+    let context =
+        part_182_lesson_35_causal_self_attention::causal_attention(&states, &states, &states)
+            .unwrap();
     states
         .iter()
         .zip(&context)
@@ -38,17 +38,15 @@ pub fn calculate_forward_pass_for_text_units(text_unit_identifiers: &[usize]) ->
 
 #[cfg(test)]
 mod tests {
-    use super::{calculate_forward_pass_for_text_units, calculate_hidden_states_for_text_units};
-
     #[test]
     fn prefix_is_causal() {
         assert_eq!(
-            calculate_hidden_states_for_text_units(&[0])[0],
-            calculate_hidden_states_for_text_units(&[0, 1])[0]
+            super::calculate_hidden_states_for_text_units(&[0])[0],
+            super::calculate_hidden_states_for_text_units(&[0, 1])[0]
         );
         assert_eq!(
-            calculate_forward_pass_for_text_units(&[0])[0],
-            calculate_forward_pass_for_text_units(&[0, 1])[0]
+            super::calculate_forward_pass_for_text_units(&[0])[0],
+            super::calculate_forward_pass_for_text_units(&[0, 1])[0]
         );
     }
 }

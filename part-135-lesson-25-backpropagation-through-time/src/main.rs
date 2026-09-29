@@ -1,16 +1,19 @@
 // Урок 25.2. Обратное распространение через время.
 // Градиент рекуррентного веса учитывает все предыдущие шаги.
 
-use part_134_lesson_25_recurrent_neural_network_state::calculate_recurrent_states;
 fn calculate_sequence_prediction_loss(
     input: &[f64],
     input_weight: f64,
     recurrent_weight: f64,
     target: f64,
 ) -> f64 {
-    let last = *calculate_recurrent_states(input, input_weight, recurrent_weight)
-        .last()
-        .unwrap();
+    let last = *part_134_lesson_25_recurrent_neural_network_state::calculate_recurrent_states(
+        input,
+        input_weight,
+        recurrent_weight,
+    )
+    .last()
+    .unwrap();
     0.5 * (last - target).powi(2)
 }
 fn main() {
@@ -18,7 +21,11 @@ fn main() {
     let input_weight = 0.3;
     let recurrent_weight = 0.4;
     let target = 0.7;
-    let history = calculate_recurrent_states(&input, input_weight, recurrent_weight);
+    let history = part_134_lesson_25_recurrent_neural_network_state::calculate_recurrent_states(
+        &input,
+        input_weight,
+        recurrent_weight,
+    );
     // Производную функции по параметру или вектор таких производных называют gradient.
     let mut hidden_state_loss_rate_of_change = history.last().unwrap() - target;
     let mut recurrent_weight_loss_rate_of_change = 0.0;

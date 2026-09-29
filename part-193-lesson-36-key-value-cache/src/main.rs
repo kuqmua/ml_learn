@@ -1,10 +1,11 @@
 // Урок 36.6. KV-cache при генерации.
 // Сохраняем K/V прошлых токенов и сверяем последний выход с полным причинным пересчётом.
 
-use part_182_lesson_35_causal_self_attention::{causal_attention, softmax};
 fn main() {
     let states = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    let full = causal_attention(&states, &states, &states).unwrap();
+    let full =
+        part_182_lesson_35_causal_self_attention::causal_attention(&states, &states, &states)
+            .unwrap();
     let mut cached_keys = Vec::new();
     let mut cached_values = Vec::new();
     let mut cached_outputs = Vec::new();
@@ -16,7 +17,7 @@ fn main() {
             .iter()
             .map(|key| (new_state[0] * key[0] + new_state[1] * key[1]) / 2.0_f64.sqrt())
             .collect();
-        let weights = softmax(&raw_model_scores);
+        let weights = part_182_lesson_35_causal_self_attention::softmax(&raw_model_scores);
         let output = weights.iter().zip(&cached_values).fold(
             [0.0; 2],
             |mut output_state, (&weight_value, cached_value)| {

@@ -15,11 +15,10 @@ pub fn rotate_coordinate_pair_by_position(
 }
 #[cfg(test)]
 mod tests {
-    use super::rotate_coordinate_pair_by_position;
     #[test]
     fn rotation_preserves_norm() {
         let input_value = [3.0, 4.0];
-        let second_input_value = rotate_coordinate_pair_by_position(input_value, 7, 0.1);
+        let second_input_value = super::rotate_coordinate_pair_by_position(input_value, 7, 0.1);
         assert!(
             (second_input_value[0] * second_input_value[0]
                 + second_input_value[1] * second_input_value[1]

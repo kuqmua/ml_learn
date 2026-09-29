@@ -1,7 +1,6 @@
 // Урок 35.4. Pre-norm decoder block.
 // Нормализация, причинное внимание, residual, FFN и второй residual образуют блок.
 
-use part_182_lesson_35_causal_self_attention::causal_attention;
 fn layer_normalization(input_value: [f64; 2]) -> [f64; 2] {
     let mean = (input_value[0] + input_value[1]) / 2.0;
     let variance = ((input_value[0] - mean).powi(2) + (input_value[1] - mean).powi(2)) / 2.0;
@@ -12,7 +11,12 @@ fn layer_normalization(input_value: [f64; 2]) -> [f64; 2] {
 }
 fn apply_transformer_decoder_block(input: &[[f64; 2]]) -> Vec<[f64; 2]> {
     let normalized: Vec<_> = input.iter().copied().map(layer_normalization).collect();
-    let attention = causal_attention(&normalized, &normalized, &normalized).unwrap();
+    let attention = part_182_lesson_35_causal_self_attention::causal_attention(
+        &normalized,
+        &normalized,
+        &normalized,
+    )
+    .unwrap();
     input
         .iter()
         .zip(&attention)

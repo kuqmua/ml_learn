@@ -1,7 +1,6 @@
 // Урок 36.3. Grouped-query attention.
 // Несколько Q-голов совместно используют меньшее число K/V-голов.
 
-use part_182_lesson_35_causal_self_attention::softmax;
 fn main() {
     // Четырём Q-головам соответствуют две K/V-головы.
     let queries = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [-1.0, 1.0]];
@@ -15,7 +14,7 @@ fn main() {
             .iter()
             .map(|key_vector| query[0] * key_vector[0] + query[1] * key_vector[1])
             .collect();
-        let weights = softmax(&raw_model_scores);
+        let weights = part_182_lesson_35_causal_self_attention::softmax(&raw_model_scores);
         output.push([
             weights[0] * values[group][0][0] + weights[1] * values[group][1][0],
             weights[0] * values[group][0][1] + weights[1] * values[group][1][1],

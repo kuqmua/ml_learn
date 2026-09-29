@@ -27,10 +27,9 @@ impl ObliviousTree {
 
 #[cfg(test)]
 mod tests {
-    use super::ObliviousTree;
     #[test]
     fn all_four_leaves_and_invalid_shape() {
-        let tree = ObliviousTree {
+        let tree = super::ObliviousTree {
             splits: vec![(0, 0.5), (1, 0.5)],
             leaves: vec![0.0, 1.0, 2.0, 3.0],
         };

@@ -1,10 +1,9 @@
 // Урок 40.1. Рекуррентная модель состояния.
 // Последовательность обрабатывается линейным сканированием с компактным состоянием.
 
-use part_206_lesson_40_state_space_model::calculate_state_sequence;
 fn main() {
     let input = [1.0, 0.0, 0.0, 0.0];
-    let states = calculate_state_sequence(&input, 0.5, 1.0);
+    let states = part_206_lesson_40_state_space_model::calculate_state_sequence(&input, 0.5, 1.0);
     assert_eq!(states, [1.0, 0.5, 0.25, 0.125]);
     println!("затухание состояния: {states:?}");
     visualize(&states);

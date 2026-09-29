@@ -1,7 +1,6 @@
 // Урок 26.5. Миниатюрная авторегрессионная модель звука.
 // Сочетаем причинные дилатированные свёртки, gate и вероятность следующего дискретного отсчёта.
 
-use part_138_lesson_26_causal_convolution::causal_convolution;
 fn sigmoid(input_value: f64) -> f64 {
     1.0 / (1.0 + (-input_value).exp())
 }
@@ -12,8 +11,10 @@ fn calculate_probability_of_next_sound_sample(history: &[u8]) -> f64 {
         .iter()
         .map(|&sample| f64::from(sample) * 2.0 - 1.0)
         .collect();
-    let filter_one = causal_convolution(&input, 0.8, 0.4, 1).unwrap();
-    let gate_one = causal_convolution(&input, 0.2, -0.3, 1).unwrap();
+    let filter_one =
+        part_138_lesson_26_causal_convolution::causal_convolution(&input, 0.8, 0.4, 1).unwrap();
+    let gate_one =
+        part_138_lesson_26_causal_convolution::causal_convolution(&input, 0.2, -0.3, 1).unwrap();
     let layer_one: Vec<f64> = filter_one
         .iter()
         .zip(&gate_one)
@@ -22,8 +23,10 @@ fn calculate_probability_of_next_sound_sample(history: &[u8]) -> f64 {
             filter_value.tanh() * sigmoid(rate_of_change_value)
         })
         .collect();
-    let filter_two = causal_convolution(&layer_one, 1.0, 0.5, 2).unwrap();
-    let gate_two = causal_convolution(&layer_one, 0.1, 0.6, 2).unwrap();
+    let filter_two =
+        part_138_lesson_26_causal_convolution::causal_convolution(&layer_one, 1.0, 0.5, 2).unwrap();
+    let gate_two =
+        part_138_lesson_26_causal_convolution::causal_convolution(&layer_one, 0.1, 0.6, 2).unwrap();
     let last = history.len() - 1;
     let output = filter_two[last].tanh() * sigmoid(gate_two[last]);
     sigmoid(2.0 * output)

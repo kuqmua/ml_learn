@@ -1,7 +1,6 @@
 // Урок 34.3. Маскированное языковое моделирование.
 // Цель содержит только скрытые позиции, а encoder видит левый и правый контекст.
 
-use part_178_lesson_34_bidirectional_encoder::bidirectional_attention;
 fn main() {
     // Три токена A, B, C; средний заменяем отдельным MASK embedding.
     let original = [0, 1, 2];
@@ -12,7 +11,9 @@ fn main() {
         dense_numeric_representations[3],
         dense_numeric_representations[original[2]],
     ];
-    let context = bidirectional_attention(&visible, &[true; 3]).unwrap();
+    let context =
+        part_178_lesson_34_bidirectional_encoder::bidirectional_attention(&visible, &[true; 3])
+            .unwrap();
     // Скрытие позиции для её предсказания называют masked language modeling.
     let hidden_text_unit_identifier = original[1];
     // Оценку модели до преобразования в вероятность называют logit.

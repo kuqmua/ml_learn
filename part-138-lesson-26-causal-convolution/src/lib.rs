@@ -26,11 +26,10 @@ pub fn causal_convolution(
 
 #[cfg(test)]
 mod tests {
-    use super::causal_convolution;
     #[test]
     fn future_does_not_change_past_outputs() {
-        let short = causal_convolution(&[1.0, 2.0], 1.0, 2.0, 1).unwrap();
-        let long = causal_convolution(&[1.0, 2.0, 999.0], 1.0, 2.0, 1).unwrap();
+        let short = super::causal_convolution(&[1.0, 2.0], 1.0, 2.0, 1).unwrap();
+        let long = super::causal_convolution(&[1.0, 2.0, 999.0], 1.0, 2.0, 1).unwrap();
         assert_eq!(short, long[..2]);
         assert_eq!(short, [1.0, 4.0]);
     }

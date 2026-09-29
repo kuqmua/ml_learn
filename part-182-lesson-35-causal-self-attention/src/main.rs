@@ -1,10 +1,11 @@
 // Урок 35.2. Причинное self-attention.
 // Для позиции i softmax вычисляется только по позициям 0..=i.
 
-use part_182_lesson_35_causal_self_attention::causal_attention;
 fn main() {
     let states = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    let context = causal_attention(&states, &states, &states).unwrap();
+    let context =
+        part_182_lesson_35_causal_self_attention::causal_attention(&states, &states, &states)
+            .unwrap();
     assert_eq!(context[0], states[0]);
     visualize(&states);
     for (index, state) in context.iter().enumerate() {
@@ -13,7 +14,6 @@ fn main() {
 }
 
 fn visualize(states: &[[f64; 2]]) {
-    use part_182_lesson_35_causal_self_attention::softmax;
     let matrix: Vec<Vec<f64>> = states
         .iter()
         .enumerate()
@@ -26,7 +26,7 @@ fn visualize(states: &[[f64; 2]]) {
                         / 2.0_f64.sqrt()
                 })
                 .collect();
-            let weights = softmax(&raw_model_scores);
+            let weights = part_182_lesson_35_causal_self_attention::softmax(&raw_model_scores);
             (0..states.len())
                 .map(|past_index| {
                     if past_index <= item_index {

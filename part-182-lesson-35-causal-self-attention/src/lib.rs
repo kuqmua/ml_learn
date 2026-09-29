@@ -50,15 +50,15 @@ pub fn causal_attention(
 
 #[cfg(test)]
 mod tests {
-    use super::causal_attention;
     #[test]
     fn first_output_ignores_future_values() {
         let query_vector = [[1.0, 0.0], [0.0, 1.0]];
         let key_vector = query_vector;
         let first =
-            causal_attention(&query_vector, &key_vector, &[[2.0, 3.0], [4.0, 5.0]]).unwrap();
+            super::causal_attention(&query_vector, &key_vector, &[[2.0, 3.0], [4.0, 5.0]]).unwrap();
         let second =
-            causal_attention(&query_vector, &key_vector, &[[2.0, 3.0], [999.0, 999.0]]).unwrap();
+            super::causal_attention(&query_vector, &key_vector, &[[2.0, 3.0], [999.0, 999.0]])
+                .unwrap();
         assert_eq!(first[0], second[0]);
         assert_eq!(first[0], [2.0, 3.0]);
     }

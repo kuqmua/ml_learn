@@ -1,21 +1,17 @@
 //! Типизированные записи и воспроизводимое разделение открытых учебных наборов.
 //! Подготовь файлы командой `python3 scripts/prepare_open_datasets.py all`.
 
-use std::collections::BTreeMap;
-use std::io::{self, ErrorKind};
-use std::path::{Path, PathBuf};
-
-pub fn prepared_dataset_path(file_name: &str) -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
+pub fn prepared_dataset_path(file_name: &str) -> std::path::PathBuf {
+    std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .expect("пакет находится в корне workspace")
         .join("datasets/processed")
         .join(file_name)
 }
 
-fn read_prepared_dataset(path: &Path) -> io::Result<String> {
+fn read_prepared_dataset(path: &std::path::Path) -> std::io::Result<String> {
     std::fs::read_to_string(path).map_err(|error| {
-        io::Error::new(
+        std::io::Error::new(
             error.kind(),
             format!(
                 "{}: {error}; подготовь набор командой python3 scripts/prepare_open_datasets.py all",
@@ -25,11 +21,14 @@ fn read_prepared_dataset(path: &Path) -> io::Result<String> {
     })
 }
 
-fn invalid_data(line: usize, message: &str) -> io::Error {
-    io::Error::new(ErrorKind::InvalidData, format!("строка {line}: {message}"))
+fn invalid_data(line: usize, message: &str) -> std::io::Error {
+    std::io::Error::new(
+        std::io::ErrorKind::InvalidData,
+        format!("строка {line}: {message}"),
+    )
 }
 
-fn parse_finite_float(value: &str, line: usize, field: &str) -> io::Result<f64> {
+fn parse_finite_float(value: &str, line: usize, field: &str) -> std::io::Result<f64> {
     let parsed = value.parse::<f64>().map_err(|_| {
         invalid_data(
             line,
@@ -49,7 +48,7 @@ fn parse_fixed_features<const COUNT: usize>(
     fields: &[&str],
     line: usize,
     field: &str,
-) -> io::Result<[f64; COUNT]> {
+) -> std::io::Result<[f64; COUNT]> {
     let mut features = [0.0; COUNT];
     for (index, feature) in features.iter_mut().enumerate() {
         *feature = parse_finite_float(fields[index], line, field)?;
@@ -81,15 +80,15 @@ pub struct IrisRecord {
     pub species: IrisSpecies,
 }
 
-pub fn load_iris_records() -> io::Result<Vec<IrisRecord>> {
+pub fn load_iris_records() -> std::io::Result<Vec<IrisRecord>> {
     load_iris_records_from_path(&prepared_dataset_path("iris.csv"))
 }
 
-pub fn load_iris_records_from_path(path: &Path) -> io::Result<Vec<IrisRecord>> {
+pub fn load_iris_records_from_path(path: &std::path::Path) -> std::io::Result<Vec<IrisRecord>> {
     parse_iris_records(&read_prepared_dataset(path)?)
 }
 
-fn parse_iris_records(text: &str) -> io::Result<Vec<IrisRecord>> {
+fn parse_iris_records(text: &str) -> std::io::Result<Vec<IrisRecord>> {
     let mut lines = text.lines();
     if lines.next() != Some("sepal_length,sepal_width,petal_length,petal_width,species") {
         return Err(invalid_data(1, "неверный заголовок Iris"));
@@ -123,17 +122,17 @@ pub struct WineQualityRedRecord {
     pub quality: f64,
 }
 
-pub fn load_wine_quality_red_records() -> io::Result<Vec<WineQualityRedRecord>> {
+pub fn load_wine_quality_red_records() -> std::io::Result<Vec<WineQualityRedRecord>> {
     load_wine_quality_red_records_from_path(&prepared_dataset_path("wine_quality_red.csv"))
 }
 
 pub fn load_wine_quality_red_records_from_path(
-    path: &Path,
-) -> io::Result<Vec<WineQualityRedRecord>> {
+    path: &std::path::Path,
+) -> std::io::Result<Vec<WineQualityRedRecord>> {
     parse_wine_quality_red_records(&read_prepared_dataset(path)?)
 }
 
-fn parse_wine_quality_red_records(text: &str) -> io::Result<Vec<WineQualityRedRecord>> {
+fn parse_wine_quality_red_records(text: &str) -> std::io::Result<Vec<WineQualityRedRecord>> {
     let mut lines = text.lines();
     if lines.next()
         != Some(
@@ -168,15 +167,17 @@ pub struct SmsSpamRecord {
     pub message: String,
 }
 
-pub fn load_sms_spam_records() -> io::Result<Vec<SmsSpamRecord>> {
+pub fn load_sms_spam_records() -> std::io::Result<Vec<SmsSpamRecord>> {
     load_sms_spam_records_from_path(&prepared_dataset_path("sms_spam.tsv"))
 }
 
-pub fn load_sms_spam_records_from_path(path: &Path) -> io::Result<Vec<SmsSpamRecord>> {
+pub fn load_sms_spam_records_from_path(
+    path: &std::path::Path,
+) -> std::io::Result<Vec<SmsSpamRecord>> {
     parse_sms_spam_records(&read_prepared_dataset(path)?)
 }
 
-fn parse_sms_spam_records(text: &str) -> io::Result<Vec<SmsSpamRecord>> {
+fn parse_sms_spam_records(text: &str) -> std::io::Result<Vec<SmsSpamRecord>> {
     let mut lines = text.lines();
     if lines.next() != Some("is_spam\tmessage") {
         return Err(invalid_data(1, "неверный заголовок SMS Spam"));
@@ -258,7 +259,7 @@ pub fn split_indices_stratified_by_class(
     class_identifiers: &[u8],
     seed: u64,
 ) -> Result<DatasetSplit, &'static str> {
-    let mut groups: BTreeMap<u8, Vec<usize>> = BTreeMap::new();
+    let mut groups: std::collections::BTreeMap<u8, Vec<usize>> = std::collections::BTreeMap::new();
     for (index, &class_identifier) in class_identifiers.iter().enumerate() {
         groups.entry(class_identifier).or_default().push(index);
     }
@@ -285,21 +286,19 @@ pub fn split_indices_stratified_by_class(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[test]
     fn parses_typed_records_and_rejects_wrong_schema() {
-        let iris = parse_iris_records(
+        let iris = super::parse_iris_records(
             "sepal_length,sepal_width,petal_length,petal_width,species\n5.1,3.5,1.4,0.2,setosa\n",
         )
         .unwrap();
         assert_eq!(iris[0].features, [5.1, 3.5, 1.4, 0.2]);
         assert_eq!(iris[0].species.class_identifier(), 0);
-        assert!(parse_iris_records("wrong\n5.1,3.5,1.4,0.2,setosa\n").is_err());
-        let sms = parse_sms_spam_records("is_spam\tmessage\n1\twin now\n").unwrap();
+        assert!(super::parse_iris_records("wrong\n5.1,3.5,1.4,0.2,setosa\n").is_err());
+        let sms = super::parse_sms_spam_records("is_spam\tmessage\n1\twin now\n").unwrap();
         assert!(sms[0].is_spam);
         assert_eq!(sms[0].message, "win now");
-        let wine = parse_wine_quality_red_records(concat!(
+        let wine = super::parse_wine_quality_red_records(concat!(
             "fixed_acidity,volatile_acidity,citric_acid,residual_sugar,chlorides,",
             "free_sulfur_dioxide,total_sulfur_dioxide,density,ph,sulphates,alcohol,quality\n",
             "7.4,0.7,0.0,1.9,0.076,11.0,34.0,0.9978,3.51,0.56,9.4,5\n",
@@ -307,16 +306,16 @@ mod tests {
         .unwrap();
         assert_eq!(wine[0].features[10], 9.4);
         assert_eq!(wine[0].quality, 5.0);
-        assert!(parse_sms_spam_records("is_spam\tmessage\n2\tbad label\n").is_err());
+        assert!(super::parse_sms_spam_records("is_spam\tmessage\n2\tbad label\n").is_err());
     }
 
     #[test]
     fn seeded_stratified_split_has_no_overlap_and_contains_both_classes() {
         let labels: Vec<u8> = (0..20).map(|index| (index % 2) as u8).collect();
-        let first = split_indices_stratified_by_class(&labels, 42).unwrap();
+        let first = super::split_indices_stratified_by_class(&labels, 42).unwrap();
         assert_eq!(
             first,
-            split_indices_stratified_by_class(&labels, 42).unwrap()
+            super::split_indices_stratified_by_class(&labels, 42).unwrap()
         );
         let mut all = [
             first.training_indices.clone(),

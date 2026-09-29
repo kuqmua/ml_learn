@@ -1,13 +1,5 @@
 //! SVG-графики для учебных примеров.
 
-use plotters::prelude::*;
-// Подключаем выравнивание чисел внутри ячеек тепловой карты.
-use plotters::style::text_anchor::{HPos, Pos, VPos};
-// Единый тип ошибки для записи и отрисовки графиков.
-use std::error::Error;
-// Путь к каталогу урока и созданному SVG-файлу.
-use std::path::{Path, PathBuf};
-
 /// Подписанный ряд координат для линейного графика или диаграммы рассеяния.
 pub struct Series<'a> {
     /// Подпись ряда в легенде.
@@ -30,7 +22,7 @@ pub fn line_chart(
     vertical_axis_label: &str,
     // Наборы точек с подписями для легенды.
     series: &[Series<'_>],
-) -> Result<PathBuf, Box<dyn Error>> {
+) -> Result<std::path::PathBuf, Box<dyn std::error::Error>> {
     // Передаём точки в общую отрисовку с соединяющими линиями.
     draw_chart(
         lesson_directory,
@@ -57,7 +49,7 @@ pub fn scatter_chart(
     vertical_axis_label: &str,
     // Наборы точек с подписями для легенды.
     series: &[Series<'_>],
-) -> Result<PathBuf, Box<dyn Error>> {
+) -> Result<std::path::PathBuf, Box<dyn std::error::Error>> {
     // Передаём точки в общую отрисовку без соединяющих линий.
     draw_chart(
         lesson_directory,
@@ -86,7 +78,7 @@ fn draw_chart(
     series: &[Series<'_>],
     // Соединять точки линией или показывать их отдельно.
     connect_points: bool,
-) -> Result<PathBuf, Box<dyn Error>> {
+) -> Result<std::path::PathBuf, Box<dyn std::error::Error>> {
     // Проверяем имя файла и подготавливаем каталог visualizations.
     let path = output_path(lesson_directory, name)?;
     // Собираем только конечные координаты для выбора диапазона осей.
@@ -110,11 +102,13 @@ fn draw_chart(
     let ((horizontal_minimum, horizontal_maximum), (vertical_minimum, vertical_maximum)) =
         bounds(&points);
     // Создаём SVG-холст заданного размера.
-    let root = SVGBackend::new(&path, (900, 560)).into_drawing_area();
+    let root = plotters::prelude::IntoDrawingArea::into_drawing_area(
+        plotters::prelude::SVGBackend::new(&path, (900, 560)),
+    );
     // Делаем фон графика белым.
-    root.fill(&WHITE)?;
+    root.fill(&plotters::prelude::WHITE)?;
     // Настраиваем область построения, заголовок и место для подписей.
-    let mut chart = ChartBuilder::on(&root)
+    let mut chart = plotters::prelude::ChartBuilder::on(&root)
         // Задаём заголовок графика.
         .caption(title, ("sans-serif", 24))
         // Оставляем внешнее поле вокруг рисунка.
@@ -140,12 +134,12 @@ fn draw_chart(
     // Рисуем каждый подписанный ряд своим цветом.
     for (index, item) in series.iter().enumerate() {
         // Номер ряда определяет цвет из палитры Plotters.
-        let color = Palette99::pick(index);
+        let color = <plotters::prelude::Palette99 as plotters::prelude::Palette>::pick(index);
         // Для временного ряда или функции соединяем соседние точки.
         if connect_points {
             chart
                 // Рисуем следующий ряд значений.
-                .draw_series(LineSeries::new(
+                .draw_series(plotters::prelude::LineSeries::new(
                     item.points
                         // Просматриваем элементы коллекции по ссылке.
                         .iter()
@@ -163,12 +157,12 @@ fn draw_chart(
                 // Показываем обозначение ряда в легенде.
                 .legend(move |(horizontal_value, vertical_value)| {
                     // Вычисляем значение по указанной формуле.
-                    PathElement::new(
+                    plotters::prelude::PathElement::new(
                         vec![
                             (horizontal_value, vertical_value),
                             (horizontal_value + 20, vertical_value),
                         ],
-                        Palette99::pick(index),
+                        <plotters::prelude::Palette99 as plotters::prelude::Palette>::pick(index),
                     )
                 });
         }
@@ -184,7 +178,13 @@ fn draw_chart(
                     horizontal_value.is_finite() && vertical_value.is_finite()
                 })
                 // Преобразуем каждый элемент в новое значение.
-                .map(|point| Circle::new(point, 4, color.filled())),
+                .map(|point| {
+                    plotters::prelude::Circle::new(
+                        point,
+                        4,
+                        plotters::prelude::Color::filled(&color),
+                    )
+                }),
         )?;
         // Для отдельных наблюдений показываем в легенде маркер точки.
         if !connect_points {
@@ -192,10 +192,14 @@ fn draw_chart(
             dots.label(item.name)
                 // Показываем обозначение ряда в легенде.
                 .legend(move |(horizontal_value, vertical_value)| {
-                    Circle::new(
+                    plotters::prelude::Circle::new(
                         (horizontal_value + 10, vertical_value),
                         4,
-                        Palette99::pick(index).filled(),
+                        plotters::prelude::Color::filled(
+                            &<plotters::prelude::Palette99 as plotters::prelude::Palette>::pick(
+                                index,
+                            ),
+                        ),
                     )
                 });
         }
@@ -203,7 +207,10 @@ fn draw_chart(
     // Легенда нужна, когда сравниваются несколько рядов.
     if series.len() > 1 {
         // Рисуем легенду с рамкой после добавления рядов.
-        chart.configure_series_labels().border_style(BLACK).draw()?;
+        chart
+            .configure_series_labels()
+            .border_style(plotters::prelude::BLACK)
+            .draw()?;
     }
     // Завершаем запись SVG на диск.
     root.present()?;
@@ -227,7 +234,7 @@ pub fn bar_chart(
     vertical_axis_label: &str,
     // Подписанные значения для столбцов.
     values: &[(&str, f64)],
-) -> Result<PathBuf, Box<dyn Error>> {
+) -> Result<std::path::PathBuf, Box<dyn std::error::Error>> {
     // Проверяем имя файла и подготавливаем каталог visualizations.
     let path = output_path(lesson_directory, name)?;
     // Пустые и нечисловые данные невозможно показать на диаграмме.
@@ -252,11 +259,13 @@ pub fn bar_chart(
     // Добавляем поле, чтобы крайний столбец не касался рамки.
     let axis_padding = (maximum_value - minimum_value).max(1.0) * 0.1;
     // Создаём SVG-холст заданного размера.
-    let root = SVGBackend::new(&path, (900, 560)).into_drawing_area();
+    let root = plotters::prelude::IntoDrawingArea::into_drawing_area(
+        plotters::prelude::SVGBackend::new(&path, (900, 560)),
+    );
     // Делаем фон графика белым.
-    root.fill(&WHITE)?;
+    root.fill(&plotters::prelude::WHITE)?;
     // Настраиваем область построения, заголовок и место для подписей.
-    let mut chart = ChartBuilder::on(&root)
+    let mut chart = plotters::prelude::ChartBuilder::on(&root)
         // Задаём заголовок графика.
         .caption(title, ("sans-serif", 24))
         // Оставляем внешнее поле вокруг рисунка.
@@ -301,14 +310,16 @@ pub fn bar_chart(
     // Строим один столбец для каждого подписанного значения.
     for (item_index, (_, value)) in values.iter().enumerate() {
         // Рисуем цветной прямоугольник на соответствующих координатах.
-        chart.draw_series(std::iter::once(Rectangle::new(
+        chart.draw_series(std::iter::once(plotters::prelude::Rectangle::new(
             // Задаём значения следующей строки или последовательности.
             [
                 (item_index as f64 - 0.35, 0.0),
                 (item_index as f64 + 0.35, *value),
             ],
             // Задаём именованное поле или параметр.
-            Palette99::pick(item_index).filled(),
+            plotters::prelude::Color::filled(
+                &<plotters::prelude::Palette99 as plotters::prelude::Palette>::pick(item_index),
+            ),
         )))?;
     }
     // Завершаем запись SVG на диск.
@@ -331,7 +342,7 @@ pub fn heatmap(
     title: &str,
     // Прямоугольная таблица чисел для окрашивания ячеек.
     values: &[Vec<f64>],
-) -> Result<PathBuf, Box<dyn Error>> {
+) -> Result<std::path::PathBuf, Box<dyn std::error::Error>> {
     // Проверяем имя файла и подготавливаем каталог visualizations.
     let path = output_path(lesson_directory, name)?;
     // Количество строк задаёт высоту сетки.
@@ -373,11 +384,13 @@ pub fn heatmap(
         // Находим наибольшее значение для цветовой шкалы.
         .fold(f64::NEG_INFINITY, f64::max);
     // Создаём SVG-холст заданного размера.
-    let root = SVGBackend::new(&path, (700, 620)).into_drawing_area();
+    let root = plotters::prelude::IntoDrawingArea::into_drawing_area(
+        plotters::prelude::SVGBackend::new(&path, (700, 620)),
+    );
     // Делаем фон графика белым.
-    root.fill(&WHITE)?;
+    root.fill(&plotters::prelude::WHITE)?;
     // Настраиваем область построения, заголовок и место для подписей.
-    let mut chart = ChartBuilder::on(&root)
+    let mut chart = plotters::prelude::ChartBuilder::on(&root)
         // Задаём заголовок графика.
         .caption(title, ("sans-serif", 24))
         // Оставляем внешнее поле вокруг рисунка.
@@ -414,7 +427,7 @@ pub fn heatmap(
                 (value - minimum_value) / (maximum_value - minimum_value)
             };
             // Номер ряда определяет цвет из палитры Plotters.
-            let color = RGBColor(
+            let color = plotters::prelude::RGBColor(
                 // Вычисляем значение по указанной формуле.
                 (35.0 + 180.0 * position_within_value_range) as u8,
                 // Вычисляем значение по указанной формуле.
@@ -427,29 +440,30 @@ pub fn heatmap(
             // Разворачиваем ось строк так, чтобы первая была сверху.
             let second_input_value = (rows - row_index - 1) as f64;
             // Рисуем цветной прямоугольник на соответствующих координатах.
-            chart.draw_series(std::iter::once(Rectangle::new(
+            chart.draw_series(std::iter::once(plotters::prelude::Rectangle::new(
                 // Задаём значения следующей строки или последовательности.
                 [
                     (input_value, second_input_value),
                     (input_value + 1.0, second_input_value + 1.0),
                 ],
                 // Заливаем прямоугольник выбранным цветом.
-                color.filled(),
+                plotters::prelude::Color::filled(&color),
             )))?;
             // Пишем числовое значение в центре ячейки.
-            chart.draw_series(std::iter::once(Text::new(
+            chart.draw_series(std::iter::once(plotters::prelude::Text::new(
                 // Показываем значение с двумя знаками после запятой.
                 format!("{value:.2}"),
                 // Добавляем пару значений для сравнения или построения графика.
                 (input_value + 0.5, second_input_value + 0.5),
                 // Добавляем пару значений для сравнения или построения графика.
-                ("sans-serif", 16)
-                    // Выбираем шрифт для числовой подписи.
-                    .into_font()
+                plotters::prelude::IntoFont::into_font(("sans-serif", 16))
                     // Белый текст читается поверх окрашенной ячейки.
-                    .color(&WHITE)
+                    .color(&plotters::prelude::WHITE)
                     // Выравниваем подпись по центру ячейки.
-                    .pos(Pos::new(HPos::Center, VPos::Center)),
+                    .pos(plotters::style::text_anchor::Pos::new(
+                        plotters::style::text_anchor::HPos::Center,
+                        plotters::style::text_anchor::VPos::Center,
+                    )),
             )))?;
         }
     }
@@ -464,7 +478,10 @@ pub fn heatmap(
 }
 
 // Создаёт отдельный каталог для файлов, полученных при запуске урока.
-fn output_path(lesson_directory: &str, name: &str) -> Result<PathBuf, Box<dyn Error>> {
+fn output_path(
+    lesson_directory: &str,
+    name: &str,
+) -> Result<std::path::PathBuf, Box<dyn std::error::Error>> {
     // Проверяем имя файла до обращения к файловой системе.
     if name.is_empty()
         // Задаём преобразование для элементов коллекции.
@@ -478,7 +495,7 @@ fn output_path(lesson_directory: &str, name: &str) -> Result<PathBuf, Box<dyn Er
         return Err("недопустимое имя графика".into());
     }
     // Все графики урока хранятся в его каталоге visualizations.
-    let output_directory = Path::new(lesson_directory).join("visualizations");
+    let output_directory = std::path::Path::new(lesson_directory).join("visualizations");
     // Создаём каталог при первом запуске урока.
     std::fs::create_dir_all(&output_directory)?;
     // Добавляем к проверенному имени расширение SVG.

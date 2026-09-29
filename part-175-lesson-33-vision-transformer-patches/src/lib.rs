@@ -24,16 +24,15 @@ pub fn extract_image_patches(
 }
 #[cfg(test)]
 mod tests {
-    use super::extract_image_patches;
     #[test]
     fn patch_order() {
         let image = vec![vec![1.0, 2.0], vec![3.0, 4.0]];
         assert_eq!(
-            extract_image_patches(&image, 1).unwrap(),
+            super::extract_image_patches(&image, 1).unwrap(),
             vec![vec![1.0], vec![2.0], vec![3.0], vec![4.0]]
         );
         assert_eq!(
-            extract_image_patches(&image, 2).unwrap(),
+            super::extract_image_patches(&image, 2).unwrap(),
             vec![vec![1.0, 2.0, 3.0, 4.0]]
         );
     }

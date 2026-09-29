@@ -1,25 +1,23 @@
-use lesson_datasets::{IrisRecord, load_iris_records, split_indices_stratified_by_class};
-use part_004_lesson_01_distance::squared_euclidean_distance_between_points;
-use std::error::Error;
-
 fn predict_species_from_nearest_training_record(
-    example: &IrisRecord,
-    records: &[IrisRecord],
+    example: &lesson_datasets::IrisRecord,
+    records: &[lesson_datasets::IrisRecord],
     training_indices: &[usize],
 ) -> u8 {
     training_indices
         .iter()
         .min_by(|&&left, &&right| {
-            let left_distance = squared_euclidean_distance_between_points(
-                &example.features,
-                &records[left].features,
-            )
-            .unwrap();
-            let right_distance = squared_euclidean_distance_between_points(
-                &example.features,
-                &records[right].features,
-            )
-            .unwrap();
+            let left_distance =
+                part_004_lesson_01_distance::squared_euclidean_distance_between_points(
+                    &example.features,
+                    &records[left].features,
+                )
+                .unwrap();
+            let right_distance =
+                part_004_lesson_01_distance::squared_euclidean_distance_between_points(
+                    &example.features,
+                    &records[right].features,
+                )
+                .unwrap();
             left_distance.total_cmp(&right_distance)
         })
         .map(|&index| records[index].species.class_identifier())
@@ -27,7 +25,7 @@ fn predict_species_from_nearest_training_record(
 }
 
 fn classification_accuracy(
-    records: &[IrisRecord],
+    records: &[lesson_datasets::IrisRecord],
     training_indices: &[usize],
     evaluation_indices: &[usize],
 ) -> f64 {
@@ -41,13 +39,13 @@ fn classification_accuracy(
     correct as f64 / evaluation_indices.len() as f64
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
-    let records = load_iris_records()?;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let records = lesson_datasets::load_iris_records()?;
     let labels: Vec<u8> = records
         .iter()
         .map(|record| record.species.class_identifier())
         .collect();
-    let split = split_indices_stratified_by_class(&labels, 42)?;
+    let split = lesson_datasets::split_indices_stratified_by_class(&labels, 42)?;
     println!(
         "Iris: {} строк, признаки [f64; 4], train={}, validation={}, test={}",
         records.len(),

@@ -23,11 +23,10 @@ pub fn root_mean_square_normalization(
 }
 #[cfg(test)]
 mod tests {
-    use super::root_mean_square_normalization;
     #[test]
     fn shape_and_scale() {
-        let output = root_mean_square_normalization(&[3.0, 4.0], &[1.0, 1.0], 1e-8).unwrap();
+        let output = super::root_mean_square_normalization(&[3.0, 4.0], &[1.0, 1.0], 1e-8).unwrap();
         assert!(((output[0] * output[0] + output[1] * output[1]) / 2.0 - 1.0).abs() < 1e-7);
-        assert!(root_mean_square_normalization(&[1.0], &[], 1e-8).is_err());
+        assert!(super::root_mean_square_normalization(&[1.0], &[], 1e-8).is_err());
     }
 }

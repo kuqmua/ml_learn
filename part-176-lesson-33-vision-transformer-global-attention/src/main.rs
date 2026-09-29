@@ -1,8 +1,6 @@
 // Урок 33.2. Глобальное внимание ViT.
 // В классификации изображения патчи могут видеть друг друга без причинной маски.
 
-use part_175_lesson_33_vision_transformer_patches::extract_image_patches;
-
 // Нормируем оценки всех патчей в вероятностные веса.
 // Оценку модели до преобразования в вероятность называют logit.
 fn softmax(raw_model_scores: &[f64]) -> Vec<f64> {
@@ -22,7 +20,8 @@ fn softmax(raw_model_scores: &[f64]) -> Vec<f64> {
 }
 fn main() {
     let image = vec![vec![1.0, 0.0], vec![0.0, 1.0]];
-    let patches = extract_image_patches(&image, 1).unwrap();
+    let patches =
+        part_175_lesson_33_vision_transformer_patches::extract_image_patches(&image, 1).unwrap();
     // Упрощённая проекция одномерного патча в двухмерный токен.
     // Представление патча изображения для трансформера называют visual token.
     let image_patch_representations: Vec<[f64; 2]> = patches

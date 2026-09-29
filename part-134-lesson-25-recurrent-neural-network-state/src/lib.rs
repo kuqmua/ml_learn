@@ -17,11 +17,10 @@ pub fn calculate_recurrent_states(
 }
 #[cfg(test)]
 mod tests {
-    use super::calculate_recurrent_states;
     #[test]
     fn future_does_not_change_past() {
-        let short = calculate_recurrent_states(&[1.0, 2.0], 0.4, 0.6);
-        let long = calculate_recurrent_states(&[1.0, 2.0, 999.0], 0.4, 0.6);
+        let short = super::calculate_recurrent_states(&[1.0, 2.0], 0.4, 0.6);
+        let long = super::calculate_recurrent_states(&[1.0, 2.0, 999.0], 0.4, 0.6);
         assert_eq!(short, long[..2]);
     }
 }

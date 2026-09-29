@@ -1,5 +1,3 @@
-use part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add;
-
 #[test]
 #[ignore = "заполни три вектора и запусти cargo test -p part-001-lesson-01-multiply-coordinates-and-add --test self_check -- --ignored"]
 fn predict_signs_of_scalar_products() {
@@ -15,13 +13,23 @@ fn predict_signs_of_scalar_products() {
         vector_with_positive_result.expect("заполни ответ перед запуском теста");
 
     let negative_result =
-        multiply_matching_coordinates_then_add(&fixed_vector, &vector_with_negative_result)
-            .unwrap();
+        part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(
+            &fixed_vector,
+            &vector_with_negative_result,
+        )
+        .unwrap();
     let zero_result =
-        multiply_matching_coordinates_then_add(&fixed_vector, &vector_with_zero_result).unwrap();
+        part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(
+            &fixed_vector,
+            &vector_with_zero_result,
+        )
+        .unwrap();
     let positive_result =
-        multiply_matching_coordinates_then_add(&fixed_vector, &vector_with_positive_result)
-            .unwrap();
+        part_001_lesson_01_multiply_coordinates_and_add::multiply_matching_coordinates_then_add(
+            &fixed_vector,
+            &vector_with_positive_result,
+        )
+        .unwrap();
     assert!(negative_result < 0.0);
     assert_eq!(zero_result, 0.0);
     assert!(

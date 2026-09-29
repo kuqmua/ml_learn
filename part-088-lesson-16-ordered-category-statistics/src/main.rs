@@ -1,11 +1,16 @@
 // Урок 16.3. Упорядоченная статистика категорий.
 // Метка текущей строки не попадает в её закодированный признак.
 
-use part_088_lesson_16_ordered_category_statistics::ordered_target_mean;
 fn main() {
     let categories = ["A", "B", "A", "A", "B"];
     let targets = [1.0, 0.0, 0.0, 1.0, 1.0];
-    let values = ordered_target_mean(&categories, &targets, 0.5, 2.0).unwrap();
+    let values = part_088_lesson_16_ordered_category_statistics::ordered_target_mean(
+        &categories,
+        &targets,
+        0.5,
+        2.0,
+    )
+    .unwrap();
     assert_eq!(values[0], 0.5);
     assert_eq!(values[1], 0.5);
     visualize(&values);

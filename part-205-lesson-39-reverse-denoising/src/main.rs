@@ -1,7 +1,6 @@
 // Урок 39.3. Обратное восстановление из шумного состояния.
 // При известном точном шуме можно алгебраически восстановить x_0.
 
-use part_203_lesson_39_diffusion_forward::add_noise_to_clean_signal;
 // Долю (fraction) дисперсии исходного сигнала обозначают alpha_bar; её сохранение называют retention.
 fn reconstruct_clean_signal_from_noisy_sample(
     noisy: f64,
@@ -15,7 +14,12 @@ fn main() {
     let clean = 2.0;
     let noise = -0.7;
     let original_signal_variance_share = 0.36;
-    let noisy = add_noise_to_clean_signal(clean, noise, original_signal_variance_share).unwrap();
+    let noisy = part_203_lesson_39_diffusion_forward::add_noise_to_clean_signal(
+        clean,
+        noise,
+        original_signal_variance_share,
+    )
+    .unwrap();
     let exact =
         reconstruct_clean_signal_from_noisy_sample(noisy, noise, original_signal_variance_share);
     let mistaken = reconstruct_clean_signal_from_noisy_sample(

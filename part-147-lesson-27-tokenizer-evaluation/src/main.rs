@@ -1,13 +1,14 @@
 // Урок 27.5.191: Проверка токенизатора на новых строках.
 // Сравниваем длину byte-level и BPE кодирования на train и новых строках.
 
-use part_144_lesson_27_byte_pair_encoding_training::BytePairEncoding;
-
 fn main() {
     // Новые строки не участвуют в выборе слияний.
     let training_data = ["кот спит", "кот ест", "пёс спит"];
     let validation = ["кот играет", "🐈 спит"];
-    let model = BytePairEncoding::train_from_corpus(&training_data, 30);
+    let model = part_144_lesson_27_byte_pair_encoding_training::BytePairEncoding::train_from_corpus(
+        &training_data,
+        30,
+    );
     let rows: Vec<(&str, usize, usize)> = training_data
         .iter()
         .chain(validation.iter())

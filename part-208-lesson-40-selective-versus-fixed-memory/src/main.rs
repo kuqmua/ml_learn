@@ -1,7 +1,6 @@
 // Урок 40.3. Селективная и постоянная память.
 // Сравниваем фиксированное затухание с входозависимым забыванием.
 
-use part_206_lesson_40_state_space_model::calculate_state_sequence;
 fn calculate_selective_state_sequence(values: &[f64], reset: &[bool]) -> Vec<f64> {
     let mut state = 0.0;
     values
@@ -20,7 +19,7 @@ fn calculate_selective_state_sequence(values: &[f64], reset: &[bool]) -> Vec<f64
 fn main() {
     let values = [1.0, 0.0, 2.0, 0.0];
     let reset = [false, false, true, false];
-    let fixed = calculate_state_sequence(&values, 0.8, 1.0);
+    let fixed = part_206_lesson_40_state_space_model::calculate_state_sequence(&values, 0.8, 1.0);
     let dynamic = calculate_selective_state_sequence(&values, &reset);
     assert!(fixed[2] > dynamic[2]);
     println!("fixed={fixed:?}; selective={dynamic:?}");

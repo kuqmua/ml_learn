@@ -1,7 +1,5 @@
 //! Обучение byte-level BPE.
 
-use std::collections::BTreeMap;
-
 /// Учебный byte-level BPE: ID 0..=255 обозначают одиночные байты.
 #[derive(Debug)]
 pub struct BytePairEncoding {
@@ -23,7 +21,7 @@ impl BytePairEncoding {
         let mut merges = Vec::new();
         for _ in 0..merge_count {
             // Частоты считаем только у соседних токенов внутри одной строки.
-            let mut frequencies = BTreeMap::<(usize, usize), usize>::new();
+            let mut frequencies = std::collections::BTreeMap::<(usize, usize), usize>::new();
             for row in &rows {
                 for pair in row.windows(2) {
                     *frequencies.entry((pair[0], pair[1])).or_default() += 1;
@@ -100,10 +98,9 @@ fn merge_pair(
 
 #[cfg(test)]
 mod tests {
-    use super::BytePairEncoding;
     #[test]
     fn roundtrip_and_unseen_unicode_transformation_format_eight_bit_text() {
-        let model = BytePairEncoding::train_from_corpus(&["мама мыла", "мама дома"], 12);
+        let model = super::BytePairEncoding::train_from_corpus(&["мама мыла", "мама дома"], 12);
         for text in ["мама", "кот 🐈", "", "\0"] {
             assert_eq!(
                 model
