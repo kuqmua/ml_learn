@@ -12,12 +12,16 @@ pub fn squared_euclidean_distance_between_two_points(
     }
     // Сохраняем результат этого шага в `squared_sum`.
     let mut squared_sum: f64 = 0.0;
+    lesson_trace::trace_step!(squared_sum);
     // Повторяем расчёт для каждого элемента последовательности.
     for index in 0..left.len() {
+        lesson_trace::trace_step!(index);
         // Сохраняем результат этого шага в `difference`.
         let difference: f64 = left[index] - right[index];
+        lesson_trace::trace_step!(difference);
         // Обновляем значение результатом текущего вычисления.
         squared_sum += difference * difference;
+        lesson_trace::trace_step!(squared_sum);
     }
     // Возвращаем успешный результат.
     Ok(squared_sum)
@@ -39,6 +43,7 @@ pub fn euclidean_distance_between_two_points(
         .zip(right)
         .map(|(&first_value, &second_value)| first_value - second_value)
         .collect();
+    lesson_trace::trace_step!(differences);
     // Возвращаем успешный результат.
     Ok(
         part_003_lesson_01_calculate_euclidean_length_of_one_vector::euclidean_norm_of_vector(

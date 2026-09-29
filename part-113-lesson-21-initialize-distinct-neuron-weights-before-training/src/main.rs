@@ -4,8 +4,10 @@
 // Разные веса позволяют нейронам начать обучение с разных ответов.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `input`.
     let input: [f64; 2] = [1.0, 2.0];
+    lesson_trace::trace_step!(input);
     // Задаём учебные значения для `cases`.
     let cases: [(&str, [f64; 2], [f64; 2], bool); 2] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -13,16 +15,23 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("разные веса", [0.2, -0.3], [-0.1, 0.4], false),
     ];
+    lesson_trace::trace_step!(cases);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, first_neuron, second_neuron, should_match) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(first_neuron);
+        lesson_trace::trace_step!(second_neuron);
+        lesson_trace::trace_step!(should_match);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(first_neuron.len(), input.len());
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(second_neuron.len(), input.len());
         // Сохраняем результат этого шага в `first_output`.
         let first_output: f64 = first_neuron[0] * input[0] + first_neuron[1] * input[1];
+        lesson_trace::trace_step!(first_output);
         // Сохраняем результат этого шага в `second_output`.
         let second_output: f64 = second_neuron[0] * input[0] + second_neuron[1] * input[1];
+        lesson_trace::trace_step!(second_output);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(first_output == second_output, should_match);
         // Печатаем рассчитанные значения для проверки примера.
@@ -30,6 +39,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_initialize_distinct_neuron_weights_before_training();
 }
 

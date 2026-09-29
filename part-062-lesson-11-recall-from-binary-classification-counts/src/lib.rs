@@ -6,6 +6,7 @@ pub fn recall_from_binary_classification_counts(
 ) -> Option<f64> {
     // Сохраняем результат этого шага в `actual_positives`.
     let actual_positives: usize = counts.true_positives + counts.false_negatives;
+    lesson_trace::trace_step!(actual_positives);
     // Выбираем дальнейший шаг по выполнению условия.
     if actual_positives == 0 {
         // Отмечаем отсутствие подходящего значения.

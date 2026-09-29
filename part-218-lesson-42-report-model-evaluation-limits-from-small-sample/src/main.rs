@@ -9,12 +9,16 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Сохраняем рассчитанное значение `correct` для следующих операций.
     let correct: i32 = 2;
+    lesson_trace::trace_step!(correct);
     // Сохраняем рассчитанное значение `total` для следующих операций.
     let total: i32 = 2;
+    lesson_trace::trace_step!(total);
     // Нормируем или усредняем величину делением и сохраняем её в `accuracy`.
     let accuracy: f64 = correct as f64 / total as f64;
+    lesson_trace::trace_step!(accuracy);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("accuracy={accuracy:.2} на {total} объектах: вывод ненадёжен");
 }

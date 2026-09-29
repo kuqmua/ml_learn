@@ -8,16 +8,21 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Сохраняем рассчитанное значение `current_cell` для следующих операций.
     let current_cell: i32 = 2;
+    lesson_trace::trace_step!(current_cell);
     // Сохраняем рассчитанное значение `goal_cell` для следующих операций.
     let goal_cell: i32 = 4;
+    lesson_trace::trace_step!(goal_cell);
     // Комбинируем исходные величины и сохраняем результат в `distance_to_goal`.
     let distance_to_goal: i32 = goal_cell - current_cell;
+    lesson_trace::trace_step!(distance_to_goal);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("состояние: клетка={current_cell}, до цели={distance_to_goal}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_environment_state_for_reinforcement_learning_agent();
 }
 

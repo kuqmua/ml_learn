@@ -8,10 +8,14 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `rows` для следующего шага примера.
     let rows: [&str; 3] = ["1.0", "oops", "3.0"];
+    lesson_trace::trace_step!(rows);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (index, row) in rows.into_iter().enumerate() {
+        lesson_trace::trace_step!(index);
+        lesson_trace::trace_step!(row);
         // Разбираем каждый возможный вариант значения отдельно.
         match row.parse::<f64>() {
             // Возвращаем успешное значение в типе `Result`.

@@ -9,13 +9,17 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `words` для следующего шага примера.
     let words: [&str; 3] = ["кот", "пёс", "мир"];
+    lesson_trace::trace_step!(words);
     // Создаём набор значений `probabilities` для следующего шага примера.
     let probabilities: [f64; 3] = [0.5, 0.3, 0.2];
+    lesson_trace::trace_step!(probabilities);
     // Инициализируем значение `random_number_between_zero_and_one` начальным состоянием.
     // Число от 0 до 1 задаёт долю единичного интервала; такую долю называют fraction.
     let random_number_between_zero_and_one: f64 = 0.65;
+    lesson_trace::trace_step!(random_number_between_zero_and_one);
     // Инициализируем изменяемый накопитель `cumulative` начальным состоянием.
     // Каждому слову соответствует одна неотрицательная вероятность.
     assert_eq!(
@@ -55,10 +59,13 @@ fn main() {
     );
     // Сохраняем результат этого шага в `cumulative`.
     let mut cumulative: f64 = 0.0;
+    lesson_trace::trace_step!(cumulative);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for index in 0..words.len() {
+        lesson_trace::trace_step!(index);
         // Прибавляем очередной вклад к ранее накопленному результату.
         cumulative += probabilities[index];
+        lesson_trace::trace_step!(cumulative);
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if random_number_between_zero_and_one < cumulative {
             // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -69,6 +76,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_sample_next_token_from_probability_distribution(probabilities);
 }
 

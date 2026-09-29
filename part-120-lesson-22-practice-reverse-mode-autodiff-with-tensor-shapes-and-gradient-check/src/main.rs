@@ -12,10 +12,13 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Шаг: Задаём две малые матрицы, результат умножения можно проверить вручную.
     let left_matrix: Vec<Vec<f64>> = vec![vec![1., 2.]];
+    lesson_trace::trace_step!(left_matrix);
     // Создаём набор значений `right_matrix` для следующего шага примера.
     let right_matrix: Vec<Vec<f64>> = vec![vec![3.], vec![4.]];
+    lesson_trace::trace_step!(right_matrix);
 
     // Шаг: Вычисляем производные суммы элементов результата по обеим матрицам.
     // Производную функции по параметру или вектор таких производных называют gradient.
@@ -25,43 +28,57 @@ fn main() {
             /* Для суммы элементов результата умножения матриц вычисляем производные по обоим входам. */
             // Собираем значения для `left_matrix` в коллекцию.
             let left_matrix: &[Vec<f64>] = &left_matrix;
+            lesson_trace::trace_step!(left_matrix);
             // Сохраняем рассчитанное значение `right_matrix` для следующих операций.
             let right_matrix: &[Vec<f64>] = &right_matrix;
+            lesson_trace::trace_step!(right_matrix);
             // Создаём набор значений `left_input_rates_of_change` для следующего шага примера.
             let mut left_input_rates_of_change: Vec<Vec<f64>> =
                 vec![vec![0.0; right_matrix.len()]; left_matrix.len()];
+            lesson_trace::trace_step!(left_input_rates_of_change);
             // Создаём набор значений `right_input_rates_of_change` для следующего шага примера.
             let mut right_input_rates_of_change: Vec<Vec<f64>> =
                 vec![vec![0.0; right_matrix[0].len()]; right_matrix.len()];
+            lesson_trace::trace_step!(right_input_rates_of_change);
             // Производная суммы элементов A·B по A[i,k] — сумма строки B[k,*].
             for row_index in 0..left_matrix.len() {
+                lesson_trace::trace_step!(row_index);
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for shared_index in 0..right_matrix.len() {
+                    lesson_trace::trace_step!(shared_index);
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
                     for column_index in 0..right_matrix[0].len() {
+                        lesson_trace::trace_step!(column_index);
                         // Прибавляем очередной вклад к ранее накопленному результату.
                         left_input_rates_of_change[row_index][shared_index] +=
                         // Выполняем очередное действие, после которого продолжаем следующий шаг.
                         right_matrix[shared_index][column_index];
+                        lesson_trace::trace_step!(left_input_rates_of_change);
                     }
                 }
             }
             // Производная по B[k,j] — сумма столбца A[*,k].
             for shared_index in 0..right_matrix.len() {
+                lesson_trace::trace_step!(shared_index);
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for column_index in 0..right_matrix[0].len() {
+                    lesson_trace::trace_step!(column_index);
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
                     for row_index in 0..left_matrix.len() {
+                        lesson_trace::trace_step!(row_index);
                         // Прибавляем очередной вклад к ранее накопленному результату.
                         right_input_rates_of_change[shared_index][column_index] +=
                         // Выполняем очередное действие, после которого продолжаем следующий шаг.
                         left_matrix[row_index][shared_index];
+                        lesson_trace::trace_step!(right_input_rates_of_change);
                     }
                 }
             }
             // Составляем результат из вычисленных значений в указанном порядке.
             (left_input_rates_of_change, right_input_rates_of_change)
         })();
+    lesson_trace::trace_step!(left_input_rates_of_change);
+    lesson_trace::trace_step!(right_input_rates_of_change);
 
     // Шаг: Выводим loss и обе матрицы градиентов.
     println!(
@@ -73,16 +90,24 @@ fn main() {
             /* Складываем элементы матрицы, полученной после умножения двух матриц. */
             // Собираем значения для `left_matrix` в коллекцию.
             let left_matrix: &[Vec<f64>] = &left_matrix;
+            lesson_trace::trace_step!(left_matrix);
+            lesson_trace::trace_step!(left_matrix);
             // Сохраняем рассчитанное значение `right_matrix` для следующих операций.
             let right_matrix: &[Vec<f64>] = &right_matrix;
+            lesson_trace::trace_step!(right_matrix);
+            lesson_trace::trace_step!(right_matrix);
             // Выполняем встроенный расчёт один раз и сохраняем результат в `result`.
             let result: Vec<Vec<f64>> = (|| -> Result<Vec<Vec<f64>>, &'static str> {
                 // Обновляем значение результатом текущего вычисления.
                 /* Для L=sum(A*B) обратный проход: dA=1*B^T, dB=A^T*1. */
                 // Собираем значения для `left_matrix` в коллекцию.
                 let left_matrix: &[Vec<f64>] = left_matrix;
+                lesson_trace::trace_step!(left_matrix);
+                lesson_trace::trace_step!(left_matrix);
                 // Сохраняем рассчитанное значение `right_matrix` для следующих операций.
                 let right_matrix: &[Vec<f64>] = right_matrix;
+                lesson_trace::trace_step!(right_matrix);
+                lesson_trace::trace_step!(right_matrix);
                 // Отдельно обрабатываем пустой набор, чтобы избежать неверного расчёта.
                 if left_matrix.is_empty()
                     // Задаём параметры короткого локального вычисления.
@@ -106,18 +131,24 @@ fn main() {
                 // Создаём набор значений `result` для следующего шага примера.
                 let mut result: Vec<Vec<f64>> =
                     vec![vec![0.0; right_matrix[0].len()]; left_matrix.len()];
+                lesson_trace::trace_step!(result);
+                lesson_trace::trace_step!(result);
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for row_index in 0..left_matrix.len() {
+                    lesson_trace::trace_step!(row_index);
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
                     for column_index in 0..right_matrix[0].len() {
+                        lesson_trace::trace_step!(column_index);
                         // Повторяем следующий блок для каждого элемента указанной последовательности.
                         for shared_index in 0..right_matrix.len() {
+                            lesson_trace::trace_step!(shared_index);
                             // Прибавляем очередной вклад к ранее накопленному результату.
                             result[row_index][column_index] += left_matrix[row_index]
                                 // Составляем результат из вычисленных значений в указанном порядке.
                                 [shared_index]
                                 // Добавляем этот член в составное арифметическое выражение.
                                 * right_matrix[shared_index][column_index];
+                            lesson_trace::trace_step!(result);
                         }
                     }
                 }
@@ -126,14 +157,21 @@ fn main() {
             })()
             // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
             .unwrap();
+            lesson_trace::trace_step!(result);
+            lesson_trace::trace_step!(result);
             // Инициализируем изменяемый накопитель `output_sum` начальным состоянием.
             let mut output_sum: f64 = 0.0;
+            lesson_trace::trace_step!(output_sum);
+            lesson_trace::trace_step!(output_sum);
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for row in &result {
+                lesson_trace::trace_step!(row);
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for &value in row {
+                    lesson_trace::trace_step!(value);
                     // Прибавляем очередной вклад к ранее накопленному результату.
                     output_sum += value;
+                    lesson_trace::trace_step!(output_sum);
                 }
             }
             // Используем ранее рассчитанное значение `output_sum` в текущем выражении.
@@ -142,6 +180,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_reverse_mode_autodiff_with_tensor_shapes_and_gradient_check(
         left_input_rates_of_change,
         right_input_rates_of_change,

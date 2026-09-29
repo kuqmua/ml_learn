@@ -4,6 +4,7 @@
 // могут совпадать (решений бесконечно много) или противоречить друг другу (решений нет).
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `cases`.
     let cases: [(&str, [f64; 4], [f64; 2]); 5] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -17,6 +18,7 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("решений нет", [0.0, 0.0, 0.0, 0.0], [1.0, 0.0]),
     ];
+    lesson_trace::trace_step!(cases);
     // Повторяем расчёт для каждого элемента последовательности.
     for (
         description,
@@ -29,19 +31,29 @@ fn main() {
         [first_right_hand_side, second_right_hand_side],
     ) in cases
     {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(first_row_first_coefficient);
+        lesson_trace::trace_step!(first_row_second_coefficient);
+        lesson_trace::trace_step!(second_row_first_coefficient);
+        lesson_trace::trace_step!(second_row_second_coefficient);
+        lesson_trace::trace_step!(first_right_hand_side);
+        lesson_trace::trace_step!(second_right_hand_side);
         // Сохраняем результат этого шага в `determinant`.
         let determinant: f64 = first_row_first_coefficient * second_row_second_coefficient
             - first_row_second_coefficient * second_row_first_coefficient;
+        lesson_trace::trace_step!(determinant);
         // Выбираем дальнейший шаг по выполнению условия.
         if determinant != 0.0 {
             // Сохраняем результат этого шага в `first_unknown`.
             let first_unknown: f64 = (first_right_hand_side * second_row_second_coefficient
                 - first_row_second_coefficient * second_right_hand_side)
                 / determinant;
+            lesson_trace::trace_step!(first_unknown);
             // Сохраняем результат этого шага в `second_unknown`.
             let second_unknown: f64 = (first_row_first_coefficient * second_right_hand_side
                 - first_right_hand_side * second_row_first_coefficient)
                 / determinant;
+            lesson_trace::trace_step!(second_unknown);
             // Печатаем рассчитанные значения для проверки примера.
             println!("{description}: x={first_unknown}, y={second_unknown}");
         // Обрабатываем случай, когда предыдущее условие не выполнено.
@@ -49,13 +61,16 @@ fn main() {
             // Если замена столбца правой частью тоже даёт ноль, обе строки описывают одну прямую.
             let first_replaced: f64 = first_right_hand_side * second_row_second_coefficient
                 - first_row_second_coefficient * second_right_hand_side;
+            lesson_trace::trace_step!(first_replaced);
             // Сохраняем результат этого шага в `second_replaced`.
             let second_replaced: f64 = first_row_first_coefficient * second_right_hand_side
                 - first_right_hand_side * second_row_first_coefficient;
+            lesson_trace::trace_step!(second_replaced);
             // Сохраняем результат этого шага в `impossible_zero_row`.
             let impossible_zero_row: bool = (first_row_first_coefficient == 0.0 && first_row_second_coefficient == 0.0 && first_right_hand_side != 0.0)
                 // Задаём преобразование для элементов коллекции.
                 || (second_row_first_coefficient == 0.0 && second_row_second_coefficient == 0.0 && second_right_hand_side != 0.0);
+            lesson_trace::trace_step!(impossible_zero_row);
             // Сохраняем результат этого шага в `actual`.
             let actual: &str =
                 if first_replaced == 0.0 && second_replaced == 0.0 && !impossible_zero_row {
@@ -66,6 +81,7 @@ fn main() {
                     // Передаём подпись или текстовое значение для следующего шага.
                     "решений нет"
                 };
+            lesson_trace::trace_step!(actual);
             // Проверяем ожидаемое свойство учебного примера.
             assert_eq!(actual, description);
             // Печатаем рассчитанные значения для проверки примера.
@@ -74,6 +90,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_solve_system_of_two_linear_equations();
 }
 

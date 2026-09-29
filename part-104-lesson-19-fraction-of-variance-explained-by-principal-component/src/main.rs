@@ -4,6 +4,7 @@
 // Она лежит от 0 до 1; при нулевой общей дисперсии долю определить нельзя.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `cases`.
     let cases: [(&str, [f64; 2], Option<f64>); 4] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -15,8 +16,12 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("изменчивости нет", [0.0, 0.0], None),
     ];
+    lesson_trace::trace_step!(cases);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, eigenvalues, expected) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(eigenvalues);
+        lesson_trace::trace_step!(expected);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(
             // Обновляем значение результатом текущего вычисления.
@@ -26,6 +31,7 @@ fn main() {
         );
         // Сохраняем результат этого шага в `total_variance`.
         let total_variance: f64 = eigenvalues[0] + eigenvalues[1];
+        lesson_trace::trace_step!(total_variance);
         // Сохраняем результат этого шага в `variance_share_explained_by_first_axis`.
         // Долю общей дисперсии, объяснённую осью, называют explained variance fraction.
         let variance_share_explained_by_first_axis: Option<f64> = if total_variance == 0.0 {
@@ -36,6 +42,7 @@ fn main() {
             // Возвращаем присутствующее значение.
             Some(eigenvalues[0] / total_variance)
         };
+        lesson_trace::trace_step!(variance_share_explained_by_first_axis);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(variance_share_explained_by_first_axis, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -45,6 +52,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_fraction_of_variance_explained_by_principal_component();
 }
 

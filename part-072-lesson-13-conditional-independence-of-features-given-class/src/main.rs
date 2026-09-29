@@ -9,18 +9,24 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Инициализируем значение `prior_positive` начальным состоянием.
     let prior_positive: f64 = 0.5;
+    lesson_trace::trace_step!(prior_positive);
     // Инициализируем значение `word_one_given_positive` начальным состоянием.
     let word_one_given_positive: f64 = 0.8;
+    lesson_trace::trace_step!(word_one_given_positive);
     // Инициализируем значение `word_two_given_positive` начальным состоянием.
     let word_two_given_positive: f64 = 0.6;
+    lesson_trace::trace_step!(word_two_given_positive);
     // Умножаем значения и сохраняем результат в `joint_score`.
     let joint_score: f64 = prior_positive * word_one_given_positive * word_two_given_positive;
+    lesson_trace::trace_step!(joint_score);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("оценка положительного класса = {joint_score}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_conditional_independence_of_features_given_class(
         prior_positive,
         word_one_given_positive,

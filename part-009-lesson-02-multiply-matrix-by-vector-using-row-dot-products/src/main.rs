@@ -4,8 +4,10 @@
 // Нулевой вектор даёт нулевой ответ; число столбцов должно совпадать с длиной вектора.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `matrix`.
     let matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
+    lesson_trace::trace_step!(matrix);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, vector, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -13,14 +15,20 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("нулевой вектор", [0.0, 0.0], [0.0, 0.0]),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(vector);
+        lesson_trace::trace_step!(expected);
         // Задаём учебные значения для `result`.
         let mut result: [f64; 2] = [0.0; 2];
+        lesson_trace::trace_step!(result);
         // Повторяем расчёт для каждого элемента последовательности.
         for row in 0..matrix.len() {
+            lesson_trace::trace_step!(row);
             // Урок 01.1 теперь работает и для каждой строки матрицы.
             result[row] = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&matrix[row], &vector)
                 // Используем результат, ожидая успешного выполнения шага.
                 .expect("число столбцов совпадает с длиной вектора");
+            lesson_trace::trace_step!(result);
         }
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(result, expected);
@@ -29,6 +37,7 @@ fn main() {
     }
     // Задаём учебные значения для `too_short`.
     let too_short: [f64; 1] = [5.0];
+    lesson_trace::trace_step!(too_short);
     // Сохраняем результат этого шага в `error`.
     let error: &str =
         part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
@@ -36,10 +45,12 @@ fn main() {
         )
         // Настраиваем или преобразуем результат предыдущего шага.
         .expect_err("разные длины нужно отклонить");
+    lesson_trace::trace_step!(error);
     // Печатаем рассчитанные значения для проверки примера.
     println!("разная длина строки и вектора: {error}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_multiply_matrix_by_vector_using_row_dot_products(matrix);
 }
 

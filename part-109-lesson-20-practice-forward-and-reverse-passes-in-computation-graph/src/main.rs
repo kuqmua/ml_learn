@@ -11,6 +11,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Учебные реализации математических операций для этого урока.
 
     /// e^x по ряду Тейлора. Деление аргумента пополам ускоряет сходимость.
@@ -32,30 +33,40 @@ fn main() {
         }
         // Создаём изменяемое значение `reduced` для следующих операций.
         let mut reduced: f64 = value;
+        lesson_trace::trace_step!(reduced);
         // Инициализируем изменяемый накопитель `halving_count` начальным состоянием.
         let mut halving_count: i32 = 0;
+        lesson_trace::trace_step!(halving_count);
         // Уменьшаем аргумент до ≤0.5: на таком интервале ряд Тейлора для exp сходится быстро.
         while reduced > 0.5 {
             // Масштабируем текущую величину делением.
             reduced /= 2.0;
+            lesson_trace::trace_step!(reduced);
             // Прибавляем очередной вклад к ранее накопленному результату.
             halving_count += 1;
+            lesson_trace::trace_step!(halving_count);
         }
         // Создаём изменяемое значение `term` для следующих операций.
         let mut term: f64 = 1.0;
+        lesson_trace::trace_step!(term);
         // Создаём изменяемое значение `result` для следующих операций.
         let mut result: f64 = 1.0;
+        lesson_trace::trace_step!(result);
         // Берём 30 членов ряда exp(y)=Σ y^k/k!; это предел приближения для учебных входов.
         for term_index in 1..=30 {
+            lesson_trace::trace_step!(term_index);
             // Умножаем накопленное значение на очередной множитель.
             term *= reduced / term_index as f64;
+            lesson_trace::trace_step!(term);
             // Прибавляем очередной вклад к ранее накопленному результату.
             result += term;
+            lesson_trace::trace_step!(result);
         }
         // Восстанавливаем exp(value): каждое возведение в квадрат отменяет одно деление аргумента на 2.
         for _ in 0..halving_count {
             // Умножаем накопленное значение на очередной множитель.
             result *= result;
+            lesson_trace::trace_step!(result);
         }
         // Используем ранее рассчитанное значение `result` в текущем выражении.
         result
@@ -75,12 +86,13 @@ fn main() {
         }
         // Умножаем значения и сохраняем результат в `exponential_value`.
         let exponential_value: f64 = approximate_exponential_with_taylor_series(2.0 * value);
+        lesson_trace::trace_step!(exponential_value);
         // Составляем результат из вычисленных значений в указанном порядке.
         (exponential_value - 1.0) / (exponential_value + 1.0)
     }
 
     // Автоматически получаем стандартные реализации перечисленных трейтов для этого типа.
-    #[derive(Clone, Copy)]
+    #[derive(Clone, Copy, Debug)]
     // Описываем тип `Operation`, чтобы явно хранить состояние и допустимые варианты.
     enum Operation {
         // Вариант входа хранит значение без операции над предками.
@@ -94,6 +106,7 @@ fn main() {
     }
 
     // Описываем тип `Node`, чтобы явно хранить состояние и допустимые варианты.
+    #[derive(Debug)]
     struct Node {
         // Поле `value` соответствующее значение в составе структуры.
         value: f64,
@@ -104,6 +117,7 @@ fn main() {
     }
 
     // Описываем тип `Graph`, чтобы явно хранить состояние и допустимые варианты.
+    #[derive(Debug)]
     struct Graph(Vec<Node>);
 
     // Группируем методы рядом с типом, к которому они относятся.
@@ -112,6 +126,7 @@ fn main() {
         fn append_input_value_node_to_computation_graph(&mut self, value: f64) -> usize {
             // Считаем количество элементов и сохраняем его в `node_index`.
             let node_index: usize = self.0.len();
+            lesson_trace::trace_step!(node_index);
             // Обновляем состояние объекта результатом текущей операции.
             self.0.push(Node {
                 // Используем ранее рассчитанное значение `value` в текущем выражении.
@@ -128,19 +143,25 @@ fn main() {
 
     // Шаг: Создаём пустой граф скалярных операций.
     let mut graph: Graph = Graph(vec![]);
+    lesson_trace::trace_step!(graph);
     // Шаг: Строим прямой проход: x, x², 2x² и tanh(2x²).
     let input_index: usize = graph.append_input_value_node_to_computation_graph(2.);
+    lesson_trace::trace_step!(input_index);
     // Умножение x на x создаёт узел с двумя ребрами к одному входу.
     let squared_index: usize =
         // Обновляем состояние объекта результатом текущей операции.
         graph.append_input_value_node_to_computation_graph(graph.0[input_index].value * graph.0[input_index].value);
+    lesson_trace::trace_step!(squared_index);
     // Обновляем состояние объекта результатом текущей операции.
     graph.0[squared_index].operation = Operation::Mul(input_index, input_index);
+    lesson_trace::trace_step!(graph);
     // Складываем полученный квадрат с самим собой.
     let doubled_square_index: usize =
         graph.append_input_value_node_to_computation_graph(graph.0[squared_index].value * 2.0);
+    lesson_trace::trace_step!(doubled_square_index);
     // Обновляем состояние объекта результатом текущей операции.
     graph.0[doubled_square_index].operation = Operation::Add(squared_index, squared_index);
+    lesson_trace::trace_step!(graph);
     // Применяем tanh к результату и запоминаем его вход для обратного прохода.
     let output_index: usize = graph.append_input_value_node_to_computation_graph(
         calculate_hyperbolic_tangent_from_exponentials(
@@ -148,15 +169,20 @@ fn main() {
             graph.0[doubled_square_index].value,
         ),
     );
+    lesson_trace::trace_step!(output_index);
     // Обновляем состояние объекта результатом текущей операции.
     graph.0[output_index].operation = Operation::Tanh(doubled_square_index);
+    lesson_trace::trace_step!(graph);
     // Шаг: Идём по графу назад: правило цепочки распределяет градиент по каждому ребру.
     graph.0[output_index].gradient = 1.;
+    lesson_trace::trace_step!(graph);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for node_index in (0..=output_index).rev() {
+        lesson_trace::trace_step!(node_index);
         // Сохраняем рассчитанное значение `incoming_loss_rate_of_change` для следующих операций.
         // Производную функции по параметру или вектор таких производных называют gradient.
         let incoming_loss_rate_of_change: f64 = graph.0[node_index].gradient;
+        lesson_trace::trace_step!(incoming_loss_rate_of_change);
         // Разбираем каждый возможный вариант значения отдельно.
         match graph.0[node_index].operation {
             // Обрабатываем этот вариант структуры данных отдельным правилом.
@@ -165,26 +191,32 @@ fn main() {
             Operation::Add(left_index, right_index) => {
                 // Накапливаем вклад текущего шага в состояние модели или графа.
                 graph.0[left_index].gradient += incoming_loss_rate_of_change;
+                lesson_trace::trace_step!(graph);
                 // Накапливаем вклад текущего шага в состояние модели или графа.
                 graph.0[right_index].gradient += incoming_loss_rate_of_change;
+                lesson_trace::trace_step!(graph);
             }
             // Обрабатываем этот вариант структуры данных отдельным правилом.
             Operation::Mul(left_index, right_index) => {
                 // Накапливаем вклад текущего шага в состояние модели или графа.
                 graph.0[left_index].gradient +=
                     incoming_loss_rate_of_change * graph.0[right_index].value;
+                lesson_trace::trace_step!(graph);
                 // Накапливаем вклад текущего шага в состояние модели или графа.
                 graph.0[right_index].gradient +=
                     incoming_loss_rate_of_change * graph.0[left_index].value;
+                lesson_trace::trace_step!(graph);
             }
             // Обрабатываем этот вариант структуры данных отдельным правилом.
             Operation::Tanh(left_index) => {
                 // Производная tanh(z) равна 1 − tanh(z)².
                 let output_value: f64 = graph.0[node_index].value;
+                lesson_trace::trace_step!(output_value);
                 // Накапливаем вклад текущего шага в состояние модели или графа.
                 graph.0[left_index].gradient +=
                     // Умножаем величины согласно используемой формуле.
                     incoming_loss_rate_of_change * (1.0 - output_value * output_value);
+                lesson_trace::trace_step!(graph);
             }
         }
     }
@@ -199,6 +231,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_forward_and_reverse_passes_in_computation_graph(graph);
 
     // Строим график по результатам урока.

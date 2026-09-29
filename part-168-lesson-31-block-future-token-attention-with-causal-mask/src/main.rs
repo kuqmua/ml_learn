@@ -4,15 +4,20 @@
 // на последней позиции — все. Вес будущих позиций всегда равен нулю.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `raw_weights`.
     let raw_weights: [f64; 3] = [0.2, 0.3, 0.5];
+    lesson_trace::trace_step!(raw_weights);
     // Повторяем расчёт для каждого элемента последовательности.
     for current_position in 0..raw_weights.len() {
+        lesson_trace::trace_step!(current_position);
         // Задаём учебные значения для `future_position_filtered_weights`.
         // Запрет внимания к будущим позициям называют causal mask.
         let mut future_position_filtered_weights: [f64; 3] = [0.0; 3];
+        lesson_trace::trace_step!(future_position_filtered_weights);
         // Вычисляем `allowed_sum` по элементам исходной коллекции.
         let allowed_sum: f64 = raw_weights[..=current_position].iter().sum();
+        lesson_trace::trace_step!(allowed_sum);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(
             // Используем подготовленное значение в следующем шаге примера.
@@ -22,8 +27,10 @@ fn main() {
         );
         // Повторяем расчёт для каждого элемента последовательности.
         for index in 0..=current_position {
+            lesson_trace::trace_step!(index);
             // Обновляем значение результатом текущего вычисления.
             future_position_filtered_weights[index] = raw_weights[index] / allowed_sum;
+            lesson_trace::trace_step!(future_position_filtered_weights);
         }
         // Проверяем ожидаемое свойство учебного примера.
         assert!((future_position_filtered_weights.iter().sum::<f64>() - 1.0).abs() < 1e-10);
@@ -41,6 +48,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_block_future_token_attention_with_causal_mask(raw_weights);
 }
 

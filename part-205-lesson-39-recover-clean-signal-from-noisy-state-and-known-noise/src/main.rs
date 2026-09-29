@@ -11,9 +11,13 @@ fn reconstruct_clean_signal_from_noisy_sample(
         / original_signal_variance_share.sqrt()
 }
 fn main() {
+    lesson_trace::enable();
     let clean: f64 = 2.0;
+    lesson_trace::trace_step!(clean);
     let noise: f64 = -0.7;
+    lesson_trace::trace_step!(noise);
     let original_signal_variance_share: f64 = 0.36;
+    lesson_trace::trace_step!(original_signal_variance_share);
     let noisy: f64 =
         part_203_lesson_39_mix_clean_signal_with_noise_in_forward_diffusion::add_scaled_noise_to_clean_signal_for_diffusion_step(
             clean,
@@ -21,13 +25,16 @@ fn main() {
             original_signal_variance_share,
         )
         .unwrap();
+    lesson_trace::trace_step!(noisy);
     let exact: f64 =
         reconstruct_clean_signal_from_noisy_sample(noisy, noise, original_signal_variance_share);
+    lesson_trace::trace_step!(exact);
     let mistaken: f64 = reconstruct_clean_signal_from_noisy_sample(
         noisy,
         noise + 0.2,
         original_signal_variance_share,
     );
+    lesson_trace::trace_step!(mistaken);
     assert!((exact - clean).abs() < 1e-12);
     assert!((mistaken - clean).abs() > 0.1);
     println!("x_t={noisy:.3}; x_0 при точном шуме={exact:.3}; при ошибке={mistaken:.3}");

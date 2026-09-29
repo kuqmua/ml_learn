@@ -6,6 +6,7 @@ pub fn precision_from_binary_classification_counts(
 ) -> Option<f64> {
     // Сохраняем результат этого шага в `predicted_positives`.
     let predicted_positives: usize = counts.true_positives + counts.false_positives;
+    lesson_trace::trace_step!(predicted_positives);
     // Выбираем дальнейший шаг по выполнению условия.
     if predicted_positives == 0 {
         // Отмечаем отсутствие подходящего значения.

@@ -9,20 +9,25 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `probabilities` для следующего шага примера.
     let probabilities: [f64; 3] = [0.2, 0.55, 0.8];
+    lesson_trace::trace_step!(probabilities);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for threshold in [0.5, 0.7] {
+        lesson_trace::trace_step!(threshold);
         // Преобразуем входные данные и сохраняем полученную коллекцию в `predictions`.
         let predictions: Vec<bool> = probabilities
             .iter()
             .map(|&probability| probability >= threshold)
             .collect();
+        lesson_trace::trace_step!(predictions);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("порог {threshold}: {predictions:?}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_convert_predicted_probability_to_class_using_threshold();
 }
 

@@ -4,8 +4,10 @@
 // Сравниваем совпадение прогноза с наблюдаемой частотой и чрезмерную уверенность.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `observed_labels`.
     let observed_labels: [bool; 5] = [true, true, true, false, true];
+    lesson_trace::trace_step!(observed_labels);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -17,6 +19,7 @@ fn main() {
     let observed_frequency: f64 = observed_labels.iter().filter(|&&label| label).count() as f64
         // Используем подготовленное значение в следующем шаге примера.
         / observed_labels.len() as f64;
+    lesson_trace::trace_step!(observed_frequency);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, predicted_probability, expected_gap) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -26,10 +29,14 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("недооценка", 0.6, 0.2),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(predicted_probability);
+        lesson_trace::trace_step!(expected_gap);
         // Проверяем ожидаемое свойство учебного примера.
         assert!((0.0..=1.0).contains(&predicted_probability));
         // Сохраняем результат этого шага в `gap`.
         let gap: f64 = (predicted_probability - observed_frequency).abs();
+        lesson_trace::trace_step!(gap);
         // Проверяем ожидаемое свойство учебного примера.
         assert!((gap - expected_gap).abs() < 1e-10);
         // Печатаем рассчитанные значения для проверки примера.
@@ -40,6 +47,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_compare_predicted_probabilities_with_observed_event_rates(observed_frequency);
 }
 

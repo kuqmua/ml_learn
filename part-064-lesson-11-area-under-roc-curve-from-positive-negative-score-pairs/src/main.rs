@@ -4,6 +4,7 @@
 // При равных оценках даём паре половину балла, как в стандартном определении ROC-AUC.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &[f64], &[f64], f64); 4] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -15,8 +16,13 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("смешанный порядок", &[0.8, 0.2], &[0.6, 0.4], 0.5),
     ];
+    lesson_trace::trace_step!(cases);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, positive_scores, negative_scores, expected) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(positive_scores);
+        lesson_trace::trace_step!(negative_scores);
+        lesson_trace::trace_step!(expected);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(
             // Используем подготовленное значение в следующем шаге примера.
@@ -26,10 +32,13 @@ fn main() {
         );
         // Сохраняем результат этого шага в `ordered_pairs`.
         let mut ordered_pairs: f64 = 0.0;
+        lesson_trace::trace_step!(ordered_pairs);
         // Повторяем расчёт для каждого элемента последовательности.
         for &positive in positive_scores {
+            lesson_trace::trace_step!(positive);
             // Повторяем расчёт для каждого элемента последовательности.
             for &negative in negative_scores {
+                lesson_trace::trace_step!(negative);
                 // Обновляем значение результатом текущего вычисления.
                 ordered_pairs += if positive > negative {
                     // Используем подготовленное значение в следующем шаге примера.
@@ -43,12 +52,15 @@ fn main() {
                     // Используем подготовленное значение в следующем шаге примера.
                     0.0
                 };
+                lesson_trace::trace_step!(ordered_pairs);
             }
         }
         // Определяем размер данных и сохраняем его в `pair_count`.
         let pair_count: f64 = (positive_scores.len() * negative_scores.len()) as f64;
+        lesson_trace::trace_step!(pair_count);
         // Сохраняем результат этого шага в `area_under_curve`.
         let area_under_curve: f64 = ordered_pairs / pair_count;
+        lesson_trace::trace_step!(area_under_curve);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(area_under_curve, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -56,6 +68,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_area_under_roc_curve_from_positive_negative_score_pairs();
 }
 

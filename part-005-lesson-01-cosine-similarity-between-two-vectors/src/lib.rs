@@ -10,12 +10,14 @@ pub fn cosine_similarity_between_two_vectors(
         part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
             left, right,
         )?;
+    lesson_trace::trace_step!(numerator);
     // Сохраняем результат этого шага в `denominator`.
     let denominator: f64 =
         part_003_lesson_01_calculate_euclidean_length_of_one_vector::euclidean_norm_of_vector(left)
             * part_003_lesson_01_calculate_euclidean_length_of_one_vector::euclidean_norm_of_vector(
                 right,
             );
+    lesson_trace::trace_step!(denominator);
     // Выбираем дальнейший шаг по выполнению условия.
     if denominator == 0.0 {
         // Прерываем вычисление и возвращаем причину ошибки.

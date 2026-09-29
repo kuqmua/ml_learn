@@ -9,14 +9,17 @@ fn cross_entropy_loss_for_target_token_from_logits(raw_model_scores: &[f64], tar
         .ln()
 }
 fn main() {
+    lesson_trace::enable();
     // BOS, A, B, EOS: на последней позиции нет следующей цели.
     // Единицу текста, которую модель обрабатывает как одно целое, называют token.
     let text_unit_identifiers: [usize; 4] = [0, 1, 2, 3];
+    lesson_trace::trace_step!(text_unit_identifiers);
     let raw_model_scores: [[f64; 4]; 3] = [
         [0.2, 2.0, 0.1, 0.0],
         [0.1, 0.2, 2.0, 0.0],
         [0.0, 0.1, 0.2, 2.0],
     ];
+    lesson_trace::trace_step!(raw_model_scores);
     let losses: Vec<f64> = (0..text_unit_identifiers.len() - 1)
         .map(|plot_step_index| {
             cross_entropy_loss_for_target_token_from_logits(
@@ -25,13 +28,17 @@ fn main() {
             )
         })
         .collect();
+    lesson_trace::trace_step!(losses);
     let average: f64 = losses.iter().sum::<f64>() / losses.len() as f64;
+    lesson_trace::trace_step!(average);
     let wrong: f64 = cross_entropy_loss_for_target_token_from_logits(
         &[2.0, 0.2, 0.1, 0.0],
         text_unit_identifiers[1],
     );
+    lesson_trace::trace_step!(wrong);
     assert!(average < wrong);
     println!("loss по позициям: {losses:?}; средний loss={average:.3}");
+    lesson_trace::disable();
     visualize_cross_entropy_loss_for_next_token_prediction(&losses);
 }
 fn visualize_cross_entropy_loss_for_next_token_prediction(losses: &[f64]) {

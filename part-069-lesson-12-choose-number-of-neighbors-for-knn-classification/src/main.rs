@@ -9,22 +9,28 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Соседи отсортированы от ближайшего к дальнему.
     let neighbor_labels: [bool; 5] = [true, false, false, true, true];
+    lesson_trace::trace_step!(neighbor_labels);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for neighbor_count in [1, 3, 5] {
+        lesson_trace::trace_step!(neighbor_count);
         // Преобразуем входные данные и сохраняем полученную коллекцию в `positive`.
         let positive: usize = neighbor_labels[..neighbor_count]
             .iter()
             .filter(|&&label| label)
             .count();
+        lesson_trace::trace_step!(positive);
         // Умножаем значения и сохраняем результат в `prediction`.
         let prediction: bool = positive * 2 > neighbor_count;
+        lesson_trace::trace_step!(prediction);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("k={neighbor_count}: прогноз={prediction}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_choose_number_of_neighbors_for_knn_classification(neighbor_labels);
 }
 

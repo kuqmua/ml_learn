@@ -9,19 +9,25 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Сохраняем рассчитанное значение `weight` для следующих операций.
     let weight: f64 = 2.0;
+    lesson_trace::trace_step!(weight);
     // Сохраняем рассчитанное значение `bias` для следующих операций.
     let bias: f64 = 1.0;
+    lesson_trace::trace_step!(bias);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for feature in [0.0, 1.0, 3.0] {
+        lesson_trace::trace_step!(feature);
         // Умножаем значения и сохраняем результат в `prediction`.
         let prediction: f64 = weight * feature + bias;
+        lesson_trace::trace_step!(prediction);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("x={feature} -> y={prediction}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_weights_and_bias_of_linear_regression_model();
 }
 

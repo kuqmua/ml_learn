@@ -2,10 +2,14 @@
 // Дилатации 1, 2, 4 расширяют область прошлого без длинных фильтров.
 
 fn main() {
+    lesson_trace::enable();
     let mut signal: Vec<f64> = vec![0.0; 9];
+    lesson_trace::trace_step!(signal);
     signal[0] = 1.0;
+    lesson_trace::trace_step!(signal);
     // Промежуток между используемыми точками фильтра называют dilation.
     for filter_spacing in [1, 2, 4] {
+        lesson_trace::trace_step!(filter_spacing);
         signal =
             part_138_lesson_26_causal_convolution_over_one_dimensional_signal::causal_convolution_of_one_dimensional_signal(
                 &signal,
@@ -14,11 +18,13 @@ fn main() {
                 filter_spacing,
             )
             .unwrap();
+        lesson_trace::trace_step!(signal);
         println!("после dilation={filter_spacing}: {signal:?}");
     }
     // Три двухточечных слоя видят 1 + 1 + 2 + 4 = 8 временных шагов.
     assert_eq!(signal[..8], [1.0; 8]);
     assert_eq!(signal[8], 0.0);
+    lesson_trace::disable();
     visualize_dilated_causal_convolution_receptive_field(&signal);
 }
 

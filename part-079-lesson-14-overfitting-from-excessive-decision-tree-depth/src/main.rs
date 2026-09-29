@@ -9,12 +9,16 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `training_error` для следующего шага примера.
     let training_error: [f64; 3] = [0.25, 0.05, 0.0];
+    lesson_trace::trace_step!(training_error);
     // Создаём набор значений `validation_error` для следующего шага примера.
     let validation_error: [f64; 3] = [0.30, 0.15, 0.35];
+    lesson_trace::trace_step!(validation_error);
     // Сравниваем три заданные глубины: train error падает, но validation error после глубины 2 растёт.
     for depth in 1..=3 {
+        lesson_trace::trace_step!(depth);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!(
             // Присваиваем вычисленное значение соответствующей переменной или полю.
@@ -27,6 +31,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_overfitting_from_excessive_decision_tree_depth(training_error, validation_error);
 }
 

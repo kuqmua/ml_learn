@@ -9,10 +9,13 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `training_data` для следующего шага примера.
     let training_data: [f64; 3] = [1.0, 2.0, 3.0];
+    lesson_trace::trace_step!(training_data);
     // Создаём набор значений `test` для следующего шага примера.
     let test: [f64; 1] = [100.0];
+    lesson_trace::trace_step!(test);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         !training_data.is_empty(),
@@ -20,14 +23,17 @@ fn main() {
     );
     // Преобразуем входные данные и сохраняем полученную коллекцию в `training_mean`.
     let training_mean: f64 = training_data.iter().sum::<f64>() / training_data.len() as f64;
+    lesson_trace::trace_step!(training_mean);
     // Сохраняем рассчитанное значение `contaminated_mean` для следующих операций.
     let contaminated_mean: f64 =
         // Составляем результат из вычисленных значений в указанном порядке.
         (training_data.iter().sum::<f64>() + test.iter().sum::<f64>()) / (training_data.len() + test.len()) as f64;
+    lesson_trace::trace_step!(contaminated_mean);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("только train={training_mean}, с утечкой={contaminated_mean}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_data_leakage_from_test_set_into_training(training_mean, contaminated_mean);
 }
 

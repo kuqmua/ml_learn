@@ -9,12 +9,16 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `first` для следующего шага примера.
     let first: [f64; 2] = [1.0, 1000.0];
+    lesson_trace::trace_step!(first);
     // Создаём набор значений `second` для следующего шага примера.
     let second: [f64; 2] = [2.0, 1010.0];
+    lesson_trace::trace_step!(second);
     // Создаём набор значений `scale` для следующего шага примера.
     let scale: [f64; 2] = [1.0, 1000.0];
+    lesson_trace::trace_step!(scale);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -26,20 +30,25 @@ fn main() {
     let raw_squared: f64 =
         part_004_lesson_01_euclidean_distance_between_two_points::squared_euclidean_distance_between_two_points(&first, &second)
             .unwrap();
+    lesson_trace::trace_step!(raw_squared);
     // Задаём учебные значения для `scaled_first`.
     let scaled_first: [f64; 2] = [first[0] / scale[0], first[1] / scale[1]];
+    lesson_trace::trace_step!(scaled_first);
     // Задаём учебные значения для `scaled_second`.
     let scaled_second: [f64; 2] = [second[0] / scale[0], second[1] / scale[1]];
+    lesson_trace::trace_step!(scaled_second);
     // Сохраняем результат этого шага в `scaled_squared`.
     let scaled_squared: f64 = part_004_lesson_01_euclidean_distance_between_two_points::squared_euclidean_distance_between_two_points(
         &scaled_first,
         &scaled_second,
     )
     .unwrap();
+    lesson_trace::trace_step!(scaled_squared);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("до={raw_squared}, после масштабирования={scaled_squared}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_scale_features_before_nearest_neighbor_distance(raw_squared, scaled_squared);
 }
 

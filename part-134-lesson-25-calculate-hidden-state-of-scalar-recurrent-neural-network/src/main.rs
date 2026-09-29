@@ -2,12 +2,16 @@
 // Состояние переносит информацию от предыдущих элементов последовательности.
 
 fn main() {
+    lesson_trace::enable();
     let input: [f64; 4] = [1.0, 0.0, 0.0, 0.0];
+    lesson_trace::trace_step!(input);
     let history: Vec<f64> = part_134_lesson_25_calculate_hidden_state_of_scalar_recurrent_neural_network::calculate_recurrent_hidden_states_from_input_sequence(
         &input, 0.8, 0.7,
     );
+    lesson_trace::trace_step!(history);
     assert_eq!(history.len(), input.len());
     println!("состояния: {history:?}");
+    lesson_trace::disable();
     visualize_calculate_hidden_state_of_scalar_recurrent_neural_network(&history);
 }
 fn visualize_calculate_hidden_state_of_scalar_recurrent_neural_network(states: &[f64]) {

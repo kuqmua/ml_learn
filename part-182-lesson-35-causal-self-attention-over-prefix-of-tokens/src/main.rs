@@ -2,13 +2,19 @@
 // Для позиции i softmax вычисляется только по позициям 0..=i.
 
 fn main() {
+    lesson_trace::enable();
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
+    lesson_trace::trace_step!(states);
     let context: Vec<[f64; 2]> =
         part_182_lesson_35_causal_self_attention_over_prefix_of_tokens::causal_self_attention_over_query_key_value_sequences(&states, &states, &states)
             .unwrap();
+    lesson_trace::trace_step!(context);
     assert_eq!(context[0], states[0]);
+    lesson_trace::disable();
     visualize_causal_self_attention_over_prefix_of_tokens(&states);
     for (index, state) in context.iter().enumerate() {
+        lesson_trace::trace_step!(index);
+        lesson_trace::trace_step!(state);
         println!("позиция {index}: {state:?}");
     }
 }

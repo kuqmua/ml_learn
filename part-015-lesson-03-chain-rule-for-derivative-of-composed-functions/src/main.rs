@@ -9,20 +9,27 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // f(x)=(2x+1)²: внутренняя функция u=2x+1, внешняя u².
     let input_value: f64 = 3.0;
+    lesson_trace::trace_step!(input_value);
     // Умножаем значения и сохраняем результат в `inner`.
     let inner: f64 = 2.0 * input_value + 1.0;
+    lesson_trace::trace_step!(inner);
     // Умножаем значения и сохраняем результат в `outer_derivative`.
     let outer_derivative: f64 = 2.0 * inner;
+    lesson_trace::trace_step!(outer_derivative);
     // Сохраняем рассчитанное значение `inner_derivative` для следующих операций.
     let inner_derivative: f64 = 2.0;
+    lesson_trace::trace_step!(inner_derivative);
     // Умножаем значения и сохраняем результат в `derivative`.
     let derivative: f64 = outer_derivative * inner_derivative;
+    lesson_trace::trace_step!(derivative);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("f'(3)={derivative}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_chain_rule_for_derivative_of_composed_functions();
 }
 

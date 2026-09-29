@@ -4,12 +4,16 @@
 // Единичная матрица не меняет значения; порядок множителей обычно влияет на ответ.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `left`.
     let left: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
+    lesson_trace::trace_step!(left);
     // Задаём учебные значения для `identity`.
     let identity: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
+    lesson_trace::trace_step!(identity);
     // Задаём учебные значения для `right`.
     let right: [[f64; 2]; 2] = [[5.0, 6.0], [7.0, 8.0]];
+    lesson_trace::trace_step!(right);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, first, second, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -29,6 +33,10 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("единичная слева", identity, left, left),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(first);
+        lesson_trace::trace_step!(second);
+        lesson_trace::trace_step!(expected);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(
             // Используем подготовленное значение в следующем шаге примера.
@@ -40,18 +48,23 @@ fn main() {
         );
         // Задаём учебные значения для `result`.
         let mut result: [[f64; 2]; 2] = [[0.0; 2]; 2];
+        lesson_trace::trace_step!(result);
         // Повторяем расчёт для каждого элемента последовательности.
         for row in 0..first.len() {
+            lesson_trace::trace_step!(row);
             // Повторяем расчёт для каждого элемента последовательности.
             for column in 0..second[0].len() {
+                lesson_trace::trace_step!(column);
                 // Задаём учебные значения для `column_values`.
                 let column_values: [f64; 2] = [second[0][column], second[1][column]];
+                lesson_trace::trace_step!(column_values);
                 // Строка × столбец — то же попарное умножение и сложение из урока 01.1.
                 result[row][column] =
                     // Используем подготовленное значение в следующем шаге примера.
                     part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&first[row], &column_values)
                         // Используем результат, ожидая успешного выполнения шага.
                         .expect("внутренние размеры матриц совпадают");
+                lesson_trace::trace_step!(result);
             }
         }
         // Проверяем ожидаемое свойство учебного примера.
@@ -61,8 +74,10 @@ fn main() {
     }
     // Сохраняем результат этого шага в `incompatible_left_shape`.
     let incompatible_left_shape: (i32, i32) = (2, 3);
+    lesson_trace::trace_step!(incompatible_left_shape);
     // Сохраняем результат этого шага в `incompatible_right_shape`.
     let incompatible_right_shape: (i32, i32) = (2, 2);
+    lesson_trace::trace_step!(incompatible_right_shape);
     // Выбираем дальнейший шаг по выполнению условия.
     if incompatible_left_shape.1 != incompatible_right_shape.0 {
         // Печатаем рассчитанные значения для проверки примера.
@@ -73,6 +88,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_multiply_two_matrices_using_row_column_dot_products();
 }
 

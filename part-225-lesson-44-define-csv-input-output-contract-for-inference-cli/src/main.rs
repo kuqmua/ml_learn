@@ -9,18 +9,23 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Сохраняем рассчитанное значение `input` для следующих операций.
     let input: &str = "feature\n1\n2\n";
+    lesson_trace::trace_step!(input);
     // Создаём изменяемое значение `lines` для следующих операций.
     let mut lines: std::str::Lines<'_> = input.lines();
+    lesson_trace::trace_step!(lines);
     // Проверяем, что сравниваемые размерности или значения действительно совпадают.
     assert_eq!(lines.next(), Some("feature"));
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("prediction");
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for line in lines {
+        lesson_trace::trace_step!(line);
         // Читаем или разбираем входные данные в значение `feature`.
         let feature: f64 = line.parse().unwrap();
+        lesson_trace::trace_step!(feature);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("{}", feature * 2.0 + 1.0);
     }

@@ -4,8 +4,10 @@
 // движение влево оставляет его в нулевой клетке.
 
 fn main() {
+    lesson_trace::enable();
     // Сохраняем результат этого шага в `last_state`.
     let last_state: i32 = 4;
+    lesson_trace::trace_step!(last_state);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, state, action, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -17,12 +19,17 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("правая граница", 4, 1, 4),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(state);
+        lesson_trace::trace_step!(action);
+        lesson_trace::trace_step!(expected);
         // Проверяем ожидаемое свойство учебного примера.
         assert!((0..=last_state).contains(&state));
         // Проверяем ожидаемое свойство учебного примера.
         assert!(action == -1 || action == 1);
         // Сохраняем результат этого шага в `next_state`.
         let next_state: i32 = (state + action).clamp(0, last_state);
+        lesson_trace::trace_step!(next_state);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(next_state, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -30,6 +37,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_move_agent_left_or_right_in_bounded_environment();
 }
 

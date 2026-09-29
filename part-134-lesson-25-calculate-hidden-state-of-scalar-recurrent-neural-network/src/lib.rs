@@ -7,10 +7,12 @@ pub fn calculate_recurrent_hidden_states_from_input_sequence(
     recurrent_weight: f64,
 ) -> Vec<f64> {
     let mut hidden_state: f64 = 0.0;
+    lesson_trace::trace_step!(hidden_state);
     input
         .iter()
         .map(|&input_value| {
             hidden_state = (input_weight * input_value + recurrent_weight * hidden_state).tanh();
+            lesson_trace::trace_step!(hidden_state);
             hidden_state
         })
         .collect()

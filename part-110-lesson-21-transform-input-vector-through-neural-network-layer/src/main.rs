@@ -8,28 +8,38 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `input` для следующего шага примера.
     let input: [f64; 2] = [1.0, 2.0];
+    lesson_trace::trace_step!(input);
     // Создаём набор значений `weights` для следующего шага примера.
     let weights: [[f64; 2]; 2] = [[0.5, 0.2], [-0.3, 0.8]];
+    lesson_trace::trace_step!(weights);
     // Создаём набор значений `biases` для следующего шага примера.
     let biases: [f64; 2] = [0.1, -0.2];
+    lesson_trace::trace_step!(biases);
     // Создаём набор значений `output` для следующего шага примера.
     let mut output: [f64; 2] = [0.0; 2];
+    lesson_trace::trace_step!(output);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for neuron in 0..2 {
+        lesson_trace::trace_step!(neuron);
         // Присваиваем вычисленное значение соответствующей переменной или полю.
         output[neuron] = biases[neuron];
+        lesson_trace::trace_step!(output);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for feature in 0..2 {
+            lesson_trace::trace_step!(feature);
             // Прибавляем очередной вклад к ранее накопленному результату.
             output[neuron] += weights[neuron][feature] * input[feature];
+            lesson_trace::trace_step!(output);
         }
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("выход слоя = {output:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_transform_input_vector_through_neural_network_layer(weights);
 }
 

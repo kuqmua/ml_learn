@@ -4,12 +4,16 @@
 // Медиану находим после сортировки. Пустые строки пропускаем, неверное число сообщаем явно.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём неизменяемые учебные данные.
     const SAMPLE_COMMA_SEPARATED_VALUES: &str = "value\n2\n4\n\n6\n8\n";
     // Сохраняем результат этого шага в `values`.
     let mut values: Vec<f64> = Vec::new();
+    lesson_trace::trace_step!(values);
     // Повторяем расчёт для каждого элемента последовательности.
     for (line_index, line) in SAMPLE_COMMA_SEPARATED_VALUES.lines().enumerate().skip(1) {
+        lesson_trace::trace_step!(line_index);
+        lesson_trace::trace_step!(line);
         // Выбираем дальнейший шаг по выполнению условия.
         if line.trim().is_empty() {
             // Переходим к следующему шагу цикла или завершаем его.
@@ -21,6 +25,7 @@ fn main() {
             .parse()
             // Настраиваем или преобразуем результат предыдущего шага.
             .unwrap_or_else(|_| panic!("строка {}: не число", line_index + 1));
+        lesson_trace::trace_step!(value);
         // Используем подготовленное значение в следующем шаге примера.
         values.push(value);
     }
@@ -35,14 +40,17 @@ fn main() {
             &values,
         )
         .unwrap();
+    lesson_trace::trace_step!(mean);
     // Сохраняем результат этого шага в `sample_variance`.
     let sample_variance: f64 =
         part_031_lesson_06_sample_variance_of_numeric_values::sample_variance_of_numeric_values(
             &values,
         )
         .unwrap();
+    lesson_trace::trace_step!(sample_variance);
     // Определяем размер данных и сохраняем его в `middle`.
     let middle: usize = values.len() / 2;
+    lesson_trace::trace_step!(middle);
     // Определяем размер данных и сохраняем его в `median`.
     let median: f64 = if values.len() % 2 == 0 {
         // Вычисляем значение по указанной формуле.
@@ -52,6 +60,7 @@ fn main() {
         // Используем подготовленное значение в следующем шаге примера.
         values[middle]
     };
+    lesson_trace::trace_step!(median);
     // Печатаем рассчитанные значения для проверки примера.
     println!(
         // Передаём подпись или текстовое значение для следующего шага.
@@ -61,6 +70,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_mean_median_and_sample_variance_from_csv(values, mean, median);
 }
 

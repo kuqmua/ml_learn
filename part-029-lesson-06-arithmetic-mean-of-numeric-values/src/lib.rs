@@ -9,10 +9,13 @@ pub fn arithmetic_mean_of_numeric_values(values: &[f64]) -> Result<f64, &'static
     }
     // Сохраняем результат этого шага в `sum`.
     let mut sum: f64 = 0.0;
+    lesson_trace::trace_step!(sum);
     // Повторяем расчёт для каждого элемента последовательности.
     for &value in values {
+        lesson_trace::trace_step!(value);
         // Обновляем значение результатом текущего вычисления.
         sum += value;
+        lesson_trace::trace_step!(sum);
     }
     // Возвращаем успешный результат.
     Ok(sum / values.len() as f64)

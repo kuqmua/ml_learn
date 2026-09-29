@@ -11,6 +11,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Учебные реализации математических операций для этого урока.
 
     // Фиксируем демонстрационные данные на время выполнения программы.
@@ -41,25 +42,35 @@ fn main() {
         /* Оцениваем совпадения слов запроса и документов с поправкой на частоту слова. */
         // Сохраняем результат этого шага в `query`.
         let query: &str = "модель данные";
+        lesson_trace::trace_step!(query);
         // Один и тот же разбор текста используем для запроса и документов.
         // Единицу текста, которую модель обрабатывает как одно целое, называют token.
         let query_text_units: Vec<String> = split_text_into_lowercase_words(query);
+        lesson_trace::trace_step!(query_text_units);
         // Создаём набор значений `ranked_results` для следующего шага примера.
         let mut ranked_results: Vec<(&str, f64)> = vec![];
+        lesson_trace::trace_step!(ranked_results);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(document_identifier, document_text) in &DOCUMENTS {
+            lesson_trace::trace_step!(document_identifier);
+            lesson_trace::trace_step!(document_text);
             // Сохраняем рассчитанное значение `document_text_units` для следующих операций.
             let document_text_units: Vec<String> = split_text_into_lowercase_words(document_text);
+            lesson_trace::trace_step!(document_text_units);
             // Частота слова внутри документа составляет компонент TF.
             let mut text_unit_counts: std::collections::BTreeMap<&String, usize> =
                 std::collections::BTreeMap::new();
+            lesson_trace::trace_step!(text_unit_counts);
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for text_unit in &document_text_units {
+                lesson_trace::trace_step!(text_unit);
                 // Прибавляем очередной вклад к ранее накопленному результату.
                 *text_unit_counts.entry(text_unit).or_insert(0usize) += 1;
+                lesson_trace::trace_step!(text_unit_counts);
             }
             // Инициализируем изменяемый накопитель `relevance_score` начальным состоянием.
             let mut relevance_score: f64 = 0.;
+            lesson_trace::trace_step!(relevance_score);
             // Редкие во всём корпусе слова получают больший вес IDF.
             for word in query_text_units
                 // Перебираем слова запроса без копирования строк.
@@ -67,6 +78,7 @@ fn main() {
                 // Убираем повторы, чтобы слово запроса учитывалось один раз.
                 .collect::<std::collections::BTreeSet<_>>()
             {
+                lesson_trace::trace_step!(word);
                 // Сохраняем рассчитанное значение `document_frequency` для следующих операций.
                 let document_frequency: usize = DOCUMENTS
                     // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -78,6 +90,7 @@ fn main() {
                     })
                     // Подсчитываем число элементов после отбора.
                     .count();
+                lesson_trace::trace_step!(document_frequency);
                 // Выполняем встроенный расчёт один раз и сохраняем результат в `inverse_document_frequency`.
                 let inverse_document_frequency: f64 = (|| -> f64 {
                     // Обновляем значение результатом текущего вычисления.
@@ -86,6 +99,7 @@ fn main() {
                     let value: f64 =
                             // Составляем результат из вычисленных значений в указанном порядке.
                             (DOCUMENTS.len() + 1) as f64 / (document_frequency + 1) as f64;
+                    lesson_trace::trace_step!(value);
                     // Проверяем обязательное условие до дальнейшего вычисления.
                     assert!(
                         // Передаём очередное значение в составе результата или вызова.
@@ -100,55 +114,71 @@ fn main() {
                     }
                     // Создаём изменяемое значение `scaled` для следующих операций.
                     let mut scaled: f64 = value;
+                    lesson_trace::trace_step!(scaled);
                     // Инициализируем изменяемый накопитель `power_of_two` начальным состоянием.
                     let mut power_of_two: i32 = 0i32;
+                    lesson_trace::trace_step!(power_of_two);
                     // Повторяем вычисление, пока выполняется указанное условие.
                     while scaled >= 2.0 {
                         // Масштабируем текущую величину делением.
                         scaled /= 2.0;
+                        lesson_trace::trace_step!(scaled);
                         // Прибавляем очередной вклад к ранее накопленному результату.
                         power_of_two += 1;
+                        lesson_trace::trace_step!(power_of_two);
                     }
                     // Повторяем вычисление, пока выполняется указанное условие.
                     while scaled < 1.0 {
                         // Умножаем накопленное значение на очередной множитель.
                         scaled *= 2.0;
+                        lesson_trace::trace_step!(scaled);
                         // Вычитаем очередной вклад из текущего значения параметра.
                         power_of_two -= 1;
+                        lesson_trace::trace_step!(power_of_two);
                     }
                     // Объявляем повторно используемое вычисление `sum_logarithm_series_terms`; параметры ниже задают его входы.
                     fn sum_logarithm_series_terms(value: f64) -> f64 {
                         // Нормируем или усредняем величину делением и сохраняем её в `ratio`.
                         let ratio: f64 = (value - 1.0) / (value + 1.0);
+                        lesson_trace::trace_step!(ratio);
                         // Умножаем значения и сохраняем результат в `ratio_squared`.
                         let ratio_squared: f64 = ratio * ratio;
+                        lesson_trace::trace_step!(ratio_squared);
                         // Создаём изменяемое значение `term` для следующих операций.
                         let mut term: f64 = ratio;
+                        lesson_trace::trace_step!(term);
                         // Инициализируем изменяемый накопитель `result` начальным состоянием.
                         let mut result: f64 = 0.0;
+                        lesson_trace::trace_step!(result);
                         // Используем 40 первых членов ряда ln(value) = 2·Σ ratio^(2k+1)/(2k+1).
                         // Это конечное приближение: для положительного value выполняется |ratio| < 1.
                         for term_index in 0..40 {
+                            lesson_trace::trace_step!(term_index);
                             // Прибавляем очередной вклад к ранее накопленному результату.
                             result += term / (2 * term_index + 1) as f64;
+                            lesson_trace::trace_step!(result);
                             // Умножаем накопленное значение на очередной множитель.
                             term *= ratio_squared;
+                            lesson_trace::trace_step!(term);
                         }
                         // Умножаем величины согласно используемой формуле.
                         2.0 * result
                     }
                     // Сохраняем рассчитанное значение `logarithm_of_two` для следующих операций.
                     let logarithm_of_two: f64 = sum_logarithm_series_terms(2.0);
+                    lesson_trace::trace_step!(logarithm_of_two);
                     // Умножаем величины согласно используемой формуле.
                     sum_logarithm_series_terms(scaled) + power_of_two as f64 * logarithm_of_two
                     // Вычисляем значение по указанной формуле.
                 })() + 1.;
+                lesson_trace::trace_step!(inverse_document_frequency);
                 // Прибавляем очередной вклад к ранее накопленному результату.
                 relevance_score += *text_unit_counts.get(word).unwrap_or(&0) as f64
                         // Делим значения, получая нормированную величину или среднее.
                         / document_text_units.len() as f64
                         // Добавляем этот член в составное арифметическое выражение.
                         * inverse_document_frequency;
+                lesson_trace::trace_step!(relevance_score);
             }
             // Проверяем условие и выбираем соответствующую ветку алгоритма.
             if relevance_score > 0. {
@@ -169,10 +199,12 @@ fn main() {
     .take(2)
     // Собираем полученные элементы в вектор.
     .collect::<Vec<_>>();
+    lesson_trace::trace_step!(highest_ranked_items);
     // Печатаем рассчитанные значения для проверки примера.
     println!("top-k: {highest_ranked_items:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_document_retrieval_with_lexical_tfidf_and_cosine_ranking(
         highest_ranked_items,
     );

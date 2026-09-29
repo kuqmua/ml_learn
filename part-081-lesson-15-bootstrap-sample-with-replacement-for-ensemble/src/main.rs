@@ -9,16 +9,21 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `data` для следующего шага примера.
     let data: [&str; 4] = ["A", "B", "C", "D"];
+    lesson_trace::trace_step!(data);
     // Создаём набор значений `sampled_indices` для следующего шага примера.
     let sampled_indices: [usize; 4] = [0, 2, 2, 3];
+    lesson_trace::trace_step!(sampled_indices);
     // Преобразуем входные данные и сохраняем полученную коллекцию в `sample`.
     let sample: Vec<&str> = sampled_indices.iter().map(|&index| data[index]).collect();
+    lesson_trace::trace_step!(sample);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("исходные={data:?}, bootstrap={sample:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_bootstrap_sample_with_replacement_for_ensemble(sample);
 }
 

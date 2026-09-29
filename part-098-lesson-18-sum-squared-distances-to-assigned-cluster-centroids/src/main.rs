@@ -9,12 +9,16 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `points` для следующего шага примера.
     let points: [[f64; 2]; 4] = [[0.0, 0.0], [1.0, 0.0], [5.0, 0.0], [6.0, 0.0]];
+    lesson_trace::trace_step!(points);
     // Создаём набор значений `centers` для следующего шага примера.
     let centers: [[f64; 2]; 2] = [[0.5, 0.0], [5.5, 0.0]];
+    lesson_trace::trace_step!(centers);
     // Создаём набор значений `assignments` для следующего шага примера.
     let assignments: [usize; 4] = [0, 0, 1, 1];
+    lesson_trace::trace_step!(assignments);
     // Инициализируем изменяемый накопитель `total_squared_distance_to_cluster_centers` начальным состоянием.
     // Каждой точке нужен индекс существующего центра.
     assert_eq!(
@@ -35,17 +39,22 @@ fn main() {
     // Сохраняем результат этого шага в `total_squared_distance_to_cluster_centers`.
     // Сумму квадратов расстояний до центров кластеров называют inertia.
     let mut total_squared_distance_to_cluster_centers: f64 = 0.0;
+    lesson_trace::trace_step!(total_squared_distance_to_cluster_centers);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for index in 0..points.len() {
+        lesson_trace::trace_step!(index);
         // Комбинируем исходные величины и сохраняем результат в `delta`.
         let delta: f64 = points[index][0] - centers[assignments[index]][0];
+        lesson_trace::trace_step!(delta);
         // Прибавляем очередной вклад к ранее накопленному результату.
         total_squared_distance_to_cluster_centers += delta * delta;
+        lesson_trace::trace_step!(total_squared_distance_to_cluster_centers);
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("инерция = {total_squared_distance_to_cluster_centers}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_sum_squared_distances_to_assigned_cluster_centroids();
 }
 

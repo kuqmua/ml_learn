@@ -9,16 +9,21 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `input` для следующего шага примера.
     let input: [f64; 2] = [1.0, 2.0];
+    lesson_trace::trace_step!(input);
     // Создаём набор значений `transformed` для следующего шага примера.
     let transformed: [f64; 2] = [0.2, -0.5];
+    lesson_trace::trace_step!(transformed);
     // Создаём набор значений `output` для следующего шага примера.
     let output: [f64; 2] = [input[0] + transformed[0], input[1] + transformed[1]];
+    lesson_trace::trace_step!(output);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("вход={input:?}, после residual={output:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_add_block_input_through_residual_connection(input, output);
 }
 

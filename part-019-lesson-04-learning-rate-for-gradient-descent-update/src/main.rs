@@ -9,22 +9,29 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Инициализируем значение `parameter` начальным состоянием.
     let parameter: f64 = 0.0;
+    lesson_trace::trace_step!(parameter);
     // Умножаем значения и сохраняем результат в `rate_of_change`.
     // Производную функции по параметру или вектор таких производных называют gradient.
     let rate_of_change: f64 = 2.0 * (parameter - 3.0);
+    lesson_trace::trace_step!(rate_of_change);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for rate in [0.1, 1.0, 2.0] {
+        lesson_trace::trace_step!(rate);
         // Делаем ровно одно обновление, чтобы изолировать влияние скорости.
         let updated: f64 = parameter - rate * rate_of_change;
+        lesson_trace::trace_step!(updated);
         // Умножаем значения и сохраняем результат в `error`.
         let error: f64 = (updated - 3.0) * (updated - 3.0);
+        lesson_trace::trace_step!(error);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("rate={rate}: параметр={updated}, ошибка={error}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_learning_rate_for_gradient_descent_update(parameter, rate_of_change);
 }
 

@@ -35,8 +35,10 @@ pub fn count_binary_classification_outcomes_from_true_and_predicted_labels(
         // Задаём именованное поле или параметр.
         false_negatives: 0,
     };
+    lesson_trace::trace_step!(counts);
     // Повторяем расчёт для каждого элемента последовательности.
     for index in 0..truth.len() {
+        lesson_trace::trace_step!(index);
         // Разбираем результат по его возможным вариантам.
         match (truth[index], predicted[index]) {
             // Выполняем действие для этого варианта данных.
@@ -70,6 +72,7 @@ pub fn count_binary_classification_outcomes_from_true_labels_and_scores_at_thres
     }
     // Собираем значения для `predicted` в коллекцию.
     let predicted: Vec<bool> = scores.iter().map(|&score| score >= threshold).collect();
+    lesson_trace::trace_step!(predicted);
     // Используем подготовленное значение в следующем шаге примера.
     count_binary_classification_outcomes_from_true_and_predicted_labels(truth, &predicted)
 }
@@ -86,6 +89,7 @@ pub fn calculate_accuracy_from_binary_classification_counts(
         + counts.true_negatives
         // Используем подготовленное значение в следующем шаге примера.
         + counts.false_negatives;
+    lesson_trace::trace_step!(total);
     // Выбираем дальнейший шаг по выполнению условия.
     if total == 0 {
         // Отмечаем отсутствие подходящего значения.

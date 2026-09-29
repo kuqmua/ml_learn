@@ -9,24 +9,31 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `query` для следующего шага примера.
     let query: [f64; 2] = [1.0, 1.0];
+    lesson_trace::trace_step!(query);
     // Создаём набор значений `key` для следующего шага примера.
     let key: [f64; 2] = [2.0, 2.0];
+    lesson_trace::trace_step!(key);
     // Умножаем соответствующие координаты запроса и ключа, затем складываем результаты.
     let sum_after_multiplying_coordinates: f64 =
         // Используем подготовленное значение в следующем шаге примера.
         part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&query, &key)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("запрос и ключ имеют одинаковую размерность");
+    lesson_trace::trace_step!(sum_after_multiplying_coordinates);
     // Сохраняем рассчитанное значение `dimension` для следующих операций.
     let dimension: f64 = 2.0;
+    lesson_trace::trace_step!(dimension);
     // Создаём изменяемое значение `scale` для следующих операций.
     let mut scale: f64 = dimension;
+    lesson_trace::trace_step!(scale);
     // Для внимания нужен делитель √размерности; 80 шагов Ньютона дают его оценку в f64.
     for _ in 0..80 {
         // Среднее scale и dimension/scale приближает √dimension.
         scale = (scale + dimension / scale) / 2.0;
+        lesson_trace::trace_step!(scale);
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
@@ -37,6 +44,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_scale_dot_product_of_query_and_key_vectors();
 }
 

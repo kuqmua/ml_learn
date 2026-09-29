@@ -9,31 +9,40 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `text_unit` для следующего шага примера.
     // Единицу текста, которую модель обрабатывает как одно целое, называют token.
     let text_unit: [f64; 2] = [1.0, 3.0];
+    lesson_trace::trace_step!(text_unit);
     // Нормируем или усредняем величину делением и сохраняем её в `mean`.
     let mean: f64 = (text_unit[0] + text_unit[1]) / 2.0;
+    lesson_trace::trace_step!(mean);
     // Сохраняем рассчитанное значение `variance` для следующих операций.
     let variance: f64 =
         // Составляем результат из вычисленных значений в указанном порядке.
         ((text_unit[0] - mean) * (text_unit[0] - mean) + (text_unit[1] - mean) * (text_unit[1] - mean)) / 2.0;
+    lesson_trace::trace_step!(variance);
     // ε = 0.00001 не даёт делить на ноль, если обе координаты одинаковы.
     // Добавка мала по сравнению с обычной дисперсией, но влияет на почти постоянный токен.
     let squared_scale: f64 = variance + 0.00001;
+    lesson_trace::trace_step!(squared_scale);
     // Создаём изменяемое значение `scale` для следующих операций.
     let mut scale: f64 = squared_scale;
+    lesson_trace::trace_step!(scale);
     // 80 шагов Ньютона превращают дисперсию с добавкой ε в делитель √(variance + ε).
     for _ in 0..80 {
         // Среднее scale и squared_scale/scale приближает нужный корень.
         scale = (scale + squared_scale / scale) / 2.0;
+        lesson_trace::trace_step!(scale);
     }
     // Создаём набор значений `normalized` для следующего шага примера.
     let normalized: [f64; 2] = [(text_unit[0] - mean) / scale, (text_unit[1] - mean) / scale];
+    lesson_trace::trace_step!(normalized);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("нормализованный токен = {normalized:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_normalize_coordinates_of_one_token_with_layer_norm(normalized);
 }
 

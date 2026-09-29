@@ -9,16 +9,20 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Инициализируем значение `probability_positive` начальным состоянием.
     let probability_positive: f64 = 0.7;
+    lesson_trace::trace_step!(probability_positive);
     // Комбинируем исходные величины и сохраняем результат в `probability_negative`.
     let probability_negative: f64 = 1.0 - probability_positive;
+    lesson_trace::trace_step!(probability_negative);
     // Проверяем обязательное условие до дальнейшего вычисления.
     assert!(probability_positive >= 0.0 && probability_positive <= 1.0);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("P(y=1)={probability_positive}, P(y=0)={probability_negative}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_positive_class_probability_from_logistic_model();
 }
 

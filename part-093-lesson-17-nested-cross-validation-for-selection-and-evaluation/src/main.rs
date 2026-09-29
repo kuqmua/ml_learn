@@ -9,8 +9,10 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `inner_scores` для следующего шага примера.
     let inner_scores: [(usize, f64); 3] = [(1, 0.70), (3, 0.85), (5, 0.80)];
+    lesson_trace::trace_step!(inner_scores);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -28,10 +30,13 @@ fn main() {
         })
         // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
         .unwrap();
+    lesson_trace::trace_step!(best);
     // Внешние метки не участвовали в выборе k: они нужны только для итоговой оценки.
     let outer_truth: [bool; 4] = [true, false, true, false];
+    lesson_trace::trace_step!(outer_truth);
     // Создаём набор значений `outer_predictions` для следующего шага примера.
     let outer_predictions: [bool; 4] = [true, false, false, false];
+    lesson_trace::trace_step!(outer_predictions);
     // Проверяем ожидаемое свойство учебного примера.
     assert_eq!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -54,8 +59,10 @@ fn main() {
         .filter(|&index| outer_truth[index] == outer_predictions[index])
         // Подсчитываем число элементов после отбора.
         .count();
+    lesson_trace::trace_step!(outer_correct);
     // Считаем количество элементов и сохраняем его в `outer_test_accuracy`.
     let outer_test_accuracy: f64 = outer_correct as f64 / outer_truth.len() as f64;
+    lesson_trace::trace_step!(outer_test_accuracy);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Присваиваем вычисленное значение соответствующей переменной или полю.
@@ -65,6 +72,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_nested_cross_validation_for_selection_and_evaluation(inner_scores);
 }
 

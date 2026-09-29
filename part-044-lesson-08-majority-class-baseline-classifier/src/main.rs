@@ -9,14 +9,18 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `labels` для следующего шага примера.
     let labels: [bool; 5] = [false, false, true, false, true];
+    lesson_trace::trace_step!(labels);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(!labels.is_empty(), "для baseline нужна хотя бы одна метка");
     // Преобразуем входные данные и сохраняем полученную коллекцию в `positive_count`.
     let positive_count: usize = labels.iter().filter(|&&label| label).count();
+    lesson_trace::trace_step!(positive_count);
     // Считаем количество элементов и сохраняем его в `majority_label`.
     let majority_label: bool = positive_count * 2 > labels.len();
+    lesson_trace::trace_step!(majority_label);
     // Сохраняем рассчитанное значение `accuracy` для следующих операций.
     let accuracy: f64 = labels
         // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -27,10 +31,12 @@ fn main() {
         .count() as f64
         // Делим значения, получая нормированную величину или среднее.
         / labels.len() as f64;
+    lesson_trace::trace_step!(accuracy);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("класс большинства={majority_label}, accuracy={accuracy:.2}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_majority_class_baseline_classifier(labels, positive_count);
 }
 

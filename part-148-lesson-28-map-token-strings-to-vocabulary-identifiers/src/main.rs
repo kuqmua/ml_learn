@@ -8,19 +8,24 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `words` для следующего шага примера.
     let words: [&str; 3] = ["кот", "спит", "кот"];
+    lesson_trace::trace_step!(words);
     // Преобразуем входные данные и сохраняем полученную коллекцию в `known_text_units`.
     // Набор известных модели текстовых единиц называют vocabulary.
     let mut known_text_units: std::collections::BTreeMap<&str, usize> =
         std::collections::BTreeMap::new();
+    lesson_trace::trace_step!(known_text_units);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for word in words {
+        lesson_trace::trace_step!(word);
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if !known_text_units.contains_key(word) {
             // Считаем количество элементов и сохраняем его в `text_unit_identifier`.
             // Единицу текста, которую модель обрабатывает как одно целое, называют token.
             let text_unit_identifier: usize = known_text_units.len() + 1;
+            lesson_trace::trace_step!(text_unit_identifier);
             // Выполняем очередное действие, после которого продолжаем следующий шаг.
             known_text_units.insert(word, text_unit_identifier);
         }

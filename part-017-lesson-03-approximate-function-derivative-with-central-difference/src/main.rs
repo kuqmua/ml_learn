@@ -9,22 +9,30 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Сохраняем рассчитанное значение `input_value` для следующих операций.
     let input_value: f64 = 3.0;
+    lesson_trace::trace_step!(input_value);
     // h = 0.0001 достаточно мал для приближения производной и достаточно велик для f64.
     let step: f64 = 0.0001;
+    lesson_trace::trace_step!(step);
     // Для f(x)=x² считаем значения в x+h и x−h.
     let right: f64 = (input_value + step) * (input_value + step);
+    lesson_trace::trace_step!(right);
     // Умножаем значения и сохраняем результат в `left`.
     let left: f64 = (input_value - step) * (input_value - step);
+    lesson_trace::trace_step!(left);
     // Делим разность f(x+h)−f(x−h) на расстояние между точками: (x+h)−(x−h)=2h.
     let numerical_derivative: f64 = (right - left) / (2.0 * step);
+    lesson_trace::trace_step!(numerical_derivative);
     // Умножаем значения и сохраняем результат в `analytical_derivative`.
     let analytical_derivative: f64 = 2.0 * input_value;
+    lesson_trace::trace_step!(analytical_derivative);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("численно={numerical_derivative}, точно={analytical_derivative}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_approximate_function_derivative_with_central_difference(
         input_value,
         analytical_derivative,

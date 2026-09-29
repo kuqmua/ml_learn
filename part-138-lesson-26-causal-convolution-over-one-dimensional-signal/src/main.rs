@@ -2,14 +2,18 @@
 // Выход в момент t зависит от текущего и прошлых элементов, но не от будущего.
 
 fn main() {
+    lesson_trace::enable();
     let signal: [f64; 4] = [1.0, 2.0, 3.0, 4.0];
+    lesson_trace::trace_step!(signal);
     let output: Vec<f64> =
         part_138_lesson_26_causal_convolution_over_one_dimensional_signal::causal_convolution_of_one_dimensional_signal(
             &signal, 1.0, 2.0, 1,
         )
         .unwrap();
+    lesson_trace::trace_step!(output);
     assert_eq!(output, [1.0, 4.0, 7.0, 10.0]);
     println!("сигнал: {signal:?}; causal conv: {output:?}");
+    lesson_trace::disable();
     visualize_causal_convolution_over_one_dimensional_signal(&signal, &output);
 }
 fn visualize_causal_convolution_over_one_dimensional_signal(input: &[f64], output: &[f64]) {

@@ -13,6 +13,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Шаг: Берём seed из аргумента командной строки или используем фиксированное значение.
     let seed: u64 = std::env::args()
         // Берём элемент с указанным порядковым номером.
@@ -21,6 +22,7 @@ fn main() {
         .map(|seed_text| seed_text.parse::<u64>().expect("seed: целое число"))
         // При отсутствии значения используем запасной вариант.
         .unwrap_or(42);
+    lesson_trace::trace_step!(seed);
     // Фиксируем демонстрационные данные на время выполнения программы.
     const SAMPLE_DATA: &str = "1,0\n2,0\n3,1\n4,1\n";
 
@@ -30,9 +32,11 @@ fn main() {
         /* Из одного seed получаем то же состояние генератора и ту же базовую метрику. */
         // Сохраняем результат этого шага в `seed`.
         let seed: u64 = seed;
+        lesson_trace::trace_step!(seed);
         // Один шаг линейного конгруэнтного генератора: фиксированный множитель и +1 по mod 2⁶⁴.
         // Так один seed всегда приводит к одному и тому же состоянию.
         let state: u64 = seed.wrapping_mul(6364136223846793005).wrapping_add(1);
+        lesson_trace::trace_step!(state);
         // Сохраняем рассчитанное значение `baseline_accuracy` для следующих операций.
         let baseline_accuracy: f64 = SAMPLE_DATA
             // Разбиваем текст на строки для последовательной обработки.
@@ -43,9 +47,12 @@ fn main() {
             .count() as f64
             // Делим значения, получая нормированную величину или среднее.
             / SAMPLE_DATA.lines().count() as f64;
+        lesson_trace::trace_step!(baseline_accuracy);
         // Составляем результат из вычисленных значений в указанном порядке.
         (state, baseline_accuracy)
     })();
+    lesson_trace::trace_step!(random_state);
+    lesson_trace::trace_step!(baseline_accuracy);
 
     // Шаг: Записываем seed, отпечаток данных и результат для сравнения запусков.
     println!(
@@ -57,9 +64,13 @@ fn main() {
             /* Отпечаток данных получаем последовательным смешиванием байтов строки. */
             // Сохраняем результат этого шага в `data`.
             let data: &str = SAMPLE_DATA;
+            lesson_trace::trace_step!(data);
+            lesson_trace::trace_step!(data);
             // Создаём хешер, чтобы получить воспроизводимый отпечаток данных.
             let mut hasher: std::collections::hash_map::DefaultHasher =
                 std::collections::hash_map::DefaultHasher::new();
+            lesson_trace::trace_step!(hasher);
+            lesson_trace::trace_step!(hasher);
             // Добавляем байты входных данных в состояние хешера.
             std::hash::Hash::hash(data, &mut hasher);
             // Завершаем хеширование и получаем числовой отпечаток.

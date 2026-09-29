@@ -27,12 +27,16 @@ pub fn mean_absolute_error_between_targets_and_predictions(
     validate_equal_lengths_of_targets_and_predictions(targets, predictions)?;
     // Сохраняем результат этого шага в `absolute_sum`.
     let mut absolute_sum: f64 = 0.0;
+    lesson_trace::trace_step!(absolute_sum);
     // Повторяем расчёт для каждого элемента последовательности.
     for index in 0..targets.len() {
+        lesson_trace::trace_step!(index);
         // Сохраняем результат этого шага в `error`.
         let error: f64 = predictions[index] - targets[index];
+        lesson_trace::trace_step!(error);
         // Обновляем значение результатом текущего вычисления.
         absolute_sum += if error < 0.0 { -error } else { error };
+        lesson_trace::trace_step!(absolute_sum);
     }
     // Возвращаем успешный результат.
     Ok(absolute_sum / targets.len() as f64)

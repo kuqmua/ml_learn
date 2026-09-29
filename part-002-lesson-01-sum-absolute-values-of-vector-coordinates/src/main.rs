@@ -4,6 +4,7 @@
 // поэтому смена знаков не меняет ответ. У нулевого вектора результат равен нулю.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `cases`.
     let cases: [(&str, [f64; 2], f64); 4] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -15,13 +16,18 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("нулевой вектор", [0.0, 0.0], 0.0),
     ];
+    lesson_trace::trace_step!(cases);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, vector, expected) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(vector);
+        lesson_trace::trace_step!(expected);
         // Формула из общей библиотеки пригодится и в сводной практике.
         let sum_absolute_values_of_vector_coordinates: f64 =
             part_002_lesson_01_sum_absolute_values_of_vector_coordinates::sum_absolute_values_of_vector_coordinates(
                 &vector,
             );
+        lesson_trace::trace_step!(sum_absolute_values_of_vector_coordinates);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(sum_absolute_values_of_vector_coordinates, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -29,6 +35,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_sum_absolute_values_of_vector_coordinates();
 }
 

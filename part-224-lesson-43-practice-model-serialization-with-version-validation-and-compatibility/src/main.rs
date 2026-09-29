@@ -11,10 +11,12 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    lesson_trace::enable();
     // Шаг: Выбираем временный файл для учебного примера.
     let model_path: std::path::PathBuf =
         // Берём системный каталог временных файлов и добавляем имя с ID процесса.
         std::env::temp_dir().join(format!("ml_learn_model_{}.txt", std::process::id()));
+    lesson_trace::trace_step!(model_path);
     // Автоматически получаем стандартные реализации перечисленных трейтов для этого типа.
     #[derive(Debug, PartialEq)]
     // Описываем тип `Model`, чтобы явно хранить состояние и допустимые варианты.
@@ -32,6 +34,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Заполняем поле `bias` соответствующим рассчитанным значением.
         bias: 1.,
     };
+    lesson_trace::trace_step!(model);
     // Сохраняем версию формата, вес и смещение по одному полю на строку.
     std::fs::write(
         // Передаём данные по ссылке или разыменовываем их для следующей операции.
@@ -44,11 +47,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Проверяем версию, оба числовых поля и отсутствие лишних данных.
     // Текстовое представление модели получают с помощью serialization.
     let saved_model_text_content: String = std::fs::read_to_string(&model_path)?;
+    lesson_trace::trace_step!(saved_model_text_content);
     // Выполняем встроенный расчёт один раз и сохраняем результат в `loaded_model`.
     let loaded_model: Model = (|| -> Result<Model, String> {
         // Создаём изменяемое значение `saved_model_lines` для следующих операций.
         // Построчное чтение сохранённой модели относится к serialization.
         let mut saved_model_lines: std::str::Lines<'_> = saved_model_text_content.lines();
+        lesson_trace::trace_step!(saved_model_lines);
         // Разбираем наличие значения перед использованием результата.
         if saved_model_lines.next() != Some("ml_learn_v1") {
             // Прерываем расчёт и явно сообщаем причину некорректного входа.
@@ -68,8 +73,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             };
         // Читаем или разбираем входные данные в значение `weight`.
         let weight: f64 = parse_parameter(saved_model_lines.next())?;
+        lesson_trace::trace_step!(weight);
         // Читаем или разбираем входные данные в значение `bias`.
         let bias: f64 = parse_parameter(saved_model_lines.next())?;
+        lesson_trace::trace_step!(bias);
         // Отсекаем бесконечные и неопределённые числовые значения.
         if !weight.is_finite() || !bias.is_finite() || saved_model_lines.next().is_some() {
             // Прерываем расчёт и явно сообщаем причину некорректного входа.
@@ -79,8 +86,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Ok(Model { weight, bias })
         // Используем подготовленное значение в следующем шаге примера.
     })()?;
+    lesson_trace::trace_step!(loaded_model);
     // Линейный прогноз равен весу, умноженному на признак, плюс смещение.
     let prediction: f64 = loaded_model.weight * 3. + loaded_model.bias;
+    lesson_trace::trace_step!(prediction);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("path={}, prediction={}", model_path.display(), prediction);
     // Шаг: Удаляем временный файл после проверки.

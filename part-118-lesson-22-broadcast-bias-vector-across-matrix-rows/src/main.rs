@@ -9,24 +9,32 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `matrix` для следующего шага примера.
     let matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
+    lesson_trace::trace_step!(matrix);
     // Создаём набор значений `bias` для следующего шага примера.
     let bias: [f64; 2] = [10.0, 20.0];
+    lesson_trace::trace_step!(bias);
     // Создаём изменяемое значение `result` для следующих операций.
     let mut result: [[f64; 2]; 2] = matrix;
+    lesson_trace::trace_step!(result);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for row in 0..2 {
+        lesson_trace::trace_step!(row);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for column in 0..2 {
+            lesson_trace::trace_step!(column);
             // Прибавляем очередной вклад к ранее накопленному результату.
             result[row][column] += bias[column];
+            lesson_trace::trace_step!(result);
         }
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("после broadcasting: {result:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_broadcast_bias_vector_across_matrix_rows(result);
 }
 

@@ -4,8 +4,10 @@
 // Доля 0 даёт минимум, 1 — максимум; между ними выбирается элемент внутри ряда.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `values`.
     let mut values: [i32; 5] = [9, 1, 7, 3, 5];
+    lesson_trace::trace_step!(values);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(!values.is_empty(), "для квантиля нужна непустая выборка");
     // Используем подготовленное значение в следующем шаге примера.
@@ -22,6 +24,9 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("максимум", 1.0, 9),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(target_share_below_cutoff);
+        lesson_trace::trace_step!(expected);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(
             // Обновляем значение результатом текущего вычисления.
@@ -31,9 +36,11 @@ fn main() {
         );
         // Определяем размер данных и сохраняем его в `index`.
         let index: usize = ((values.len() - 1) as f64 * target_share_below_cutoff) as usize;
+        lesson_trace::trace_step!(index);
         // Сохраняем результат этого шага в `distribution_cutoff_value`.
         // Границу, ниже которой лежит заданная доля наблюдений, называют quantile.
         let distribution_cutoff_value: i32 = values[index];
+        lesson_trace::trace_step!(distribution_cutoff_value);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(distribution_cutoff_value, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -41,6 +48,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_quantile_of_sorted_numeric_values();
 }
 

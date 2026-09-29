@@ -8,12 +8,17 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `documents` для следующего шага примера.
     let documents: [(&str, &str); 2] = [("rust cargo", "guide"), ("машинное обучение", "ml")];
+    lesson_trace::trace_step!(documents);
     // Сохраняем рассчитанное значение `query` для следующих операций.
     let query: &str = "cargo";
+    lesson_trace::trace_step!(query);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (text, document_identifier) in documents {
+        lesson_trace::trace_step!(text);
+        lesson_trace::trace_step!(document_identifier);
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if text.split_whitespace().any(|word| word == query) {
             // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -22,6 +27,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_lexical_match_between_query_and_documents(documents, query);
 }
 

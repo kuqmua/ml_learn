@@ -4,8 +4,10 @@
 // библиотеках предыдущих уроков: позже те же функции применяются в матрицах, kNN и поиске.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `first`.
     let first: [f64; 2] = [3.0, 4.0];
+    lesson_trace::trace_step!(first);
     // Проверяем ожидаемое свойство учебного примера.
     assert_eq!(
         part_002_lesson_01_sum_absolute_values_of_vector_coordinates::sum_absolute_values_of_vector_coordinates(&first),
@@ -32,17 +34,25 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("нулевой без направления", &[0.0, 0.0], 0.0, None),
     ];
+    lesson_trace::trace_step!(cases);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, other, expected_sum, expected_cosine) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(other);
+        lesson_trace::trace_step!(expected_sum);
+        lesson_trace::trace_step!(expected_cosine);
         // Сохраняем результат этого шага в `sum`.
         let sum: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&first, other)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("у этих векторов одинаковое число координат");
+        lesson_trace::trace_step!(sum);
         // Сохраняем результат этого шага в `distance`.
         let distance: f64 =
             part_004_lesson_01_euclidean_distance_between_two_points::euclidean_distance_between_two_points(&first, other).unwrap();
+        lesson_trace::trace_step!(distance);
         // Сохраняем результат этого шага в `cosine`.
         let cosine: Option<f64> = part_005_lesson_01_cosine_similarity_between_two_vectors::cosine_similarity_between_two_vectors(&first, other).ok();
+        lesson_trace::trace_step!(cosine);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(sum, expected_sum);
         // Выбираем дальнейший шаг по выполнению условия.
@@ -57,6 +67,7 @@ fn main() {
         // Сохраняем результат этого шага в `reverse_distance`.
         let reverse_distance: f64 =
             part_004_lesson_01_euclidean_distance_between_two_points::euclidean_distance_between_two_points(other, &first).unwrap();
+        lesson_trace::trace_step!(reverse_distance);
         // Проверяем ожидаемое свойство учебного примера.
         assert!((distance - reverse_distance).abs() < 1e-10);
         // Печатаем рассчитанные значения для проверки примера.
@@ -65,6 +76,7 @@ fn main() {
 
     // Задаём учебные значения для `too_short`.
     let too_short: [f64; 1] = [1.0];
+    lesson_trace::trace_step!(too_short);
     // Сохраняем результат этого шага в `error`.
     let error: &str =
         part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
@@ -72,10 +84,12 @@ fn main() {
         )
         // Настраиваем или преобразуем результат предыдущего шага.
         .expect_err("векторы разной длины нужно отклонить");
+    lesson_trace::trace_step!(error);
     // Печатаем рассчитанные значения для проверки примера.
     println!("разная длина: {error}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_vector_dot_product_norms_distance_and_cosine();
 }
 

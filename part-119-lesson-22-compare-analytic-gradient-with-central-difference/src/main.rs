@@ -9,22 +9,30 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Сохраняем рассчитанное значение `input_value` для следующих операций.
     let input_value: f64 = 3.0;
+    lesson_trace::trace_step!(input_value);
     // h=10⁻⁴ в центральной разности: небольшой сдвиг для приближения без сильного округления f64.
     let step_size: f64 = 0.0001;
+    lesson_trace::trace_step!(step_size);
     // Умножаем значения и сохраняем результат в `analytical`.
     let analytical: f64 = 2.0 * input_value;
+    lesson_trace::trace_step!(analytical);
     // Умножаем значения и сохраняем результат в `right`.
     let right: f64 = (input_value + step_size) * (input_value + step_size);
+    lesson_trace::trace_step!(right);
     // Умножаем значения и сохраняем результат в `left`.
     let left: f64 = (input_value - step_size) * (input_value - step_size);
+    lesson_trace::trace_step!(left);
     // Нормируем или усредняем величину делением и сохраняем её в `numerical`.
     let numerical: f64 = (right - left) / (2.0 * step_size);
+    lesson_trace::trace_step!(numerical);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("аналитически={analytical}, численно={numerical}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_compare_analytic_gradient_with_central_difference();
 }
 

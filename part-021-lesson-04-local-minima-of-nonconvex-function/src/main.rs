@@ -9,10 +9,13 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for start in [-0.5, 0.5] {
+        lesson_trace::trace_step!(start);
         // Создаём изменяемое значение `input_value` для следующих операций.
         let mut input_value: f64 = start;
+        lesson_trace::trace_step!(input_value);
         // Делаем 100 шагов, чтобы оба старта успели приблизиться к своим локальным минимумам.
         // Число шагов выбрано для демонстрации; 0.1 ниже — длина одного шага против градиента.
         for _ in 0..100 {
@@ -20,17 +23,21 @@ fn main() {
             // Производную функции по параметру или вектор таких производных называют gradient.
             let rate_of_change: f64 =
                 4.0 * input_value * input_value * input_value - 4.0 * input_value;
+            lesson_trace::trace_step!(rate_of_change);
             // Вычитаем очередной вклад из текущего значения параметра.
             input_value -= 0.1 * rate_of_change;
+            lesson_trace::trace_step!(input_value);
         }
         // Умножаем значения и сохраняем результат в `loss`.
         let loss: f64 =
             input_value * input_value * input_value * input_value - 2.0 * input_value * input_value;
+        lesson_trace::trace_step!(loss);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("старт={start}, найдено x={input_value:.3}, f(x)={loss:.3}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_local_minima_of_nonconvex_function();
 }
 

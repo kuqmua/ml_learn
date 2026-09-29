@@ -4,8 +4,10 @@
 // Также индекс строки и столбца должен оставаться внутри этих границ.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `elements`.
     let elements: [i32; 6] = [1, 2, 3, 4, 5, 6];
+    lesson_trace::trace_step!(elements);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, rows, columns, row, column) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -17,6 +19,11 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("столбец вне матрицы", 2, 3, 1, 3),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(rows);
+        lesson_trace::trace_step!(columns);
+        lesson_trace::trace_step!(row);
+        lesson_trace::trace_step!(column);
         // Выбираем дальнейший шаг по выполнению условия.
         if rows * columns != elements.len() {
             // Печатаем рассчитанные значения для проверки примера.
@@ -38,11 +45,13 @@ fn main() {
         }
         // Сохраняем результат этого шага в `value`.
         let value: i32 = elements[row * columns + column];
+        lesson_trace::trace_step!(value);
         // Печатаем рассчитанные значения для проверки примера.
         println!("{description}: ячейка [{row}, {column}] = {value}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_validate_matrix_element_count_and_row_column_indices();
 }
 

@@ -4,8 +4,10 @@
 // Значение точно на пороге ещё не вызывает предупреждение.
 
 fn main() {
+    lesson_trace::enable();
     // Сохраняем результат этого шага в `alert_threshold`.
     let alert_threshold: f64 = 0.2;
+    lesson_trace::trace_step!(alert_threshold);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, drift_score, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -15,10 +17,14 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("выше порога", 0.35, true),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(drift_score);
+        lesson_trace::trace_step!(expected);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(drift_score >= 0.0);
         // Сохраняем результат этого шага в `alert`.
         let alert: bool = drift_score > alert_threshold;
+        lesson_trace::trace_step!(alert);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(alert, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -26,6 +32,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_trigger_monitoring_alert_when_drift_score_exceeds_threshold(alert_threshold);
 }
 

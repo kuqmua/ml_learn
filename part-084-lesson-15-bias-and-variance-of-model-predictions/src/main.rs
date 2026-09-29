@@ -9,8 +9,10 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `predictions` для следующего шага примера.
     let predictions: [f64; 3] = [2.0, 4.0, 6.0];
+    lesson_trace::trace_step!(predictions);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -20,10 +22,13 @@ fn main() {
     );
     // Сохраняем рассчитанное значение `target` для следующих операций.
     let target: f64 = 5.0;
+    lesson_trace::trace_step!(target);
     // Преобразуем входные данные и сохраняем полученную коллекцию в `mean`.
     let mean: f64 = predictions.iter().sum::<f64>() / predictions.len() as f64;
+    lesson_trace::trace_step!(mean);
     // Комбинируем исходные величины и сохраняем результат в `bias`.
     let bias: f64 = mean - target;
+    lesson_trace::trace_step!(bias);
     // Сохраняем рассчитанное значение `variance` для следующих операций.
     let variance: f64 = predictions
         // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -34,10 +39,12 @@ fn main() {
         .sum::<f64>()
         // Делим значения, получая нормированную величину или среднее.
         / predictions.len() as f64;
+    lesson_trace::trace_step!(variance);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("смещение={bias}, разброс={variance:.2}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_bias_and_variance_of_model_predictions(bias, variance);
 }
 

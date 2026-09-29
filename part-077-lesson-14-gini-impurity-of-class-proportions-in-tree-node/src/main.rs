@@ -9,20 +9,25 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     // Долю объектов одного класса среди всех объектов называют fraction.
     for positive_class_share in [0.0, 0.5, 1.0] {
+        lesson_trace::trace_step!(positive_class_share);
         // Комбинируем исходные величины и сохраняем результат в `negative_class_share`.
         let negative_class_share: f64 = 1.0 - positive_class_share;
+        lesson_trace::trace_step!(negative_class_share);
         // Сохраняем рассчитанное значение `gini` для следующих операций.
         let gini: f64 =
             // Умножаем величины согласно используемой формуле.
             1.0 - positive_class_share * positive_class_share - negative_class_share * negative_class_share;
+        lesson_trace::trace_step!(gini);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("доля положительных={positive_class_share}, Gini={gini}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_gini_impurity_of_class_proportions_in_tree_node();
 }
 

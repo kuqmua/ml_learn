@@ -9,10 +9,13 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `training` для следующего шага примера.
     let training: [(f64, f64); 2] = [(1.0, 3.0), (2.0, 5.0)];
+    lesson_trace::trace_step!(training);
     // Создаём набор значений `test` для следующего шага примера.
     let test: [(f64, f64); 2] = [(3.0, 7.0), (4.0, 9.0)];
+    lesson_trace::trace_step!(test);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Обновляем значение результатом текущего вычисления.
@@ -38,10 +41,13 @@ fn main() {
     );
     // Нормируем или усредняем величину делением и сохраняем её в `weight`.
     let weight: f64 = (training[1].1 - training[0].1) / (training[1].0 - training[0].0);
+    lesson_trace::trace_step!(weight);
     // Умножаем значения и сохраняем результат в `bias`.
     let bias: f64 = training[0].1 - weight * training[0].0;
+    lesson_trace::trace_step!(bias);
     // Собираем значения для `targets` в коллекцию.
     let targets: Vec<f64> = test.iter().map(|&(_, target)| target).collect();
+    lesson_trace::trace_step!(targets);
     // Собираем значения для `predictions` в коллекцию.
     let predictions: Vec<f64> = test
         // Просматриваем элементы коллекции по ссылке.
@@ -50,13 +56,16 @@ fn main() {
         .map(|&(feature, _)| weight * feature + bias)
         // Собираем результаты в коллекцию.
         .collect();
+    lesson_trace::trace_step!(predictions);
     // Сохраняем результат этого шага в `mean_squared_error_value`.
     let mean_squared_error_value: f64 =
         part_049_lesson_09_mean_squared_error_between_targets_and_predictions::mean_squared_error_between_targets_and_predictions(&targets, &predictions).unwrap();
+    lesson_trace::trace_step!(mean_squared_error_value);
     // Печатаем рассчитанные значения для проверки примера.
     println!("test MSE = {mean_squared_error_value}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_evaluate_linear_regression_on_heldout_data(training, test, weight, bias);
 }
 

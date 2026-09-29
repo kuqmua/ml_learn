@@ -9,16 +9,22 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `data` для следующего шага примера.
     let data: [(f64, bool); 4] = [(1.0, false), (2.0, false), (3.0, true), (4.0, true)];
+    lesson_trace::trace_step!(data);
     // Создаём изменяемое значение `best` для следующих операций.
     let mut best: (f64, f64) = (f64::INFINITY, 0.0);
+    lesson_trace::trace_step!(best);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for threshold in [1.5, 2.5, 3.5] {
+        lesson_trace::trace_step!(threshold);
         // Преобразуем входные данные и сохраняем полученную коллекцию в `left`.
         let left: Vec<&(f64, bool)> = data.iter().filter(|sample| sample.0 < threshold).collect();
+        lesson_trace::trace_step!(left);
         // Преобразуем входные данные и сохраняем полученную коллекцию в `right`.
         let right: Vec<&(f64, bool)> = data.iter().filter(|sample| sample.0 >= threshold).collect();
+        lesson_trace::trace_step!(right);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(
             // Используем подготовленное значение в следующем шаге примера.
@@ -30,28 +36,35 @@ fn main() {
         let left_positive: f64 =
             // Делим значения, получая нормированную величину или среднее.
             left.iter().filter(|sample| sample.1).count() as f64 / left.len() as f64;
+        lesson_trace::trace_step!(left_positive);
         // Сохраняем рассчитанное значение `right_positive` для следующих операций.
         let right_positive: f64 =
             // Делим значения, получая нормированную величину или среднее.
             right.iter().filter(|sample| sample.1).count() as f64 / right.len() as f64;
+        lesson_trace::trace_step!(right_positive);
         // Умножаем значения и сохраняем результат в `left_gini`.
         let left_gini: f64 = 2.0 * left_positive * (1.0 - left_positive);
+        lesson_trace::trace_step!(left_gini);
         // Умножаем значения и сохраняем результат в `right_gini`.
         let right_gini: f64 = 2.0 * right_positive * (1.0 - right_positive);
+        lesson_trace::trace_step!(right_gini);
         // Сохраняем рассчитанное значение `score` для следующих операций.
         let score: f64 =
             // Составляем результат из вычисленных значений в указанном порядке.
             (left.len() as f64 * left_gini + right.len() as f64 * right_gini) / data.len() as f64;
+        lesson_trace::trace_step!(score);
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if score < best.0 {
             // Присваиваем вычисленное значение соответствующей переменной или полю.
             best = (score, threshold);
+            lesson_trace::trace_step!(best);
         }
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("лучший порог={}, Gini={}", best.1, best.0);
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_greedy_threshold_split_for_decision_tree();
 }
 

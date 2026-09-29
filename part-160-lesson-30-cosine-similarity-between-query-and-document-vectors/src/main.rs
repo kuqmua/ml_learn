@@ -9,18 +9,23 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `query` для следующего шага примера.
     let query: [f64; 2] = [1.0, 0.0];
+    lesson_trace::trace_step!(query);
     // Создаём набор значений `document` для следующего шага примера.
     let document: [f64; 2] = [2.0, 0.0];
+    lesson_trace::trace_step!(document);
     // Тот же косинус из урока 01.5 теперь сравнивает векторы слов документов.
     let similarity: f64 = part_005_lesson_01_cosine_similarity_between_two_vectors::cosine_similarity_between_two_vectors(&query, &document)
         // Используем результат, ожидая успешного выполнения шага.
         .expect("ненулевые векторы слов одинаковой размерности");
+    lesson_trace::trace_step!(similarity);
     // Печатаем рассчитанные значения для проверки примера.
     println!("косинусное сходство={similarity}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_cosine_similarity_between_query_and_document_vectors(query);
 }
 

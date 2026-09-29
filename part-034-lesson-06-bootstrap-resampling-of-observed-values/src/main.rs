@@ -9,14 +9,18 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `values` для следующего шага примера.
     let values: [f64; 3] = [2.0, 4.0, 6.0];
+    lesson_trace::trace_step!(values);
     // Создаём набор значений `resamples` для следующего шага примера.
     let resamples: [[usize; 3]; 4] = [[0, 1, 2], [0, 0, 2], [1, 2, 2], [0, 1, 1]];
+    lesson_trace::trace_step!(resamples);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(!values.is_empty(), "исходная выборка не должна быть пустой");
     // Повторяем следующий блок для каждой повторной выборки.
     for indices in resamples {
+        lesson_trace::trace_step!(indices);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(
             // Используем подготовленное значение в следующем шаге примера.
@@ -33,18 +37,23 @@ fn main() {
         );
         // Инициализируем изменяемый накопитель `sum` начальным состоянием.
         let mut sum: f64 = 0.0;
+        lesson_trace::trace_step!(sum);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for index in indices {
+            lesson_trace::trace_step!(index);
             // Прибавляем очередной вклад к ранее накопленному результату.
             sum += values[index];
+            lesson_trace::trace_step!(sum);
         }
         // Считаем количество элементов и сохраняем его в `mean`.
         let mean: f64 = sum / indices.len() as f64;
+        lesson_trace::trace_step!(mean);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("индексы {indices:?} -> среднее {mean:.2}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_bootstrap_resampling_of_observed_values(values, resamples);
 }
 

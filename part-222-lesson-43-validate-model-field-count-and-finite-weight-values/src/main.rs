@@ -4,6 +4,7 @@
 // Ошибочные строки показываем отдельно, не выдавая их за допустимую модель.
 
 fn main() {
+    lesson_trace::enable();
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, saved_model_text, should_be_valid) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -17,8 +18,12 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("бесконечный вес", "inf\n1.0\n", false),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(saved_model_text);
+        lesson_trace::trace_step!(should_be_valid);
         // Собираем значения для `values` в коллекцию.
         let values: Vec<&str> = saved_model_text.lines().collect();
+        lesson_trace::trace_step!(values);
         // Определяем размер данных и сохраняем его в `result`.
         let result: Result<(f64, f64), &str> = if values.len() != 2 {
             // Возвращаем описание ошибки.
@@ -36,6 +41,7 @@ fn main() {
                 _ => Err("параметры должны быть конечными числами"),
             }
         };
+        lesson_trace::trace_step!(result);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(result.is_ok(), should_be_valid);
         // Печатаем рассчитанные значения для проверки примера.

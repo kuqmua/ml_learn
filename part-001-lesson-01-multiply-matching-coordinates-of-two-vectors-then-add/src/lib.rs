@@ -15,10 +15,13 @@ pub fn multiply_matching_coordinates_of_two_vectors_then_add(
     }
     // Сохраняем результат этого шага в `sum`.
     let mut sum: f64 = 0.0;
+    lesson_trace::trace_step!(sum);
     // Повторяем расчёт для каждого элемента последовательности.
     for index in 0..left.len() {
+        lesson_trace::trace_step!(index);
         // Обновляем значение результатом текущего вычисления.
         sum += left[index] * right[index];
+        lesson_trace::trace_step!(sum);
     }
     // Возвращаем успешный результат.
     Ok(sum)

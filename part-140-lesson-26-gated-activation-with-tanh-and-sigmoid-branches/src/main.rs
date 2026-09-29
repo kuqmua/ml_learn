@@ -8,12 +8,17 @@ fn calculate_wavenet_gated_activation_from_tanh_and_sigmoid(filter: f64, gate: f
     filter.tanh() * sigmoid_activation_of_raw_score(gate)
 }
 fn main() {
+    lesson_trace::enable();
     let filter: f64 = 1.5;
+    lesson_trace::trace_step!(filter);
     let open: f64 = calculate_wavenet_gated_activation_from_tanh_and_sigmoid(filter, 5.0);
+    lesson_trace::trace_step!(open);
     let closed: f64 = calculate_wavenet_gated_activation_from_tanh_and_sigmoid(filter, -5.0);
+    lesson_trace::trace_step!(closed);
     assert!(open > closed);
     assert!(closed >= 0.0);
     println!("закрытый gate={closed:.4}; открытый gate={open:.4}");
+    lesson_trace::disable();
     visualize_gated_activation_with_tanh_and_sigmoid_branches(filter);
 }
 

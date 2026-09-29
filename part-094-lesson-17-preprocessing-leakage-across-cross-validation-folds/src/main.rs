@@ -9,8 +9,10 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `training_data` для следующего шага примера.
     let training_data: [f64; 3] = [1.0, 2.0, 3.0];
+    lesson_trace::trace_step!(training_data);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         !training_data.is_empty(),
@@ -18,14 +20,18 @@ fn main() {
     );
     // Создаём набор значений `validation` для следующего шага примера.
     let validation: [f64; 1] = [100.0];
+    lesson_trace::trace_step!(validation);
     // Преобразуем входные данные и сохраняем полученную коллекцию в `training_mean`.
     let training_mean: f64 = training_data.iter().sum::<f64>() / training_data.len() as f64;
+    lesson_trace::trace_step!(training_mean);
     // Комбинируем исходные величины и сохраняем результат в `validation_centered`.
     let validation_centered: f64 = validation[0] - training_mean;
+    lesson_trace::trace_step!(validation_centered);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("среднее train={training_mean}, validation после центрирования={validation_centered}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_preprocessing_leakage_across_cross_validation_folds(
         training_mean,
         validation_centered,

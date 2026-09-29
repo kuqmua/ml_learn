@@ -9,6 +9,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `passages` для следующего шага примера.
     let passages: [(&str, f64); 3] = [
         // Составляем результат из вычисленных значений в указанном порядке.
@@ -18,15 +19,20 @@ fn main() {
         // Составляем результат из вычисленных значений в указанном порядке.
         ("слабый", 0.1),
     ];
+    lesson_trace::trace_step!(passages);
     // Сохраняем рассчитанное значение `capacity` для следующих операций.
     let capacity: usize = 2;
+    lesson_trace::trace_step!(capacity);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (text, score) in passages.into_iter().take(capacity) {
+        lesson_trace::trace_step!(text);
+        lesson_trace::trace_step!(score);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("в контексте: {text}, оценка={score}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_limit_number_of_retrieved_fragments_to_context_window();
 }
 

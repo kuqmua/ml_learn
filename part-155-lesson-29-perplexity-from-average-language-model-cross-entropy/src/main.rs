@@ -9,25 +9,33 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Инициализируем значение `predicted_probability_error` начальным состоянием.
     // Ошибку предсказанного распределения вероятностей называют cross-entropy.
     let predicted_probability_error: f64 = 0.7;
+    lesson_trace::trace_step!(predicted_probability_error);
     // Создаём изменяемое значение `term` для следующих операций.
     let mut term: f64 = 1.0;
+    lesson_trace::trace_step!(term);
     // Создаём изменяемое значение `effective_choice_count` для следующих операций.
     // Эффективное число вариантов, соответствующее ошибке языковой модели, называют perplexity.
     let mut effective_choice_count: f64 = 1.0;
+    lesson_trace::trace_step!(effective_choice_count);
     // Perplexity = exp(cross-entropy); 30 членов ряда Σx^k/k! приближают exp(0.7).
     for order in 1..=30 {
+        lesson_trace::trace_step!(order);
         // Умножаем накопленное значение на очередной множитель.
         term *= predicted_probability_error / order as f64;
+        lesson_trace::trace_step!(term);
         // Прибавляем очередной вклад к ранее накопленному результату.
         effective_choice_count += term;
+        lesson_trace::trace_step!(effective_choice_count);
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("perplexity={effective_choice_count:.3}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_perplexity_from_average_language_model_cross_entropy();
 }
 

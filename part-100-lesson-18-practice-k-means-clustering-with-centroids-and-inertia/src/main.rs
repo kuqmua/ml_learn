@@ -11,8 +11,10 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Шаг: Задаём две визуально разделимые группы точек.
     let dataset: [[f64; 2]; 4] = [[0., 0.], [0., 1.], [10., 10.], [10., 11.]];
+    lesson_trace::trace_step!(dataset);
 
     // Учебные реализации математических операций для этого урока.
 
@@ -46,16 +48,25 @@ fn main() {
             /* Чередуем назначение ближайшего центра и пересчёт средних по кластерам. */
             // Сохраняем результат этого шага в `data`.
             let data: &[[f64; 2]] = &dataset;
+            lesson_trace::trace_step!(data);
+            lesson_trace::trace_step!(data);
             // Создаём набор значений `centers` для следующего шага примера.
             let mut centers: Vec<[f64; 2]> = vec![dataset[0], dataset[2]];
+            lesson_trace::trace_step!(centers);
+            lesson_trace::trace_step!(centers);
             // 100 — верхняя граница перерасчётов центров k-means: цикл также может завершиться раньше.
             for _ in 0..100 {
                 // Создаём набор значений `coordinate_sums` для следующего шага примера.
                 let mut coordinate_sums: Vec<[f64; 2]> = vec![[0., 0.]; centers.len()];
+                lesson_trace::trace_step!(coordinate_sums);
+                lesson_trace::trace_step!(coordinate_sums);
                 // Создаём набор значений `cluster_sizes` для следующего шага примера.
                 let mut cluster_sizes: Vec<i32> = vec![0; centers.len()];
+                lesson_trace::trace_step!(cluster_sizes);
+                lesson_trace::trace_step!(cluster_sizes);
                 // Назначаем каждую точку ближайшему центру и собираем суммы координат.
                 for &point in data {
+                    lesson_trace::trace_step!(point);
                     // Считаем количество элементов и сохраняем его в `center_index`.
                     let center_index: usize = (0..centers.len())
                         // Сравниваем кандидатов и оставляем наименьшее расстояние.
@@ -80,17 +91,25 @@ fn main() {
                         })
                         // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
                         .unwrap();
+                    lesson_trace::trace_step!(center_index);
+                    lesson_trace::trace_step!(center_index);
                     // Прибавляем очередной вклад к ранее накопленному результату.
                     coordinate_sums[center_index][0] += point[0];
+                    lesson_trace::trace_step!(coordinate_sums);
                     // Прибавляем очередной вклад к ранее накопленному результату.
                     coordinate_sums[center_index][1] += point[1];
+                    lesson_trace::trace_step!(coordinate_sums);
                     // Прибавляем очередной вклад к ранее накопленному результату.
                     cluster_sizes[center_index] += 1;
+                    lesson_trace::trace_step!(cluster_sizes);
                 }
                 // Сохраняем рассчитанное значение `previous_centers` для следующих операций.
                 let previous_centers: Vec<[f64; 2]> = centers.clone();
+                lesson_trace::trace_step!(previous_centers);
+                lesson_trace::trace_step!(previous_centers);
                 // Новый центр каждого непустого кластера — среднее его точек.
                 for center_index in 0..centers.len() {
+                    lesson_trace::trace_step!(center_index);
                     // Проверяем условие и выбираем соответствующую ветку алгоритма.
                     if cluster_sizes[center_index] > 0 {
                         // Обновляем `centers[center_index]` результатом текущего шага.
@@ -100,6 +119,7 @@ fn main() {
                             // Делим значения, получая нормированную величину или среднее.
                             coordinate_sums[center_index][1] / cluster_sizes[center_index] as f64,
                         ];
+                        lesson_trace::trace_step!(centers);
                     }
                 }
                 // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -110,24 +130,34 @@ fn main() {
             }
             // Инерция суммирует квадраты расстояний до ближайших центров.
             let mut inertia: f64 = 0.0;
+            lesson_trace::trace_step!(inertia);
+            lesson_trace::trace_step!(inertia);
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for &point in data {
+                lesson_trace::trace_step!(point);
                 // Создаём изменяемое значение `nearest_squared_distance` для следующих операций.
                 let mut nearest_squared_distance: f64 = f64::INFINITY;
+                lesson_trace::trace_step!(nearest_squared_distance);
+                lesson_trace::trace_step!(nearest_squared_distance);
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for &center in &centers {
+                    lesson_trace::trace_step!(center);
                     // Сохраняем рассчитанное значение `candidate_distance` для следующих операций.
                     let candidate_distance: f64 =
                         // Вызываем нужное вычисление с подготовленными аргументами.
                         calculate_squared_distance_between_points(point, center);
+                    lesson_trace::trace_step!(candidate_distance);
+                    lesson_trace::trace_step!(candidate_distance);
                     // Проверяем условие и выбираем соответствующую ветку алгоритма.
                     if candidate_distance < nearest_squared_distance {
                         // Обновляем `nearest_squared_distance` результатом текущего шага.
                         nearest_squared_distance = candidate_distance;
+                        lesson_trace::trace_step!(nearest_squared_distance);
                     }
                 }
                 // Прибавляем очередной вклад к ранее накопленному результату.
                 inertia += nearest_squared_distance;
+                lesson_trace::trace_step!(inertia);
             }
             // Составляем результат из вычисленных значений в указанном порядке.
             (centers, inertia)
@@ -135,6 +165,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_k_means_clustering_with_centroids_and_inertia(dataset);
 }
 

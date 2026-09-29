@@ -9,8 +9,10 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `values` для следующего шага примера.
     let values: [f64; 3] = [1.0, 2.0, 3.0];
+    lesson_trace::trace_step!(values);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -24,12 +26,15 @@ fn main() {
             &values,
         )
         .unwrap();
+    lesson_trace::trace_step!(mean);
     // Преобразуем входные данные и сохраняем полученную коллекцию в `centered`.
     let centered: Vec<f64> = values.iter().map(|&value| value - mean).collect();
+    lesson_trace::trace_step!(centered);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("среднее={mean}, центрированные значения={centered:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_center_features_by_subtracting_training_means(values, centered);
 }
 

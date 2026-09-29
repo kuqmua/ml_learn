@@ -11,6 +11,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Шаг: Берём обучающие точки для нескольких базовых моделей.
     let data: [(f64, bool); 6] = [
         // Учебный объект: признак 0., метка класса false.
@@ -26,6 +27,7 @@ fn main() {
         // Учебный объект: признак 5., метка класса true.
         (5., true),
     ];
+    lesson_trace::trace_step!(data);
 
     // Шаг: Каждый stump обучаем на своей bootstrap-выборке.
     let models: Vec<(f64, bool)> = (1..=9)
@@ -41,10 +43,13 @@ fn main() {
                     /* Создаём выборку той же длины с возвращением и фиксированным seed. */
                     // Сохраняем результат этого шага в `data`.
                     let data: &[(f64, bool)] = &data;
+                    lesson_trace::trace_step!(data);
                     // Сохраняем рассчитанное значение `seed` для следующих операций.
                     let seed: u64 = seed;
+                    lesson_trace::trace_step!(seed);
                     // Создаём изменяемое значение `generator_state` для следующих операций.
                     let mut generator_state: u64 = seed;
+                    lesson_trace::trace_step!(generator_state);
                     // Составляем результат из вычисленных значений в указанном порядке.
                     (0..data.len())
                         // Преобразуем каждый элемент последовательности.
@@ -55,18 +60,23 @@ fn main() {
                                 .wrapping_mul(6364136223846793005)
                                 // Используем арифметику с переполнением для воспроизводимого генератора.
                                 .wrapping_add(1);
+                            lesson_trace::trace_step!(generator_state);
                             // Передаём ранее рассчитанное значение в текущую операцию.
                             data[(generator_state as usize) % data.len()]
                         })
                         // Собираем элементы итератора в итоговую коллекцию.
                         .collect()
                 })();
+                lesson_trace::trace_step!(data);
                 // Создаём изменяемое значение `best` для следующих операций.
                 let mut best: (f64, f64, bool) = (f64::INFINITY, 0., false);
+                lesson_trace::trace_step!(best);
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for &(candidate_threshold, _) in data {
+                    lesson_trace::trace_step!(candidate_threshold);
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
                     for reverse in [false, true] {
+                        lesson_trace::trace_step!(reverse);
                         // Сохраняем рассчитанное значение `errors` для следующих операций.
                         let errors: f64 = data
                             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -78,10 +88,12 @@ fn main() {
                             })
                             // Подсчитываем число элементов после отбора.
                             .count() as f64;
+                        lesson_trace::trace_step!(errors);
                         // Проверяем условие и выбираем соответствующую ветку алгоритма.
                         if errors < best.0 {
                             // Обновляем `best` результатом текущего шага.
                             best = (errors, candidate_threshold, reverse);
+                            lesson_trace::trace_step!(best);
                         }
                     }
                 }
@@ -91,6 +103,7 @@ fn main() {
         })
         // Собираем элементы итератора в итоговую коллекцию.
         .collect();
+    lesson_trace::trace_step!(models);
 
     // Шаг: Объединяем прогнозы моделей голосованием большинства.
     assert!(
@@ -101,8 +114,10 @@ fn main() {
     );
     // Повторяем расчёт для каждого элемента последовательности.
     for feature_value in [0.5, 2.5, 4.5] {
+        lesson_trace::trace_step!(feature_value);
         // Показываем ответ одного и того же базового дерева рядом с ответом ансамбля.
         let first_model: bool = (feature_value >= models[0].0) ^ models[0].1;
+        lesson_trace::trace_step!(first_model);
         // Сохраняем рассчитанное значение `votes` для следующих операций.
         let votes: usize = models
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -115,14 +130,17 @@ fn main() {
                     /* Сравниваем признак с порогом и учитываем направление пня. */
                     // Сохраняем результат этого шага в `model`.
                     let model: (f64, bool) = model;
+                    lesson_trace::trace_step!(model);
                     // Сохраняем рассчитанное значение `feature_value` для следующих операций.
                     let feature_value: f64 = feature_value;
+                    lesson_trace::trace_step!(feature_value);
                     // Составляем результат из вычисленных значений в указанном порядке.
                     (feature_value >= model.0) ^ model.1
                 })()
             })
             // Подсчитываем число элементов после отбора.
             .count();
+        lesson_trace::trace_step!(votes);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!(
             // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
@@ -135,6 +153,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_bootstrap_bagging_and_majority_vote_ensemble(models);
 }
 

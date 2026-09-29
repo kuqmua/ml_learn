@@ -9,11 +9,14 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `text_unit` для следующего шага примера.
     // Единицу текста, которую модель обрабатывает как одно целое, называют token.
     let text_unit: [f64; 2] = [1.0, 2.0];
+    lesson_trace::trace_step!(text_unit);
     // Создаём набор значений `query_weights` для следующего шага примера.
     let query_weights: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 0.5]];
+    lesson_trace::trace_step!(query_weights);
     // Создаём набор значений `query` для следующего шага примера.
     let query: [f64; 2] = [
         // Умножаем величины согласно используемой формуле.
@@ -21,10 +24,12 @@ fn main() {
         // Умножаем величины согласно используемой формуле.
         query_weights[1][0] * text_unit[0] + query_weights[1][1] * text_unit[1],
     ];
+    lesson_trace::trace_step!(query);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("Q = {query:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_query_vector_for_attention_position(query);
 }
 

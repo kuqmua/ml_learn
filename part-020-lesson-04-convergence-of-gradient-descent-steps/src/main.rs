@@ -9,15 +9,20 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Инициализируем изменяемый накопитель `parameter` начальным состоянием.
     let mut parameter: f64 = 0.0;
+    lesson_trace::trace_step!(parameter);
     // Скорость 0.2 уменьшает расстояние до минимума x=3 на каждом шаге этой параболы.
     let rate: f64 = 0.2;
+    lesson_trace::trace_step!(rate);
     // 100 — страховочный предел шагов; обычно остановимся раньше, когда |градиент| < 10⁻⁶.
     for epoch in 0..100 {
+        lesson_trace::trace_step!(epoch);
         // Умножаем значения и сохраняем результат в `rate_of_change`.
         // Производную функции по параметру или вектор таких производных называют gradient.
         let rate_of_change: f64 = 2.0 * (parameter - 3.0);
+        lesson_trace::trace_step!(rate_of_change);
         // Порог 10⁻⁶ задаёт, насколько близко к нулю должен стать градиент перед остановкой.
         if rate_of_change > -0.000001 && rate_of_change < 0.000001 {
             // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -27,9 +32,11 @@ fn main() {
         }
         // Вычитаем очередной вклад из текущего значения параметра.
         parameter -= rate * rate_of_change;
+        lesson_trace::trace_step!(parameter);
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_convergence_of_gradient_descent_steps();
 }
 

@@ -9,21 +9,28 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Инициализируем значение `observed_count` начальным состоянием.
     let observed_count: f64 = 0.0;
+    lesson_trace::trace_step!(observed_count);
     // Сохраняем рассчитанное значение `total_words_in_class` для следующих операций.
     let total_words_in_class: f64 = 8.0;
+    lesson_trace::trace_step!(total_words_in_class);
     // Сохраняем рассчитанное значение `known_text_unit_count` для следующих операций.
     // Набор известных модели текстовых единиц называют vocabulary.
     let known_text_unit_count: f64 = 4.0;
+    lesson_trace::trace_step!(known_text_unit_count);
     // Нормируем или усредняем величину делением и сохраняем её в `unsmoothed`.
     let unsmoothed: f64 = observed_count / total_words_in_class;
+    lesson_trace::trace_step!(unsmoothed);
     // Нормируем или усредняем величину делением и сохраняем её в `smoothed`.
     let smoothed: f64 = (observed_count + 1.0) / (total_words_in_class + known_text_unit_count);
+    lesson_trace::trace_step!(smoothed);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("без сглаживания={unsmoothed}, со сглаживанием={smoothed}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_laplace_smoothing_of_class_conditional_word_counts();
 }
 

@@ -9,18 +9,23 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `dense_representation_table` для следующего шага примера.
     // Плотное числовое представление объекта называют embedding.
     let dense_representation_table: [[f64; 2]; 3] = [[0.0, 0.0], [0.8, 0.2], [0.7, 0.3]];
+    lesson_trace::trace_step!(dense_representation_table);
     // Сохраняем рассчитанное значение `text_unit_identifier` для следующих операций.
     // Единицу текста, которую модель обрабатывает как одно целое, называют token.
     let text_unit_identifier: usize = 2;
+    lesson_trace::trace_step!(text_unit_identifier);
     // Сохраняем рассчитанное значение `dense_numeric_representation` для следующих операций.
     let dense_numeric_representation: [f64; 2] = dense_representation_table[text_unit_identifier];
+    lesson_trace::trace_step!(dense_numeric_representation);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("токен={text_unit_identifier}, плотный вектор={dense_numeric_representation:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_dense_vector_representations_of_words(dense_numeric_representation);
 }
 

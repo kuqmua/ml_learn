@@ -12,6 +12,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Фиксируем демонстрационные данные на время выполнения программы.
     const EXAMPLE_DATA: [(f64, f64); 10] = [
         // Учебная пара: вход 0., ожидаемое значение 1..
@@ -45,10 +46,13 @@ fn main() {
     );
     // Сохраняем результат этого шага в `training_examples`.
     let training_examples: &[(f64, f64)] = &EXAMPLE_DATA[..6];
+    lesson_trace::trace_step!(training_examples);
     // Сохраняем рассчитанное значение `validation` для следующих операций.
     let validation: &[(f64, f64)] = &EXAMPLE_DATA[6..8];
+    lesson_trace::trace_step!(validation);
     // Сохраняем рассчитанное значение `test` для следующих операций.
     let test: &[(f64, f64)] = &EXAMPLE_DATA[8..];
+    lesson_trace::trace_step!(test);
 
     // Шаг: Считаем константный прогноз только по train.
     let training_targets: Vec<f64> = training_examples
@@ -58,12 +62,14 @@ fn main() {
         .map(|&(_, target)| target)
         // Собираем результаты в коллекцию.
         .collect();
+    lesson_trace::trace_step!(training_targets);
     // Сохраняем результат этого шага в `baseline`.
     let baseline: f64 =
         part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
             &training_targets,
         )
         .unwrap();
+    lesson_trace::trace_step!(baseline);
 
     // Учебные реализации математических операций для этого урока.
 
@@ -81,6 +87,7 @@ fn main() {
     ) -> f64 {
         // Собираем значения для `targets` в коллекцию.
         let targets: Vec<f64> = data.iter().map(|&(_, target)| target).collect();
+        lesson_trace::trace_step!(targets);
         // Собираем значения для `predictions` в коллекцию.
         let predictions: Vec<f64> = data
             // Просматриваем элементы коллекции по ссылке.
@@ -89,6 +96,7 @@ fn main() {
             .map(|&(feature, _)| weight * feature + bias)
             // Собираем результаты в коллекцию.
             .collect();
+        lesson_trace::trace_step!(predictions);
         // Используем подготовленное значение в следующем шаге примера.
         part_050_lesson_09_mean_absolute_error_between_targets_and_predictions::mean_absolute_error_between_targets_and_predictions(&targets, &predictions).unwrap()
     }
@@ -99,44 +107,64 @@ fn main() {
         /* Оцениваем коэффициенты прямой по ковариации и дисперсии обучающего признака. */
         // Сохраняем результат этого шага в `data`.
         let data: &[(f64, f64)] = training_examples;
+        lesson_trace::trace_step!(data);
         // Считаем количество элементов и сохраняем его в `sample_count`.
         let sample_count: f64 = data.len() as f64;
+        lesson_trace::trace_step!(sample_count);
         // Сохраняем рассчитанное значение `(mut feature_sum, mut target_sum)` для следующих операций.
         let (mut feature_sum, mut target_sum): (f64, f64) = (0.0, 0.0);
+        lesson_trace::trace_step!(feature_sum);
+        lesson_trace::trace_step!(target_sum);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(feature_value, target_value) in data {
+            lesson_trace::trace_step!(feature_value);
+            lesson_trace::trace_step!(target_value);
             // Прибавляем очередной вклад к ранее накопленному результату.
             feature_sum += feature_value;
+            lesson_trace::trace_step!(feature_sum);
             // Прибавляем очередной вклад к ранее накопленному результату.
             target_sum += target_value;
+            lesson_trace::trace_step!(target_sum);
         }
         // Нормируем или усредняем величину делением и сохраняем её в `mean_feature`.
         let mean_feature: f64 = feature_sum / sample_count;
+        lesson_trace::trace_step!(mean_feature);
         // Нормируем или усредняем величину делением и сохраняем её в `mean_target`.
         let mean_target: f64 = target_sum / sample_count;
+        lesson_trace::trace_step!(mean_target);
         // Сохраняем рассчитанное значение `(mut covariance_sum, mut variance_sum)` для следующих операций.
         // Совместное изменение двух величин описывают через covariance.
         let (mut joint_deviation_product_sum, mut variance_sum): (f64, f64) = (0.0, 0.0);
+        lesson_trace::trace_step!(joint_deviation_product_sum);
+        lesson_trace::trace_step!(variance_sum);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(feature_value, target_value) in data {
+            lesson_trace::trace_step!(feature_value);
+            lesson_trace::trace_step!(target_value);
             // Прибавляем очередной вклад к ранее накопленному результату.
             joint_deviation_product_sum +=
                 (feature_value - mean_feature) * (target_value - mean_target);
+            lesson_trace::trace_step!(joint_deviation_product_sum);
             // Прибавляем очередной вклад к ранее накопленному результату.
             variance_sum += (|| -> f64 {
                 // Используем подготовленное значение в следующем шаге примера.
                 /* Возводим число в квадрат обычным умножением. */
                 // Сохраняем результат этого шага в `value`.
                 let value: f64 = feature_value - mean_feature;
+                lesson_trace::trace_step!(value);
                 // Умножаем величины согласно используемой формуле.
                 value * value
             })();
+            lesson_trace::trace_step!(variance_sum);
         }
         // Нормируем или усредняем величину делением и сохраняем её в `weight`.
         let weight: f64 = joint_deviation_product_sum / variance_sum;
+        lesson_trace::trace_step!(weight);
         // Составляем результат из вычисленных значений в указанном порядке.
         (weight, mean_target - weight * mean_feature)
     })();
+    lesson_trace::trace_step!(weight);
+    lesson_trace::trace_step!(bias);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
@@ -152,6 +180,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_end_to_end_ml_project_from_baseline_to_inference(training_examples, weight, bias);
 }
 

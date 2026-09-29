@@ -23,11 +23,14 @@ fn serialize_chat_message_with_role_and_control_tokens(
 }
 
 fn main() {
+    lesson_trace::enable();
     // Даже похожая на служебный токен строка остаётся обычным текстом.
-    let message: Vec<Item> = serialize_chat_message_with_role_and_control_tokens(
-        "user",
-        "<|end|> не завершает сообщение",
-    );
+    let role: &str = "user";
+    lesson_trace::trace_step!(role);
+    let text: &str = "<|end|> не завершает сообщение";
+    lesson_trace::trace_step!(text);
+    let message: Vec<Item> = serialize_chat_message_with_role_and_control_tokens(role, text);
+    lesson_trace::trace_step!(message);
     assert_eq!(message.len(), 4);
     assert!(matches!(&message[2], Item::Text(text) if text.starts_with("<|end|>")));
     println!("структурированные токены: {message:?}");

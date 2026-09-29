@@ -4,6 +4,7 @@
 // значение здесь считаем неопределённым.
 
 fn main() {
+    lesson_trace::enable();
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, true_positives, false_negatives, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -15,6 +16,10 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("положительных объектов нет", 0, 0, None),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(true_positives);
+        lesson_trace::trace_step!(false_negatives);
+        lesson_trace::trace_step!(expected);
         // Сохраняем результат этого шага в `counts`.
         let counts: part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::BinaryClassificationCounts = part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::BinaryClassificationCounts {
             // Используем подготовленное значение в следующем шаге примера.
@@ -26,8 +31,10 @@ fn main() {
             // Используем подготовленное значение в следующем шаге примера.
             false_negatives,
         };
+        lesson_trace::trace_step!(counts);
         // Сохраняем результат этого шага в `recall`.
         let recall: Option<f64> = part_062_lesson_11_recall_from_binary_classification_counts::recall_from_binary_classification_counts(counts);
+        lesson_trace::trace_step!(recall);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(recall, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -35,6 +42,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_recall_from_binary_classification_counts();
 }
 

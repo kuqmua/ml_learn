@@ -8,15 +8,20 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Сохраняем рассчитанное значение `input_value` для следующих операций.
     let input_value: f64 = 3.0;
+    lesson_trace::trace_step!(input_value);
     // f(x)=x*x: вход x участвует как левый и правый множитель.
     // Производную функции по параметру или вектор таких производных называют gradient.
     let left_path_rate_of_change: f64 = input_value;
+    lesson_trace::trace_step!(left_path_rate_of_change);
     // Сохраняем рассчитанное значение `right_path_rate_of_change` для следующих операций.
     let right_path_rate_of_change: f64 = input_value;
+    lesson_trace::trace_step!(right_path_rate_of_change);
     // Комбинируем исходные величины и сохраняем результат в `combined_rate_of_change`.
     let combined_rate_of_change: f64 = left_path_rate_of_change + right_path_rate_of_change;
+    lesson_trace::trace_step!(combined_rate_of_change);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Присваиваем вычисленное значение соответствующей переменной или полю.
@@ -24,6 +29,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_sum_gradient_contributions_from_multiple_graph_paths(
         left_path_rate_of_change,
         right_path_rate_of_change,

@@ -19,6 +19,7 @@ pub fn causal_convolution_of_one_dimensional_signal(
             let previous: f64 = index
                 .checked_sub(filter_spacing)
                 .map_or(0.0, |past| input[past]);
+            lesson_trace::trace_step!(previous);
             weight_current * current + weight_previous * previous
         })
         .collect())

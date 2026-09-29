@@ -9,17 +9,22 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for training_size in [10, 100, 1000] {
+        lesson_trace::trace_step!(training_size);
         // Сохраняем рассчитанное значение `feature_count` для следующих операций.
         let feature_count: i32 = 4;
+        lesson_trace::trace_step!(feature_count);
         // Умножаем значения и сохраняем результат в `coordinate_comparisons`.
         let coordinate_comparisons: i32 = training_size * feature_count;
+        lesson_trace::trace_step!(coordinate_comparisons);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("объектов={training_size}, сравнений координат={coordinate_comparisons}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_cost_of_knn_prediction_over_training_points();
 }
 

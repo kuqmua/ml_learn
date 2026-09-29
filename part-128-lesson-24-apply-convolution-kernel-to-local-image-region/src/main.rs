@@ -8,25 +8,33 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `patch` для следующего шага примера.
     let patch: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
+    lesson_trace::trace_step!(patch);
     // Создаём набор значений `filter_weights` для следующего шага примера.
     // Небольшой набор весов свёрточного фильтра называют kernel.
     let filter_weights: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, -1.0]];
+    lesson_trace::trace_step!(filter_weights);
     // Инициализируем изменяемый накопитель `response` начальным состоянием.
     let mut response: f64 = 0.0;
+    lesson_trace::trace_step!(response);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for row in 0..2 {
+        lesson_trace::trace_step!(row);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for column in 0..2 {
+            lesson_trace::trace_step!(column);
             // Прибавляем очередной вклад к ранее накопленному результату.
             response += patch[row][column] * filter_weights[row][column];
+            lesson_trace::trace_step!(response);
         }
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("отклик ядра = {response}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_apply_convolution_kernel_to_local_image_region(patch, response);
 }
 

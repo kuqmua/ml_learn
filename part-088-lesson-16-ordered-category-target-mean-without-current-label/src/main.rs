@@ -2,8 +2,11 @@
 // Метка текущей строки не попадает в её закодированный признак.
 
 fn main() {
+    lesson_trace::enable();
     let categories: [&str; 5] = ["A", "B", "A", "A", "B"];
+    lesson_trace::trace_step!(categories);
     let targets: [f64; 5] = [1.0, 0.0, 0.0, 1.0, 1.0];
+    lesson_trace::trace_step!(targets);
     let values: Vec<f64> = part_088_lesson_16_ordered_category_target_mean_without_current_label::ordered_category_target_mean_using_prior_rows(
         &categories,
         &targets,
@@ -11,10 +14,14 @@ fn main() {
         2.0,
     )
     .unwrap();
+    lesson_trace::trace_step!(values);
     assert_eq!(values[0], 0.5);
     assert_eq!(values[1], 0.5);
+    lesson_trace::disable();
     visualize_ordered_category_target_mean_without_current_label(&values);
     for (index, value) in values.iter().enumerate() {
+        lesson_trace::trace_step!(index);
+        lesson_trace::trace_step!(value);
         println!(
             "строка {index}, категория {}, ordered mean={value:.3}",
             categories[index]

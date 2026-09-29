@@ -9,10 +9,13 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `features` для следующего шага примера.
     let features: Vec<f64> = vec![1.0; 1000];
+    lesson_trace::trace_step!(features);
     // Сохраняем рассчитанное значение `start` для следующих операций.
     let start: std::time::Instant = std::time::Instant::now();
+    lesson_trace::trace_step!(start);
     // Сохраняем рассчитанное значение `predictions` для следующих операций.
     let predictions: Vec<f64> = features
         // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -21,6 +24,7 @@ fn main() {
         .map(|&feature| 2.0 * feature + 1.0)
         // Собираем элементы итератора в итоговую коллекцию.
         .collect();
+    lesson_trace::trace_step!(predictions);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Присваиваем вычисленное значение соответствующей переменной или полю.
@@ -32,6 +36,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_measure_inference_time_as_batch_size_grows();
 }
 

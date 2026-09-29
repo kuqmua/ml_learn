@@ -4,6 +4,7 @@
 // положительный — выше 0.5. Значение всегда находится между 0 и 1.
 
 fn main() {
+    lesson_trace::enable();
     // Повторяем расчёт для каждого элемента последовательности.
     // Оценку модели до преобразования в вероятность называют logit.
     for (description, raw_model_score, expected_side) in [
@@ -14,19 +15,28 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("положительный", 2.0, 1),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(raw_model_score);
+        lesson_trace::trace_step!(expected_side);
         // Сохраняем результат этого шага в `term`.
         let mut term: f64 = 1.0;
+        lesson_trace::trace_step!(term);
         // Сохраняем результат этого шага в `exponential`.
         let mut exponential: f64 = 1.0;
+        lesson_trace::trace_step!(exponential);
         // Берём 30 членов ряда Тейлора exp(−logit)=Σ(−logit)^k/k! для небольших учебных logit.
         for index in 1..=30 {
+            lesson_trace::trace_step!(index);
             // Обновляем значение результатом текущего вычисления.
             term *= -raw_model_score / index as f64;
+            lesson_trace::trace_step!(term);
             // Обновляем значение результатом текущего вычисления.
             exponential += term;
+            lesson_trace::trace_step!(exponential);
         }
         // Сохраняем результат этого шага в `probability`.
         let probability: f64 = 1.0 / (1.0 + exponential);
+        lesson_trace::trace_step!(probability);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(probability > 0.0 && probability < 1.0);
         // 0.5 — середина диапазона вероятностей: ниже неё знак отрицательный, выше положительный.
@@ -42,6 +52,7 @@ fn main() {
             // Используем подготовленное значение в следующем шаге примера.
             0
         };
+        lesson_trace::trace_step!(side);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(side, expected_side);
         // Печатаем рассчитанные значения для проверки примера.
@@ -49,6 +60,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_sigmoid_map_from_logit_to_class_probability();
 }
 

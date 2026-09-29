@@ -4,10 +4,13 @@
 // На границе random=epsilon выбираем использование.
 
 fn main() {
+    lesson_trace::enable();
     // Сохраняем результат этого шага в `exploration_probability`.
     let exploration_probability: f64 = 0.1;
+    lesson_trace::trace_step!(exploration_probability);
     // Сохраняем результат этого шага в `best_known_action`.
     let best_known_action: &str = "вправо";
+    lesson_trace::trace_step!(best_known_action);
     // Повторяем расчёт для каждого элемента последовательности.
     // Число от 0 до 1 задаёт долю единичного интервала; такую долю называют fraction.
     for (description, random_number_between_zero_and_one, expected_action) in [
@@ -18,6 +21,9 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("использование", 0.8, "вправо"),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(random_number_between_zero_and_one);
+        lesson_trace::trace_step!(expected_action);
         // Проверяем ожидаемое свойство учебного примера.
         assert!((0.0..1.0).contains(&random_number_between_zero_and_one));
         // Сохраняем результат этого шага в `action`.
@@ -29,6 +35,7 @@ fn main() {
             // Используем подготовленное значение в следующем шаге примера.
             best_known_action
         };
+        lesson_trace::trace_step!(action);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(action, expected_action);
         // Печатаем рассчитанные значения для проверки примера.
@@ -38,6 +45,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_epsilon_greedy_exploration_versus_best_known_action();
 }
 

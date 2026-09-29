@@ -27,12 +27,16 @@ pub fn mean_squared_error_between_targets_and_predictions(
     validate_equal_lengths_of_targets_and_predictions(targets, predictions)?;
     // Сохраняем результат этого шага в `squared_sum`.
     let mut squared_sum: f64 = 0.0;
+    lesson_trace::trace_step!(squared_sum);
     // Повторяем расчёт для каждого элемента последовательности.
     for index in 0..targets.len() {
+        lesson_trace::trace_step!(index);
         // Сохраняем результат этого шага в `error`.
         let error: f64 = predictions[index] - targets[index];
+        lesson_trace::trace_step!(error);
         // Обновляем значение результатом текущего вычисления.
         squared_sum += error * error;
+        lesson_trace::trace_step!(squared_sum);
     }
     // Возвращаем успешный результат.
     Ok(squared_sum / targets.len() as f64)

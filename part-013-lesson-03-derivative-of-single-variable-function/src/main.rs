@@ -9,14 +9,18 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Сохраняем рассчитанное значение `input_value` для следующих операций.
     let input_value: f64 = 3.0;
+    lesson_trace::trace_step!(input_value);
     // Умножаем значения и сохраняем результат в `derivative`.
     let derivative: f64 = 2.0 * input_value;
+    lesson_trace::trace_step!(derivative);
     // При x=3 малое увеличение аргумента меняет x² примерно в шесть раз быстрее.
     println!("f(x)=x²; f'(3)={derivative}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_derivative_of_single_variable_function();
 }
 

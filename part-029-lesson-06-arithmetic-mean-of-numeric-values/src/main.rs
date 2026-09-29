@@ -4,6 +4,7 @@
 // отрицательные числа могут уменьшить среднее, а для пустого набора делить не на что.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &[f64], f64); 3] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -13,12 +14,17 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("значения разных знаков", &[-2.0, 2.0], 0.0),
     ];
+    lesson_trace::trace_step!(cases);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, values, expected) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(values);
+        lesson_trace::trace_step!(expected);
         // Общая функция среднего повторно понадобится в дисперсии и нормализации.
         let mean: f64 =
             part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(values)
                 .expect("в этой строке есть значения");
+        lesson_trace::trace_step!(mean);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(mean, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -26,6 +32,7 @@ fn main() {
     }
     // Задаём учебные значения для `empty`.
     let empty: [f64; 0] = [];
+    lesson_trace::trace_step!(empty);
     // Сохраняем результат этого шага в `error`.
     let error: &str =
         part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
@@ -33,10 +40,12 @@ fn main() {
         )
         // Настраиваем или преобразуем результат предыдущего шага.
         .expect_err("среднее пустого набора должно быть отклонено");
+    lesson_trace::trace_step!(error);
     // Печатаем рассчитанные значения для проверки примера.
     println!("пустой набор: {error}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_arithmetic_mean_of_numeric_values();
 }
 

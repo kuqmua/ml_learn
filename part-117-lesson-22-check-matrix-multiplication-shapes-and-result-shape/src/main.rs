@@ -3,6 +3,7 @@
 // Матрицы (a,b) и (c,d) можно умножить, только если b=c; ответ имеет форму (a,d).
 
 fn main() {
+    lesson_trace::enable();
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, left_shape, right_shape, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -12,6 +13,10 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("несовместимые формы", (2, 3), (2, 4), None),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(left_shape);
+        lesson_trace::trace_step!(right_shape);
+        lesson_trace::trace_step!(expected);
         // Сохраняем результат этого шага в `result_shape`.
         let result_shape: Option<(i32, i32)> = if left_shape.1 == right_shape.0 {
             // Возвращаем присутствующее значение.
@@ -21,6 +26,7 @@ fn main() {
             // Отмечаем отсутствие подходящего значения.
             None
         };
+        lesson_trace::trace_step!(result_shape);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(result_shape, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -28,6 +34,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_check_matrix_multiplication_shapes_and_result_shape();
 }
 

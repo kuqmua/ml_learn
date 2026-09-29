@@ -8,10 +8,12 @@ pub fn calculate_linear_recurrent_state_sequence_from_inputs(
     input_factor: f64,
 ) -> Vec<f64> {
     let mut state: f64 = 0.0;
+    lesson_trace::trace_step!(state);
     input
         .iter()
         .map(|&value| {
             state = previous_state_share_kept * state + input_factor * value;
+            lesson_trace::trace_step!(state);
             state
         })
         .collect()

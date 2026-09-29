@@ -8,24 +8,31 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Сохраняем рассчитанное значение `image_width` для следующих операций.
     let image_width: i32 = 5;
+    lesson_trace::trace_step!(image_width);
     // Сохраняем рассчитанное значение `filter_width` для следующих операций.
     // Небольшой набор весов свёрточного фильтра называют kernel.
     let filter_width: i32 = 2;
+    lesson_trace::trace_step!(filter_width);
     // Сохраняем рассчитанное значение `filter_step_size` для следующих операций.
     // Шаг перемещения фильтра по входу называют stride.
     let filter_step_size: i32 = 2;
+    lesson_trace::trace_step!(filter_step_size);
     // Нормируем или усредняем величину делением и сохраняем её в `output_width`.
     let output_width: i32 = (image_width - filter_width) / filter_step_size + 1;
+    lesson_trace::trace_step!(output_width);
     // Преобразуем входные данные и сохраняем полученную коллекцию в `positions`.
     let positions: Vec<i32> = (0..output_width)
         .map(|index| index * filter_step_size)
         .collect();
+    lesson_trace::trace_step!(positions);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("позиции ядра по ширине: {positions:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_move_convolution_kernel_by_stride_pixels(positions);
 }
 

@@ -4,4 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+lesson-trace = { path = "../lesson-trace" }
 part-144-lesson-27-train-byte-level-bpe-merges-from-training-corpus = { path = "../part-144-lesson-27-train-byte-level-bpe-merges-from-training-corpus" }

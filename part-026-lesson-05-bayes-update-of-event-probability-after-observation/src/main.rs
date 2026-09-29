@@ -9,22 +9,30 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Инициализируем значение `prevalence` начальным состоянием.
     let prevalence: f64 = 0.01;
+    lesson_trace::trace_step!(prevalence);
     // Инициализируем значение `sensitivity` начальным состоянием.
     let sensitivity: f64 = 0.90;
+    lesson_trace::trace_step!(sensitivity);
     // Инициализируем значение `specificity` начальным состоянием.
     let specificity: f64 = 0.95;
+    lesson_trace::trace_step!(specificity);
     // Умножаем значения и сохраняем результат в `true_positive`.
     let true_positive: f64 = prevalence * sensitivity;
+    lesson_trace::trace_step!(true_positive);
     // Умножаем значения и сохраняем результат в `false_positive`.
     let false_positive: f64 = (1.0 - prevalence) * (1.0 - specificity);
+    lesson_trace::trace_step!(false_positive);
     // Нормируем или усредняем величину делением и сохраняем её в `posterior`.
     let posterior: f64 = true_positive / (true_positive + false_positive);
+    lesson_trace::trace_step!(posterior);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("P(болен | положительный тест) = {posterior:.3}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_bayes_update_of_event_probability_after_observation(posterior);
 }
 

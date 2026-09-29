@@ -8,8 +8,10 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `outcomes` для следующего шага примера.
     let outcomes: [f64; 6] = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0];
+    lesson_trace::trace_step!(outcomes);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -19,17 +21,22 @@ fn main() {
     );
     // Считаем количество элементов и сохраняем его в `probability`.
     let probability: f64 = 1.0 / outcomes.len() as f64;
+    lesson_trace::trace_step!(probability);
     // Инициализируем изменяемый накопитель `expectation` начальным состоянием.
     let mut expectation: f64 = 0.0;
+    lesson_trace::trace_step!(expectation);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for outcome in outcomes {
+        lesson_trace::trace_step!(outcome);
         // Прибавляем очередной вклад к ранее накопленному результату.
         expectation += outcome * probability;
+        lesson_trace::trace_step!(expectation);
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("ожидание броска кубика = {expectation}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_expected_value_of_discrete_random_outcomes();
 }
 

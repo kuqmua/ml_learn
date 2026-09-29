@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+lesson-trace = { path = "../lesson-trace" }
 part_049_lesson_09_mean_squared_error_between_targets_and_predictions = { package = "part-049-lesson-09-mean-squared-error-between-targets-and-predictions", path = "../part-049-lesson-09-mean-squared-error-between-targets-and-predictions" }
 
 lesson-visualization = { path = "../lesson-visualization" }

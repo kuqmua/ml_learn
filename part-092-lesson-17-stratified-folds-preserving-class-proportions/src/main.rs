@@ -4,18 +4,25 @@
 // только положительный класс, в другой — только отрицательный. Стратификация смешивает классы.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `positive`.
     let positive: [i32; 4] = [1, 3, 5, 7];
+    lesson_trace::trace_step!(positive);
     // Задаём учебные значения для `negative`.
     let negative: [i32; 4] = [0, 2, 4, 6];
+    lesson_trace::trace_step!(negative);
     // Сохраняем результат этого шага в `bad_first`.
     let bad_first: [i32; 4] = positive;
+    lesson_trace::trace_step!(bad_first);
     // Сохраняем результат этого шага в `bad_second`.
     let bad_second: [i32; 4] = negative;
+    lesson_trace::trace_step!(bad_second);
     // Задаём учебные значения для `first_fold`.
     let first_fold: [i32; 4] = [positive[0], positive[1], negative[0], negative[1]];
+    lesson_trace::trace_step!(first_fold);
     // Задаём учебные значения для `second_fold`.
     let second_fold: [i32; 4] = [positive[2], positive[3], negative[2], negative[3]];
+    lesson_trace::trace_step!(second_fold);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, first_fold, second_fold, expected_positive) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -23,6 +30,10 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("стратификация", first_fold, second_fold, [2, 2]),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(first_fold);
+        lesson_trace::trace_step!(second_fold);
+        lesson_trace::trace_step!(expected_positive);
         // Задаём учебные значения для `counts`.
         let counts: [usize; 2] = [
             // Обновляем значение результатом текущего вычисления.
@@ -30,6 +41,7 @@ fn main() {
             // Обновляем значение результатом текущего вычисления.
             second_fold.iter().filter(|&&value| value % 2 == 1).count(),
         ];
+        lesson_trace::trace_step!(counts);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(counts, expected_positive);
         // Печатаем рассчитанные значения для проверки примера.
@@ -37,6 +49,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_stratified_folds_preserving_class_proportions();
 }
 

@@ -9,32 +9,40 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `values` для следующего шага примера.
     let values: [f64; 4] = [2.0, 4.0, 6.0, 8.0];
+    lesson_trace::trace_step!(values);
     // Сохраняем результат этого шага в `mean`.
     let mean: f64 =
         part_029_lesson_06_arithmetic_mean_of_numeric_values::arithmetic_mean_of_numeric_values(
             &values,
         )
         .unwrap();
+    lesson_trace::trace_step!(mean);
     // Сохраняем результат этого шага в `sample_variance`.
     let sample_variance: f64 =
         part_031_lesson_06_sample_variance_of_numeric_values::sample_variance_of_numeric_values(
             &values,
         )
         .unwrap();
+    lesson_trace::trace_step!(sample_variance);
     // Считаем количество элементов и сохраняем его в `standard_error_squared`.
     let standard_error_squared: f64 = sample_variance / values.len() as f64;
+    lesson_trace::trace_step!(standard_error_squared);
     // Создаём изменяемое значение `standard_error` для следующих операций.
     let mut standard_error: f64 = standard_error_squared;
+    lesson_trace::trace_step!(standard_error);
     // 80 шагов Ньютона дают здесь устойчивую оценку корня из SE² в арифметике f64.
     for _ in 0..80 {
         // Среднее текущей оценки и SE²/оценка приближается к стандартной ошибке SE.
         standard_error = (standard_error + standard_error_squared / standard_error) / 2.0;
+        lesson_trace::trace_step!(standard_error);
     }
     // 1.96 — квантиль стандартного нормального распределения для двустороннего 95% интервала.
     // Формула mean ± 1.96·SE здесь является приближением для учебного примера.
     let margin: f64 = 1.96 * standard_error;
+    lesson_trace::trace_step!(margin);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Подставляем результаты в этот шаблон вывода или текстового значения.
@@ -46,6 +54,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_confidence_interval_for_population_mean(values, mean, margin);
 }
 

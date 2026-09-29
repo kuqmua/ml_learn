@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+lesson-trace = { path = "../lesson-trace" }
 part_005_lesson_01_cosine_similarity_between_two_vectors = { package = "part-005-lesson-01-cosine-similarity-between-two-vectors", path = "../part-005-lesson-01-cosine-similarity-between-two-vectors" }
 lesson-visualization = { path = "../lesson-visualization" }

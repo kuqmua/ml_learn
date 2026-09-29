@@ -4,6 +4,7 @@
 // Прибавление одной константы к обеим оценкам не меняет веса, а сумма весов равна 1.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `cases`.
     let cases: [(&str, [f64; 2]); 4] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -15,32 +16,45 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("к обеим прибавили 1", [1.0, 2.0]),
     ];
+    lesson_trace::trace_step!(cases);
     // Задаём учебные значения для `reference_weights`.
     let mut reference_weights: [f64; 2] = [0.0; 2];
+    lesson_trace::trace_step!(reference_weights);
     // Повторяем расчёт для каждого элемента последовательности.
     // Оценку модели до преобразования в вероятность называют logit.
     for (description, raw_model_scores) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(raw_model_scores);
         // Задаём учебные значения для `exponentials`.
         let mut exponentials: [f64; 2] = [0.0; 2];
+        lesson_trace::trace_step!(exponentials);
         // Повторяем расчёт для каждого элемента последовательности.
         for index in 0..2 {
+            lesson_trace::trace_step!(index);
             // Считаем exp(x) первыми 30 членами ряда Тейлора для малых учебных оценок.
             let mut term: f64 = 1.0;
+            lesson_trace::trace_step!(term);
             // Сохраняем результат этого шага в `sum`.
             let mut sum: f64 = 1.0;
+            lesson_trace::trace_step!(sum);
             // Повторяем расчёт для каждого элемента последовательности.
             // 30 членов ряда Σx^k/k! приближают exp(score−max_score) для softmax.
             for order in 1..=30 {
+                lesson_trace::trace_step!(order);
                 // Обновляем значение результатом текущего вычисления.
                 term *= raw_model_scores[index] / order as f64;
+                lesson_trace::trace_step!(term);
                 // Обновляем значение результатом текущего вычисления.
                 sum += term;
+                lesson_trace::trace_step!(sum);
             }
             // Обновляем значение результатом текущего вычисления.
             exponentials[index] = sum;
+            lesson_trace::trace_step!(exponentials);
         }
         // Сохраняем результат этого шага в `denominator`.
         let denominator: f64 = exponentials[0] + exponentials[1];
+        lesson_trace::trace_step!(denominator);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(
             // Используем подготовленное значение в следующем шаге примера.
@@ -50,6 +64,7 @@ fn main() {
         );
         // Задаём учебные значения для `weights`.
         let weights: [f64; 2] = [exponentials[0] / denominator, exponentials[1] / denominator];
+        lesson_trace::trace_step!(weights);
         // Проверяем ожидаемое свойство учебного примера.
         assert!((weights[0] + weights[1] - 1.0).abs() < 1e-10);
         // Проверяем ожидаемое свойство учебного примера.
@@ -64,6 +79,7 @@ fn main() {
                 assert!(weights[1] > weights[0]);
                 // Обновляем значение результатом текущего вычисления.
                 reference_weights = weights;
+                lesson_trace::trace_step!(reference_weights);
             }
             // Передаём подпись или текстовое значение для следующего шага.
             "первая оценка выше" => assert!(weights[0] > weights[1]),
@@ -82,6 +98,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_normalize_attention_scores_into_weights_with_softmax();
 }
 

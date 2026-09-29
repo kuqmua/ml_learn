@@ -9,18 +9,24 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // f(x,y)=x²+3y².
     let (input_value, second_input_value): (f64, f64) = (2.0, -1.0);
+    lesson_trace::trace_step!(input_value);
+    lesson_trace::trace_step!(second_input_value);
     // Умножаем значения и сохраняем результат в `derivative_by_horizontal_coordinate`.
     let derivative_by_horizontal_coordinate: f64 = 2.0 * input_value;
+    lesson_trace::trace_step!(derivative_by_horizontal_coordinate);
     // Умножаем значения и сохраняем результат в `derivative_by_vertical_coordinate`.
     let derivative_by_vertical_coordinate: f64 = 6.0 * second_input_value;
+    lesson_trace::trace_step!(derivative_by_vertical_coordinate);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         "∂f/∂x={derivative_by_horizontal_coordinate}, ∂f/∂y={derivative_by_vertical_coordinate}"
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_partial_derivative_of_two_variable_function();
 }
 

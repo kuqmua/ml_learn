@@ -3,6 +3,7 @@
 // Загрузчик различает поддерживаемый формат, другую версию и отсутствие строки версии.
 
 fn main() {
+    lesson_trace::enable();
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, saved_model_text, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -18,6 +19,9 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("пустой файл", "", "нет версии"),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(saved_model_text);
+        lesson_trace::trace_step!(expected);
         // Сохраняем результат этого шага в `status`.
         let status: &str = match saved_model_text.lines().next() {
             // Возвращаем присутствующее значение.
@@ -27,6 +31,7 @@ fn main() {
             // Отмечаем отсутствие подходящего значения.
             None => "нет версии",
         };
+        lesson_trace::trace_step!(status);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(status, expected);
         // Печатаем рассчитанные значения для проверки примера.

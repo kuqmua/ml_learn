@@ -11,6 +11,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Учебные реализации математических операций для этого урока.
 
     /// Возводим число в квадрат обычным умножением.
@@ -37,6 +38,7 @@ fn main() {
     ) -> f64 {
         // Комбинируем исходные величины и сохраняем результат в `shifted_first`.
         let shifted_first: f64 = first_parameter - 2.0;
+        lesson_trace::trace_step!(shifted_first);
         // Делим значения, получая нормированную величину или среднее.
         shifted_first * shifted_first * shifted_first / 3.0
             // Умножаем величины согласно используемой формуле.
@@ -45,6 +47,7 @@ fn main() {
 
     // Сравниваем h=10⁻², 10⁻⁴ и 10⁻⁸: большой h даёт ошибку приближения, слишком малый усиливает округление f64.
     for step_size in [1e-2, 1e-4, 1e-8] {
+        lesson_trace::trace_step!(step_size);
         // Шаг: Сравниваем численный градиент с производными, найденными вручную.
         println!(
             // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
@@ -55,8 +58,12 @@ fn main() {
                 /* Вычисляем обе частные производные квадратичной функции. */
                 // Сохраняем результат этого шага в `first_parameter`.
                 let first_parameter: f64 = 0.3;
+                lesson_trace::trace_step!(first_parameter);
+                lesson_trace::trace_step!(first_parameter);
                 // Сохраняем рассчитанное значение `second_parameter` для следующих операций.
                 let second_parameter: f64 = 2.0;
+                lesson_trace::trace_step!(second_parameter);
+                lesson_trace::trace_step!(second_parameter);
                 // Составляем результат из вычисленных значений в указанном порядке.
                 [
                     // Умножаем величины согласно используемой формуле.
@@ -71,10 +78,16 @@ fn main() {
                 /* Центральная конечная разность приближает каждую частную производную. */
                 // Сохраняем результат этого шага в `first_parameter`.
                 let first_parameter: f64 = 0.3;
+                lesson_trace::trace_step!(first_parameter);
+                lesson_trace::trace_step!(first_parameter);
                 // Сохраняем рассчитанное значение `second_parameter` для следующих операций.
                 let second_parameter: f64 = 2.0;
+                lesson_trace::trace_step!(second_parameter);
+                lesson_trace::trace_step!(second_parameter);
                 // Сохраняем рассчитанное значение `step_size` для следующих операций.
                 let step_size: f64 = step_size;
+                lesson_trace::trace_step!(step_size);
+                lesson_trace::trace_step!(step_size);
                 // Составляем результат из вычисленных значений в указанном порядке.
                 [
                     // Составляем результат из вычисленных значений в указанном порядке.
@@ -112,6 +125,7 @@ fn main() {
     // Производная первообразной по первому параметру должна возвращать исходную функцию.
     // h=10⁻⁵ — отдельный небольшой шаг для проверки, что производная первообразной возвращает функцию.
     let step_size: f64 = 1e-5;
+    lesson_trace::trace_step!(step_size);
     // Сохраняем рассчитанное значение `recovered_value` для следующих операций.
     let recovered_value: f64 =
         // Составляем результат из вычисленных значений в указанном порядке.
@@ -120,6 +134,7 @@ fn main() {
             - calculate_antiderivative_with_respect_to_first_parameter(0.3 - step_size, 2.0))
             // Делим значения, получая нормированную величину или среднее.
             / (2.0 * step_size);
+    lesson_trace::trace_step!(recovered_value);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
@@ -129,6 +144,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_derivatives_chain_rule_gradient_and_finite_differences();
 
     // Строим график по результатам урока.

@@ -2,13 +2,17 @@
 // Сравниваем длину byte-level и BPE кодирования на train и новых строках.
 
 fn main() {
+    lesson_trace::enable();
     // Новые строки не участвуют в выборе слияний.
     let training_data: [&str; 3] = ["кот спит", "кот ест", "пёс спит"];
+    lesson_trace::trace_step!(training_data);
     let validation: [&str; 2] = ["кот играет", "🐈 спит"];
+    lesson_trace::trace_step!(validation);
     let model: part_144_lesson_27_train_byte_level_bpe_merges_from_training_corpus::BytePairEncoding = part_144_lesson_27_train_byte_level_bpe_merges_from_training_corpus::BytePairEncoding::train_byte_pair_encoding_merges_from_corpus(
         &training_data,
         30,
     );
+    lesson_trace::trace_step!(model);
     let rows: Vec<(&str, usize, usize)> = training_data
         .iter()
         .chain(validation.iter())
@@ -20,8 +24,12 @@ fn main() {
             )
         })
         .collect();
+    lesson_trace::trace_step!(rows);
     // Единицу текста, которую модель обрабатывает как одно целое, называют token.
     for &(text, bytes, text_units) in &rows {
+        lesson_trace::trace_step!(text);
+        lesson_trace::trace_step!(bytes);
+        lesson_trace::trace_step!(text_units);
         assert!(text_units <= bytes);
         assert_eq!(
             model
@@ -31,6 +39,7 @@ fn main() {
         );
         println!("{text:?}: байтов={bytes}, BPE-токенов={text_units}");
     }
+    lesson_trace::disable();
     visualize_evaluate_byte_level_and_bpe_tokenizers_on_new_strings(&rows);
 }
 

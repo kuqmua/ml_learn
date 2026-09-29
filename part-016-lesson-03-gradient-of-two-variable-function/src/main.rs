@@ -9,15 +9,20 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // f(x,y)=(x−2)²+3(y+1)².
     let (input_value, second_input_value): (f64, f64) = (0.0, 0.0);
+    lesson_trace::trace_step!(input_value);
+    lesson_trace::trace_step!(second_input_value);
     // Создаём набор значений `rate_of_change` для следующего шага примера.
     // Производную функции по параметру или вектор таких производных называют gradient.
     let rate_of_change: [f64; 2] = [2.0 * (input_value - 2.0), 6.0 * (second_input_value + 1.0)];
+    lesson_trace::trace_step!(rate_of_change);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("градиент в (0,0) = {rate_of_change:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_gradient_of_two_variable_function();
 }
 

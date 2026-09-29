@@ -9,21 +9,27 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `centered_points` для следующего шага примера.
     let centered_points: [[f64; 2]; 4] = [[-2.0, 0.0], [-1.0, 0.0], [1.0, 0.0], [2.0, 0.0]];
+    lesson_trace::trace_step!(centered_points);
     // Создаём набор значений `principal_axis` для следующего шага примера.
     let principal_axis: [f64; 2] = [1.0, 0.0];
+    lesson_trace::trace_step!(principal_axis);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for point in centered_points {
+        lesson_trace::trace_step!(point);
         // Умножаем значения и сохраняем результат в `projection`.
         let projection: f64 =
             // Используем подготовленное значение в следующем шаге примера.
             part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&point, &principal_axis).unwrap();
+        lesson_trace::trace_step!(projection);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("точка={point:?}, координата на главной оси={projection}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_principal_component_direction_of_maximum_variance(centered_points);
 }
 

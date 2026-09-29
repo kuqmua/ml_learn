@@ -4,6 +4,7 @@
 // Если обе равны нулю, формула даёт 0/0, поэтому возвращаем None.
 
 fn main() {
+    lesson_trace::enable();
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, precision, recall, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -15,11 +16,16 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("обе равны нулю", 0.0, 0.0, None),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(precision);
+        lesson_trace::trace_step!(recall);
+        lesson_trace::trace_step!(expected);
         // Сохраняем результат этого шага в `harmonic_mean_of_precision_and_recall`.
         let harmonic_mean_score: Option<f64> = part_063_lesson_11_harmonic_mean_of_binary_classification_precision_and_recall::harmonic_mean_of_precision_and_recall(
             Some(precision),
             Some(recall),
         );
+        lesson_trace::trace_step!(harmonic_mean_score);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(harmonic_mean_score, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -29,6 +35,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_harmonic_mean_of_binary_classification_precision_and_recall();
 }
 

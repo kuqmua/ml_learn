@@ -4,6 +4,7 @@
 // Улучшение сбрасывает счётчик; при постоянном улучшении остановки нет.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &[f64], Option<usize>); 3] = [
         (
@@ -25,33 +26,47 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("каждая эпоха лучше", &[0.8, 0.7, 0.6, 0.5], None),
     ];
+    lesson_trace::trace_step!(cases);
     // Сохраняем результат этого шага в `patience`.
     let patience: i32 = 2;
+    lesson_trace::trace_step!(patience);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, validation_losses, expected_stop) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(validation_losses);
+        lesson_trace::trace_step!(expected_stop);
         // Сохраняем результат этого шага в `best`.
         let mut best: f64 = f64::INFINITY;
+        lesson_trace::trace_step!(best);
         // Сохраняем результат этого шага в `bad_epochs`.
         let mut bad_epochs: i32 = 0;
+        lesson_trace::trace_step!(bad_epochs);
         // Сохраняем результат этого шага в `stopped_at`.
         let mut stopped_at: Option<usize> = None;
+        lesson_trace::trace_step!(stopped_at);
         // Повторяем расчёт для каждого элемента последовательности.
         for (epoch, &loss) in validation_losses.iter().enumerate() {
+            lesson_trace::trace_step!(epoch);
+            lesson_trace::trace_step!(loss);
             // Выбираем дальнейший шаг по выполнению условия.
             if loss < best {
                 // Обновляем значение результатом текущего вычисления.
                 best = loss;
+                lesson_trace::trace_step!(best);
                 // Обновляем значение результатом текущего вычисления.
                 bad_epochs = 0;
+                lesson_trace::trace_step!(bad_epochs);
             // Обрабатываем случай, когда предыдущее условие не выполнено.
             } else {
                 // Обновляем значение результатом текущего вычисления.
                 bad_epochs += 1;
+                lesson_trace::trace_step!(bad_epochs);
             }
             // Выбираем дальнейший шаг по выполнению условия.
             if bad_epochs >= patience {
                 // Обновляем значение результатом текущего вычисления.
                 stopped_at = Some(epoch);
+                lesson_trace::trace_step!(stopped_at);
                 // Переходим к следующему шагу цикла или завершаем его.
                 break;
             }
@@ -63,6 +78,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_stop_training_after_validation_loss_stagnates(cases);
 }
 

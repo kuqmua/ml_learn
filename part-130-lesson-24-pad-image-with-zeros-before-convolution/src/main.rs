@@ -8,23 +8,30 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `image` для следующего шага примера.
     let image: [[i32; 2]; 2] = [[1, 2], [3, 4]];
+    lesson_trace::trace_step!(image);
     // Создаём набор значений `image_with_zero_border` для следующего шага примера.
     // Добавление нулевой рамки к изображению называют padding.
     let mut image_with_zero_border: [[i32; 4]; 4] = [[0; 4]; 4];
+    lesson_trace::trace_step!(image_with_zero_border);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for row in 0..2 {
+        lesson_trace::trace_step!(row);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for column in 0..2 {
+            lesson_trace::trace_step!(column);
             // Присваиваем вычисленное значение соответствующей переменной или полю.
             image_with_zero_border[row + 1][column + 1] = image[row][column];
+            lesson_trace::trace_step!(image_with_zero_border);
         }
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("после padding: {image_with_zero_border:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_pad_image_with_zeros_before_convolution(image_with_zero_border);
 }
 

@@ -8,25 +8,34 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `transitions` для следующего шага примера.
     let transitions: [(&str, &str, i32); 3] =
         [("я", "учу", 3), ("я", "пишу", 1), ("учу", "rust", 2)];
+    lesson_trace::trace_step!(transitions);
     // Сохраняем рассчитанное значение `current` для следующих операций.
     let current: &str = "я";
+    lesson_trace::trace_step!(current);
     // Создаём изменяемое значение `best` для следующих операций.
     let mut best: (&str, i32) = ("", 0);
+    lesson_trace::trace_step!(best);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (previous, next, count) in transitions {
+        lesson_trace::trace_step!(previous);
+        lesson_trace::trace_step!(next);
+        lesson_trace::trace_step!(count);
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if previous == current && count > best.1 {
             // Присваиваем вычисленное значение соответствующей переменной или полю.
             best = (next, count);
+            lesson_trace::trace_step!(best);
         }
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("после {current:?} вероятнее {next:?}", next = best.0);
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_predict_next_token_from_bigram_counts();
 }
 

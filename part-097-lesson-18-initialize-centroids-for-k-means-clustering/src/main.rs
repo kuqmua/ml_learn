@@ -9,16 +9,21 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `points` для следующего шага примера.
     let points: [[f64; 2]; 4] = [[0.0, 0.0], [0.1, 0.0], [5.0, 5.0], [5.1, 5.0]];
+    lesson_trace::trace_step!(points);
     // Создаём набор значений `first_start` для следующего шага примера.
     let first_start: [[f64; 2]; 2] = [points[0], points[2]];
+    lesson_trace::trace_step!(first_start);
     // Создаём набор значений `second_start` для следующего шага примера.
     let second_start: [[f64; 2]; 2] = [points[0], points[1]];
+    lesson_trace::trace_step!(second_start);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("разнесённые центры={first_start:?}; соседние центры={second_start:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_initialize_centroids_for_k_means_clustering(points, first_start, second_start);
 }
 

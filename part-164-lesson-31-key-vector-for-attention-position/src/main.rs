@@ -8,10 +8,13 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `query` для следующего шага примера.
     let query: [f64; 2] = [1.0, 0.5];
+    lesson_trace::trace_step!(query);
     // Создаём набор значений `key` для следующего шага примера.
     let key: [f64; 2] = [0.8, 0.2];
+    lesson_trace::trace_step!(key);
     // Умножаем значения и сохраняем результат в `score`.
     let score: f64 =
         part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
@@ -19,10 +22,12 @@ fn main() {
         )
         // Используем результат, ожидая успешного выполнения шага.
         .expect("запрос и ключ имеют одинаковую размерность");
+    lesson_trace::trace_step!(score);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("Q·K = {score}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_key_vector_for_attention_position(query, key, score);
 }
 

@@ -8,22 +8,30 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Сохраняем рассчитанное значение `input_value` для следующих операций.
     let input_value: f64 = 2.0;
+    lesson_trace::trace_step!(input_value);
     // Умножаем значения и сохраняем результат в `square`.
     let square: f64 = input_value * input_value;
+    lesson_trace::trace_step!(square);
     // Умножаем значения и сохраняем результат в `output`.
     let output: f64 = 2.0 * square;
+    lesson_trace::trace_step!(output);
     // Сохраняем рассчитанное значение `derivative_output_by_square` для следующих операций.
     let derivative_output_by_square: f64 = 2.0;
+    lesson_trace::trace_step!(derivative_output_by_square);
     // Умножаем значения и сохраняем результат в `derivative_square_by_input`.
     let derivative_square_by_input: f64 = 2.0 * input_value;
+    lesson_trace::trace_step!(derivative_square_by_input);
     // Умножаем значения и сохраняем результат в `derivative_output_by_input`.
     let derivative_output_by_input: f64 = derivative_output_by_square * derivative_square_by_input;
+    lesson_trace::trace_step!(derivative_output_by_input);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("f(x)={output}, df/dx={derivative_output_by_input}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_backpropagate_output_derivative_through_computation_graph();
 }
 

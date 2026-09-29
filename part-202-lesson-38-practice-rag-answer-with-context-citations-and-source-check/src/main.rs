@@ -12,6 +12,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Фиксируем демонстрационные данные на время выполнения программы.
     const DOCUMENTS: [(&str, &str); 3] = [
         // Составляем результат из вычисленных значений в указанном порядке.
@@ -52,6 +53,7 @@ fn main() {
             .filter(|raw_word| raw_word.len() > 3)
             // Собираем элементы итератора в итоговую коллекцию.
             .collect();
+        lesson_trace::trace_step!(query_terms);
         // Выбираем фрагмент с наибольшим числом совпавших слов.
         let best_match: (usize, &str, &str) = DOCUMENTS
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -60,6 +62,7 @@ fn main() {
             .map(|&(source_identifier, document)| {
                 // Сохраняем рассчитанное значение `lower` для следующих операций.
                 let lower: String = document.to_lowercase();
+                lesson_trace::trace_step!(lower);
                 // Сохраняем рассчитанное значение `score` для следующих операций.
                 let score: usize = query_terms
                     // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -68,6 +71,7 @@ fn main() {
                     .filter(|term| lower.contains(term.as_str()))
                     // Подсчитываем число элементов после отбора.
                     .count();
+                lesson_trace::trace_step!(score);
                 // Составляем результат из вычисленных значений в указанном порядке.
                 (score, source_identifier, document)
             })
@@ -75,6 +79,7 @@ fn main() {
             .max_by_key(|candidate| candidate.0)
             // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
             .unwrap();
+        lesson_trace::trace_step!(best_match);
         // Без совпадений нельзя ссылаться на источник как на подтверждение.
         if best_match.0 == 0 {
             // Подставляем результаты в этот шаблон вывода или текстового значения.

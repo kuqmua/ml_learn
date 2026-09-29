@@ -11,6 +11,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Шаг: Задаём данные для выбора числа соседей.
     let training_examples: [(f64, bool); 9] = [
         // Учебный объект: признак 0., метка класса false.
@@ -32,6 +33,7 @@ fn main() {
         // Учебный объект: признак 8., метка класса false.
         (8., false),
     ];
+    lesson_trace::trace_step!(training_examples);
 
     // Учебные реализации математических операций для этого урока.
 
@@ -66,6 +68,7 @@ fn main() {
                         /* Модуль числа по определению: меняем знак только у отрицательного числа. */
                         // Сохраняем результат этого шага в `value`.
                         let value: f64 = training_feature - feature_value;
+                        lesson_trace::trace_step!(value);
                         // Проверяем условие и выбираем соответствующую ветку алгоритма.
                         if value < 0.0 { -value } else { value }
                     })(),
@@ -75,6 +78,7 @@ fn main() {
             })
             // Собираем элементы итератора в итоговую коллекцию.
             .collect();
+        lesson_trace::trace_step!(sorted_neighbors);
         // Используем ранее рассчитанное значение `sorted_neighbors` в текущем выражении.
         sorted_neighbors
             // Упорядочиваем данные для следующего шага алгоритма.
@@ -111,16 +115,21 @@ fn main() {
                     /* Каждый объект один раз становится проверочным, остальные участвуют в обучении. */
                     // Сохраняем результат этого шага в `data`.
                     let data: &[(f64, bool)] = &training_examples;
+                    lesson_trace::trace_step!(data);
                     // Сохраняем рассчитанное значение `neighbor_count` для следующих операций.
                     let neighbor_count: usize = neighbor_count;
+                    lesson_trace::trace_step!(neighbor_count);
                     // Сохраняем рассчитанное значение `fold_count` для следующих операций.
                     let fold_count: usize = 3;
+                    lesson_trace::trace_step!(fold_count);
                     // Проверяем ожидаемое свойство учебного примера.
                     assert!(data.len() >= fold_count, "для каждого блока нужен хотя бы один пример");
                     // Инициализируем изменяемый накопитель `correct_predictions` начальным состоянием.
                     let mut correct_predictions: usize = 0;
+                    lesson_trace::trace_step!(correct_predictions);
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
                     for fold in 0..fold_count {
+                        lesson_trace::trace_step!(fold);
                         // Сохраняем рассчитанное значение `training_examples` для следующих операций.
                         let training_examples: Vec<(f64, bool)> = data
                             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -133,6 +142,7 @@ fn main() {
                             .map(|(_, record)| *record)
                             // Собираем элементы итератора в итоговую коллекцию.
                             .collect();
+                        lesson_trace::trace_step!(training_examples);
                         // Повторяем следующий блок для каждого элемента указанной последовательности.
                         for (_, record) in data
                             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -142,6 +152,7 @@ fn main() {
                             // Оставляем только элементы, прошедшие указанную проверку.
                             .filter(|(sample_index, _)| sample_index % fold_count == fold)
                         {
+                            lesson_trace::trace_step!(record);
                             // Прибавляем очередной вклад к ранее накопленному результату.
                             correct_predictions += usize::from(
                                 // Вызываем нужное вычисление с подготовленными аргументами.
@@ -155,6 +166,7 @@ fn main() {
                                 // Обновляем значение результатом текущего вычисления.
                                 ) == record.1,
                             );
+                            lesson_trace::trace_step!(correct_predictions);
                         }
                     }
                     // Делим значения, получая нормированную величину или среднее.
@@ -166,8 +178,10 @@ fn main() {
         .max_by(|left_result, right_result| left_result.1.total_cmp(&right_result.1))
         // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
         .unwrap();
+    lesson_trace::trace_step!(best);
     // Шаг: После выбора параметра один раз оцениваем качество на test.
     let test: [(f64, bool); 2] = [(2.5, false), (5.5, true)];
+    lesson_trace::trace_step!(test);
     // Сохраняем рассчитанное значение `accuracy` для следующих операций.
     let accuracy: f64 = test
         // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -183,6 +197,7 @@ fn main() {
         .count() as f64
         // Делим значения, получая нормированную величину или среднее.
         / test.len() as f64;
+    lesson_trace::trace_step!(accuracy);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
@@ -194,6 +209,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_stratified_nested_cross_validation_without_preprocessing_leakage(
         best, accuracy,
     );

@@ -9,16 +9,22 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `matrix` для следующего шага примера.
     let matrix: [[i32; 3]; 2] = [[1, 2, 3], [4, 5, 6]];
+    lesson_trace::trace_step!(matrix);
     // Создаём набор значений `transposed` для следующего шага примера.
     let mut transposed: [[i32; 2]; 3] = [[0; 2]; 3];
+    lesson_trace::trace_step!(transposed);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for row in 0..2 {
+        lesson_trace::trace_step!(row);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for column in 0..3 {
+            lesson_trace::trace_step!(column);
             // Элемент [row, column] переносим в [column, row].
             transposed[column][row] = matrix[row][column];
+            lesson_trace::trace_step!(transposed);
         }
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -26,12 +32,16 @@ fn main() {
 
     // Повторное транспонирование возвращает каждое число на исходное место.
     let mut restored: [[i32; 3]; 2] = [[0; 3]; 2];
+    lesson_trace::trace_step!(restored);
     // Повторяем расчёт для каждого элемента последовательности.
     for row in 0..transposed.len() {
+        lesson_trace::trace_step!(row);
         // Повторяем расчёт для каждого элемента последовательности.
         for column in 0..transposed[row].len() {
+            lesson_trace::trace_step!(column);
             // Обновляем значение результатом текущего вычисления.
             restored[column][row] = transposed[row][column];
+            lesson_trace::trace_step!(restored);
         }
     }
     // Проверяем ожидаемое свойство учебного примера.
@@ -40,6 +50,7 @@ fn main() {
     println!("после второго транспонирования: {restored:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_transpose_matrix_rows_into_columns(transposed);
 }
 

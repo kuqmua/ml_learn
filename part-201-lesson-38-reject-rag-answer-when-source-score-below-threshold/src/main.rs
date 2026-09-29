@@ -3,8 +3,10 @@
 // Ответ допускается при оценке источника не ниже порога; ниже порога система воздерживается.
 
 fn main() {
+    lesson_trace::enable();
     // Сохраняем результат этого шага в `minimum_reliable_score`.
     let minimum_reliable_score: f64 = 0.5;
+    lesson_trace::trace_step!(minimum_reliable_score);
     // Повторяем расчёт для каждого элемента последовательности.
     // Поиск подходящих документов и оценку их релевантности называют retrieval.
     for (description, document_relevance_score, expected_answer) in [
@@ -15,6 +17,9 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("сильный источник", 0.9, "подтверждённый ответ"),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(document_relevance_score);
+        lesson_trace::trace_step!(expected_answer);
         // Проверяем ожидаемое свойство учебного примера.
         assert!((0.0..=1.0).contains(&document_relevance_score));
         // Сохраняем результат этого шага в `answer`.
@@ -26,6 +31,7 @@ fn main() {
             // Передаём подпись или текстовое значение для следующего шага.
             "нет надёжного источника"
         };
+        lesson_trace::trace_step!(answer);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(answer, expected_answer);
         // Печатаем рассчитанные значения для проверки примера.
@@ -33,6 +39,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_reject_rag_answer_when_source_score_below_threshold(minimum_reliable_score);
 }
 

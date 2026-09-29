@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+lesson-trace = { path = "../lesson-trace" }
 part-188-lesson-36-normalize-token-vector-by-root-mean-square = { path = "../part-188-lesson-36-normalize-token-vector-by-root-mean-square" }
 part-189-lesson-36-rotate-query-and-key-coordinate-pairs-by-position = { path = "../part-189-lesson-36-rotate-query-and-key-coordinate-pairs-by-position" }

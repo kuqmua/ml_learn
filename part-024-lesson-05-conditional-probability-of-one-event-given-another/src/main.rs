@@ -4,6 +4,7 @@
 // и условная вероятность на этих данных не определена.
 
 fn main() {
+    lesson_trace::enable();
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, positive_tests, sick_and_positive, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -15,6 +16,10 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("положительных тестов не было", 0.0, 0.0, None),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(positive_tests);
+        lesson_trace::trace_step!(sick_and_positive);
+        lesson_trace::trace_step!(expected);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(positive_tests >= 0.0 && sick_and_positive >= 0.0);
         // Проверяем ожидаемое свойство учебного примера.
@@ -33,6 +38,7 @@ fn main() {
             // Возвращаем присутствующее значение.
             Some(sick_and_positive / positive_tests)
         };
+        lesson_trace::trace_step!(probability);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(probability, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -40,6 +46,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_conditional_probability_of_one_event_given_another();
 }
 

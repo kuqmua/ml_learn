@@ -9,19 +9,28 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `examples` для следующего шага примера.
     let examples: [(f64, f64); 2] = [(1.0, 2.0), (2.0, 4.0)];
+    lesson_trace::trace_step!(examples);
     // Инициализируем изменяемый накопитель `weight` начальным состоянием.
     let mut weight: f64 = 0.0;
+    lesson_trace::trace_step!(weight);
     // Собираем значения для `weight_history` в коллекцию.
     let mut weight_history: Vec<(f64, f64)> = vec![(0.0, weight)];
+    lesson_trace::trace_step!(weight_history);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (step, (feature, target)) in examples.into_iter().enumerate() {
+        lesson_trace::trace_step!(step);
+        lesson_trace::trace_step!(feature);
+        lesson_trace::trace_step!(target);
         // Умножаем значения и сохраняем результат в `rate_of_change`.
         // Производную функции по параметру или вектор таких производных называют gradient.
         let rate_of_change: f64 = 2.0 * (weight * feature - target) * feature;
+        lesson_trace::trace_step!(rate_of_change);
         // Вычитаем очередной вклад из текущего значения параметра.
         weight -= 0.1 * rate_of_change;
+        lesson_trace::trace_step!(weight);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("после x={feature}: вес={weight}");
         // Вычисляем значение по указанной формуле.
@@ -29,6 +38,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_update_linear_model_weight_per_example_with_sgd(weight_history);
 }
 

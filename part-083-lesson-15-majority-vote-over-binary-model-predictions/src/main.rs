@@ -4,6 +4,7 @@
 // При равенстве голосов правило этого примера выбирает false.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &[bool], bool); 4] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -15,14 +16,20 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("один голос", &[true], true),
     ];
+    lesson_trace::trace_step!(cases);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, votes, expected) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(votes);
+        lesson_trace::trace_step!(expected);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(!votes.is_empty(), "для решения нужен хотя бы один голос");
         // Вычисляем `positives` по элементам исходной коллекции.
         let positives: usize = votes.iter().filter(|&&vote| vote).count();
+        lesson_trace::trace_step!(positives);
         // Определяем размер данных и сохраняем его в `result`.
         let result: bool = positives * 2 > votes.len();
+        lesson_trace::trace_step!(result);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(result, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -30,6 +37,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_majority_vote_over_binary_model_predictions();
 }
 

@@ -11,11 +11,13 @@ fn square_root_with_newton_method(value: f64) -> f64 {
     }
     // Начинаем с положительной оценки: value при value > 1, иначе 1, чтобы не делить на ноль.
     let mut estimate: f64 = if value > 1.0 { value } else { 1.0 };
+    lesson_trace::trace_step!(estimate);
     // 80 шагов — консервативный предел для небольших учебных входов, не часть формулы корня.
     // В общем случае число шагов лучше определять по изменению оценки или требуемой точности.
     for _ in 0..80 {
         // Метод Ньютона для f(x)=x²−value: x−f(x)/f'(x) = (x+value/x)/2.
         estimate = (estimate + value / estimate) / 2.0;
+        lesson_trace::trace_step!(estimate);
     }
     // Используем подготовленное значение в следующем шаге примера.
     estimate
@@ -30,6 +32,7 @@ pub fn euclidean_norm_of_vector(vector: &[f64]) -> f64 {
         )
         // Используем результат, ожидая успешного выполнения шага.
         .expect("длина вектора сравнивает его с самим собой");
+    lesson_trace::trace_step!(squared_length);
     // Используем подготовленное значение в следующем шаге примера.
     square_root_with_newton_method(squared_length)
 }

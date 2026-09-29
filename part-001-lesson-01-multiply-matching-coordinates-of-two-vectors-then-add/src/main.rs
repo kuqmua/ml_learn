@@ -8,8 +8,10 @@
 // Что делает пример: показывает все варианты знака, включая граничные случаи и разную длину.
 
 fn main() {
+    lesson_trace::enable();
     // Для всех примеров слева используем один вектор, чтобы было проще сравнивать ответы.
     let left: [f64; 2] = [1.0, 2.0];
+    lesson_trace::trace_step!(left);
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &[f64], f64); 6] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -25,15 +27,20 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("нулевой вектор без направления", &[0.0, 0.0], 0.0),
     ];
+    lesson_trace::trace_step!(cases);
 
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, right, expected) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(right);
+        lesson_trace::trace_step!(expected);
         // Реализация находится в библиотеке этого урока; её используют и следующие уроки.
         let sum_after_multiplying_coordinates: f64 =
             // Используем подготовленное значение в следующем шаге примера.
             part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&left, right)
                 // Используем результат, ожидая успешного выполнения шага.
                 .expect("у этой пары одинаковое число координат");
+        lesson_trace::trace_step!(sum_after_multiplying_coordinates);
         // Например, для [1, 2] и [-2, 1] получаем 1·(-2) + 2·1 = 0.
         assert_eq!(sum_after_multiplying_coordinates, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -42,6 +49,7 @@ fn main() {
 
     // Неполную пару отклоняем до вычисления: иначе лишнее значение потеряется.
     let too_short: [f64; 1] = [3.0];
+    lesson_trace::trace_step!(too_short);
     // Сохраняем результат этого шага в `error`.
     let error: &str =
         // Используем подготовленное значение в следующем шаге примера.
@@ -51,9 +59,11 @@ fn main() {
         )
         // Настраиваем или преобразуем результат предыдущего шага.
         .expect_err("разная длина должна быть отклонена");
+    lesson_trace::trace_step!(error);
     // Печатаем рассчитанные значения для проверки примера.
     println!("разная длина: {:?} и {too_short:?} → {error}", left);
     // Показываем зависимость скалярного произведения от второй координаты.
+    lesson_trace::disable();
     visualize_multiply_matching_coordinates_of_two_vectors_then_add(&left);
 }
 

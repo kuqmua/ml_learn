@@ -9,16 +9,22 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Сохраняем рассчитанное значение `prediction_error` для следующих операций.
     let prediction_error: f64 = 1.0;
+    lesson_trace::trace_step!(prediction_error);
     // Сохраняем рассчитанное значение `weight` для следующих операций.
     let weight: f64 = 3.0;
+    lesson_trace::trace_step!(weight);
     // Инициализируем значение `penalty_strength` начальным состоянием.
     let penalty_strength: f64 = 0.2;
+    lesson_trace::trace_step!(penalty_strength);
     // Умножаем значения и сохраняем результат в `squared_weight`.
     let squared_weight: f64 = weight * weight;
+    lesson_trace::trace_step!(squared_weight);
     // Умножаем значения и сохраняем результат в `objective`.
     let objective: f64 = prediction_error + penalty_strength * squared_weight;
+    lesson_trace::trace_step!(objective);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Присваиваем вычисленное значение соответствующей переменной или полю.
@@ -28,6 +34,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_regularization_penalty_for_linear_model_weight();
 }
 

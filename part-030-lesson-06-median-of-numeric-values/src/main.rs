@@ -4,6 +4,7 @@
 // Выброс меняет среднее арифметическое гораздо сильнее, чем медиану.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &[f64], f64); 4] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -15,16 +16,22 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("одно значение", &[7.0], 7.0),
     ];
+    lesson_trace::trace_step!(cases);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, source, expected) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(source);
+        lesson_trace::trace_step!(expected);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(!source.is_empty(), "медиана пустого набора не определена");
         // Сохраняем результат этого шага в `values`.
         let mut values: Vec<f64> = source.to_vec();
+        lesson_trace::trace_step!(values);
         // Используем подготовленное значение в следующем шаге примера.
         values.sort_by(f64::total_cmp);
         // Определяем размер данных и сохраняем его в `middle`.
         let middle: usize = values.len() / 2;
+        lesson_trace::trace_step!(middle);
         // Определяем размер данных и сохраняем его в `median`.
         let median: f64 = if values.len() % 2 == 0 {
             // Вычисляем значение по указанной формуле.
@@ -34,6 +41,7 @@ fn main() {
             // Используем подготовленное значение в следующем шаге примера.
             values[middle]
         };
+        lesson_trace::trace_step!(median);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(median, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -41,6 +49,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_median_of_numeric_values();
 }
 

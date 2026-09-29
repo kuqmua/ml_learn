@@ -9,10 +9,13 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `truth` для следующего шага примера.
     let truth: [bool; 3] = [true, false, true];
+    lesson_trace::trace_step!(truth);
     // Создаём набор значений `predicted` для следующего шага примера.
     let predicted: [bool; 3] = [true, true, true];
+    lesson_trace::trace_step!(predicted);
     // Проверяем ожидаемое свойство учебного примера.
     assert_eq!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -35,6 +38,7 @@ fn main() {
         .filter(|&index| truth[index] == predicted[index])
         // Подсчитываем число элементов после отбора.
         .count();
+    lesson_trace::trace_step!(correct);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Присваиваем вычисленное значение соответствующей переменной или полю.
@@ -44,6 +48,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_evaluate_model_quality_after_release_with_new_labels(truth, correct);
 }
 

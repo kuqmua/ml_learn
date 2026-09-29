@@ -4,6 +4,7 @@
 // Для совпадающих точек ответ 0. Порядок точек не влияет на расстояние.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &[f64], &[f64], f64); 3] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -13,8 +14,13 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("точки совпадают", &[3.0, 4.0], &[3.0, 4.0], 0.0),
     ];
+    lesson_trace::trace_step!(cases);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, first_point, second_point, expected) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(first_point);
+        lesson_trace::trace_step!(second_point);
+        lesson_trace::trace_step!(expected);
         // Общая функция проверяет размерности и вычисляет расстояние.
         let distance: f64 = part_004_lesson_01_euclidean_distance_between_two_points::euclidean_distance_between_two_points(
             first_point,
@@ -22,6 +28,7 @@ fn main() {
         )
         // Используем результат, ожидая успешного выполнения шага.
         .expect("точки в этом примере имеют одинаковую размерность");
+        lesson_trace::trace_step!(distance);
         // Проверяем ожидаемое свойство учебного примера.
         assert!((distance - expected).abs() < 1e-10);
         // Печатаем рассчитанные значения для проверки примера.
@@ -29,17 +36,21 @@ fn main() {
     }
     // Задаём учебные значения для `first_point`.
     let first_point: [f64; 2] = [0.0, 0.0];
+    lesson_trace::trace_step!(first_point);
     // Задаём учебные значения для `too_short`.
     let too_short: [f64; 1] = [3.0];
+    lesson_trace::trace_step!(too_short);
     // Сохраняем результат этого шага в `error`.
     let error: &str =
         part_004_lesson_01_euclidean_distance_between_two_points::euclidean_distance_between_two_points(&first_point, &too_short)
             // Настраиваем или преобразуем результат предыдущего шага.
             .expect_err("точки разной размерности нужно отклонить");
+    lesson_trace::trace_step!(error);
     // Печатаем рассчитанные значения для проверки примера.
     println!("разная размерность: {error}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_euclidean_distance_between_two_points();
 }
 

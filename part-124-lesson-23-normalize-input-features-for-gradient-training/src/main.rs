@@ -9,8 +9,10 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `training_data` для следующего шага примера.
     let training_data: [f64; 3] = [10.0, 20.0, 30.0];
+    lesson_trace::trace_step!(training_data);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         !training_data.is_empty(),
@@ -22,12 +24,15 @@ fn main() {
             &training_data,
         )
         .unwrap();
+    lesson_trace::trace_step!(mean);
     // Преобразуем входные данные и сохраняем полученную коллекцию в `centered`.
     let centered: Vec<f64> = training_data.iter().map(|&value| value - mean).collect();
+    lesson_trace::trace_step!(centered);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("среднее train={mean}, центрировано={centered:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_normalize_input_features_for_gradient_training(training_data, centered);
 }
 

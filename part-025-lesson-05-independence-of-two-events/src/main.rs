@@ -4,6 +4,7 @@
 // умножения отдельных вероятностей. Одинаковые отдельные вероятности этого не гарантируют.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `cases`.
     let cases: [(&str, f64, f64, f64, bool); 3] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -13,8 +14,14 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("несовместимые события", 0.5, 0.5, 0.0, false),
     ];
+    lesson_trace::trace_step!(cases);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, first, second, both, expected) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(first);
+        lesson_trace::trace_step!(second);
+        lesson_trace::trace_step!(both);
+        lesson_trace::trace_step!(expected);
         // Проверяем ожидаемое свойство учебного примера.
         assert!((0.0..=1.0).contains(&first) && (0.0..=1.0).contains(&second));
         // Проверяем ожидаемое свойство учебного примера.
@@ -22,6 +29,7 @@ fn main() {
         // Сохраняем результат этого шага в `independent`.
         // 10⁻¹⁰ допускает округление f64 при проверке равенства P(A∩B)=P(A)·P(B).
         let independent: bool = (both - first * second).abs() < 1e-10;
+        lesson_trace::trace_step!(independent);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(independent, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -32,6 +40,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_independence_of_two_events(cases);
 }
 

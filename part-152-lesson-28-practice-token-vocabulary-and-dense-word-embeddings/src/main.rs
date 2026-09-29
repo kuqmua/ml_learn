@@ -11,8 +11,10 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Шаг: Создаём корпус из двух коротких предложений.
     let corpus: [&str; 2] = ["кот спит", "пёс спит"];
+    lesson_trace::trace_step!(corpus);
 
     // Шаг: Назначаем индекс каждому слову и резервируем индекс для неизвестных слов.
     // Набор известных модели текстовых единиц называют vocabulary.
@@ -22,9 +24,11 @@ fn main() {
             /* Нумеруем слова корпуса; нулевой индекс оставляем неизвестному токену. */
             // Сохраняем результат этого шага в `corpus`.
             let corpus: &[&str] = &corpus;
+            lesson_trace::trace_step!(corpus);
             // Инициализируем изменяемый накопитель `known_text_units` начальным состоянием.
             let mut known_text_units: std::collections::BTreeMap<String, usize> =
                 std::collections::BTreeMap::new();
+            lesson_trace::trace_step!(known_text_units);
             // Выполняем очередное действие, после которого продолжаем следующий шаг.
             known_text_units.insert("<unk>".into(), 0);
             // Повторяем следующий блок для каждого элемента указанной последовательности.
@@ -34,11 +38,13 @@ fn main() {
                 // Разделяем текст по пробельным символам на отдельные слова.
                 .flat_map(|sentence| sentence.split_whitespace())
             {
+                lesson_trace::trace_step!(word);
                 // Проверяем условие и выбираем соответствующую ветку алгоритма.
                 if !known_text_units.contains_key(word) {
                     // Считаем количество элементов и сохраняем его в `text_unit_identifier`.
                     // Единицу текста, которую модель обрабатывает как одно целое, называют token.
                     let text_unit_identifier: usize = known_text_units.len();
+                    lesson_trace::trace_step!(text_unit_identifier);
                     // Выполняем очередное действие, после которого продолжаем следующий шаг.
                     known_text_units.insert(word.into(), text_unit_identifier);
                 }
@@ -46,14 +52,19 @@ fn main() {
             // Используем ранее рассчитанное значение `known_text_units` в текущем выражении.
             known_text_units
         })();
+    lesson_trace::trace_step!(known_text_units);
 
     // Шаг: Создаём таблицу векторов и читаем строки по индексам токенов.
     // Плотное числовое представление объекта называют embedding.
     let mut dense_numeric_representations: Vec<[f64; 2]> = vec![[0., 0.]; known_text_units.len()];
+    lesson_trace::trace_step!(dense_numeric_representations);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (text_unit_index, row) in dense_numeric_representations.iter_mut().enumerate() {
+        lesson_trace::trace_step!(text_unit_index);
+        lesson_trace::trace_step!(row);
         // Передаём данные по ссылке или разыменовываем их для следующей операции.
         *row = [text_unit_index as f64 * 0.1, text_unit_index as f64 * 0.2];
+        lesson_trace::trace_step!(row);
     }
     // Выполняем встроенный расчёт один раз и сохраняем результат в `text_unit_indices`.
     let text_unit_indices: Vec<usize> = (|| -> Vec<usize> {
@@ -61,8 +72,10 @@ fn main() {
         /* Каждое слово превращаем в индекс словаря, неизвестным словам даём нулевой индекс. */
         // Сохраняем результат этого шага в `text`.
         let text: &str = "кот неизвестно";
+        lesson_trace::trace_step!(text);
         // Сохраняем рассчитанное значение `known_text_units` для следующих операций.
         let known_text_units: &std::collections::BTreeMap<String, usize> = &known_text_units;
+        lesson_trace::trace_step!(known_text_units);
         // Разделяем текст по пробельным символам на отдельные слова.
         text.split_whitespace()
             // Преобразуем каждый элемент последовательности.
@@ -70,6 +83,7 @@ fn main() {
             // Собираем элементы итератора в итоговую коллекцию.
             .collect()
     })();
+    lesson_trace::trace_step!(text_unit_indices);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
@@ -85,6 +99,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_token_vocabulary_and_dense_word_embeddings(
         known_text_units,
         text_unit_indices,

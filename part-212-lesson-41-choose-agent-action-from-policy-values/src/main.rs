@@ -8,10 +8,13 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Инициализируем значение `left_action_value` начальным состоянием.
     let left_action_value: f64 = 0.2;
+    lesson_trace::trace_step!(left_action_value);
     // Инициализируем значение `right_action_value` начальным состоянием.
     let right_action_value: f64 = 0.8;
+    lesson_trace::trace_step!(right_action_value);
     // Сохраняем рассчитанное значение `action` для следующих операций.
     let action: &str = if right_action_value > left_action_value {
         // Подставляем результаты в этот шаблон вывода или текстового значения.
@@ -21,10 +24,12 @@ fn main() {
         // Подставляем результаты в этот шаблон вывода или текстового значения.
         "влево"
     };
+    lesson_trace::trace_step!(action);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("политика выбирает: {action}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_choose_agent_action_from_policy_values(left_action_value, right_action_value);
 }
 

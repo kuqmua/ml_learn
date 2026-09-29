@@ -17,9 +17,14 @@ impl ObliviousTree {
             return Err("число листьев должно быть 2^depth");
         }
         let mut leaf: usize = 0;
+        lesson_trace::trace_step!(leaf);
         for &(feature, threshold) in &self.splits {
+            lesson_trace::trace_step!(feature);
+            lesson_trace::trace_step!(threshold);
             let value: f64 = *features.get(feature).ok_or("нет признака")?;
+            lesson_trace::trace_step!(value);
             leaf = (leaf << 1) | usize::from(value > threshold);
+            lesson_trace::trace_step!(leaf);
         }
         Ok(self.leaves[leaf])
     }

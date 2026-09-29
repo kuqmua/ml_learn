@@ -4,8 +4,10 @@
 // заменяются ближайшей границей с сохранением знака.
 
 fn main() {
+    lesson_trace::enable();
     // Сохраняем результат этого шага в `limit`.
     let limit: f64 = 1.0;
+    lesson_trace::trace_step!(limit);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(limit > 0.0);
     // Повторяем расчёт для каждого элемента последовательности.
@@ -22,6 +24,9 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("слишком большой отрицательный", -12.0, -1.0),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(rate_of_change);
+        lesson_trace::trace_step!(expected);
         // Сохраняем результат этого шага в `clipped`.
         let clipped: f64 = if rate_of_change > limit {
             // Используем подготовленное значение в следующем шаге примера.
@@ -35,6 +40,7 @@ fn main() {
             // Используем подготовленное значение в следующем шаге примера.
             rate_of_change
         };
+        lesson_trace::trace_step!(clipped);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(clipped, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -42,6 +48,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_clip_gradient_components_to_symmetric_interval();
 }
 

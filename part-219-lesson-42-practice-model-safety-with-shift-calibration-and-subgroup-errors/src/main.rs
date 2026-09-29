@@ -11,10 +11,11 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Учебные реализации математических операций для этого урока.
 
     // Автоматически получаем стандартные реализации перечисленных трейтов для этого типа.
-    #[derive(Clone, Copy)]
+    #[derive(Clone, Copy, Debug)]
     // Описываем тип `EvaluationCase`, чтобы явно хранить состояние и допустимые варианты.
     struct EvaluationCase {
         // `group` задаёт соответствующее входное значение или поле структуры.
@@ -103,6 +104,7 @@ fn main() {
 
     // Шаг: Разделяем набор по подгруппам.
     for group in ["A", "B"] {
+        lesson_trace::trace_step!(group);
         // Сохраняем рассчитанное значение `group_cases` для следующих операций.
         let group_cases: Vec<EvaluationCase> = EVALUATION_CASES
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -113,6 +115,7 @@ fn main() {
             .filter(|case| case.group == group)
             // Собираем элементы итератора в итоговую коллекцию.
             .collect();
+        lesson_trace::trace_step!(group_cases);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(
             // Используем подготовленное значение в следующем шаге примера.
@@ -143,6 +146,8 @@ fn main() {
                 /* Считаем долю прогнозов, совпавших с истинными метками. */
                 // Сохраняем результат этого шага в `data`.
                 let data: &[EvaluationCase] = &group_cases;
+                lesson_trace::trace_step!(data);
+                lesson_trace::trace_step!(data);
                 // Перебираем оценочные примеры по ссылке.
                 data.iter()
                     // Порог 0.5 превращает вероятность класса 1 в бинарный прогноз перед сравнением с truth.
@@ -158,21 +163,31 @@ fn main() {
                 /* Средний квадрат разницы вероятности и метки измеряет качество вероятностного прогноза. */
                 // Сохраняем результат этого шага в `data`.
                 let data: &[EvaluationCase] = &group_cases;
+                lesson_trace::trace_step!(data);
+                lesson_trace::trace_step!(data);
                 // Инициализируем изменяемый накопитель `squared_error_sum` начальным состоянием.
                 let mut squared_error_sum: f64 = 0.0;
+                lesson_trace::trace_step!(squared_error_sum);
+                lesson_trace::trace_step!(squared_error_sum);
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for case in data {
+                    lesson_trace::trace_step!(case);
                     // Сохраняем рассчитанное значение `target` для следующих операций.
                     let target: f64 = if case.truth { 1.0 } else { 0.0 };
+                    lesson_trace::trace_step!(target);
+                    lesson_trace::trace_step!(target);
                     // Прибавляем очередной вклад к ранее накопленному результату.
                     squared_error_sum += (|| -> f64 {
                         // Используем подготовленное значение в следующем шаге примера.
                         /* Возводим число в квадрат обычным умножением. */
                         // Сохраняем результат этого шага в `value`.
                         let value: f64 = case.score - target;
+                        lesson_trace::trace_step!(value);
+                        lesson_trace::trace_step!(value);
                         // Умножаем величины согласно используемой формуле.
                         value * value
                     })();
+                    lesson_trace::trace_step!(squared_error_sum);
                 }
                 // Делим значения, получая нормированную величину или среднее.
                 squared_error_sum / data.len() as f64
@@ -183,6 +198,7 @@ fn main() {
     println!("Ограничение: по четырём примерам на группу нельзя оценить реальное качество.");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_model_safety_with_shift_calibration_and_subgroup_errors();
 
     // Строим график по результатам урока.

@@ -9,14 +9,19 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `features` для следующего шага примера.
     let features: [f64; 3] = [1.0, 2.0, 3.0];
+    lesson_trace::trace_step!(features);
     // Сохраняем рассчитанное значение `weight` для следующих операций.
     let weight: f64 = 2.0;
+    lesson_trace::trace_step!(weight);
     // Сохраняем рассчитанное значение `bias` для следующих операций.
     let bias: f64 = 1.0;
+    lesson_trace::trace_step!(bias);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for feature in features {
+        lesson_trace::trace_step!(feature);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("прогноз для {feature} = {}", weight * feature + bias);
     }

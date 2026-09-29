@@ -8,24 +8,33 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Сохраняем рассчитанное значение `input` для следующих операций.
     let input: f64 = 2.0;
+    lesson_trace::trace_step!(input);
     // Инициализируем изменяемый накопитель `weight` начальным состоянием.
     let mut weight: f64 = 0.5;
+    lesson_trace::trace_step!(weight);
     // Инициализируем изменяемый накопитель `bias` начальным состоянием.
     let mut bias: f64 = 0.1;
+    lesson_trace::trace_step!(bias);
     // Умножаем значения и сохраняем результат в `before`.
     let before: f64 = weight * input + bias;
+    lesson_trace::trace_step!(before);
     // Прибавляем очередной вклад к ранее накопленному результату.
     weight += 0.2;
+    lesson_trace::trace_step!(weight);
     // Вычитаем очередной вклад из текущего значения параметра.
     bias -= 0.1;
+    lesson_trace::trace_step!(bias);
     // Умножаем значения и сохраняем результат в `after`.
     let after: f64 = weight * input + bias;
+    lesson_trace::trace_step!(after);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("до={before}, после обновления={after}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_weights_and_biases_as_neural_network_parameters(before, after);
 }
 

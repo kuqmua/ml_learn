@@ -12,12 +12,16 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Шаг: Задаём эталонное распределение признака.
     let reference: [f64; 6] = [-1., -0.5, 0.1, 0.2, 1.2, 1.5];
+    lesson_trace::trace_step!(reference);
     // Шаг: Готовим контрольный набор без сдвига и набор с сильным сдвигом.
     let stable: [f64; 6] = reference;
+    lesson_trace::trace_step!(stable);
     // Создаём набор значений `shifted` для следующего шага примера.
     let shifted: [f64; 6] = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6];
+    lesson_trace::trace_step!(shifted);
 
     // Учебные реализации математических операций для этого урока.
 
@@ -32,8 +36,10 @@ fn main() {
     fn calculate_shares_of_feature_values_in_three_bins(data: &[f64]) -> [f64; 3] {
         // Создаём набор значений `bin_counts` для следующего шага примера.
         let mut bin_counts: [f64; 3] = [0.; 3];
+        lesson_trace::trace_step!(bin_counts);
         // Одни и те же границы интервалов используются для обоих наборов данных.
         for &feature_value in data {
+            lesson_trace::trace_step!(feature_value);
             // Сохраняем рассчитанное значение `histogram_bin` для следующих операций.
             let histogram_bin: usize = if feature_value < 0. {
                 // Используем фиксированное значение для этого варианта примера.
@@ -47,13 +53,17 @@ fn main() {
                 // Используем фиксированное значение для этого варианта примера.
                 2
             };
+            lesson_trace::trace_step!(histogram_bin);
             // Прибавляем очередной вклад к ранее накопленному результату.
             bin_counts[histogram_bin] += 1.;
+            lesson_trace::trace_step!(bin_counts);
         }
         // Переходим от числа объектов к долям, чтобы сравнивать разные размеры выборок.
         for group_share in &mut bin_counts {
+            lesson_trace::trace_step!(group_share);
             // Масштабируем текущую величину делением.
             *group_share /= data.len() as f64;
+            lesson_trace::trace_step!(group_share);
         }
         // Используем ранее рассчитанное значение `bin_counts` в текущем выражении.
         bin_counts
@@ -66,20 +76,26 @@ fn main() {
         // Сохраняем рассчитанное значение `reference_group_shares` для следующих операций.
         let reference_group_shares: [f64; 3] =
             calculate_shares_of_feature_values_in_three_bins(reference);
+        lesson_trace::trace_step!(reference_group_shares);
         // Сохраняем рассчитанное значение `current_group_shares` для следующих операций.
         let current_group_shares: [f64; 3] =
             calculate_shares_of_feature_values_in_three_bins(current);
+        lesson_trace::trace_step!(current_group_shares);
         // Инициализируем изменяемый накопитель `stability_index` начальным состоянием.
         let mut stability_index: f64 = 0.0;
+        lesson_trace::trace_step!(stability_index);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for bin_index in 0..reference_group_shares.len() {
+            lesson_trace::trace_step!(bin_index);
             // Нижняя граница 10⁻⁶ предотвращает деление на ноль и log(0) в пустом интервале.
             // Она намного меньше ненулевых долей в этом учебном наборе.
             let reference_group_share: f64 =
                 choose_larger_number(reference_group_shares[bin_index], 1e-6);
+            lesson_trace::trace_step!(reference_group_share);
             // Комбинируем исходные величины и сохраняем результат в `current_group_share`.
             let current_group_share: f64 =
                 choose_larger_number(current_group_shares[bin_index], 1e-6);
+            lesson_trace::trace_step!(current_group_share);
             // Прибавляем очередной вклад к ранее накопленному результату.
             stability_index += (current_group_share - reference_group_share)
                 // Добавляем этот член в составное арифметическое выражение.
@@ -88,6 +104,7 @@ fn main() {
                     /* ln(x) через ряд 2 * (t + t³/3 + t⁵/5 + ...), t=(x-1)/(x+1). */
                     // Сохраняем результат этого шага в `value`.
                     let value: f64 = current_group_share / reference_group_share;
+                    lesson_trace::trace_step!(value);
                     // Проверяем обязательное условие до дальнейшего вычисления.
                     assert!(
                         // Передаём очередное значение в составе результата или вызова.
@@ -102,48 +119,63 @@ fn main() {
                     }
                     // Создаём изменяемое значение `scaled` для следующих операций.
                     let mut scaled: f64 = value;
+                    lesson_trace::trace_step!(scaled);
                     // Инициализируем изменяемый накопитель `power_of_two` начальным состоянием.
                     let mut power_of_two: i32 = 0i32;
+                    lesson_trace::trace_step!(power_of_two);
                     // Повторяем вычисление, пока выполняется указанное условие.
                     while scaled >= 2.0 {
                         // Масштабируем текущую величину делением.
                         scaled /= 2.0;
+                        lesson_trace::trace_step!(scaled);
                         // Прибавляем очередной вклад к ранее накопленному результату.
                         power_of_two += 1;
+                        lesson_trace::trace_step!(power_of_two);
                     }
                     // Повторяем вычисление, пока выполняется указанное условие.
                     while scaled < 1.0 {
                         // Умножаем накопленное значение на очередной множитель.
                         scaled *= 2.0;
+                        lesson_trace::trace_step!(scaled);
                         // Вычитаем очередной вклад из текущего значения параметра.
                         power_of_two -= 1;
+                        lesson_trace::trace_step!(power_of_two);
                     }
                     // Объявляем повторно используемое вычисление `sum_logarithm_series_terms`; параметры ниже задают его входы.
                     fn sum_logarithm_series_terms(value: f64) -> f64 {
                         // Нормируем или усредняем величину делением и сохраняем её в `ratio`.
                         let ratio: f64 = (value - 1.0) / (value + 1.0);
+                        lesson_trace::trace_step!(ratio);
                         // Умножаем значения и сохраняем результат в `ratio_squared`.
                         let ratio_squared: f64 = ratio * ratio;
+                        lesson_trace::trace_step!(ratio_squared);
                         // Создаём изменяемое значение `term` для следующих операций.
                         let mut term: f64 = ratio;
+                        lesson_trace::trace_step!(term);
                         // Инициализируем изменяемый накопитель `result` начальным состоянием.
                         let mut result: f64 = 0.0;
+                        lesson_trace::trace_step!(result);
                         // Используем 40 первых членов ряда ln(value) = 2·Σ ratio^(2k+1)/(2k+1).
                         // Это конечное приближение: для положительного value выполняется |ratio| < 1.
                         for term_index in 0..40 {
+                            lesson_trace::trace_step!(term_index);
                             // Прибавляем очередной вклад к ранее накопленному результату.
                             result += term / (2 * term_index + 1) as f64;
+                            lesson_trace::trace_step!(result);
                             // Умножаем накопленное значение на очередной множитель.
                             term *= ratio_squared;
+                            lesson_trace::trace_step!(term);
                         }
                         // Умножаем величины согласно используемой формуле.
                         2.0 * result
                     }
                     // Сохраняем рассчитанное значение `logarithm_of_two` для следующих операций.
                     let logarithm_of_two: f64 = sum_logarithm_series_terms(2.0);
+                    lesson_trace::trace_step!(logarithm_of_two);
                     // Умножаем величины согласно используемой формуле.
                     sum_logarithm_series_terms(scaled) + power_of_two as f64 * logarithm_of_two
                 })();
+            lesson_trace::trace_step!(stability_index);
         }
         // Используем ранее рассчитанное значение `stability_index` в текущем выражении.
         stability_index
@@ -164,6 +196,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_model_monitoring_with_drift_quality_latency_and_alerts(
         reference, stable, shifted,
     );

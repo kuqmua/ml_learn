@@ -4,8 +4,10 @@
 // Общая библиотека проверяет, что у каждого прогноза есть правильный ответ.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `targets`.
     let targets: [f64; 3] = [2.0, 4.0, 6.0];
+    lesson_trace::trace_step!(targets);
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &[f64], f64); 4] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -17,13 +19,18 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("ошибка вдвое больше", &[2.0, 6.0, 6.0], 2.0 / 3.0),
     ];
+    lesson_trace::trace_step!(cases);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, predictions, expected) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(predictions);
+        lesson_trace::trace_step!(expected);
         // Сохраняем результат этого шага в `mean_absolute_error_value`.
         let mean_absolute_error_value: f64 =
             part_050_lesson_09_mean_absolute_error_between_targets_and_predictions::mean_absolute_error_between_targets_and_predictions(&targets, predictions)
                 // Используем результат, ожидая успешного выполнения шага.
                 .expect("у каждого прогноза есть правильный ответ");
+        lesson_trace::trace_step!(mean_absolute_error_value);
         // Проверяем ожидаемое свойство учебного примера.
         assert!((mean_absolute_error_value - expected).abs() < 1e-10);
         // Печатаем рассчитанные значения для проверки примера.
@@ -31,6 +38,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_mean_absolute_error_between_targets_and_predictions();
 }
 

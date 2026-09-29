@@ -8,22 +8,30 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // f(x,y)=x*y+x.
     let (input_value, second_input_value): (f64, f64) = (2.0, 3.0);
+    lesson_trace::trace_step!(input_value);
+    lesson_trace::trace_step!(second_input_value);
     // Умножаем значения и сохраняем результат в `multiplied_coordinates`.
     let multiplied_coordinates: f64 = input_value * second_input_value;
+    lesson_trace::trace_step!(multiplied_coordinates);
     // Комбинируем исходные величины и сохраняем результат в `output`.
     let output: f64 = multiplied_coordinates + input_value;
+    lesson_trace::trace_step!(output);
     // Комбинируем исходные величины и сохраняем результат в `derivative_by_horizontal_coordinate`.
     let derivative_by_horizontal_coordinate: f64 = second_input_value + 1.0;
+    lesson_trace::trace_step!(derivative_by_horizontal_coordinate);
     // Сохраняем рассчитанное значение `derivative_by_vertical_coordinate` для следующих операций.
     let derivative_by_vertical_coordinate: f64 = input_value;
+    lesson_trace::trace_step!(derivative_by_vertical_coordinate);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         "f={output}, df/dx={derivative_by_horizontal_coordinate}, df/dy={derivative_by_vertical_coordinate}"
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_reverse_mode_gradients_of_scalar_output(second_input_value);
 }
 

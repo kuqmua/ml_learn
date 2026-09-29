@@ -12,6 +12,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Автоматически получаем стандартные реализации перечисленных трейтов для этого типа.
     #[derive(Debug, PartialEq)]
     // Описываем тип `Matrix`, чтобы явно хранить состояние и допустимые варианты.
@@ -57,8 +58,10 @@ fn main() {
 
     // Шаг: Создаём матрицу 2×2 с известными элементами.
     let left_matrix: Matrix = Matrix::from_row_major_elements(2, 2, vec![1., 2., 3., 4.]).unwrap();
+    lesson_trace::trace_step!(left_matrix);
     // Шаг: Умножаем матрицу на вектор: каждая координата ответа — сумма после попарного умножения элементов строки.
     let input_vector: [f64; 2] = [1., 1.];
+    lesson_trace::trace_step!(input_vector);
     // Проверяем, что сравниваемые размерности или значения действительно совпадают.
     assert_eq!(
         left_matrix.column_count,
@@ -67,12 +70,16 @@ fn main() {
     );
     // Создаём изменяемое значение `output_vector` для следующих операций.
     let mut output_vector: Vec<f64> = Vec::with_capacity(left_matrix.rows);
+    lesson_trace::trace_step!(output_vector);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for row_index in 0..left_matrix.rows {
+        lesson_trace::trace_step!(row_index);
         // Сохраняем результат этого шага в `row_start`.
         let row_start: usize = row_index * left_matrix.column_count;
+        lesson_trace::trace_step!(row_start);
         // Сохраняем результат этого шага в `row_end`.
         let row_end: usize = row_start + left_matrix.column_count;
+        lesson_trace::trace_step!(row_end);
         // Сохраняем результат этого шага в `row_result`.
         let row_result: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
             // Используем подготовленное значение в следующем шаге примера.
@@ -82,15 +89,19 @@ fn main() {
         )
         // Используем результат, ожидая успешного выполнения шага.
         .expect("длина строки совпадает с длиной вектора");
+        lesson_trace::trace_step!(row_result);
         // Сохраняем очередной рассчитанный элемент в коллекции.
         output_vector.push(row_result);
     }
     // Шаг: Транспонируем матрицу, меняя строки и столбцы местами.
     let mut transposed_elements: Vec<f64> = Vec::with_capacity(left_matrix.data.len());
+    lesson_trace::trace_step!(transposed_elements);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for column_index in 0..left_matrix.column_count {
+        lesson_trace::trace_step!(column_index);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for row_index in 0..left_matrix.rows {
+            lesson_trace::trace_step!(row_index);
             // Сохраняем очередной рассчитанный элемент в коллекции.
             transposed_elements.push(left_matrix.value_at_row_and_column(row_index, column_index));
         }
@@ -104,6 +115,7 @@ fn main() {
         // `data` задаёт соответствующее входное значение или поле структуры.
         data: transposed_elements,
     };
+    lesson_trace::trace_step!(transposed_matrix);
     // Шаг: Считаем каждый элемент результата умножения как сумму после попарного умножения координат строки и столбца.
     assert_eq!(
         // Передаём очередное значение в составе результата или вызова.
@@ -116,20 +128,26 @@ fn main() {
     // Умножаем значения и сохраняем результат в `result_elements`.
     let mut result_elements: Vec<f64> =
         Vec::with_capacity(transposed_matrix.rows * left_matrix.column_count);
+    lesson_trace::trace_step!(result_elements);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for row_index in 0..transposed_matrix.rows {
+        lesson_trace::trace_step!(row_index);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for column_index in 0..left_matrix.column_count {
+            lesson_trace::trace_step!(column_index);
             // Сохраняем результат этого шага в `row_start`.
             let row_start: usize = row_index * transposed_matrix.column_count;
+            lesson_trace::trace_step!(row_start);
             // Сохраняем результат этого шага в `row_end`.
             let row_end: usize = row_start + transposed_matrix.column_count;
+            lesson_trace::trace_step!(row_end);
             // Собираем значения для `column_values` в коллекцию.
             let column_values: Vec<f64> = (0..left_matrix.rows)
                 // Преобразуем каждый элемент в новое значение.
                 .map(|shared_index| left_matrix.value_at_row_and_column(shared_index, column_index))
                 // Собираем результаты в коллекцию.
                 .collect();
+            lesson_trace::trace_step!(column_values);
             // Сохраняем результат этого шага в `cell_value`.
             let cell_value: f64 = part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(
                 // Используем подготовленное значение в следующем шаге примера.
@@ -139,6 +157,7 @@ fn main() {
             )
             // Используем результат, ожидая успешного выполнения шага.
             .expect("внутренние размеры матриц совпадают");
+            lesson_trace::trace_step!(cell_value);
             // Сохраняем очередной рассчитанный элемент в коллекции.
             result_elements.push(cell_value);
         }
@@ -149,10 +168,12 @@ fn main() {
         Matrix::from_row_major_elements(transposed_matrix.rows, left_matrix.column_count, result_elements)
             // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
             .unwrap();
+    lesson_trace::trace_step!(result_matrix);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("A*x={:?}, A^T*A={:?}", output_vector, result_matrix);
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_matrix_shapes_transpose_products_and_linear_system(result_matrix);
 
     // Строим график по результатам урока.

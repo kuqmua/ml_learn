@@ -11,41 +11,58 @@ fn binary_cross_entropy_for_gpt_readout_prediction(
     let final_hidden_state: [f64; 2] = *part_186_lesson_35_calculate_tiny_gpt_output_logits_from_token_ids::calculate_decoder_hidden_states_for_token_ids(sample.0)
         .last()
         .unwrap();
+    lesson_trace::trace_step!(final_hidden_state);
     // Оценку модели до преобразования в вероятность называют logit.
     let raw_model_score: f64 =
         weight[0] * final_hidden_state[0] + weight[1] * final_hidden_state[1];
+    lesson_trace::trace_step!(raw_model_score);
     // Ограничиваем p интервалом [10⁻¹², 1−10⁻¹²], чтобы ln(p) и ln(1−p) были конечными.
     let probability: f64 =
         sigmoid_activation_of_raw_score(raw_model_score).clamp(1e-12, 1.0 - 1e-12);
+    lesson_trace::trace_step!(probability);
     -sample.1 * probability.ln() - (1.0 - sample.1) * (1.0 - probability).ln()
 }
 fn main() {
+    lesson_trace::enable();
     let training_data: [(&[usize], f64); 2] = [(&[0][..], 1.0), (&[1][..], 0.0)];
+    lesson_trace::trace_step!(training_data);
     let validation: [(&[usize], f64); 2] = [(&[0, 0][..], 1.0), (&[1, 1][..], 0.0)];
+    lesson_trace::trace_step!(validation);
     let mut weight: [f64; 2] = [0.0; 2];
+    lesson_trace::trace_step!(weight);
     let baseline: f64 = validation
         .iter()
         .map(|&sample| binary_cross_entropy_for_gpt_readout_prediction(&weight, sample))
         .sum::<f64>()
         / validation.len() as f64;
+    lesson_trace::trace_step!(baseline);
     // Обновляем только обучаемый выходной слой 100 раз; декодер в этом опыте заморожен.
     // Число шагов ограничивает учебное обучение и позволяет затем сравнить ошибку.
     for _ in 0..100 {
         // Производную функции по параметру или вектор таких производных называют gradient.
         let mut rate_of_change: [f64; 2] = [0.0; 2];
+        lesson_trace::trace_step!(rate_of_change);
         // Единицу текста, которую модель обрабатывает как одно целое, называют token.
         for &(text_unit_identifiers, target) in &training_data {
+            lesson_trace::trace_step!(text_unit_identifiers);
+            lesson_trace::trace_step!(target);
             let final_hidden_state: [f64; 2] = *part_186_lesson_35_calculate_tiny_gpt_output_logits_from_token_ids::calculate_decoder_hidden_states_for_token_ids(text_unit_identifiers)
                 .last()
                 .unwrap();
+            lesson_trace::trace_step!(final_hidden_state);
             let error: f64 = sigmoid_activation_of_raw_score(
                 weight[0] * final_hidden_state[0] + weight[1] * final_hidden_state[1],
             ) - target;
+            lesson_trace::trace_step!(error);
             rate_of_change[0] += error * final_hidden_state[0];
+            lesson_trace::trace_step!(rate_of_change);
             rate_of_change[1] += error * final_hidden_state[1];
+            lesson_trace::trace_step!(rate_of_change);
         }
         for step_index in 0..2 {
+            lesson_trace::trace_step!(step_index);
             weight[step_index] -= 0.2 * rate_of_change[step_index] / training_data.len() as f64;
+            lesson_trace::trace_step!(weight);
         }
     }
     let held_out: f64 = validation
@@ -53,6 +70,7 @@ fn main() {
         .map(|&sample| binary_cross_entropy_for_gpt_readout_prediction(&weight, sample))
         .sum::<f64>()
         / validation.len() as f64;
+    lesson_trace::trace_step!(held_out);
     assert!(held_out < baseline);
     println!("validation cross entropy: baseline={baseline:.3}, обученная голова={held_out:.3}");
     // Здесь обучается только readout, не все параметры GPT.

@@ -9,16 +9,20 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `first` для следующего шага примера.
     let first: [f64; 2] = [0.8, 0.2];
+    lesson_trace::trace_step!(first);
     // Создаём набор значений `second` для следующего шага примера.
     let second: [f64; 2] = [0.7, 0.3];
+    lesson_trace::trace_step!(second);
     // Умножаем значения и сохраняем результат в `sum_after_multiplying_coordinates`.
     let sum_after_multiplying_coordinates: f64 =
         // Используем подготовленное значение в следующем шаге примера.
         part_001_lesson_01_multiply_matching_coordinates_of_two_vectors_then_add::multiply_matching_coordinates_of_two_vectors_then_add(&first, &second)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("представления имеют одинаковую размерность");
+    lesson_trace::trace_step!(sum_after_multiplying_coordinates);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Передаём подпись или текстовое значение для следующего шага.
@@ -26,6 +30,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_dot_product_similarity_between_two_word_embeddings(first, second);
 }
 

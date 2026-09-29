@@ -11,6 +11,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Шаг: Задаём размеченные точки двух классов.
     let training_examples: [([f64; 2], bool); 4] = [
         // Составляем результат из вычисленных значений в указанном порядке.
@@ -22,6 +23,7 @@ fn main() {
         // Составляем результат из вычисленных значений в указанном порядке.
         ([2., 3.], true),
     ];
+    lesson_trace::trace_step!(training_examples);
 
     // Учебные реализации математических операций для этого урока.
 
@@ -33,6 +35,7 @@ fn main() {
 
     // Шаг: Меняем число соседей и сравниваем прогноз для одной точки.
     for neighbor_count in [1, 3] {
+        lesson_trace::trace_step!(neighbor_count);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!(
             // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
@@ -43,10 +46,16 @@ fn main() {
                 /* Сортируем обучающие точки по расстоянию и голосуем среди ближайших. */
                 // Сохраняем результат этого шага в `training_examples`.
                 let training_examples: &[([f64; 2], bool)] = &training_examples;
+                lesson_trace::trace_step!(training_examples);
+                lesson_trace::trace_step!(training_examples);
                 // Создаём набор значений `query_point` для следующего шага примера.
                 let query_point: [f64; 2] = [1.8, 2.1];
+                lesson_trace::trace_step!(query_point);
+                lesson_trace::trace_step!(query_point);
                 // Сохраняем рассчитанное значение `neighbor_count` для следующих операций.
                 let neighbor_count: usize = neighbor_count;
+                lesson_trace::trace_step!(neighbor_count);
+                lesson_trace::trace_step!(neighbor_count);
                 // Проверяем обязательное условие до дальнейшего вычисления.
                 assert!(neighbor_count > 0 && neighbor_count <= training_examples.len());
                 // Создаём изменяемое значение `nearest_neighbor_vote_uses_selected_count` для следующих операций.
@@ -68,6 +77,8 @@ fn main() {
                         })
                         // Собираем элементы итератора в итоговую коллекцию.
                         .collect();
+                lesson_trace::trace_step!(nearest_neighbor_vote_uses_selected_count);
+                lesson_trace::trace_step!(nearest_neighbor_vote_uses_selected_count);
                 // Сортируем значения в порядке, заданном функцией сравнения.
                 nearest_neighbor_vote_uses_selected_count.sort_by(
                     // Задаём параметры короткого локального вычисления.
@@ -83,6 +94,8 @@ fn main() {
                     .filter(|(_, label)| *label)
                     // Подсчитываем число элементов после отбора.
                     .count();
+                lesson_trace::trace_step!(votes);
+                lesson_trace::trace_step!(votes);
                 // Умножаем величины согласно используемой формуле.
                 votes * 2 > neighbor_count
             })()
@@ -90,6 +103,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_knn_classification_with_scaled_features_and_chosen_k(training_examples);
 }
 

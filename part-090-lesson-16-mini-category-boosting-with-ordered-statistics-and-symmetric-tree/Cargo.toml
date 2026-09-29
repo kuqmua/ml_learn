@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+lesson-trace = { path = "../lesson-trace" }
 part-087-lesson-16-symmetric-decision-tree-with-shared-level-splits = { path = "../part-087-lesson-16-symmetric-decision-tree-with-shared-level-splits" }
 part-088-lesson-16-ordered-category-target-mean-without-current-label = { path = "../part-088-lesson-16-ordered-category-target-mean-without-current-label" }
 lesson-visualization = { path = "../lesson-visualization" }

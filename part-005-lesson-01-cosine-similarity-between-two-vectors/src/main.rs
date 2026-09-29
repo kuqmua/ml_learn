@@ -5,8 +5,10 @@
 // Промежуточные значения показывают острый или тупой угол. Для нулевого вектора направления нет.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `left`.
     let left: [f64; 2] = [1.0, 0.0];
+    lesson_trace::trace_step!(left);
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &[f64], f64); 5] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -20,13 +22,18 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("противоположные направления", &[-2.0, 0.0], -1.0),
     ];
+    lesson_trace::trace_step!(cases);
 
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, right, expected) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(right);
+        lesson_trace::trace_step!(expected);
         // Числитель и длины уже изучены; общий код соединяет их в косинусное сходство.
         let similarity: f64 = part_005_lesson_01_cosine_similarity_between_two_vectors::cosine_similarity_between_two_vectors(&left, right)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("оба вектора ненулевые и одинаковой длины");
+        lesson_trace::trace_step!(similarity);
         // Проверяем ожидаемое свойство учебного примера.
         assert!((similarity - expected).abs() < 1e-10);
         // Печатаем рассчитанные значения для проверки примера.
@@ -40,15 +47,19 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("разная длина", &[1.0][..]),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(right);
         // Сохраняем результат этого шага в `error`.
         let error: &str = part_005_lesson_01_cosine_similarity_between_two_vectors::cosine_similarity_between_two_vectors(&left, right)
             // Настраиваем или преобразуем результат предыдущего шага.
             .expect_err("этот вход должен быть отклонён");
+        lesson_trace::trace_step!(error);
         // Печатаем рассчитанные значения для проверки примера.
         println!("{description}: {error}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_cosine_similarity_between_two_vectors();
 }
 

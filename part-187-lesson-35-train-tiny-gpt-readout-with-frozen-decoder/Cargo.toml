@@ -4,4 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+lesson-trace = { path = "../lesson-trace" }
 part-186-lesson-35-calculate-tiny-gpt-output-logits-from-token-ids = { path = "../part-186-lesson-35-calculate-tiny-gpt-output-logits-from-token-ids" }

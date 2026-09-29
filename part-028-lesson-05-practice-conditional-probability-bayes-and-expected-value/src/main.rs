@@ -13,7 +13,9 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Описываем тип `PseudorandomGenerator`, чтобы явно хранить состояние и допустимые варианты.
+    #[derive(Debug)]
     struct PseudorandomGenerator(u64);
 
     // Группируем методы рядом с типом, к которому они относятся.
@@ -31,12 +33,16 @@ fn main() {
 
     // Шаг: Фиксируем начальное состояние генератора для повторяемого моделирования.
     let mut generator: PseudorandomGenerator = PseudorandomGenerator(42);
+    lesson_trace::trace_step!(generator);
     // Инициализируем изменяемый накопитель `positive_test_count` начальным состоянием.
     let mut positive_test_count: i32 = 0;
+    lesson_trace::trace_step!(positive_test_count);
     // Инициализируем изменяемый накопитель `true_positive_count` начальным состоянием.
     let mut true_positive_count: i32 = 0;
+    lesson_trace::trace_step!(true_positive_count);
     // Инициализируем изменяемый накопитель `heads_count` начальным состоянием.
     let mut heads_count: i32 = 0;
+    lesson_trace::trace_step!(heads_count);
     // 100 000 псевдослучайных опытов уменьшают колебания оценённых частот.
     // Это размер учебной симуляции, а не параметр формулы Байеса.
     for _ in 0..100_000 {
@@ -44,9 +50,11 @@ fn main() {
         if generator.generate_random_number_between_zero_and_one() < 0.5 {
             // Прибавляем очередной вклад к ранее накопленному результату.
             heads_count += 1;
+            lesson_trace::trace_step!(heads_count);
         }
         // 0.01 — заданная для примера распространённость: заболевание есть примерно у 1% людей.
         let has_disease: bool = generator.generate_random_number_between_zero_and_one() < 0.01;
+        lesson_trace::trace_step!(has_disease);
         // Сохраняем рассчитанное значение `test_is_positive` для следующих операций.
         let test_is_positive: bool = if has_disease {
             // Для больного моделируем положительный тест с чувствительностью 90%.
@@ -56,14 +64,17 @@ fn main() {
             // Для здорового моделируем ложноположительный тест с вероятностью 5%.
             generator.generate_random_number_between_zero_and_one() < 0.05
         };
+        lesson_trace::trace_step!(test_is_positive);
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if test_is_positive {
             // Прибавляем очередной вклад к ранее накопленному результату.
             positive_test_count += 1;
+            lesson_trace::trace_step!(positive_test_count);
             // Проверяем условие и выбираем соответствующую ветку алгоритма.
             if has_disease {
                 // Прибавляем очередной вклад к ранее накопленному результату.
                 true_positive_count += 1;
+                lesson_trace::trace_step!(true_positive_count);
             }
         }
     }
@@ -80,12 +91,20 @@ fn main() {
             /* Формула Байеса учитывает и качество теста, и редкость болезни. */
             // Сохраняем результат этого шага в `prevalence`.
             let prevalence: f64 = 0.01;
+            lesson_trace::trace_step!(prevalence);
+            lesson_trace::trace_step!(prevalence);
             // Инициализируем значение `sensitivity` начальным состоянием.
             let sensitivity: f64 = 0.9;
+            lesson_trace::trace_step!(sensitivity);
+            lesson_trace::trace_step!(sensitivity);
             // Инициализируем значение `specificity` начальным состоянием.
             let specificity: f64 = 0.95;
+            lesson_trace::trace_step!(specificity);
+            lesson_trace::trace_step!(specificity);
             // Умножаем значения и сохраняем результат в `true_positive_probability`.
             let true_positive_probability: f64 = prevalence * sensitivity;
+            lesson_trace::trace_step!(true_positive_probability);
+            lesson_trace::trace_step!(true_positive_probability);
             // Возвращаем булев результат для этого случая.
             true_positive_probability
                 // Делим значения, получая нормированную величину или среднее.
@@ -94,6 +113,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_conditional_probability_bayes_and_expected_value(
         positive_test_count,
         true_positive_count,

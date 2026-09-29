@@ -7,6 +7,7 @@ pub fn calculate_decoder_hidden_states_for_token_ids(
 ) -> Vec<[f64; 2]> {
     // Три двумерных embedding заданы вручную: так весь прямой проход можно просчитать на бумаге.
     let dense_numeric_representation: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
+    lesson_trace::trace_step!(dense_numeric_representation);
     // Позиционный вклад 0.1·position добавляем только к первой координате для наглядного примера.
     let states: Vec<[f64; 2]> = text_unit_identifiers
         .iter()
@@ -18,12 +19,14 @@ pub fn calculate_decoder_hidden_states_for_token_ids(
             ]
         })
         .collect();
+    lesson_trace::trace_step!(states);
     if states.is_empty() {
         return Vec::new();
     }
     let context: Vec<[f64; 2]> =
         part_182_lesson_35_causal_self_attention_over_prefix_of_tokens::causal_self_attention_over_query_key_value_sequences(&states, &states, &states)
             .unwrap();
+    lesson_trace::trace_step!(context);
     states
         .iter()
         .zip(&context)

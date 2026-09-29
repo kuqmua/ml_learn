@@ -4,6 +4,7 @@
 // для выборочной оценки нужны хотя бы два значения.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &[f64], f64); 3] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -13,12 +14,17 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("значения раздвинули", &[0.0, 4.0, 8.0], 16.0),
     ];
+    lesson_trace::trace_step!(cases);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, values, expected) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(values);
+        lesson_trace::trace_step!(expected);
         // Сохраняем результат этого шага в `variance`.
         let variance: f64 = part_031_lesson_06_sample_variance_of_numeric_values::sample_variance_of_numeric_values(values)
             // Используем результат, ожидая успешного выполнения шага.
             .expect("для этой выборки дисперсия определена");
+        lesson_trace::trace_step!(variance);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(variance, expected);
         // Печатаем рассчитанные значения для проверки примера.
@@ -31,10 +37,12 @@ fn main() {
         ])
         // Настраиваем или преобразуем результат предыдущего шага.
         .expect_err("одного значения недостаточно");
+    lesson_trace::trace_step!(error);
     // Печатаем рассчитанные значения для проверки примера.
     println!("одно значение: {error}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_sample_variance_of_numeric_values();
 }
 

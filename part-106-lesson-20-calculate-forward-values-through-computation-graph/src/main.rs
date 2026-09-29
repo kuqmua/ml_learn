@@ -9,16 +9,21 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Сохраняем рассчитанное значение `input_value` для следующих операций.
     let input_value: f64 = 2.0;
+    lesson_trace::trace_step!(input_value);
     // Умножаем значения и сохраняем результат в `square`.
     let square: f64 = input_value * input_value;
+    lesson_trace::trace_step!(square);
     // Комбинируем исходные величины и сохраняем результат в `doubled_square`.
     let doubled_square: f64 = square + square;
+    lesson_trace::trace_step!(doubled_square);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("x={input_value}, x²={square}, 2x²={doubled_square}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_calculate_forward_values_through_computation_graph();
 }
 

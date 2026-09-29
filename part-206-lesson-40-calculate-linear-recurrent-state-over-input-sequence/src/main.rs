@@ -2,13 +2,17 @@
 // Последовательность обрабатывается линейным сканированием с компактным состоянием.
 
 fn main() {
+    lesson_trace::enable();
     let input: [f64; 4] = [1.0, 0.0, 0.0, 0.0];
+    lesson_trace::trace_step!(input);
     let states: Vec<f64> =
         part_206_lesson_40_calculate_linear_recurrent_state_over_input_sequence::calculate_linear_recurrent_state_sequence_from_inputs(
             &input, 0.5, 1.0,
         );
+    lesson_trace::trace_step!(states);
     assert_eq!(states, [1.0, 0.5, 0.25, 0.125]);
     println!("затухание состояния: {states:?}");
+    lesson_trace::disable();
     visualize_calculate_linear_recurrent_state_over_input_sequence(&states);
 }
 

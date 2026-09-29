@@ -9,24 +9,34 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Оценки уже отсортированы от большей к меньшей.
     let ranked_labels: [bool; 4] = [true, false, true, false];
+    lesson_trace::trace_step!(ranked_labels);
     // Преобразуем входные данные и сохраняем полученную коллекцию в `positive_count`.
     let positive_count: f64 = ranked_labels.iter().filter(|&&label| label).count() as f64;
+    lesson_trace::trace_step!(positive_count);
     // Инициализируем изменяемый накопитель `found_positive` начальным состоянием.
     let mut found_positive: f64 = 0.0;
+    lesson_trace::trace_step!(found_positive);
     // Инициализируем изменяемый накопитель `area` начальным состоянием.
     let mut area: f64 = 0.0;
+    lesson_trace::trace_step!(area);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (rank, label) in ranked_labels.into_iter().enumerate() {
+        lesson_trace::trace_step!(rank);
+        lesson_trace::trace_step!(label);
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
         if label {
             // Прибавляем очередной вклад к ранее накопленному результату.
             found_positive += 1.0;
+            lesson_trace::trace_step!(found_positive);
             // Нормируем или усредняем величину делением и сохраняем её в `precision`.
             let precision: f64 = found_positive / (rank + 1) as f64;
+            lesson_trace::trace_step!(precision);
             // Прибавляем очередной вклад к ранее накопленному результату.
             area += precision / positive_count;
+            lesson_trace::trace_step!(area);
         }
     }
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
@@ -35,6 +45,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_area_under_precision_recall_curve_for_binary_scores();
 }
 

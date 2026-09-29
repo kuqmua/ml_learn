@@ -7,11 +7,14 @@ pub fn softmax_probabilities_from_raw_model_scores(raw_model_scores: &[f64]) -> 
         .iter()
         .copied()
         .fold(f64::NEG_INFINITY, f64::max);
+    lesson_trace::trace_step!(maximum);
     let weights: Vec<f64> = raw_model_scores
         .iter()
         .map(|&value| (value - maximum).exp())
         .collect();
+    lesson_trace::trace_step!(weights);
     let total: f64 = weights.iter().sum();
+    lesson_trace::trace_step!(total);
     weights.into_iter().map(|weight| weight / total).collect()
 }
 
@@ -28,7 +31,9 @@ pub fn causal_self_attention_over_query_key_value_sequences(
         return Err("неверная форма Q/K/V");
     }
     let mut output: Vec<[f64; 2]> = Vec::with_capacity(query_vector.len());
+    lesson_trace::trace_step!(output);
     for index in 0..query_vector.len() {
+        lesson_trace::trace_step!(index);
         // Ключи после index скрыты причинной маской; 2 под корнем — размерность Q и K.
         // Деление на √2 удерживает величину dot product при переходе к softmax.
         let raw_model_scores: Vec<f64> = (0..=index)
@@ -38,11 +43,18 @@ pub fn causal_self_attention_over_query_key_value_sequences(
                     / 2.0_f64.sqrt()
             })
             .collect();
+        lesson_trace::trace_step!(raw_model_scores);
         let weights: Vec<f64> = softmax_probabilities_from_raw_model_scores(&raw_model_scores);
+        lesson_trace::trace_step!(weights);
         let mut state: [f64; 2] = [0.0; 2];
+        lesson_trace::trace_step!(state);
         for (past, &weight) in weights.iter().enumerate() {
+            lesson_trace::trace_step!(past);
+            lesson_trace::trace_step!(weight);
             for feature in 0..2 {
+                lesson_trace::trace_step!(feature);
                 state[feature] += weight * value_vectors[past][feature];
+                lesson_trace::trace_step!(state);
             }
         }
         output.push(state);

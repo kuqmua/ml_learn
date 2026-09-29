@@ -8,18 +8,22 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `ranked` для следующего шага примера.
     let mut ranked: [(&str, f64); 3] = [("doc-a", 0.8), ("doc-b", 0.3), ("doc-c", 0.9)];
+    lesson_trace::trace_step!(ranked);
     // Сортируем значения в порядке, заданном функцией сравнения.
     ranked.sort_by(|first_candidate, second_candidate| {
         second_candidate.1.total_cmp(&first_candidate.1)
     });
     // Сохраняем рассчитанное значение `highest_ranked_items` для следующих операций.
     let highest_ranked_items: &[(&str, f64)] = &ranked[..2];
+    lesson_trace::trace_step!(highest_ranked_items);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("лучшие источники: {highest_ranked_items:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_select_top_k_ranked_documents(highest_ranked_items);
 }
 

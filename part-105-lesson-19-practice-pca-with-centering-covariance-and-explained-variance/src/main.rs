@@ -10,8 +10,10 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Шаг: Создаём точки, лежащие на одной прямой.
     let data: [[f64; 2]; 4] = [[1., 1.], [2., 2.], [3., 3.], [4., 4.]];
+    lesson_trace::trace_step!(data);
 
     // Учебные реализации математических операций для этого урока.
 
@@ -32,10 +34,12 @@ fn main() {
         }
         // Создаём изменяемое значение `estimate` для следующих операций.
         let mut estimate: f64 = if value > 1.0 { value } else { 1.0 };
+        lesson_trace::trace_step!(estimate);
         // 80 шагов Ньютона — запас точности для учебного вычисления корня в f64.
         for _ in 0..80 {
             // Из x² = value получаем новую оценку √value как среднее x и value/x.
             estimate = (estimate + value / estimate) / 2.0;
+            lesson_trace::trace_step!(estimate);
         }
         // Используем ранее рассчитанное значение `estimate` в текущем выражении.
         estimate
@@ -49,16 +53,22 @@ fn main() {
             /* Находим главную ось двумерной ковариационной матрицы. */
             // Сохраняем результат этого шага в `data`.
             let data: &[[f64; 2]] = &data;
+            lesson_trace::trace_step!(data);
             // Считаем количество элементов и сохраняем его в `sample_count`.
             let sample_count: f64 = data.len() as f64;
+            lesson_trace::trace_step!(sample_count);
             // Создаём набор значений `coordinate_sums` для следующего шага примера.
             let mut coordinate_sums: [f64; 2] = [0.0, 0.0];
+            lesson_trace::trace_step!(coordinate_sums);
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for point in data {
+                lesson_trace::trace_step!(point);
                 // Прибавляем очередной вклад к ранее накопленному результату.
                 coordinate_sums[0] += point[0];
+                lesson_trace::trace_step!(coordinate_sums);
                 // Прибавляем очередной вклад к ранее накопленному результату.
                 coordinate_sums[1] += point[1];
+                lesson_trace::trace_step!(coordinate_sums);
             }
             // Создаём набор значений `mean` для следующего шага примера.
             let mean: [f64; 2] = [
@@ -67,29 +77,40 @@ fn main() {
                 // Делим значения, получая нормированную величину или среднее.
                 coordinate_sums[1] / sample_count,
             ];
+            lesson_trace::trace_step!(mean);
             // Сохраняем рассчитанное значение `(mut first_variance_sum, mut cross_covariance_sum, mut second_variance_sum)` для следующих операций.
             // Совместное изменение двух величин описывают через covariance.
             let (mut first_variance_sum, mut cross_deviation_product_sum, mut second_variance_sum): (f64, f64, f64) =
             // Составляем результат из вычисленных значений в указанном порядке.
             (0.0, 0.0, 0.0);
+            lesson_trace::trace_step!(first_variance_sum);
+            lesson_trace::trace_step!(cross_deviation_product_sum);
+            lesson_trace::trace_step!(second_variance_sum);
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for point in data {
+                lesson_trace::trace_step!(point);
                 // Комбинируем исходные величины и сохраняем результат в `centered_first`.
                 let centered_first: f64 = point[0] - mean[0];
+                lesson_trace::trace_step!(centered_first);
                 // Комбинируем исходные величины и сохраняем результат в `centered_second`.
                 let centered_second: f64 = point[1] - mean[1];
+                lesson_trace::trace_step!(centered_second);
                 // Прибавляем очередной вклад к ранее накопленному результату.
                 first_variance_sum += multiply_number_by_itself(centered_first);
+                lesson_trace::trace_step!(first_variance_sum);
                 // Прибавляем очередной вклад к ранее накопленному результату.
                 cross_deviation_product_sum += centered_first * centered_second;
+                lesson_trace::trace_step!(cross_deviation_product_sum);
                 // Прибавляем очередной вклад к ранее накопленному результату.
                 second_variance_sum += multiply_number_by_itself(centered_second);
+                lesson_trace::trace_step!(second_variance_sum);
             }
             // Для симметричной матрицы [[a,b],[b,c]] большее собственное значение
             // равно (a+c+sqrt((a-c)^2+4b^2))/2. Его собственный вектор — [b, lambda-a].
             let discriminant: f64 = multiply_number_by_itself(first_variance_sum - second_variance_sum)
             // Умножаем величины согласно используемой формуле.
             + 4.0 * multiply_number_by_itself(cross_deviation_product_sum);
+            lesson_trace::trace_step!(discriminant);
             // Сохраняем рассчитанное значение `largest_eigenvalue` для следующих операций.
             let largest_eigenvalue: f64 = (first_variance_sum
             // Складываем или вычитаем величины согласно используемой формуле.
@@ -98,6 +119,7 @@ fn main() {
             + approximate_square_root_with_newton_method(discriminant))
             // Делим значения, получая нормированную величину или среднее.
             / 2.0;
+            lesson_trace::trace_step!(largest_eigenvalue);
             // Комбинируем исходные величины и сохраняем результат в `axis`.
             // 10⁻¹² считаем численным нулём ковариации: тогда ось можно выбрать без поворота.
             let axis: [f64; 2] = if (|| -> f64 {
@@ -105,6 +127,7 @@ fn main() {
                 /* Модуль числа по определению: меняем знак только у отрицательного числа. */
                 // Сохраняем результат этого шага в `value`.
                 let value: f64 = cross_deviation_product_sum;
+                lesson_trace::trace_step!(value);
                 // Проверяем условие и выбираем соответствующую ветку алгоритма.
                 if value < 0.0 { -value } else { value }
                 // Используем подготовленное значение в следующем шаге примера.
@@ -128,6 +151,7 @@ fn main() {
                     // Складываем или вычитаем величины согласно используемой формуле.
                     largest_eigenvalue - first_variance_sum,
                 ];
+                lesson_trace::trace_step!(unnormalized_axis);
                 // Сохраняем рассчитанное значение `axis_length` для следующих операций.
                 let axis_length: f64 = approximate_square_root_with_newton_method(
                     // Вызываем нужное вычисление с подготовленными аргументами.
@@ -135,6 +159,7 @@ fn main() {
                     // Складываем или вычитаем величины согласно используемой формуле.
                     + multiply_number_by_itself(unnormalized_axis[1]),
                 );
+                lesson_trace::trace_step!(axis_length);
                 // Составляем результат из вычисленных значений в указанном порядке.
                 [
                     // Делим значения, получая нормированную величину или среднее.
@@ -143,11 +168,16 @@ fn main() {
                     unnormalized_axis[1] / axis_length,
                 ]
             };
+            lesson_trace::trace_step!(axis);
             // Нормируем или усредняем величину делением и сохраняем её в `variance`.
             let variance: f64 = largest_eigenvalue / (first_variance_sum + second_variance_sum);
+            lesson_trace::trace_step!(variance);
             // Составляем результат из вычисленных значений в указанном порядке.
             (mean, axis, variance)
         })();
+    lesson_trace::trace_step!(mean);
+    lesson_trace::trace_step!(axis);
+    lesson_trace::trace_step!(variance_share_explained_by_first_axis);
     // Шаг: Проецируем исходные точки на найденную ось.
     let projections: Vec<f64> = data
         // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -156,6 +186,7 @@ fn main() {
         .map(|point| (point[0] - mean[0]) * axis[0] + (point[1] - mean[1]) * axis[1])
         // Собираем элементы итератора в итоговую коллекцию.
         .collect();
+    lesson_trace::trace_step!(projections);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
@@ -163,6 +194,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_pca_with_centering_covariance_and_explained_variance(projections);
 }
 

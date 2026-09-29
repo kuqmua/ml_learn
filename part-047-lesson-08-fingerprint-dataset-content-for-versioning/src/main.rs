@@ -4,6 +4,7 @@
 // Для повторного запуска с теми же байтами отпечаток должен совпасть.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `cases`.
     let cases: [(&str, &str); 3] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -13,17 +14,24 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("изменилась одна метка", "1,0\n2,0\n"),
     ];
+    lesson_trace::trace_step!(cases);
     // Задаём учебные значения для `fingerprints`.
     let mut fingerprints: [u64; 3] = [0; 3];
+    lesson_trace::trace_step!(fingerprints);
     // Повторяем расчёт для каждого элемента последовательности.
     for (index, (description, data)) in cases.into_iter().enumerate() {
+        lesson_trace::trace_step!(index);
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(data);
         // Сохраняем результат этого шага в `hasher`.
         let mut hasher: std::collections::hash_map::DefaultHasher =
             std::collections::hash_map::DefaultHasher::new();
+        lesson_trace::trace_step!(hasher);
         // Используем подготовленное значение в следующем шаге примера.
         std::hash::Hash::hash(data, &mut hasher);
         // Обновляем значение результатом текущего вычисления.
         fingerprints[index] = std::hash::Hasher::finish(&hasher);
+        lesson_trace::trace_step!(fingerprints);
         // Печатаем рассчитанные значения для проверки примера.
         println!("{description}: отпечаток {}", fingerprints[index]);
     }

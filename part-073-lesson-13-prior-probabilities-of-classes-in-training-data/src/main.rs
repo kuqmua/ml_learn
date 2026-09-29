@@ -9,8 +9,10 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `labels` для следующего шага примера.
     let labels: [&str; 4] = ["code", "code", "code", "ml"];
+    lesson_trace::trace_step!(labels);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(
         // Используем подготовленное значение в следующем шаге примера.
@@ -20,14 +22,18 @@ fn main() {
     );
     // Преобразуем входные данные и сохраняем полученную коллекцию в `code_count`.
     let code_count: usize = labels.iter().filter(|&&label| label == "code").count();
+    lesson_trace::trace_step!(code_count);
     // Считаем количество элементов и сохраняем его в `code_prior`.
     let code_prior: f64 = code_count as f64 / labels.len() as f64;
+    lesson_trace::trace_step!(code_prior);
     // Комбинируем исходные величины и сохраняем результат в `machine_learning_prior`.
     let machine_learning_prior: f64 = 1.0 - code_prior;
+    lesson_trace::trace_step!(machine_learning_prior);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("P(code)={code_prior}, P(ml)={machine_learning_prior}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_prior_probabilities_of_classes_in_training_data(code_prior, machine_learning_prior);
 }
 

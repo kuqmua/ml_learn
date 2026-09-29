@@ -5,6 +5,7 @@
 // считает только строго внутренние вероятности.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `cases`.
     let cases: [(&str, f64, f64); 4] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -16,10 +17,16 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("отрицательный класс предсказан верно", 0.0, 0.1),
     ];
+    lesson_trace::trace_step!(cases);
     // Задаём учебные значения для `losses`.
     let mut losses: [f64; 4] = [0.0; 4];
+    lesson_trace::trace_step!(losses);
     // Повторяем расчёт для каждого элемента последовательности.
     for (index, (description, target, probability)) in cases.into_iter().enumerate() {
+        lesson_trace::trace_step!(index);
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(target);
+        lesson_trace::trace_step!(probability);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(target == 0.0 || target == 1.0);
         // Проверяем ожидаемое свойство учебного примера.
@@ -33,21 +40,29 @@ fn main() {
             // Вычисляем значение по указанной формуле.
             1.0 - probability
         };
+        lesson_trace::trace_step!(chosen_probability);
         // ln(x) ≈ 2·(t+t³/3+t⁵/5+...), t=(x−1)/(x+1).
         let ratio: f64 = (chosen_probability - 1.0) / (chosen_probability + 1.0);
+        lesson_trace::trace_step!(ratio);
         // Сохраняем результат этого шага в `term`.
         let mut term: f64 = ratio;
+        lesson_trace::trace_step!(term);
         // Сохраняем результат этого шага в `logarithm`.
         let mut logarithm: f64 = 0.0;
+        lesson_trace::trace_step!(logarithm);
         // Повторяем расчёт для каждого элемента последовательности.
         for odd_divisor in (1..=99).step_by(2) {
+            lesson_trace::trace_step!(odd_divisor);
             // Обновляем значение результатом текущего вычисления.
             logarithm += term / odd_divisor as f64;
+            lesson_trace::trace_step!(logarithm);
             // Обновляем значение результатом текущего вычисления.
             term *= ratio * ratio;
+            lesson_trace::trace_step!(term);
         }
         // Обновляем значение результатом текущего вычисления.
         losses[index] = -2.0 * logarithm;
+        lesson_trace::trace_step!(losses);
         // Печатаем рассчитанные значения для проверки примера.
         println!(
             // Передаём подпись или текстовое значение для следующего шага.
@@ -58,6 +73,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_binary_logarithmic_loss_from_target_and_predicted_probability(losses);
 }
 

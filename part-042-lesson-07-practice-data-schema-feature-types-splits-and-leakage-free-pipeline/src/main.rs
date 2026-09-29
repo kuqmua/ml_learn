@@ -12,6 +12,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Фиксируем демонстрационные данные на время выполнения программы.
     const SAMPLE_COMMA_SEPARATED_VALUES: &str =
         "feature,target\n1,0\n2,0\n3,1\n4,1\n5,0\n6,1\n7,0\n8,1\n9,1\n10,0\n";
@@ -30,6 +31,8 @@ fn main() {
             .map(|line| {
                 // Сохраняем рассчитанное значение `(feature_value, target_value)` для следующих операций.
                 let (feature_value, target_value): (&str, &str) = line.split_once(',').unwrap();
+                lesson_trace::trace_step!(feature_value);
+                lesson_trace::trace_step!(target_value);
                 // Составляем результат из вычисленных значений в указанном порядке.
                 (
                     // Преобразуем текстовое поле в требуемый числовой тип.
@@ -41,6 +44,7 @@ fn main() {
             // Собираем элементы итератора в итоговую коллекцию.
             .collect()
     })();
+    lesson_trace::trace_step!(records);
     // Шаг: Отделяем обучающую, проверочную и тестовую части.
     assert!(
         // Обновляем значение результатом текущего вычисления.
@@ -50,10 +54,13 @@ fn main() {
     );
     // Сохраняем результат этого шага в `training_records`.
     let training_records: &[(f64, u8)] = &records[..6];
+    lesson_trace::trace_step!(training_records);
     // Сохраняем рассчитанное значение `validation_records` для следующих операций.
     let validation_records: &[(f64, u8)] = &records[6..8];
+    lesson_trace::trace_step!(validation_records);
     // Сохраняем рассчитанное значение `test_records` для следующих операций.
     let test_records: &[(f64, u8)] = &records[8..];
+    lesson_trace::trace_step!(test_records);
 
     // Шаг: Считаем среднее только по train: validation и test не влияют на подготовку признаков.
     let training_mean: f64 = (|| -> f64 {
@@ -61,16 +68,21 @@ fn main() {
         /* Среднее признака считаем только по обучающим строкам. */
         // Сохраняем результат этого шага в `training_records`.
         let training_records: &[(f64, u8)] = training_records;
+        lesson_trace::trace_step!(training_records);
         // Инициализируем изменяемый накопитель `feature_sum` начальным состоянием.
         let mut feature_sum: f64 = 0.0;
+        lesson_trace::trace_step!(feature_sum);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(feature_value, _) in training_records {
+            lesson_trace::trace_step!(feature_value);
             // Прибавляем очередной вклад к ранее накопленному результату.
             feature_sum += feature_value;
+            lesson_trace::trace_step!(feature_sum);
         }
         // Делим значения, получая нормированную величину или среднее.
         feature_sum / training_records.len() as f64
     })();
+    lesson_trace::trace_step!(training_mean);
     // Шаг: Применяем найденное среднее к тестовым значениям.
     println!(
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
@@ -92,6 +104,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_data_schema_feature_types_splits_and_leakage_free_pipeline(
         records,
         training_mean,

@@ -8,29 +8,38 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `cluster` для следующего шага примера.
     let cluster: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
+    lesson_trace::trace_step!(cluster);
     // Создаём набор значений `cluster_center` для следующего шага примера.
     // Среднее пустого кластера не определено.
     assert!(!cluster.is_empty(), "для центра нужна хотя бы одна точка");
     // Задаём учебные значения для `cluster_center`.
     // Центр группы точек называют centroid.
     let mut cluster_center: [f64; 2] = [0.0, 0.0];
+    lesson_trace::trace_step!(cluster_center);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for point in cluster {
+        lesson_trace::trace_step!(point);
         // Прибавляем очередной вклад к ранее накопленному результату.
         cluster_center[0] += point[0];
+        lesson_trace::trace_step!(cluster_center);
         // Прибавляем очередной вклад к ранее накопленному результату.
         cluster_center[1] += point[1];
+        lesson_trace::trace_step!(cluster_center);
     }
     // Масштабируем текущую величину делением.
     cluster_center[0] /= cluster.len() as f64;
+    lesson_trace::trace_step!(cluster_center);
     // Масштабируем текущую величину делением.
     cluster_center[1] /= cluster.len() as f64;
+    lesson_trace::trace_step!(cluster_center);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("центроид = {cluster_center:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_compute_centroid_as_mean_of_cluster_points(cluster, cluster_center);
 }
 

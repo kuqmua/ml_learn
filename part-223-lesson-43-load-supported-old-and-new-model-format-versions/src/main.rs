@@ -3,6 +3,7 @@
 // Старая и новая версии разбираются разными правилами; неизвестную версию отвергаем.
 
 fn main() {
+    lesson_trace::enable();
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, saved_model_text, expected) in [
         // Добавляем пару значений для сравнения или построения графика.
@@ -24,6 +25,9 @@ fn main() {
             "формат не поддерживается",
         ),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(saved_model_text);
+        lesson_trace::trace_step!(expected);
         // Сохраняем результат этого шага в `explanation`.
         let explanation: &str = match saved_model_text.lines().next() {
             // Возвращаем присутствующее значение.
@@ -33,6 +37,7 @@ fn main() {
             // Выполняем действие для этого варианта данных.
             _ => "формат не поддерживается",
         };
+        lesson_trace::trace_step!(explanation);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(explanation, expected);
         // Печатаем рассчитанные значения для проверки примера.

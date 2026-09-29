@@ -9,11 +9,15 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `candidates` для следующего шага примера.
     let candidates: [(i32, f64); 4] = [(1, 52.0), (2, 4.0), (3, 3.5), (4, 3.0)];
+    lesson_trace::trace_step!(candidates);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     // Сумму квадратов расстояний до центров кластеров называют inertia.
     for (cluster_count, total_squared_distance_to_cluster_centers) in candidates {
+        lesson_trace::trace_step!(cluster_count);
+        lesson_trace::trace_step!(total_squared_distance_to_cluster_centers);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("k={cluster_count}, инерция={total_squared_distance_to_cluster_centers}");
     }
@@ -21,6 +25,7 @@ fn main() {
     println!("заметный излом кривой находится около k=2");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_choose_number_of_k_means_clusters_from_inertia(candidates);
 }
 

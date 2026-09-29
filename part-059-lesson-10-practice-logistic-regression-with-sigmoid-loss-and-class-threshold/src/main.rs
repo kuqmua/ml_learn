@@ -11,6 +11,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Учебные реализации математических операций для этого урока.
 
     /// e^x по ряду Тейлора. Деление аргумента пополам ускоряет сходимость.
@@ -32,30 +33,40 @@ fn main() {
         }
         // Создаём изменяемое значение `reduced` для следующих операций.
         let mut reduced: f64 = value;
+        lesson_trace::trace_step!(reduced);
         // Инициализируем изменяемый накопитель `halving_count` начальным состоянием.
         let mut halving_count: i32 = 0;
+        lesson_trace::trace_step!(halving_count);
         // Уменьшаем аргумент до ≤0.5: на таком интервале ряд Тейлора для exp сходится быстро.
         while reduced > 0.5 {
             // Масштабируем текущую величину делением.
             reduced /= 2.0;
+            lesson_trace::trace_step!(reduced);
             // Прибавляем очередной вклад к ранее накопленному результату.
             halving_count += 1;
+            lesson_trace::trace_step!(halving_count);
         }
         // Создаём изменяемое значение `term` для следующих операций.
         let mut term: f64 = 1.0;
+        lesson_trace::trace_step!(term);
         // Создаём изменяемое значение `result` для следующих операций.
         let mut result: f64 = 1.0;
+        lesson_trace::trace_step!(result);
         // Берём 30 членов ряда exp(y)=Σ y^k/k!; это предел приближения для учебных входов.
         for term_index in 1..=30 {
+            lesson_trace::trace_step!(term_index);
             // Умножаем накопленное значение на очередной множитель.
             term *= reduced / term_index as f64;
+            lesson_trace::trace_step!(term);
             // Прибавляем очередной вклад к ранее накопленному результату.
             result += term;
+            lesson_trace::trace_step!(result);
         }
         // Восстанавливаем exp(value): каждое возведение в квадрат отменяет одно деление аргумента на 2.
         for _ in 0..halving_count {
             // Умножаем накопленное значение на очередной множитель.
             result *= result;
+            lesson_trace::trace_step!(result);
         }
         // Используем ранее рассчитанное значение `result` в текущем выражении.
         result
@@ -89,19 +100,25 @@ fn main() {
     ) -> f64 {
         // Инициализируем изменяемый накопитель `loss_sum` начальным состоянием.
         let mut loss_sum: f64 = 0.0;
+        lesson_trace::trace_step!(loss_sum);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(feature_value, target_label) in data {
+            lesson_trace::trace_step!(feature_value);
+            lesson_trace::trace_step!(target_label);
             // Умножаем значения и сохраняем результат в `raw_model_score`.
             // Оценку модели до преобразования в вероятность называют logit.
             let raw_model_score: f64 = weight * feature_value + bias;
+            lesson_trace::trace_step!(raw_model_score);
             // Прибавляем очередной вклад к ранее накопленному результату.
             loss_sum += (|| -> f64 {
                 // Используем подготовленное значение в следующем шаге примера.
                 /* Выбираем большее из двух чисел для формул softmax, log-loss и Q-learning. */
                 // Сохраняем результат этого шага в `first`.
                 let first: f64 = raw_model_score;
+                lesson_trace::trace_step!(first);
                 // Инициализируем значение `second` начальным состоянием.
                 let second: f64 = 0.;
+                lesson_trace::trace_step!(second);
                 // Проверяем условие и выбираем соответствующую ветку алгоритма.
                 if first > second { first } else { second }
             // Вычисляем значение по указанной формуле.
@@ -118,9 +135,11 @@ fn main() {
                             /* Модуль числа по определению: меняем знак только у отрицательного числа. */
                             // Сохраняем результат этого шага в `value`.
                             let value: f64 = raw_model_score;
+                            lesson_trace::trace_step!(value);
                             // Проверяем условие и выбираем соответствующую ветку алгоритма.
                             if value < 0.0 { -value } else { value }
                         })());
+                    lesson_trace::trace_step!(value);
                     // Проверяем обязательное условие до дальнейшего вычисления.
                     assert!(
                         // Передаём очередное значение в составе результата или вызова.
@@ -135,48 +154,63 @@ fn main() {
                     }
                     // Создаём изменяемое значение `scaled` для следующих операций.
                     let mut scaled: f64 = value;
+                    lesson_trace::trace_step!(scaled);
                     // Инициализируем изменяемый накопитель `power_of_two` начальным состоянием.
                     let mut power_of_two: i32 = 0i32;
+                    lesson_trace::trace_step!(power_of_two);
                     // Повторяем вычисление, пока выполняется указанное условие.
                     while scaled >= 2.0 {
                         // Масштабируем текущую величину делением.
                         scaled /= 2.0;
+                        lesson_trace::trace_step!(scaled);
                         // Прибавляем очередной вклад к ранее накопленному результату.
                         power_of_two += 1;
+                        lesson_trace::trace_step!(power_of_two);
                     }
                     // Повторяем вычисление, пока выполняется указанное условие.
                     while scaled < 1.0 {
                         // Умножаем накопленное значение на очередной множитель.
                         scaled *= 2.0;
+                        lesson_trace::trace_step!(scaled);
                         // Вычитаем очередной вклад из текущего значения параметра.
                         power_of_two -= 1;
+                        lesson_trace::trace_step!(power_of_two);
                     }
                     // Объявляем повторно используемое вычисление `sum_logarithm_series_terms`; параметры ниже задают его входы.
                     fn sum_logarithm_series_terms(value: f64) -> f64 {
                         // Нормируем или усредняем величину делением и сохраняем её в `ratio`.
                         let ratio: f64 = (value - 1.0) / (value + 1.0);
+                        lesson_trace::trace_step!(ratio);
                         // Умножаем значения и сохраняем результат в `ratio_squared`.
                         let ratio_squared: f64 = ratio * ratio;
+                        lesson_trace::trace_step!(ratio_squared);
                         // Создаём изменяемое значение `term` для следующих операций.
                         let mut term: f64 = ratio;
+                        lesson_trace::trace_step!(term);
                         // Инициализируем изменяемый накопитель `result` начальным состоянием.
                         let mut result: f64 = 0.0;
+                        lesson_trace::trace_step!(result);
                         // Используем 40 первых членов ряда ln(value) = 2·Σ ratio^(2k+1)/(2k+1).
                         // Это конечное приближение: для положительного value выполняется |ratio| < 1.
                         for term_index in 0..40 {
+                            lesson_trace::trace_step!(term_index);
                             // Прибавляем очередной вклад к ранее накопленному результату.
                             result += term / (2 * term_index + 1) as f64;
+                            lesson_trace::trace_step!(result);
                             // Умножаем накопленное значение на очередной множитель.
                             term *= ratio_squared;
+                            lesson_trace::trace_step!(term);
                         }
                         // Умножаем величины согласно используемой формуле.
                         2.0 * result
                     }
                     // Сохраняем рассчитанное значение `logarithm_of_two` для следующих операций.
                     let logarithm_of_two: f64 = sum_logarithm_series_terms(2.0);
+                    lesson_trace::trace_step!(logarithm_of_two);
                     // Умножаем величины согласно используемой формуле.
                     sum_logarithm_series_terms(scaled) + power_of_two as f64 * logarithm_of_two
                 })();
+            lesson_trace::trace_step!(loss_sum);
         }
         // Делим значения, получая нормированную величину или среднее.
         loss_sum / data.len() as f64
@@ -184,6 +218,7 @@ fn main() {
 
     // Шаг: Измеряем loss модели с нулевыми коэффициентами.
     let before: f64 = calculate_binary_cross_entropy_from_logits(&TRAINING_EXAMPLES, 0., 0.);
+    lesson_trace::trace_step!(before);
     // Объявляем повторно используемое вычисление `convert_logit_to_probability`; параметры ниже задают его входы.
     fn convert_logit_to_probability(raw_model_score: f64) -> f64 {
         // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -194,6 +229,7 @@ fn main() {
         } else {
             // Сохраняем рассчитанное значение `prediction_error` для следующих операций.
             let prediction_error: f64 = approximate_exponential_with_taylor_series(raw_model_score);
+            lesson_trace::trace_step!(prediction_error);
             // Делим значения, получая нормированную величину или среднее.
             prediction_error / (1. + prediction_error)
         }
@@ -206,9 +242,11 @@ fn main() {
         /* Обновляем вес и смещение по градиенту логистической ошибки. */
         // Сохраняем результат этого шага в промежуточный результат.
         let (mut weight, mut bias): (f64, f64) = (0., 0.);
+        lesson_trace::trace_step!(weight);
+        lesson_trace::trace_step!(bias);
         // 300 проходов достаточно для сходимости весов на этом маленьком наборе.
         // При другой скорости обучения число проходов пришлось бы подобрать заново.
-        for _ in 0..300 {
+        for epoch in 0..300 {
             // Выполняем встроенный расчёт один раз и сохраняем результат в `(weight_gradient, bias_gradient)`.
             // Производную функции по параметру или вектор таких производных называют gradient.
             let (weight_loss_rate_of_change, bias_loss_rate_of_change): (f64, f64) =
@@ -217,23 +255,33 @@ fn main() {
                     /* Для log-loss производная по logit равна sigmoid_activation_of_raw_score(logit) − правильная метка. */
                     // Сохраняем результат этого шага в `data`.
                     let data: &[(f64, f64)] = &TRAINING_EXAMPLES;
+                    lesson_trace::trace_step!(data);
                     // Сохраняем рассчитанное значение `weight` для следующих операций.
                     let weight: f64 = weight;
+                    lesson_trace::trace_step!(weight);
                     // Сохраняем рассчитанное значение `bias` для следующих операций.
                     let bias: f64 = bias;
+                    lesson_trace::trace_step!(bias);
                     // Сохраняем рассчитанное значение `(mut weight_gradient, mut bias_gradient)` для следующих операций.
                     let (mut weight_loss_rate_of_change, mut bias_loss_rate_of_change): (f64, f64) =
                         (0.0, 0.0);
+                    lesson_trace::trace_step!(weight_loss_rate_of_change);
+                    lesson_trace::trace_step!(bias_loss_rate_of_change);
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
                     for &(feature_value, target_label) in data {
+                        lesson_trace::trace_step!(feature_value);
+                        lesson_trace::trace_step!(target_label);
                         // Сохраняем рассчитанное значение `prediction_error` для следующих операций.
                         let prediction_error: f64 =
                         // Умножаем величины согласно используемой формуле.
                         convert_logit_to_probability(weight * feature_value + bias) - target_label;
+                        lesson_trace::trace_step!(prediction_error);
                         // Прибавляем очередной вклад к ранее накопленному результату.
                         weight_loss_rate_of_change += prediction_error * feature_value;
+                        lesson_trace::trace_step!(weight_loss_rate_of_change);
                         // Прибавляем очередной вклад к ранее накопленному результату.
                         bias_loss_rate_of_change += prediction_error;
+                        lesson_trace::trace_step!(bias_loss_rate_of_change);
                     }
                     // Составляем результат из вычисленных значений в указанном порядке.
                     (
@@ -243,15 +291,29 @@ fn main() {
                         bias_loss_rate_of_change / data.len() as f64,
                     )
                 })();
+            lesson_trace::trace_step!(weight_loss_rate_of_change);
+            lesson_trace::trace_step!(bias_loss_rate_of_change);
             // Вычитаем очередной вклад из текущего значения параметра.
             // 0.1 — скорость обучения: за шаг меняем вес на десятую часть его градиента.
             weight -= 0.1 * weight_loss_rate_of_change;
+            lesson_trace::trace_step!(weight);
             // Вычитаем очередной вклад из текущего значения параметра.
             bias -= 0.1 * bias_loss_rate_of_change;
+            lesson_trace::trace_step!(bias);
+            if matches!(epoch, 0 | 1 | 9 | 99 | 299) {
+                let loss: f64 =
+                    calculate_binary_cross_entropy_from_logits(&TRAINING_EXAMPLES, weight, bias);
+                println!(
+                    "после эпохи {}: вес={weight:.4}, смещение={bias:.4}, log-loss={loss:.4}",
+                    epoch + 1
+                );
+            }
         }
         // Составляем результат из вычисленных значений в указанном порядке.
         (weight, bias)
     })();
+    lesson_trace::trace_step!(weight);
+    lesson_trace::trace_step!(bias);
     // Шаг: Сравниваем loss до и после обучения и выводим вероятность класса.
     println!(
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
@@ -263,6 +325,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_logistic_regression_with_sigmoid_loss_and_class_threshold(weight, bias);
 
     // Строим график по результатам урока.

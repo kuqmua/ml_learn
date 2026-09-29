@@ -9,12 +9,16 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Сохраняем рассчитанное значение `next_state` для следующих операций.
     let next_state: i32 = 4;
+    lesson_trace::trace_step!(next_state);
     // Сохраняем рассчитанное значение `goal` для следующих операций.
     let goal: i32 = 4;
+    lesson_trace::trace_step!(goal);
     // Комбинируем исходные величины и сохраняем результат в `reward`.
     let reward: f64 = if next_state == goal { 1.0 } else { -0.01 };
+    lesson_trace::trace_step!(reward);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("после перехода награда={reward}");
 }

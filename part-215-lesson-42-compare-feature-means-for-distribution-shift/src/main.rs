@@ -4,8 +4,10 @@
 // Совпадение средних само по себе не доказывает совпадения распределений.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `reference`.
     let reference: [f64; 3] = [1.0, 2.0, 3.0];
+    lesson_trace::trace_step!(reference);
     // Задаём учебные значения для `cases`.
     let cases: [(&str, [f64; 3], f64); 3] = [
         // Добавляем пару значений для сравнения или построения графика.
@@ -15,6 +17,7 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("то же среднее, другой разброс", [0.0, 2.0, 4.0], 0.0),
     ];
+    lesson_trace::trace_step!(cases);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(!reference.is_empty());
     // Сохраняем результат этого шага в `reference_mean`.
@@ -23,8 +26,12 @@ fn main() {
             &reference,
         )
         .unwrap();
+    lesson_trace::trace_step!(reference_mean);
     // Повторяем расчёт для каждого элемента последовательности.
     for (description, current, expected_difference) in cases {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(current);
+        lesson_trace::trace_step!(expected_difference);
         // Проверяем ожидаемое свойство учебного примера.
         assert!(!current.is_empty());
         // Сохраняем результат этого шага в `current_mean`.
@@ -33,8 +40,10 @@ fn main() {
                 &current,
             )
             .unwrap();
+        lesson_trace::trace_step!(current_mean);
         // Сохраняем результат этого шага в `difference`.
         let difference: f64 = current_mean - reference_mean;
+        lesson_trace::trace_step!(difference);
         // Проверяем ожидаемое свойство учебного примера.
         assert_eq!(difference, expected_difference);
         // Печатаем рассчитанные значения для проверки примера.
@@ -45,6 +54,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_compare_feature_means_for_distribution_shift(reference, cases);
 }
 

@@ -9,15 +9,20 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `losses` для следующего шага примера.
     let losses: [f64; 3] = [1.0, 0.6, 0.4];
+    lesson_trace::trace_step!(losses);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (epoch, loss) in losses.into_iter().enumerate() {
+        lesson_trace::trace_step!(epoch);
+        lesson_trace::trace_step!(loss);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("epoch={epoch}, loss={loss:.2}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_record_training_metric_by_epoch(losses);
 }
 

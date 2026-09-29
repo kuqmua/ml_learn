@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+lesson-trace = { path = "../lesson-trace" }
 part-206-lesson-40-calculate-linear-recurrent-state-over-input-sequence = { path = "../part-206-lesson-40-calculate-linear-recurrent-state-over-input-sequence" }
 lesson-visualization = { path = "../lesson-visualization" }

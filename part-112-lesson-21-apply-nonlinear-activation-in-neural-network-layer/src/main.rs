@@ -9,20 +9,24 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     // Оценку модели до преобразования в вероятность называют logit.
     for raw_model_score in [-2.0, 0.0, 2.0] {
+        lesson_trace::trace_step!(raw_model_score);
         // ReLU оставляет положительные значения и обнуляет отрицательные.
         let rectified_linear_output: f64 = if raw_model_score > 0.0 {
             raw_model_score
         } else {
             0.0
         };
+        lesson_trace::trace_step!(rectified_linear_output);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("logit={raw_model_score}, ReLU={rectified_linear_output}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_apply_nonlinear_activation_in_neural_network_layer();
 }
 

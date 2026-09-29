@@ -4,6 +4,7 @@
 // Нулевую долю пропускаем: предел p·log(p) при p→0 равен нулю.
 
 fn main() {
+    lesson_trace::enable();
     // Повторяем расчёт для каждого элемента последовательности.
     // Долю объектов одного класса среди всех объектов называют fraction.
     for (description, positive_class_share) in [
@@ -16,32 +17,44 @@ fn main() {
         // Добавляем пару значений для сравнения или построения графика.
         ("только положительный класс", 1.0),
     ] {
+        lesson_trace::trace_step!(description);
+        lesson_trace::trace_step!(positive_class_share);
         // Проверяем ожидаемое свойство учебного примера.
         assert!((0.0..=1.0).contains(&positive_class_share));
         // Сохраняем результат этого шага в `negative_class_share`.
         let negative_class_share: f64 = 1.0 - positive_class_share;
+        lesson_trace::trace_step!(negative_class_share);
         // Сохраняем результат этого шага в `uncertainty_measure`.
         // Меру неопределённости распределения называют entropy.
         let mut uncertainty_measure: f64 = 0.0;
+        lesson_trace::trace_step!(uncertainty_measure);
         // Повторяем расчёт для каждого элемента последовательности.
         for probability in [positive_class_share, negative_class_share] {
+            lesson_trace::trace_step!(probability);
             // Выбираем дальнейший шаг по выполнению условия.
             if probability > 0.0 {
                 // Сохраняем результат этого шага в `ratio`.
                 let ratio: f64 = (probability - 1.0) / (probability + 1.0);
+                lesson_trace::trace_step!(ratio);
                 // Сохраняем результат этого шага в `term`.
                 let mut term: f64 = ratio;
+                lesson_trace::trace_step!(term);
                 // Сохраняем результат этого шага в `logarithm`.
                 let mut logarithm: f64 = 0.0;
+                lesson_trace::trace_step!(logarithm);
                 // Повторяем расчёт для каждого элемента последовательности.
                 for odd_divisor in (1..=99).step_by(2) {
+                    lesson_trace::trace_step!(odd_divisor);
                     // Обновляем значение результатом текущего вычисления.
                     logarithm += term / odd_divisor as f64;
+                    lesson_trace::trace_step!(logarithm);
                     // Обновляем значение результатом текущего вычисления.
                     term *= ratio * ratio;
+                    lesson_trace::trace_step!(term);
                 }
                 // Переводим натуральный логарифм в логарифм по основанию 2.
                 uncertainty_measure -= probability * (2.0 * logarithm) / std::f64::consts::LN_2;
+                lesson_trace::trace_step!(uncertainty_measure);
             }
         }
         // Проверяем ожидаемое свойство учебного примера.
@@ -61,6 +74,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_entropy_of_class_proportions_in_tree_node();
 }
 

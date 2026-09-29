@@ -9,18 +9,24 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `rows` для следующего шага примера.
     let rows: [i32; 10] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    lesson_trace::trace_step!(rows);
     // Сохраняем рассчитанное значение `training_data` для следующих операций.
     let training_data: &[i32] = &rows[..6];
+    lesson_trace::trace_step!(training_data);
     // Сохраняем рассчитанное значение `validation` для следующих операций.
     let validation: &[i32] = &rows[6..8];
+    lesson_trace::trace_step!(validation);
     // Сохраняем рассчитанное значение `test` для следующих операций.
     let test: &[i32] = &rows[8..];
+    lesson_trace::trace_step!(test);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("train={training_data:?}, validation={validation:?}, test={test:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_split_dataset_into_training_validation_and_test_sets(training_data, validation, test);
 }
 

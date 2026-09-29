@@ -9,8 +9,10 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `feature_map` для следующего шага примера.
     let feature_map: [[f64; 2]; 2] = [[1.0, 4.0], [3.0, 2.0]];
+    lesson_trace::trace_step!(feature_map);
     // Создаём изменяемое значение `maximum` для следующих операций.
     // Для выбора максимума карта должна содержать хотя бы одно значение.
     assert!(
@@ -21,14 +23,18 @@ fn main() {
     );
     // Сохраняем результат этого шага в `maximum`.
     let mut maximum: f64 = feature_map[0][0];
+    lesson_trace::trace_step!(maximum);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for row in feature_map {
+        lesson_trace::trace_step!(row);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for value in row {
+            lesson_trace::trace_step!(value);
             // Проверяем условие и выбираем соответствующую ветку алгоритма.
             if value > maximum {
                 // Присваиваем вычисленное значение соответствующей переменной или полю.
                 maximum = value;
+                lesson_trace::trace_step!(maximum);
             }
         }
     }
@@ -36,6 +42,7 @@ fn main() {
     println!("max pooling = {maximum}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_max_pool_local_image_windows(feature_map, maximum);
 }
 

@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "lesson-trace",
     "lesson-datasets",
     "lesson-visualization",
     "part-001-lesson-01-multiply-matching-coordinates-of-two-vectors-then-add",

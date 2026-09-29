@@ -12,6 +12,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Учебные реализации математических операций для этого урока.
 
     // Объявляем повторно используемое вычисление `calculate_quadratic_loss`; параметры ниже задают его входы.
@@ -22,6 +23,7 @@ fn main() {
             /* Возводим число в квадрат обычным умножением. */
             // Сохраняем результат этого шага в `value`.
             let value: f64 = parameter - 3.0;
+            lesson_trace::trace_step!(value);
             // Умножаем величины согласно используемой формуле.
             value * value
         })()
@@ -30,20 +32,25 @@ fn main() {
     // 0.01 даёт медленный спуск, 0.2 — быстрый устойчивый, 1.1 — слишком большой шаг для этой параболы.
     // Так сравниваем скорость сходимости и расхождение при одинаковом старте.
     for learning_rate in [0.01, 0.2, 1.1] {
+        lesson_trace::trace_step!(learning_rate);
         // Шаг: Сохраняем loss после каждого обновления параметра.
         let history: Vec<f64> = (|| -> Vec<f64> {
             // Используем подготовленное значение в следующем шаге примера.
             /* Обновляем параметр против градиента и сохраняем историю ошибки. */
             // Сохраняем результат этого шага в `learning_rate`.
             let learning_rate: f64 = learning_rate;
+            lesson_trace::trace_step!(learning_rate);
             // 30 обновлений достаточно, чтобы увидеть разницу траекторий на графике.
             let steps: usize = 30;
+            lesson_trace::trace_step!(steps);
             // Инициализируем изменяемый накопитель `parameter` начальным состоянием.
             let mut parameter: f64 = 0.0;
+            lesson_trace::trace_step!(parameter);
             // Создаём набор значений `history` для следующего шага примера.
             let mut history: Vec<f64> = vec![calculate_squared_distance_of_parameter_from_three(
                 parameter,
             )];
+            lesson_trace::trace_step!(history);
             // Повторяем следующий блок для каждого элемента указанной последовательности.
             for _ in 0..steps {
                 // Выполняем встроенный расчёт один раз и сохраняем результат в `rate_of_change`.
@@ -53,15 +60,18 @@ fn main() {
                     /* Для квадратичной ошибки берём производную 2(x−3). */
                     // Сохраняем результат этого шага в `parameter`.
                     let parameter: f64 = parameter;
+                    lesson_trace::trace_step!(parameter);
                     // d/dx (x−3)² = 2(x−3).
                     2.0 * (parameter - 3.0)
                 })();
+                lesson_trace::trace_step!(rate_of_change);
                 // Считаем спуск сошедшимся при |градиенте| < 10⁻⁸; это учебный порог остановки.
                 if (|| -> f64 {
                     // Используем подготовленное значение в следующем шаге примера.
                     /* Модуль числа по определению: меняем знак только у отрицательного числа. */
                     // Сохраняем результат этого шага в `value`.
                     let value: f64 = rate_of_change;
+                    lesson_trace::trace_step!(value);
                     // Проверяем условие и выбираем соответствующую ветку алгоритма.
                     if value < 0.0 { -value } else { value }
                     // Используем подготовленное значение в следующем шаге примера.
@@ -72,6 +82,7 @@ fn main() {
                 }
                 // Шагаем против производной: большой learning_rate может вызвать расходимость.
                 parameter -= learning_rate * rate_of_change;
+                lesson_trace::trace_step!(parameter);
                 // Сохраняем очередной рассчитанный элемент в коллекции.
                 history.push(calculate_squared_distance_of_parameter_from_three(
                     parameter,
@@ -85,6 +96,7 @@ fn main() {
             // Используем ранее рассчитанное значение `history` в текущем выражении.
             history
         })();
+        lesson_trace::trace_step!(history);
         // Шаг: По первой и последней ошибке видим сходимость или расходимость.
         println!(
             // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
@@ -99,6 +111,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_gradient_descent_learning_rate_convergence_and_update_modes();
 
     // Строим график по результатам урока.

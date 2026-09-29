@@ -9,31 +9,43 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `data` для следующего шага примера.
     let data: [(f64, f64); 2] = [(1.0, 2.0), (2.0, 4.0)];
+    lesson_trace::trace_step!(data);
     // Проверяем ожидаемое свойство учебного примера.
     assert!(!data.is_empty(), "для градиента нужны обучающие примеры");
     // Инициализируем значение `weight` начальным состоянием.
     let weight: f64 = 0.0;
+    lesson_trace::trace_step!(weight);
     // Инициализируем изменяемый накопитель `summed_rates_of_change` начальным состоянием.
     // Производную функции по параметру или вектор таких производных называют gradient.
     let mut summed_rates_of_change: f64 = 0.0;
+    lesson_trace::trace_step!(summed_rates_of_change);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for (feature, target) in data {
+        lesson_trace::trace_step!(feature);
+        lesson_trace::trace_step!(target);
         // Прибавляем очередной вклад к ранее накопленному результату.
         summed_rates_of_change += 2.0 * (weight * feature - target) * feature;
+        lesson_trace::trace_step!(summed_rates_of_change);
     }
     // Считаем количество элементов и сохраняем его в `batch_loss_rate_of_change`.
     let batch_loss_rate_of_change: f64 = summed_rates_of_change / data.len() as f64;
+    lesson_trace::trace_step!(batch_loss_rate_of_change);
     // Сохраняем рассчитанное значение `(first_feature, first_target)` для следующих операций.
     let (first_feature, first_target): (f64, f64) = data[0];
+    lesson_trace::trace_step!(first_feature);
+    lesson_trace::trace_step!(first_target);
     // Умножаем значения и сохраняем результат в `single_example_loss_rate_of_change`.
     let single_example_loss_rate_of_change: f64 =
         2.0 * (weight * first_feature - first_target) * first_feature;
+    lesson_trace::trace_step!(single_example_loss_rate_of_change);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("batch={batch_loss_rate_of_change}, stochastic={single_example_loss_rate_of_change}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_batch_versus_stochastic_gradient_updates(
         batch_loss_rate_of_change,
         single_example_loss_rate_of_change,

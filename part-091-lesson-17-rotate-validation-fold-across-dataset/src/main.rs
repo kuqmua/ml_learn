@@ -9,12 +9,16 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `rows` для следующего шага примера.
     let rows: [i32; 6] = [0, 1, 2, 3, 4, 5];
+    lesson_trace::trace_step!(rows);
     // Сохраняем рассчитанное значение `folds` для следующих операций.
     let folds: i32 = 3;
+    lesson_trace::trace_step!(folds);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for fold in 0..folds {
+        lesson_trace::trace_step!(fold);
         // Сохраняем рассчитанное значение `validation` для следующих операций.
         let validation: Vec<i32> = rows
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -25,6 +29,7 @@ fn main() {
             .filter(|&row| row % folds == fold)
             // Собираем элементы итератора в итоговую коллекцию.
             .collect();
+        lesson_trace::trace_step!(validation);
         // Сохраняем рассчитанное значение `training_data` для следующих операций.
         let training_data: Vec<i32> = rows
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -35,11 +40,13 @@ fn main() {
             .filter(|&row| row % folds != fold)
             // Собираем элементы итератора в итоговую коллекцию.
             .collect();
+        lesson_trace::trace_step!(training_data);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("fold={fold}: train={training_data:?}, validation={validation:?}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_rotate_validation_fold_across_dataset();
 }
 

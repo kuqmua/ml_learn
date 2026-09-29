@@ -11,8 +11,10 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Шаг: Создаём одномерную задачу с явной границей классов.
     let data: [(f64, bool); 4] = [(1., false), (2., false), (3., true), (4., true)];
+    lesson_trace::trace_step!(data);
 
     // Автоматически получаем стандартные реализации перечисленных трейтов для этого типа.
     #[derive(Debug)]
@@ -43,6 +45,7 @@ fn main() {
         let positive_class_share: f64 =
             // Делим значения, получая нормированную величину или среднее.
             data.iter().filter(|(_, label)| *label).count() as f64 / data.len() as f64;
+        lesson_trace::trace_step!(positive_class_share);
         // Умножаем величины согласно используемой формуле.
         2. * positive_class_share * (1. - positive_class_share)
     }
@@ -50,6 +53,7 @@ fn main() {
     fn build_numeric_decision_tree(data: &[(f64, bool)], remaining_depth: usize) -> Tree {
         // Считаем число положительных меток, чтобы проверить чистоту узла.
         let positive_count: usize = data.iter().filter(|(_, label)| *label).count();
+        lesson_trace::trace_step!(positive_count);
         // Чистый узел или достигнутый предел глубины превращаем в лист.
         if remaining_depth == 0 || positive_count == 0 || positive_count == data.len() {
             // Завершаем текущий расчёт и возвращаем найденное значение.
@@ -57,12 +61,15 @@ fn main() {
         }
         // Извлекаем значения признака и сортируем их для поиска возможных порогов.
         let mut sorted_feature_values: Vec<f64> = data.iter().map(|sample| sample.0).collect();
+        lesson_trace::trace_step!(sorted_feature_values);
         // Сортируем значения в порядке, заданном функцией сравнения.
         sorted_feature_values.sort_by(f64::total_cmp);
         // Инициализируем изменяемый накопитель `best_split` начальным состоянием.
         let mut best_split: Option<(f64, f64)> = None;
+        lesson_trace::trace_step!(best_split);
         // Кандидатами служат середины между соседними значениями признака.
         for pair in sorted_feature_values.windows(2) {
+            lesson_trace::trace_step!(pair);
             // Проверяем условие и выбираем соответствующую ветку алгоритма.
             if pair[0] == pair[1] {
                 // Пропускаем текущий элемент и переходим к следующему.
@@ -70,6 +77,7 @@ fn main() {
             }
             // Нормируем или усредняем величину делением и сохраняем её в `candidate_threshold`.
             let candidate_threshold: f64 = (pair[0] + pair[1]) / 2.;
+            lesson_trace::trace_step!(candidate_threshold);
             // Сохраняем рассчитанное значение `left_samples` для следующих операций.
             let left_samples: Vec<(f64, bool)> = data
                 // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -80,6 +88,7 @@ fn main() {
                 .filter(|sample| sample.0 < candidate_threshold)
                 // Собираем элементы итератора в итоговую коллекцию.
                 .collect();
+            lesson_trace::trace_step!(left_samples);
             // Сохраняем рассчитанное значение `right_samples` для следующих операций.
             let right_samples: Vec<(f64, bool)> = data
                 // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -90,6 +99,7 @@ fn main() {
                 .filter(|sample| sample.0 >= candidate_threshold)
                 // Собираем элементы итератора в итоговую коллекцию.
                 .collect();
+            lesson_trace::trace_step!(right_samples);
             // Считаем количество элементов и сохраняем его в `score`.
             let score: f64 = (left_samples.len() as f64
                 // Добавляем этот член в составное арифметическое выражение.
@@ -98,10 +108,12 @@ fn main() {
                 + right_samples.len() as f64 * calculate_gini_impurity_of_labels(&right_samples))
                 // Делим значения, получая нормированную величину или среднее.
                 / data.len() as f64;
+            lesson_trace::trace_step!(score);
             // Проверяем условие и выбираем соответствующую ветку алгоритма.
             if best_split.is_none_or(|(previous_score, _)| score < previous_score) {
                 // Обновляем `best_split` результатом текущего шага.
                 best_split = Some((score, candidate_threshold));
+                lesson_trace::trace_step!(best_split);
             }
         }
         // По лучшему порогу рекурсивно строим два дочерних поддерева.
@@ -116,6 +128,7 @@ fn main() {
                 .filter(|sample| sample.0 < threshold)
                 // Собираем элементы итератора в итоговую коллекцию.
                 .collect();
+            lesson_trace::trace_step!(left_samples);
             // Сохраняем рассчитанное значение `right_samples` для следующих операций.
             let right_samples: Vec<(f64, bool)> = data
                 // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -126,6 +139,7 @@ fn main() {
                 .filter(|sample| sample.0 >= threshold)
                 // Собираем элементы итератора в итоговую коллекцию.
                 .collect();
+            lesson_trace::trace_step!(right_samples);
             // Обрабатываем этот вариант структуры данных отдельным правилом.
             Tree::Split {
                 // Используем ранее рассчитанное значение `threshold` в текущем выражении.
@@ -154,6 +168,7 @@ fn main() {
 
     // Шаг: Обучаем дерево, выбирая порог по уменьшению неоднородности.
     let tree: Tree = build_numeric_decision_tree(&data, 2);
+    lesson_trace::trace_step!(tree);
     // Объявляем повторно используемое вычисление `classify_feature_with_decision_tree`; параметры ниже задают его входы.
     fn classify_feature_with_decision_tree(tree: &Tree, feature_value: f64) -> bool {
         // Разбираем каждый возможный вариант значения отдельно.
@@ -194,6 +209,7 @@ fn main() {
     );
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_decision_tree_with_impurity_splits_and_depth_control(tree);
 
     // Строим график по результатам урока.

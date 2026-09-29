@@ -12,6 +12,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Мини-проект: классификация запроса по словам, оценка на отложенных фразах.
 
     // Фиксируем демонстрационные данные на время выполнения программы.
@@ -47,6 +48,7 @@ fn main() {
         .count() as f64
         // Делим значения, получая нормированную величину или среднее.
         / TRAINING_EXAMPLES.len() as f64;
+    lesson_trace::trace_step!(baseline);
     // Фиксируем демонстрационные данные на время выполнения программы.
     const TEST_EXAMPLES: [(&str, &str); 2] = [("ошибка cargo", "code"), ("метрики модели", "ml")];
     // Проверяем ожидаемое свойство учебного примера.
@@ -74,22 +76,29 @@ fn main() {
         // Единицу текста, которую модель обрабатывает как одно целое, называют token.
         let query_text_units: std::collections::BTreeSet<&str> =
             collect_unique_words_from_text(query);
+        lesson_trace::trace_step!(query_text_units);
         // Создаём изменяемое значение `scores` для следующих операций.
         let mut scores: std::collections::BTreeMap<&str, usize> =
             std::collections::BTreeMap::from([("code", 0usize), ("ml", 0)]);
+        lesson_trace::trace_step!(scores);
         // Повторяем следующий блок для каждого элемента указанной последовательности.
         for &(sample_text, label) in training_examples {
+            lesson_trace::trace_step!(sample_text);
+            lesson_trace::trace_step!(label);
             // Прибавляем очередной вклад к ранее накопленному результату.
             *scores.get_mut(label).unwrap() += query_text_units
                 // Находим общие слова запроса и обучающего текста.
                 .intersection(&collect_unique_words_from_text(sample_text))
                 // Подсчитываем число элементов после отбора.
                 .count();
+            lesson_trace::trace_step!(scores);
         }
         // Сохраняем рассчитанное значение `code_score` для следующих операций.
         let code_score: usize = scores["code"];
+        lesson_trace::trace_step!(code_score);
         // Сохраняем рассчитанное значение `machine_learning_score` для следующих операций.
         let machine_learning_score: usize = scores["ml"];
+        lesson_trace::trace_step!(machine_learning_score);
         // Составляем результат из вычисленных значений в указанном порядке.
         (
             // Проверяем условие и выбираем соответствующую ветку алгоритма.
@@ -126,6 +135,7 @@ fn main() {
         })
         // Подсчитываем число элементов после отбора.
         .count();
+    lesson_trace::trace_step!(correct);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!(
         // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
@@ -135,10 +145,14 @@ fn main() {
     );
     // Шаг: Разбираем каждый прогноз вместе с истинной темой и числом совпавших слов.
     for &(sample_text, expected_topic) in &TEST_EXAMPLES {
+        lesson_trace::trace_step!(sample_text);
+        lesson_trace::trace_step!(expected_topic);
         // Сохраняем рассчитанное значение `(predicted_topic, overlap_count)` для следующих операций.
         let (predicted_topic, overlap_count): (&str, usize) =
             // Вызываем нужное вычисление с подготовленными аргументами.
             choose_topic_and_count_matching_training_words(sample_text, &TRAINING_EXAMPLES);
+        lesson_trace::trace_step!(predicted_topic);
+        lesson_trace::trace_step!(overlap_count);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!(
             // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
@@ -147,6 +161,7 @@ fn main() {
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_capstone_ai_project_with_comparison_and_error_analysis(baseline, correct);
 
     // Строим график по результатам урока.

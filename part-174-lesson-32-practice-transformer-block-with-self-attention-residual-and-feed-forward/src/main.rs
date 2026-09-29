@@ -11,8 +11,10 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Шаг: Создаём вход из двух токенов с двумерными признаками.
     let input_values: [[f64; 2]; 2] = [[1., 0.], [0., 1.]];
+    lesson_trace::trace_step!(input_values);
 
     // Учебные реализации математических операций для этого урока.
 
@@ -33,10 +35,12 @@ fn main() {
         }
         // Создаём изменяемое значение `estimate` для следующих операций.
         let mut estimate: f64 = if value > 1.0 { value } else { 1.0 };
+        lesson_trace::trace_step!(estimate);
         // 80 шагов Ньютона дают оценку √value с запасом для f64.
         for _ in 0..80 {
             // Среднее estimate и value/estimate приближает квадратный корень.
             estimate = (estimate + value / estimate) / 2.0;
+            lesson_trace::trace_step!(estimate);
         }
         // Используем ранее рассчитанное значение `estimate` в текущем выражении.
         estimate
@@ -61,30 +65,40 @@ fn main() {
         }
         // Создаём изменяемое значение `reduced` для следующих операций.
         let mut reduced: f64 = value;
+        lesson_trace::trace_step!(reduced);
         // Инициализируем изменяемый накопитель `halving_count` начальным состоянием.
         let mut halving_count: i32 = 0;
+        lesson_trace::trace_step!(halving_count);
         // Уменьшаем аргумент до ≤0.5: на таком интервале ряд Тейлора для exp сходится быстро.
         while reduced > 0.5 {
             // Масштабируем текущую величину делением.
             reduced /= 2.0;
+            lesson_trace::trace_step!(reduced);
             // Прибавляем очередной вклад к ранее накопленному результату.
             halving_count += 1;
+            lesson_trace::trace_step!(halving_count);
         }
         // Создаём изменяемое значение `term` для следующих операций.
         let mut term: f64 = 1.0;
+        lesson_trace::trace_step!(term);
         // Создаём изменяемое значение `result` для следующих операций.
         let mut result: f64 = 1.0;
+        lesson_trace::trace_step!(result);
         // Берём 30 членов ряда exp(y)=Σ y^k/k!; это предел приближения для учебных входов.
         for term_index in 1..=30 {
+            lesson_trace::trace_step!(term_index);
             // Умножаем накопленное значение на очередной множитель.
             term *= reduced / term_index as f64;
+            lesson_trace::trace_step!(term);
             // Прибавляем очередной вклад к ранее накопленному результату.
             result += term;
+            lesson_trace::trace_step!(result);
         }
         // Восстанавливаем exp(value): каждое возведение в квадрат отменяет одно деление аргумента на 2.
         for _ in 0..halving_count {
             // Умножаем накопленное значение на очередной множитель.
             result *= result;
+            lesson_trace::trace_step!(result);
         }
         // Используем ранее рассчитанное значение `result` в текущем выражении.
         result
@@ -100,12 +114,14 @@ fn main() {
     fn layer_normalize_two_feature_vector(input_values: [f64; 2]) -> [f64; 2] {
         // Нормируем или усредняем величину делением и сохраняем её в `mean`.
         let mean: f64 = (input_values[0] + input_values[1]) / 2.;
+        lesson_trace::trace_step!(mean);
         // Комбинируем исходные величины и сохраняем результат в `variance`.
         let variance: f64 = (multiply_number_by_itself(input_values[0] - mean)
             // Складываем или вычитаем величины согласно используемой формуле.
             + multiply_number_by_itself(input_values[1] - mean))
             // Делим значения, получая нормированную величину или среднее.
             / 2.;
+        lesson_trace::trace_step!(variance);
         // Составляем результат из вычисленных значений в указанном порядке.
         [
             // Составляем результат из вычисленных значений в указанном порядке.
@@ -122,6 +138,7 @@ fn main() {
         /* Собираем causal self-attention, остаточные связи, нормализацию и feed-forward. */
         // Сохраняем результат этого шага в `input_values`.
         let input_values: &[[f64; 2]] = &input_values;
+        lesson_trace::trace_step!(input_values);
         // Используем ранее рассчитанное значение `input_values` в текущем выражении.
         input_values
             // Перебираем элементы по ссылке, не копируя исходную коллекцию.
@@ -147,53 +164,70 @@ fn main() {
                     })
                     // Собираем элементы итератора в итоговую коллекцию.
                     .collect();
+                lesson_trace::trace_step!(raw_model_scores);
                 // Выполняем встроенный расчёт один раз и сохраняем результат в `attention_weights`.
                 let attention_weights: Vec<f64> = (|| -> Vec<f64> {
                     // Используем подготовленное значение в следующем шаге примера.
                     /* Вычитаем максимум для устойчивости, затем нормируем экспоненты. */
                     // Сохраняем результат этого шага в `input_values`.
                     let input_values: &[f64] = &raw_model_scores;
+                    lesson_trace::trace_step!(input_values);
                     // Создаём изменяемое значение `maximum_value` для следующих операций.
                     let mut maximum_value: f64 = f64::NEG_INFINITY;
+                    lesson_trace::trace_step!(maximum_value);
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
                     for &value in input_values {
+                        lesson_trace::trace_step!(value);
                         // Проверяем условие и выбираем соответствующую ветку алгоритма.
                         if value > maximum_value {
                             // Обновляем `maximum_value` результатом текущего шага.
                             maximum_value = value;
+                            lesson_trace::trace_step!(maximum_value);
                         }
                     }
                     // Считаем количество элементов и сохраняем его в `exponentials`.
                     let mut exponentials: Vec<f64> = Vec::with_capacity(input_values.len());
+                    lesson_trace::trace_step!(exponentials);
                     // Инициализируем изменяемый накопитель `normalizer` начальным состоянием.
                     let mut normalizer: f64 = 0.0;
+                    lesson_trace::trace_step!(normalizer);
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
                     for &value in input_values {
+                        lesson_trace::trace_step!(value);
                         // Сохраняем рассчитанное значение `exponential_value` для следующих операций.
                         let exponential_value: f64 =
                                 // Складываем или вычитаем величины согласно используемой формуле.
                                 approximate_exponential_with_taylor_series(value - maximum_value);
+                        lesson_trace::trace_step!(exponential_value);
                         // Сохраняем очередной рассчитанный элемент в коллекции.
                         exponentials.push(exponential_value);
                         // Прибавляем очередной вклад к ранее накопленному результату.
                         normalizer += exponential_value;
+                        lesson_trace::trace_step!(normalizer);
                     }
                     // Повторяем следующий блок для каждого элемента указанной последовательности.
                     for exponential_value in &mut exponentials {
+                        lesson_trace::trace_step!(exponential_value);
                         // Масштабируем текущую величину делением.
                         *exponential_value /= normalizer;
+                        lesson_trace::trace_step!(exponential_value);
                     }
                     // Используем ранее рассчитанное значение `exponentials` в текущем выражении.
                     exponentials
                 })();
+                lesson_trace::trace_step!(attention_weights);
                 // Смешиваем value-векторы по рассчитанным весам внимания.
                 let mut attended: [f64; 2] = [0.0, 0.0];
+                lesson_trace::trace_step!(attended);
                 // Повторяем следующий блок для каждого элемента указанной последовательности.
                 for key_index in 0..attention_weights.len() {
+                    lesson_trace::trace_step!(key_index);
                     // Прибавляем очередной вклад к ранее накопленному результату.
                     attended[0] += attention_weights[key_index] * input_values[key_index][0];
+                    lesson_trace::trace_step!(attended);
                     // Прибавляем очередной вклад к ранее накопленному результату.
                     attended[1] += attention_weights[key_index] * input_values[key_index][1];
+                    lesson_trace::trace_step!(attended);
                 }
                 // После первой остаточной связи применяем нормализацию и простую feed-forward функцию.
                 let normalized_values: [f64; 2] = layer_normalize_two_feature_vector([
@@ -202,6 +236,7 @@ fn main() {
                     // Складываем или вычитаем величины согласно используемой формуле.
                     query[1] + attended[1],
                 ]);
+                lesson_trace::trace_step!(normalized_values);
                 // Создаём набор значений `feed_forward_values` для следующего шага примера.
                 let feed_forward_values: [f64; 2] = [
                     // Вызываем нужное вычисление с подготовленными аргументами.
@@ -209,6 +244,7 @@ fn main() {
                     // Вызываем нужное вычисление с подготовленными аргументами.
                     choose_larger_number(normalized_values[1], 0.),
                 ];
+                lesson_trace::trace_step!(feed_forward_values);
                 // Вызываем нужное вычисление с подготовленными аргументами.
                 layer_normalize_two_feature_vector([
                     // Складываем или вычитаем величины согласно используемой формуле.
@@ -220,10 +256,12 @@ fn main() {
             // Собираем элементы итератора в итоговую коллекцию.
             .collect()
     })();
+    lesson_trace::trace_step!(transformer_output);
     // Печатаем рассчитанные значения для проверки примера.
     println!("transformer block: {transformer_output:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_practice_transformer_block_with_self_attention_residual_and_feed_forward(
         input_values,
         transformer_output,

@@ -4,18 +4,23 @@
 // Эти счётчики затем повторно используются в precision, recall, F1 и сводной практике.
 
 fn main() {
+    lesson_trace::enable();
     // Задаём учебные значения для `truth`.
     let truth: [bool; 4] = [true, false, true, false];
+    lesson_trace::trace_step!(truth);
     // Задаём учебные значения для `predicted`.
     let predicted: [bool; 4] = [true, true, false, false];
+    lesson_trace::trace_step!(predicted);
     // Сохраняем результат этого шага в `counts`.
     let counts: part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::BinaryClassificationCounts = part_060_lesson_11_binary_classification_confusion_matrix_from_true_and_predicted_labels::count_binary_classification_outcomes_from_true_and_predicted_labels(
         &truth, &predicted,
     )
     // Используем результат, ожидая успешного выполнения шага.
     .expect("у каждого ответа есть прогноз");
+    lesson_trace::trace_step!(counts);
     // Повторяем расчёт для каждого элемента последовательности.
     for index in 0..truth.len() {
+        lesson_trace::trace_step!(index);
         // Сохраняем результат этого шага в `description`.
         let description: &str = match (truth[index], predicted[index]) {
             // Выполняем действие для этого варианта данных.
@@ -27,6 +32,7 @@ fn main() {
             // Выполняем действие для этого варианта данных.
             (false, false) => "TN: верно найден отрицательный класс",
         };
+        lesson_trace::trace_step!(description);
         // Печатаем рассчитанные значения для проверки примера.
         println!(
             // Передаём подпись или текстовое значение для следующего шага.
@@ -56,6 +62,7 @@ fn main() {
     println!("итоговые счётчики: {counts:?}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_binary_classification_confusion_matrix_from_true_and_predicted_labels(counts);
 }
 

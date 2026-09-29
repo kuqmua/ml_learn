@@ -9,12 +9,16 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `query` для следующего шага примера.
     let query: [f64; 2] = [1.0, 2.0];
+    lesson_trace::trace_step!(query);
     // Создаём набор значений `candidates` для следующего шага примера.
     let candidates: [[f64; 2]; 2] = [[2.0, 2.0], [4.0, 6.0]];
+    lesson_trace::trace_step!(candidates);
     // Повторяем следующий блок для каждого элемента указанной последовательности.
     for candidate in candidates {
+        lesson_trace::trace_step!(candidate);
         // Для поиска ближайшего кандидата нужен квадрат расстояния из урока 01.4.
         let squared_distance: f64 =
             part_004_lesson_01_euclidean_distance_between_two_points::squared_euclidean_distance_between_two_points(
@@ -22,11 +26,13 @@ fn main() {
             )
             // Используем результат, ожидая успешного выполнения шага.
             .expect("запрос и кандидат имеют одинаковое число координат");
+        lesson_trace::trace_step!(squared_distance);
         // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
         println!("кандидат {candidate:?}: квадрат расстояния={squared_distance}");
     }
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_squared_feature_distance_for_nearest_neighbors();
 }
 

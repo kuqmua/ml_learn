@@ -9,17 +9,22 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
+    lesson_trace::enable();
     // Создаём набор значений `model_predictions` для следующего шага примера.
     let model_predictions: [bool; 5] = [true, false, true, true, false];
+    lesson_trace::trace_step!(model_predictions);
     // Преобразуем входные данные и сохраняем полученную коллекцию в `positive_votes`.
     let positive_votes: usize = model_predictions.iter().filter(|&&vote| vote).count();
+    lesson_trace::trace_step!(positive_votes);
     // Считаем количество элементов и сохраняем его в `majority_vote_from_models`.
     // Объединение моделей, обученных на разных выборках, называют bagging.
     let majority_vote_from_models: bool = positive_votes * 2 > model_predictions.len();
+    lesson_trace::trace_step!(majority_vote_from_models);
     // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
     println!("голосов за класс 1: {positive_votes}; ансамбль={majority_vote_from_models}");
 
     // Построение графика вынесено из основного кода урока.
+    lesson_trace::disable();
     visualize_bagging_models_trained_on_bootstrap_samples(model_predictions, positive_votes);
 }
 
