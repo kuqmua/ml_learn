@@ -1,9 +1,0 @@
-[package]
-name = "part-109-lesson-20-practice-forward-values-and-backward-rates-of-change"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

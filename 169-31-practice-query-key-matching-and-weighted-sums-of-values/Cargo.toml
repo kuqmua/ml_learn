@@ -1,0 +1,10 @@
+[package]
+name = "l169-31-practice-query-key-matching-and-weighted-sums-of-values"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding = { package = "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding", path = "../001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding" }
+
+lesson-visualization = { path = "../lesson-visualization" }

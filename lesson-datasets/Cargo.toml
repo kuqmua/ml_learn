@@ -6,9 +6,9 @@ edition = "2024"
 [dependencies]
 
 [dev-dependencies]
-part-004-lesson-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum = { path = "../part-004-lesson-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum" }
-part-029-lesson-06-calculate-mean-by-summing-values-and-dividing-by-count = { path = "../part-029-lesson-06-calculate-mean-by-summing-values-and-dividing-by-count" }
-part-049-lesson-09-calculate-mean-squared-error-as-squared-error-sum-divided-by-count = { path = "../part-049-lesson-09-calculate-mean-squared-error-as-squared-error-sum-divided-by-count" }
-part-050-lesson-09-calculate-mean-absolute-error-as-absolute-error-sum-divided-by-count = { path = "../part-050-lesson-09-calculate-mean-absolute-error-as-absolute-error-sum-divided-by-count" }
-part-060-lesson-11-count-correct-and-incorrect-positive-and-negative-predictions = { path = "../part-060-lesson-11-count-correct-and-incorrect-positive-and-negative-predictions" }
-part-062-lesson-11-calculate-positive-detection-recall-as-found-positives-over-actual-positives = { path = "../part-062-lesson-11-calculate-positive-detection-recall-as-found-positives-over-actual-positives" }
+l004-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum = { path = "../004-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum" }
+l029-06-calculate-mean-by-summing-values-and-dividing-by-count = { path = "../029-06-calculate-mean-by-summing-values-and-dividing-by-count" }
+l049-09-calculate-mean-squared-error-as-squared-error-sum-divided-by-count = { path = "../049-09-calculate-mean-squared-error-as-squared-error-sum-divided-by-count" }
+l050-09-calculate-mean-absolute-error-as-absolute-error-sum-divided-by-count = { path = "../050-09-calculate-mean-absolute-error-as-absolute-error-sum-divided-by-count" }
+l060-11-count-correct-and-incorrect-positive-and-negative-predictions = { path = "../060-11-count-correct-and-incorrect-positive-and-negative-predictions" }
+l062-11-calculate-positive-detection-recall-as-found-positives-over-actual-positives = { path = "../062-11-calculate-positive-detection-recall-as-found-positives-over-actual-positives" }

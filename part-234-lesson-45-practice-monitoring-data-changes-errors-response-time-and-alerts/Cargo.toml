@@ -1,9 +1,0 @@
-[package]
-name = "part-234-lesson-45-practice-monitoring-data-changes-errors-response-time-and-alerts"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

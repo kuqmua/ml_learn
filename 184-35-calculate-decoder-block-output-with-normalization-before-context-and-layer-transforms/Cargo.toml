@@ -1,0 +1,8 @@
+[package]
+name = "l184-35-calculate-decoder-block-output-with-normalization-before-context-and-layer-transforms"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+l182-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights = { path = "../182-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights" }

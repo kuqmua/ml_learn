@@ -1,7 +1,0 @@
-[package]
-name = "part-045-lesson-08-read-experiment-settings-from-command-line"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

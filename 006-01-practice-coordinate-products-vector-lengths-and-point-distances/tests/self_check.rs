@@ -1,0 +1,52 @@
+#[test]
+#[ignore = "подбери второй вектор и запусти тест с --ignored"]
+fn combine_vector_properties() {
+    let first_vector: [f64; 2] = [3.0, 4.0];
+    let perpendicular_vector: Option<[f64; 2]> = None; // Заполни: подбери ненулевой перпендикулярный вектор
+    let perpendicular_vector: [f64; 2] =
+        perpendicular_vector.expect("заполни ответ перед запуском теста");
+    let expected_distance: Option<f64> = None; // Заполни: вычисли расстояние до выбранного вектора
+    let expected_distance: f64 = expected_distance.expect("заполни ответ перед запуском теста");
+
+    assert_eq!(
+        l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+            &first_vector,
+            &perpendicular_vector
+        ),
+        Ok(0.0)
+    );
+    assert!(
+        perpendicular_vector
+            .iter()
+            .any(|&coordinate| coordinate != 0.0)
+    );
+    assert_eq!(
+        l002_01_calculate_l1_vector_norm_by_summing_absolute_coordinates::calculate_l1_vector_norm_by_summing_absolute_coordinates(
+            &first_vector
+        ),
+        7.0
+    );
+    assert_eq!(
+        l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(
+            &first_vector
+        ),
+        5.0
+    );
+    assert!(
+        (l004_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+            &first_vector,
+            &perpendicular_vector
+        )
+        .unwrap()
+            - expected_distance)
+            .abs()
+            < 1e-10
+    );
+    assert_eq!(
+        l005_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(
+            &first_vector,
+            &perpendicular_vector
+        ),
+        Ok(0.0)
+    );
+}

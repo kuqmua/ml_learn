@@ -1,0 +1,9 @@
+[package]
+name = "l131-24-reduce-image-size-by-taking-local-window-maxima"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

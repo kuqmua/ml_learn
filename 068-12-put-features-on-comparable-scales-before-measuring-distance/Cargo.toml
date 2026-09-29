@@ -1,0 +1,10 @@
+[package]
+name = "l068-12-put-features-on-comparable-scales-before-measuring-distance"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+l004_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum = { package = "l004-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum", path = "../004-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum" }
+
+lesson-visualization = { path = "../lesson-visualization" }

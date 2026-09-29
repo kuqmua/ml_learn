@@ -1,9 +1,0 @@
-[package]
-name = "part-021-lesson-04-compare-function-valleys-reached-from-different-starts"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

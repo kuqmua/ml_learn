@@ -1,9 +1,0 @@
-[package]
-name = "part-071-lesson-12-practice-class-voting-by-nearby-examples-after-feature-scaling"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

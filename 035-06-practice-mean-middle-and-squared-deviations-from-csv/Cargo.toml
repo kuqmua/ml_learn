@@ -1,0 +1,11 @@
+[package]
+name = "l035-06-practice-mean-middle-and-squared-deviations-from-csv"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+l029_06_calculate_mean_by_summing_values_and_dividing_by_count = { package = "l029-06-calculate-mean-by-summing-values-and-dividing-by-count", path = "../029-06-calculate-mean-by-summing-values-and-dividing-by-count" }
+l031_06_calculate_sample_variance_as_squared_deviation_sum_over_count_minus_one = { package = "l031-06-calculate-sample-variance-as-squared-deviation-sum-over-count-minus-one", path = "../031-06-calculate-sample-variance-as-squared-deviation-sum-over-count-minus-one" }
+
+lesson-visualization = { path = "../lesson-visualization" }

@@ -1,9 +1,0 @@
-[package]
-name = "part-147-lesson-27-compare-byte-splitting-and-learned-text-pieces-on-new-strings"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-part-144-lesson-27-learn-text-units-by-merging-most-frequent-adjacent-byte-pairs = { path = "../part-144-lesson-27-learn-text-units-by-merging-most-frequent-adjacent-byte-pairs" }
-lesson-visualization = { path = "../lesson-visualization" }

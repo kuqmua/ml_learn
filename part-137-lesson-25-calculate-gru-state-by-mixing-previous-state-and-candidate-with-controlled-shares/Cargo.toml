@@ -1,7 +1,0 @@
-[package]
-name = "part-137-lesson-25-calculate-gru-state-by-mixing-previous-state-and-candidate-with-controlled-shares"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

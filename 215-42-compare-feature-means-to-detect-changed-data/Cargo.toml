@@ -1,0 +1,10 @@
+[package]
+name = "l215-42-compare-feature-means-to-detect-changed-data"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+l029_06_calculate_mean_by_summing_values_and_dividing_by_count = { package = "l029-06-calculate-mean-by-summing-values-and-dividing-by-count", path = "../029-06-calculate-mean-by-summing-values-and-dividing-by-count" }
+
+lesson-visualization = { path = "../lesson-visualization" }

@@ -50,8 +50,21 @@ pub fn show<T: Debug + ?Sized>(file: &'static str, line: u32, label: &str, value
     let suffix = if display.clipped { "…" } else { "" };
     let part = file
         .split('/')
-        .find(|segment| segment.starts_with("part-"))
-        .and_then(|segment| segment.get(..8))
+        .find_map(|segment| {
+            let mut parts = segment.splitn(3, '-');
+            let lesson = parts.next()?;
+            let block = parts.next()?;
+            parts.next()?;
+            if lesson.len() == 3
+                && lesson.bytes().all(|byte| byte.is_ascii_digit())
+                && !block.is_empty()
+                && block.bytes().all(|byte| byte.is_ascii_digit())
+            {
+                segment.get(..lesson.len() + 1 + block.len())
+            } else {
+                None
+            }
+        })
         .unwrap_or("урок");
     if occurrence == 1 {
         println!("  [{part}] {label} = {}{suffix}", display.text);

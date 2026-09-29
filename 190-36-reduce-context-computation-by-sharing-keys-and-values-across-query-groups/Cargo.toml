@@ -1,0 +1,8 @@
+[package]
+name = "l190-36-reduce-context-computation-by-sharing-keys-and-values-across-query-groups"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+l182-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights = { path = "../182-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights" }

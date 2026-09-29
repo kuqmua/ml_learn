@@ -1,0 +1,9 @@
+[package]
+name = "l013-03-calculate-derivative-as-function-output-change-per-input-change"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

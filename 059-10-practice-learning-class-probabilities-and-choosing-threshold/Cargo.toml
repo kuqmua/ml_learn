@@ -1,0 +1,9 @@
+[package]
+name = "l059-10-practice-learning-class-probabilities-and-choosing-threshold"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

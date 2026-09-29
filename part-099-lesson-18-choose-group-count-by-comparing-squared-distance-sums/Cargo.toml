@@ -1,9 +1,0 @@
-[package]
-name = "part-099-lesson-18-choose-group-count-by-comparing-squared-distance-sums"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

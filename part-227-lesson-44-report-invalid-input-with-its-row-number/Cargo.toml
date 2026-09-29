@@ -1,7 +1,0 @@
-[package]
-name = "part-227-lesson-44-report-invalid-input-with-its-row-number"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

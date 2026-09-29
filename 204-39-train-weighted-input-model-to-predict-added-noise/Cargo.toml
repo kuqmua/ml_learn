@@ -1,0 +1,8 @@
+[package]
+name = "l204-39-train-weighted-input-model-to-predict-added-noise"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+l203-39-calculate-noisy-signal-by-mixing-signal-and-noise-with-root-variance-share-weights = { path = "../203-39-calculate-noisy-signal-by-mixing-signal-and-noise-with-root-variance-share-weights" }

@@ -1,9 +1,0 @@
-[package]
-name = "part-049-lesson-09-calculate-mean-squared-error-as-squared-error-sum-divided-by-count"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

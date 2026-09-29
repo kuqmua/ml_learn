@@ -1,0 +1,8 @@
+[package]
+name = "l135-25-calculate-memory-parameter-influence-by-passing-error-changes-back-in-time"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+l134-25-update-memory-from-weighted-input-and-previous-memory = { path = "../134-25-update-memory-from-weighted-input-and-previous-memory" }

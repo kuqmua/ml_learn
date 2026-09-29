@@ -1,0 +1,9 @@
+[package]
+name = "l030-06-calculate-median-by-sorting-values-and-finding-middle"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

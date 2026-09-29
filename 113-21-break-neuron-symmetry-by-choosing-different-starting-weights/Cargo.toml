@@ -1,0 +1,9 @@
+[package]
+name = "l113-21-break-neuron-symmetry-by-choosing-different-starting-weights"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

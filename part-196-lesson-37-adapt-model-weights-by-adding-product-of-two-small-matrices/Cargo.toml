@@ -1,7 +1,0 @@
-[package]
-name = "part-196-lesson-37-adapt-model-weights-by-adding-product-of-two-small-matrices"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

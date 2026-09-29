@@ -1,9 +1,0 @@
-[package]
-name = "part-016-lesson-03-calculate-gradient-by-collecting-rates-of-change-for-both-inputs"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

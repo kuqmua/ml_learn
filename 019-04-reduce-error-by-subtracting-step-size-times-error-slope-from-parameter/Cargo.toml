@@ -1,0 +1,9 @@
+[package]
+name = "l019-04-reduce-error-by-subtracting-step-size-times-error-slope-from-parameter"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

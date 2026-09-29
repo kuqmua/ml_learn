@@ -1,7 +1,0 @@
-[package]
-name = "part-223-lesson-43-load-both-supported-old-and-new-model-file-versions"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

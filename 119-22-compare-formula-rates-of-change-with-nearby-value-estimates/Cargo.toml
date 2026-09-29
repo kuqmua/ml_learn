@@ -1,0 +1,9 @@
+[package]
+name = "l119-22-compare-formula-rates-of-change-with-nearby-value-estimates"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

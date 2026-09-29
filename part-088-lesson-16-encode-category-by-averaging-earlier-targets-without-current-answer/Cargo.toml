@@ -1,8 +1,0 @@
-[package]
-name = "part-088-lesson-16-encode-category-by-averaging-earlier-targets-without-current-answer"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-lesson-visualization = { path = "../lesson-visualization" }

@@ -1,0 +1,11 @@
+[package]
+name = "l005-01-calculate-direction-similarity-as-coordinate-product-sum-divided-by-vector-lengths"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding = { package = "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding", path = "../001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding" }
+l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates = { package = "l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates", path = "../003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates" }
+
+lesson-visualization = { path = "../lesson-visualization" }

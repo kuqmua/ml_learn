@@ -1,9 +1,0 @@
-[package]
-name = "part-024-lesson-05-calculate-conditional-probability-by-dividing-joint-by-known-event-probability"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

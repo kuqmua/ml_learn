@@ -1,0 +1,9 @@
+[package]
+name = "l028-05-practice-event-probability-updates-and-weighted-outcome-sums"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

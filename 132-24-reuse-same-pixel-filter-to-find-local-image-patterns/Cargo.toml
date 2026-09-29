@@ -1,0 +1,9 @@
+[package]
+name = "l132-24-reuse-same-pixel-filter-to-find-local-image-patterns"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

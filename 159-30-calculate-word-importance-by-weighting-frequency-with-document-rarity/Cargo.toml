@@ -1,0 +1,9 @@
+[package]
+name = "l159-30-calculate-word-importance-by-weighting-frequency-with-document-rarity"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

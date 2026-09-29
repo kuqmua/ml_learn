@@ -1,8 +1,0 @@
-[package]
-name = "part-134-lesson-25-update-memory-from-weighted-input-and-previous-memory"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-lesson-visualization = { path = "../lesson-visualization" }
