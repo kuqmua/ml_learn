@@ -1,7 +1,0 @@
-[package]
-name = "l089-16-correct-errors-using-models-trained-only-on-earlier-rows"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

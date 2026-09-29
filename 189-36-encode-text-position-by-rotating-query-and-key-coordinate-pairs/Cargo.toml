@@ -1,8 +1,0 @@
-[package]
-name = "l189-36-encode-text-position-by-rotating-query-and-key-coordinate-pairs"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-lesson-visualization = { path = "../lesson-visualization" }

@@ -1,7 +1,0 @@
-[package]
-name = "l222-43-validate-model-field-count-and-reject-nonfinite-weights"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

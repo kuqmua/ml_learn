@@ -1,9 +1,0 @@
-[package]
-name = "l160-30-calculate-query-document-direction-similarity-as-product-sum-over-vector-lengths"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-l005_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths = { package = "l005-01-calculate-direction-similarity-as-coordinate-product-sum-divided-by-vector-lengths", path = "../005-01-calculate-direction-similarity-as-coordinate-product-sum-divided-by-vector-lengths" }
-lesson-visualization = { path = "../lesson-visualization" }

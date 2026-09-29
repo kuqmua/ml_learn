@@ -1,7 +1,0 @@
-[package]
-name = "l197-37-compress-model-weights-by-scaling-and-rounding-to-eight-bit-integers"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

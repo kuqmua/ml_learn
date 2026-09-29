@@ -1,7 +1,0 @@
-[package]
-name = "l087-16-build-symmetric-tree-using-shared-threshold-test-at-each-level"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

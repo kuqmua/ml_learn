@@ -1,8 +1,0 @@
-[package]
-name = "l187-35-train-output-weights-while-keeping-context-model-fixed"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-l186-35-convert-text-identifiers-to-context-and-next-piece-scores = { path = "../186-35-convert-text-identifiers-to-context-and-next-piece-scores" }

@@ -1,9 +1,0 @@
-[package]
-name = "l194-36-calculate-selected-branch-output-by-combining-two-chosen-branches"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-l182-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights = { path = "../182-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights" }
-lesson-visualization = { path = "../lesson-visualization" }

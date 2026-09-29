@@ -1,8 +1,0 @@
-[package]
-name = "l207-40-control-memory-forgetting-by-choosing-retained-state-share-from-input"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-lesson-visualization = { path = "../lesson-visualization" }

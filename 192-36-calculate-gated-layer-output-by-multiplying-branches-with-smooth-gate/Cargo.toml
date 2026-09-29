@@ -1,7 +1,0 @@
-[package]
-name = "l192-36-calculate-gated-layer-output-by-multiplying-branches-with-smooth-gate"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

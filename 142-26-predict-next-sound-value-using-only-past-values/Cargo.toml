@@ -1,9 +1,0 @@
-[package]
-name = "l142-26-predict-next-sound-value-using-only-past-values"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-l138-26-calculate-causal-filter-output-by-summing-weighted-current-and-past-values = { path = "../138-26-calculate-causal-filter-output-by-summing-weighted-current-and-past-values" }
-lesson-visualization = { path = "../lesson-visualization" }

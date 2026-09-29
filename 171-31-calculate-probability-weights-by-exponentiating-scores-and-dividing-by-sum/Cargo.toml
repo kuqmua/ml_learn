@@ -1,0 +1,9 @@
+[package]
+name = "l171-31-calculate-probability-weights-by-exponentiating-scores-and-dividing-by-sum"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

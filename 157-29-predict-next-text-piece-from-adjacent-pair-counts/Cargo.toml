@@ -1,0 +1,9 @@
+[package]
+name = "l157-29-predict-next-text-piece-from-adjacent-pair-counts"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

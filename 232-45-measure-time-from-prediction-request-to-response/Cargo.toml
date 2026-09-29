@@ -1,7 +1,0 @@
-[package]
-name = "l232-45-measure-time-from-prediction-request-to-response"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

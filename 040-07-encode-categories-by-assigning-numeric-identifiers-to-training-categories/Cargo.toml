@@ -1,7 +1,0 @@
-[package]
-name = "l040-07-encode-categories-by-assigning-numeric-identifiers-to-training-categories"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }

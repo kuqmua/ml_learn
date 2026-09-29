@@ -1,0 +1,9 @@
+[package]
+name = "l205-38-limit-found-fragment-count-to-fit-answer-context"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

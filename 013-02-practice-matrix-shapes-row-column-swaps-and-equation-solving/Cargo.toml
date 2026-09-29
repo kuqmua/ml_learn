@@ -1,0 +1,10 @@
+[package]
+name = "l013-02-practice-matrix-shapes-row-column-swaps-and-equation-solving"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding = { package = "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding", path = "../001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding" }
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

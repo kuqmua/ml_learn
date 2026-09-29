@@ -1,8 +1,0 @@
-[package]
-name = "l205-39-recover-clean-signal-by-subtracting-scaled-noise-and-dividing-by-signal-scale"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-l203-39-calculate-noisy-signal-by-mixing-signal-and-noise-with-root-variance-share-weights = { path = "../203-39-calculate-noisy-signal-by-mixing-signal-and-noise-with-root-variance-share-weights" }

@@ -1,0 +1,10 @@
+[package]
+name = "l131-23-practice-stable-weight-updates-and-stopping-on-validation-error"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }
+
+
+lesson-visualization = { path = "../lesson-visualization" }

@@ -1,9 +1,0 @@
-[package]
-name = "l231-45-check-released-model-predictions-against-new-known-answers"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

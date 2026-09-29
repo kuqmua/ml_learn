@@ -9,17 +9,17 @@ fn report_majority_baseline(
         .map(|&index| records[index].is_spam)
         .collect();
     let predictions = vec![majority_is_spam; indices.len()];
-    let counts = l060_11_count_correct_and_incorrect_positive_and_negative_predictions::count_binary_classification_outcomes_from_true_and_predicted_labels(
+    let counts = l061_11_count_correct_and_incorrect_positive_and_negative_predictions::count_binary_classification_outcomes_from_true_and_predicted_labels(
         &truth,
         &predictions,
     )?;
     println!(
         "{name}: accuracy={:.3}, spam recall={:.3}, missed spam={}",
-        l060_11_count_correct_and_incorrect_positive_and_negative_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(
+        l063_11_calculate_accuracy_as_correct_predictions_divided_by_all_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(
             counts
         )
         .unwrap(),
-        l062_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(counts).unwrap(),
+        l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(counts).unwrap(),
         counts.false_negatives
     );
     Ok(())

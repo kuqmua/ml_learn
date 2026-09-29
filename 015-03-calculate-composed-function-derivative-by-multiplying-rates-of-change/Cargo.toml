@@ -1,9 +1,0 @@
-[package]
-name = "l015-03-calculate-composed-function-derivative-by-multiplying-rates-of-change"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

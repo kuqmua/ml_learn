@@ -1,9 +1,0 @@
-[package]
-name = "l123-23-calculate-adaptive-update-from-running-means-of-slopes-and-squared-slopes"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

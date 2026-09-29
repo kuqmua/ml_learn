@@ -1,0 +1,10 @@
+[package]
+name = "l065-11-calculate-positive-detection-recall-as-found-positives-over-actual-positives"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l061_11_count_correct_and_incorrect_positive_and_negative_predictions = { package = "l061-11-count-correct-and-incorrect-positive-and-negative-predictions", path = "../061-11-count-correct-and-incorrect-positive-and-negative-predictions" }
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

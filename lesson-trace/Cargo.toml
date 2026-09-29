@@ -5,3 +5,6 @@ edition = "2024"
 
 [lib]
 name = "lesson_trace"
+
+[dev-dependencies]
+syn = { version = "2", features = ["full", "visit"] }

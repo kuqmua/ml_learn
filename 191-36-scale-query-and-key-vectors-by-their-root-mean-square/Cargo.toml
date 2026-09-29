@@ -1,9 +1,0 @@
-[package]
-name = "l191-36-scale-query-and-key-vectors-by-their-root-mean-square"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-l188-36-normalize-vector-scale-by-dividing-by-root-mean-square-and-applying-weights = { path = "../188-36-normalize-vector-scale-by-dividing-by-root-mean-square-and-applying-weights" }
-l189-36-encode-text-position-by-rotating-query-and-key-coordinate-pairs = { path = "../189-36-encode-text-position-by-rotating-query-and-key-coordinate-pairs" }

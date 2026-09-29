@@ -1,9 +1,0 @@
-[package]
-name = "l165-31-calculate-context-by-combining-value-vectors-with-weights"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

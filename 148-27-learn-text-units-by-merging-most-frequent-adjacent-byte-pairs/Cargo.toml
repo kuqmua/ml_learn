@@ -1,0 +1,7 @@
+[package]
+name = "l148-27-learn-text-units-by-merging-most-frequent-adjacent-byte-pairs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }

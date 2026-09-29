@@ -1,8 +1,0 @@
-[package]
-name = "l180-34-predict-hidden-text-piece-from-surrounding-context"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-l178-34-build-text-context-from-both-earlier-and-later-positions = { path = "../178-34-build-text-context-from-both-earlier-and-later-positions" }

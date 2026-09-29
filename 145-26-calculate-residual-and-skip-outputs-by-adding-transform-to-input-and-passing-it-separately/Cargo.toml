@@ -1,0 +1,7 @@
+[package]
+name = "l145-26-calculate-residual-and-skip-outputs-by-adding-transform-to-input-and-passing-it-separately"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-trace = { path = "../lesson-trace" }

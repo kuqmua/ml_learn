@@ -1,9 +1,0 @@
-[package]
-name = "l080-14-practice-threshold-tree-with-class-separation-and-depth-limit"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

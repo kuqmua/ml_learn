@@ -1,9 +1,0 @@
-[package]
-name = "l051-09-calculate-linear-prediction-by-multiplying-input-by-weight-and-adding-bias"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-
-lesson-visualization = { path = "../lesson-visualization" }

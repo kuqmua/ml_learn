@@ -1,0 +1,8 @@
+[package]
+name = "l192-35-convert-text-identifiers-to-context-and-next-piece-scores"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context = { package = "l191-35-calculate-text-context-vectors-by-adding-position-and-weighted-past-context", path = "../191-35-calculate-text-context-vectors-by-adding-position-and-weighted-past-context" }
+lesson-trace = { path = "../lesson-trace" }

@@ -1,8 +1,0 @@
-[package]
-name = "l145-27-encode-and-decode-text-using-learned-pair-merges"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
-l144-27-learn-text-units-by-merging-most-frequent-adjacent-byte-pairs = { path = "../144-27-learn-text-units-by-merging-most-frequent-adjacent-byte-pairs" }

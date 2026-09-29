@@ -1,7 +1,0 @@
-[package]
-name = "l136-25-calculate-lstm-memory-and-output-by-keeping-old-and-adding-new-information"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-trace = { path = "../lesson-trace" }
