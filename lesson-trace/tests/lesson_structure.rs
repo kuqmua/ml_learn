@@ -164,9 +164,10 @@ fn every_public_lesson_operation_is_demonstrated_in_its_own_main() {
         let directory = entry.unwrap().path();
         let name = directory.file_name().unwrap().to_string_lossy();
         if !directory.is_dir()
-            || name.len() < 4
-            || !name.as_bytes()[..3].iter().all(u8::is_ascii_digit)
-            || name.as_bytes()[3] != b'-'
+            || name.len() < 5
+            || name.as_bytes()[0] != b'l'
+            || !name.as_bytes()[1..4].iter().all(u8::is_ascii_digit)
+            || name.as_bytes()[4] != b'-'
         {
             continue;
         }
@@ -179,7 +180,7 @@ fn every_public_lesson_operation_is_demonstrated_in_its_own_main() {
         };
         let parsed = syn::parse_file(&library).expect("lib.rs должен быть корректным Rust");
         let mut functions = Vec::new();
-        let crate_name = format!("l{}", name.replace('-', "_"));
+        let crate_name = name.replace('-', "_");
         exported_functions(&parsed.items, &source, &[crate_name], &mut functions);
         let main =
             std::fs::read_to_string(source.join("main.rs")).expect("у урока должен быть main.rs");

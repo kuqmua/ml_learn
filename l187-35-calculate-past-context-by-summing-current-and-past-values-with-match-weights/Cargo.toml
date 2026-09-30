@@ -1,0 +1,9 @@
+[package]
+name = "l187-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing = { package = "l186-35-calculate-probability-weights-by-exponentiating-shifted-scores-and-normalizing", path = "../l186-35-calculate-probability-weights-by-exponentiating-shifted-scores-and-normalizing" }
+lesson-trace = { path = "../lesson-trace" }
+lesson-visualization = { path = "../lesson-visualization" }

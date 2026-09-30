@@ -1,9 +1,0 @@
-[package]
-name = "l197-36-scale-query-and-key-vectors-by-their-root-mean-square"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights = { package = "l194-36-normalize-vector-scale-by-dividing-by-root-mean-square-and-applying-weights", path = "../194-36-normalize-vector-scale-by-dividing-by-root-mean-square-and-applying-weights" }
-l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs = { package = "l195-36-encode-text-position-by-rotating-query-and-key-coordinate-pairs", path = "../195-36-encode-text-position-by-rotating-query-and-key-coordinate-pairs" }
-lesson-trace = { path = "../lesson-trace" }

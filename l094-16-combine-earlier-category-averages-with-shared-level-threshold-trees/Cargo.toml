@@ -1,0 +1,10 @@
+[package]
+name = "l094-16-combine-earlier-category-averages-with-shared-level-threshold-trees"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l091_16_build_symmetric_tree_using_shared_threshold_test_at_each_level = { package = "l091-16-build-symmetric-tree-using-shared-threshold-test-at-each-level", path = "../l091-16-build-symmetric-tree-using-shared-threshold-test-at-each-level" }
+l092_16_encode_category_by_averaging_earlier_targets_without_current_answer = { package = "l092-16-encode-category-by-averaging-earlier-targets-without-current-answer", path = "../l092-16-encode-category-by-averaging-earlier-targets-without-current-answer" }
+lesson-trace = { path = "../lesson-trace" }
+lesson-visualization = { path = "../lesson-visualization" }

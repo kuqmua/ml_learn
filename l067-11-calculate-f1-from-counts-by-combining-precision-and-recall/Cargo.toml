@@ -1,0 +1,11 @@
+[package]
+name = "l067-11-calculate-f1-from-counts-by-combining-precision-and-recall"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l061_11_count_correct_and_incorrect_positive_and_negative_predictions = { package = "l061-11-count-correct-and-incorrect-positive-and-negative-predictions", path = "../l061-11-count-correct-and-incorrect-positive-and-negative-predictions" }
+l064_11_calculate_positive_prediction_precision_as_true_positives_over_positive_predictions = { package = "l064-11-calculate-positive-prediction-precision-as-true-positives-over-positive-predictions", path = "../l064-11-calculate-positive-prediction-precision-as-true-positives-over-positive-predictions" }
+l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives = { package = "l065-11-calculate-positive-detection-recall-as-found-positives-over-actual-positives", path = "../l065-11-calculate-positive-detection-recall-as-found-positives-over-actual-positives" }
+l066_11_calculate_f1_score_as_twice_precision_times_recall_over_their_sum = { package = "l066-11-calculate-f1-score-as-twice-precision-times-recall-over-their-sum", path = "../l066-11-calculate-f1-score-as-twice-precision-times-recall-over-their-sum" }
+lesson-trace = { path = "../lesson-trace" }

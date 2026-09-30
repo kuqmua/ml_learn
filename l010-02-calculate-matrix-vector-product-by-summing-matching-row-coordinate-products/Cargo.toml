@@ -1,0 +1,10 @@
+[package]
+name = "l010-02-calculate-matrix-vector-product-by-summing-matching-row-coordinate-products"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding = { package = "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding", path = "../l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding" }
+lesson-trace = { path = "../lesson-trace" }
+
+lesson-visualization = { path = "../lesson-visualization" }

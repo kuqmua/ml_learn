@@ -1,0 +1,9 @@
+[package]
+name = "l180-33-mix-information-between-all-image-blocks-using-weights"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l179_33_create_image_block_sequence_by_splitting_image_into_nonoverlapping_squares = { package = "l179-33-create-image-block-sequence-by-splitting-image-into-nonoverlapping-squares", path = "../l179-33-create-image-block-sequence-by-splitting-image-into-nonoverlapping-squares" }
+lesson-trace = { path = "../lesson-trace" }
+lesson-visualization = { path = "../lesson-visualization" }

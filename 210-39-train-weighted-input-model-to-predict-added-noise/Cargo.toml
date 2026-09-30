@@ -1,8 +1,0 @@
-[package]
-name = "l210-39-train-weighted-input-model-to-predict-added-noise"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights = { package = "l209-39-calculate-noisy-signal-by-mixing-signal-and-noise-with-root-variance-share-weights", path = "../209-39-calculate-noisy-signal-by-mixing-signal-and-noise-with-root-variance-share-weights" }
-lesson-trace = { path = "../lesson-trace" }

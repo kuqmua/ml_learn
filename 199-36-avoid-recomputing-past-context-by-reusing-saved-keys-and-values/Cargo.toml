@@ -1,9 +1,0 @@
-[package]
-name = "l199-36-avoid-recomputing-past-context-by-reusing-saved-keys-and-values"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing = { package = "l186-35-calculate-probability-weights-by-exponentiating-shifted-scores-and-normalizing", path = "../186-35-calculate-probability-weights-by-exponentiating-shifted-scores-and-normalizing" }
-l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights = { package = "l187-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights", path = "../187-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights" }
-lesson-trace = { path = "../lesson-trace" }

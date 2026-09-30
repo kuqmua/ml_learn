@@ -1,0 +1,8 @@
+[package]
+name = "l196-36-reduce-context-computation-by-sharing-keys-and-values-across-query-groups"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing = { package = "l186-35-calculate-probability-weights-by-exponentiating-shifted-scores-and-normalizing", path = "../l186-35-calculate-probability-weights-by-exponentiating-shifted-scores-and-normalizing" }
+lesson-trace = { path = "../lesson-trace" }

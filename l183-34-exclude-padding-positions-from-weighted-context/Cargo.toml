@@ -1,0 +1,8 @@
+[package]
+name = "l183-34-exclude-padding-positions-from-weighted-context"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l182_34_build_text_context_from_both_earlier_and_later_positions = { package = "l182-34-build-text-context-from-both-earlier-and-later-positions", path = "../l182-34-build-text-context-from-both-earlier-and-later-positions" }
+lesson-trace = { path = "../lesson-trace" }

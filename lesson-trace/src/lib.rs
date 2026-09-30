@@ -52,8 +52,9 @@ pub fn show<T: std::fmt::Debug + ?Sized>(file: &'static str, line: u32, label: &
             let lesson = parts.next()?;
             let block = parts.next()?;
             parts.next()?;
-            if lesson.len() == 3
-                && lesson.bytes().all(|byte| byte.is_ascii_digit())
+            if lesson.len() == 4
+                && lesson.starts_with('l')
+                && lesson[1..].bytes().all(|byte| byte.is_ascii_digit())
                 && !block.is_empty()
                 && block.bytes().all(|byte| byte.is_ascii_digit())
             {
