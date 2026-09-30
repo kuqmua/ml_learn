@@ -3,17 +3,14 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str =
+    let _question: &str =
         "Дай системе вопрос, ответ на который есть в коротком контексте, и вопрос без ответа.";
-    let choices: [&str; 3] = [
+    let _choices: [&str; 3] = [
         "Покажи, какой фрагмент отбрасывается и может ли измениться ответ.",
         "Каждая ссылка ведёт к фрагменту, который действительно поддерживает утверждение.",
         "Первый ответ опирается на контекст, второй явно признаёт нехватку сведений.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

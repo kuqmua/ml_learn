@@ -3,17 +3,14 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str =
+    let _question: &str =
         "Нормализуй признак по среднему и разбросу train, затем обработай новое значение.";
-    let choices: [&str; 3] = [
+    let _choices: [&str; 3] = [
         "Среднее train после преобразования близко к нулю; новое значение не меняет статистики train.",
         "Покажи скользящие оценки первого и второго моментов и поправку на начальный сдвиг.",
         "Получаются -1, 0.5 и 1 при покоординатном ограничении; поясни другое правило для нормы вектора.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

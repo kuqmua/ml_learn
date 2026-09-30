@@ -3,17 +3,14 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str =
+    let _question: &str =
         "Разбей предсказания на группы по вероятности и сравни с частотами исходов.";
-    let choices: [&str; 3] = [
+    let _choices: [&str; 3] = [
         "Покажи числовой признак сдвига и объясни, почему модель требует проверки качества.",
         "Покажи, как общая метрика может скрывать плохой результат для одной группы.",
         "Хорошо калиброванная группа с прогнозом около 0.7 содержит около 70% положительных объектов.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

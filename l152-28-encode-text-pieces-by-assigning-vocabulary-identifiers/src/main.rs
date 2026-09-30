@@ -9,35 +9,15 @@
 // Зачем это нужно: Словарь сопоставляет каждой известной строке постоянный числовой индекс.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `words` для следующего шага примера.");
     let words: [&str; 3] = ["кот", "спит", "кот"];
-    trace_step!(words);
-    trace_note!(
-        "Преобразуем входные данные и сохраняем полученную коллекцию в `known_text_units`."
-    );
-    trace_note!("Набор известных модели текстовых единиц называют vocabulary.");
     let mut known_text_units: std::collections::BTreeMap<&str, usize> =
         std::collections::BTreeMap::new();
-    trace_step!(known_text_units);
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for word in words {
-        trace_step!(word);
-        trace_note!("Проверяем условие и выбираем соответствующую ветку алгоритма.");
         if !known_text_units.contains_key(word) {
-            trace_note!("Считаем количество элементов и сохраняем его в `text_unit_identifier`.");
-            trace_note!(
-                "Единицу текста, которую модель обрабатывает как одно целое, называют token."
-            );
             let text_unit_identifier: usize = known_text_units.len() + 1;
-            trace_step!(text_unit_identifier);
-            trace_note!("Выполняем очередное действие, после которого продолжаем следующий шаг.");
             known_text_units.insert(word, text_unit_identifier);
         }
     }
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("словарь: {known_text_units:?}");
 }

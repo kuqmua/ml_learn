@@ -11,29 +11,14 @@
 // Зачем это нужно: Совпадение слов запроса с документом даёт простой поиск без обученной модели.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `documents` для следующего шага примера.");
     let documents: [(&str, &str); 2] = [("rust cargo", "guide"), ("машинное обучение", "ml")];
-    trace_step!(documents);
-    trace_note!("Сохраняем рассчитанное значение `query` для следующих операций.");
     let query: &str = "cargo";
-    trace_step!(query);
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
-    for (text, document_identifier) in documents {
-        trace_step!(text);
-        trace_step!(document_identifier);
-        trace_note!("Проверяем условие и выбираем соответствующую ветку алгоритма.");
-        if text.split_whitespace().any(|word| word == query) {
-            trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-            println!("найден документ {document_identifier}");
-        }
+    for (text, _document_identifier) in documents {
+        if text.split_whitespace().any(|word| word == query) {}
     }
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_number_of_documents_with_and_without_query_matches(documents, query);
 }
 
@@ -42,24 +27,7 @@ fn plot_number_of_documents_with_and_without_query_matches(
     documents: [(&str, &str); 2],
     query: &str,
 ) {
-    trace_note!("Сравниваем величины, вычисленные в примере.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок диаграммы.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    trace_note!("Просматриваем элементы коллекции по ссылке.");
-    trace_note!("Оставляем элементы, отвечающие условию.");
-    trace_note!("Подсчитываем число подходящих элементов.");
-    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    trace_note!("Просматриваем элементы коллекции по ссылке.");
-    trace_note!("Оставляем элементы, отвечающие условию.");
-    trace_note!("Подсчитываем число подходящих элементов.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Лексический поиск",
@@ -82,6 +50,4 @@ fn plot_number_of_documents_with_and_without_query_matches(
         ],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

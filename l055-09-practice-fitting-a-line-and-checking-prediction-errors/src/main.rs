@@ -20,190 +20,79 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 use l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count;
 
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
-    trace_note!("Фиксируем демонстрационные данные на время выполнения программы.");
     const TRAINING_EXAMPLES: [(f64, f64); 5] = [(0., 1.), (1., 3.), (2., 5.), (3., 7.), (4., 9.)];
-    trace_note!("Проверяем ожидаемое свойство учебного примера.");
-    trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
     assert!(
         !TRAINING_EXAMPLES.is_empty(),
         "для обучения нужен хотя бы один пример"
     );
 
-    trace_note!("Шаг: Обучаем коэффициенты линейной модели на train.");
     let (weight, bias): (f64, f64) = (|| -> (f64, f64) {
-        trace_note!("Используем подготовленное значение в следующем шаге примера.");
-        trace_note!("Обновляем вес и смещение по среднему градиенту квадратичной ошибки.");
-        trace_note!("Сохраняем результат этого шага в `data`.");
         let data: &[(f64, f64)] = &TRAINING_EXAMPLES;
-        trace_step!(data);
-        trace_note!(
-            "Сохраняем рассчитанное значение `(mut weight, mut bias)` для следующих операций."
-        );
         let (mut weight, mut bias): (f64, f64) = (0., 0.);
-        trace_step!(weight);
-        trace_step!(bias);
-        trace_note!("3000 обновлений дают этой маленькой задаче линейной регрессии время сойтись.");
-        trace_note!("Это число итераций учебного обучения, а не число строк данных.");
         for _ in 0..3000 {
-            trace_note!(
-                "Выполняем встроенный расчёт один раз и сохраняем результат в `(weight_gradient, bias_gradient)`."
-            );
-            trace_note!(
-                "Производную функции по параметру или вектор таких производных называют gradient."
-            );
             let (weight_loss_rate_of_change, bias_loss_rate_of_change): (f64, f64) =
                 (|| -> (f64, f64) {
-                    trace_note!("Вычисляем значение по указанной формуле.");
-                    trace_note!(
-                        "Частные производные MSE по весу и смещению: 2/n * sum(error*x) и 2/n * sum(error)."
-                    );
-                    trace_note!("Сохраняем результат этого шага в `data`.");
                     let data: &[(f64, f64)] = data;
-                    trace_step!(data);
-                    trace_note!("Сохраняем рассчитанное значение `weight` для следующих операций.");
                     let weight: f64 = weight;
-                    trace_step!(weight);
-                    trace_note!("Сохраняем рассчитанное значение `bias` для следующих операций.");
                     let bias: f64 = bias;
-                    trace_step!(bias);
-                    trace_note!(
-                        "Сохраняем рассчитанное значение `(mut weight_gradient_sum, mut bias_gradient_sum)` для следующих операций."
-                    );
                     let (
                         mut accumulated_weight_loss_rate_of_change,
                         mut accumulated_bias_loss_rate_of_change,
                     ): (f64, f64) = (0.0, 0.0);
-                    trace_step!(accumulated_weight_loss_rate_of_change);
-                    trace_step!(accumulated_bias_loss_rate_of_change);
-                    trace_note!(
-                        "Повторяем следующий блок для каждого элемента указанной последовательности."
-                    );
                     for &(feature_value, target_value) in data {
-                        trace_step!(feature_value);
-                        trace_step!(target_value);
-                        trace_note!(
-                            "Умножаем значения и сохраняем результат в `prediction_error`."
-                        );
                         let prediction_error: f64 = weight * feature_value + bias - target_value;
-                        trace_step!(prediction_error);
-                        trace_note!("Прибавляем очередной вклад к ранее накопленному результату.");
                         accumulated_weight_loss_rate_of_change +=
                             2.0 * feature_value * prediction_error;
-                        trace_step!(accumulated_weight_loss_rate_of_change);
-                        trace_note!("Прибавляем очередной вклад к ранее накопленному результату.");
                         accumulated_bias_loss_rate_of_change += 2.0 * prediction_error;
-                        trace_step!(accumulated_bias_loss_rate_of_change);
                     }
-                    trace_note!(
-                        "Составляем результат из вычисленных значений в указанном порядке."
-                    );
-                    trace_note!("Делим значения, получая нормированную величину или среднее.");
-                    trace_note!("Делим значения, получая нормированную величину или среднее.");
                     (
                         accumulated_weight_loss_rate_of_change / data.len() as f64,
                         accumulated_bias_loss_rate_of_change / data.len() as f64,
                     )
                 })();
-            trace_step!(weight_loss_rate_of_change);
-            trace_step!(bias_loss_rate_of_change);
-            trace_note!("Вычитаем очередной вклад из текущего значения параметра.");
-            trace_note!(
-                "0.02 — скорость обучения: вычитаем только 2% рассчитанного градиента веса."
-            );
             weight -= 0.02 * weight_loss_rate_of_change;
-            trace_step!(weight);
-            trace_note!("Вычитаем очередной вклад из текущего значения параметра.");
             bias -= 0.02 * bias_loss_rate_of_change;
-            trace_step!(bias);
         }
-        trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
         (weight, bias)
     })();
-    trace_step!(weight);
-    trace_step!(bias);
-    trace_note!("Шаг: Отдельно задаём примеры, которые не участвовали в обучении.");
     let test: [(f64, f64); 2] = [(5., 11.), (6., 13.)];
-    trace_step!(test);
 
-    trace_note!("Собираем значения для `targets` в коллекцию.");
     let targets: Vec<f64> = test.iter().map(|&(_, target)| target).collect();
-    trace_step!(targets);
-    trace_note!("Собираем значения для `model_predictions` в коллекцию.");
-    trace_note!("Просматриваем элементы коллекции по ссылке.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Собираем результаты в коллекцию.");
     let model_predictions: Vec<f64> = test
         .iter()
         .map(|&(feature, _)| weight * feature + bias)
         .collect();
-    trace_step!(model_predictions);
-    trace_note!("Собираем значения для `baseline_predictions` в коллекцию.");
     let baseline_predictions: Vec<f64> = test.iter().map(|_| 5.0).collect();
-    trace_step!(baseline_predictions);
-    trace_note!("Сохраняем результат этого шага в `model_mean_squared_error`.");
-    let model_mean_squared_error: f64 =
+    let _model_mean_squared_error: f64 =
         calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
             &targets,
             &model_predictions,
         )
         .unwrap();
-    trace_step!(model_mean_squared_error);
-    trace_note!("Сохраняем результат этого шага в `baseline_mean_squared_error`.");
-    let baseline_mean_squared_error: f64 =
+    let _baseline_mean_squared_error: f64 =
         calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
             &targets,
             &baseline_predictions,
         )
         .unwrap();
-    trace_step!(baseline_mean_squared_error);
-    trace_note!("Печатаем рассчитанные значения для проверки примера.");
-    println!(
-        "w={weight:.3}, b={bias:.3}, test MSE={model_mean_squared_error:.6}, baseline MSE={baseline_mean_squared_error:.3}"
-    );
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_prediction_line_and_held_out_points(weight, bias, test);
 }
 
 // Строим график по результатам урока.
 fn plot_prediction_line_and_held_out_points(weight: f64, bias: f64, test: [(f64, f64); 2]) {
-    trace_note!("График величин и зависимостей, изученных в этом уроке.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Собираем результаты в коллекцию.");
     let model_points: Vec<(f64, f64)> = (0..=60)
         .map(|plot_step_index| {
-            trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            trace_note!("Добавляем пару значений для сравнения или построения графика.");
             (horizontal_value, weight * horizontal_value + bias)
         })
         .collect();
-    trace_note!("Собираем значения для `test_points` в коллекцию.");
     let test_points: Vec<(f64, f64)> = test
         .iter()
         .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
         .collect();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Добавляем ряд данных с подписью к графику.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Добавляем ряд данных с подписью к графику.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Линейная регрессия и тест",
@@ -223,6 +112,4 @@ fn plot_prediction_line_and_held_out_points(weight: f64, bias: f64, test: [(f64,
         ],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

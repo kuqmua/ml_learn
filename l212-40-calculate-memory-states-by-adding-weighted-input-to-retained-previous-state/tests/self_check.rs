@@ -3,16 +3,13 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str = "Подай единичный импульс в модель состояния с сохранением 0.5.";
-    let choices: [&str; 3] = [
+    let _question: &str = "Подай единичный импульс в модель состояния с сохранением 0.5.";
+    let _choices: [&str; 3] = [
         "После сброса прежнее состояние не влияет на новые выходы.",
         "Состояния после импульса равны 1, 0.5, 0.25 и далее убывают вдвое.",
         "Покажи, какие значения каждая модель сохраняет и какое правило помогает выделить событие.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

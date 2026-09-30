@@ -10,19 +10,9 @@
 // обучения.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Сохраняем рассчитанное значение `next_state` для следующих операций.");
     let next_state: i32 = 4;
-    trace_step!(next_state);
-    trace_note!("Сохраняем рассчитанное значение `goal` для следующих операций.");
     let goal: i32 = 4;
-    trace_step!(goal);
-    trace_note!("Комбинируем исходные величины и сохраняем результат в `reward`.");
-    let reward: f64 = if next_state == goal { 1.0 } else { -0.01 };
-    trace_step!(reward);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("после перехода награда={reward}");
+    let _reward: f64 = if next_state == goal { 1.0 } else { -0.01 };
 }

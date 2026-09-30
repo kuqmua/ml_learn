@@ -3,17 +3,14 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str =
+    let _question: &str =
         "Нормализуй один и тот же набор правильно и с расчётом среднего по всем фолдам.";
-    let choices: [&str; 3] = [
+    let _choices: [&str; 3] = [
         "Сравни оценки и укажи, где данные проверки попали в подготовку.",
         "Внешний фолд ни разу не использован для выбора параметра.",
         "Test не влияет на выбор параметра; средние оценки по фолдам сохранены.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

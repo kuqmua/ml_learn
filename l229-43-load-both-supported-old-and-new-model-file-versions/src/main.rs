@@ -8,19 +8,8 @@
 //
 // Старая и новая версии разбираются разными правилами; неизвестную версию отвергаем.
 
-use lesson_trace::{enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
-    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    for (description, saved_model_text, expected) in [
+    for (_description, saved_model_text, expected) in [
         ("старый формат", "model_v1\n2.0\n1.0\n", "вес и смещение"),
         (
             "новый формат",
@@ -33,13 +22,6 @@ fn main() {
             "формат не поддерживается",
         ),
     ] {
-        trace_step!(description);
-        trace_step!(saved_model_text);
-        trace_step!(expected);
-        trace_note!("Сохраняем результат этого шага в `explanation`.");
-        trace_note!("Возвращаем присутствующее значение.");
-        trace_note!("Возвращаем присутствующее значение.");
-        trace_note!("Выполняем действие для этого варианта данных.");
         let explanation: &str = match saved_model_text.lines().next() {
             Some("model_v1") => "вес и смещение",
 
@@ -47,10 +29,6 @@ fn main() {
 
             _ => "формат не поддерживается",
         };
-        trace_step!(explanation);
-        trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(explanation, expected);
-        trace_note!("Печатаем рассчитанные значения для проверки примера.");
-        println!("{description}: {explanation}");
     }
 }

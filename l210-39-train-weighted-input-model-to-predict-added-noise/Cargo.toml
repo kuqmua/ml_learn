@@ -5,4 +5,3 @@ edition = "2024"
 
 [dependencies]
 l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights = { package = "l209-39-calculate-noisy-signal-by-mixing-signal-and-noise-with-root-variance-share-weights", path = "../l209-39-calculate-noisy-signal-by-mixing-signal-and-noise-with-root-variance-share-weights" }
-lesson-trace = { path = "../lesson-trace" }

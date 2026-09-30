@@ -1,10 +1,11 @@
 [package]
-name = "lesson-trace"
+name = "lesson-structure"
 version = "0.1.0"
 edition = "2024"
 
-[lib]
-name = "lesson_trace"
+[[test]]
+name = "lesson_structure"
+path = "tests/lesson_structure.rs"
 
 [dev-dependencies]
 syn = { version = "2", features = ["full", "visit"] }

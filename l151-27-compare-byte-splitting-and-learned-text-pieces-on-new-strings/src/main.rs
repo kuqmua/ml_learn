@@ -8,21 +8,14 @@
 
 use l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding;
 
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
-    trace_note!("Новые строки не участвуют в выборе слияний.");
     let training_data: [&str; 3] = ["кот спит", "кот ест", "пёс спит"];
-    trace_step!(training_data);
     let validation: [&str; 2] = ["кот играет", "🐈 спит"];
-    trace_step!(validation);
     let model: BytePairEncoding =
         BytePairEncoding::train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair(
             &training_data,
             30,
         );
-    trace_step!(model);
     let rows: Vec<(&str, usize, usize)> = training_data
         .iter()
         .chain(validation.iter())
@@ -36,12 +29,7 @@ fn main() {
             )
         })
         .collect();
-    trace_step!(rows);
-    trace_note!("Единицу текста, которую модель обрабатывает как одно целое, называют token.");
     for &(text, bytes, text_units) in &rows {
-        trace_step!(text);
-        trace_step!(bytes);
-        trace_step!(text_units);
         assert!(text_units <= bytes);
         assert_eq!(
             model
@@ -51,9 +39,7 @@ fn main() {
                 .unwrap(),
             text
         );
-        println!("{text:?}: байтов={bytes}, BPE-токенов={text_units}");
     }
-    disable();
     plot_number_of_text_units_after_learned_pair_merges(&rows);
 }
 
@@ -63,7 +49,7 @@ fn plot_number_of_text_units_after_learned_pair_merges(rows: &[(&str, usize, usi
         .iter()
         .map(|(text, _, count)| (*text, *count as f64))
         .collect();
-    let path: std::path::PathBuf = lesson_visualization::bar_chart(
+    let _path: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "token-count",
         "Длина BPE-кодирования",
@@ -71,5 +57,4 @@ fn plot_number_of_text_units_after_learned_pair_merges(rows: &[(&str, usize, usi
         &values,
     )
     .expect("не удалось построить график");
-    println!("график: {}", path.display());
 }

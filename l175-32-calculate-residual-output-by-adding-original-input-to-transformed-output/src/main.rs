@@ -12,37 +12,18 @@
 // следующих слоёв.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `input` для следующего шага примера.");
     let input: [f64; 2] = [1.0, 2.0];
-    trace_step!(input);
-    trace_note!("Создаём набор значений `transformed` для следующего шага примера.");
     let transformed: [f64; 2] = [0.2, -0.5];
-    trace_step!(transformed);
-    trace_note!("Создаём набор значений `output` для следующего шага примера.");
     let output: [f64; 2] = [input[0] + transformed[0], input[1] + transformed[1]];
-    trace_step!(output);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("вход={input:?}, после residual={output:?}");
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_first_coordinate_before_and_after_adding_block_input(input, output);
 }
 
 // Строим график по результатам урока.
 fn plot_first_coordinate_before_and_after_adding_block_input(input: [f64; 2], output: [f64; 2]) {
-    trace_note!("Сравнение величин из этого урока.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок диаграммы.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Остаточная связь",
@@ -50,6 +31,4 @@ fn plot_first_coordinate_before_and_after_adding_block_input(input: [f64; 2], ou
         &[("вход", input[0]), ("после", output[0])],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

@@ -13,57 +13,24 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
 
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `query` для следующего шага примера.");
     let query: [f64; 2] = [1.0, 1.0];
-    trace_step!(query);
-    trace_note!("Создаём набор значений `key` для следующего шага примера.");
     let key: [f64; 2] = [2.0, 2.0];
-    trace_step!(key);
-    trace_note!(
-        "Умножаем соответствующие координаты запроса и ключа, затем складываем результаты."
-    );
-    trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    trace_note!("Используем результат, ожидая успешного выполнения шага.");
     let sum_after_multiplying_coordinates: f64 =
         calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&query, &key)
             .expect("запрос и ключ имеют одинаковую размерность");
-    trace_step!(sum_after_multiplying_coordinates);
-    trace_note!("Сохраняем рассчитанное значение `dimension` для следующих операций.");
     let dimension: f64 = 2.0;
-    trace_step!(dimension);
-    trace_note!("Создаём изменяемое значение `scale` для следующих операций.");
     let mut scale: f64 = dimension;
-    trace_step!(scale);
-    trace_note!(
-        "Для внимания нужен делитель √размерности; 80 шагов Ньютона дают его оценку в f64."
-    );
     for _ in 0..80 {
-        trace_note!("Среднее scale и dimension/scale приближает √dimension.");
         scale = (scale + dimension / scale) / 2.0;
-        trace_step!(scale);
     }
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    trace_note!("Вычисляем значение по указанной формуле.");
-    println!(
-        "Q·K={sum_after_multiplying_coordinates}, после масштабирования={}",
-        sum_after_multiplying_coordinates / scale
-    );
+    let _ = &(sum_after_multiplying_coordinates / scale);
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_attention_scale_as_one_divided_by_square_root_of_coordinate_count();
 }
 
 // Строим график по результатам урока.
 fn plot_attention_scale_as_one_divided_by_square_root_of_coordinate_count() {
-    trace_note!("График величин и зависимостей, изученных в этом уроке.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Собираем результаты в коллекцию.");
     let multiply_coordinates_add_and_scale_points: Vec<(f64, f64)> = (1..=64)
         .map(|vector_dimension| {
             (
@@ -72,17 +39,7 @@ fn plot_attention_scale_as_one_divided_by_square_root_of_coordinate_count() {
             )
         })
         .collect();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Масштабирование скалярного произведения векторов запроса и ключа",
@@ -95,6 +52,4 @@ fn plot_attention_scale_as_one_divided_by_square_root_of_coordinate_count() {
         }],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

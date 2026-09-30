@@ -10,14 +10,9 @@
 
 use l092_16_encode_category_by_averaging_earlier_targets_without_current_answer::encode_categories_as_average_previous_targets_with_prior_weight;
 
-use lesson_trace::{disable, enable_tracing, trace_step};
-
 fn main() {
-    enable_tracing();
     let categories: [&str; 5] = ["A", "B", "A", "A", "B"];
-    trace_step!(categories);
     let targets: [f64; 5] = [1.0, 0.0, 0.0, 1.0, 1.0];
-    trace_step!(targets);
     let values: Vec<f64> = encode_categories_as_average_previous_targets_with_prior_weight(
         &categories,
         &targets,
@@ -25,18 +20,11 @@ fn main() {
         2.0,
     )
     .unwrap();
-    trace_step!(values);
     assert_eq!(values[0], 0.5);
     assert_eq!(values[1], 0.5);
-    disable();
     plot_category_target_averages_using_only_previous_rows(&values);
-    for (index, value) in values.iter().enumerate() {
-        trace_step!(index);
-        trace_step!(value);
-        println!(
-            "строка {index}, категория {}, ordered mean={value:.3}",
-            categories[index]
-        );
+    for (index, _value) in values.iter().enumerate() {
+        let _ = &(categories[index]);
     }
 }
 
@@ -46,7 +34,7 @@ fn plot_category_target_averages_using_only_previous_rows(values: &[f64]) {
         .enumerate()
         .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
         .collect();
-    let path: std::path::PathBuf = lesson_visualization::line_chart(
+    let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "ordered-stats",
         "Префиксная статистика",
@@ -58,5 +46,4 @@ fn plot_category_target_averages_using_only_previous_rows(values: &[f64]) {
         }],
     )
     .expect("график");
-    println!("график: {}", path.display());
 }

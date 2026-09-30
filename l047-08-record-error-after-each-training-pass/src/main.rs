@@ -9,49 +9,22 @@
 // эпохи и ошибку рядом.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `losses` для следующего шага примера.");
     let losses: [f64; 3] = [1.0, 0.6, 0.4];
-    trace_step!(losses);
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
-    for (epoch, loss) in losses.into_iter().enumerate() {
-        trace_step!(epoch);
-        trace_step!(loss);
-        trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-        println!("epoch={epoch}, loss={loss:.2}");
-    }
+    for (_epoch, _loss) in losses.into_iter().enumerate() {}
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_error_after_each_training_pass(losses);
 }
 
 // Строим график по результатам урока.
 fn plot_error_after_each_training_pass(losses: [f64; 3]) {
-    trace_note!("График величин и зависимостей, изученных в этом уроке.");
-    trace_note!("Передаём элементы коллекции в итератор.");
-    trace_note!("Добавляем порядковый номер к каждому элементу.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Собираем результаты в коллекцию.");
     let metric_log_points: Vec<(f64, f64)> = losses
         .into_iter()
         .enumerate()
         .map(|(item_index, element_value)| (item_index as f64, element_value))
         .collect();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Журнал обучения",
@@ -64,6 +37,4 @@ fn plot_error_after_each_training_pass(losses: [f64; 3]) {
         }],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

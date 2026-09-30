@@ -3,17 +3,14 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str =
+    let _question: &str =
         "Вручную вычисли выход небольшого графа из двух последовательных операций.";
-    let choices: [&str; 3] = [
+    let _choices: [&str; 3] = [
         "Промежуточные значения и конечный ответ совпадают с программой.",
         "Покажи производные на каждом ребре графа и проверь их произведение аналитически.",
         "Вклад каждого пути найден отдельно; итоговая производная равна сумме вкладов.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

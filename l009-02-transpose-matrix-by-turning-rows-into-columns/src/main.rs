@@ -10,66 +10,30 @@
 // только его координаты.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `matrix` для следующего шага примера.");
     let matrix: [[i32; 3]; 2] = [[1, 2, 3], [4, 5, 6]];
-    trace_step!(matrix);
-    trace_note!("Создаём набор значений `transposed` для следующего шага примера.");
     let mut transposed: [[i32; 2]; 3] = [[0; 2]; 3];
-    trace_step!(transposed);
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for row in 0..2 {
-        trace_step!(row);
-        trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
         for column in 0..3 {
-            trace_step!(column);
-            trace_note!("Элемент [row, column] переносим в [column, row].");
             transposed[column][row] = matrix[row][column];
-            trace_step!(transposed);
         }
     }
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("исходная: {matrix:?}; транспонированная: {transposed:?}");
 
-    trace_note!("Повторное транспонирование возвращает каждое число на исходное место.");
     let mut restored: [[i32; 3]; 2] = [[0; 3]; 2];
-    trace_step!(restored);
-    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for row in 0..transposed.len() {
-        trace_step!(row);
-        trace_note!("Повторяем расчёт для каждого элемента последовательности.");
         for column in 0..transposed[row].len() {
-            trace_step!(column);
-            trace_note!("Обновляем значение результатом текущего вычисления.");
             restored[column][row] = transposed[row][column];
-            trace_step!(restored);
         }
     }
-    trace_note!("Проверяем ожидаемое свойство учебного примера.");
     assert_eq!(restored, matrix);
-    trace_note!("Печатаем рассчитанные значения для проверки примера.");
-    println!("после второго транспонирования: {restored:?}");
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_matrix_after_turning_rows_into_columns(transposed);
 }
 
 // Строим график по результатам урока.
 fn plot_matrix_after_turning_rows_into_columns(transposed: [[i32; 2]; 3]) {
-    trace_note!("Значения ячеек видны по цвету и подписи.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок тепловой карты.");
-    trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    trace_note!("Просматриваем элементы коллекции по ссылке.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::heatmap(
+    let _chart: std::path::PathBuf = lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Транспонированная матрица",
@@ -83,6 +47,4 @@ fn plot_matrix_after_turning_rows_into_columns(transposed: [[i32; 2]; 3]) {
             .collect::<Vec<_>>(),
     )
     .expect("не удалось сохранить тепловую карту");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

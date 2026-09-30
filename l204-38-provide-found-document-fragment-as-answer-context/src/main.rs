@@ -11,26 +11,13 @@
 // Зачем это нужно: В RAG найденный фрагмент передаёт факты, на которые должен опираться ответ.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Сохраняем рассчитанное значение `context` для следующих операций.");
     let context: &str = "Rust использует Cargo для сборки проектов.";
-    trace_step!(context);
-    trace_note!("Сохраняем рассчитанное значение `question` для следующих операций.");
-    let question: &str = "Чем собирают проект Rust?";
-    trace_step!(question);
-    trace_note!("Сохраняем рассчитанное значение `answer` для следующих операций.");
-    let answer: &str = if context.contains("Cargo") {
-        trace_note!("Подставляем результаты в этот шаблон вывода или текстового значения.");
+    let _question: &str = "Чем собирают проект Rust?";
+    let _answer: &str = if context.contains("Cargo") {
         "Cargo"
     } else {
-        trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
-        trace_note!("Подставляем результаты в этот шаблон вывода или текстового значения.");
         "не знаю"
     };
-    trace_step!(answer);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("вопрос: {question}; контекст: {context}; ответ: {answer}");
 }

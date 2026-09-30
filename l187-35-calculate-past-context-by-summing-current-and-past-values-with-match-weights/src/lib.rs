@@ -5,8 +5,6 @@
 /// Причинное внимание: совпадения запроса и ключей делим на sqrt(2), превращаем в веса через softmax и суммируем значения только текущей и прошлых позиций.
 use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
 
-use lesson_trace::{trace_note, trace_step};
-
 pub fn calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
     query_vector: &[[f64; 2]],
     key_vector: &[[f64; 2]],
@@ -19,11 +17,7 @@ pub fn calculate_past_context_by_summing_current_and_past_values_weighted_by_que
         return Err("неверная форма Q/K/V");
     }
     let mut output: Vec<[f64; 2]> = Vec::with_capacity(query_vector.len());
-    trace_step!(output);
     for index in 0..query_vector.len() {
-        trace_step!(index);
-        trace_note!("Ключи после index скрыты причинной маской; 2 под корнем — размерность Q и K.");
-        trace_note!("Деление на √2 удерживает величину dot product при переходе к softmax.");
         let raw_model_scores: Vec<f64> = (0..=index)
             .map(|past| {
                 (query_vector[index][0] * key_vector[past][0]
@@ -31,19 +25,12 @@ pub fn calculate_past_context_by_summing_current_and_past_values_weighted_by_que
                     / 2.0_f64.sqrt()
             })
             .collect();
-        trace_step!(raw_model_scores);
         let weights: Vec<f64> =
             calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&raw_model_scores);
-        trace_step!(weights);
         let mut state: [f64; 2] = [0.0; 2];
-        trace_step!(state);
         for (past, &weight) in weights.iter().enumerate() {
-            trace_step!(past);
-            trace_step!(weight);
             for feature in 0..2 {
-                trace_step!(feature);
                 state[feature] += weight * value_vectors[past][feature];
-                trace_step!(state);
             }
         }
         output.push(state);

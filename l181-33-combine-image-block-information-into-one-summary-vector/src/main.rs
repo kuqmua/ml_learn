@@ -8,32 +8,23 @@
 // Специальный токен собирает информацию от патчей для классификации изображения.
 
 /// Softmax: вычитаем максимальную оценку, вычисляем экспоненты и делим каждую на их сумму.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
     values: &[f64],
 ) -> Vec<f64> {
     let maximum_value: f64 = values.iter().copied().fold(f64::NEG_INFINITY, f64::max);
-    trace_step!(maximum_value);
     let exponential_values: Vec<f64> = values
         .iter()
         .map(|&patch_value| (patch_value - maximum_value).exp())
         .collect();
-    trace_step!(exponential_values);
     let sum: f64 = exponential_values.iter().sum();
-    trace_step!(sum);
     exponential_values
         .iter()
         .map(|patch_value| patch_value / sum)
         .collect()
 }
 fn main() {
-    enable_tracing();
-    trace_note!("Первый токен обозначает CLS; остальные представляют патчи.");
-    trace_note!("Патчи и элемент классификации в ViT называют visual tokens.");
     let image_input_representations: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    trace_step!(image_input_representations);
-    trace_note!("Оценку модели до преобразования в вероятность называют logit.");
     let raw_model_scores: Vec<f64> = image_input_representations
         .iter()
         .map(|image_input_representation| {
@@ -41,31 +32,21 @@ fn main() {
                 + image_input_representations[0][1] * image_input_representation[1]
         })
         .collect();
-    trace_step!(raw_model_scores);
     let weights: Vec<f64> =
         calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
             &raw_model_scores,
         );
-    trace_step!(weights);
-    trace_note!(
-        "Итоговое представление элемента классификации получают через class token pooling."
-    );
     let image_classification_summary: [f64; 2] = image_input_representations
         .iter()
         .zip(&weights)
         .fold([0.0; 2], |mut sum, (patch_value, &weight)| {
             sum[0] += weight * patch_value[0];
-            trace_step!(sum);
             sum[1] += weight * patch_value[1];
-            trace_step!(sum);
             sum
         });
-    trace_step!(image_classification_summary);
-    let class: u8 = u8::from(image_classification_summary[0] > image_classification_summary[1]);
-    trace_step!(class);
+    let _class: u8 = u8::from(image_classification_summary[0] > image_classification_summary[1]);
     assert_eq!(weights.len(), 3);
-    println!("CLS context={image_classification_summary:?}; class={class}");
-    disable();
+
     plot_weights_used_to_combine_image_blocks_into_summary(&weights);
 }
 fn plot_weights_used_to_combine_image_blocks_into_summary(weights: &[f64]) {
@@ -74,7 +55,7 @@ fn plot_weights_used_to_combine_image_blocks_into_summary(weights: &[f64]) {
         ("patch 1", weights[1]),
         ("patch 2", weights[2]),
     ];
-    let path: std::path::PathBuf = lesson_visualization::bar_chart(
+    let _path: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "cls-weights",
         "Что читает CLS",
@@ -82,5 +63,4 @@ fn plot_weights_used_to_combine_image_blocks_into_summary(weights: &[f64]) {
         &values,
     )
     .expect("график");
-    println!("график: {}", path.display());
 }

@@ -3,16 +3,13 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str = "Запиши форму матрицы из двух строк и трёх столбцов и попробуй добавить строку другой длины.";
-    let choices: [&str; 3] = [
+    let _question: &str = "Запиши форму матрицы из двух строк и трёх столбцов и попробуй добавить строку другой длины.";
+    let _choices: [&str; 3] = [
         "Покажи форму 2×3 и причину, по которой неровные строки нельзя использовать как обычную матрицу.",
         "После двух операций получи исходные элементы и форму 2×3.",
         "Сверь результат [17, 39] с программой и проверь случай неверной длины вектора.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

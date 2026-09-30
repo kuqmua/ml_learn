@@ -10,53 +10,27 @@
 // строке.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `matrix` для следующего шага примера.");
     let matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
-    trace_step!(matrix);
-    trace_note!("Создаём набор значений `bias` для следующего шага примера.");
     let bias: [f64; 2] = [10.0, 20.0];
-    trace_step!(bias);
-    trace_note!("Создаём изменяемое значение `result` для следующих операций.");
     let mut result: [[f64; 2]; 2] = matrix;
-    trace_step!(result);
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for row in 0..2 {
-        trace_step!(row);
-        trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
         for column in 0..2 {
-            trace_step!(column);
-            trace_note!("Прибавляем очередной вклад к ранее накопленному результату.");
             result[row][column] += bias[column];
-            trace_step!(result);
         }
     }
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("после broadcasting: {result:?}");
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_matrix_after_adding_same_bias_vector_to_each_row(result);
 }
 
 // Строим график по результатам урока.
 fn plot_matrix_after_adding_same_bias_vector_to_each_row(result: [[f64; 2]; 2]) {
-    trace_note!("Значения ячеек видны по цвету и подписи.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок тепловой карты.");
-    trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::heatmap(
+    let _chart: std::path::PathBuf = lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Broadcasting: результат",
         &result.iter().map(|row| row.to_vec()).collect::<Vec<_>>(),
     )
     .expect("не удалось сохранить тепловую карту");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

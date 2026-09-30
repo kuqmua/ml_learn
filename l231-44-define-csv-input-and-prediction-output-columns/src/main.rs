@@ -11,27 +11,14 @@
 // схеме.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Сохраняем рассчитанное значение `input` для следующих операций.");
     let input: &str = "feature\n1\n2\n";
-    trace_step!(input);
-    trace_note!("Создаём изменяемое значение `lines` для следующих операций.");
     let mut lines: std::str::Lines<'_> = input.lines();
-    trace_step!(lines);
-    trace_note!("Проверяем, что сравниваемые размерности или значения действительно совпадают.");
     assert_eq!(lines.next(), Some("feature"));
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("prediction");
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
+
     for line in lines {
-        trace_step!(line);
-        trace_note!("Читаем или разбираем входные данные в значение `feature`.");
         let feature: f64 = line.parse().unwrap();
-        trace_step!(feature);
-        trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-        println!("{}", feature * 2.0 + 1.0);
+        let _ = &(feature * 2.0 + 1.0);
     }
 }

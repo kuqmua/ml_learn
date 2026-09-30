@@ -19,78 +19,33 @@
 //   входного файла.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!(
-        "Шаг: Берём seed из аргумента командной строки или используем фиксированное значение."
-    );
-    trace_note!("Берём элемент с указанным порядковым номером.");
-    trace_note!("Преобразуем каждый элемент последовательности.");
-    trace_note!("При отсутствии значения используем запасной вариант.");
     let seed: u64 = std::env::args()
         .nth(1)
         .map(|seed_text| seed_text.parse::<u64>().expect("seed: целое число"))
         .unwrap_or(42);
-    trace_step!(seed);
-    trace_note!("Фиксируем демонстрационные данные на время выполнения программы.");
     const SAMPLE_DATA: &str = "1,0\n2,0\n3,1\n4,1\n";
 
-    trace_note!("Шаг: Запускаем повторяемый эксперимент и считаем простую базовую метрику.");
-    let (random_state, baseline_accuracy): (u64, f64) = (|| -> (u64, f64) {
-        trace_note!("Используем подготовленное значение в следующем шаге примера.");
-        trace_note!("Из одного seed получаем то же состояние генератора и ту же базовую метрику.");
-        trace_note!("Сохраняем результат этого шага в `seed`.");
+    let (_random_state, _baseline_accuracy): (u64, f64) = (|| -> (u64, f64) {
         let seed: u64 = seed;
-        trace_step!(seed);
-        trace_note!(
-            "Один шаг линейного конгруэнтного генератора: фиксированный множитель и +1 по mod 2⁶⁴."
-        );
-        trace_note!("Так один seed всегда приводит к одному и тому же состоянию.");
         let state: u64 = seed.wrapping_mul(6364136223846793005).wrapping_add(1);
-        trace_step!(state);
-        trace_note!("Сохраняем рассчитанное значение `baseline_accuracy` для следующих операций.");
-        trace_note!("Разбиваем текст на строки для последовательной обработки.");
-        trace_note!("Оставляем только элементы, прошедшие указанную проверку.");
-        trace_note!("Подсчитываем число элементов после отбора.");
-        trace_note!("Делим значения, получая нормированную величину или среднее.");
         let baseline_accuracy: f64 = SAMPLE_DATA
             .lines()
             .filter(|line| line.ends_with(",1"))
             .count() as f64
             / SAMPLE_DATA.lines().count() as f64;
-        trace_step!(baseline_accuracy);
-        trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
         (state, baseline_accuracy)
     })();
-    trace_step!(random_state);
-    trace_step!(baseline_accuracy);
 
-    trace_note!("Шаг: Записываем seed, отпечаток данных и результат для сравнения запусков.");
-    trace_note!("Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.");
-    trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
-    trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    trace_note!("Отпечаток данных получаем последовательным смешиванием байтов строки.");
-    trace_note!("Сохраняем результат этого шага в `data`.");
-    trace_note!("Создаём хешер, чтобы получить воспроизводимый отпечаток данных.");
-    trace_note!("Добавляем байты входных данных в состояние хешера.");
-    trace_note!("Завершаем хеширование и получаем числовой отпечаток.");
-    println!(
-        "seed={seed}, data_hash={}, random_state={random_state}, baseline_accuracy={baseline_accuracy:.2}",
-        (|| -> u64 {
-            let data: &str = SAMPLE_DATA;
-            trace_step!(data);
-            trace_step!(data);
+    let _ = &((|| -> u64 {
+        let data: &str = SAMPLE_DATA;
 
-            let mut hasher: std::collections::hash_map::DefaultHasher =
-                std::collections::hash_map::DefaultHasher::new();
-            trace_step!(hasher);
-            trace_step!(hasher);
+        let mut hasher: std::collections::hash_map::DefaultHasher =
+            std::collections::hash_map::DefaultHasher::new();
 
-            std::hash::Hash::hash(data, &mut hasher);
+        std::hash::Hash::hash(data, &mut hasher);
 
-            std::hash::Hasher::finish(&hasher)
-        })()
-    );
+        std::hash::Hasher::finish(&hasher)
+    })());
 }

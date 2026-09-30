@@ -141,7 +141,6 @@ def prepare(name: str) -> None:
         temporary.write(normalized)
         temporary_path = Path(temporary.name)
     temporary_path.replace(destination)
-    print(f"{name}: {count} строк → {destination}")
 
 
 def main() -> None:

@@ -3,16 +3,13 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str = "Измени начальную точку и правило остановки градиентного спуска.";
-    let choices: [&str; 3] = [
+    let _question: &str = "Измени начальную точку и правило остановки градиентного спуска.";
+    let _choices: [&str; 3] = [
         "Объясни по истории значений, где движение медленное, где сходится, а где колеблется или расходится.",
         "Покажи, что остановка определяется изменением функции или градиента, а не только числом шагов.",
         "Найди старты с разными конечными минимумами и объясни причину.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

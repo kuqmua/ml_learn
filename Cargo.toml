@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "lesson-trace",
+    "lesson-structure",
     "lesson-datasets",
     "lesson-visualization",
     "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding",

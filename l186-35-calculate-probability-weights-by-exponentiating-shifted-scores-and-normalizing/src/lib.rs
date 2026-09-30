@@ -3,7 +3,6 @@
 /// Устойчивый softmax для конечных логитов.
 // Оценку модели до преобразования в вероятность называют logit.
 /// Softmax: вычитаем максимальную оценку, вычисляем экспоненты и делим каждую на их сумму.
-use lesson_trace::trace_step;
 
 pub fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
     raw_model_scores: &[f64],
@@ -12,13 +11,10 @@ pub fn calculate_probability_weights_by_exponentiating_shifted_scores_then_divid
         .iter()
         .copied()
         .fold(f64::NEG_INFINITY, f64::max);
-    trace_step!(maximum);
     let weights: Vec<f64> = raw_model_scores
         .iter()
         .map(|&value| (value - maximum).exp())
         .collect();
-    trace_step!(weights);
     let total: f64 = weights.iter().sum();
-    trace_step!(total);
     weights.into_iter().map(|weight| weight / total).collect()
 }

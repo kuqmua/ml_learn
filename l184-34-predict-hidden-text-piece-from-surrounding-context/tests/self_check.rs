@@ -3,16 +3,13 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str = "Скрой один токен и предскажи его из левого и правого контекста.";
-    let choices: [&str; 3] = [
+    let _question: &str = "Скрой один токен и предскажи его из левого и правого контекста.";
+    let _choices: [&str; 3] = [
         "Выходы настоящих позиций не должны меняться при правильной маске.",
         "Выход более ранней позиции может измениться; сравни с причинным вниманием.",
         "Целевая позиция не содержит исходный ответ на входе, а ошибка считается по правильному токену.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

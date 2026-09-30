@@ -10,42 +10,20 @@
 // Отпечаток зависит от содержимого, поэтому одинаковое имя файла не гарантирует одинаковые данные.
 // Для повторного запуска с теми же байтами отпечаток должен совпасть.
 
-use lesson_trace::{enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
-    trace_note!("Задаём учебные значения для `cases`.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
     let cases: [(&str, &str); 3] = [
         ("исходные данные", "1,0\n2,1\n"),
         ("те же данные", "1,0\n2,1\n"),
         ("изменилась одна метка", "1,0\n2,0\n"),
     ];
-    trace_step!(cases);
-    trace_note!("Задаём учебные значения для `fingerprints`.");
     let mut fingerprints: [u64; 3] = [0; 3];
-    trace_step!(fingerprints);
-    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
-    for (index, (description, data)) in cases.into_iter().enumerate() {
-        trace_step!(index);
-        trace_step!(description);
-        trace_step!(data);
-        trace_note!("Сохраняем результат этого шага в `hasher`.");
+    for (index, (_description, data)) in cases.into_iter().enumerate() {
         let mut hasher: std::collections::hash_map::DefaultHasher =
             std::collections::hash_map::DefaultHasher::new();
-        trace_step!(hasher);
-        trace_note!("Используем подготовленное значение в следующем шаге примера.");
         std::hash::Hash::hash(data, &mut hasher);
-        trace_note!("Обновляем значение результатом текущего вычисления.");
         fingerprints[index] = std::hash::Hasher::finish(&hasher);
-        trace_step!(fingerprints);
-        trace_note!("Печатаем рассчитанные значения для проверки примера.");
-        println!("{description}: отпечаток {}", fingerprints[index]);
+        let _ = &(fingerprints[index]);
     }
-    trace_note!("Проверяем ожидаемое свойство учебного примера.");
     assert_eq!(fingerprints[0], fingerprints[1]);
-    trace_note!("Проверяем ожидаемое свойство учебного примера.");
     assert_ne!(fingerprints[0], fingerprints[2]);
 }

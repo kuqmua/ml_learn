@@ -3,16 +3,13 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str = "Примени один feed-forward слой к двум разным позициям.";
-    let choices: [&str; 3] = [
+    let _question: &str = "Примени один feed-forward слой к двум разным позициям.";
+    let _choices: [&str; 3] = [
         "Среднее нормализованных координат близко к 0; объясни роль малого epsilon.",
         "Одинаковые веса действуют на обе позиции отдельно; изменение одной позиции не меняет другую.",
         "После каждого подслоя форма сохраняется, а итог отличается от входа.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

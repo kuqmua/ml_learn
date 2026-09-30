@@ -11,55 +11,26 @@
 // прогноз при нулевом признаке.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Сохраняем рассчитанное значение `weight` для следующих операций.");
     let weight: f64 = 2.0;
-    trace_step!(weight);
-    trace_note!("Сохраняем рассчитанное значение `bias` для следующих операций.");
     let bias: f64 = 1.0;
-    trace_step!(bias);
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for feature in [0.0, 1.0, 3.0] {
-        trace_step!(feature);
-        trace_note!("Умножаем значения и сохраняем результат в `prediction`.");
-        let prediction: f64 = weight * feature + bias;
-        trace_step!(prediction);
-        trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-        println!("x={feature} -> y={prediction}");
+        let _prediction: f64 = weight * feature + bias;
     }
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_linear_prediction_as_weighted_input_plus_bias();
 }
 
 // Строим график по результатам урока.
 fn plot_linear_prediction_as_weighted_input_plus_bias() {
-    trace_note!("График величин и зависимостей, изученных в этом уроке.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Собираем результаты в коллекцию.");
     let coefficients_points: Vec<(f64, f64)> = (0..=50)
         .map(|plot_step_index| {
-            trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            trace_note!("Добавляем пару значений для сравнения или построения графика.");
             (horizontal_value, 2.0 * horizontal_value + 1.0)
         })
         .collect();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Линейная модель",
@@ -72,6 +43,4 @@ fn plot_linear_prediction_as_weighted_input_plus_bias() {
         }],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

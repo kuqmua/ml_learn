@@ -10,59 +10,29 @@
 // Зачем это нужно: Слой преобразует входной вектор в выходной по весам и смещениям каждого нейрона.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `input` для следующего шага примера.");
     let input: [f64; 2] = [1.0, 2.0];
-    trace_step!(input);
-    trace_note!("Создаём набор значений `weights` для следующего шага примера.");
     let weights: [[f64; 2]; 2] = [[0.5, 0.2], [-0.3, 0.8]];
-    trace_step!(weights);
-    trace_note!("Создаём набор значений `biases` для следующего шага примера.");
     let biases: [f64; 2] = [0.1, -0.2];
-    trace_step!(biases);
-    trace_note!("Создаём набор значений `output` для следующего шага примера.");
     let mut output: [f64; 2] = [0.0; 2];
-    trace_step!(output);
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for neuron in 0..2 {
-        trace_step!(neuron);
-        trace_note!("Присваиваем вычисленное значение соответствующей переменной или полю.");
         output[neuron] = biases[neuron];
-        trace_step!(output);
-        trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
         for feature in 0..2 {
-            trace_step!(feature);
-            trace_note!("Прибавляем очередной вклад к ранее накопленному результату.");
             output[neuron] += weights[neuron][feature] * input[feature];
-            trace_step!(output);
         }
     }
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("выход слоя = {output:?}");
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_weights_used_to_sum_input_coordinates(weights);
 }
 
 // Строим график по результатам урока.
 fn plot_weights_used_to_sum_input_coordinates(weights: [[f64; 2]; 2]) {
-    trace_note!("Значения ячеек видны по цвету и подписи.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок тепловой карты.");
-    trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::heatmap(
+    let _chart: std::path::PathBuf = lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Веса слоя",
         &weights.iter().map(|row| row.to_vec()).collect::<Vec<_>>(),
     )
     .expect("не удалось сохранить тепловую карту");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

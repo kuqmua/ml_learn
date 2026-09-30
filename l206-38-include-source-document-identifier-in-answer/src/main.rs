@@ -10,16 +10,8 @@
 // проверить основание.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Сохраняем рассчитанное значение `source_identifier` для следующих операций.");
-    let source_identifier: &str = "docs/rust/cargo";
-    trace_step!(source_identifier);
-    trace_note!("Сохраняем рассчитанное значение `fact` для следующих операций.");
-    let fact: &str = "Cargo собирает проект";
-    trace_step!(fact);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("{fact} [источник: {source_identifier}]");
+    let _source_identifier: &str = "docs/rust/cargo";
+    let _fact: &str = "Cargo собирает проект";
 }

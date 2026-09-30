@@ -11,24 +11,12 @@
 // нужно фиксировать.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `points` для следующего шага примера.");
     let points: [[f64; 2]; 4] = [[0.0, 0.0], [0.1, 0.0], [5.0, 5.0], [5.1, 5.0]];
-    trace_step!(points);
-    trace_note!("Создаём набор значений `first_start` для следующего шага примера.");
     let first_start: [[f64; 2]; 2] = [points[0], points[2]];
-    trace_step!(first_start);
-    trace_note!("Создаём набор значений `second_start` для следующего шага примера.");
     let second_start: [[f64; 2]; 2] = [points[0], points[1]];
-    trace_step!(second_start);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("разнесённые центры={first_start:?}; соседние центры={second_start:?}");
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_initial_cluster_centers(points, first_start, second_start);
 }
 
@@ -38,40 +26,19 @@ fn plot_initial_cluster_centers(
     first_start: [[f64; 2]; 2],
     second_start: [[f64; 2]; 2],
 ) {
-    trace_note!("Значения из этого урока на графике.");
     let observation_points: Vec<(f64, f64)> = points
         .iter()
         .map(|data_point| (data_point[0], data_point[1]))
         .collect();
-    trace_note!("Собираем значения для `separated_cluster_center_points` в коллекцию.");
-    trace_note!("Центр группы точек называют centroid.");
     let separated_cluster_center_points: Vec<(f64, f64)> = first_start
         .iter()
         .map(|data_point| (data_point[0], data_point[1]))
         .collect();
-    trace_note!("Собираем значения для `nearby_cluster_center_points` в коллекцию.");
     let nearby_cluster_center_points: Vec<(f64, f64)> = second_start
         .iter()
         .map(|data_point| (data_point[0], data_point[1]))
         .collect();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок диаграммы.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Добавляем ряд данных с подписью к графику.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Добавляем ряд данных с подписью к графику.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Добавляем ряд данных с подписью к графику.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::scatter_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Инициализация k-means",
@@ -96,6 +63,4 @@ fn plot_initial_cluster_centers(
         ],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

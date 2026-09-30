@@ -9,21 +9,15 @@
 
 use l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values;
 
-use lesson_trace::{disable, enable_tracing, trace_step};
-
 fn main() {
-    enable_tracing();
     let signal: [f64; 4] = [1.0, 2.0, 3.0, 4.0];
-    trace_step!(signal);
     let output: Vec<f64> =
         calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &signal, 1.0, 2.0, 1,
         )
         .unwrap();
-    trace_step!(output);
     assert_eq!(output, [1.0, 4.0, 7.0, 10.0]);
-    println!("сигнал: {signal:?}; causal conv: {output:?}");
-    disable();
+
     plot_input_signal_and_weighted_current_and_past_sums(&signal, &output);
 }
 fn plot_input_signal_and_weighted_current_and_past_sums(input: &[f64], output: &[f64]) {
@@ -37,7 +31,7 @@ fn plot_input_signal_and_weighted_current_and_past_sums(input: &[f64], output: &
         .enumerate()
         .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
         .collect();
-    let path: std::path::PathBuf = lesson_visualization::line_chart(
+    let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "causal-conv",
         "Причинная свёртка",
@@ -55,5 +49,4 @@ fn plot_input_signal_and_weighted_current_and_past_sums(input: &[f64], output: &
         ],
     )
     .expect("не удалось сохранить график");
-    println!("график: {}", path.display());
 }

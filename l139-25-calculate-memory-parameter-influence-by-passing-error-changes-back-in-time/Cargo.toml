@@ -5,4 +5,3 @@ edition = "2024"
 
 [dependencies]
 l138_25_update_memory_from_weighted_input_and_previous_memory = { package = "l138-25-update-memory-from-weighted-input-and-previous-memory", path = "../l138-25-update-memory-from-weighted-input-and-previous-memory" }
-lesson-trace = { path = "../lesson-trace" }

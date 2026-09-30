@@ -11,30 +11,16 @@
 // Зачем это нужно: Отдельные индексы нужны для неизвестных слов и границ последовательности.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Инициализируем значение `unknown_identifier` начальным состоянием.");
     let unknown_identifier: i32 = 0;
-    trace_step!(unknown_identifier);
-    trace_note!("Сохраняем рассчитанное значение `begin_identifier` для следующих операций.");
     let begin_identifier: i32 = 1;
-    trace_step!(begin_identifier);
-    trace_note!("Сохраняем рассчитанное значение `end_identifier` для следующих операций.");
     let end_identifier: i32 = 2;
-    trace_step!(end_identifier);
-    trace_note!("Сохраняем рассчитанное значение `known_word_identifier` для следующих операций.");
     let known_word_identifier: i32 = 3;
-    trace_step!(known_word_identifier);
-    trace_note!("Создаём набор значений `sequence` для следующего шага примера.");
-    let sequence: [i32; 4] = [
+    let _sequence: [i32; 4] = [
         begin_identifier,
         known_word_identifier,
         unknown_identifier,
         end_identifier,
     ];
-    trace_step!(sequence);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("индексы последовательности: {sequence:?}");
 }

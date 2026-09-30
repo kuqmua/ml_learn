@@ -9,23 +9,16 @@
 
 use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
-use lesson_trace::{enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
     let input: [[f64; 2]; 3] = [[1.0, 2.0], [3.0, 1.0], [2.0, 4.0]];
-    trace_step!(input);
-    trace_note!("Первая голова смотрит на первый признак, вторая — на второй.");
     let first_attention_head: Vec<[f64; 2]> = input
         .iter()
         .map(|input_value| [input_value[0], 0.0])
         .collect();
-    trace_step!(first_attention_head);
     let second_attention_head: Vec<[f64; 2]> = input
         .iter()
         .map(|input_value| [0.0, input_value[1]])
         .collect();
-    trace_step!(second_attention_head);
     let first_output: Vec<[f64; 2]> =
         calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
             &first_attention_head,
@@ -33,7 +26,6 @@ fn main() {
             &first_attention_head,
         )
         .unwrap();
-    trace_step!(first_output);
     let second_output: Vec<[f64; 2]> =
         calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
             &second_attention_head,
@@ -41,14 +33,10 @@ fn main() {
             &second_attention_head,
         )
         .unwrap();
-    trace_step!(second_output);
-    trace_note!("Конкатенация двух одномерных выходов здесь сразу даёт размерность 2.");
     let combined: Vec<[f64; 2]> = first_output
         .iter()
         .zip(&second_output)
         .map(|(first_value, second_value)| [first_value[0], second_value[1]])
         .collect();
-    trace_step!(combined);
     assert_eq!(combined[0], input[0]);
-    println!("две головы: {combined:?}");
 }

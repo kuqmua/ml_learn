@@ -9,7 +9,6 @@
 // Forget/input/output gates отдельно управляют памятью и наблюдаемым состоянием.
 
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
-use lesson_trace::{enable_tracing, trace_step};
 
 fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
     input_value: f64,
@@ -24,34 +23,25 @@ fn calculate_lstm_memory_and_output_by_mixing_old_memory_with_candidate_then_gat
 ) -> (f64, f64) {
     let forget: f64 =
         calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(forget_bias);
-    trace_step!(forget);
     let insert: f64 =
         calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(input);
-    trace_step!(insert);
     let candidate: f64 = input.tanh();
-    trace_step!(candidate);
     let cell: f64 = forget * previous_cell + insert * candidate;
-    trace_step!(cell);
     let hidden: f64 =
         calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(input)
             * cell.tanh();
-    trace_step!(hidden);
     (cell, hidden)
 }
 fn main() {
-    enable_tracing();
     let remembered: f64 =
         calculate_lstm_memory_and_output_by_mixing_old_memory_with_candidate_then_gating_output(
             0.0, 1.0, 5.0,
         )
         .0;
-    trace_step!(remembered);
     let forgotten: f64 =
         calculate_lstm_memory_and_output_by_mixing_old_memory_with_candidate_then_gating_output(
             0.0, 1.0, -5.0,
         )
         .0;
-    trace_step!(forgotten);
     assert!(remembered > forgotten);
-    println!("ячейка при открытом forget={remembered:.3}, при закрытом={forgotten:.3}");
 }

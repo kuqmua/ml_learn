@@ -11,22 +11,11 @@
 // и показывает применённое значение.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Получаем значение `seed` из окружения текущего процесса.");
-    trace_note!("Берём элемент с указанным порядковым номером.");
-    trace_note!("Преобразуем каждый элемент последовательности.");
-    trace_note!("При отсутствии значения используем запасной вариант.");
-    let seed: u64 = std::env::args()
+    let _seed: u64 = std::env::args()
         .nth(1)
         .map(|text| text.parse::<u64>().expect("seed должен быть числом"))
         .unwrap_or(42);
-    trace_step!(seed);
-    trace_note!("Сохраняем рассчитанное значение `iterations` для следующих операций.");
-    let iterations: i32 = 3;
-    trace_step!(iterations);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("конфигурация: seed={seed}, iterations={iterations}");
+    let _iterations: i32 = 3;
 }

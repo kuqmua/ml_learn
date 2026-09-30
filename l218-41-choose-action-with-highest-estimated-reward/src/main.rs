@@ -10,44 +10,22 @@
 // Зачем это нужно: Политика выбирает действие по оценкам доступных вариантов в текущем состоянии.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Инициализируем значение `left_action_value` начальным состоянием.");
     let left_action_value: f64 = 0.2;
-    trace_step!(left_action_value);
-    trace_note!("Инициализируем значение `right_action_value` начальным состоянием.");
     let right_action_value: f64 = 0.8;
-    trace_step!(right_action_value);
-    trace_note!("Сохраняем рассчитанное значение `action` для следующих операций.");
-    let action: &str = if right_action_value > left_action_value {
-        trace_note!("Подставляем результаты в этот шаблон вывода или текстового значения.");
+    let _action: &str = if right_action_value > left_action_value {
         "вправо"
     } else {
-        trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
-        trace_note!("Подставляем результаты в этот шаблон вывода или текстового значения.");
         "влево"
     };
-    trace_step!(action);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("политика выбирает: {action}");
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_estimated_rewards_for_available_actions(left_action_value, right_action_value);
 }
 
 // Строим график по результатам урока.
 fn plot_estimated_rewards_for_available_actions(left_action_value: f64, right_action_value: f64) {
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок диаграммы.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Оценки действий политики",
@@ -55,6 +33,4 @@ fn plot_estimated_rewards_for_available_actions(left_action_value: f64, right_ac
         &[("влево", left_action_value), ("вправо", right_action_value)],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

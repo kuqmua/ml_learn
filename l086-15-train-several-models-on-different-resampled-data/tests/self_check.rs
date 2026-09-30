@@ -3,16 +3,13 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str = "Измени один голос модели в ансамбле из пяти моделей.";
-    let choices: [&str; 3] = [
+    let _question: &str = "Измени один голос модели в ансамбле из пяти моделей.";
+    let _choices: [&str; 3] = [
         "Покажи, когда решение большинства меняется и когда остаётся тем же.",
         "Проверь их длину, повторы и отсутствие хотя бы одного исходного объекта при подходящей выборке.",
         "Итоговый класс меняется; явно задай правило при равенстве голосов.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

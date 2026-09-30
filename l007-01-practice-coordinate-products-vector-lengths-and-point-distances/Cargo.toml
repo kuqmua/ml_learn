@@ -9,6 +9,5 @@ l002_01_calculate_l1_vector_norm_by_summing_absolute_coordinates = { package = "
 l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates = { package = "l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates", path = "../l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates" }
 l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum = { package = "l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum", path = "../l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum" }
 l006_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths = { package = "l006-01-calculate-direction-similarity-as-coordinate-product-sum-divided-by-vector-lengths", path = "../l006-01-calculate-direction-similarity-as-coordinate-product-sum-divided-by-vector-lengths" }
-lesson-trace = { path = "../lesson-trace" }
 
 lesson-visualization = { path = "../lesson-visualization" }

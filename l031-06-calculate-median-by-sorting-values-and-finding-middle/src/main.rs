@@ -8,79 +8,34 @@
 // У нечётного набора берём средний элемент, у чётного — среднее двух центральных.
 // Выброс меняет среднее арифметическое гораздо сильнее, чем медиану.
 
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
-    trace_note!("Задаём учебные значения для `cases`.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
     let cases: [(&str, &[f64], f64); 4] = [
         ("нечётное число значений", &[2.0, 4.0, 6.0], 4.0),
         ("чётное число значений", &[2.0, 4.0, 6.0, 8.0], 5.0),
         ("сильный выброс", &[2.0, 4.0, 6.0, 100.0], 5.0),
         ("одно значение", &[7.0], 7.0),
     ];
-    trace_step!(cases);
-    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
-    for (description, source, expected) in cases {
-        trace_step!(description);
-        trace_step!(source);
-        trace_step!(expected);
-        trace_note!("Проверяем ожидаемое свойство учебного примера.");
+    for (_description, source, expected) in cases {
         assert!(!source.is_empty(), "медиана пустого набора не определена");
-        trace_note!("Сохраняем результат этого шага в `values`.");
         let mut values: Vec<f64> = source.to_vec();
-        trace_step!(values);
-        trace_note!("Используем подготовленное значение в следующем шаге примера.");
         values.sort_by(f64::total_cmp);
-        trace_note!("Определяем размер данных и сохраняем его в `middle`.");
         let middle: usize = values.len() / 2;
-        trace_step!(middle);
-        trace_note!("Определяем размер данных и сохраняем его в `median`.");
         let median: f64 = if values.len() % 2 == 0 {
-            trace_note!("Вычисляем значение по указанной формуле.");
             (values[middle - 1] + values[middle]) / 2.0
         } else {
-            trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
-            trace_note!("Используем подготовленное значение в следующем шаге примера.");
             values[middle]
         };
-        trace_step!(median);
-        trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(median, expected);
-        trace_note!("Печатаем рассчитанные значения для проверки примера.");
-        println!("{description}: {values:?} → медиана {median}");
     }
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_values_and_median_as_middle_of_sorted_values();
 }
 
 // Строим график по результатам урока.
 fn plot_values_and_median_as_middle_of_sorted_values() {
-    trace_note!("Наглядное представление величин из этого урока.");
     let observation_points: Vec<(f64, f64)> = [(1.0, 1.0), (2.0, 3.0), (3.0, 7.0)].to_vec();
-    trace_note!("Собираем значения для `median_points` в коллекцию.");
     let median_points: Vec<(f64, f64)> = [(1.0, 3.0), (3.0, 3.0)].to_vec();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Добавляем ряд данных с подписью к графику.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Добавляем ряд данных с подписью к графику.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Медиана и отдельные значения",
@@ -100,6 +55,4 @@ fn plot_values_and_median_as_middle_of_sorted_values() {
         ],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

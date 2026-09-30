@@ -3,7 +3,6 @@
 
 /// Для строки i использует только метки предыдущих строк в заданном порядке.
 /// Упорядоченная статистика категории: (сумма предыдущих ответов + prior·strength) / (их число + strength).
-use lesson_trace::{trace_note, trace_step};
 
 pub fn encode_categories_as_average_previous_targets_with_prior_weight(
     categories: &[&str],
@@ -16,26 +15,16 @@ pub fn encode_categories_as_average_previous_targets_with_prior_weight(
     }
     let mut stats: std::collections::BTreeMap<&str, (f64, usize)> =
         std::collections::BTreeMap::<&str, (f64, usize)>::new();
-    trace_step!(stats);
-    trace_note!("Замену категорий числами, рассчитанными по целям, называют target encoding.");
     let mut category_target_mean_values: Vec<f64> = Vec::with_capacity(categories.len());
-    trace_step!(category_target_mean_values);
     for (&category, &target) in categories.iter().zip(targets) {
-        trace_step!(category);
-        trace_step!(target);
         if !target.is_finite() {
             return Err("нечисловая метка");
         }
         let &(sum, count) = stats.get(category).unwrap_or(&(0.0, 0));
-        trace_step!(sum);
-        trace_step!(count);
         category_target_mean_values.push((sum + prior * strength) / (count as f64 + strength));
         let entry: &mut (f64, usize) = stats.entry(category).or_default();
-        trace_step!(entry);
         entry.0 += target;
-        trace_step!(entry);
         entry.1 += 1;
-        trace_step!(entry);
     }
     Ok(category_target_mean_values)
 }

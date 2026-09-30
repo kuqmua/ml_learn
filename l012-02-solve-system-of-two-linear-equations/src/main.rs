@@ -10,16 +10,7 @@
 // При ненулевом определителе решение одно. При нулевом определителе уравнения
 // могут совпадать (решений бесконечно много) или противоречить друг другу (решений нет).
 
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
-    trace_note!("Задаём учебные значения для `cases`.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
     let cases: [(&str, [f64; 4], [f64; 2]); 5] = [
         ("одно решение", [2.0, 1.0, 1.0, -1.0], [5.0, 1.0]),
         ("бесконечно много решений", [1.0, 1.0, 2.0, 2.0], [3.0, 6.0]),
@@ -27,8 +18,6 @@ fn main() {
         ("бесконечно много решений", [0.0, 0.0, 0.0, 0.0], [0.0, 0.0]),
         ("решений нет", [0.0, 0.0, 0.0, 0.0], [1.0, 0.0]),
     ];
-    trace_step!(cases);
-    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for (
         description,
         [
@@ -40,114 +29,54 @@ fn main() {
         [first_right_hand_side, second_right_hand_side],
     ) in cases
     {
-        trace_step!(description);
-        trace_step!(first_row_first_coefficient);
-        trace_step!(first_row_second_coefficient);
-        trace_step!(second_row_first_coefficient);
-        trace_step!(second_row_second_coefficient);
-        trace_step!(first_right_hand_side);
-        trace_step!(second_right_hand_side);
-        trace_note!("Сохраняем результат этого шага в `determinant`.");
         let determinant: f64 = first_row_first_coefficient * second_row_second_coefficient
             - first_row_second_coefficient * second_row_first_coefficient;
-        trace_step!(determinant);
-        trace_note!("Выбираем дальнейший шаг по выполнению условия.");
         if determinant != 0.0 {
-            trace_note!("Сохраняем результат этого шага в `first_unknown`.");
-            let first_unknown: f64 = (first_right_hand_side * second_row_second_coefficient
+            let _first_unknown: f64 = (first_right_hand_side * second_row_second_coefficient
                 - first_row_second_coefficient * second_right_hand_side)
                 / determinant;
-            trace_step!(first_unknown);
-            trace_note!("Сохраняем результат этого шага в `second_unknown`.");
-            let second_unknown: f64 = (first_row_first_coefficient * second_right_hand_side
+            let _second_unknown: f64 = (first_row_first_coefficient * second_right_hand_side
                 - first_right_hand_side * second_row_first_coefficient)
                 / determinant;
-            trace_step!(second_unknown);
-            trace_note!("Печатаем рассчитанные значения для проверки примера.");
-            println!("{description}: x={first_unknown}, y={second_unknown}");
         } else {
-            trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
-            trace_note!(
-                "Если замена столбца правой частью тоже даёт ноль, обе строки описывают одну прямую."
-            );
             let first_replaced: f64 = first_right_hand_side * second_row_second_coefficient
                 - first_row_second_coefficient * second_right_hand_side;
-            trace_step!(first_replaced);
-            trace_note!("Сохраняем результат этого шага в `second_replaced`.");
             let second_replaced: f64 = first_row_first_coefficient * second_right_hand_side
                 - first_right_hand_side * second_row_first_coefficient;
-            trace_step!(second_replaced);
-            trace_note!("Сохраняем результат этого шага в `impossible_zero_row`.");
-            trace_note!("Задаём преобразование для элементов коллекции.");
             let impossible_zero_row: bool = (first_row_first_coefficient == 0.0
                 && first_row_second_coefficient == 0.0
                 && first_right_hand_side != 0.0)
                 || (second_row_first_coefficient == 0.0
                     && second_row_second_coefficient == 0.0
                     && second_right_hand_side != 0.0);
-            trace_step!(impossible_zero_row);
-            trace_note!("Сохраняем результат этого шага в `actual`.");
             let actual: &str =
                 if first_replaced == 0.0 && second_replaced == 0.0 && !impossible_zero_row {
-                    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
                     "бесконечно много решений"
                 } else {
-                    trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
-                    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
                     "решений нет"
                 };
-            trace_step!(actual);
-            trace_note!("Проверяем ожидаемое свойство учебного примера.");
             assert_eq!(actual, description);
-            trace_note!("Печатаем рассчитанные значения для проверки примера.");
-            println!("{description}: определитель равен нулю");
         }
     }
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_two_lines_and_their_intersection();
 }
 
 // Строим график по результатам урока.
 fn plot_two_lines_and_their_intersection() {
-    trace_note!("Значения из этого урока на графике.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Собираем результаты в коллекцию.");
     let first_equation_points: Vec<(f64, f64)> = (0..=50)
         .map(|plot_step_index| {
-            trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            trace_note!("Добавляем пару значений для сравнения или построения графика.");
             (horizontal_value, 5.0 - 2.0 * horizontal_value)
         })
         .collect();
-    trace_note!("Собираем значения для `second_equation_points` в коллекцию.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Собираем результаты в коллекцию.");
     let second_equation_points: Vec<(f64, f64)> = (0..=50)
         .map(|plot_step_index| {
-            trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            trace_note!("Добавляем пару значений для сравнения или построения графика.");
             (horizontal_value, horizontal_value - 1.0)
         })
         .collect();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Добавляем ряд данных с подписью к графику.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Добавляем ряд данных с подписью к графику.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Две прямые с единственным пересечением",
@@ -167,6 +96,4 @@ fn plot_two_lines_and_their_intersection() {
         ],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

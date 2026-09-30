@@ -11,43 +11,21 @@
 // подходящий контекст.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `text_units` для следующего шага примера.");
-    trace_note!("Единицу текста, которую модель обрабатывает как одно целое, называют token.");
     let text_units: [f64; 2] = [1.0, 3.0];
-    trace_step!(text_units);
-    trace_note!("Создаём набор значений `weights` для следующего шага примера.");
     let weights: [[f64; 2]; 2] = [[0.8, 0.2], [0.4, 0.6]];
-    trace_step!(weights);
-    trace_note!("Создаём набор значений `context` для следующего шага примера.");
-    trace_note!("Умножаем величины согласно используемой формуле.");
-    trace_note!("Умножаем величины согласно используемой формуле.");
     let context: [f64; 2] = [
         weights[0][0] * text_units[0] + weights[0][1] * text_units[1],
         weights[1][0] * text_units[0] + weights[1][1] * text_units[1],
     ];
-    trace_step!(context);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("контекст для двух позиций = {context:?}");
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_weighted_context_coordinates(context);
 }
 
 // Строим график по результатам урока.
 fn plot_weighted_context_coordinates(context: [f64; 2]) {
-    trace_note!("Сравнение величин из этого урока.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок диаграммы.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Self-attention: контекст",
@@ -55,6 +33,4 @@ fn plot_weighted_context_coordinates(context: [f64; 2]) {
         &[("позиция 0", context[0]), ("позиция 1", context[1])],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

@@ -3,17 +3,14 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str =
+    let _question: &str =
         "Построй интервалы среднего для маленькой и увеличенной выборки с похожим разбросом.";
-    let choices: [&str; 3] = [
+    let _choices: [&str; 3] = [
         "Объясни используемое правило индексации и проверь граничные доли 0 и 1.",
         "Убедись, что выборки имеют ту же длину, допускают повторы и дают воспроизводимый результат.",
         "Сравни ширину интервалов и объясни роль размера выборки.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

@@ -10,32 +10,19 @@
 
 use l192_35_convert_text_identifiers_to_context_and_next_piece_scores::convert_text_identifiers_to_context_then_to_next_token_scores;
 
-use lesson_trace::{enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
     let prefix: [usize; 2] = [0, 1];
-    trace_step!(prefix);
-    trace_note!("Оценку модели до преобразования в вероятность называют logit.");
     let raw_model_scores: Vec<[f64; 3]> =
         convert_text_identifiers_to_context_then_to_next_token_scores(&prefix);
-    trace_step!(raw_model_scores);
     let last: &[f64; 3] = raw_model_scores.last().unwrap();
-    trace_step!(last);
-    let next: usize = last
+    let _next: usize = last
         .iter()
         .enumerate()
         .max_by(|first_candidate, second_candidate| first_candidate.1.total_cmp(second_candidate.1))
         .unwrap()
         .0;
-    trace_step!(next);
-    trace_note!("Изменение будущего токена не меняет предыдущие позиции.");
     assert_eq!(
         convert_text_identifiers_to_context_then_to_next_token_scores(&[0])[0],
         raw_model_scores[0]
-    );
-    println!("префикс: {prefix:?}; logits: {last:?}; следующий ID: {next}");
-    trace_note!(
-        "Весов из GPT здесь нет: это минимальный прямой проход с фиксированными параметрами."
     );
 }

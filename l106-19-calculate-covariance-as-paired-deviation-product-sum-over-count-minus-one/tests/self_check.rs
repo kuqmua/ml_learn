@@ -3,17 +3,14 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str =
+    let _question: &str =
         "Вычисли ковариацию двух признаков, которые растут вместе, затем поменяй знак одного.";
-    let choices: [&str; 3] = [
+    let _choices: [&str; 3] = [
         "Среднее новых значений близко к нулю, а разности между объектами не меняются.",
         "Главным выбрано направление с большим разбросом проекций.",
         "Знак ковариации меняется; объясни расчёт через произведения отклонений.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

@@ -12,41 +12,18 @@
 // другой.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `data` для следующего шага примера.");
     let data: [&str; 4] = ["A", "B", "C", "D"];
-    trace_step!(data);
-    trace_note!("Создаём набор значений `sampled_indices` для следующего шага примера.");
     let sampled_indices: [usize; 4] = [0, 2, 2, 3];
-    trace_step!(sampled_indices);
-    trace_note!("Преобразуем входные данные и сохраняем полученную коллекцию в `sample`.");
     let sample: Vec<&str> = sampled_indices.iter().map(|&index| data[index]).collect();
-    trace_step!(sample);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("исходные={data:?}, bootstrap={sample:?}");
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_repeated_appearances_in_sample_drawn_with_replacement(sample);
 }
 
 // Строим график по результатам урока.
 fn plot_repeated_appearances_in_sample_drawn_with_replacement(sample: std::vec::Vec<&str>) {
-    trace_note!("Сравниваем величины, вычисленные в примере.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок диаграммы.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Повторы в bootstrap-выборке",
@@ -83,6 +60,4 @@ fn plot_repeated_appearances_in_sample_drawn_with_replacement(sample: std::vec::
         ],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

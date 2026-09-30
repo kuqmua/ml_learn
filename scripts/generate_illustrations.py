@@ -247,5 +247,3 @@ for index, (share, result, terms, clean_share) in enumerate(stages):
     if index < 3:body += line(x + 257, 337, x + 282, 337, MUTED, 2, "gray-arrow")
 body += text(600, 515, "При ᾱ = 1 остаётся чистый сигнал; при ᾱ = 0 остаётся только шум.", 17, MUTED, 600, "middle")
 write("39-diffusion.svg", 545, "От сигнала к шуму", "Чистый сигнал 2, фиксированный шум −1, меняется только ᾱ", body)
-
-print("Generated", len(list(OUTPUT.glob("*.svg"))), "illustrations in", OUTPUT)

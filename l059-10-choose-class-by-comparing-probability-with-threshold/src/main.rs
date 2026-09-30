@@ -12,42 +12,24 @@
 // положительных прогнозов.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `probabilities` для следующего шага примера.");
     let probabilities: [f64; 3] = [0.2, 0.55, 0.8];
-    trace_step!(probabilities);
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for threshold in [0.5, 0.7] {
-        trace_step!(threshold);
-        trace_note!("Преобразуем входные данные и сохраняем полученную коллекцию в `predictions`.");
-        let predictions: Vec<bool> = probabilities
+        let _predictions: Vec<bool> = probabilities
             .iter()
             .map(|&probability| probability >= threshold)
             .collect();
-        trace_step!(predictions);
-        trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-        println!("порог {threshold}: {predictions:?}");
     }
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_number_of_positive_predictions_for_changing_threshold();
 }
 
 // Строим график по результатам урока.
 fn plot_number_of_positive_predictions_for_changing_threshold() {
-    trace_note!("График величин и зависимостей, изученных в этом уроке.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Собираем результаты в коллекцию.");
     let threshold_points: Vec<(f64, f64)> = (0..=100)
         .map(|plot_step_index| {
-            trace_note!("Сохраняем результат этого шага в `threshold_value`.");
             let threshold_value: f64 = plot_step_index as f64 / 100.0;
-            trace_note!("Используем подготовленное значение в следующем шаге примера.");
-            trace_note!("Задаём значения следующей строки или последовательности.");
             (
                 threshold_value,
                 [0.2, 0.55, 0.8]
@@ -57,17 +39,7 @@ fn plot_number_of_positive_predictions_for_changing_threshold() {
             )
         })
         .collect();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Число положительных прогнозов",
@@ -80,6 +52,4 @@ fn plot_number_of_positive_predictions_for_changing_threshold() {
         }],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

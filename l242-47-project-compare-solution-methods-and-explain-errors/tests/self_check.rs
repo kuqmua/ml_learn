@@ -3,16 +3,13 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str = "Собери итоговую систему ответа с поиском источников, проверкой ссылок и отказом при нехватке данных.";
-    let choices: [&str; 3] = [
+    let _question: &str = "Собери итоговую систему ответа с поиском источников, проверкой ссылок и отказом при нехватке данных.";
+    let _choices: [&str; 3] = [
         "Сравни модель с baseline, сохрани конфигурацию и один раз отчитайся по test.",
         "Два проверяемых вопроса получают обоснованные ответы, неизвестный вопрос — честный отказ.",
         "Для каждого искусственно созданного сбоя покажи, какой сигнал мониторинга его обнаруживает.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

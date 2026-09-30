@@ -3,16 +3,13 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str = "Сравни число токенов для учебной и новой строки.";
-    let choices: [&str; 3] = [
+    let _question: &str = "Сравни число токенов для учебной и новой строки.";
+    let _choices: [&str; 3] = [
         "Покажи, почему маркеры должны отличаться от обычного текста пользователя.",
         "Декодирование восстанавливает исходные байты; укажи, как обработан незнакомый фрагмент.",
         "Объясни случай, когда новая строка разбивается на большее число частей.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

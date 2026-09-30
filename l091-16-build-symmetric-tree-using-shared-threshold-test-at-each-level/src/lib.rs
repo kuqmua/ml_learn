@@ -2,7 +2,6 @@
 //! Связь с принятой терминологией: Симметричное дерево.
 
 /// Все узлы одного уровня проверяют один и тот же признак и порог.
-use lesson_trace::trace_step;
 
 #[derive(Debug)]
 pub struct ObliviousTree {
@@ -21,14 +20,9 @@ impl ObliviousTree {
             return Err("число листьев должно быть 2^depth");
         }
         let mut leaf: usize = 0;
-        trace_step!(leaf);
         for &(feature, threshold) in &self.splits {
-            trace_step!(feature);
-            trace_step!(threshold);
             let value: f64 = *features.get(feature).ok_or("нет признака")?;
-            trace_step!(value);
             leaf = (leaf << 1) | usize::from(value > threshold);
-            trace_step!(leaf);
         }
         Ok(self.leaves[leaf])
     }

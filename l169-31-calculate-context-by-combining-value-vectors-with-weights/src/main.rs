@@ -10,42 +10,21 @@
 // Зачем это нужно: Value содержит информацию, которая будет перенесена в выход внимания после взвешивания.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `values` для следующего шага примера.");
     let values: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 2.0]];
-    trace_step!(values);
-    trace_note!("Создаём набор значений `weights` для следующего шага примера.");
     let weights: [f64; 2] = [0.25, 0.75];
-    trace_step!(weights);
-    trace_note!("Создаём набор значений `output` для следующего шага примера.");
-    trace_note!("Умножаем величины согласно используемой формуле.");
-    trace_note!("Умножаем величины согласно используемой формуле.");
     let output: [f64; 2] = [
         weights[0] * values[0][0] + weights[1] * values[1][0],
         weights[0] * values[0][1] + weights[1] * values[1][1],
     ];
-    trace_step!(output);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("взвешенное значение = {output:?}");
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_value_coordinates_after_weighted_summing(output);
 }
 
 // Строим график по результатам урока.
 fn plot_value_coordinates_after_weighted_summing(output: [f64; 2]) {
-    trace_note!("Сравнение величин из этого урока.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок диаграммы.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Взвешенная сумма V",
@@ -53,6 +32,4 @@ fn plot_value_coordinates_after_weighted_summing(output: [f64; 2]) {
         &[("выход 0", output[0]), ("выход 1", output[1])],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

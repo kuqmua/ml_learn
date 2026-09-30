@@ -12,63 +12,29 @@
 // производная равна 2x.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Сохраняем рассчитанное значение `input_value` для следующих операций.");
     let input_value: f64 = 3.0;
-    trace_step!(input_value);
-    trace_note!("Умножаем значения и сохраняем результат в `derivative`.");
-    let derivative: f64 = 2.0 * input_value;
-    trace_step!(derivative);
-    trace_note!("При x=3 малое увеличение аргумента меняет x² примерно в шесть раз быстрее.");
-    println!("f(x)=x²; f'(3)={derivative}");
+    let _derivative: f64 = 2.0 * input_value;
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_squared_input_and_tangent_line();
 }
 
 // Строим график по результатам урока.
 fn plot_squared_input_and_tangent_line() {
-    trace_note!("Наглядное представление величин из этого урока.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Собираем результаты в коллекцию.");
     let function_points: Vec<(f64, f64)> = (0..=60)
         .map(|plot_step_index| {
-            trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            trace_note!("Добавляем пару значений для сравнения или построения графика.");
             (horizontal_value, horizontal_value * horizontal_value)
         })
         .collect();
-    trace_note!("Собираем значения для `tangent_points` в коллекцию.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Собираем результаты в коллекцию.");
     let tangent_points: Vec<(f64, f64)> = (0..=60)
         .map(|plot_step_index| {
-            trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            trace_note!("Добавляем пару значений для сравнения или построения графика.");
             (horizontal_value, 9.0 + 6.0 * (horizontal_value - 3.0))
         })
         .collect();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Добавляем ряд данных с подписью к графику.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Добавляем ряд данных с подписью к графику.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Функция и касательная в x=3",
@@ -88,6 +54,4 @@ fn plot_squared_input_and_tangent_line() {
         ],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

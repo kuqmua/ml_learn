@@ -12,35 +12,15 @@
 // точки. Сравнение с точной формулой показывает погрешность.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Сохраняем рассчитанное значение `input_value` для следующих операций.");
     let input_value: f64 = 3.0;
-    trace_step!(input_value);
-    trace_note!(
-        "h = 0.0001 достаточно мал для приближения производной и достаточно велик для f64."
-    );
     let step: f64 = 0.0001;
-    trace_step!(step);
-    trace_note!("Для f(x)=x² считаем значения в x+h и x−h.");
     let right: f64 = (input_value + step) * (input_value + step);
-    trace_step!(right);
-    trace_note!("Умножаем значения и сохраняем результат в `left`.");
     let left: f64 = (input_value - step) * (input_value - step);
-    trace_step!(left);
-    trace_note!("Делим разность f(x+h)−f(x−h) на расстояние между точками: (x+h)−(x−h)=2h.");
-    let numerical_derivative: f64 = (right - left) / (2.0 * step);
-    trace_step!(numerical_derivative);
-    trace_note!("Умножаем значения и сохраняем результат в `analytical_derivative`.");
+    let _numerical_derivative: f64 = (right - left) / (2.0 * step);
     let analytical_derivative: f64 = 2.0 * input_value;
-    trace_step!(analytical_derivative);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("численно={numerical_derivative}, точно={analytical_derivative}");
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_slope_estimation_error_for_shrinking_step(input_value, analytical_derivative);
 }
 
@@ -49,35 +29,19 @@ fn plot_slope_estimation_error_for_shrinking_step(
     horizontal_value: f64,
     analytical_derivative: f64,
 ) {
-    trace_note!("На малом шаге проявляется погрешность округления центральной разности.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Собираем результаты в коллекцию.");
     let points: Vec<(f64, f64)> = (1..=12)
         .map(|step_exponent| {
-            trace_note!("Сохраняем результат этого шага в `step_size`.");
             let step_size: f64 = 10f64.powi(-step_exponent);
-            trace_note!("Сохраняем результат этого шага в `numeric`.");
             let numeric: f64 = ((horizontal_value + step_size) * (horizontal_value + step_size)
                 - (horizontal_value - step_size) * (horizontal_value - step_size))
                 / (2.0 * step_size);
-            trace_note!("Добавляем пару значений для сравнения или построения графика.");
             (
                 step_exponent as f64,
                 (numeric - analytical_derivative).abs(),
             )
         })
         .collect();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Ошибка центральной разности",
@@ -90,6 +54,4 @@ fn plot_slope_estimation_error_for_shrinking_step(
         }],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

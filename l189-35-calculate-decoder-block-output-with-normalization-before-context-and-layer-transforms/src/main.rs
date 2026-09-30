@@ -11,18 +11,11 @@
 /// Нормализация слоя (LayerNorm): из координат вычитаем среднее и делим на sqrt(среднее квадратов отклонений + epsilon).
 use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
-use lesson_trace::{enable_tracing, trace_note, trace_step};
-
 fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
     input_value: [f64; 2],
 ) -> [f64; 2] {
-    trace_note!(
-        "Среднее и дисперсию считаем по двум координатам токена; 10⁻⁵ не даёт делить на ноль."
-    );
     let mean: f64 = (input_value[0] + input_value[1]) / 2.0;
-    trace_step!(mean);
     let variance: f64 = ((input_value[0] - mean).powi(2) + (input_value[1] - mean).powi(2)) / 2.0;
-    trace_step!(variance);
     [
         (input_value[0] - mean) / (variance + 1e-5).sqrt(),
         (input_value[1] - mean) / (variance + 1e-5).sqrt(),
@@ -37,7 +30,6 @@ fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normali
         .copied()
         .map(normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation)
         .collect();
-    trace_step!(normalized);
     let attention: Vec<[f64; 2]> =
         calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
             &normalized,
@@ -45,20 +37,15 @@ fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normali
             &normalized,
         )
         .unwrap();
-    trace_step!(attention);
     input
         .iter()
         .zip(&attention)
         .map(|(&original, &context)| {
-            trace_note!("Добавление входа блока к его преобразованному выходу называют residual connection.");
             let input_plus_transformed_value: [f64; 2] =
                 [original[0] + context[0], original[1] + context[1]];
-            trace_step!(input_plus_transformed_value);
             let norm: [f64; 2] = normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
                 input_plus_transformed_value,
             );
-            trace_step!(norm);
-            trace_note!("Упрощённый FFN: два ReLU-канала и фиксированная выходная проекция.");
             [
                 input_plus_transformed_value[0] + 0.2 * norm[0].max(0.0),
                 input_plus_transformed_value[1] + 0.2 * norm[1].max(0.0),
@@ -67,14 +54,10 @@ fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normali
         .collect()
 }
 fn main() {
-    enable_tracing();
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    trace_step!(states);
     let output: Vec<[f64; 2]> =
         calculate_decoder_block_output_by_adding_past_context_and_transformed_normalized_values(
             &states,
         );
-    trace_step!(output);
     assert_eq!(output.len(), states.len());
-    println!("после decoder block: {output:?}");
 }

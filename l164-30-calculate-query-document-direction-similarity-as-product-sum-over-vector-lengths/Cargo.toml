@@ -5,5 +5,4 @@ edition = "2024"
 
 [dependencies]
 l006_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths = { package = "l006-01-calculate-direction-similarity-as-coordinate-product-sum-divided-by-vector-lengths", path = "../l006-01-calculate-direction-similarity-as-coordinate-product-sum-divided-by-vector-lengths" }
-lesson-trace = { path = "../lesson-trace" }
 lesson-visualization = { path = "../lesson-visualization" }

@@ -9,39 +9,27 @@
 // Вход управляет коэффициентом забывания; это учебная идея selective SSM, не реализация Mamba.
 
 /// Избирательное забывание: прибавляем вход к сохранённой доле состояния; по флагу сброса оставляем только текущий вход.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(
     input: &[(f64, bool)],
 ) -> Vec<f64> {
     let mut state: f64 = 0.0;
-    trace_step!(state);
     input
         .iter()
         .map(|&(value, reset)| {
-            trace_note!("Долю (fraction) предыдущего состояния, сохраняемую на следующем шаге, называют retention.");
-            trace_note!("При reset полностью забываем прошлое (0); иначе сохраняем 90% прежнего состояния.");
             let previous_state_share_kept: f64 = if reset { 0.0 } else { 0.9 };
-            trace_step!(previous_state_share_kept);
             state = previous_state_share_kept * state + value;
-            trace_step!(state);
             state
         })
         .collect()
 }
 fn main() {
-    enable_tracing();
     let sequence: [(f64, bool); 4] = [(1.0, false), (0.0, false), (2.0, true), (0.0, false)];
-    trace_step!(sequence);
     let states: Vec<f64> =
         calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(&sequence);
-    trace_step!(states);
     assert_eq!(states[0], 1.0);
     assert_eq!(states[2], 2.0);
-    trace_note!("reset удаляет прошлый контекст.");
 
-    println!("селективное состояние: {states:?}");
-    disable();
     plot_stored_state_with_reset_on_third_step(&states);
 }
 
@@ -51,7 +39,7 @@ fn plot_stored_state_with_reset_on_third_step(states: &[f64]) {
         .enumerate()
         .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
         .collect();
-    let path: std::path::PathBuf = lesson_visualization::line_chart(
+    let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "selective-state",
         "Сброс состояния на третьем шаге",
@@ -63,5 +51,4 @@ fn plot_stored_state_with_reset_on_third_step(states: &[f64]) {
         }],
     )
     .expect("график");
-    println!("график: {}", path.display());
 }

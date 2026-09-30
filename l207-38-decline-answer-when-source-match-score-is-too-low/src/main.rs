@@ -8,62 +8,28 @@
 //
 // Ответ допускается при оценке источника не ниже порога; ниже порога система воздерживается.
 
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
-    trace_note!("Сохраняем результат этого шага в `minimum_reliable_score`.");
     let minimum_reliable_score: f64 = 0.5;
-    trace_step!(minimum_reliable_score);
-    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
-    trace_note!("Поиск подходящих документов и оценку их релевантности называют retrieval.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    for (description, document_relevance_score, expected_answer) in [
+    for (_description, document_relevance_score, expected_answer) in [
         ("слабый источник", 0.1, "нет надёжного источника"),
         ("ровно на пороге", 0.5, "подтверждённый ответ"),
         ("сильный источник", 0.9, "подтверждённый ответ"),
     ] {
-        trace_step!(description);
-        trace_step!(document_relevance_score);
-        trace_step!(expected_answer);
-        trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert!((0.0..=1.0).contains(&document_relevance_score));
-        trace_note!("Сохраняем результат этого шага в `answer`.");
         let answer: &str = if document_relevance_score >= minimum_reliable_score {
-            trace_note!("Передаём подпись или текстовое значение для следующего шага.");
             "подтверждённый ответ"
         } else {
-            trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
-            trace_note!("Передаём подпись или текстовое значение для следующего шага.");
             "нет надёжного источника"
         };
-        trace_step!(answer);
-        trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(answer, expected_answer);
-        trace_note!("Печатаем рассчитанные значения для проверки примера.");
-        println!("{description}: score={document_relevance_score} → {answer}");
     }
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_source_score_compared_with_acceptance_threshold(minimum_reliable_score);
 }
 
 // Строим график по результатам урока.
 fn plot_source_score_compared_with_acceptance_threshold(minimum_reliable_score: f64) {
-    trace_note!("Сравниваем величины, вычисленные в примере.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок диаграммы.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Порог проверки источника",
@@ -75,6 +41,4 @@ fn plot_source_score_compared_with_acceptance_threshold(minimum_reliable_score: 
         ],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

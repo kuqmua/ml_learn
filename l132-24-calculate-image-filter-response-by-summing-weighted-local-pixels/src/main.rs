@@ -10,52 +10,23 @@
 // Зачем это нужно: Малое ядро умножает локальный участок изображения на веса и суммирует отклики.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `patch` для следующего шага примера.");
     let patch: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
-    trace_step!(patch);
-    trace_note!("Создаём набор значений `filter_weights` для следующего шага примера.");
-    trace_note!("Небольшой набор весов свёрточного фильтра называют kernel.");
     let filter_weights: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, -1.0]];
-    trace_step!(filter_weights);
-    trace_note!("Инициализируем изменяемый накопитель `response` начальным состоянием.");
     let mut response: f64 = 0.0;
-    trace_step!(response);
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for row in 0..2 {
-        trace_step!(row);
-        trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
         for column in 0..2 {
-            trace_step!(column);
-            trace_note!("Прибавляем очередной вклад к ранее накопленному результату.");
             response += patch[row][column] * filter_weights[row][column];
-            trace_step!(response);
         }
     }
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("отклик ядра = {response}");
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_local_pixel_values_and_weighted_sum(patch, response);
 }
 
 // Строим график по результатам урока.
 fn plot_local_pixel_values_and_weighted_sum(patch: [[f64; 2]; 2], response: f64) {
-    trace_note!("Сравниваем величины, вычисленные в примере.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок диаграммы.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Ядро свёртки и отклик",
@@ -67,6 +38,4 @@ fn plot_local_pixel_values_and_weighted_sum(patch: [[f64; 2]; 2], response: f64)
         ],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

@@ -12,43 +12,19 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
 
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `query` для следующего шага примера.");
     let query: [f64; 2] = [1.0, 0.5];
-    trace_step!(query);
-    trace_note!("Создаём набор значений `key` для следующего шага примера.");
     let key: [f64; 2] = [0.8, 0.2];
-    trace_step!(key);
-    trace_note!("Умножаем значения и сохраняем результат в `score`.");
-    trace_note!("Используем результат, ожидая успешного выполнения шага.");
     let score: f64 =
         calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&query, &key)
             .expect("запрос и ключ имеют одинаковую размерность");
-    trace_step!(score);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("Q·K = {score}");
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_matching_query_and_key_coordinate_products(query, key, score);
 }
 
 // Строим график по результатам урока.
 fn plot_matching_query_and_key_coordinate_products(query: [f64; 2], key: [f64; 2], score: f64) {
-    trace_note!("Сравниваем величины, вычисленные в примере.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок диаграммы.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Вклады координат в Q·K",
@@ -60,6 +36,4 @@ fn plot_matching_query_and_key_coordinate_products(query: [f64; 2], key: [f64; 2
         ],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

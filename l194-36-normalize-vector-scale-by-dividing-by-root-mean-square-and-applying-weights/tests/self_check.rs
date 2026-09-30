@@ -3,16 +3,13 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str = "Умножь вход на константу и сравни результат RMSNorm до и после.";
-    let choices: [&str; 3] = [
+    let _question: &str = "Умножь вход на константу и сравни результат RMSNorm до и после.";
+    let _choices: [&str; 3] = [
         "Длина вектора сохраняется; зависимость от относительных позиций объяснена.",
         "При нулевом либо малом epsilon направление нормированного вектора сохраняется; проверь влияние gamma.",
         "Покажи, какие запросы разделяют одни ключи и значения.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

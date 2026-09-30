@@ -9,27 +9,16 @@
 
 use l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares;
 
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
     let clean: f64 = 2.0;
-    trace_step!(clean);
     let noise: f64 = -1.0;
-    trace_step!(noise);
-    trace_note!(
-        "Долю (fraction) дисперсии исходного сигнала обозначают alpha_bar; её сохранение называют retention."
-    );
     for original_signal_variance_share in [1.0, 0.75, 0.25, 0.0] {
-        trace_step!(original_signal_variance_share);
-        let noisy: f64 = calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+        let _noisy: f64 = calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
             clean,
             noise,
             original_signal_variance_share,
         )
         .unwrap();
-        trace_step!(noisy);
-        println!("alpha_bar={original_signal_variance_share:.2}; x_t={noisy:.3}");
     }
     assert_eq!(
         calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
@@ -45,7 +34,6 @@ fn main() {
         .unwrap(),
         noise
     );
-    disable();
     plot_signal_and_noise_mixture_for_changing_signal_share(clean, noise);
 }
 
@@ -64,7 +52,7 @@ fn plot_signal_and_noise_mixture_for_changing_signal_share(clean: f64, noise: f6
             )
         })
         .collect();
-    let path: std::path::PathBuf = lesson_visualization::line_chart(
+    let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "diffusion-forward",
         "Смесь сигнала и шума",
@@ -76,5 +64,4 @@ fn plot_signal_and_noise_mixture_for_changing_signal_share(clean: f64, noise: f6
         }],
     )
     .expect("график");
-    println!("график: {}", path.display());
 }

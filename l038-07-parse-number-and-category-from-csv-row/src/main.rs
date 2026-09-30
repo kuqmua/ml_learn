@@ -11,25 +11,10 @@
 // сохранить это различие.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Сохраняем рассчитанное значение `row` для следующих операций.");
     let row: &str = "3.5,red";
-    trace_step!(row);
-    trace_note!(
-        "Сохраняем рассчитанное значение `(number_text, category)` для следующих операций."
-    );
     let (number_text, category): (&str, &str) = row.split_once(',').expect("две колонки");
-    trace_step!(number_text);
-    trace_step!(category);
-    trace_note!("Читаем или разбираем входные данные в значение `numeric_feature`.");
-    let numeric_feature: f64 = number_text.parse().expect("число");
-    trace_step!(numeric_feature);
-    trace_note!("Сохраняем рассчитанное значение `categorical_feature` для следующих операций.");
-    let categorical_feature: &str = category;
-    trace_step!(categorical_feature);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("число={numeric_feature}, категория={categorical_feature}");
+    let _numeric_feature: f64 = number_text.parse().expect("число");
+    let _categorical_feature: &str = category;
 }

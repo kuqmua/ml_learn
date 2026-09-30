@@ -12,73 +12,33 @@
 // градиенту, а не только по числу эпох.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Инициализируем изменяемый накопитель `parameter` начальным состоянием.");
     let mut parameter: f64 = 0.0;
-    trace_step!(parameter);
-    trace_note!("Скорость 0.2 уменьшает расстояние до минимума x=3 на каждом шаге этой параболы.");
     let rate: f64 = 0.2;
-    trace_step!(rate);
-    trace_note!(
-        "100 — страховочный предел шагов; обычно остановимся раньше, когда |градиент| < 10⁻⁶."
-    );
-    for epoch in 0..100 {
-        trace_step!(epoch);
-        trace_note!("Умножаем значения и сохраняем результат в `rate_of_change`.");
-        trace_note!(
-            "Производную функции по параметру или вектор таких производных называют gradient."
-        );
+    for _epoch in 0..100 {
         let rate_of_change: f64 = 2.0 * (parameter - 3.0);
-        trace_step!(rate_of_change);
-        trace_note!(
-            "Порог 10⁻⁶ задаёт, насколько близко к нулю должен стать градиент перед остановкой."
-        );
         if rate_of_change > -0.000001 && rate_of_change < 0.000001 {
-            trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-            println!("сошлись за {epoch} шагов: параметр={parameter}");
-            trace_note!("Останавливаем цикл после достижения условия завершения.");
             break;
         }
-        trace_note!("Вычитаем очередной вклад из текущего значения параметра.");
         parameter -= rate * rate_of_change;
-        trace_step!(parameter);
     }
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_squared_error_after_each_parameter_update();
 }
 
 // Строим график по результатам урока.
 fn plot_squared_error_after_each_parameter_update() {
-    trace_note!("Наглядное представление величин из этого урока.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Собираем результаты в коллекцию.");
     let convergence_points: Vec<(f64, f64)> = (0..=30)
         .map(|plot_step_index| {
-            trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = 3.0 * (1.0 - 0.6_f64.powi(plot_step_index));
-            trace_note!("Добавляем пару значений для сравнения или построения графика.");
             (
                 plot_step_index as f64,
                 (horizontal_value - 3.0) * (horizontal_value - 3.0),
             )
         })
         .collect();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Сходимость градиентного спуска",
@@ -91,6 +51,4 @@ fn plot_squared_error_after_each_parameter_update() {
         }],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

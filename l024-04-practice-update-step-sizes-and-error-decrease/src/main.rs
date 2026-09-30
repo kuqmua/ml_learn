@@ -18,185 +18,76 @@
 //   rate.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Учебные реализации математических операций для этого урока.");
-
-    trace_note!(
-        "Объявляем повторно используемое вычисление `calculate_quadratic_loss`; параметры ниже задают его входы."
-    );
     fn calculate_squared_distance_of_parameter_from_three(parameter: f64) -> f64 {
-        trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
         (|| -> f64 {
-            trace_note!("Используем подготовленное значение в следующем шаге примера.");
-            trace_note!("Возводим число в квадрат обычным умножением.");
-            trace_note!("Сохраняем результат этого шага в `value`.");
             let value: f64 = parameter - 3.0;
-            trace_step!(value);
-            trace_note!("Умножаем величины согласно используемой формуле.");
             value * value
         })()
     }
 
-    trace_note!(
-        "0.01 даёт медленный спуск, 0.2 — быстрый устойчивый, 1.1 — слишком большой шаг для этой параболы."
-    );
-    trace_note!("Так сравниваем скорость сходимости и расхождение при одинаковом старте.");
     for learning_rate in [0.01, 0.2, 1.1] {
-        trace_step!(learning_rate);
-        trace_note!("Шаг: Сохраняем loss после каждого обновления параметра.");
         let history: Vec<f64> = (|| -> Vec<f64> {
-            trace_note!("Используем подготовленное значение в следующем шаге примера.");
-            trace_note!("Обновляем параметр против градиента и сохраняем историю ошибки.");
-            trace_note!("Сохраняем результат этого шага в `learning_rate`.");
             let learning_rate: f64 = learning_rate;
-            trace_step!(learning_rate);
-            trace_note!("30 обновлений достаточно, чтобы увидеть разницу траекторий на графике.");
             let steps: usize = 30;
-            trace_step!(steps);
-            trace_note!("Инициализируем изменяемый накопитель `parameter` начальным состоянием.");
             let mut parameter: f64 = 0.0;
-            trace_step!(parameter);
-            trace_note!("Создаём набор значений `history` для следующего шага примера.");
             let mut history: Vec<f64> = vec![calculate_squared_distance_of_parameter_from_three(
                 parameter,
             )];
-            trace_step!(history);
-            trace_note!(
-                "Повторяем следующий блок для каждого элемента указанной последовательности."
-            );
             for _ in 0..steps {
-                trace_note!(
-                    "Выполняем встроенный расчёт один раз и сохраняем результат в `rate_of_change`."
-                );
-                trace_note!(
-                    "Производную функции по параметру или вектор таких производных называют gradient."
-                );
                 let rate_of_change: f64 = (|| -> f64 {
-                    trace_note!("Используем подготовленное значение в следующем шаге примера.");
-                    trace_note!("Для квадратичной ошибки берём производную 2(x−3).");
-                    trace_note!("Сохраняем результат этого шага в `parameter`.");
                     let parameter: f64 = parameter;
-                    trace_step!(parameter);
-                    trace_note!("d/dx (x−3)² = 2(x−3).");
                     2.0 * (parameter - 3.0)
                 })();
-                trace_step!(rate_of_change);
-                trace_note!(
-                    "Считаем спуск сошедшимся при |градиенте| < 10⁻⁸; это учебный порог остановки."
-                );
                 if (|| -> f64 {
-                    trace_note!("Используем подготовленное значение в следующем шаге примера.");
-                    trace_note!(
-                        "Модуль числа по определению: меняем знак только у отрицательного числа."
-                    );
-                    trace_note!("Сохраняем результат этого шага в `value`.");
                     let value: f64 = rate_of_change;
-                    trace_step!(value);
-                    trace_note!("Проверяем условие и выбираем соответствующую ветку алгоритма.");
-                    trace_note!("Используем подготовленное значение в следующем шаге примера.");
                     if value < 0.0 { -value } else { value }
                 })() < 1e-8
                 {
-                    trace_note!("Останавливаем цикл после достижения условия завершения.");
                     break;
                 }
-                trace_note!(
-                    "Шагаем против производной: большой learning_rate может вызвать расходимость."
-                );
                 parameter -= learning_rate * rate_of_change;
-                trace_step!(parameter);
-                trace_note!("Сохраняем очередной рассчитанный элемент в коллекции.");
                 history.push(calculate_squared_distance_of_parameter_from_three(
                     parameter,
                 ));
-                trace_note!("Отсекаем бесконечные и неопределённые числовые значения.");
                 if !parameter.is_finite() {
-                    trace_note!("Останавливаем цикл после достижения условия завершения.");
                     break;
                 }
             }
-            trace_note!("Используем ранее рассчитанное значение `history` в текущем выражении.");
             history
         })();
-        trace_step!(history);
-        trace_note!("Шаг: По первой и последней ошибке видим сходимость или расходимость.");
-        trace_note!("Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.");
-        trace_note!("Передаём ранее рассчитанное значение в текущую операцию.");
-        trace_note!("Складываем или вычитаем величины согласно используемой формуле.");
-        trace_note!("Складываем или вычитаем величины согласно используемой формуле.");
-        println!(
-            "rate={learning_rate}, initial={:.4}, final={:.4}, steps={}",
-            history[0],
-            history[history.len() - 1],
-            history.len() - 1
+        let _ = (
+            &(history[0]),
+            &(history[history.len() - 1]),
+            &(history.len() - 1),
         );
     }
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_errors_over_updates_for_different_step_sizes();
 
-    trace_note!("Строим график по результатам урока.");
     fn plot_errors_over_updates_for_different_step_sizes() {
-        trace_note!("Логарифмическая шкала позволяет видеть и сходимость, и расходимость.");
-        trace_note!("Передаём элементы коллекции в итератор.");
-        trace_note!("Преобразуем каждый элемент в новое значение.");
-        trace_note!("Собираем результаты в коллекцию.");
         let histories: Vec<Vec<(f64, f64)>> = [0.01, 0.2, 1.1]
             .into_iter()
             .map(|rate| {
-                trace_note!("Сохраняем результат этого шага в `parameter`.");
                 let mut parameter: f64 = 0.0;
-                trace_note!("Собираем значения для `points` в коллекцию.");
-                trace_note!(
-                    "Добавка 10⁻¹² делает log10(loss + ε) определённым даже при нулевой ошибке."
-                );
                 let mut points: Vec<(f64, f64)> = vec![(
                     0.0,
                     (calculate_squared_distance_of_parameter_from_three(parameter) + 1e-12).log10(),
                 )];
-                trace_note!("Повторяем расчёт для каждого элемента последовательности.");
                 for step in 1..=30 {
-                    trace_note!("Сохраняем результат этого шага в `rate_of_change`.");
                     let rate_of_change: f64 = 2.0 * (parameter - 3.0);
-                    trace_note!("Обновляем значение результатом текущего вычисления.");
                     parameter -= rate * rate_of_change;
-                    trace_note!("Используем подготовленное значение в следующем шаге примера.");
-                    trace_note!("Используем подготовленное значение в следующем шаге примера.");
-                    trace_note!(
-                        "Та же добавка 10⁻¹² сохраняет конечное значение графика при loss=0."
-                    );
                     points.push((
                         step as f64,
                         (calculate_squared_distance_of_parameter_from_three(parameter) + 1e-12)
                             .log10(),
                     ));
                 }
-                trace_note!("Используем подготовленное значение в следующем шаге примера.");
                 points
             })
             .collect();
-        trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-        trace_note!("Передаём путь к каталогу текущего урока.");
-        trace_note!("Указываем имя SVG-файла.");
-        trace_note!("Указываем заголовок графика.");
-        trace_note!("Указываем подпись горизонтальной оси.");
-        trace_note!("Указываем подпись вертикальной оси.");
-        trace_note!("Передаём ряды или значения для отрисовки графика.");
-        trace_note!("Добавляем ряд данных с подписью к графику.");
-        trace_note!("Указываем подпись этого ряда в легенде.");
-        trace_note!("Передаём рассчитанные координаты точек.");
-        trace_note!("Добавляем ряд данных с подписью к графику.");
-        trace_note!("Указываем подпись этого ряда в легенде.");
-        trace_note!("Передаём рассчитанные координаты точек.");
-        trace_note!("Добавляем ряд данных с подписью к графику.");
-        trace_note!("Указываем подпись этого ряда в легенде.");
-        trace_note!("Передаём рассчитанные координаты точек.");
-        trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-        let chart: std::path::PathBuf = lesson_visualization::line_chart(
+        let _chart: std::path::PathBuf = lesson_visualization::line_chart(
             env!("CARGO_MANIFEST_DIR"),
             "lesson-chart",
             "Скорость обучения и ошибка",
@@ -221,7 +112,5 @@ fn main() {
             ],
         )
         .expect("не удалось сохранить график");
-        trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-        println!("график: {}", chart.display());
     }
 }

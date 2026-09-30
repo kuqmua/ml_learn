@@ -9,20 +9,13 @@
 
 use l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights;
 
-use lesson_trace::{enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
     let input_component: [f64; 2] = [3.0, 4.0];
-    trace_step!(input_component);
-    trace_note!("ε=10⁻⁸ защищает от нулевого RMS и почти не меняет обычный ненулевой вектор.");
-    let result: Vec<f64> =
+    let _result: Vec<f64> =
         normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
             &input_component,
             &[1.0, 1.0],
             1e-8,
         )
         .unwrap();
-    trace_step!(result);
-    println!("до: {input_component:?}; после RMSNorm: {result:?}");
 }

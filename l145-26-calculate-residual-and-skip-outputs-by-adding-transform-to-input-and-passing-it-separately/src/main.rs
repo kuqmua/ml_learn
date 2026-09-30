@@ -8,40 +8,24 @@
 // Residual переносит состояние через слои, skip собирает вклады для выхода.
 
 /// Остаточная и пропускная связи: возвращаем (input + tanh(input·transform), tanh(input·transform)).
-use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn calculate_residual_and_skip_outputs_as_input_plus_tanh_transform_and_transform_separately(
     input: f64,
     transform: f64,
 ) -> (f64, f64) {
     let activation: f64 = (input * transform).tanh();
-    trace_step!(activation);
-    trace_note!(
-        "Добавление входа блока к его преобразованному выходу называют residual connection."
-    );
     let input_plus_transformed_value: f64 = input + activation;
-    trace_step!(input_plus_transformed_value);
     let skip: f64 = activation;
-    trace_step!(skip);
     (input_plus_transformed_value, skip)
 }
 fn main() {
-    enable_tracing();
     let mut state: f64 = 0.5;
-    trace_step!(state);
     let mut skip_sum: f64 = 0.0;
-    trace_step!(skip_sum);
     for transform in [0.2, -0.4, 0.8] {
-        trace_step!(transform);
         let (next, skip): (f64, f64) =
             calculate_residual_and_skip_outputs_as_input_plus_tanh_transform_and_transform_separately(state, transform);
-        trace_step!(next);
-        trace_step!(skip);
         state = next;
-        trace_step!(state);
         skip_sum += skip;
-        trace_step!(skip_sum);
     }
     assert!((state - (0.5 + skip_sum)).abs() < 1e-12);
-    println!("residual state={state:.4}; skip sum={skip_sum:.4}");
 }

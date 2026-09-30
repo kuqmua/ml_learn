@@ -12,32 +12,15 @@
 // может перескочить минимум.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Инициализируем значение `parameter` начальным состоянием.");
     let parameter: f64 = 0.0;
-    trace_step!(parameter);
-    trace_note!("Умножаем значения и сохраняем результат в `rate_of_change`.");
-    trace_note!("Производную функции по параметру или вектор таких производных называют gradient.");
     let rate_of_change: f64 = 2.0 * (parameter - 3.0);
-    trace_step!(rate_of_change);
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for rate in [0.1, 1.0, 2.0] {
-        trace_step!(rate);
-        trace_note!("Делаем ровно одно обновление, чтобы изолировать влияние скорости.");
         let updated: f64 = parameter - rate * rate_of_change;
-        trace_step!(updated);
-        trace_note!("Умножаем значения и сохраняем результат в `error`.");
-        let error: f64 = (updated - 3.0) * (updated - 3.0);
-        trace_step!(error);
-        trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-        println!("rate={rate}: параметр={updated}, ошибка={error}");
+        let _error: f64 = (updated - 3.0) * (updated - 3.0);
     }
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_squared_error_after_one_update_for_different_step_sizes(parameter, rate_of_change);
 }
 
@@ -46,32 +29,15 @@ fn plot_squared_error_after_one_update_for_different_step_sizes(
     parameter: f64,
     rate_of_change: f64,
 ) {
-    trace_note!("Задаём учебные значения для `learning_rates`.");
     let learning_rates: [f64; 3] = [0.1, 1.0, 2.0];
-    trace_note!("Собираем значения для `errors` в коллекцию.");
-    trace_note!("Передаём элементы коллекции в итератор.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Собираем результаты в коллекцию.");
     let errors: Vec<(f64, f64)> = learning_rates
         .into_iter()
         .map(|rate| {
-            trace_note!("Сохраняем результат этого шага в `updated`.");
             let updated: f64 = parameter - rate * rate_of_change;
-            trace_note!("Добавляем пару значений для сравнения или построения графика.");
             (rate, (updated - 3.0) * (updated - 3.0))
         })
         .collect();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "learning-rate",
         "Ошибка после одного шага",
@@ -84,6 +50,4 @@ fn plot_squared_error_after_one_update_for_different_step_sizes(
         }],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

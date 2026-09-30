@@ -3,16 +3,13 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str = "Запусти генератор дважды с одинаковым seed и один раз с другим.";
-    let choices: [&str; 3] = [
+    let _question: &str = "Запусти генератор дважды с одинаковым seed и один раз с другим.";
+    let _choices: [&str; 3] = [
         "Первые две последовательности совпадают; поясни, что seed не делает выборку более точной.",
         "Обе ошибки посчитаны одинаковой метрикой; сделай вывод, даёт ли обучение выигрыш.",
         "Сохрани оба значения параметра рядом с результатами, чтобы объяснить разницу запусков.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

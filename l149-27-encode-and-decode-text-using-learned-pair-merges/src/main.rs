@@ -10,32 +10,22 @@
 
 use l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding;
 
-use lesson_trace::{enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
-    trace_note!("Словарь обучаем на одной части текста и применяем к новой строке.");
     let model: BytePairEncoding =
         BytePairEncoding::train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair(
             &["кот спит", "кот ест", "пёс спит"],
             24,
         );
-    trace_step!(model);
     let unseen: &str = "кот 🐈 спит";
-    trace_step!(unseen);
-    trace_note!("Единицу текста, которую модель обрабатывает как одно целое, называют token.");
     let text_unit_identifiers: Vec<usize> = model
         .encode_text_as_token_identifiers_by_converting_bytes_and_applying_learned_merges(unseen);
-    trace_step!(text_unit_identifiers);
     let reconstructed: String = model
         .restore_text_by_joining_token_bytes_and_decoding_them(&text_unit_identifiers)
         .expect("каждый ID принадлежит словарю");
-    trace_step!(reconstructed);
     assert_eq!(reconstructed, unseen);
     assert!(
         model
             .restore_text_by_joining_token_bytes_and_decoding_them(&[usize::MAX])
             .is_err()
     );
-    println!("текст: {unseen}; ID: {text_unit_identifiers:?}; восстановлено: {reconstructed}");
 }

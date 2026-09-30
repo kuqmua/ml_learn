@@ -10,63 +10,28 @@
 // размер.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `feature_map` для следующего шага примера.");
     let feature_map: [[f64; 2]; 2] = [[1.0, 4.0], [3.0, 2.0]];
-    trace_step!(feature_map);
-    trace_note!("Создаём изменяемое значение `maximum` для следующих операций.");
-    trace_note!("Для выбора максимума карта должна содержать хотя бы одно значение.");
-    trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
     assert!(
         !feature_map.is_empty() && !feature_map[0].is_empty(),
         "карта признаков не должна быть пустой"
     );
-    trace_note!("Сохраняем результат этого шага в `maximum`.");
     let mut maximum: f64 = feature_map[0][0];
-    trace_step!(maximum);
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for row in feature_map {
-        trace_step!(row);
-        trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
         for value in row {
-            trace_step!(value);
-            trace_note!("Проверяем условие и выбираем соответствующую ветку алгоритма.");
             if value > maximum {
-                trace_note!(
-                    "Присваиваем вычисленное значение соответствующей переменной или полю."
-                );
                 maximum = value;
-                trace_step!(maximum);
             }
         }
     }
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("max pooling = {maximum}");
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_largest_values_in_local_image_windows(feature_map, maximum);
 }
 
 // Строим график по результатам урока.
 fn plot_largest_values_in_local_image_windows(feature_map: [[f64; 2]; 2], maximum: f64) {
-    trace_note!("Сравниваем величины, вычисленные в примере.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок диаграммы.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Max pooling",
@@ -80,6 +45,4 @@ fn plot_largest_values_in_local_image_windows(feature_map: [[f64; 2]; 2], maximu
         ],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

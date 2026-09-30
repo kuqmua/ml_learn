@@ -11,14 +11,11 @@
 /// Избирательное забывание: прибавляем вход к сохранённой доле состояния; по флагу сброса оставляем только текущий вход.
 use l212_40_calculate_memory_states_by_adding_weighted_input_to_retained_previous_state::calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state;
 
-use lesson_trace::{disable, enable_tracing, trace_step};
-
 fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(
     values: &[f64],
     reset: &[bool],
 ) -> Vec<f64> {
     let mut state: f64 = 0.0;
-    trace_step!(state);
     values
         .iter()
         .zip(reset)
@@ -28,30 +25,23 @@ fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_inp
             } else {
                 0.8 * state + input_value
             };
-            trace_step!(state);
             state
         })
         .collect()
 }
 fn main() {
-    enable_tracing();
     let values: [f64; 4] = [1.0, 0.0, 2.0, 0.0];
-    trace_step!(values);
     let reset: [bool; 4] = [false, false, true, false];
-    trace_step!(reset);
     let fixed: Vec<f64> =
         calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
             &values, 0.8, 1.0,
         );
-    trace_step!(fixed);
     let dynamic: Vec<f64> =
         calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(
             &values, &reset,
         );
-    trace_step!(dynamic);
     assert!(fixed[2] > dynamic[2]);
-    println!("fixed={fixed:?}; selective={dynamic:?}");
-    disable();
+
     plot_stored_state_with_constant_retention_and_selective_resets(&fixed, &dynamic);
 }
 fn plot_stored_state_with_constant_retention_and_selective_resets(fixed: &[f64], dynamic: &[f64]) {
@@ -65,7 +55,7 @@ fn plot_stored_state_with_constant_retention_and_selective_resets(fixed: &[f64],
         .enumerate()
         .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
         .collect();
-    let path: std::path::PathBuf = lesson_visualization::line_chart(
+    let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "memory",
         "Постоянное и выборочное забывание",
@@ -83,5 +73,4 @@ fn plot_stored_state_with_constant_retention_and_selective_resets(fixed: &[f64],
         ],
     )
     .expect("график");
-    println!("график: {}", path.display());
 }

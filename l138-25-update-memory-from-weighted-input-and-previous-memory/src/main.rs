@@ -10,20 +10,14 @@
 
 use l138_25_update_memory_from_weighted_input_and_previous_memory::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state;
 
-use lesson_trace::{disable, enable_tracing, trace_step};
-
 fn main() {
-    enable_tracing();
     let input: [f64; 4] = [1.0, 0.0, 0.0, 0.0];
-    trace_step!(input);
     let history: Vec<f64> =
         calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
             &input, 0.8, 0.7,
         );
-    trace_step!(history);
     assert_eq!(history.len(), input.len());
-    println!("состояния: {history:?}");
-    disable();
+
     plot_state_after_each_weighted_input_and_memory_update(&history);
 }
 fn plot_state_after_each_weighted_input_and_memory_update(states: &[f64]) {
@@ -32,7 +26,7 @@ fn plot_state_after_each_weighted_input_and_memory_update(states: &[f64]) {
         .enumerate()
         .map(|(item_index, &hidden_state)| (item_index as f64, hidden_state))
         .collect();
-    let path: std::path::PathBuf = lesson_visualization::line_chart(
+    let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "rnn-state",
         "Память RNN",
@@ -44,5 +38,4 @@ fn plot_state_after_each_weighted_input_and_memory_update(states: &[f64]) {
         }],
     )
     .expect("график");
-    println!("график: {}", path.display());
 }

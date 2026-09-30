@@ -9,67 +9,32 @@
 // обучения.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `rows` для следующего шага примера.");
     let rows: [i32; 6] = [0, 1, 2, 3, 4, 5];
-    trace_step!(rows);
-    trace_note!("Сохраняем рассчитанное значение `folds` для следующих операций.");
     let folds: i32 = 3;
-    trace_step!(folds);
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for fold in 0..folds {
-        trace_step!(fold);
-        trace_note!("Сохраняем рассчитанное значение `validation` для следующих операций.");
-        trace_note!("Перебираем элементы по ссылке, не копируя исходную коллекцию.");
-        trace_note!("Копируем значения из ссылок, чтобы получить самостоятельные элементы.");
-        trace_note!("Оставляем только элементы, прошедшие указанную проверку.");
-        trace_note!("Собираем элементы итератора в итоговую коллекцию.");
-        let validation: Vec<i32> = rows
+        let _validation: Vec<i32> = rows
             .iter()
             .copied()
             .filter(|&row| row % folds == fold)
             .collect();
-        trace_step!(validation);
-        trace_note!("Сохраняем рассчитанное значение `training_data` для следующих операций.");
-        trace_note!("Перебираем элементы по ссылке, не копируя исходную коллекцию.");
-        trace_note!("Копируем значения из ссылок, чтобы получить самостоятельные элементы.");
-        trace_note!("Оставляем только элементы, прошедшие указанную проверку.");
-        trace_note!("Собираем элементы итератора в итоговую коллекцию.");
-        let training_data: Vec<i32> = rows
+        let _training_data: Vec<i32> = rows
             .iter()
             .copied()
             .filter(|&row| row % folds != fold)
             .collect();
-        trace_step!(training_data);
-        trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-        println!("fold={fold}: train={training_data:?}, validation={validation:?}");
     }
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_validation_group_assigned_to_each_row();
 }
 
 // Строим график по результатам урока.
 fn plot_validation_group_assigned_to_each_row() {
-    trace_note!("Значения из этого урока на графике.");
     let cross_validation_fold_points: Vec<(f64, f64)> = (0..9)
         .map(|plot_step_index| (plot_step_index as f64, (plot_step_index % 3) as f64))
         .collect();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "K-fold: номер fold для строки",
@@ -82,6 +47,4 @@ fn plot_validation_group_assigned_to_each_row() {
         }],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

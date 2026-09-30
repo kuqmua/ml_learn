@@ -3,16 +3,13 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str = "Вычисли вес редкого и частого слова в двух документах через TF-IDF.";
-    let choices: [&str; 3] = [
+    let _question: &str = "Вычисли вес редкого и частого слова в двух документах через TF-IDF.";
+    let _choices: [&str; 3] = [
         "Объясни, почему порядок результатов меняется при повторении редкого слова.",
         "Объясни, почему нормировка влияет на сравнение длинного и короткого документа.",
         "Редкое слово получает больший вклад при сопоставимой частоте в документе.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

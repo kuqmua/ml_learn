@@ -48,17 +48,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(|record| record.species.class_identifier())
         .collect();
     let split = lesson_datasets::split_indices_stratified_by_class(&labels, 42)?;
-    println!(
-        "Iris: {} строк, признаки [f64; 4], train={}, validation={}, test={}",
-        records.len(),
-        split.training_indices.len(),
-        split.validation_indices.len(),
-        split.test_indices.len()
+    let _ = (
+        &(records.len()),
+        &(split.training_indices.len()),
+        &(split.validation_indices.len()),
+        &(split.test_indices.len()),
     );
-    println!(
-        "1 ближайший сосед: validation accuracy={:.3}, test accuracy={:.3}",
-        classification_accuracy(&records, &split.training_indices, &split.validation_indices),
-        classification_accuracy(&records, &split.training_indices, &split.test_indices)
+    let _ = (
+        &(classification_accuracy(&records, &split.training_indices, &split.validation_indices)),
+        &(classification_accuracy(&records, &split.training_indices, &split.test_indices)),
     );
     Ok(())
 }

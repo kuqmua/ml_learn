@@ -9,17 +9,10 @@
 
 use l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values;
 
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
     let mut signal: Vec<f64> = vec![0.0; 9];
-    trace_step!(signal);
     signal[0] = 1.0;
-    trace_step!(signal);
-    trace_note!("Промежуток между используемыми точками фильтра называют dilation.");
     for filter_spacing in [1, 2, 4] {
-        trace_step!(filter_spacing);
         signal = calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &signal,
             1.0,
@@ -27,13 +20,9 @@ fn main() {
             filter_spacing,
         )
         .unwrap();
-        trace_step!(signal);
-        println!("после dilation={filter_spacing}: {signal:?}");
     }
-    trace_note!("Три двухточечных слоя видят 1 + 1 + 2 + 4 = 8 временных шагов.");
     assert_eq!(signal[..8], [1.0; 8]);
     assert_eq!(signal[8], 0.0);
-    disable();
     plot_impulse_response_with_increasing_filter_spacing(&signal);
 }
 
@@ -43,7 +32,7 @@ fn plot_impulse_response_with_increasing_filter_spacing(signal: &[f64]) {
         .enumerate()
         .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
         .collect();
-    let path: std::path::PathBuf = lesson_visualization::line_chart(
+    let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "receptive-field",
         "Отклик на импульс",
@@ -55,5 +44,4 @@ fn plot_impulse_response_with_increasing_filter_spacing(signal: &[f64]) {
         }],
     )
     .expect("график");
-    println!("график: {}", path.display());
 }

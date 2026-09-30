@@ -8,32 +8,17 @@
 //   строк.
 // Упорядоченный бустинг исключает собственную метку из предсказания, по которому считают её градиент.
 
-use lesson_trace::{enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
-    trace_note!("Для каждого объекта строим константную модель только на предшествующих метках.");
     let targets: [f64; 4] = [1.0, 0.0, 1.0, 1.0];
-    trace_step!(targets);
     let prior: f64 = 0.5;
-    trace_step!(prior);
     let mut prefix_sum: f64 = 0.0;
-    trace_step!(prefix_sum);
-    trace_note!("Производную функции по параметру или вектор таких производных называют gradient.");
     let mut rates_of_change: Vec<f64> = Vec::new();
-    trace_step!(rates_of_change);
     for (index, &target) in targets.iter().enumerate() {
-        trace_step!(index);
-        trace_step!(target);
         let prediction: f64 = (prefix_sum + prior) / (index as f64 + 1.0);
-        trace_step!(prediction);
         let rate_of_change: f64 = prediction - target;
-        trace_step!(rate_of_change);
         rates_of_change.push(rate_of_change);
-        println!("объект {index}: prediction={prediction:.3}, gradient={rate_of_change:.3}");
+
         prefix_sum += target;
-        trace_step!(prefix_sum);
     }
-    trace_note!("Первая оценка не зависит от первой метки.");
     assert_eq!(rates_of_change[0], -0.5);
 }

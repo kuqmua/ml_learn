@@ -10,44 +10,21 @@
 // Зачем это нужно: Состояние описывает информацию, от которой зависит выбор следующего действия агента.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Сохраняем рассчитанное значение `current_cell` для следующих операций.");
     let current_cell: i32 = 2;
-    trace_step!(current_cell);
-    trace_note!("Сохраняем рассчитанное значение `goal_cell` для следующих операций.");
     let goal_cell: i32 = 4;
-    trace_step!(goal_cell);
-    trace_note!("Комбинируем исходные величины и сохраняем результат в `distance_to_goal`.");
-    let distance_to_goal: i32 = goal_cell - current_cell;
-    trace_step!(distance_to_goal);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("состояние: клетка={current_cell}, до цели={distance_to_goal}");
+    let _distance_to_goal: i32 = goal_cell - current_cell;
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_remaining_steps_to_target_for_each_position();
 }
 
 // Строим график по результатам урока.
 fn plot_remaining_steps_to_target_for_each_position() {
-    trace_note!("Значения из этого урока на графике.");
     let state_points: Vec<(f64, f64)> = (0..=5)
         .map(|plot_step_index| (plot_step_index as f64, (5 - plot_step_index) as f64))
         .collect();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Расстояние до цели",
@@ -60,6 +37,4 @@ fn plot_remaining_steps_to_target_for_each_position() {
         }],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

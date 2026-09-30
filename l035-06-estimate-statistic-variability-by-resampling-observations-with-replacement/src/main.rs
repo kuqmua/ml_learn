@@ -11,71 +11,36 @@
 // наблюдений.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `values` для следующего шага примера.");
     let values: [f64; 3] = [2.0, 4.0, 6.0];
-    trace_step!(values);
-    trace_note!("Создаём набор значений `resamples` для следующего шага примера.");
     let resamples: [[usize; 3]; 4] = [[0, 1, 2], [0, 0, 2], [1, 2, 2], [0, 1, 1]];
-    trace_step!(resamples);
-    trace_note!("Проверяем ожидаемое свойство учебного примера.");
     assert!(!values.is_empty(), "исходная выборка не должна быть пустой");
-    trace_note!("Повторяем следующий блок для каждой повторной выборки.");
     for indices in resamples {
-        trace_step!(indices);
-        trace_note!("Проверяем ожидаемое свойство учебного примера.");
-        trace_note!("Используем подготовленное значение в следующем шаге примера.");
-        trace_note!("Передаём подпись или текстовое значение для следующего шага.");
         assert!(
             !indices.is_empty(),
             "повторная выборка не должна быть пустой"
         );
-        trace_note!("Проверяем ожидаемое свойство учебного примера.");
-        trace_note!("Используем подготовленное значение в следующем шаге примера.");
-        trace_note!("Передаём подпись или текстовое значение для следующего шага.");
         assert!(
             indices.iter().all(|&index| index < values.len()),
             "индекс выходит за границы исходной выборки"
         );
-        trace_note!("Инициализируем изменяемый накопитель `sum` начальным состоянием.");
         let mut sum: f64 = 0.0;
-        trace_step!(sum);
-        trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
         for index in indices {
-            trace_step!(index);
-            trace_note!("Прибавляем очередной вклад к ранее накопленному результату.");
             sum += values[index];
-            trace_step!(sum);
         }
-        trace_note!("Считаем количество элементов и сохраняем его в `mean`.");
-        let mean: f64 = sum / indices.len() as f64;
-        trace_step!(mean);
-        trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-        println!("индексы {indices:?} -> среднее {mean:.2}");
+        let _mean: f64 = sum / indices.len() as f64;
     }
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_means_of_samples_drawn_with_replacement(values, resamples);
 }
 
 // Строим график по результатам урока.
 fn plot_means_of_samples_drawn_with_replacement(values: [f64; 3], resamples: [[usize; 3]; 4]) {
-    trace_note!("Показываем значения, рассчитанные по данным примера.");
-    trace_note!("Повторную выборку с возвращением называют bootstrap sample.");
-    trace_note!("Просматриваем элементы коллекции по ссылке.");
-    trace_note!("Добавляем порядковый номер к каждому элементу.");
-    trace_note!("Преобразуем каждый элемент в новое значение.");
-    trace_note!("Собираем результаты в коллекцию.");
     let resampled_mean_points: Vec<(f64, f64)> = resamples
         .iter()
         .enumerate()
         .map(|(item_index, indices)| {
-            trace_note!("Вычисляем значение по указанной формуле.");
-            trace_note!("Вычисляем значение по указанной формуле.");
             (
                 (item_index + 1) as f64,
                 indices
@@ -86,17 +51,7 @@ fn plot_means_of_samples_drawn_with_replacement(values: [f64; 3], resamples: [[u
             )
         })
         .collect();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Bootstrap: средние повторных выборок",
@@ -109,6 +64,4 @@ fn plot_means_of_samples_drawn_with_replacement(values: [f64; 3], resamples: [[u
         }],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

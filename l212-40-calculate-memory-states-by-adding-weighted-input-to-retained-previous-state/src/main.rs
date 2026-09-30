@@ -10,20 +10,14 @@
 
 use l212_40_calculate_memory_states_by_adding_weighted_input_to_retained_previous_state::calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state;
 
-use lesson_trace::{disable, enable_tracing, trace_step};
-
 fn main() {
-    enable_tracing();
     let input: [f64; 4] = [1.0, 0.0, 0.0, 0.0];
-    trace_step!(input);
     let states: Vec<f64> =
         calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
             &input, 0.5, 1.0,
         );
-    trace_step!(states);
     assert_eq!(states, [1.0, 0.5, 0.25, 0.125]);
-    println!("затухание состояния: {states:?}");
-    disable();
+
     plot_stored_state_over_repeated_weighted_updates(&states);
 }
 
@@ -33,7 +27,7 @@ fn plot_stored_state_over_repeated_weighted_updates(states: &[f64]) {
         .enumerate()
         .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
         .collect();
-    let path: std::path::PathBuf = lesson_visualization::line_chart(
+    let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "state-space",
         "Затухание состояния",
@@ -45,5 +39,4 @@ fn plot_stored_state_over_repeated_weighted_updates(states: &[f64]) {
         }],
     )
     .expect("график");
-    println!("график: {}", path.display());
 }

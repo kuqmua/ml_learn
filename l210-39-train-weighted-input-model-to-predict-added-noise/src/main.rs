@@ -8,20 +8,10 @@
 
 use l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares;
 
-use lesson_trace::{enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
-    trace_note!(
-        "α=0.64 сохраняет 64% дисперсии чистого сигнала; оставшиеся 36% приходятся на шум."
-    );
     let alpha: f64 = 0.64;
-    trace_step!(alpha);
     let training: [(f64, f64); 4] = [(1.0, -1.0), (1.0, 0.0), (1.0, 1.0), (1.0, 2.0)];
-    trace_step!(training);
     let validation: [(f64, f64); 2] = [(2.0, -0.5), (-1.0, 0.5)];
-    trace_step!(validation);
-    trace_note!("Условный предсказатель получает известное clean: пример изолирует MSE обучения.");
     let inputs: Vec<(f64, f64)> = training
         .iter()
         .map(|&(clean, noise)| {
@@ -35,35 +25,21 @@ fn main() {
             )
         })
         .collect();
-    trace_step!(inputs);
     let mut weight: f64 = 0.0;
-    trace_step!(weight);
-    trace_note!("100 шагов градиентного спуска подгоняют один вес к четырём обучающим парам.");
-    trace_note!("Множитель 0.2 ниже — выбранная скорость обучения, то есть доля градиента за шаг.");
     for _ in 0..100 {
-        trace_note!(
-            "Производную функции по параметру или вектор таких производных называют gradient."
-        );
         let rate_of_change: f64 = inputs
             .iter()
             .map(|&(input_value, target)| 2.0 * (weight * input_value - target) * input_value)
             .sum::<f64>()
             / inputs.len() as f64;
-        trace_step!(rate_of_change);
         weight -= 0.2 * rate_of_change;
-        trace_step!(weight);
     }
     let loss: f64 = inputs
         .iter()
         .map(|&(input_value, target)| (weight * input_value - target).powi(2))
         .sum::<f64>()
         / inputs.len() as f64;
-    trace_step!(loss);
-    trace_note!(
-        "Требуем MSE ниже 10⁻⁶: это проверка, что один вес действительно подогнал учебные пары."
-    );
     assert!(loss < 1e-6);
-    trace_note!("Отложенные пары не участвовали в изменении веса.");
     let held_out: Vec<(f64, f64)> = validation
         .iter()
         .map(|&(clean, noise)| {
@@ -77,7 +53,6 @@ fn main() {
             )
         })
         .collect();
-    trace_step!(held_out);
     let mean_squared_error_value: &dyn Fn(f64) -> f64 = &|candidate: f64| {
         held_out
             .iter()
@@ -86,14 +61,6 @@ fn main() {
             / held_out.len() as f64
     };
     let baseline: f64 = mean_squared_error_value(0.0);
-    trace_step!(baseline);
     let validation_loss: f64 = mean_squared_error_value(weight);
-    trace_step!(validation_loss);
     assert!(validation_loss < baseline);
-    println!(
-        "вес={weight:.3}; train MSE={loss:.8}; validation MSE={validation_loss:.8}; baseline={baseline:.3}"
-    );
-    trace_note!(
-        "В реальной модели clean при генерации неизвестен; это только проверка loss и градиента."
-    );
 }

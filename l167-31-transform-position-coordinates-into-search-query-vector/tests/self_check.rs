@@ -3,16 +3,13 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str = "Вычисли запросный вектор одной позиции умножением на матрицу весов.";
-    let choices: [&str; 3] = [
+    let _question: &str = "Вычисли запросный вектор одной позиции умножением на матрицу весов.";
+    let _choices: [&str; 3] = [
         "Проверь обе координаты вручную и объясни, что позиция пытается найти.",
         "Позиция с большим скалярным произведением получает большую оценку соответствия.",
         "Веса внимания остаются прежними, но итоговая смесь значений меняется.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

@@ -12,65 +12,28 @@
 // классе.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Оценки уже отсортированы от большей к меньшей.");
     let ranked_labels: [bool; 4] = [true, false, true, false];
-    trace_step!(ranked_labels);
-    trace_note!("Преобразуем входные данные и сохраняем полученную коллекцию в `positive_count`.");
     let positive_count: f64 = ranked_labels.iter().filter(|&&label| label).count() as f64;
-    trace_step!(positive_count);
-    trace_note!("Инициализируем изменяемый накопитель `found_positive` начальным состоянием.");
     let mut found_positive: f64 = 0.0;
-    trace_step!(found_positive);
-    trace_note!("Инициализируем изменяемый накопитель `area` начальным состоянием.");
-    let mut area: f64 = 0.0;
-    trace_step!(area);
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
+    let mut _area: f64 = 0.0;
     for (rank, label) in ranked_labels.into_iter().enumerate() {
-        trace_step!(rank);
-        trace_step!(label);
-        trace_note!("Проверяем условие и выбираем соответствующую ветку алгоритма.");
         if label {
-            trace_note!("Прибавляем очередной вклад к ранее накопленному результату.");
             found_positive += 1.0;
-            trace_step!(found_positive);
-            trace_note!("Нормируем или усредняем величину делением и сохраняем её в `precision`.");
             let precision: f64 = found_positive / (rank + 1) as f64;
-            trace_step!(precision);
-            trace_note!("Прибавляем очередной вклад к ранее накопленному результату.");
-            area += precision / positive_count;
-            trace_step!(area);
+            _area += precision / positive_count;
         }
     }
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!(
-        "average calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions (ступенчатая PR-AUC) = {area:.3}"
-    );
 
-    trace_note!("Построение графика вынесено из основного кода урока.");
-    disable();
     plot_correct_positive_prediction_share_against_detected_positive_share();
 }
 
 // Строим график по результатам урока.
 fn plot_correct_positive_prediction_share_against_detected_positive_share() {
-    trace_note!("Значения из этого урока на графике.");
     let precision_recall_area_under_curve_points: Vec<(f64, f64)> =
         [(0.0, 1.0), (0.5, 1.0), (1.0, 2.0 / 3.0)].to_vec();
-    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    trace_note!("Передаём путь к каталогу текущего урока.");
-    trace_note!("Указываем имя SVG-файла.");
-    trace_note!("Указываем заголовок графика.");
-    trace_note!("Указываем подпись горизонтальной оси.");
-    trace_note!("Указываем подпись вертикальной оси.");
-    trace_note!("Передаём ряды или значения для отрисовки графика.");
-    trace_note!("Указываем подпись этого ряда в легенде.");
-    trace_note!("Передаём рассчитанные координаты точек.");
-    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
-    let chart: std::path::PathBuf = lesson_visualization::line_chart(
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "PR-кривая по ранжированным меткам",
@@ -83,6 +46,4 @@ fn plot_correct_positive_prediction_share_against_detected_positive_share() {
         }],
     )
     .expect("не удалось сохранить график");
-    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
-    println!("график: {}", chart.display());
 }

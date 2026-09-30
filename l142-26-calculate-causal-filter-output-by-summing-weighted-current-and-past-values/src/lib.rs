@@ -4,7 +4,6 @@
 /// Фильтр длины два читает только текущий и предыдущий элементы.
 /// При генерации прогноз после `input` нельзя использовать будущий элемент.
 /// Причинная свёртка: вес текущего отсчёта умножаем на него и прибавляем взвешенный прошлый отсчёт с заданным отступом.
-use lesson_trace::{trace_note, trace_step};
 
 pub fn calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
     input: &[f64],
@@ -13,7 +12,6 @@ pub fn calculate_causal_filter_output_by_summing_weighted_current_and_spaced_pas
 
     filter_spacing: usize,
 ) -> Result<Vec<f64>, &'static str> {
-    trace_note!("Промежуток между используемыми точками фильтра называют dilation.");
     if filter_spacing == 0 {
         return Err("dilation должен быть положительным");
     }
@@ -24,7 +22,6 @@ pub fn calculate_causal_filter_output_by_summing_weighted_current_and_spaced_pas
             let previous: f64 = index
                 .checked_sub(filter_spacing)
                 .map_or(0.0, |past| input[past]);
-            trace_step!(previous);
             weight_current * current + weight_previous * previous
         })
         .collect())

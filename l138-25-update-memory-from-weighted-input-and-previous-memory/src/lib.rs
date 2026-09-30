@@ -3,7 +3,6 @@
 
 /// Скалярная RNN: h_t = tanh(w_x*x_t + w_h*h_(t-1)).
 /// Состояния простой рекуррентной сети: h = tanh(input_weight·x + recurrent_weight·h_previous), начиная с h = 0.
-use lesson_trace::trace_step;
 
 pub fn calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
     input: &[f64],
@@ -11,12 +10,10 @@ pub fn calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_
     recurrent_weight: f64,
 ) -> Vec<f64> {
     let mut hidden_state: f64 = 0.0;
-    trace_step!(hidden_state);
     input
         .iter()
         .map(|&input_value| {
             hidden_state = (input_weight * input_value + recurrent_weight * hidden_state).tanh();
-            trace_step!(hidden_state);
             hidden_state
         })
         .collect()

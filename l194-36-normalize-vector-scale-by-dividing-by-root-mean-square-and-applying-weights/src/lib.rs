@@ -3,7 +3,6 @@
 
 /// RMSNorm без вычитания среднего; gamma задаётся отдельно для каждой координаты.
 /// RMSNorm: делим координаты на sqrt(среднее квадратов + epsilon), затем умножаем каждую на её вес gamma.
-use lesson_trace::{trace_note, trace_step};
 
 pub fn normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
     input: &[f64],
@@ -18,10 +17,7 @@ pub fn normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_a
         .map(|input_component| input_component * input_component)
         .sum::<f64>()
         / input.len() as f64;
-    trace_step!(mean_square);
-    trace_note!("epsilon добавляем до корня, чтобы RMS не оказался нулём для нулевого вектора.");
     let scale: f64 = 1.0 / (mean_square + epsilon).sqrt();
-    trace_step!(scale);
     Ok(input
         .iter()
         .zip(gamma)

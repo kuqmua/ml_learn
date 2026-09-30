@@ -3,16 +3,13 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let question: &str = "Повтори bootstrap для [1, 2, 3] с фиксированным seed.";
-    let choices: [&str; 3] = [
+    let _question: &str = "Повтори bootstrap для [1, 2, 3] с фиксированным seed.";
+    let _choices: [&str; 3] = [
         "Убедись, что выборки имеют ту же длину, допускают повторы и дают воспроизводимый результат.",
         "Сравни ширину интервалов и объясни роль размера выборки.",
         "Отчёт явно сообщает об ошибках либо обоснованно пропускает строки; среднее и медиана проверены вручную.",
     ];
-    println!("{question}");
-    for (choice_number, choice) in choices.iter().enumerate() {
-        println!("{}. {choice}", choice_number + 1);
-    }
+
     let selected_choice: Option<usize> = None;
     let selected_choice: usize =
         selected_choice.expect("замени None на Some(1), Some(2) или Some(3)");

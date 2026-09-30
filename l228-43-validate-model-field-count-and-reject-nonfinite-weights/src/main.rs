@@ -7,51 +7,26 @@
 // Перед использованием проверяем число полей, числовой формат и конечность значений.
 // Ошибочные строки показываем отдельно, не выдавая их за допустимую модель.
 
-use lesson_trace::{enable_tracing, trace_note, trace_step};
-
 fn main() {
-    enable_tracing();
-    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    for (description, saved_model_text, should_be_valid) in [
+    for (_description, saved_model_text, should_be_valid) in [
         ("допустимая модель", "2.0\n1.0\n", true),
         ("не хватает поля", "2.0\n", false),
         ("лишнее поле", "2.0\n1.0\n3.0\n", false),
         ("вес не является числом", "abc\n1.0\n", false),
         ("бесконечный вес", "inf\n1.0\n", false),
     ] {
-        trace_step!(description);
-        trace_step!(saved_model_text);
-        trace_step!(should_be_valid);
-        trace_note!("Собираем значения для `values` в коллекцию.");
         let values: Vec<&str> = saved_model_text.lines().collect();
-        trace_step!(values);
-        trace_note!("Определяем размер данных и сохраняем его в `result`.");
         let result: Result<(f64, f64), &str> = if values.len() != 2 {
-            trace_note!("Возвращаем описание ошибки.");
             Err("нужно ровно два параметра")
         } else {
-            trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
-            trace_note!("Разбираем результат по его возможным вариантам.");
-            trace_note!("Выполняем действие для этого варианта данных.");
-            trace_note!("Выполняем действие для этого варианта данных.");
             match (values[0].parse::<f64>(), values[1].parse::<f64>()) {
                 (Ok(weight), Ok(bias)) if weight.is_finite() && bias.is_finite() => {
-                    trace_note!("Возвращаем успешный результат.");
                     Ok((weight, bias))
                 }
 
                 _ => Err("параметры должны быть конечными числами"),
             }
         };
-        trace_step!(result);
-        trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(result.is_ok(), should_be_valid);
-        trace_note!("Печатаем рассчитанные значения для проверки примера.");
-        println!("{description}: {result:?}");
     }
 }

@@ -12,23 +12,10 @@
 // может быть непригоден.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Сохраняем рассчитанное значение `start` для следующих операций.");
     let start: std::time::Instant = std::time::Instant::now();
-    trace_step!(start);
-    trace_note!("Сохраняем рассчитанное значение `feature` для следующих операций.");
     let feature: f64 = 3.0;
-    trace_step!(feature);
-    trace_note!("Умножаем значения и сохраняем результат в `prediction`.");
-    let prediction: f64 = 2.0 * feature + 1.0;
-    trace_step!(prediction);
-    trace_note!("Сохраняем рассчитанное значение `response_delay` для следующих операций.");
-    trace_note!("Время ожидания ответа после запроса называют latency.");
-    let response_delay: std::time::Duration = start.elapsed();
-    trace_step!(response_delay);
-    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-    println!("прогноз={prediction}, задержка={response_delay:?}");
+    let _prediction: f64 = 2.0 * feature + 1.0;
+    let _response_delay: std::time::Duration = start.elapsed();
 }

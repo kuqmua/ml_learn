@@ -19,22 +19,21 @@ fn report_error(
         .iter()
         .map(|&index| slope * records[index].features[10] + intercept)
         .collect();
-    println!(
-        "{name}: baseline MAE={:.3}, MSE={:.3}; alcohol model MAE={:.3}, MSE={:.3}",
-        calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(
-            &targets, &baseline
-        )?,
-        calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
-            &targets, &baseline
-        )?,
-        calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(
+    let _ = (
+        &(calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(
+            &targets, &baseline,
+        )?),
+        &(calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+            &targets, &baseline,
+        )?),
+        &(calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(
             &targets,
-            &predictions
-        )?,
-        calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+            &predictions,
+        )?),
+        &(calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
             &targets,
-            &predictions
-        )?
+            &predictions,
+        )?),
     );
     Ok(())
 }
@@ -65,12 +64,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .sum();
     let slope = covariance / variance;
     let intercept = target_mean - slope * alcohol_mean;
-    println!(
-        "Wine Quality red: {} строк, признаки [f64; 11], train={}, validation={}, test={}",
-        records.len(),
-        split.training_indices.len(),
-        split.validation_indices.len(),
-        split.test_indices.len()
+    let _ = (
+        &(records.len()),
+        &(split.training_indices.len()),
+        &(split.validation_indices.len()),
+        &(split.test_indices.len()),
     );
     report_error(
         "validation",

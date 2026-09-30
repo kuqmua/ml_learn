@@ -2,26 +2,15 @@
 
 /// Получаем норму L1: складываем модули координат — длины перемещений вдоль каждой оси.
 /// Для [3, 4] это 7; обычная длина прямого отрезка (норма L2) равна 5.
-use lesson_trace::{trace_note, trace_step};
 
 pub fn calculate_l1_vector_norm_by_summing_absolute_coordinates(vector: &[f64]) -> f64 {
-    trace_note!("Сохраняем результат этого шага в `sum`.");
     let mut sum: f64 = 0.0;
-    trace_step!(sum);
-    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for &coordinate in vector {
-        trace_step!(coordinate);
-        trace_note!("Обновляем значение результатом текущего вычисления.");
         sum += if coordinate < 0.0 {
-            trace_note!("Используем подготовленное значение в следующем шаге примера.");
             -coordinate
         } else {
-            trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
-            trace_note!("Используем подготовленное значение в следующем шаге примера.");
             coordinate
         };
-        trace_step!(sum);
     }
-    trace_note!("Используем подготовленное значение в следующем шаге примера.");
     sum
 }

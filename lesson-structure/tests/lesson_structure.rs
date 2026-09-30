@@ -76,7 +76,7 @@ impl<'ast> syn::visit::Visit<'ast> for Calls {
     }
 
     fn visit_macro(&mut self, mac: &'ast syn::Macro) {
-        // Calls inside assert_eq!, println!, trace_step!, etc. are expressions too.
+        // Calls inside assert_eq! and other macros are expressions too.
         let expressions =
             syn::punctuated::Punctuated::<syn::Expr, syn::Token![,]>::parse_terminated;
         if let Ok(expressions) = syn::parse::Parser::parse2(expressions, mac.tokens.clone()) {
@@ -201,7 +201,6 @@ fn every_public_lesson_operation_is_demonstrated_in_its_own_main() {
         "Публичные функции без демонстрации в main своего крейта:\n{}\nВынесите самостоятельную операцию в отдельную часть с main и тестами.",
         missing.join("\n")
     );
-    println!("Проверено {lessons} частей и {checked} публичных учебных функций");
 }
 
 #[test]

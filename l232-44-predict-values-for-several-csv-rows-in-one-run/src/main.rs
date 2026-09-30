@@ -11,23 +11,12 @@
 // строки.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable_tracing();
-    trace_note!("Создаём набор значений `features` для следующего шага примера.");
     let features: [f64; 3] = [1.0, 2.0, 3.0];
-    trace_step!(features);
-    trace_note!("Сохраняем рассчитанное значение `weight` для следующих операций.");
     let weight: f64 = 2.0;
-    trace_step!(weight);
-    trace_note!("Сохраняем рассчитанное значение `bias` для следующих операций.");
     let bias: f64 = 1.0;
-    trace_step!(bias);
-    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for feature in features {
-        trace_step!(feature);
-        trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
-        println!("прогноз для {feature} = {}", weight * feature + bias);
+        let _ = &(weight * feature + bias);
     }
 }
