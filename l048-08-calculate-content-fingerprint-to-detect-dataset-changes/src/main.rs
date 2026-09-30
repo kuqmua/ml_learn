@@ -10,40 +10,42 @@
 // Отпечаток зависит от содержимого, поэтому одинаковое имя файла не гарантирует одинаковые данные.
 // Для повторного запуска с теми же байтами отпечаток должен совпасть.
 
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Задаём учебные значения для `cases`.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    enable();
+    trace_note!("Задаём учебные значения для `cases`.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
     let cases: [(&str, &str); 3] = [
         ("исходные данные", "1,0\n2,1\n"),
         ("те же данные", "1,0\n2,1\n"),
         ("изменилась одна метка", "1,0\n2,0\n"),
     ];
-    lesson_trace::trace_step!(cases);
-    lesson_trace::trace_note!("Задаём учебные значения для `fingerprints`.");
+    trace_step!(cases);
+    trace_note!("Задаём учебные значения для `fingerprints`.");
     let mut fingerprints: [u64; 3] = [0; 3];
-    lesson_trace::trace_step!(fingerprints);
-    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
+    trace_step!(fingerprints);
+    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for (index, (description, data)) in cases.into_iter().enumerate() {
-        lesson_trace::trace_step!(index);
-        lesson_trace::trace_step!(description);
-        lesson_trace::trace_step!(data);
-        lesson_trace::trace_note!("Сохраняем результат этого шага в `hasher`.");
+        trace_step!(index);
+        trace_step!(description);
+        trace_step!(data);
+        trace_note!("Сохраняем результат этого шага в `hasher`.");
         let mut hasher: std::collections::hash_map::DefaultHasher =
             std::collections::hash_map::DefaultHasher::new();
-        lesson_trace::trace_step!(hasher);
-        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        trace_step!(hasher);
+        trace_note!("Используем подготовленное значение в следующем шаге примера.");
         std::hash::Hash::hash(data, &mut hasher);
-        lesson_trace::trace_note!("Обновляем значение результатом текущего вычисления.");
+        trace_note!("Обновляем значение результатом текущего вычисления.");
         fingerprints[index] = std::hash::Hasher::finish(&hasher);
-        lesson_trace::trace_step!(fingerprints);
-        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
+        trace_step!(fingerprints);
+        trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("{description}: отпечаток {}", fingerprints[index]);
     }
-    lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+    trace_note!("Проверяем ожидаемое свойство учебного примера.");
     assert_eq!(fingerprints[0], fingerprints[1]);
-    lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+    trace_note!("Проверяем ожидаемое свойство учебного примера.");
     assert_ne!(fingerprints[0], fingerprints[2]);
 }

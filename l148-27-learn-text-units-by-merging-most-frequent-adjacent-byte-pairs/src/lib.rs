@@ -2,6 +2,8 @@
 //! Связь с принятой терминологией: Обучение byte-level BPE.
 
 /// Учебный byte-level BPE: ID 0..=255 обозначают одиночные байты.
+use lesson_trace::{trace_note, trace_step};
+
 #[derive(Debug)]
 pub struct BytePairEncoding {
     /// Содержимое каждого токена нужно для обратного преобразования.
@@ -17,58 +19,56 @@ impl BytePairEncoding {
         corpus: &[&str],
         merge_count: usize,
     ) -> Self {
-        lesson_trace::trace_note!("Начальный словарь покрывает любой UTF-8 текст.");
+        trace_note!("Начальный словарь покрывает любой UTF-8 текст.");
         let mut pieces: Vec<Vec<u8>> = (0..=255).map(|byte| vec![byte as u8]).collect::<Vec<_>>();
-        lesson_trace::trace_step!(pieces);
+        trace_step!(pieces);
         let mut rows: Vec<Vec<usize>> = corpus
             .iter()
             .map(|text| text.bytes().map(usize::from).collect::<Vec<_>>())
             .collect::<Vec<_>>();
-        lesson_trace::trace_step!(rows);
+        trace_step!(rows);
         let mut merges: Vec<(usize, usize)> = Vec::new();
-        lesson_trace::trace_step!(merges);
+        trace_step!(merges);
         for _ in 0..merge_count {
-            lesson_trace::trace_note!(
-                "Частоты считаем только у соседних токенов внутри одной строки."
-            );
+            trace_note!("Частоты считаем только у соседних токенов внутри одной строки.");
             let mut frequencies: std::collections::BTreeMap<(usize, usize), usize> =
                 std::collections::BTreeMap::<(usize, usize), usize>::new();
-            lesson_trace::trace_step!(frequencies);
+            trace_step!(frequencies);
             for row in &rows {
-                lesson_trace::trace_step!(row);
+                trace_step!(row);
                 for pair in row.windows(2) {
-                    lesson_trace::trace_step!(pair);
+                    trace_step!(pair);
                     *frequencies.entry((pair[0], pair[1])).or_default() += 1;
-                    lesson_trace::trace_step!(frequencies);
+                    trace_step!(frequencies);
                 }
             }
-            lesson_trace::trace_note!("BTreeMap делает выбор при равных частотах воспроизводимым.");
+            trace_note!("BTreeMap делает выбор при равных частотах воспроизводимым.");
             let Some((&pair, _)) = frequencies
                 .iter()
                 .max_by_key(|(pair, count)| (*count, std::cmp::Reverse(**pair)))
             else {
                 break;
             };
-            lesson_trace::trace_step!(pair);
-            lesson_trace::trace_note!(
+            trace_step!(pair);
+            trace_note!(
                 "Единицу текста, которую модель обрабатывает как одно целое, называют token."
             );
             let text_unit_identifier: usize = pieces.len();
-            lesson_trace::trace_step!(text_unit_identifier);
+            trace_step!(text_unit_identifier);
             let mut joined: Vec<u8> = pieces[pair.0].clone();
-            lesson_trace::trace_step!(joined);
+            trace_step!(joined);
             joined.extend_from_slice(&pieces[pair.1]);
             pieces.push(joined);
             merges.push(pair);
-            lesson_trace::trace_note!("Заменяем выбранную пару во всём обучающем корпусе.");
+            trace_note!("Заменяем выбранную пару во всём обучающем корпусе.");
             for row in &mut rows {
-                lesson_trace::trace_step!(row);
+                trace_step!(row);
                 *row = replace_matching_adjacent_identifier_pair_with_new_identifier(
                     row,
                     pair,
                     text_unit_identifier,
                 );
-                lesson_trace::trace_step!(row);
+                trace_step!(row);
             }
         }
         Self { pieces, merges }
@@ -82,11 +82,11 @@ impl BytePairEncoding {
     ) -> Vec<usize> {
         let mut text_unit_identifiers: Vec<usize> =
             text.bytes().map(usize::from).collect::<Vec<_>>();
-        lesson_trace::trace_step!(text_unit_identifiers);
+        trace_step!(text_unit_identifiers);
         for (offset, &pair) in self.merges.iter().enumerate() {
-            lesson_trace::trace_step!(offset);
-            lesson_trace::trace_step!(pair);
-            lesson_trace::trace_note!(
+            trace_step!(offset);
+            trace_step!(pair);
+            trace_note!(
                 "0..255 заняты одиночными байтами; новое слияние получает ID 256 + его номер."
             );
             text_unit_identifiers = replace_matching_adjacent_identifier_pair_with_new_identifier(
@@ -94,7 +94,7 @@ impl BytePairEncoding {
                 pair,
                 256 + offset,
             );
-            lesson_trace::trace_step!(text_unit_identifiers);
+            trace_step!(text_unit_identifiers);
         }
         text_unit_identifiers
     }
@@ -106,14 +106,14 @@ impl BytePairEncoding {
         text_unit_identifiers: &[usize],
     ) -> Result<String, String> {
         let mut bytes: Vec<u8> = Vec::new();
-        lesson_trace::trace_step!(bytes);
+        trace_step!(bytes);
         for &text_unit_identifier in text_unit_identifiers {
-            lesson_trace::trace_step!(text_unit_identifier);
+            trace_step!(text_unit_identifier);
             let piece: &Vec<u8> = self
                 .pieces
                 .get(text_unit_identifier)
                 .ok_or("неизвестный ID токена")?;
-            lesson_trace::trace_step!(piece);
+            trace_step!(piece);
             bytes.extend_from_slice(piece);
         }
         String::from_utf8(bytes).map_err(|error| error.to_string())
@@ -128,20 +128,20 @@ fn replace_matching_adjacent_identifier_pair_with_new_identifier(
     new_identifier: usize,
 ) -> Vec<usize> {
     let mut result: Vec<usize> = Vec::new();
-    lesson_trace::trace_step!(result);
+    trace_step!(result);
     let mut index: usize = 0;
-    lesson_trace::trace_step!(index);
+    trace_step!(index);
     while index < text_unit_identifiers.len() {
         if text_unit_identifiers.get(index) == Some(&pair.0)
             && text_unit_identifiers.get(index + 1) == Some(&pair.1)
         {
             result.push(new_identifier);
             index += 2;
-            lesson_trace::trace_step!(index);
+            trace_step!(index);
         } else {
             result.push(text_unit_identifiers[index]);
             index += 1;
-            lesson_trace::trace_step!(index);
+            trace_step!(index);
         }
     }
     result

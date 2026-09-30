@@ -8,54 +8,54 @@
 //   пропуск.
 // Цель содержит только скрытые позиции, а encoder видит левый и правый контекст.
 
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Три токена A, B, C; средний заменяем отдельным MASK embedding.");
+    enable();
+    trace_note!("Три токена A, B, C; средний заменяем отдельным MASK embedding.");
     let original: [usize; 3] = [0, 1, 2];
-    lesson_trace::trace_step!(original);
-    lesson_trace::trace_note!("Плотное числовое представление объекта называют embedding.");
+    trace_step!(original);
+    trace_note!("Плотное числовое представление объекта называют embedding.");
     let dense_numeric_representations: [[f64; 2]; 4] =
         [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.0, 0.0]];
-    lesson_trace::trace_step!(dense_numeric_representations);
+    trace_step!(dense_numeric_representations);
     let visible: [[f64; 2]; 3] = [
         dense_numeric_representations[original[0]],
         dense_numeric_representations[3],
         dense_numeric_representations[original[2]],
     ];
-    lesson_trace::trace_step!(visible);
+    trace_step!(visible);
     let context: Vec<[f64; 2]> =
         l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
             &visible, &[true; 3],
         )
         .unwrap();
-    lesson_trace::trace_step!(context);
-    lesson_trace::trace_note!(
-        "Скрытие позиции для её предсказания называют masked language modeling."
-    );
+    trace_step!(context);
+    trace_note!("Скрытие позиции для её предсказания называют masked language modeling.");
     let hidden_text_unit_identifier: usize = original[1];
-    lesson_trace::trace_step!(hidden_text_unit_identifier);
-    lesson_trace::trace_note!("Оценку модели до преобразования в вероятность называют logit.");
+    trace_step!(hidden_text_unit_identifier);
+    trace_note!("Оценку модели до преобразования в вероятность называют logit.");
     let raw_model_scores: Vec<f64> = dense_numeric_representations[..3]
         .iter()
         .map(|candidate| context[1][0] * candidate[0] + context[1][1] * candidate[1])
         .collect();
-    lesson_trace::trace_step!(raw_model_scores);
+    trace_step!(raw_model_scores);
     let maximum_value: f64 = raw_model_scores
         .iter()
         .copied()
         .fold(f64::NEG_INFINITY, f64::max);
-    lesson_trace::trace_step!(maximum_value);
+    trace_step!(maximum_value);
     let logarithm_of_sum_of_exponentials: f64 = maximum_value
         + raw_model_scores
             .iter()
             .map(|value| (value - maximum_value).exp())
             .sum::<f64>()
             .ln();
-    lesson_trace::trace_step!(logarithm_of_sum_of_exponentials);
+    trace_step!(logarithm_of_sum_of_exponentials);
     let loss: f64 =
         logarithm_of_sum_of_exponentials - raw_model_scores[hidden_text_unit_identifier];
-    lesson_trace::trace_step!(loss);
+    trace_step!(loss);
     assert!(loss.is_finite());
     println!("цель скрытой позиции={hidden_text_unit_identifier}; MLM loss={loss:.4}");
-    lesson_trace::trace_note!("Фиксированные embeddings иллюстрируют loss, а не обученный BERT.");
+    trace_note!("Фиксированные embeddings иллюстрируют loss, а не обученный BERT.");
 }

@@ -8,20 +8,20 @@
 // Зачем это нужно: Некорректную строку сообщаем явно вместе с её номером, не выдавая ошибочный прогноз.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Создаём набор значений `rows` для следующего шага примера.");
+    enable();
+    trace_note!("Создаём набор значений `rows` для следующего шага примера.");
     let rows: [&str; 3] = ["1.0", "oops", "3.0"];
-    lesson_trace::trace_step!(rows);
-    lesson_trace::trace_note!(
-        "Повторяем следующий блок для каждого элемента указанной последовательности."
-    );
+    trace_step!(rows);
+    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for (index, row) in rows.into_iter().enumerate() {
-        lesson_trace::trace_step!(index);
-        lesson_trace::trace_step!(row);
-        lesson_trace::trace_note!("Разбираем каждый возможный вариант значения отдельно.");
-        lesson_trace::trace_note!("Возвращаем успешное значение в типе `Result`.");
-        lesson_trace::trace_note!("Возвращаем описание ошибки в типе `Result`.");
+        trace_step!(index);
+        trace_step!(row);
+        trace_note!("Разбираем каждый возможный вариант значения отдельно.");
+        trace_note!("Возвращаем успешное значение в типе `Result`.");
+        trace_note!("Возвращаем описание ошибки в типе `Result`.");
         match row.parse::<f64>() {
             Ok(value) => println!("строка {}: {value}", index + 1),
 

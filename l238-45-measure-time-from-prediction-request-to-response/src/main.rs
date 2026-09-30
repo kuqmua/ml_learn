@@ -12,25 +12,23 @@
 // может быть непригоден.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Сохраняем рассчитанное значение `start` для следующих операций.");
+    enable();
+    trace_note!("Сохраняем рассчитанное значение `start` для следующих операций.");
     let start: std::time::Instant = std::time::Instant::now();
-    lesson_trace::trace_step!(start);
-    lesson_trace::trace_note!("Сохраняем рассчитанное значение `feature` для следующих операций.");
+    trace_step!(start);
+    trace_note!("Сохраняем рассчитанное значение `feature` для следующих операций.");
     let feature: f64 = 3.0;
-    lesson_trace::trace_step!(feature);
-    lesson_trace::trace_note!("Умножаем значения и сохраняем результат в `prediction`.");
+    trace_step!(feature);
+    trace_note!("Умножаем значения и сохраняем результат в `prediction`.");
     let prediction: f64 = 2.0 * feature + 1.0;
-    lesson_trace::trace_step!(prediction);
-    lesson_trace::trace_note!(
-        "Сохраняем рассчитанное значение `response_delay` для следующих операций."
-    );
-    lesson_trace::trace_note!("Время ожидания ответа после запроса называют latency.");
+    trace_step!(prediction);
+    trace_note!("Сохраняем рассчитанное значение `response_delay` для следующих операций.");
+    trace_note!("Время ожидания ответа после запроса называют latency.");
     let response_delay: std::time::Duration = start.elapsed();
-    lesson_trace::trace_step!(response_delay);
-    lesson_trace::trace_note!(
-        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-    );
+    trace_step!(response_delay);
+    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
     println!("прогноз={prediction}, задержка={response_delay:?}");
 }

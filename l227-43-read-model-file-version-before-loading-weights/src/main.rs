@@ -9,14 +9,16 @@
 //
 // Загрузчик различает поддерживаемый формат, другую версию и отсутствие строки версии.
 
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    enable();
+    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
     for (description, saved_model_text, expected) in [
         ("поддерживаемый формат", "model_v1\n2.0\n1.0\n", "model_v1"),
         (
@@ -26,13 +28,13 @@ fn main() {
         ),
         ("пустой файл", "", "нет версии"),
     ] {
-        lesson_trace::trace_step!(description);
-        lesson_trace::trace_step!(saved_model_text);
-        lesson_trace::trace_step!(expected);
-        lesson_trace::trace_note!("Сохраняем результат этого шага в `status`.");
-        lesson_trace::trace_note!("Возвращаем присутствующее значение.");
-        lesson_trace::trace_note!("Возвращаем присутствующее значение.");
-        lesson_trace::trace_note!("Отмечаем отсутствие подходящего значения.");
+        trace_step!(description);
+        trace_step!(saved_model_text);
+        trace_step!(expected);
+        trace_note!("Сохраняем результат этого шага в `status`.");
+        trace_note!("Возвращаем присутствующее значение.");
+        trace_note!("Возвращаем присутствующее значение.");
+        trace_note!("Отмечаем отсутствие подходящего значения.");
         let status: &str = match saved_model_text.lines().next() {
             Some("model_v1") => "model_v1",
 
@@ -40,10 +42,10 @@ fn main() {
 
             None => "нет версии",
         };
-        lesson_trace::trace_step!(status);
-        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+        trace_step!(status);
+        trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(status, expected);
-        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
+        trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("{description}: {status}");
     }
 }

@@ -9,18 +9,20 @@
 // Словарь категорий учим на train; новую категорию на validation отправляем в отдельный ID.
 
 /// Словарь категорий: каждой новой категории обучения назначаем номер, начиная с 1.
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn build_category_dictionary_by_assigning_identifiers_to_unique_training_categories(
     training_data: &[&str],
 ) -> std::collections::BTreeMap<String, usize> {
-    lesson_trace::trace_note!("Набор известных модели текстовых единиц называют vocabulary.");
+    trace_note!("Набор известных модели текстовых единиц называют vocabulary.");
     let mut known_text_units: std::collections::BTreeMap<String, usize> =
         std::collections::BTreeMap::new();
-    lesson_trace::trace_step!(known_text_units);
+    trace_step!(known_text_units);
     for &category in training_data {
-        lesson_trace::trace_step!(category);
+        trace_step!(category);
         if !known_text_units.contains_key(category) {
             let category_identifier: usize = known_text_units.len() + 1;
-            lesson_trace::trace_step!(category_identifier);
+            trace_step!(category_identifier);
             known_text_units.insert(category.to_owned(), category_identifier);
         }
     }
@@ -37,17 +39,17 @@ fn encode_categories_by_replacing_with_known_identifiers_or_zero(
         .collect()
 }
 fn main() {
-    lesson_trace::enable();
+    enable();
     let known_text_units: std::collections::BTreeMap<String, usize> =
         build_category_dictionary_by_assigning_identifiers_to_unique_training_categories(&[
             "red", "blue", "red",
         ]);
-    lesson_trace::trace_step!(known_text_units);
+    trace_step!(known_text_units);
     let validation: Vec<usize> = encode_categories_by_replacing_with_known_identifiers_or_zero(
         &known_text_units,
         &["blue", "green"],
     );
-    lesson_trace::trace_step!(validation);
+    trace_step!(validation);
     assert_eq!(validation[1], 0);
     println!("словарь train={known_text_units:?}; validation ID={validation:?}; ID 0=unknown");
 }

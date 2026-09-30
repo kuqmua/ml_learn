@@ -1,13 +1,15 @@
 // Квадрат расстояния: сложение квадратов разностей координат.
 
+use lesson_trace::{enable, trace_step};
+
 fn main() {
-    lesson_trace::enable();
+    enable();
     let first = [1.0, 2.0];
     let second = [4.0, 6.0];
-    lesson_trace::trace_step!(first);
-    lesson_trace::trace_step!(second);
+    trace_step!(first);
+    trace_step!(second);
     let squared_distance = l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences(&first, &second).unwrap();
-    lesson_trace::trace_step!(squared_distance);
+    trace_step!(squared_distance);
     println!(
         "Квадрат расстояния: {squared_distance}; обычное расстояние будет вычислено в следующей части."
     );

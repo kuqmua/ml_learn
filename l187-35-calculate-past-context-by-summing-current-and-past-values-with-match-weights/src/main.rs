@@ -7,20 +7,22 @@
 //   продолжение.
 // Для позиции i softmax вычисляется только по позициям 0..=i.
 
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
+    enable();
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    lesson_trace::trace_step!(states);
+    trace_step!(states);
     let context: Vec<[f64; 2]> =
         l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(&states, &states, &states)
             .unwrap();
-    lesson_trace::trace_step!(context);
+    trace_step!(context);
     assert_eq!(context[0], states[0]);
-    lesson_trace::disable();
+    disable();
     plot_weights_assigned_only_to_current_and_past_positions(&states);
     for (index, state) in context.iter().enumerate() {
-        lesson_trace::trace_step!(index);
-        lesson_trace::trace_step!(state);
+        trace_step!(index);
+        trace_step!(state);
         println!("позиция {index}: {state:?}");
     }
 }
@@ -30,7 +32,7 @@ fn plot_weights_assigned_only_to_current_and_past_positions(states: &[[f64; 2]])
         .iter()
         .enumerate()
         .map(|(item_index, query_vector)| {
-            lesson_trace::trace_note!("Оценку модели до преобразования в вероятность называют logit.");
+            trace_note!("Оценку модели до преобразования в вероятность называют logit.");
             let raw_model_scores: Vec<f64> = (0..=item_index)
                 .map(|past_index| {
                     (query_vector[0] * states[past_index][0]

@@ -11,65 +11,65 @@
 // участвовавших в обучении.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Создаём набор значений `training` для следующего шага примера.");
+    enable();
+    trace_note!("Создаём набор значений `training` для следующего шага примера.");
     let training: [(f64, f64); 2] = [(1.0, 3.0), (2.0, 5.0)];
-    lesson_trace::trace_step!(training);
-    lesson_trace::trace_note!("Создаём набор значений `test` для следующего шага примера.");
+    trace_step!(training);
+    trace_note!("Создаём набор значений `test` для следующего шага примера.");
     let test: [(f64, f64); 2] = [(3.0, 7.0), (4.0, 9.0)];
-    lesson_trace::trace_step!(test);
-    lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
-    lesson_trace::trace_note!("Обновляем значение результатом текущего вычисления.");
-    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+    trace_step!(test);
+    trace_note!("Проверяем ожидаемое свойство учебного примера.");
+    trace_note!("Обновляем значение результатом текущего вычисления.");
+    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
     assert!(
         training.len() >= 2,
         "для прямой нужны хотя бы две обучающие точки"
     );
-    lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
-    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    lesson_trace::trace_note!("Сравниваем признаки второй обучающей точки с первой.");
-    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+    trace_note!("Проверяем ожидаемое свойство учебного примера.");
+    trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    trace_note!("Сравниваем признаки второй обучающей точки с первой.");
+    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
     assert_ne!(
         training[0].0, training[1].0,
         "обучающие точки должны иметь разные значения x"
     );
-    lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
-    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+    trace_note!("Проверяем ожидаемое свойство учебного примера.");
+    trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
     assert!(
         !test.is_empty(),
         "для MSE нужен хотя бы один тестовый пример"
     );
-    lesson_trace::trace_note!(
-        "Нормируем или усредняем величину делением и сохраняем её в `weight`."
-    );
+    trace_note!("Нормируем или усредняем величину делением и сохраняем её в `weight`.");
     let weight: f64 = (training[1].1 - training[0].1) / (training[1].0 - training[0].0);
-    lesson_trace::trace_step!(weight);
-    lesson_trace::trace_note!("Умножаем значения и сохраняем результат в `bias`.");
+    trace_step!(weight);
+    trace_note!("Умножаем значения и сохраняем результат в `bias`.");
     let bias: f64 = training[0].1 - weight * training[0].0;
-    lesson_trace::trace_step!(bias);
-    lesson_trace::trace_note!("Собираем значения для `targets` в коллекцию.");
+    trace_step!(bias);
+    trace_note!("Собираем значения для `targets` в коллекцию.");
     let targets: Vec<f64> = test.iter().map(|&(_, target)| target).collect();
-    lesson_trace::trace_step!(targets);
-    lesson_trace::trace_note!("Собираем значения для `predictions` в коллекцию.");
-    lesson_trace::trace_note!("Просматриваем элементы коллекции по ссылке.");
-    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
-    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
+    trace_step!(targets);
+    trace_note!("Собираем значения для `predictions` в коллекцию.");
+    trace_note!("Просматриваем элементы коллекции по ссылке.");
+    trace_note!("Преобразуем каждый элемент в новое значение.");
+    trace_note!("Собираем результаты в коллекцию.");
     let predictions: Vec<f64> = test
         .iter()
         .map(|&(feature, _)| weight * feature + bias)
         .collect();
-    lesson_trace::trace_step!(predictions);
-    lesson_trace::trace_note!("Сохраняем результат этого шага в `mean_squared_error_value`.");
+    trace_step!(predictions);
+    trace_note!("Сохраняем результат этого шага в `mean_squared_error_value`.");
     let mean_squared_error_value: f64 =
         l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &predictions).unwrap();
-    lesson_trace::trace_step!(mean_squared_error_value);
-    lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
+    trace_step!(mean_squared_error_value);
+    trace_note!("Печатаем рассчитанные значения для проверки примера.");
     println!("test MSE = {mean_squared_error_value}");
 
-    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
-    lesson_trace::disable();
+    trace_note!("Построение графика вынесено из основного кода урока.");
+    disable();
     plot_training_and_test_points_with_prediction_line(training, test, weight, bias);
 }
 
@@ -80,46 +80,44 @@ fn plot_training_and_test_points_with_prediction_line(
     weight: f64,
     bias: f64,
 ) {
-    lesson_trace::trace_note!("Показываем значения, рассчитанные по данным примера.");
+    trace_note!("Показываем значения, рассчитанные по данным примера.");
     let training_points: Vec<(f64, f64)> = training
         .iter()
         .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
         .collect();
-    lesson_trace::trace_note!("Собираем значения для `test_points` в коллекцию.");
+    trace_note!("Собираем значения для `test_points` в коллекцию.");
     let test_points: Vec<(f64, f64)> = test
         .iter()
         .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
         .collect();
-    lesson_trace::trace_note!("Собираем значения для `model_points` в коллекцию.");
-    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
-    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
+    trace_note!("Собираем значения для `model_points` в коллекцию.");
+    trace_note!("Преобразуем каждый элемент в новое значение.");
+    trace_note!("Собираем результаты в коллекцию.");
     let model_points: Vec<(f64, f64)> = (0..=50)
         .map(|plot_step_index| {
-            lesson_trace::trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
+            trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            lesson_trace::trace_note!(
-                "Добавляем пару значений для сравнения или построения графика."
-            );
+            trace_note!("Добавляем пару значений для сравнения или построения графика.");
             (horizontal_value, weight * horizontal_value + bias)
         })
         .collect();
-    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
-    lesson_trace::trace_note!("Указываем имя SVG-файла.");
-    lesson_trace::trace_note!("Указываем заголовок графика.");
-    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
-    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
-    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
-    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
-    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
-    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
-    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
-    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
-    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
-    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
-    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
-    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
-    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
+    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    trace_note!("Передаём путь к каталогу текущего урока.");
+    trace_note!("Указываем имя SVG-файла.");
+    trace_note!("Указываем заголовок графика.");
+    trace_note!("Указываем подпись горизонтальной оси.");
+    trace_note!("Указываем подпись вертикальной оси.");
+    trace_note!("Передаём ряды или значения для отрисовки графика.");
+    trace_note!("Добавляем ряд данных с подписью к графику.");
+    trace_note!("Указываем подпись этого ряда в легенде.");
+    trace_note!("Передаём рассчитанные координаты точек.");
+    trace_note!("Добавляем ряд данных с подписью к графику.");
+    trace_note!("Указываем подпись этого ряда в легенде.");
+    trace_note!("Передаём рассчитанные координаты точек.");
+    trace_note!("Добавляем ряд данных с подписью к графику.");
+    trace_note!("Указываем подпись этого ряда в легенде.");
+    trace_note!("Передаём рассчитанные координаты точек.");
+    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -145,6 +143,6 @@ fn plot_training_and_test_points_with_prediction_line(
         ],
     )
     .expect("не удалось сохранить график");
-    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
+    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

@@ -6,16 +6,18 @@
 // Представь: На одном уровне симметричного дерева все узлы задают один вопрос, например «x < 5?».
 // Один порог на каждом уровне ведёт к 2^depth листьям.
 
+use lesson_trace::{enable, trace_step};
+
 fn main() {
-    lesson_trace::enable();
+    enable();
     let tree: l091_16_build_symmetric_tree_using_shared_threshold_test_at_each_level::ObliviousTree =
         l091_16_build_symmetric_tree_using_shared_threshold_test_at_each_level::ObliviousTree {
             splits: vec![(0, 0.5), (1, 0.5)],
             leaves: vec![0.0, 1.0, 2.0, 3.0],
         };
-    lesson_trace::trace_step!(tree);
+    trace_step!(tree);
     for input in [[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]] {
-        lesson_trace::trace_step!(input);
+        trace_step!(input);
         println!(
             "{input:?} -> {}",
             tree.predict_tree_output_by_choosing_leaf_with_shared_threshold_tests(&input)

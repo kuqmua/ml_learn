@@ -6,33 +6,35 @@
 // Представь: Четыре головы Q могут обращаться к меньшему числу общих наборов K/V, экономя хранение.
 // Несколько Q-голов совместно используют меньшее число K/V-голов.
 
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Четырём Q-головам соответствуют две K/V-головы.");
+    enable();
+    trace_note!("Четырём Q-головам соответствуют две K/V-головы.");
     let queries: [[f64; 2]; 4] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [-1.0, 1.0]];
-    lesson_trace::trace_step!(queries);
+    trace_step!(queries);
     let keys: [[[f64; 2]; 2]; 2] = [[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [1.0, 0.0]]];
-    lesson_trace::trace_step!(keys);
+    trace_step!(keys);
     let values: [[[f64; 2]; 2]; 2] = [[[1.0, 0.0], [0.0, 1.0]], [[0.2, 0.8], [0.8, 0.2]]];
-    lesson_trace::trace_step!(values);
+    trace_step!(values);
     let mut output: Vec<[f64; 2]> = Vec::new();
-    lesson_trace::trace_step!(output);
+    trace_step!(output);
     for (head, &query) in queries.iter().enumerate() {
-        lesson_trace::trace_step!(head);
-        lesson_trace::trace_step!(query);
+        trace_step!(head);
+        trace_step!(query);
         let group: usize = head / 2;
-        lesson_trace::trace_step!(group);
-        lesson_trace::trace_note!("Оценку модели до преобразования в вероятность называют logit.");
+        trace_step!(group);
+        trace_note!("Оценку модели до преобразования в вероятность называют logit.");
         let raw_model_scores: Vec<f64> = keys[group]
             .iter()
             .map(|key_vector| query[0] * key_vector[0] + query[1] * key_vector[1])
             .collect();
-        lesson_trace::trace_step!(raw_model_scores);
+        trace_step!(raw_model_scores);
         let weights: Vec<f64> =
             l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
                 &raw_model_scores,
             );
-        lesson_trace::trace_step!(weights);
+        trace_step!(weights);
         output.push([
             weights[0] * values[group][0][0] + weights[1] * values[group][1][0],
             weights[0] * values[group][0][1] + weights[1] * values[group][1][1],

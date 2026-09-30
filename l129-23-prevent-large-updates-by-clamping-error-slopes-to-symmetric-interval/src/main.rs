@@ -8,22 +8,22 @@
 // Значения внутри интервала [-limit, limit] не меняются. Выходящие за границу
 // заменяются ближайшей границей с сохранением знака.
 
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Сохраняем результат этого шага в `limit`.");
+    enable();
+    trace_note!("Сохраняем результат этого шага в `limit`.");
     let limit: f64 = 1.0;
-    lesson_trace::trace_step!(limit);
-    lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+    trace_step!(limit);
+    trace_note!("Проверяем ожидаемое свойство учебного примера.");
     assert!(limit > 0.0);
-    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
-    lesson_trace::trace_note!(
-        "Производную функции по параметру или вектор таких производных называют gradient."
-    );
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
+    trace_note!("Производную функции по параметру или вектор таких производных называют gradient.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
     for (description, rate_of_change, expected) in [
         ("слишком большой положительный", 12.0, 1.0),
         ("положительный внутри интервала", 0.5, 0.5),
@@ -31,70 +31,58 @@ fn main() {
         ("отрицательный внутри интервала", -0.5, -0.5),
         ("слишком большой отрицательный", -12.0, -1.0),
     ] {
-        lesson_trace::trace_step!(description);
-        lesson_trace::trace_step!(rate_of_change);
-        lesson_trace::trace_step!(expected);
-        lesson_trace::trace_note!("Сохраняем результат этого шага в `clipped`.");
+        trace_step!(description);
+        trace_step!(rate_of_change);
+        trace_step!(expected);
+        trace_note!("Сохраняем результат этого шага в `clipped`.");
         let clipped: f64 = if rate_of_change > limit {
-            lesson_trace::trace_note!(
-                "Используем подготовленное значение в следующем шаге примера."
-            );
-            lesson_trace::trace_note!(
-                "Используем подготовленное значение в следующем шаге примера."
-            );
+            trace_note!("Используем подготовленное значение в следующем шаге примера.");
+            trace_note!("Используем подготовленное значение в следующем шаге примера.");
             limit
         } else if rate_of_change < -limit {
-            lesson_trace::trace_note!(
-                "Используем подготовленное значение в следующем шаге примера."
-            );
+            trace_note!("Используем подготовленное значение в следующем шаге примера.");
             -limit
         } else {
-            lesson_trace::trace_note!(
-                "Обрабатываем случай, когда предыдущее условие не выполнено."
-            );
-            lesson_trace::trace_note!(
-                "Используем подготовленное значение в следующем шаге примера."
-            );
+            trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
+            trace_note!("Используем подготовленное значение в следующем шаге примера.");
             rate_of_change
         };
-        lesson_trace::trace_step!(clipped);
-        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+        trace_step!(clipped);
+        trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(clipped, expected);
-        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
+        trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("{description}: {rate_of_change} → {clipped}");
     }
 
-    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
-    lesson_trace::disable();
+    trace_note!("Построение графика вынесено из основного кода урока.");
+    disable();
     plot_rate_of_change_clamped_to_symmetric_interval();
 }
 
 // Строим график по результатам урока.
 fn plot_rate_of_change_clamped_to_symmetric_interval() {
-    lesson_trace::trace_note!("График величин и зависимостей, изученных в этом уроке.");
-    lesson_trace::trace_note!("Ограничение величины заданным порогом называют clipping.");
-    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
-    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
+    trace_note!("График величин и зависимостей, изученных в этом уроке.");
+    trace_note!("Ограничение величины заданным порогом называют clipping.");
+    trace_note!("Преобразуем каждый элемент в новое значение.");
+    trace_note!("Собираем результаты в коллекцию.");
     let bounded_value_points: Vec<(f64, f64)> = (-30..=30)
         .map(|plot_step_index| {
-            lesson_trace::trace_note!("Сохраняем результат этого шага в `rate_of_change_value`.");
+            trace_note!("Сохраняем результат этого шага в `rate_of_change_value`.");
             let rate_of_change_value: f64 = plot_step_index as f64 / 10.0;
-            lesson_trace::trace_note!(
-                "Добавляем пару значений для сравнения или построения графика."
-            );
+            trace_note!("Добавляем пару значений для сравнения или построения графика.");
             (rate_of_change_value, rate_of_change_value.clamp(-1.0, 1.0))
         })
         .collect();
-    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
-    lesson_trace::trace_note!("Указываем имя SVG-файла.");
-    lesson_trace::trace_note!("Указываем заголовок графика.");
-    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
-    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
-    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
-    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
-    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
-    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
+    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    trace_note!("Передаём путь к каталогу текущего урока.");
+    trace_note!("Указываем имя SVG-файла.");
+    trace_note!("Указываем заголовок графика.");
+    trace_note!("Указываем подпись горизонтальной оси.");
+    trace_note!("Указываем подпись вертикальной оси.");
+    trace_note!("Передаём ряды или значения для отрисовки графика.");
+    trace_note!("Указываем подпись этого ряда в легенде.");
+    trace_note!("Передаём рассчитанные координаты точек.");
+    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -108,6 +96,6 @@ fn plot_rate_of_change_clamped_to_symmetric_interval() {
         }],
     )
     .expect("не удалось сохранить график");
-    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
+    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

@@ -11,46 +11,42 @@
 // последовательности.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Создаём набор значений `text_unit` для следующего шага примера.");
-    lesson_trace::trace_note!(
-        "Единицу текста, которую модель обрабатывает как одно целое, называют token."
-    );
+    enable();
+    trace_note!("Создаём набор значений `text_unit` для следующего шага примера.");
+    trace_note!("Единицу текста, которую модель обрабатывает как одно целое, называют token.");
     let text_unit: [f64; 2] = [1.0, 2.0];
-    lesson_trace::trace_step!(text_unit);
-    lesson_trace::trace_note!(
-        "Создаём набор значений `query_weights` для следующего шага примера."
-    );
+    trace_step!(text_unit);
+    trace_note!("Создаём набор значений `query_weights` для следующего шага примера.");
     let query_weights: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 0.5]];
-    lesson_trace::trace_step!(query_weights);
-    lesson_trace::trace_note!("Создаём набор значений `query` для следующего шага примера.");
-    lesson_trace::trace_note!("Умножаем величины согласно используемой формуле.");
-    lesson_trace::trace_note!("Умножаем величины согласно используемой формуле.");
+    trace_step!(query_weights);
+    trace_note!("Создаём набор значений `query` для следующего шага примера.");
+    trace_note!("Умножаем величины согласно используемой формуле.");
+    trace_note!("Умножаем величины согласно используемой формуле.");
     let query: [f64; 2] = [
         query_weights[0][0] * text_unit[0] + query_weights[0][1] * text_unit[1],
         query_weights[1][0] * text_unit[0] + query_weights[1][1] * text_unit[1],
     ];
-    lesson_trace::trace_step!(query);
-    lesson_trace::trace_note!(
-        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-    );
+    trace_step!(query);
+    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
     println!("Q = {query:?}");
 
-    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
-    lesson_trace::disable();
+    trace_note!("Построение графика вынесено из основного кода урока.");
+    disable();
     plot_coordinates_after_multiplying_by_query_weights(query);
 }
 
 // Строим график по результатам урока.
 fn plot_coordinates_after_multiplying_by_query_weights(query: [f64; 2]) {
-    lesson_trace::trace_note!("Сравнение величин из этого урока.");
-    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
-    lesson_trace::trace_note!("Указываем имя SVG-файла.");
-    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
-    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
-    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
-    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
+    trace_note!("Сравнение величин из этого урока.");
+    trace_note!("Передаём путь к каталогу текущего урока.");
+    trace_note!("Указываем имя SVG-файла.");
+    trace_note!("Указываем заголовок диаграммы.");
+    trace_note!("Указываем подпись вертикальной оси.");
+    trace_note!("Передаём ряды или значения для отрисовки графика.");
+    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -59,6 +55,6 @@ fn plot_coordinates_after_multiplying_by_query_weights(query: [f64; 2]) {
         &[("Q₀", query[0]), ("Q₁", query[1])],
     )
     .expect("не удалось сохранить график");
-    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
+    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

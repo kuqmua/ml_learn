@@ -9,55 +9,57 @@
 // Нейроны с одинаковыми весами дают одинаковый ответ на один вход.
 // Разные веса позволяют нейронам начать обучение с разных ответов.
 
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Задаём учебные значения для `input`.");
+    enable();
+    trace_note!("Задаём учебные значения для `input`.");
     let input: [f64; 2] = [1.0, 2.0];
-    lesson_trace::trace_step!(input);
-    lesson_trace::trace_note!("Задаём учебные значения для `cases`.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_step!(input);
+    trace_note!("Задаём учебные значения для `cases`.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
     let cases: [(&str, [f64; 2], [f64; 2], bool); 2] = [
         ("одинаковые веса", [0.2, -0.3], [0.2, -0.3], true),
         ("разные веса", [0.2, -0.3], [-0.1, 0.4], false),
     ];
-    lesson_trace::trace_step!(cases);
-    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
+    trace_step!(cases);
+    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for (description, first_neuron, second_neuron, should_match) in cases {
-        lesson_trace::trace_step!(description);
-        lesson_trace::trace_step!(first_neuron);
-        lesson_trace::trace_step!(second_neuron);
-        lesson_trace::trace_step!(should_match);
-        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+        trace_step!(description);
+        trace_step!(first_neuron);
+        trace_step!(second_neuron);
+        trace_step!(should_match);
+        trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(first_neuron.len(), input.len());
-        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+        trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(second_neuron.len(), input.len());
-        lesson_trace::trace_note!("Сохраняем результат этого шага в `first_output`.");
+        trace_note!("Сохраняем результат этого шага в `first_output`.");
         let first_output: f64 = first_neuron[0] * input[0] + first_neuron[1] * input[1];
-        lesson_trace::trace_step!(first_output);
-        lesson_trace::trace_note!("Сохраняем результат этого шага в `second_output`.");
+        trace_step!(first_output);
+        trace_note!("Сохраняем результат этого шага в `second_output`.");
         let second_output: f64 = second_neuron[0] * input[0] + second_neuron[1] * input[1];
-        lesson_trace::trace_step!(second_output);
-        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+        trace_step!(second_output);
+        trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(first_output == second_output, should_match);
-        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
+        trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("{description}: ответы {first_output} и {second_output}");
     }
 
-    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
-    lesson_trace::disable();
+    trace_note!("Построение графика вынесено из основного кода урока.");
+    disable();
     plot_different_starting_weights();
 }
 
 // Строим график по результатам урока.
 fn plot_different_starting_weights() {
-    lesson_trace::trace_note!("Сравнение величин из этого урока.");
-    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
-    lesson_trace::trace_note!("Указываем имя SVG-файла.");
-    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
-    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
-    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
-    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
+    trace_note!("Сравнение величин из этого урока.");
+    trace_note!("Передаём путь к каталогу текущего урока.");
+    trace_note!("Указываем имя SVG-файла.");
+    trace_note!("Указываем заголовок диаграммы.");
+    trace_note!("Указываем подпись вертикальной оси.");
+    trace_note!("Передаём ряды или значения для отрисовки графика.");
+    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -66,6 +68,6 @@ fn plot_different_starting_weights() {
         &[("нейрон 1", 0.5), ("нейрон 2", -0.5)],
     )
     .expect("не удалось сохранить график");
-    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
+    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

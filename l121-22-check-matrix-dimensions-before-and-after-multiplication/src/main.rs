@@ -8,57 +8,57 @@
 //
 // Матрицы (a,b) и (c,d) можно умножить, только если b=c; ответ имеет форму (a,d).
 
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    enable();
+    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
     for (description, left_shape, right_shape, expected) in [
         ("совместимые формы", (2, 3), (3, 4), Some((2, 4))),
         ("квадратные матрицы", (2, 2), (2, 2), Some((2, 2))),
         ("несовместимые формы", (2, 3), (2, 4), None),
     ] {
-        lesson_trace::trace_step!(description);
-        lesson_trace::trace_step!(left_shape);
-        lesson_trace::trace_step!(right_shape);
-        lesson_trace::trace_step!(expected);
-        lesson_trace::trace_note!("Сохраняем результат этого шага в `result_shape`.");
+        trace_step!(description);
+        trace_step!(left_shape);
+        trace_step!(right_shape);
+        trace_step!(expected);
+        trace_note!("Сохраняем результат этого шага в `result_shape`.");
         let result_shape: Option<(i32, i32)> = if left_shape.1 == right_shape.0 {
-            lesson_trace::trace_note!("Возвращаем присутствующее значение.");
+            trace_note!("Возвращаем присутствующее значение.");
             Some((left_shape.0, right_shape.1))
         } else {
-            lesson_trace::trace_note!(
-                "Обрабатываем случай, когда предыдущее условие не выполнено."
-            );
-            lesson_trace::trace_note!("Отмечаем отсутствие подходящего значения.");
+            trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
+            trace_note!("Отмечаем отсутствие подходящего значения.");
             None
         };
-        lesson_trace::trace_step!(result_shape);
-        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+        trace_step!(result_shape);
+        trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(result_shape, expected);
-        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
+        trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("{description}: {left_shape:?} × {right_shape:?} → {result_shape:?}");
     }
 
-    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
-    lesson_trace::disable();
+    trace_note!("Построение графика вынесено из основного кода урока.");
+    disable();
     plot_row_and_column_counts_of_input_and_output_matrices();
 }
 
 // Строим график по результатам урока.
 fn plot_row_and_column_counts_of_input_and_output_matrices() {
-    lesson_trace::trace_note!("Сравнение величин из этого урока.");
-    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
-    lesson_trace::trace_note!("Указываем имя SVG-файла.");
-    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
-    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
-    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
+    trace_note!("Сравнение величин из этого урока.");
+    trace_note!("Передаём путь к каталогу текущего урока.");
+    trace_note!("Указываем имя SVG-файла.");
+    trace_note!("Указываем заголовок диаграммы.");
+    trace_note!("Указываем подпись вертикальной оси.");
+    trace_note!("Передаём ряды или значения для отрисовки графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -72,6 +72,6 @@ fn plot_row_and_column_counts_of_input_and_output_matrices() {
         ],
     )
     .expect("не удалось сохранить график");
-    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
+    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

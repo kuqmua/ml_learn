@@ -19,86 +19,74 @@
 //   входного файла.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!(
+    enable();
+    trace_note!(
         "Шаг: Берём seed из аргумента командной строки или используем фиксированное значение."
     );
-    lesson_trace::trace_note!("Берём элемент с указанным порядковым номером.");
-    lesson_trace::trace_note!("Преобразуем каждый элемент последовательности.");
-    lesson_trace::trace_note!("При отсутствии значения используем запасной вариант.");
+    trace_note!("Берём элемент с указанным порядковым номером.");
+    trace_note!("Преобразуем каждый элемент последовательности.");
+    trace_note!("При отсутствии значения используем запасной вариант.");
     let seed: u64 = std::env::args()
         .nth(1)
         .map(|seed_text| seed_text.parse::<u64>().expect("seed: целое число"))
         .unwrap_or(42);
-    lesson_trace::trace_step!(seed);
-    lesson_trace::trace_note!("Фиксируем демонстрационные данные на время выполнения программы.");
+    trace_step!(seed);
+    trace_note!("Фиксируем демонстрационные данные на время выполнения программы.");
     const SAMPLE_DATA: &str = "1,0\n2,0\n3,1\n4,1\n";
 
-    lesson_trace::trace_note!(
-        "Шаг: Запускаем повторяемый эксперимент и считаем простую базовую метрику."
-    );
+    trace_note!("Шаг: Запускаем повторяемый эксперимент и считаем простую базовую метрику.");
     let (random_state, baseline_accuracy): (u64, f64) = (|| -> (u64, f64) {
-        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
-        lesson_trace::trace_note!(
-            "Из одного seed получаем то же состояние генератора и ту же базовую метрику."
-        );
-        lesson_trace::trace_note!("Сохраняем результат этого шага в `seed`.");
+        trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        trace_note!("Из одного seed получаем то же состояние генератора и ту же базовую метрику.");
+        trace_note!("Сохраняем результат этого шага в `seed`.");
         let seed: u64 = seed;
-        lesson_trace::trace_step!(seed);
-        lesson_trace::trace_note!(
+        trace_step!(seed);
+        trace_note!(
             "Один шаг линейного конгруэнтного генератора: фиксированный множитель и +1 по mod 2⁶⁴."
         );
-        lesson_trace::trace_note!("Так один seed всегда приводит к одному и тому же состоянию.");
+        trace_note!("Так один seed всегда приводит к одному и тому же состоянию.");
         let state: u64 = seed.wrapping_mul(6364136223846793005).wrapping_add(1);
-        lesson_trace::trace_step!(state);
-        lesson_trace::trace_note!(
-            "Сохраняем рассчитанное значение `baseline_accuracy` для следующих операций."
-        );
-        lesson_trace::trace_note!("Разбиваем текст на строки для последовательной обработки.");
-        lesson_trace::trace_note!("Оставляем только элементы, прошедшие указанную проверку.");
-        lesson_trace::trace_note!("Подсчитываем число элементов после отбора.");
-        lesson_trace::trace_note!("Делим значения, получая нормированную величину или среднее.");
+        trace_step!(state);
+        trace_note!("Сохраняем рассчитанное значение `baseline_accuracy` для следующих операций.");
+        trace_note!("Разбиваем текст на строки для последовательной обработки.");
+        trace_note!("Оставляем только элементы, прошедшие указанную проверку.");
+        trace_note!("Подсчитываем число элементов после отбора.");
+        trace_note!("Делим значения, получая нормированную величину или среднее.");
         let baseline_accuracy: f64 = SAMPLE_DATA
             .lines()
             .filter(|line| line.ends_with(",1"))
             .count() as f64
             / SAMPLE_DATA.lines().count() as f64;
-        lesson_trace::trace_step!(baseline_accuracy);
-        lesson_trace::trace_note!(
-            "Составляем результат из вычисленных значений в указанном порядке."
-        );
+        trace_step!(baseline_accuracy);
+        trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
         (state, baseline_accuracy)
     })();
-    lesson_trace::trace_step!(random_state);
-    lesson_trace::trace_step!(baseline_accuracy);
+    trace_step!(random_state);
+    trace_step!(baseline_accuracy);
 
-    lesson_trace::trace_note!(
-        "Шаг: Записываем seed, отпечаток данных и результат для сравнения запусков."
-    );
-    lesson_trace::trace_note!(
-        "Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями."
-    );
-    lesson_trace::trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
-    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    lesson_trace::trace_note!(
-        "Отпечаток данных получаем последовательным смешиванием байтов строки."
-    );
-    lesson_trace::trace_note!("Сохраняем результат этого шага в `data`.");
-    lesson_trace::trace_note!("Создаём хешер, чтобы получить воспроизводимый отпечаток данных.");
-    lesson_trace::trace_note!("Добавляем байты входных данных в состояние хешера.");
-    lesson_trace::trace_note!("Завершаем хеширование и получаем числовой отпечаток.");
+    trace_note!("Шаг: Записываем seed, отпечаток данных и результат для сравнения запусков.");
+    trace_note!("Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.");
+    trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
+    trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    trace_note!("Отпечаток данных получаем последовательным смешиванием байтов строки.");
+    trace_note!("Сохраняем результат этого шага в `data`.");
+    trace_note!("Создаём хешер, чтобы получить воспроизводимый отпечаток данных.");
+    trace_note!("Добавляем байты входных данных в состояние хешера.");
+    trace_note!("Завершаем хеширование и получаем числовой отпечаток.");
     println!(
         "seed={seed}, data_hash={}, random_state={random_state}, baseline_accuracy={baseline_accuracy:.2}",
         (|| -> u64 {
             let data: &str = SAMPLE_DATA;
-            lesson_trace::trace_step!(data);
-            lesson_trace::trace_step!(data);
+            trace_step!(data);
+            trace_step!(data);
 
             let mut hasher: std::collections::hash_map::DefaultHasher =
                 std::collections::hash_map::DefaultHasher::new();
-            lesson_trace::trace_step!(hasher);
-            lesson_trace::trace_step!(hasher);
+            trace_step!(hasher);
+            trace_step!(hasher);
 
             std::hash::Hash::hash(data, &mut hasher);
 

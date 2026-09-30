@@ -8,15 +8,15 @@
 //   прогноза.
 // Соединяем упорядоченную статистику и симметричное дерево; это учебная схема, не полная реализация CatBoost.
 
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
+    enable();
     let categories: [&str; 6] = ["A", "B", "A", "B", "A", "B"];
-    lesson_trace::trace_step!(categories);
+    trace_step!(categories);
     let targets: [f64; 6] = [1.0, 0.0, 1.0, 0.0, 1.0, 0.0];
-    lesson_trace::trace_step!(targets);
-    lesson_trace::trace_note!(
-        "Замену категорий числами, рассчитанными по целям, называют target encoding."
-    );
+    trace_step!(targets);
+    trace_note!("Замену категорий числами, рассчитанными по целям, называют target encoding.");
     let category_target_mean_values: Vec<f64> =
         l092_16_encode_category_by_averaging_earlier_targets_without_current_answer::encode_categories_as_average_previous_targets_with_prior_weight(
             &categories,
@@ -25,8 +25,8 @@ fn main() {
             1.0,
         )
         .unwrap();
-    lesson_trace::trace_step!(category_target_mean_values);
-    lesson_trace::trace_note!(
+    trace_step!(category_target_mean_values);
+    trace_note!(
         "Порог фиксирован для прозрачности примера; настоящий алгоритм выбирает split по данным."
     );
     let tree: l091_16_build_symmetric_tree_using_shared_threshold_test_at_each_level::ObliviousTree =
@@ -34,40 +34,40 @@ fn main() {
             splits: vec![(0, 0.5)],
             leaves: vec![-0.25, 0.25],
         };
-    lesson_trace::trace_step!(tree);
-    lesson_trace::trace_note!(
+    trace_step!(tree);
+    trace_note!(
         "0.5 — начальный прогноз для бинарной метки; дерево ниже добавляет поправку к нему."
     );
     let base: f64 = 0.5;
-    lesson_trace::trace_step!(base);
-    lesson_trace::trace_note!(
+    trace_step!(base);
+    trace_note!(
         "Коэффициент 0.5 берёт половину поправки дерева, чтобы пример показал постепенное усиление."
     );
     let learning_rate: f64 = 0.5;
-    lesson_trace::trace_step!(learning_rate);
+    trace_step!(learning_rate);
     let mut before: f64 = 0.0;
-    lesson_trace::trace_step!(before);
+    trace_step!(before);
     let mut after: f64 = 0.0;
-    lesson_trace::trace_step!(after);
+    trace_step!(after);
     for (index, (&feature, &target)) in category_target_mean_values.iter().zip(&targets).enumerate()
     {
-        lesson_trace::trace_step!(index);
-        lesson_trace::trace_step!(feature);
-        lesson_trace::trace_step!(target);
+        trace_step!(index);
+        trace_step!(feature);
+        trace_step!(target);
         let prediction: f64 = base
             + learning_rate
                 * tree
                     .predict_tree_output_by_choosing_leaf_with_shared_threshold_tests(&[feature])
                     .unwrap();
-        lesson_trace::trace_step!(prediction);
+        trace_step!(prediction);
         before += (base - target).powi(2);
-        lesson_trace::trace_step!(before);
+        trace_step!(before);
         after += (prediction - target).powi(2);
-        lesson_trace::trace_step!(after);
+        trace_step!(after);
         println!("строка {index}: target={target}, код={feature:.3}, prediction={prediction:.3}");
     }
     println!("MSE до: {:.3}; после: {:.3}", before / 6.0, after / 6.0);
-    lesson_trace::disable();
+    disable();
     plot_average_squared_error_before_and_after_training(before / 6.0, after / 6.0);
 }
 

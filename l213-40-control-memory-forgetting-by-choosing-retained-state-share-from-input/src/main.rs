@@ -9,37 +9,39 @@
 // Вход управляет коэффициентом забывания; это учебная идея selective SSM, не реализация Mamba.
 
 /// Избирательное забывание: прибавляем вход к сохранённой доле состояния; по флагу сброса оставляем только текущий вход.
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(
     input: &[(f64, bool)],
 ) -> Vec<f64> {
     let mut state: f64 = 0.0;
-    lesson_trace::trace_step!(state);
+    trace_step!(state);
     input
         .iter()
         .map(|&(value, reset)| {
-            lesson_trace::trace_note!("Долю (fraction) предыдущего состояния, сохраняемую на следующем шаге, называют retention.");
-            lesson_trace::trace_note!("При reset полностью забываем прошлое (0); иначе сохраняем 90% прежнего состояния.");
+            trace_note!("Долю (fraction) предыдущего состояния, сохраняемую на следующем шаге, называют retention.");
+            trace_note!("При reset полностью забываем прошлое (0); иначе сохраняем 90% прежнего состояния.");
             let previous_state_share_kept: f64 = if reset { 0.0 } else { 0.9 };
-            lesson_trace::trace_step!(previous_state_share_kept);
+            trace_step!(previous_state_share_kept);
             state = previous_state_share_kept * state + value;
-            lesson_trace::trace_step!(state);
+            trace_step!(state);
             state
         })
         .collect()
 }
 fn main() {
-    lesson_trace::enable();
+    enable();
     let sequence: [(f64, bool); 4] = [(1.0, false), (0.0, false), (2.0, true), (0.0, false)];
-    lesson_trace::trace_step!(sequence);
+    trace_step!(sequence);
     let states: Vec<f64> =
         calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(&sequence);
-    lesson_trace::trace_step!(states);
+    trace_step!(states);
     assert_eq!(states[0], 1.0);
     assert_eq!(states[2], 2.0);
-    lesson_trace::trace_note!("reset удаляет прошлый контекст.");
+    trace_note!("reset удаляет прошлый контекст.");
 
     println!("селективное состояние: {states:?}");
-    lesson_trace::disable();
+    disable();
     plot_stored_state_with_reset_on_third_step(&states);
 }
 

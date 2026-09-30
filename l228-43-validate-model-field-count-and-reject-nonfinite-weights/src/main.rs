@@ -7,14 +7,16 @@
 // Перед использованием проверяем число полей, числовой формат и конечность значений.
 // Ошибочные строки показываем отдельно, не выдавая их за допустимую модель.
 
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    enable();
+    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
     for (description, saved_model_text, should_be_valid) in [
         ("допустимая модель", "2.0\n1.0\n", true),
         ("не хватает поля", "2.0\n", false),
@@ -22,36 +24,34 @@ fn main() {
         ("вес не является числом", "abc\n1.0\n", false),
         ("бесконечный вес", "inf\n1.0\n", false),
     ] {
-        lesson_trace::trace_step!(description);
-        lesson_trace::trace_step!(saved_model_text);
-        lesson_trace::trace_step!(should_be_valid);
-        lesson_trace::trace_note!("Собираем значения для `values` в коллекцию.");
+        trace_step!(description);
+        trace_step!(saved_model_text);
+        trace_step!(should_be_valid);
+        trace_note!("Собираем значения для `values` в коллекцию.");
         let values: Vec<&str> = saved_model_text.lines().collect();
-        lesson_trace::trace_step!(values);
-        lesson_trace::trace_note!("Определяем размер данных и сохраняем его в `result`.");
+        trace_step!(values);
+        trace_note!("Определяем размер данных и сохраняем его в `result`.");
         let result: Result<(f64, f64), &str> = if values.len() != 2 {
-            lesson_trace::trace_note!("Возвращаем описание ошибки.");
+            trace_note!("Возвращаем описание ошибки.");
             Err("нужно ровно два параметра")
         } else {
-            lesson_trace::trace_note!(
-                "Обрабатываем случай, когда предыдущее условие не выполнено."
-            );
-            lesson_trace::trace_note!("Разбираем результат по его возможным вариантам.");
-            lesson_trace::trace_note!("Выполняем действие для этого варианта данных.");
-            lesson_trace::trace_note!("Выполняем действие для этого варианта данных.");
+            trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
+            trace_note!("Разбираем результат по его возможным вариантам.");
+            trace_note!("Выполняем действие для этого варианта данных.");
+            trace_note!("Выполняем действие для этого варианта данных.");
             match (values[0].parse::<f64>(), values[1].parse::<f64>()) {
                 (Ok(weight), Ok(bias)) if weight.is_finite() && bias.is_finite() => {
-                    lesson_trace::trace_note!("Возвращаем успешный результат.");
+                    trace_note!("Возвращаем успешный результат.");
                     Ok((weight, bias))
                 }
 
                 _ => Err("параметры должны быть конечными числами"),
             }
         };
-        lesson_trace::trace_step!(result);
-        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+        trace_step!(result);
+        trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(result.is_ok(), should_be_valid);
-        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
+        trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("{description}: {result:?}");
     }
 }

@@ -7,24 +7,26 @@
 //   всю фразу.
 // В отличие от decoder, текущий токен читает контекст и слева, и справа.
 
+use lesson_trace::{enable, trace_step};
+
 fn main() {
-    lesson_trace::enable();
+    enable();
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    lesson_trace::trace_step!(states);
+    trace_step!(states);
     let output: Vec<[f64; 2]> =
         l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
             &states, &[true; 3],
         )
         .unwrap();
-    lesson_trace::trace_step!(output);
+    trace_step!(output);
     let changed: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [9.0, 9.0]];
-    lesson_trace::trace_step!(changed);
+    trace_step!(changed);
     let after: Vec<[f64; 2]> =
         l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
             &changed, &[true; 3],
         )
         .unwrap();
-    lesson_trace::trace_step!(after);
+    trace_step!(after);
     assert_ne!(output[0], after[0]);
     println!("первый токен учитывает будущий контекст: {:?}", output[0]);
 }

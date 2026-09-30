@@ -8,26 +8,26 @@
 //   исходную строку.
 // При кодировании важен порядок изученных слияний; декодирование собирает исходные байты.
 
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Словарь обучаем на одной части текста и применяем к новой строке.");
+    enable();
+    trace_note!("Словарь обучаем на одной части текста и применяем к новой строке.");
     let model: l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding = l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding::train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair(
         &["кот спит", "кот ест", "пёс спит"],
         24,
     );
-    lesson_trace::trace_step!(model);
+    trace_step!(model);
     let unseen: &str = "кот 🐈 спит";
-    lesson_trace::trace_step!(unseen);
-    lesson_trace::trace_note!(
-        "Единицу текста, которую модель обрабатывает как одно целое, называют token."
-    );
+    trace_step!(unseen);
+    trace_note!("Единицу текста, которую модель обрабатывает как одно целое, называют token.");
     let text_unit_identifiers: Vec<usize> = model
         .encode_text_as_token_identifiers_by_converting_bytes_and_applying_learned_merges(unseen);
-    lesson_trace::trace_step!(text_unit_identifiers);
+    trace_step!(text_unit_identifiers);
     let reconstructed: String = model
         .restore_text_by_joining_token_bytes_and_decoding_them(&text_unit_identifiers)
         .expect("каждый ID принадлежит словарю");
-    lesson_trace::trace_step!(reconstructed);
+    trace_step!(reconstructed);
     assert_eq!(reconstructed, unseen);
     assert!(
         model

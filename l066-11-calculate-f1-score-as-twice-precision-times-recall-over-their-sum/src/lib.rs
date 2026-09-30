@@ -2,13 +2,15 @@
 
 /// Гармоническое среднее precision и recall.
 /// F1 — гармоническое среднее precision и recall: 2·precision·recall / (precision + recall).
+use lesson_trace::trace_note;
+
 pub fn calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum(
     precision: Option<f64>,
     recall: Option<f64>,
 ) -> Option<f64> {
-    lesson_trace::trace_note!("Разбираем результат по его возможным вариантам.");
-    lesson_trace::trace_note!("Коэффициент 2 делает 2pr/(p+r) гармоническим средним двух метрик.");
-    lesson_trace::trace_note!("Выполняем действие для этого варианта данных.");
+    trace_note!("Разбираем результат по его возможным вариантам.");
+    trace_note!("Коэффициент 2 делает 2pr/(p+r) гармоническим средним двух метрик.");
+    trace_note!("Выполняем действие для этого варианта данных.");
     match (precision, recall) {
         (Some(p), Some(r)) if p + r > 0.0 => Some(2.0 * p * r / (p + r)),
 

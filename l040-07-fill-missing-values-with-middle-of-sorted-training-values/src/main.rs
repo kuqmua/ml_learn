@@ -9,37 +9,39 @@
 // Медиану вычисляем только по train, затем применяем к validation.
 
 /// Медиана для нечётного числа значений: сортируем и берём середину. При чётном числе эта реализация берёт верхний средний элемент.
+use lesson_trace::{enable, trace_step};
+
 fn choose_missing_value_replacement_by_sorting_training_values_and_taking_upper_middle(
     values: &[f64],
 ) -> f64 {
     let mut sorted: Vec<f64> = values.to_vec();
-    lesson_trace::trace_step!(sorted);
+    trace_step!(sorted);
     sorted.sort_by(f64::total_cmp);
     sorted[sorted.len() / 2]
 }
 fn main() {
-    lesson_trace::enable();
+    enable();
     let training_data: [Option<f64>; 4] = [Some(1.0), None, Some(3.0), Some(5.0)];
-    lesson_trace::trace_step!(training_data);
+    trace_step!(training_data);
     let validation: [Option<f64>; 2] = [None, Some(100.0)];
-    lesson_trace::trace_step!(validation);
+    trace_step!(validation);
     let observed: Vec<f64> = training_data.iter().flatten().copied().collect();
-    lesson_trace::trace_step!(observed);
+    trace_step!(observed);
     let replacement: f64 =
         choose_missing_value_replacement_by_sorting_training_values_and_taking_upper_middle(
             &observed,
         );
-    lesson_trace::trace_step!(replacement);
+    trace_step!(replacement);
     let training_filled: Vec<f64> = training_data
         .iter()
         .map(|input_value| input_value.unwrap_or(replacement))
         .collect();
-    lesson_trace::trace_step!(training_filled);
+    trace_step!(training_filled);
     let validation_filled: Vec<f64> = validation
         .iter()
         .map(|input_value| input_value.unwrap_or(replacement))
         .collect();
-    lesson_trace::trace_step!(validation_filled);
+    trace_step!(validation_filled);
     assert_eq!(replacement, 3.0);
     assert_eq!(validation_filled, [3.0, 100.0]);
     println!(

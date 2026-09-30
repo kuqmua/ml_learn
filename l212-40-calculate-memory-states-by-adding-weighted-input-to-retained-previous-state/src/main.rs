@@ -8,18 +8,20 @@
 //   прошлого.
 // Последовательность обрабатывается линейным сканированием с компактным состоянием.
 
+use lesson_trace::{disable, enable, trace_step};
+
 fn main() {
-    lesson_trace::enable();
+    enable();
     let input: [f64; 4] = [1.0, 0.0, 0.0, 0.0];
-    lesson_trace::trace_step!(input);
+    trace_step!(input);
     let states: Vec<f64> =
         l212_40_calculate_memory_states_by_adding_weighted_input_to_retained_previous_state::calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
             &input, 0.5, 1.0,
         );
-    lesson_trace::trace_step!(states);
+    trace_step!(states);
     assert_eq!(states, [1.0, 0.5, 0.25, 0.125]);
     println!("затухание состояния: {states:?}");
-    lesson_trace::disable();
+    disable();
     plot_stored_state_over_repeated_weighted_updates(&states);
 }
 

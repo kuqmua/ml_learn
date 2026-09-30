@@ -10,21 +10,19 @@
 // вместе с результатом.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Сохраняем рассчитанное значение `correct` для следующих операций.");
+    enable();
+    trace_note!("Сохраняем рассчитанное значение `correct` для следующих операций.");
     let correct: i32 = 2;
-    lesson_trace::trace_step!(correct);
-    lesson_trace::trace_note!("Сохраняем рассчитанное значение `total` для следующих операций.");
+    trace_step!(correct);
+    trace_note!("Сохраняем рассчитанное значение `total` для следующих операций.");
     let total: i32 = 2;
-    lesson_trace::trace_step!(total);
-    lesson_trace::trace_note!(
-        "Нормируем или усредняем величину делением и сохраняем её в `accuracy`."
-    );
+    trace_step!(total);
+    trace_note!("Нормируем или усредняем величину делением и сохраняем её в `accuracy`.");
     let accuracy: f64 = correct as f64 / total as f64;
-    lesson_trace::trace_step!(accuracy);
-    lesson_trace::trace_note!(
-        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-    );
+    trace_step!(accuracy);
+    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
     println!("accuracy={accuracy:.2} на {total} объектах: вывод ненадёжен");
 }

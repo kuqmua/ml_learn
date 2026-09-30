@@ -1,16 +1,18 @@
 // F1 из счётчиков: вычисление точности и полноты и их гармонического среднего.
 
+use lesson_trace::{enable, trace_step};
+
 fn main() {
-    lesson_trace::enable();
+    enable();
     let counts = l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts {
         true_positives: 3,
         false_positives: 1,
         true_negatives: 4,
         false_negatives: 2,
     };
-    lesson_trace::trace_step!(counts);
+    trace_step!(counts);
     let f1 = l067_11_calculate_f1_from_counts_by_combining_precision_and_recall::calculate_f1_score_from_counts_by_combining_precision_and_recall_as_twice_product_over_sum(counts).unwrap();
-    lesson_trace::trace_step!(f1);
+    trace_step!(f1);
     println!("Precision = 3/4, recall = 3/5, F1 = {f1}");
     assert!((f1 - 2.0 / 3.0).abs() < 1e-12);
     let no_positive_predictions = l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts {

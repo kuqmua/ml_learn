@@ -11,27 +11,25 @@
 // сохранить это различие.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Сохраняем рассчитанное значение `row` для следующих операций.");
+    enable();
+    trace_note!("Сохраняем рассчитанное значение `row` для следующих операций.");
     let row: &str = "3.5,red";
-    lesson_trace::trace_step!(row);
-    lesson_trace::trace_note!(
+    trace_step!(row);
+    trace_note!(
         "Сохраняем рассчитанное значение `(number_text, category)` для следующих операций."
     );
     let (number_text, category): (&str, &str) = row.split_once(',').expect("две колонки");
-    lesson_trace::trace_step!(number_text);
-    lesson_trace::trace_step!(category);
-    lesson_trace::trace_note!("Читаем или разбираем входные данные в значение `numeric_feature`.");
+    trace_step!(number_text);
+    trace_step!(category);
+    trace_note!("Читаем или разбираем входные данные в значение `numeric_feature`.");
     let numeric_feature: f64 = number_text.parse().expect("число");
-    lesson_trace::trace_step!(numeric_feature);
-    lesson_trace::trace_note!(
-        "Сохраняем рассчитанное значение `categorical_feature` для следующих операций."
-    );
+    trace_step!(numeric_feature);
+    trace_note!("Сохраняем рассчитанное значение `categorical_feature` для следующих операций.");
     let categorical_feature: &str = category;
-    lesson_trace::trace_step!(categorical_feature);
-    lesson_trace::trace_note!(
-        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-    );
+    trace_step!(categorical_feature);
+    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
     println!("число={numeric_feature}, категория={categorical_feature}");
 }

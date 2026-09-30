@@ -10,102 +10,94 @@
 // Зачем это нужно: Общая accuracy скрывает различия качества между группами; считаем ошибку отдельно.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Создаём набор значений `groups` для следующего шага примера.");
-    lesson_trace::trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
-    lesson_trace::trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
-    lesson_trace::trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
-    lesson_trace::trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
+    enable();
+    trace_note!("Создаём набор значений `groups` для следующего шага примера.");
+    trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
+    trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
+    trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
+    trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
     let groups: [(&str, bool, bool); 4] = [
         ("A", true, true),
         ("A", false, false),
         ("B", true, false),
         ("B", false, false),
     ];
-    lesson_trace::trace_step!(groups);
-    lesson_trace::trace_note!(
-        "Повторяем следующий блок для каждого элемента указанной последовательности."
-    );
+    trace_step!(groups);
+    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for group_name in ["A", "B"] {
-        lesson_trace::trace_step!(group_name);
-        lesson_trace::trace_note!(
-            "Сохраняем рассчитанное значение `matching` для следующих операций."
-        );
-        lesson_trace::trace_note!("Перебираем элементы по ссылке, не копируя исходную коллекцию.");
-        lesson_trace::trace_note!("Оставляем только элементы, прошедшие указанную проверку.");
-        lesson_trace::trace_note!("Собираем элементы итератора в итоговую коллекцию.");
+        trace_step!(group_name);
+        trace_note!("Сохраняем рассчитанное значение `matching` для следующих операций.");
+        trace_note!("Перебираем элементы по ссылке, не копируя исходную коллекцию.");
+        trace_note!("Оставляем только элементы, прошедшие указанную проверку.");
+        trace_note!("Собираем элементы итератора в итоговую коллекцию.");
         let matching: Vec<&(&str, bool, bool)> = groups
             .iter()
             .filter(|&&(name, _, _)| name == group_name)
             .collect();
-        lesson_trace::trace_step!(matching);
-        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
-        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
-        lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+        trace_step!(matching);
+        trace_note!("Проверяем ожидаемое свойство учебного примера.");
+        trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        trace_note!("Передаём подпись или текстовое значение для следующего шага.");
         assert!(
             !matching.is_empty(),
             "для оценки группы нужен хотя бы один пример"
         );
-        lesson_trace::trace_note!(
-            "Сохраняем рассчитанное значение `correct` для следующих операций."
-        );
-        lesson_trace::trace_note!("Перебираем элементы по ссылке, не копируя исходную коллекцию.");
-        lesson_trace::trace_note!("Оставляем только элементы, прошедшие указанную проверку.");
-        lesson_trace::trace_note!("Подсчитываем число элементов после отбора.");
+        trace_note!("Сохраняем рассчитанное значение `correct` для следующих операций.");
+        trace_note!("Перебираем элементы по ссылке, не копируя исходную коллекцию.");
+        trace_note!("Оставляем только элементы, прошедшие указанную проверку.");
+        trace_note!("Подсчитываем число элементов после отбора.");
         let correct: usize = matching
             .iter()
             .filter(|sample| sample.1 == sample.2)
             .count();
-        lesson_trace::trace_step!(correct);
-        lesson_trace::trace_note!(
-            "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-        );
-        lesson_trace::trace_note!(
-            "Присваиваем вычисленное значение соответствующей переменной или полю."
-        );
-        lesson_trace::trace_note!("Делим значения, получая нормированную величину или среднее.");
+        trace_step!(correct);
+        trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
+        trace_note!("Присваиваем вычисленное значение соответствующей переменной или полю.");
+        trace_note!("Делим значения, получая нормированную величину или среднее.");
         println!(
             "группа {group_name}: accuracy={:.2}",
             correct as f64 / matching.len() as f64
         );
     }
 
-    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
-    lesson_trace::disable();
+    trace_note!("Построение графика вынесено из основного кода урока.");
+    disable();
     plot_correct_prediction_share_in_each_subgroup(groups);
 }
 
 // Строим график по результатам урока.
 fn plot_correct_prediction_share_in_each_subgroup(groups: [(&str, bool, bool); 4]) {
-    lesson_trace::trace_note!("Сохраняем результат этого шага в `group_accuracy`.");
+    trace_note!("Сохраняем результат этого шага в `group_accuracy`.");
     let group_accuracy: &dyn Fn(&str) -> f64 = &|name: &str| {
-        lesson_trace::trace_note!("Собираем значения для `examples` в коллекцию.");
-        lesson_trace::trace_note!("Просматриваем элементы коллекции по ссылке.");
-        lesson_trace::trace_note!("Оставляем элементы, отвечающие условию.");
-        lesson_trace::trace_note!("Собираем результаты в коллекцию.");
+        trace_note!("Собираем значения для `examples` в коллекцию.");
+        trace_note!("Просматриваем элементы коллекции по ссылке.");
+        trace_note!("Оставляем элементы, отвечающие условию.");
+        trace_note!("Собираем результаты в коллекцию.");
         let examples: Vec<&(&str, bool, bool)> = groups
             .iter()
             .filter(|(group, _, _)| *group == name)
             .collect();
-        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
-        lesson_trace::trace_note!("Просматриваем элементы коллекции по ссылке.");
-        lesson_trace::trace_note!("Оставляем элементы, отвечающие условию.");
-        lesson_trace::trace_note!("Подсчитываем число подходящих элементов.");
-        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        trace_note!("Просматриваем элементы коллекции по ссылке.");
+        trace_note!("Оставляем элементы, отвечающие условию.");
+        trace_note!("Подсчитываем число подходящих элементов.");
+        trace_note!("Используем подготовленное значение в следующем шаге примера.");
         examples
             .iter()
             .filter(|(_, truth, predicted)| truth == predicted)
             .count() as f64
             / examples.len() as f64
     };
-    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
-    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
-    lesson_trace::trace_note!("Указываем имя SVG-файла.");
-    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
-    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
-    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
-    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
+    trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    trace_note!("Передаём путь к каталогу текущего урока.");
+    trace_note!("Указываем имя SVG-файла.");
+    trace_note!("Указываем заголовок диаграммы.");
+    trace_note!("Указываем подпись вертикальной оси.");
+    trace_note!("Передаём ряды или значения для отрисовки графика.");
+    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -114,6 +106,6 @@ fn plot_correct_prediction_share_in_each_subgroup(groups: [(&str, bool, bool); 4
         &[("A", group_accuracy("A")), ("B", group_accuracy("B"))],
     )
     .expect("не удалось сохранить график");
-    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
+    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

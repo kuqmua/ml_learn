@@ -11,28 +11,26 @@
 // незаметную перестановку признаков.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!(
+    enable();
+    trace_note!(
         "Сохраняем рассчитанное значение `comma_separated_values_text` для следующих операций."
     );
     let comma_separated_values_text: &str = "feature,target\n1.5,0\n2.5,1\n";
-    lesson_trace::trace_step!(comma_separated_values_text);
-    lesson_trace::trace_note!("Создаём изменяемое значение `lines` для следующих операций.");
+    trace_step!(comma_separated_values_text);
+    trace_note!("Создаём изменяемое значение `lines` для следующих операций.");
     let mut lines: std::str::Lines<'_> = comma_separated_values_text.lines();
-    lesson_trace::trace_step!(lines);
-    lesson_trace::trace_note!("Сохраняем рассчитанное значение `header` для следующих операций.");
+    trace_step!(lines);
+    trace_note!("Сохраняем рассчитанное значение `header` для следующих операций.");
     let header: &str = lines.next().expect("CSV не пустой");
-    lesson_trace::trace_step!(header);
-    lesson_trace::trace_note!(
-        "Проверяем, что сравниваемые размерности или значения действительно совпадают."
-    );
+    trace_step!(header);
+    trace_note!("Проверяем, что сравниваемые размерности или значения действительно совпадают.");
     assert_eq!(header, "feature,target", "неверная схема CSV");
-    lesson_trace::trace_note!("Считаем количество элементов и сохраняем его в `row_count`.");
+    trace_note!("Считаем количество элементов и сохраняем его в `row_count`.");
     let row_count: usize = lines.count();
-    lesson_trace::trace_step!(row_count);
-    lesson_trace::trace_note!(
-        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-    );
+    trace_step!(row_count);
+    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
     println!("схема верна, строк данных = {row_count}");
 }

@@ -7,51 +7,53 @@
 //   префикса.
 // Сохраняем K/V прошлых токенов и сверяем последний выход с полным причинным пересчётом.
 
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
+    enable();
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    lesson_trace::trace_step!(states);
+    trace_step!(states);
     let full: Vec<[f64; 2]> =
         l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(&states, &states, &states)
             .unwrap();
-    lesson_trace::trace_step!(full);
+    trace_step!(full);
     let mut cached_keys: Vec<[f64; 2]> = Vec::new();
-    lesson_trace::trace_step!(cached_keys);
+    trace_step!(cached_keys);
     let mut cached_values: Vec<[f64; 2]> = Vec::new();
-    lesson_trace::trace_step!(cached_values);
+    trace_step!(cached_values);
     let mut cached_outputs: Vec<[f64; 2]> = Vec::new();
-    lesson_trace::trace_step!(cached_outputs);
+    trace_step!(cached_outputs);
     for &new_state in &states {
-        lesson_trace::trace_step!(new_state);
+        trace_step!(new_state);
         cached_keys.push(new_state);
         cached_values.push(new_state);
-        lesson_trace::trace_note!("Оценку модели до преобразования в вероятность называют logit.");
+        trace_note!("Оценку модели до преобразования в вероятность называют logit.");
         let raw_model_scores: Vec<f64> = cached_keys
             .iter()
             .map(|key| (new_state[0] * key[0] + new_state[1] * key[1]) / 2.0_f64.sqrt())
             .collect();
-        lesson_trace::trace_step!(raw_model_scores);
+        trace_step!(raw_model_scores);
         let weights: Vec<f64> =
             l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
                 &raw_model_scores,
             );
-        lesson_trace::trace_step!(weights);
+        trace_step!(weights);
         let output: [f64; 2] = weights.iter().zip(&cached_values).fold(
             [0.0; 2],
             |mut output_state, (&weight_value, cached_value)| {
                 output_state[0] += weight_value * cached_value[0];
-                lesson_trace::trace_step!(output_state);
+                trace_step!(output_state);
                 output_state[1] += weight_value * cached_value[1];
-                lesson_trace::trace_step!(output_state);
+                trace_step!(output_state);
                 output_state
             },
         );
-        lesson_trace::trace_step!(output);
+        trace_step!(output);
         cached_outputs.push(output);
     }
     for (cached, recomputed) in cached_outputs.iter().zip(full) {
-        lesson_trace::trace_step!(cached);
-        lesson_trace::trace_step!(recomputed);
+        trace_step!(cached);
+        trace_step!(recomputed);
         assert!((cached[0] - recomputed[0]).abs() < 1e-12);
         assert!((cached[1] - recomputed[1]).abs() < 1e-12);
     }

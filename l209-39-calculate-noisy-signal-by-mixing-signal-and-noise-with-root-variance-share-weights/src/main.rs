@@ -7,24 +7,26 @@
 //   число.
 // При уменьшении доли исходного сигнала смесь становится ближе к шуму.
 
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
+    enable();
     let clean: f64 = 2.0;
-    lesson_trace::trace_step!(clean);
+    trace_step!(clean);
     let noise: f64 = -1.0;
-    lesson_trace::trace_step!(noise);
-    lesson_trace::trace_note!(
+    trace_step!(noise);
+    trace_note!(
         "Долю (fraction) дисперсии исходного сигнала обозначают alpha_bar; её сохранение называют retention."
     );
     for original_signal_variance_share in [1.0, 0.75, 0.25, 0.0] {
-        lesson_trace::trace_step!(original_signal_variance_share);
+        trace_step!(original_signal_variance_share);
         let noisy: f64 = l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
             clean,
             noise,
             original_signal_variance_share,
         )
         .unwrap();
-        lesson_trace::trace_step!(noisy);
+        trace_step!(noisy);
         println!("alpha_bar={original_signal_variance_share:.2}; x_t={noisy:.3}");
     }
     assert_eq!(
@@ -41,7 +43,7 @@ fn main() {
         .unwrap(),
         noise
     );
-    lesson_trace::disable();
+    disable();
     plot_signal_and_noise_mixture_for_changing_signal_share(clean, noise);
 }
 

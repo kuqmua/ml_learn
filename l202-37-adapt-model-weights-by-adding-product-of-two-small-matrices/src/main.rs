@@ -8,28 +8,30 @@
 //   выходу.
 // Замороженную матрицу дополняют произведением маленьких обучаемых матриц.
 
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
+    enable();
     let frozen: [[f64; 4]; 4] = [
         [1.0, 0.0, 0.0, 0.0],
         [0.0, 1.0, 0.0, 0.0],
         [0.0, 0.0, 1.0, 0.0],
         [0.0, 0.0, 0.0, 1.0],
     ];
-    lesson_trace::trace_step!(frozen);
-    lesson_trace::trace_note!("Rank 1: A имеет форму 4x1, B — 1x4.");
+    trace_step!(frozen);
+    trace_note!("Rank 1: A имеет форму 4x1, B — 1x4.");
     let adapter_output_weights: [f64; 4] = [0.1, 0.2, 0.3, 0.4];
-    lesson_trace::trace_step!(adapter_output_weights);
+    trace_step!(adapter_output_weights);
     let adapter_input_weights: [f64; 4] = [1.0, 0.0, -1.0, 0.0];
-    lesson_trace::trace_step!(adapter_input_weights);
+    trace_step!(adapter_input_weights);
     let input: [f64; 4] = [1.0, 2.0, 3.0, 4.0];
-    lesson_trace::trace_step!(input);
+    trace_step!(input);
     let projected_input: f64 = adapter_input_weights
         .iter()
         .zip(input)
         .map(|(adapter_component, input_component)| adapter_component * input_component)
         .sum();
-    lesson_trace::trace_step!(projected_input);
+    trace_step!(projected_input);
     let output: [f64; 4] = std::array::from_fn(|row| {
         frozen[row]
             .iter()
@@ -38,7 +40,7 @@ fn main() {
             .sum::<f64>()
             + adapter_output_weights[row] * projected_input
     });
-    lesson_trace::trace_step!(output);
+    trace_step!(output);
     assert_eq!(output[0], 0.8);
     println!("выход с LoRA: {output:?}; trainable=8 вместо 16 параметров");
 }

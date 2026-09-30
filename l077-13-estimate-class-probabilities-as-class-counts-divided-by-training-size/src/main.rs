@@ -12,50 +12,46 @@
 // наборе.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Создаём набор значений `labels` для следующего шага примера.");
+    enable();
+    trace_note!("Создаём набор значений `labels` для следующего шага примера.");
     let labels: [&str; 4] = ["code", "code", "code", "ml"];
-    lesson_trace::trace_step!(labels);
-    lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
-    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+    trace_step!(labels);
+    trace_note!("Проверяем ожидаемое свойство учебного примера.");
+    trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
     assert!(
         !labels.is_empty(),
         "для частоты класса нужна хотя бы одна метка"
     );
-    lesson_trace::trace_note!(
-        "Преобразуем входные данные и сохраняем полученную коллекцию в `code_count`."
-    );
+    trace_note!("Преобразуем входные данные и сохраняем полученную коллекцию в `code_count`.");
     let code_count: usize = labels.iter().filter(|&&label| label == "code").count();
-    lesson_trace::trace_step!(code_count);
-    lesson_trace::trace_note!("Считаем количество элементов и сохраняем его в `code_prior`.");
+    trace_step!(code_count);
+    trace_note!("Считаем количество элементов и сохраняем его в `code_prior`.");
     let code_prior: f64 = code_count as f64 / labels.len() as f64;
-    lesson_trace::trace_step!(code_prior);
-    lesson_trace::trace_note!(
-        "Комбинируем исходные величины и сохраняем результат в `machine_learning_prior`."
-    );
+    trace_step!(code_prior);
+    trace_note!("Комбинируем исходные величины и сохраняем результат в `machine_learning_prior`.");
     let machine_learning_prior: f64 = 1.0 - code_prior;
-    lesson_trace::trace_step!(machine_learning_prior);
-    lesson_trace::trace_note!(
-        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-    );
+    trace_step!(machine_learning_prior);
+    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
     println!("P(code)={code_prior}, P(ml)={machine_learning_prior}");
 
-    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
-    lesson_trace::disable();
+    trace_note!("Построение графика вынесено из основного кода урока.");
+    disable();
     plot_training_class_shares(code_prior, machine_learning_prior);
 }
 
 // Строим график по результатам урока.
 fn plot_training_class_shares(code_prior: f64, machine_learning_prior: f64) {
-    lesson_trace::trace_note!("Сравнение величин из этого урока.");
-    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
-    lesson_trace::trace_note!("Указываем имя SVG-файла.");
-    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
-    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
-    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
-    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
+    trace_note!("Сравнение величин из этого урока.");
+    trace_note!("Передаём путь к каталогу текущего урока.");
+    trace_note!("Указываем имя SVG-файла.");
+    trace_note!("Указываем заголовок диаграммы.");
+    trace_note!("Указываем подпись вертикальной оси.");
+    trace_note!("Передаём ряды или значения для отрисовки графика.");
+    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -64,6 +60,6 @@ fn plot_training_class_shares(code_prior: f64, machine_learning_prior: f64) {
         &[("code", code_prior), ("ml", machine_learning_prior)],
     )
     .expect("не удалось сохранить график");
-    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
+    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

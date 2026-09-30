@@ -10,33 +10,25 @@
 // уменьшая зависимость от одной выборки.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!(
-        "Создаём набор значений `model_predictions` для следующего шага примера."
-    );
+    enable();
+    trace_note!("Создаём набор значений `model_predictions` для следующего шага примера.");
     let model_predictions: [bool; 5] = [true, false, true, true, false];
-    lesson_trace::trace_step!(model_predictions);
-    lesson_trace::trace_note!(
-        "Преобразуем входные данные и сохраняем полученную коллекцию в `positive_votes`."
-    );
+    trace_step!(model_predictions);
+    trace_note!("Преобразуем входные данные и сохраняем полученную коллекцию в `positive_votes`.");
     let positive_votes: usize = model_predictions.iter().filter(|&&vote| vote).count();
-    lesson_trace::trace_step!(positive_votes);
-    lesson_trace::trace_note!(
-        "Считаем количество элементов и сохраняем его в `majority_vote_from_models`."
-    );
-    lesson_trace::trace_note!(
-        "Объединение моделей, обученных на разных выборках, называют bagging."
-    );
+    trace_step!(positive_votes);
+    trace_note!("Считаем количество элементов и сохраняем его в `majority_vote_from_models`.");
+    trace_note!("Объединение моделей, обученных на разных выборках, называют bagging.");
     let majority_vote_from_models: bool = positive_votes * 2 > model_predictions.len();
-    lesson_trace::trace_step!(majority_vote_from_models);
-    lesson_trace::trace_note!(
-        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-    );
+    trace_step!(majority_vote_from_models);
+    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
     println!("голосов за класс 1: {positive_votes}; ансамбль={majority_vote_from_models}");
 
-    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
-    lesson_trace::disable();
+    trace_note!("Построение графика вынесено из основного кода урока.");
+    disable();
     plot_votes_of_models_trained_on_resampled_data(model_predictions, positive_votes);
 }
 
@@ -45,15 +37,15 @@ fn plot_votes_of_models_trained_on_resampled_data(
     model_predictions: [bool; 5],
     positive_votes: usize,
 ) {
-    lesson_trace::trace_note!("Сравниваем величины, вычисленные в примере.");
-    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
-    lesson_trace::trace_note!("Указываем имя SVG-файла.");
-    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
-    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
-    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
+    trace_note!("Сравниваем величины, вычисленные в примере.");
+    trace_note!("Передаём путь к каталогу текущего урока.");
+    trace_note!("Указываем имя SVG-файла.");
+    trace_note!("Указываем заголовок диаграммы.");
+    trace_note!("Указываем подпись вертикальной оси.");
+    trace_note!("Передаём ряды или значения для отрисовки графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -65,6 +57,6 @@ fn plot_votes_of_models_trained_on_resampled_data(
         ],
     )
     .expect("не удалось сохранить график");
-    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
+    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

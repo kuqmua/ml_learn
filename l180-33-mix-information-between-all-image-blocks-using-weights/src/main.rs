@@ -11,6 +11,8 @@
 // Нормируем оценки всех патчей в вероятностные веса.
 // Оценку модели до преобразования в вероятность называют logit.
 /// Softmax: вычитаем максимальную оценку, вычисляем экспоненты и делим каждую на их сумму.
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
     raw_model_scores: &[f64],
 ) -> Vec<f64> {
@@ -18,53 +20,51 @@ fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_
         .iter()
         .copied()
         .fold(f64::NEG_INFINITY, f64::max);
-    lesson_trace::trace_step!(maximum);
+    trace_step!(maximum);
     let exponential_values: Vec<f64> = raw_model_scores
         .iter()
         .map(|&patch_value| (patch_value - maximum).exp())
         .collect();
-    lesson_trace::trace_step!(exponential_values);
+    trace_step!(exponential_values);
     let sum: f64 = exponential_values.iter().sum();
-    lesson_trace::trace_step!(sum);
+    trace_step!(sum);
     exponential_values
         .into_iter()
         .map(|patch_value| patch_value / sum)
         .collect()
 }
 fn main() {
-    lesson_trace::enable();
+    enable();
     let image: Vec<Vec<f64>> = vec![vec![1.0, 0.0], vec![0.0, 1.0]];
-    lesson_trace::trace_step!(image);
+    trace_step!(image);
     let patches: Vec<Vec<f64>> =
         l179_33_create_image_block_sequence_by_splitting_image_into_nonoverlapping_squares::extract_nonoverlapping_square_patches_from_square_image(&image, 1).unwrap();
-    lesson_trace::trace_step!(patches);
-    lesson_trace::trace_note!("Упрощённая проекция одномерного патча в двухмерный токен.");
-    lesson_trace::trace_note!(
-        "Представление патча изображения для трансформера называют visual token."
-    );
+    trace_step!(patches);
+    trace_note!("Упрощённая проекция одномерного патча в двухмерный токен.");
+    trace_note!("Представление патча изображения для трансформера называют visual token.");
     let image_patch_representations: Vec<[f64; 2]> = patches
         .iter()
         .map(|patch| [patch[0], 1.0 - patch[0]])
         .collect();
-    lesson_trace::trace_step!(image_patch_representations);
+    trace_step!(image_patch_representations);
     let first: [f64; 2] = image_patch_representations[0];
-    lesson_trace::trace_step!(first);
+    trace_step!(first);
     let raw_model_scores: Vec<f64> = image_patch_representations
         .iter()
         .map(|key| first[0] * key[0] + first[1] * key[1])
         .collect();
-    lesson_trace::trace_step!(raw_model_scores);
+    trace_step!(raw_model_scores);
     let weights: Vec<f64> =
         calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
             &raw_model_scores,
         );
-    lesson_trace::trace_step!(weights);
+    trace_step!(weights);
     assert_eq!(weights.len(), 4);
     assert!(weights[3] > 0.0);
-    lesson_trace::trace_note!("Последний патч виден первому.");
+    trace_note!("Последний патч виден первому.");
 
     println!("веса внимания первого патча ко всем патчам: {weights:?}");
-    lesson_trace::disable();
+    disable();
     plot_weights_assigned_from_first_image_block_to_all_blocks(&weights);
 }
 

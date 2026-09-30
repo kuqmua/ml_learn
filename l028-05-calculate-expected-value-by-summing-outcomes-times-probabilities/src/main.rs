@@ -11,60 +11,56 @@
 // Зачем это нужно: Ожидание — средний выигрыш по всем исходам, взвешенный их вероятностями.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Создаём набор значений `outcomes` для следующего шага примера.");
+    enable();
+    trace_note!("Создаём набор значений `outcomes` для следующего шага примера.");
     let outcomes: [f64; 6] = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0];
-    lesson_trace::trace_step!(outcomes);
-    lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
-    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+    trace_step!(outcomes);
+    trace_note!("Проверяем ожидаемое свойство учебного примера.");
+    trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
     assert!(
         !outcomes.is_empty(),
         "для среднего нужен хотя бы один исход"
     );
-    lesson_trace::trace_note!("Считаем количество элементов и сохраняем его в `probability`.");
+    trace_note!("Считаем количество элементов и сохраняем его в `probability`.");
     let probability: f64 = 1.0 / outcomes.len() as f64;
-    lesson_trace::trace_step!(probability);
-    lesson_trace::trace_note!(
-        "Инициализируем изменяемый накопитель `expectation` начальным состоянием."
-    );
+    trace_step!(probability);
+    trace_note!("Инициализируем изменяемый накопитель `expectation` начальным состоянием.");
     let mut expectation: f64 = 0.0;
-    lesson_trace::trace_step!(expectation);
-    lesson_trace::trace_note!(
-        "Повторяем следующий блок для каждого элемента указанной последовательности."
-    );
+    trace_step!(expectation);
+    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for outcome in outcomes {
-        lesson_trace::trace_step!(outcome);
-        lesson_trace::trace_note!("Прибавляем очередной вклад к ранее накопленному результату.");
+        trace_step!(outcome);
+        trace_note!("Прибавляем очередной вклад к ранее накопленному результату.");
         expectation += outcome * probability;
-        lesson_trace::trace_step!(expectation);
+        trace_step!(expectation);
     }
-    lesson_trace::trace_note!(
-        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-    );
+    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
     println!("ожидание броска кубика = {expectation}");
 
-    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
-    lesson_trace::disable();
+    trace_note!("Построение графика вынесено из основного кода урока.");
+    disable();
     plot_probabilities_of_die_outcomes();
 }
 
 // Строим график по результатам урока.
 fn plot_probabilities_of_die_outcomes() {
-    lesson_trace::trace_note!("Сравнение величин из этого урока.");
-    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
-    lesson_trace::trace_note!("Указываем имя SVG-файла.");
-    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
-    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
-    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
+    trace_note!("Сравнение величин из этого урока.");
+    trace_note!("Передаём путь к каталогу текущего урока.");
+    trace_note!("Указываем имя SVG-файла.");
+    trace_note!("Указываем заголовок диаграммы.");
+    trace_note!("Указываем подпись вертикальной оси.");
+    trace_note!("Передаём ряды или значения для отрисовки графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -80,6 +76,6 @@ fn plot_probabilities_of_die_outcomes() {
         ],
     )
     .expect("не удалось сохранить график");
-    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
+    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

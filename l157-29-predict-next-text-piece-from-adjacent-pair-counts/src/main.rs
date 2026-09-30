@@ -10,53 +10,49 @@
 // Зачем это нужно: По частотам переходов выбираем наиболее вероятное продолжение текущего слова.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Создаём набор значений `transitions` для следующего шага примера.");
+    enable();
+    trace_note!("Создаём набор значений `transitions` для следующего шага примера.");
     let transitions: [(&str, &str, i32); 3] =
         [("я", "учу", 3), ("я", "пишу", 1), ("учу", "rust", 2)];
-    lesson_trace::trace_step!(transitions);
-    lesson_trace::trace_note!("Сохраняем рассчитанное значение `current` для следующих операций.");
+    trace_step!(transitions);
+    trace_note!("Сохраняем рассчитанное значение `current` для следующих операций.");
     let current: &str = "я";
-    lesson_trace::trace_step!(current);
-    lesson_trace::trace_note!("Создаём изменяемое значение `best` для следующих операций.");
+    trace_step!(current);
+    trace_note!("Создаём изменяемое значение `best` для следующих операций.");
     let mut best: (&str, i32) = ("", 0);
-    lesson_trace::trace_step!(best);
-    lesson_trace::trace_note!(
-        "Повторяем следующий блок для каждого элемента указанной последовательности."
-    );
+    trace_step!(best);
+    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for (previous, next, count) in transitions {
-        lesson_trace::trace_step!(previous);
-        lesson_trace::trace_step!(next);
-        lesson_trace::trace_step!(count);
-        lesson_trace::trace_note!("Проверяем условие и выбираем соответствующую ветку алгоритма.");
+        trace_step!(previous);
+        trace_step!(next);
+        trace_step!(count);
+        trace_note!("Проверяем условие и выбираем соответствующую ветку алгоритма.");
         if previous == current && count > best.1 {
-            lesson_trace::trace_note!(
-                "Присваиваем вычисленное значение соответствующей переменной или полю."
-            );
+            trace_note!("Присваиваем вычисленное значение соответствующей переменной или полю.");
             best = (next, count);
-            lesson_trace::trace_step!(best);
+            trace_step!(best);
         }
     }
-    lesson_trace::trace_note!(
-        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-    );
+    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
     println!("после {current:?} вероятнее {next:?}", next = best.0);
 
-    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
-    lesson_trace::disable();
+    trace_note!("Построение графика вынесено из основного кода урока.");
+    disable();
     plot_counts_of_next_text_units_after_current_one();
 }
 
 // Строим график по результатам урока.
 fn plot_counts_of_next_text_units_after_current_one() {
-    lesson_trace::trace_note!("Сравниваем величины, вычисленные в примере.");
-    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
-    lesson_trace::trace_note!("Указываем имя SVG-файла.");
-    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
-    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
-    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
-    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
+    trace_note!("Сравниваем величины, вычисленные в примере.");
+    trace_note!("Передаём путь к каталогу текущего урока.");
+    trace_note!("Указываем имя SVG-файла.");
+    trace_note!("Указываем заголовок диаграммы.");
+    trace_note!("Указываем подпись вертикальной оси.");
+    trace_note!("Передаём ряды или значения для отрисовки графика.");
+    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -65,6 +61,6 @@ fn plot_counts_of_next_text_units_after_current_one() {
         &[("учу", 3.0), ("пишу", 1.0)],
     )
     .expect("не удалось сохранить график");
-    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
+    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

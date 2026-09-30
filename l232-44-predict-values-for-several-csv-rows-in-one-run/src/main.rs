@@ -11,25 +11,23 @@
 // строки.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Создаём набор значений `features` для следующего шага примера.");
+    enable();
+    trace_note!("Создаём набор значений `features` для следующего шага примера.");
     let features: [f64; 3] = [1.0, 2.0, 3.0];
-    lesson_trace::trace_step!(features);
-    lesson_trace::trace_note!("Сохраняем рассчитанное значение `weight` для следующих операций.");
+    trace_step!(features);
+    trace_note!("Сохраняем рассчитанное значение `weight` для следующих операций.");
     let weight: f64 = 2.0;
-    lesson_trace::trace_step!(weight);
-    lesson_trace::trace_note!("Сохраняем рассчитанное значение `bias` для следующих операций.");
+    trace_step!(weight);
+    trace_note!("Сохраняем рассчитанное значение `bias` для следующих операций.");
     let bias: f64 = 1.0;
-    lesson_trace::trace_step!(bias);
-    lesson_trace::trace_note!(
-        "Повторяем следующий блок для каждого элемента указанной последовательности."
-    );
+    trace_step!(bias);
+    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for feature in features {
-        lesson_trace::trace_step!(feature);
-        lesson_trace::trace_note!(
-            "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-        );
+        trace_step!(feature);
+        trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
         println!("прогноз для {feature} = {}", weight * feature + bias);
     }
 }

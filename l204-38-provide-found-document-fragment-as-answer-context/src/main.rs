@@ -11,30 +11,26 @@
 // Зачем это нужно: В RAG найденный фрагмент передаёт факты, на которые должен опираться ответ.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Сохраняем рассчитанное значение `context` для следующих операций.");
+    enable();
+    trace_note!("Сохраняем рассчитанное значение `context` для следующих операций.");
     let context: &str = "Rust использует Cargo для сборки проектов.";
-    lesson_trace::trace_step!(context);
-    lesson_trace::trace_note!("Сохраняем рассчитанное значение `question` для следующих операций.");
+    trace_step!(context);
+    trace_note!("Сохраняем рассчитанное значение `question` для следующих операций.");
     let question: &str = "Чем собирают проект Rust?";
-    lesson_trace::trace_step!(question);
-    lesson_trace::trace_note!("Сохраняем рассчитанное значение `answer` для следующих операций.");
+    trace_step!(question);
+    trace_note!("Сохраняем рассчитанное значение `answer` для следующих операций.");
     let answer: &str = if context.contains("Cargo") {
-        lesson_trace::trace_note!(
-            "Подставляем результаты в этот шаблон вывода или текстового значения."
-        );
+        trace_note!("Подставляем результаты в этот шаблон вывода или текстового значения.");
         "Cargo"
     } else {
-        lesson_trace::trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
-        lesson_trace::trace_note!(
-            "Подставляем результаты в этот шаблон вывода или текстового значения."
-        );
+        trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
+        trace_note!("Подставляем результаты в этот шаблон вывода или текстового значения.");
         "не знаю"
     };
-    lesson_trace::trace_step!(answer);
-    lesson_trace::trace_note!(
-        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-    );
+    trace_step!(answer);
+    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
     println!("вопрос: {question}; контекст: {context}; ответ: {answer}");
 }

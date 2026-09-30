@@ -7,6 +7,8 @@
 // Update gate выбирает между предыдущим состоянием и новым кандидатом.
 
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
+use lesson_trace::{enable, trace_step};
+
 fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
     input_value: f64,
 ) -> f64 {
@@ -21,29 +23,29 @@ fn calculate_gru_state_by_mixing_previous_state_with_candidate_using_update_frac
 ) -> f64 {
     let reset: f64 =
         calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(input);
-    lesson_trace::trace_step!(reset);
+    trace_step!(reset);
     let candidate: f64 = (input + reset * previous).tanh();
-    lesson_trace::trace_step!(candidate);
+    trace_step!(candidate);
     let update: f64 = calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
         update_gate_raw_score,
     );
-    lesson_trace::trace_step!(update);
+    trace_step!(update);
     (1.0 - update) * previous + update * candidate
 }
 fn main() {
-    lesson_trace::enable();
+    enable();
     let previous: f64 = 0.8;
-    lesson_trace::trace_step!(previous);
+    trace_step!(previous);
     let keep: f64 =
         calculate_gru_state_by_mixing_previous_state_with_candidate_using_update_fraction(
             -0.2, previous, -5.0,
         );
-    lesson_trace::trace_step!(keep);
+    trace_step!(keep);
     let replace: f64 =
         calculate_gru_state_by_mixing_previous_state_with_candidate_using_update_fraction(
             -0.2, previous, 5.0,
         );
-    lesson_trace::trace_step!(replace);
+    trace_step!(replace);
     assert!((keep - previous).abs() < (replace - previous).abs());
     println!("keep={keep:.3}; replace={replace:.3}");
 }

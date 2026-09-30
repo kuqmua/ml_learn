@@ -12,29 +12,29 @@
 // воспроизводимой.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Сохраняем рассчитанное значение `seed` для следующих операций.");
+    enable();
+    trace_note!("Сохраняем рассчитанное значение `seed` для следующих операций.");
     let seed: u64 = 42_u64;
-    lesson_trace::trace_step!(seed);
-    lesson_trace::trace_note!("Создаём изменяемое значение `state` для следующих операций.");
+    trace_step!(seed);
+    trace_note!("Создаём изменяемое значение `state` для следующих операций.");
     let mut state: u64 = seed;
-    lesson_trace::trace_step!(state);
-    lesson_trace::trace_note!(
+    trace_step!(state);
+    trace_note!(
         "Печатаем три последовательных состояния, чтобы показать повторяемость при одном seed."
     );
     for _ in 0..3 {
-        lesson_trace::trace_note!(
+        trace_note!(
             "Это линейный конгруэнтный генератор: state ← 6364136223846793005·state + 1 (mod 2⁶⁴)."
         );
-        lesson_trace::trace_note!(
+        trace_note!(
             "Фиксированные множитель и прибавка дают одну и ту же последовательность для одного seed."
         );
         state = state.wrapping_mul(6364136223846793005).wrapping_add(1);
-        lesson_trace::trace_step!(state);
-        lesson_trace::trace_note!(
-            "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-        );
+        trace_step!(state);
+        trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
         println!("состояние = {state}");
     }
 }

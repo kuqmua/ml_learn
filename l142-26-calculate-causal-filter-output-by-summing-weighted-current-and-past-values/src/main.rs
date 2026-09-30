@@ -7,19 +7,21 @@
 // Представь: Изменение сигнала завтра не должно менять прогноз, сделанный сегодня.
 // Выход в момент t зависит от текущего и прошлых элементов, но не от будущего.
 
+use lesson_trace::{disable, enable, trace_step};
+
 fn main() {
-    lesson_trace::enable();
+    enable();
     let signal: [f64; 4] = [1.0, 2.0, 3.0, 4.0];
-    lesson_trace::trace_step!(signal);
+    trace_step!(signal);
     let output: Vec<f64> =
         l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &signal, 1.0, 2.0, 1,
         )
         .unwrap();
-    lesson_trace::trace_step!(output);
+    trace_step!(output);
     assert_eq!(output, [1.0, 4.0, 7.0, 10.0]);
     println!("сигнал: {signal:?}; causal conv: {output:?}");
-    lesson_trace::disable();
+    disable();
     plot_input_signal_and_weighted_current_and_past_sums(&signal, &output);
 }
 fn plot_input_signal_and_weighted_current_and_past_sums(input: &[f64], output: &[f64]) {

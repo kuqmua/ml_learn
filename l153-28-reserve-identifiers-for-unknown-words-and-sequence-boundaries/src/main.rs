@@ -11,36 +11,30 @@
 // Зачем это нужно: Отдельные индексы нужны для неизвестных слов и границ последовательности.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Инициализируем значение `unknown_identifier` начальным состоянием.");
+    enable();
+    trace_note!("Инициализируем значение `unknown_identifier` начальным состоянием.");
     let unknown_identifier: i32 = 0;
-    lesson_trace::trace_step!(unknown_identifier);
-    lesson_trace::trace_note!(
-        "Сохраняем рассчитанное значение `begin_identifier` для следующих операций."
-    );
+    trace_step!(unknown_identifier);
+    trace_note!("Сохраняем рассчитанное значение `begin_identifier` для следующих операций.");
     let begin_identifier: i32 = 1;
-    lesson_trace::trace_step!(begin_identifier);
-    lesson_trace::trace_note!(
-        "Сохраняем рассчитанное значение `end_identifier` для следующих операций."
-    );
+    trace_step!(begin_identifier);
+    trace_note!("Сохраняем рассчитанное значение `end_identifier` для следующих операций.");
     let end_identifier: i32 = 2;
-    lesson_trace::trace_step!(end_identifier);
-    lesson_trace::trace_note!(
-        "Сохраняем рассчитанное значение `known_word_identifier` для следующих операций."
-    );
+    trace_step!(end_identifier);
+    trace_note!("Сохраняем рассчитанное значение `known_word_identifier` для следующих операций.");
     let known_word_identifier: i32 = 3;
-    lesson_trace::trace_step!(known_word_identifier);
-    lesson_trace::trace_note!("Создаём набор значений `sequence` для следующего шага примера.");
+    trace_step!(known_word_identifier);
+    trace_note!("Создаём набор значений `sequence` для следующего шага примера.");
     let sequence: [i32; 4] = [
         begin_identifier,
         known_word_identifier,
         unknown_identifier,
         end_identifier,
     ];
-    lesson_trace::trace_step!(sequence);
-    lesson_trace::trace_note!(
-        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-    );
+    trace_step!(sequence);
+    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
     println!("индексы последовательности: {sequence:?}");
 }

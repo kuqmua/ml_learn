@@ -8,17 +8,19 @@
 //   сохраняется.
 // Состояние переносит информацию от предыдущих элементов последовательности.
 
+use lesson_trace::{disable, enable, trace_step};
+
 fn main() {
-    lesson_trace::enable();
+    enable();
     let input: [f64; 4] = [1.0, 0.0, 0.0, 0.0];
-    lesson_trace::trace_step!(input);
+    trace_step!(input);
     let history: Vec<f64> = l138_25_update_memory_from_weighted_input_and_previous_memory::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
         &input, 0.8, 0.7,
     );
-    lesson_trace::trace_step!(history);
+    trace_step!(history);
     assert_eq!(history.len(), input.len());
     println!("состояния: {history:?}");
-    lesson_trace::disable();
+    disable();
     plot_state_after_each_weighted_input_and_memory_update(&history);
 }
 fn plot_state_after_each_weighted_input_and_memory_update(states: &[f64]) {

@@ -7,15 +7,17 @@
 // Представь: Фильтр с промежутками между весами видит более далёкое прошлое при том же числе весов.
 // Дилатации 1, 2, 4 расширяют область прошлого без длинных фильтров.
 
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
+    enable();
     let mut signal: Vec<f64> = vec![0.0; 9];
-    lesson_trace::trace_step!(signal);
+    trace_step!(signal);
     signal[0] = 1.0;
-    lesson_trace::trace_step!(signal);
-    lesson_trace::trace_note!("Промежуток между используемыми точками фильтра называют dilation.");
+    trace_step!(signal);
+    trace_note!("Промежуток между используемыми точками фильтра называют dilation.");
     for filter_spacing in [1, 2, 4] {
-        lesson_trace::trace_step!(filter_spacing);
+        trace_step!(filter_spacing);
         signal =
             l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
                 &signal,
@@ -24,13 +26,13 @@ fn main() {
                 filter_spacing,
             )
             .unwrap();
-        lesson_trace::trace_step!(signal);
+        trace_step!(signal);
         println!("после dilation={filter_spacing}: {signal:?}");
     }
-    lesson_trace::trace_note!("Три двухточечных слоя видят 1 + 1 + 2 + 4 = 8 временных шагов.");
+    trace_note!("Три двухточечных слоя видят 1 + 1 + 2 + 4 = 8 временных шагов.");
     assert_eq!(signal[..8], [1.0; 8]);
     assert_eq!(signal[8], 0.0);
-    lesson_trace::disable();
+    disable();
     plot_impulse_response_with_increasing_filter_spacing(&signal);
 }
 

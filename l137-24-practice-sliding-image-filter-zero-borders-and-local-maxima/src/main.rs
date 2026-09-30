@@ -16,176 +16,146 @@
 // Дополнительная практика: Реализуй 2D свёртку для одноканального изображения и max pooling.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Шаг: Создаём одноканальное изображение 3×3.");
-    let image: Vec<Vec<f64>> = vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]];
-    lesson_trace::trace_step!(image);
-    lesson_trace::trace_note!("Шаг: Задаём ядро 2×2, реагирующее на локальную разницу значений.");
-    lesson_trace::trace_note!("Небольшой набор весов свёрточного фильтра называют kernel.");
-    let filter_weights: Vec<Vec<f64>> = vec![vec![1., 0.], vec![0., -1.]];
-    lesson_trace::trace_step!(filter_weights);
+use lesson_trace::{disable, enable, trace_note, trace_step};
 
-    lesson_trace::trace_note!("Скользящую взвешенную сумму называют convolution (свёрткой).");
-    lesson_trace::trace_note!(
-        "Шаг: Проводим свёртку, затем уменьшаем карту признаков max pooling."
-    );
+fn main() {
+    enable();
+    trace_note!("Шаг: Создаём одноканальное изображение 3×3.");
+    let image: Vec<Vec<f64>> = vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]];
+    trace_step!(image);
+    trace_note!("Шаг: Задаём ядро 2×2, реагирующее на локальную разницу значений.");
+    trace_note!("Небольшой набор весов свёрточного фильтра называют kernel.");
+    let filter_weights: Vec<Vec<f64>> = vec![vec![1., 0.], vec![0., -1.]];
+    trace_step!(filter_weights);
+
+    trace_note!("Скользящую взвешенную сумму называют convolution (свёрткой).");
+    trace_note!("Шаг: Проводим свёртку, затем уменьшаем карту признаков max pooling.");
     let feature_map: Vec<Vec<f64>> = (|| -> Vec<Vec<f64>> {
-        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
-        lesson_trace::trace_note!(
+        trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        trace_note!(
             "Сдвигаем ядро по изображению и умножаем соответствующие значения и складываем результаты."
         );
-        lesson_trace::trace_note!("Собираем значения для `image` в коллекцию.");
+        trace_note!("Собираем значения для `image` в коллекцию.");
         let image: &[Vec<f64>] = &image;
-        lesson_trace::trace_step!(image);
-        lesson_trace::trace_note!(
-            "Сохраняем рассчитанное значение `filter_weights` для следующих операций."
-        );
+        trace_step!(image);
+        trace_note!("Сохраняем рассчитанное значение `filter_weights` для следующих операций.");
         let filter_weights: &[Vec<f64>] = &filter_weights;
-        lesson_trace::trace_step!(filter_weights);
-        lesson_trace::trace_note!(
-            "Сохраняем рассчитанное значение `filter_step_size` для следующих операций."
-        );
-        lesson_trace::trace_note!("Шаг перемещения фильтра по входу называют stride.");
+        trace_step!(filter_weights);
+        trace_note!("Сохраняем рассчитанное значение `filter_step_size` для следующих операций.");
+        trace_note!("Шаг перемещения фильтра по входу называют stride.");
         let filter_step_size: usize = 1;
-        lesson_trace::trace_step!(filter_step_size);
-        lesson_trace::trace_note!("Проверяем обязательное условие до дальнейшего вычисления.");
+        trace_step!(filter_step_size);
+        trace_note!("Проверяем обязательное условие до дальнейшего вычисления.");
         assert!(filter_step_size > 0);
-        lesson_trace::trace_note!("Считаем количество элементов и сохраняем его в `rows`.");
+        trace_note!("Считаем количество элементов и сохраняем его в `rows`.");
         let rows: usize = (image.len() - filter_weights.len()) / filter_step_size + 1;
-        lesson_trace::trace_step!(rows);
-        lesson_trace::trace_note!("Считаем количество элементов и сохраняем его в `column_count`.");
+        trace_step!(rows);
+        trace_note!("Считаем количество элементов и сохраняем его в `column_count`.");
         let column_count: usize = (image[0].len() - filter_weights[0].len()) / filter_step_size + 1;
-        lesson_trace::trace_step!(column_count);
-        lesson_trace::trace_note!("Создаём набор значений `output` для следующего шага примера.");
+        trace_step!(column_count);
+        trace_note!("Создаём набор значений `output` для следующего шага примера.");
         let mut output: Vec<Vec<f64>> = vec![vec![0.0; column_count]; rows];
-        lesson_trace::trace_step!(output);
-        lesson_trace::trace_note!(
-            "Повторяем следующий блок для каждого элемента указанной последовательности."
-        );
+        trace_step!(output);
+        trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
         for output_row in 0..rows {
-            lesson_trace::trace_step!(output_row);
-            lesson_trace::trace_note!(
+            trace_step!(output_row);
+            trace_note!(
                 "Повторяем следующий блок для каждого элемента указанной последовательности."
             );
             for output_column in 0..column_count {
-                lesson_trace::trace_step!(output_column);
-                lesson_trace::trace_note!(
+                trace_step!(output_column);
+                trace_note!(
                     "Повторяем следующий блок для каждого элемента указанной последовательности."
                 );
                 for filter_row in 0..filter_weights.len() {
-                    lesson_trace::trace_step!(filter_row);
-                    lesson_trace::trace_note!(
+                    trace_step!(filter_row);
+                    trace_note!(
                         "Повторяем следующий блок для каждого элемента указанной последовательности."
                     );
                     for filter_column in 0..filter_weights[0].len() {
-                        lesson_trace::trace_step!(filter_column);
-                        lesson_trace::trace_note!(
-                            "Прибавляем очередной вклад к ранее накопленному результату."
-                        );
-                        lesson_trace::trace_note!(
-                            "Добавляем этот член в составное арифметическое выражение."
-                        );
-                        lesson_trace::trace_note!(
+                        trace_step!(filter_column);
+                        trace_note!("Прибавляем очередной вклад к ранее накопленному результату.");
+                        trace_note!("Добавляем этот член в составное арифметическое выражение.");
+                        trace_note!(
                             "Составляем результат из вычисленных значений в указанном порядке."
                         );
                         output[output_row][output_column] += filter_weights[filter_row]
                             [filter_column]
                             * image[output_row * filter_step_size + filter_row]
                                 [output_column * filter_step_size + filter_column];
-                        lesson_trace::trace_step!(output);
+                        trace_step!(output);
                     }
                 }
             }
         }
-        lesson_trace::trace_note!(
-            "Используем ранее рассчитанное значение `output` в текущем выражении."
-        );
+        trace_note!("Используем ранее рассчитанное значение `output` в текущем выражении.");
         output
     })();
-    lesson_trace::trace_step!(feature_map);
-    lesson_trace::trace_note!(
-        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-    );
-    lesson_trace::trace_note!(
-        "Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями."
-    );
-    lesson_trace::trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
-    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    lesson_trace::trace_note!("В каждом окне 2×2 оставляем максимальный элемент.");
-    lesson_trace::trace_note!("Собираем значения для `image` в коллекцию.");
-    lesson_trace::trace_note!(
-        "Создаём набор значений `local_maximum_values` для следующего шага примера."
-    );
-    lesson_trace::trace_note!(
-        "Повторяем следующий блок для каждого элемента указанной последовательности."
-    );
-    lesson_trace::trace_note!(
-        "Повторяем следующий блок для каждого элемента указанной последовательности."
-    );
-    lesson_trace::trace_note!(
-        "Создаём изменяемое значение `largest_value` для следующих операций."
-    );
-    lesson_trace::trace_note!(
-        "Повторяем следующий блок для каждого элемента указанной последовательности."
-    );
-    lesson_trace::trace_note!(
-        "Повторяем следующий блок для каждого элемента указанной последовательности."
-    );
-    lesson_trace::trace_note!(
-        "Сохраняем рассчитанное значение `candidate` для следующих операций."
-    );
-    lesson_trace::trace_note!("Умножаем величины согласно используемой формуле.");
-    lesson_trace::trace_note!("Проверяем условие и выбираем соответствующую ветку алгоритма.");
-    lesson_trace::trace_note!("Обновляем `largest_value` результатом текущего шага.");
-    lesson_trace::trace_note!(
+    trace_step!(feature_map);
+    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
+    trace_note!("Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.");
+    trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
+    trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    trace_note!("В каждом окне 2×2 оставляем максимальный элемент.");
+    trace_note!("Собираем значения для `image` в коллекцию.");
+    trace_note!("Создаём набор значений `local_maximum_values` для следующего шага примера.");
+    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
+    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
+    trace_note!("Создаём изменяемое значение `largest_value` для следующих операций.");
+    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
+    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
+    trace_note!("Сохраняем рассчитанное значение `candidate` для следующих операций.");
+    trace_note!("Умножаем величины согласно используемой формуле.");
+    trace_note!("Проверяем условие и выбираем соответствующую ветку алгоритма.");
+    trace_note!("Обновляем `largest_value` результатом текущего шага.");
+    trace_note!(
         "Обновляем `local_maximum_values[output_row][output_column]` результатом текущего шага."
     );
-    lesson_trace::trace_note!(
+    trace_note!(
         "Используем ранее рассчитанное значение `local_maximum_values` в текущем выражении."
     );
     println!(
         "convolution={feature_map:?}, local_maximum_values={:?}",
         (|| -> Vec<Vec<f64>> {
             let image: &[Vec<f64>] = &feature_map;
-            lesson_trace::trace_step!(image);
-            lesson_trace::trace_step!(image);
+            trace_step!(image);
+            trace_step!(image);
 
             let mut local_maximum_values: Vec<Vec<f64>> =
                 vec![vec![0.0; image[0].len() / 2]; image.len() / 2];
-            lesson_trace::trace_step!(local_maximum_values);
-            lesson_trace::trace_step!(local_maximum_values);
+            trace_step!(local_maximum_values);
+            trace_step!(local_maximum_values);
 
             for output_row in 0..local_maximum_values.len() {
-                lesson_trace::trace_step!(output_row);
+                trace_step!(output_row);
 
                 for output_column in 0..local_maximum_values[0].len() {
-                    lesson_trace::trace_step!(output_column);
+                    trace_step!(output_column);
 
                     let mut largest_value: f64 = f64::NEG_INFINITY;
-                    lesson_trace::trace_step!(largest_value);
-                    lesson_trace::trace_step!(largest_value);
+                    trace_step!(largest_value);
+                    trace_step!(largest_value);
 
                     for local_row in 0..2 {
-                        lesson_trace::trace_step!(local_row);
+                        trace_step!(local_row);
 
                         for local_column in 0..2 {
-                            lesson_trace::trace_step!(local_column);
+                            trace_step!(local_column);
 
                             let candidate: f64 =
                                 image[2 * output_row + local_row][2 * output_column + local_column];
-                            lesson_trace::trace_step!(candidate);
-                            lesson_trace::trace_step!(candidate);
+                            trace_step!(candidate);
+                            trace_step!(candidate);
 
                             if candidate > largest_value {
                                 largest_value = candidate;
-                                lesson_trace::trace_step!(largest_value);
+                                trace_step!(largest_value);
                             }
                         }
                     }
 
                     local_maximum_values[output_row][output_column] = largest_value;
-                    lesson_trace::trace_step!(local_maximum_values);
+                    trace_step!(local_maximum_values);
                 }
             }
 
@@ -193,8 +163,8 @@ fn main() {
         })()
     );
 
-    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
-    lesson_trace::disable();
+    trace_note!("Построение графика вынесено из основного кода урока.");
+    disable();
     plot_image_feature_map_as_local_weighted_pixel_sums(feature_map);
 }
 
@@ -202,12 +172,12 @@ fn main() {
 fn plot_image_feature_map_as_local_weighted_pixel_sums(
     feature_map: std::vec::Vec<std::vec::Vec<f64>>,
 ) {
-    lesson_trace::trace_note!("Значения ячеек видны по цвету и подписи.");
-    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
-    lesson_trace::trace_note!("Указываем имя SVG-файла.");
-    lesson_trace::trace_note!("Указываем заголовок тепловой карты.");
-    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
+    trace_note!("Значения ячеек видны по цвету и подписи.");
+    trace_note!("Передаём путь к каталогу текущего урока.");
+    trace_note!("Указываем имя SVG-файла.");
+    trace_note!("Указываем заголовок тепловой карты.");
+    trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -215,6 +185,6 @@ fn plot_image_feature_map_as_local_weighted_pixel_sums(
         &feature_map,
     )
     .expect("не удалось сохранить тепловую карту");
-    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
+    trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

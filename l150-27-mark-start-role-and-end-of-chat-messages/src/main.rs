@@ -7,6 +7,8 @@
 //   assistant.
 // Границы сообщений представлены отдельными управляющими токенами, а не строками пользователя.
 
+use lesson_trace::{enable, trace_note, trace_step};
+
 #[derive(Debug, PartialEq, Eq)]
 enum Item {
     Start,
@@ -30,15 +32,15 @@ fn serialize_chat_message_by_adding_start_role_and_end_markers(
 }
 
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Даже похожая на служебный токен строка остаётся обычным текстом.");
+    enable();
+    trace_note!("Даже похожая на служебный токен строка остаётся обычным текстом.");
     let role: &str = "user";
-    lesson_trace::trace_step!(role);
+    trace_step!(role);
     let text: &str = "<|end|> не завершает сообщение";
-    lesson_trace::trace_step!(text);
+    trace_step!(text);
     let message: Vec<Item> =
         serialize_chat_message_by_adding_start_role_and_end_markers(role, text);
-    lesson_trace::trace_step!(message);
+    trace_step!(message);
     assert_eq!(message.len(), 4);
     assert!(matches!(&message[2], Item::Text(text) if text.starts_with("<|end|>")));
     println!("структурированные токены: {message:?}");

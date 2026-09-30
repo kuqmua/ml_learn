@@ -8,16 +8,18 @@
 //
 // Старая и новая версии разбираются разными правилами; неизвестную версию отвергаем.
 
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
-    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
-    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
-    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+    enable();
+    trace_note!("Повторяем расчёт для каждого элемента последовательности.");
+    trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+    trace_note!("Передаём подпись или текстовое значение для следующего шага.");
     for (description, saved_model_text, expected) in [
         ("старый формат", "model_v1\n2.0\n1.0\n", "вес и смещение"),
         (
@@ -31,13 +33,13 @@ fn main() {
             "формат не поддерживается",
         ),
     ] {
-        lesson_trace::trace_step!(description);
-        lesson_trace::trace_step!(saved_model_text);
-        lesson_trace::trace_step!(expected);
-        lesson_trace::trace_note!("Сохраняем результат этого шага в `explanation`.");
-        lesson_trace::trace_note!("Возвращаем присутствующее значение.");
-        lesson_trace::trace_note!("Возвращаем присутствующее значение.");
-        lesson_trace::trace_note!("Выполняем действие для этого варианта данных.");
+        trace_step!(description);
+        trace_step!(saved_model_text);
+        trace_step!(expected);
+        trace_note!("Сохраняем результат этого шага в `explanation`.");
+        trace_note!("Возвращаем присутствующее значение.");
+        trace_note!("Возвращаем присутствующее значение.");
+        trace_note!("Выполняем действие для этого варианта данных.");
         let explanation: &str = match saved_model_text.lines().next() {
             Some("model_v1") => "вес и смещение",
 
@@ -45,10 +47,10 @@ fn main() {
 
             _ => "формат не поддерживается",
         };
-        lesson_trace::trace_step!(explanation);
-        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+        trace_step!(explanation);
+        trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(explanation, expected);
-        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
+        trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("{description}: {explanation}");
     }
 }

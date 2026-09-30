@@ -11,33 +11,27 @@
 // схеме.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("Сохраняем рассчитанное значение `input` для следующих операций.");
+    enable();
+    trace_note!("Сохраняем рассчитанное значение `input` для следующих операций.");
     let input: &str = "feature\n1\n2\n";
-    lesson_trace::trace_step!(input);
-    lesson_trace::trace_note!("Создаём изменяемое значение `lines` для следующих операций.");
+    trace_step!(input);
+    trace_note!("Создаём изменяемое значение `lines` для следующих операций.");
     let mut lines: std::str::Lines<'_> = input.lines();
-    lesson_trace::trace_step!(lines);
-    lesson_trace::trace_note!(
-        "Проверяем, что сравниваемые размерности или значения действительно совпадают."
-    );
+    trace_step!(lines);
+    trace_note!("Проверяем, что сравниваемые размерности или значения действительно совпадают.");
     assert_eq!(lines.next(), Some("feature"));
-    lesson_trace::trace_note!(
-        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-    );
+    trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
     println!("prediction");
-    lesson_trace::trace_note!(
-        "Повторяем следующий блок для каждого элемента указанной последовательности."
-    );
+    trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for line in lines {
-        lesson_trace::trace_step!(line);
-        lesson_trace::trace_note!("Читаем или разбираем входные данные в значение `feature`.");
+        trace_step!(line);
+        trace_note!("Читаем или разбираем входные данные в значение `feature`.");
         let feature: f64 = line.parse().unwrap();
-        lesson_trace::trace_step!(feature);
-        lesson_trace::trace_note!(
-            "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
-        );
+        trace_step!(feature);
+        trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
         println!("{}", feature * 2.0 + 1.0);
     }
 }

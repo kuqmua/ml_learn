@@ -6,20 +6,20 @@
 // Представь: На учебных парах модель видит зашумлённый вход и правильный добавленный шум.
 // На синтетической паре учим линейный предсказатель epsilon по x_t и исходному условию.
 
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!(
+    enable();
+    trace_note!(
         "α=0.64 сохраняет 64% дисперсии чистого сигнала; оставшиеся 36% приходятся на шум."
     );
     let alpha: f64 = 0.64;
-    lesson_trace::trace_step!(alpha);
+    trace_step!(alpha);
     let training: [(f64, f64); 4] = [(1.0, -1.0), (1.0, 0.0), (1.0, 1.0), (1.0, 2.0)];
-    lesson_trace::trace_step!(training);
+    trace_step!(training);
     let validation: [(f64, f64); 2] = [(2.0, -0.5), (-1.0, 0.5)];
-    lesson_trace::trace_step!(validation);
-    lesson_trace::trace_note!(
-        "Условный предсказатель получает известное clean: пример изолирует MSE обучения."
-    );
+    trace_step!(validation);
+    trace_note!("Условный предсказатель получает известное clean: пример изолирует MSE обучения.");
     let inputs: Vec<(f64, f64)> = training
         .iter()
         .map(|&(clean, noise)| {
@@ -33,17 +33,13 @@ fn main() {
             )
         })
         .collect();
-    lesson_trace::trace_step!(inputs);
+    trace_step!(inputs);
     let mut weight: f64 = 0.0;
-    lesson_trace::trace_step!(weight);
-    lesson_trace::trace_note!(
-        "100 шагов градиентного спуска подгоняют один вес к четырём обучающим парам."
-    );
-    lesson_trace::trace_note!(
-        "Множитель 0.2 ниже — выбранная скорость обучения, то есть доля градиента за шаг."
-    );
+    trace_step!(weight);
+    trace_note!("100 шагов градиентного спуска подгоняют один вес к четырём обучающим парам.");
+    trace_note!("Множитель 0.2 ниже — выбранная скорость обучения, то есть доля градиента за шаг.");
     for _ in 0..100 {
-        lesson_trace::trace_note!(
+        trace_note!(
             "Производную функции по параметру или вектор таких производных называют gradient."
         );
         let rate_of_change: f64 = inputs
@@ -51,21 +47,21 @@ fn main() {
             .map(|&(input_value, target)| 2.0 * (weight * input_value - target) * input_value)
             .sum::<f64>()
             / inputs.len() as f64;
-        lesson_trace::trace_step!(rate_of_change);
+        trace_step!(rate_of_change);
         weight -= 0.2 * rate_of_change;
-        lesson_trace::trace_step!(weight);
+        trace_step!(weight);
     }
     let loss: f64 = inputs
         .iter()
         .map(|&(input_value, target)| (weight * input_value - target).powi(2))
         .sum::<f64>()
         / inputs.len() as f64;
-    lesson_trace::trace_step!(loss);
-    lesson_trace::trace_note!(
+    trace_step!(loss);
+    trace_note!(
         "Требуем MSE ниже 10⁻⁶: это проверка, что один вес действительно подогнал учебные пары."
     );
     assert!(loss < 1e-6);
-    lesson_trace::trace_note!("Отложенные пары не участвовали в изменении веса.");
+    trace_note!("Отложенные пары не участвовали в изменении веса.");
     let held_out: Vec<(f64, f64)> = validation
         .iter()
         .map(|&(clean, noise)| {
@@ -79,7 +75,7 @@ fn main() {
             )
         })
         .collect();
-    lesson_trace::trace_step!(held_out);
+    trace_step!(held_out);
     let mean_squared_error_value: &dyn Fn(f64) -> f64 = &|candidate: f64| {
         held_out
             .iter()
@@ -88,14 +84,14 @@ fn main() {
             / held_out.len() as f64
     };
     let baseline: f64 = mean_squared_error_value(0.0);
-    lesson_trace::trace_step!(baseline);
+    trace_step!(baseline);
     let validation_loss: f64 = mean_squared_error_value(weight);
-    lesson_trace::trace_step!(validation_loss);
+    trace_step!(validation_loss);
     assert!(validation_loss < baseline);
     println!(
         "вес={weight:.3}; train MSE={loss:.8}; validation MSE={validation_loss:.8}; baseline={baseline:.3}"
     );
-    lesson_trace::trace_note!(
+    trace_note!(
         "В реальной модели clean при генерации неизвестен; это только проверка loss и градиента."
     );
 }

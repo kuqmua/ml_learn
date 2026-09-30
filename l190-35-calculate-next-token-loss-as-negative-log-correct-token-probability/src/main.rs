@@ -10,6 +10,8 @@
 
 // Оценку модели до преобразования в вероятность называют logit.
 /// Перекрёстная энтропия: получаем вероятности через softmax, выбираем правильный токен и берём −ln(p).
+use lesson_trace::{disable, enable, trace_note, trace_step};
+
 fn calculate_next_token_loss_as_negative_log_of_target_probability_from_exponentiated_scores(
     raw_model_scores: &[f64],
     target: usize,
@@ -20,19 +22,17 @@ fn calculate_next_token_loss_as_negative_log_of_target_probability_from_exponent
         .ln()
 }
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!("BOS, A, B, EOS: на последней позиции нет следующей цели.");
-    lesson_trace::trace_note!(
-        "Единицу текста, которую модель обрабатывает как одно целое, называют token."
-    );
+    enable();
+    trace_note!("BOS, A, B, EOS: на последней позиции нет следующей цели.");
+    trace_note!("Единицу текста, которую модель обрабатывает как одно целое, называют token.");
     let text_unit_identifiers: [usize; 4] = [0, 1, 2, 3];
-    lesson_trace::trace_step!(text_unit_identifiers);
+    trace_step!(text_unit_identifiers);
     let raw_model_scores: [[f64; 4]; 3] = [
         [0.2, 2.0, 0.1, 0.0],
         [0.1, 0.2, 2.0, 0.0],
         [0.0, 0.1, 0.2, 2.0],
     ];
-    lesson_trace::trace_step!(raw_model_scores);
+    trace_step!(raw_model_scores);
     let losses: Vec<f64> = (0..text_unit_identifiers.len() - 1)
         .map(|plot_step_index| {
             calculate_next_token_loss_as_negative_log_of_target_probability_from_exponentiated_scores(
@@ -41,18 +41,18 @@ fn main() {
             )
         })
         .collect();
-    lesson_trace::trace_step!(losses);
+    trace_step!(losses);
     let average: f64 = losses.iter().sum::<f64>() / losses.len() as f64;
-    lesson_trace::trace_step!(average);
+    trace_step!(average);
     let wrong: f64 =
         calculate_next_token_loss_as_negative_log_of_target_probability_from_exponentiated_scores(
             &[2.0, 0.2, 0.1, 0.0],
             text_unit_identifiers[1],
         );
-    lesson_trace::trace_step!(wrong);
+    trace_step!(wrong);
     assert!(average < wrong);
     println!("loss по позициям: {losses:?}; средний loss={average:.3}");
-    lesson_trace::disable();
+    disable();
     plot_next_token_loss_as_negative_log_correct_text_unit_probability_by_position(&losses);
 }
 fn plot_next_token_loss_as_negative_log_correct_text_unit_probability_by_position(losses: &[f64]) {

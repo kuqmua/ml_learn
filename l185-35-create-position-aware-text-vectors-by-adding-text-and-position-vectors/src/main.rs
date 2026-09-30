@@ -5,21 +5,19 @@
 // Представь: Два одинаковых слова на местах 0 и 2 получают разные входные векторы из-за позиции.
 // Вход decoder складывает представление токена и его позиции.
 
+use lesson_trace::{enable, trace_note, trace_step};
+
 fn main() {
-    lesson_trace::enable();
-    lesson_trace::trace_note!(
-        "Строки таблиц — обучаемые параметры; здесь числа фиксированы для проверки."
-    );
-    lesson_trace::trace_note!("Плотное числовое представление объекта называют embedding.");
+    enable();
+    trace_note!("Строки таблиц — обучаемые параметры; здесь числа фиксированы для проверки.");
+    trace_note!("Плотное числовое представление объекта называют embedding.");
     let text_unit_dense_representation: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
-    lesson_trace::trace_step!(text_unit_dense_representation);
+    trace_step!(text_unit_dense_representation);
     let position_dense_representation: [[f64; 2]; 3] = [[0.0, 0.0], [0.1, 0.0], [0.2, 0.0]];
-    lesson_trace::trace_step!(position_dense_representation);
-    lesson_trace::trace_note!(
-        "Единицу текста, которую модель обрабатывает как одно целое, называют token."
-    );
+    trace_step!(position_dense_representation);
+    trace_note!("Единицу текста, которую модель обрабатывает как одно целое, называют token.");
     let text_unit_identifiers: [usize; 3] = [0, 1, 0];
-    lesson_trace::trace_step!(text_unit_identifiers);
+    trace_step!(text_unit_identifiers);
     let states: Vec<[f64; 2]> = text_unit_identifiers
         .iter()
         .enumerate()
@@ -32,7 +30,7 @@ fn main() {
             ]
         })
         .collect();
-    lesson_trace::trace_step!(states);
+    trace_step!(states);
     assert_ne!(states[0], states[2]);
     println!("входные состояния: {states:?}");
 }
