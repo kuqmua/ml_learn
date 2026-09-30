@@ -3,10 +3,10 @@
 use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts;
 use l067_11_calculate_f1_from_counts_by_combining_precision_and_recall::calculate_f1_score_from_counts_by_combining_precision_and_recall_as_twice_product_over_sum;
 
-use lesson_trace::{enable, trace_step};
+use lesson_trace::{enable_tracing, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     let counts = BinaryClassificationCounts {
         true_positives: 3,
         false_positives: 1,

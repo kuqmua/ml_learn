@@ -9,10 +9,10 @@
 // ноль.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     trace_note!("Долю объектов одного класса среди всех объектов называют fraction.");
     for positive_class_share in [0.0, 0.5, 1.0] {

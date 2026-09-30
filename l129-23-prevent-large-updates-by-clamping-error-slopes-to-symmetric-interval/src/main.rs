@@ -8,10 +8,10 @@
 // Значения внутри интервала [-limit, limit] не меняются. Выходящие за границу
 // заменяются ближайшей границей с сохранением знака.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Сохраняем результат этого шага в `limit`.");
     let limit: f64 = 1.0;
     trace_step!(limit);

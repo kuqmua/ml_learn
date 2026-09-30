@@ -7,10 +7,10 @@
 //   отличаться.
 // Масштабируем веса в i8 и измеряем погрешность после восстановления.
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     let weights: [f64; 5] = [-1.0, -0.5, 0.0, 0.25, 1.0];
     trace_step!(weights);
     let maximum: f64 = weights.iter().copied().map(f64::abs).fold(0.0, f64::max);

@@ -9,10 +9,10 @@
 // Считаем значения ниже 0.5 и значения от 0.5. Сравнение старой и новой выборки
 // показывает, переместилась ли масса распределения между интервалами.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Задаём учебные значения для `cases`.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");

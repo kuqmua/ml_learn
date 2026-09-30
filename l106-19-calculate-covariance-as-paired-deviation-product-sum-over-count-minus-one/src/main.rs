@@ -9,10 +9,10 @@
 // результатов умножения отклонений на n−1.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `first_feature_values` для следующего шага примера.");
     let first_feature_values: [f64; 3] = [1.0, 2.0, 3.0];
     trace_step!(first_feature_values);

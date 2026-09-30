@@ -8,10 +8,10 @@
 // В линейном мире агент может шагнуть вправо или влево. На левой границе
 // движение влево оставляет его в нулевой клетке.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Сохраняем результат этого шага в `last_state`.");
     let last_state: i32 = 4;
     trace_step!(last_state);

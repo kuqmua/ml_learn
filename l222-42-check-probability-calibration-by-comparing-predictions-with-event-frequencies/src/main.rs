@@ -9,10 +9,10 @@
 // Если модель сообщает 0.8 многим объектам, событие должно происходить примерно в 80% случаев.
 // Сравниваем совпадение прогноза с наблюдаемой частотой и чрезмерную уверенность.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Задаём учебные значения для `observed_labels`.");
     let observed_labels: [bool; 5] = [true, true, true, false, true];
     trace_step!(observed_labels);

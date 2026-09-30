@@ -11,10 +11,10 @@
 // вероятностное предсказание.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Инициализируем значение `predicted_probability_error` начальным состоянием.");
     trace_note!("Ошибку предсказанного распределения вероятностей называют cross-entropy.");
     let predicted_probability_error: f64 = 0.7;

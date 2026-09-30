@@ -18,10 +18,10 @@
 //   ошибок.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Шаг: Задаём эталонное распределение признака.");
     let reference: [f64; 6] = [-1., -0.5, 0.1, 0.2, 1.2, 1.5];
     trace_step!(reference);

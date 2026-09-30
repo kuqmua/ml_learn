@@ -9,10 +9,10 @@
 // На позиции 0 виден только первый токен, на позиции 1 — первые два,
 // на последней позиции — все. Вес будущих позиций всегда равен нулю.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Задаём учебные значения для `raw_weights`.");
     let raw_weights: [f64; 3] = [0.2, 0.3, 0.5];
     trace_step!(raw_weights);

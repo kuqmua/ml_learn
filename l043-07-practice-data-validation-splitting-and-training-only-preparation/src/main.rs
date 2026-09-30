@@ -18,10 +18,10 @@
 //   нормализации только на train.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Фиксируем демонстрационные данные на время выполнения программы.");
     const SAMPLE_COMMA_SEPARATED_VALUES: &str =
         "feature,target\n1,0\n2,0\n3,1\n4,1\n5,0\n6,1\n7,0\n8,1\n9,1\n10,0\n";

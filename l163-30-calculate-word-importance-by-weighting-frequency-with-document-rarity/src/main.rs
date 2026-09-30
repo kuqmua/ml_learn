@@ -10,10 +10,10 @@
 // многих документах.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Сохраняем рассчитанное значение `term_frequency` для следующих операций.");
     let term_frequency: f64 = 3.0;
     trace_step!(term_frequency);

@@ -7,10 +7,10 @@
 // Представь: Если модель предсказала 8 вместо 10, следующая модель учится исправлять остаток +2.
 // Каждое следующее дерево исправляет остатки текущей модели.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Простая регрессия без случайности позволяет проверить каждый шаг вручную.");
     let targets: [f64; 4] = [0.0, 0.0, 2.0, 2.0];
     trace_step!(targets);

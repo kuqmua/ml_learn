@@ -7,10 +7,10 @@
 // Представь: Буква «я» представляется несколькими байтами UTF-8, а не одним ASCII-байтом.
 // UTF-8 кодирует символы несколькими байтами; байт не обязан быть целым символом.
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Сравниваем три разных размера одной и той же строки.");
     let text: &str = "кот 🐈";
     trace_step!(text);

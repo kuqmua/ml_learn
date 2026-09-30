@@ -9,10 +9,10 @@
 // Случайное число ниже epsilon ведёт к исследованию, иначе выбираем лучшее известное действие.
 // На границе random=epsilon выбираем использование.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Сохраняем результат этого шага в `exploration_probability`.");
     let exploration_probability: f64 = 0.1;
     trace_step!(exploration_probability);

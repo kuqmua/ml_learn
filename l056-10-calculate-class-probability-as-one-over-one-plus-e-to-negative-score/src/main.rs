@@ -8,10 +8,10 @@
 // Отрицательный logit даёт вероятность ниже 0.5, нулевой — 0.5,
 // положительный — выше 0.5. Значение всегда находится между 0 и 1.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     trace_note!("Оценку модели до преобразования в вероятность называют logit.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");

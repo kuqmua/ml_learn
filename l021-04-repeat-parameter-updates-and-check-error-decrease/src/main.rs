@@ -12,10 +12,10 @@
 // градиенту, а не только по числу эпох.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Инициализируем изменяемый накопитель `parameter` начальным состоянием.");
     let mut parameter: f64 = 0.0;
     trace_step!(parameter);

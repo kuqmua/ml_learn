@@ -15,10 +15,10 @@
 // Дополнительная практика: Сохрани обученную модель и метаданные; загрузи её в отдельном процессе.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    enable();
+    enable_tracing();
     trace_note!("Шаг: Выбираем временный файл для учебного примера.");
     trace_note!("Берём системный каталог временных файлов и добавляем имя с ID процесса.");
     let model_path: std::path::PathBuf =

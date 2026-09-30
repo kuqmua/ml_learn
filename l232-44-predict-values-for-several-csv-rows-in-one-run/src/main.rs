@@ -11,10 +11,10 @@
 // строки.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `features` для следующего шага примера.");
     let features: [f64; 3] = [1.0, 2.0, 3.0];
     trace_step!(features);

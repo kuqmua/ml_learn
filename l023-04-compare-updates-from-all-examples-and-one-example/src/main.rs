@@ -12,10 +12,10 @@
 // шаге их направления могут отличаться.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `data` для следующего шага примера.");
     let data: [(f64, f64); 2] = [(1.0, 2.0), (2.0, 4.0)];
     trace_step!(data);

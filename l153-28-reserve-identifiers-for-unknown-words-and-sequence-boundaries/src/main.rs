@@ -11,10 +11,10 @@
 // Зачем это нужно: Отдельные индексы нужны для неизвестных слов и границ последовательности.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Инициализируем значение `unknown_identifier` начальным состоянием.");
     let unknown_identifier: i32 = 0;
     trace_step!(unknown_identifier);

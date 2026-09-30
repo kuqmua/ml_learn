@@ -9,7 +9,7 @@
 // Forget/input/output gates отдельно управляют памятью и наблюдаемым состоянием.
 
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
-use lesson_trace::{enable, trace_step};
+use lesson_trace::{enable_tracing, trace_step};
 
 fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
     input_value: f64,
@@ -39,7 +39,7 @@ fn calculate_lstm_memory_and_output_by_mixing_old_memory_with_candidate_then_gat
     (cell, hidden)
 }
 fn main() {
-    enable();
+    enable_tracing();
     let remembered: f64 =
         calculate_lstm_memory_and_output_by_mixing_old_memory_with_candidate_then_gating_output(
             0.0, 1.0, 5.0,

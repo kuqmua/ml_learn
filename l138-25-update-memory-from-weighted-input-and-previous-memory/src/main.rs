@@ -10,10 +10,10 @@
 
 use l138_25_update_memory_from_weighted_input_and_previous_memory::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state;
 
-use lesson_trace::{disable, enable, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     let input: [f64; 4] = [1.0, 0.0, 0.0, 0.0];
     trace_step!(input);
     let history: Vec<f64> =

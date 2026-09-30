@@ -2,10 +2,10 @@
 
 use l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calculate_text_context_vectors_by_adding_position_and_weighted_past_context;
 
-use lesson_trace::{enable, trace_step};
+use lesson_trace::{enable_tracing, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     let identifiers = [0, 1];
     trace_step!(identifiers);
     let states =

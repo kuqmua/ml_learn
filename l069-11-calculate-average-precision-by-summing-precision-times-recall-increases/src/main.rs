@@ -12,10 +12,10 @@
 // классе.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Оценки уже отсортированы от большей к меньшей.");
     let ranked_labels: [bool; 4] = [true, false, true, false];
     trace_step!(ranked_labels);

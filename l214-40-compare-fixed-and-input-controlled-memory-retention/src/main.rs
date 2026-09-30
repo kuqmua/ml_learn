@@ -11,7 +11,7 @@
 /// Избирательное забывание: прибавляем вход к сохранённой доле состояния; по флагу сброса оставляем только текущий вход.
 use l212_40_calculate_memory_states_by_adding_weighted_input_to_retained_previous_state::calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state;
 
-use lesson_trace::{disable, enable, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_step};
 
 fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(
     values: &[f64],
@@ -34,7 +34,7 @@ fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_inp
         .collect()
 }
 fn main() {
-    enable();
+    enable_tracing();
     let values: [f64; 4] = [1.0, 0.0, 2.0, 0.0];
     trace_step!(values);
     let reset: [bool; 4] = [false, false, true, false];

@@ -5,10 +5,10 @@
 // Представь: Два одинаковых слова на местах 0 и 2 получают разные входные векторы из-за позиции.
 // Вход decoder складывает представление токена и его позиции.
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Строки таблиц — обучаемые параметры; здесь числа фиксированы для проверки.");
     trace_note!("Плотное числовое представление объекта называют embedding.");
     let text_unit_dense_representation: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];

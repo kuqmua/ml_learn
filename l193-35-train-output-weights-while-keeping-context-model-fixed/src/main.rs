@@ -11,7 +11,7 @@
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
 use l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calculate_text_context_vectors_by_adding_position_and_weighted_past_context;
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
     input_value: f64,
@@ -44,7 +44,7 @@ fn calculate_binary_prediction_loss_as_negative_log_label_probability_from_final
     -sample.1 * probability.ln() - (1.0 - sample.1) * (1.0 - probability).ln()
 }
 fn main() {
-    enable();
+    enable_tracing();
     let training_data: [(&[usize], f64); 2] = [(&[0][..], 1.0), (&[1][..], 0.0)];
     trace_step!(training_data);
     let validation: [(&[usize], f64); 2] = [(&[0, 0][..], 1.0), (&[1, 1][..], 0.0)];

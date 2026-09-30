@@ -16,10 +16,10 @@
 // Дополнительная практика: Сделай CLI для пакетных прогнозов по CSV или JSONL с явным форматом результата.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    enable();
+    enable_tracing();
     trace_note!("Шаг: Считываем CSV из стандартного ввода.");
     let mut input_comma_separated_values: String = String::new();
     trace_step!(input_comma_separated_values);

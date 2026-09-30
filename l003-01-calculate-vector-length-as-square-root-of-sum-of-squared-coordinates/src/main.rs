@@ -11,10 +11,10 @@
 
 use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates;
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Задаём учебные значения для `cases`.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");

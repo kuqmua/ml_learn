@@ -11,10 +11,10 @@
 use l091_16_build_symmetric_tree_using_shared_threshold_test_at_each_level::ObliviousTree;
 use l092_16_encode_category_by_averaging_earlier_targets_without_current_answer::encode_categories_as_average_previous_targets_with_prior_weight;
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     let categories: [&str; 6] = ["A", "B", "A", "B", "A", "B"];
     trace_step!(categories);
     let targets: [f64; 6] = [1.0, 0.0, 1.0, 0.0, 1.0, 0.0];

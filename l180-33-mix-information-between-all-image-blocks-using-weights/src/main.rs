@@ -13,7 +13,7 @@
 /// Softmax: вычитаем максимальную оценку, вычисляем экспоненты и делим каждую на их сумму.
 use l179_33_create_image_block_sequence_by_splitting_image_into_nonoverlapping_squares::extract_nonoverlapping_square_patches_from_square_image;
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
     raw_model_scores: &[f64],
@@ -36,7 +36,7 @@ fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_
         .collect()
 }
 fn main() {
-    enable();
+    enable_tracing();
     let image: Vec<Vec<f64>> = vec![vec![1.0, 0.0], vec![0.0, 1.0]];
     trace_step!(image);
     let patches: Vec<Vec<f64>> =

@@ -10,10 +10,10 @@
 
 use l192_35_convert_text_identifiers_to_context_and_next_piece_scores::convert_text_identifiers_to_context_then_to_next_token_scores;
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     let prefix: [usize; 2] = [0, 1];
     trace_step!(prefix);
     trace_note!("Оценку модели до преобразования в вероятность называют logit.");

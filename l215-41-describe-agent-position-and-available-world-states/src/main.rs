@@ -10,10 +10,10 @@
 // Зачем это нужно: Состояние описывает информацию, от которой зависит выбор следующего действия агента.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Сохраняем рассчитанное значение `current_cell` для следующих операций.");
     let current_cell: i32 = 2;
     trace_step!(current_cell);

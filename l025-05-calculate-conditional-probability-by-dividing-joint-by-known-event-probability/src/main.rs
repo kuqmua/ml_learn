@@ -9,10 +9,10 @@
 // P(A|B) — доля случаев A среди случаев B. Когда B не встречается, знаменатель равен нулю
 // и условная вероятность на этих данных не определена.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");

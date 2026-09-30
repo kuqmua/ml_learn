@@ -7,10 +7,10 @@
 
 use l198_36_calculate_gated_layer_output_by_multiplying_branches_with_smooth_gate::calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate;
 
-use lesson_trace::{enable, trace_step};
+use lesson_trace::{enable_tracing, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     let input: [f64; 2] = [1.0, -2.0];
     trace_step!(input);
     let gate: f64 = input[0] - input[1];

@@ -11,7 +11,7 @@
 /// Нормализация слоя (LayerNorm): из координат вычитаем среднее и делим на sqrt(среднее квадратов отклонений + epsilon).
 use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
     input_value: [f64; 2],
@@ -67,7 +67,7 @@ fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normali
         .collect()
 }
 fn main() {
-    enable();
+    enable_tracing();
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
     trace_step!(states);
     let output: Vec<[f64; 2]> =

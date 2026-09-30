@@ -17,10 +17,10 @@
 // Дополнительная практика: Построй токенизатор по словам и обучаемую таблицу эмбеддингов для малого корпуса.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Шаг: Создаём корпус из двух коротких предложений.");
     let corpus: [&str; 2] = ["кот спит", "пёс спит"];
     trace_step!(corpus);

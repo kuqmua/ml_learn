@@ -10,7 +10,7 @@
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
 use l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values;
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
     input_value: f64,
@@ -71,7 +71,7 @@ fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f6
     calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(2.0 * output)
 }
 fn main() {
-    enable();
+    enable_tracing();
     let mut samples: Vec<u8> = vec![1, 0, 1, 1];
     trace_step!(samples);
     trace_note!(

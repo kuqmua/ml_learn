@@ -17,10 +17,10 @@ use l064_11_calculate_positive_prediction_precision_as_true_positives_over_posit
 use l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives;
 use l066_11_calculate_f1_score_as_twice_precision_times_recall_over_their_sum::calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum;
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Задаём учебные значения для `labels`.");
     trace_note!("Используем подготовленное значение в следующем шаге примера.");
     let labels: [bool; 10] = [

@@ -9,7 +9,7 @@
 
 use l138_25_update_memory_from_weighted_input_and_previous_memory::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state;
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn half_squared_error_of_last_recurrent_state_against_target(
     input: &[f64],
@@ -29,7 +29,7 @@ fn half_squared_error_of_last_recurrent_state_against_target(
     0.5 * (last - target).powi(2)
 }
 fn main() {
-    enable();
+    enable_tracing();
     let input: [f64; 3] = [1.0, 0.5, -0.2];
     trace_step!(input);
     let input_weight: f64 = 0.3;

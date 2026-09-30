@@ -11,10 +11,10 @@
 // Зачем это нужно: Совпадение слов запроса с документом даёт простой поиск без обученной модели.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `documents` для следующего шага примера.");
     let documents: [(&str, &str); 2] = [("rust cargo", "guide"), ("машинное обучение", "ml")];
     trace_step!(documents);

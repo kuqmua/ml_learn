@@ -7,7 +7,7 @@
 // Update gate выбирает между предыдущим состоянием и новым кандидатом.
 
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
-use lesson_trace::{enable, trace_step};
+use lesson_trace::{enable_tracing, trace_step};
 
 fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
     input_value: f64,
@@ -33,7 +33,7 @@ fn calculate_gru_state_by_mixing_previous_state_with_candidate_using_update_frac
     (1.0 - update) * previous + update * candidate
 }
 fn main() {
-    enable();
+    enable_tracing();
     let previous: f64 = 0.8;
     trace_step!(previous);
     let keep: f64 =

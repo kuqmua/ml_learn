@@ -20,10 +20,10 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 use l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count;
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Фиксируем демонстрационные данные на время выполнения программы.");
     const TRAINING_EXAMPLES: [(f64, f64); 5] = [(0., 1.), (1., 3.), (2., 5.), (3., 7.), (4., 9.)];
     trace_note!("Проверяем ожидаемое свойство учебного примера.");

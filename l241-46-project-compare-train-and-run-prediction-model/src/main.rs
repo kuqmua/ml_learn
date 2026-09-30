@@ -21,10 +21,10 @@
 use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
 use l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count;
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Фиксируем демонстрационные данные на время выполнения программы.");
     trace_note!("Учебная пара: вход 0., ожидаемое значение 1..");
     trace_note!("Учебная пара: вход 1., ожидаемое значение 3..");

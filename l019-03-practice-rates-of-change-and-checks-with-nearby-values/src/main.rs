@@ -17,10 +17,10 @@
 // Дополнительная практика: Для f(x,y)=(x−2)²+3(y+1)² реализуй аналитический и численный градиенты.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Учебные реализации математических операций для этого урока.");
 
     /// Возводим число в квадрат обычным умножением.

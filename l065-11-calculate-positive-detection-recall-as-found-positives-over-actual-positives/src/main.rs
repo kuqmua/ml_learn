@@ -13,10 +13,10 @@
 use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts;
 use l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives;
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");

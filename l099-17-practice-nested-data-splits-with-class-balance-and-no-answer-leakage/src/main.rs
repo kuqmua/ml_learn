@@ -17,10 +17,10 @@
 // Дополнительная практика: Реализуй k-fold подбор одного гиперпараметра для модели из предыдущих уроков.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Шаг: Задаём данные для выбора числа соседей.");
     trace_note!("Учебный объект: признак 0., метка класса false.");
     trace_note!("Учебный объект: признак 1., метка класса false.");

@@ -13,10 +13,10 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 use l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences;
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `first` для следующего шага примера.");
     let first: [f64; 2] = [1.0, 1000.0];
     trace_step!(first);

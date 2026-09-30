@@ -12,7 +12,7 @@
 /// Восстановление сигнала: (noisy − sqrt(1−a)·predicted_noise) / sqrt(a).
 use l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares;
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
     noisy: f64,
@@ -23,7 +23,7 @@ fn recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scal
         / original_signal_variance_share.sqrt()
 }
 fn main() {
-    enable();
+    enable_tracing();
     let clean: f64 = 2.0;
     trace_step!(clean);
     let noise: f64 = -0.7;

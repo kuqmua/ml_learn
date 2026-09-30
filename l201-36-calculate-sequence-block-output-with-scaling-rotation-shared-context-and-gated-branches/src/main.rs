@@ -15,7 +15,7 @@ use l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_
 use l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position;
 use l198_36_calculate_gated_layer_output_by_multiplying_branches_with_smooth_gate::calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate;
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and_gated_features(
     states: &[[f64; 2]],
@@ -130,7 +130,7 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
     output
 }
 fn main() {
-    enable();
+    enable_tracing();
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
     trace_step!(states);
     let output: Vec<[f64; 2]> =

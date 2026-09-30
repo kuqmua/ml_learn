@@ -10,10 +10,10 @@
 // Зачем это нужно: Политика выбирает действие по оценкам доступных вариантов в текущем состоянии.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Инициализируем значение `left_action_value` начальным состоянием.");
     let left_action_value: f64 = 0.2;
     trace_step!(left_action_value);

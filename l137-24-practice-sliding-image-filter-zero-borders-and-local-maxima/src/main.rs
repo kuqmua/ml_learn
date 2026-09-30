@@ -16,10 +16,10 @@
 // Дополнительная практика: Реализуй 2D свёртку для одноканального изображения и max pooling.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Шаг: Создаём одноканальное изображение 3×3.");
     let image: Vec<Vec<f64>> = vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]];
     trace_step!(image);

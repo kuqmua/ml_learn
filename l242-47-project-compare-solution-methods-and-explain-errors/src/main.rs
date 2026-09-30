@@ -18,10 +18,10 @@
 //   генератор; обоснуй выбор и оформи README.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Мини-проект: классификация запроса по словам, оценка на отложенных фразах.");
 
     trace_note!("Фиксируем демонстрационные данные на время выполнения программы.");

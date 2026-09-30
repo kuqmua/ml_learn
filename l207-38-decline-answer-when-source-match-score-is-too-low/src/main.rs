@@ -8,10 +8,10 @@
 //
 // Ответ допускается при оценке источника не ниже порога; ниже порога система воздерживается.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Сохраняем результат этого шага в `minimum_reliable_score`.");
     let minimum_reliable_score: f64 = 0.5;
     trace_step!(minimum_reliable_score);

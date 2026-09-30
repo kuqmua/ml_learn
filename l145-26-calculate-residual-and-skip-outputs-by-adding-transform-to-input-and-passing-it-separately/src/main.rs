@@ -8,7 +8,7 @@
 // Residual переносит состояние через слои, skip собирает вклады для выхода.
 
 /// Остаточная и пропускная связи: возвращаем (input + tanh(input·transform), tanh(input·transform)).
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn calculate_residual_and_skip_outputs_as_input_plus_tanh_transform_and_transform_separately(
     input: f64,
@@ -26,7 +26,7 @@ fn calculate_residual_and_skip_outputs_as_input_plus_tanh_transform_and_transfor
     (input_plus_transformed_value, skip)
 }
 fn main() {
-    enable();
+    enable_tracing();
     let mut state: f64 = 0.5;
     trace_step!(state);
     let mut skip_sum: f64 = 0.0;

@@ -10,10 +10,10 @@
 
 use l212_40_calculate_memory_states_by_adding_weighted_input_to_retained_previous_state::calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state;
 
-use lesson_trace::{disable, enable, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     let input: [f64; 4] = [1.0, 0.0, 0.0, 0.0];
     trace_step!(input);
     let states: Vec<f64> =

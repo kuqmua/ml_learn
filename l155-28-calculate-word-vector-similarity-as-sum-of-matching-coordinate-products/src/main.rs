@@ -14,10 +14,10 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `first` для следующего шага примера.");
     let first: [f64; 2] = [0.8, 0.2];
     trace_step!(first);

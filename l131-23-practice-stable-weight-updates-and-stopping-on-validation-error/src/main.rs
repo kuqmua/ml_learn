@@ -16,10 +16,10 @@
 // Дополнительная практика: Добавь два оптимизатора и контроль нормы градиента к MLP.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Учебные реализации математических операций для этого урока.");
 
     trace_note!("Шаг: Запускаем один и тот же эксперимент без импульса и с импульсом.");

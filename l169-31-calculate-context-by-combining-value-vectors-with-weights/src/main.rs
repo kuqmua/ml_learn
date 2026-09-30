@@ -10,10 +10,10 @@
 // Зачем это нужно: Value содержит информацию, которая будет перенесена в выход внимания после взвешивания.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `values` для следующего шага примера.");
     let values: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 2.0]];
     trace_step!(values);

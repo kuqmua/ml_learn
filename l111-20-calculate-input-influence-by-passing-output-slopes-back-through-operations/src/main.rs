@@ -11,10 +11,10 @@
 // Зачем это нужно: Правило цепочки передаёт производную результата назад через каждую операцию графа.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Сохраняем рассчитанное значение `input_value` для следующих операций.");
     let input_value: f64 = 2.0;
     trace_step!(input_value);

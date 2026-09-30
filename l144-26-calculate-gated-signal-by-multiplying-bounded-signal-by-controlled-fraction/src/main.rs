@@ -7,7 +7,7 @@
 // Одна ветка tanh создаёт сигнал, другая sigmoid управляет его пропусканием.
 
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
-use lesson_trace::{disable, enable, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_step};
 
 fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
     value: f64,
@@ -23,7 +23,7 @@ fn calculate_gated_signal_as_tanh_of_filter_times_one_over_one_plus_e_to_negativ
         * calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(gate)
 }
 fn main() {
-    enable();
+    enable_tracing();
     let filter: f64 = 1.5;
     trace_step!(filter);
     let open: f64 =

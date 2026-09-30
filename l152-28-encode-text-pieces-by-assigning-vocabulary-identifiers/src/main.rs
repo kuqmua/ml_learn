@@ -9,10 +9,10 @@
 // Зачем это нужно: Словарь сопоставляет каждой известной строке постоянный числовой индекс.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `words` для следующего шага примера.");
     let words: [&str; 3] = ["кот", "спит", "кот"];
     trace_step!(words);

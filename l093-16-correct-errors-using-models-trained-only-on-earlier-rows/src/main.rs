@@ -8,10 +8,10 @@
 //   строк.
 // Упорядоченный бустинг исключает собственную метку из предсказания, по которому считают её градиент.
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Для каждого объекта строим константную модель только на предшествующих метках.");
     let targets: [f64; 4] = [1.0, 0.0, 1.0, 1.0];
     trace_step!(targets);

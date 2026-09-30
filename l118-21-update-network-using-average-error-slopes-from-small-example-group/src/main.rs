@@ -11,10 +11,10 @@
 // одного объекта или всего набора.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `rates_of_change` для следующего шага примера.");
     trace_note!("Производную функции по параметру или вектор таких производных называют gradient.");
     let rates_of_change: [f64; 2] = [2.0, 4.0];

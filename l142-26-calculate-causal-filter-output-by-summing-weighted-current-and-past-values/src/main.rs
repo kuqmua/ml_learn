@@ -9,10 +9,10 @@
 
 use l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values;
 
-use lesson_trace::{disable, enable, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     let signal: [f64; 4] = [1.0, 2.0, 3.0, 4.0];
     trace_step!(signal);
     let output: Vec<f64> =

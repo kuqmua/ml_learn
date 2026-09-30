@@ -9,10 +9,10 @@
 // Останавливаем обучение после двух подряд эпох без улучшения validation loss.
 // Улучшение сбрасывает счётчик; при постоянном улучшении остановки нет.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Задаём учебные значения для `cases`.");
     trace_note!("Передаём подпись или текстовое значение для следующего шага.");
     trace_note!("Передаём ряды или значения для отрисовки графика.");

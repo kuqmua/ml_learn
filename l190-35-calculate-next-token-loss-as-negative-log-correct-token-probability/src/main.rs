@@ -12,7 +12,7 @@
 /// Перекрёстная энтропия: получаем вероятности через softmax, выбираем правильный токен и берём −ln(p).
 use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn calculate_next_token_loss_as_negative_log_of_target_probability_from_exponentiated_scores(
     raw_model_scores: &[f64],
@@ -24,7 +24,7 @@ fn calculate_next_token_loss_as_negative_log_of_target_probability_from_exponent
         .ln()
 }
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("BOS, A, B, EOS: на последней позиции нет следующей цели.");
     trace_note!("Единицу текста, которую модель обрабатывает как одно целое, называют token.");
     let text_unit_identifiers: [usize; 4] = [0, 1, 2, 3];

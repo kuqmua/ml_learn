@@ -10,10 +10,10 @@
 // Зачем это нужно: По частотам переходов выбираем наиболее вероятное продолжение текущего слова.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `transitions` для следующего шага примера.");
     let transitions: [(&str, &str, i32); 3] =
         [("я", "учу", 3), ("я", "пишу", 1), ("учу", "rust", 2)];

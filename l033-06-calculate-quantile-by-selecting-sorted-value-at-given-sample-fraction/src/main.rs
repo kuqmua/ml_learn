@@ -10,10 +10,10 @@
 // Используем ближайший порядковый элемент с индексом floor((n−1)·доля).
 // Доля 0 даёт минимум, 1 — максимум; между ними выбирается элемент внутри ряда.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Задаём учебные значения для `values`.");
     let mut values: [i32; 5] = [9, 1, 7, 3, 5];
     trace_step!(values);

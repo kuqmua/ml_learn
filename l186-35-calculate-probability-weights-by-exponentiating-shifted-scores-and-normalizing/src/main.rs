@@ -2,10 +2,10 @@
 
 use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Без вычитания максимума экспоненты таких оценок переполнились бы.");
     let scores = [1000.0, 1001.0, 1002.0];
     trace_step!(scores);

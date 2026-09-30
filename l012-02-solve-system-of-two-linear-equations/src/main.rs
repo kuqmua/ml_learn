@@ -10,10 +10,10 @@
 // При ненулевом определителе решение одно. При нулевом определителе уравнения
 // могут совпадать (решений бесконечно много) или противоречить друг другу (решений нет).
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Задаём учебные значения для `cases`.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");

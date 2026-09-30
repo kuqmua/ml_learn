@@ -9,10 +9,10 @@
 // обучения.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `rows` для следующего шага примера.");
     let rows: [i32; 6] = [0, 1, 2, 3, 4, 5];
     trace_step!(rows);

@@ -11,10 +11,10 @@
 // Зачем это нужно: В RAG найденный фрагмент передаёт факты, на которые должен опираться ответ.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Сохраняем рассчитанное значение `context` для следующих операций.");
     let context: &str = "Rust использует Cargo для сборки проектов.";
     trace_step!(context);

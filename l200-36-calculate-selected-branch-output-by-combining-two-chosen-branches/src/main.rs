@@ -9,10 +9,10 @@
 
 use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     let input: [f64; 2] = [0.8, 0.2];
     trace_step!(input);
     let scores: [f64; 4] = [input[0], input[1], -input[0], -input[1]];

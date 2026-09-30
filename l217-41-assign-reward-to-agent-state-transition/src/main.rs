@@ -10,10 +10,10 @@
 // обучения.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Сохраняем рассчитанное значение `next_state` для следующих операций.");
     let next_state: i32 = 4;
     trace_step!(next_state);

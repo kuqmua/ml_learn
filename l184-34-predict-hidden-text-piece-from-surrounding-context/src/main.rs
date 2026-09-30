@@ -10,10 +10,10 @@
 
 use l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products;
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Три токена A, B, C; средний заменяем отдельным MASK embedding.");
     let original: [usize; 3] = [0, 1, 2];
     trace_step!(original);

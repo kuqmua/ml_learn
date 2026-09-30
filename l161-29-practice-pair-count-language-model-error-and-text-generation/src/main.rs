@@ -18,10 +18,10 @@
 //   генерацию.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Шаг: Задаём маленький корпус для подсчёта биграмм.");
     let training_sentences: [&str; 3] = ["кот спит", "кот ест", "пёс спит"];
     trace_step!(training_sentences);

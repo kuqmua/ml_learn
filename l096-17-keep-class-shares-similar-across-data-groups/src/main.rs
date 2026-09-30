@@ -10,10 +10,10 @@
 // Если разложить упорядоченные по классу данные подряд, в одной части может оказаться
 // только положительный класс, в другой — только отрицательный. Стратификация смешивает классы.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Задаём учебные значения для `positive`.");
     let positive: [i32; 4] = [1, 3, 5, 7];
     trace_step!(positive);

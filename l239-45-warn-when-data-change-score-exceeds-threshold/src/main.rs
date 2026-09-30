@@ -9,10 +9,10 @@
 // Здесь предупреждаем, только когда оценка дрейфа строго выше порога.
 // Значение точно на пороге ещё не вызывает предупреждение.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Сохраняем результат этого шага в `alert_threshold`.");
     let alert_threshold: f64 = 0.2;
     trace_step!(alert_threshold);

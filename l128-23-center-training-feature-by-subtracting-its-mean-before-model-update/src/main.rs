@@ -12,10 +12,10 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `training_data` для следующего шага примера.");
     let training_data: [f64; 3] = [10.0, 20.0, 30.0];
     trace_step!(training_data);

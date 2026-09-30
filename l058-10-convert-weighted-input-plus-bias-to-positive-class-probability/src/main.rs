@@ -11,10 +11,10 @@
 // повторного обучения.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Инициализируем значение `probability_positive` начальным состоянием.");
     let probability_positive: f64 = 0.7;
     trace_step!(probability_positive);

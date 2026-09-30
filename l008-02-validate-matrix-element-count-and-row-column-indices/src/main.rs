@@ -9,10 +9,10 @@
 // Что изучаем: форма rows×columns требует ровно rows*columns элементов.
 // Также индекс строки и столбца должен оставаться внутри этих границ.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Задаём учебные значения для `elements`.");
     let elements: [i32; 6] = [1, 2, 3, 4, 5, 6];
     trace_step!(elements);

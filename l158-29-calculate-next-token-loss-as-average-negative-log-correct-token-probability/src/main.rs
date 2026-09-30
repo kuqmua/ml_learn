@@ -9,10 +9,10 @@
 // Чем выше вероятность правильных токенов, тем меньше ошибка. Для вероятности 1
 // вклад равен нулю; вероятность 0 запрещена, потому что её логарифм не определён.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Задаём учебные значения для `cases`.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");

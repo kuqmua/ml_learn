@@ -10,7 +10,7 @@
 /// Скалярное произведение: умножаем соответствующие координаты двух векторов и складываем произведения.
 use l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position;
 
-use lesson_trace::{disable, enable, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_step};
 
 fn calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
     first_value: [f64; 2],
@@ -19,7 +19,7 @@ fn calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
     first_value[0] * second_value[0] + first_value[1] * second_value[1]
 }
 fn main() {
-    enable();
+    enable_tracing();
     let query_vector: [f64; 2] = [1.0, 0.0];
     trace_step!(query_vector);
     let key_vector: [f64; 2] = [1.0, 0.0];

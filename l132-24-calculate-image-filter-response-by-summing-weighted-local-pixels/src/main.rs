@@ -10,10 +10,10 @@
 // Зачем это нужно: Малое ядро умножает локальный участок изображения на веса и суммирует отклики.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `patch` для следующего шага примера.");
     let patch: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
     trace_step!(patch);

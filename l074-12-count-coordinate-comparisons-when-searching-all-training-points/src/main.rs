@@ -11,10 +11,10 @@
 // растёт вместе с набором.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Повторяем следующий блок для каждого элемента указанной последовательности.");
     for training_size in [10, 100, 1000] {
         trace_step!(training_size);

@@ -12,10 +12,10 @@
 // быстрого роста функции.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("f(x,y)=(x−2)²+3(y+1)².");
     let (input_value, second_input_value): (f64, f64) = (0.0, 0.0);
     trace_step!(input_value);

@@ -18,10 +18,10 @@
 //   специфичностью.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!(
         "Описываем тип `PseudorandomGenerator`, чтобы явно хранить состояние и допустимые варианты."
     );

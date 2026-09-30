@@ -17,10 +17,10 @@
 // Дополнительная практика: Расширь скалярный граф или создай минимальный Tensor для elementwise и matmul.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Шаг: Задаём две малые матрицы, результат умножения можно проверить вручную.");
     let left_matrix: Vec<Vec<f64>> = vec![vec![1., 2.]];
     trace_step!(left_matrix);

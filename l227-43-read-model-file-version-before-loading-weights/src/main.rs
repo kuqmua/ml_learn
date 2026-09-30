@@ -9,10 +9,10 @@
 //
 // Загрузчик различает поддерживаемый формат, другую версию и отсутствие строки версии.
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");
     trace_note!("Передаём подпись или текстовое значение для следующего шага.");

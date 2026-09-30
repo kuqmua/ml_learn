@@ -9,10 +9,10 @@
 // Нейроны с одинаковыми весами дают одинаковый ответ на один вход.
 // Разные веса позволяют нейронам начать обучение с разных ответов.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Задаём учебные значения для `input`.");
     let input: [f64; 2] = [1.0, 2.0];
     trace_step!(input);

@@ -16,10 +16,10 @@
 // Дополнительная практика: Сделай GridWorld и tabular Q-learning с epsilon-greedy политикой.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Мир из пяти клеток: старт 0, цель 4, действия — влево и вправо.");
     fn move_agent_in_bounded_world_and_calculate_reward(
         current_state: usize,

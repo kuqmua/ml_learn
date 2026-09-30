@@ -12,7 +12,7 @@ const MAX_NOTE_LINES: usize = 240;
 const MAX_VALUE_CHARS: usize = 180;
 
 /// Включает трассировку для `cargo run`; вызовы функций из тестов остаются тихими.
-pub fn enable() {
+pub fn enable_tracing() {
     ENABLED.store(true, std::sync::atomic::Ordering::Relaxed);
     println!("Промежуточные шаги (повторы 1–4, затем 8, 64, 512, …):");
 }

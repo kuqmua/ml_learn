@@ -7,7 +7,7 @@
 //   assistant.
 // Границы сообщений представлены отдельными управляющими токенами, а не строками пользователя.
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 #[derive(Debug, PartialEq, Eq)]
 enum Item {
@@ -32,7 +32,7 @@ fn serialize_chat_message_by_adding_start_role_and_end_markers(
 }
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Даже похожая на служебный токен строка остаётся обычным текстом.");
     let role: &str = "user";
     trace_step!(role);

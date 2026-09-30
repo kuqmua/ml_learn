@@ -2,10 +2,10 @@
 
 use l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences;
 
-use lesson_trace::{enable, trace_step};
+use lesson_trace::{enable_tracing, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     let first = [1.0, 2.0];
     let second = [4.0, 6.0];
     trace_step!(first);

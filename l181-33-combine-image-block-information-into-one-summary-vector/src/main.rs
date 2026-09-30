@@ -8,7 +8,7 @@
 // Специальный токен собирает информацию от патчей для классификации изображения.
 
 /// Softmax: вычитаем максимальную оценку, вычисляем экспоненты и делим каждую на их сумму.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
     values: &[f64],
@@ -28,7 +28,7 @@ fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_
         .collect()
 }
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Первый токен обозначает CLS; остальные представляют патчи.");
     trace_note!("Патчи и элемент классификации в ViT называют visual tokens.");
     let image_input_representations: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];

@@ -13,10 +13,10 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 use l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count;
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `training` для следующего шага примера.");
     let training: [(f64, f64); 2] = [(1.0, 3.0), (2.0, 5.0)];
     trace_step!(training);

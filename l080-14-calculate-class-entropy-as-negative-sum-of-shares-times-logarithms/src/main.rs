@@ -8,10 +8,10 @@
 // У чистого узла энтропия равна нулю, при долях 50/50 она максимальна.
 // Нулевую долю пропускаем: предел p·log(p) при p→0 равен нулю.
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     trace_note!("Долю объектов одного класса среди всех объектов называют fraction.");
     trace_note!("Добавляем пару значений для сравнения или построения графика.");

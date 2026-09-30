@@ -9,10 +9,10 @@
 
 use l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding;
 
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Повторяющийся корпус даёт устойчивые кандидаты на слияние.");
     let corpus: [&str; 3] = ["мама мыла", "мама дома", "мама мыла"];
     trace_step!(corpus);

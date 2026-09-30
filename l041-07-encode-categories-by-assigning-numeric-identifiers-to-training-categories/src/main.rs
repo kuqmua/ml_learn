@@ -9,7 +9,7 @@
 // Словарь категорий учим на train; новую категорию на validation отправляем в отдельный ID.
 
 /// Словарь категорий: каждой новой категории обучения назначаем номер, начиная с 1.
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn build_category_dictionary_by_assigning_identifiers_to_unique_training_categories(
     training_data: &[&str],
@@ -39,7 +39,7 @@ fn encode_categories_by_replacing_with_known_identifiers_or_zero(
         .collect()
 }
 fn main() {
-    enable();
+    enable_tracing();
     let known_text_units: std::collections::BTreeMap<String, usize> =
         build_category_dictionary_by_assigning_identifiers_to_unique_training_categories(&[
             "red", "blue", "red",

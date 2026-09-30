@@ -8,10 +8,10 @@
 // Зачем это нужно: Некорректную строку сообщаем явно вместе с её номером, не выдавая ошибочный прогноз.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{enable, trace_note, trace_step};
+use lesson_trace::{enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `rows` для следующего шага примера.");
     let rows: [&str; 3] = ["1.0", "oops", "3.0"];
     trace_step!(rows);

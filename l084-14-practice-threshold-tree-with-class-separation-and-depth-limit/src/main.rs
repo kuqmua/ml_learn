@@ -15,10 +15,10 @@
 // Дополнительная практика: Реализуй дерево для числовых признаков: выбор порога, max_depth, min_samples_leaf.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Шаг: Создаём одномерную задачу с явной границей классов.");
     let data: [(f64, bool); 4] = [(1., false), (2., false), (3., true), (4., true)];
     trace_step!(data);

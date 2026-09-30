@@ -8,10 +8,10 @@
 
 use l091_16_build_symmetric_tree_using_shared_threshold_test_at_each_level::ObliviousTree;
 
-use lesson_trace::{enable, trace_step};
+use lesson_trace::{enable_tracing, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     let tree: ObliviousTree = ObliviousTree {
         splits: vec![(0, 0.5), (1, 0.5)],
         leaves: vec![0.0, 1.0, 2.0, 3.0],

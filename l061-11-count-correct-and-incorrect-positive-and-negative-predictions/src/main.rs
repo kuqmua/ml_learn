@@ -13,10 +13,10 @@ use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::{
     BinaryClassificationCounts, count_binary_classification_outcomes_from_true_and_predicted_labels,
 };
 
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Задаём учебные значения для `truth`.");
     let truth: [bool; 4] = [true, false, true, false];
     trace_step!(truth);

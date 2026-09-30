@@ -12,10 +12,10 @@
 // внутренней.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("f(x)=(2x+1)²: внутренняя функция u=2x+1, внешняя u².");
     let input_value: f64 = 3.0;
     trace_step!(input_value);

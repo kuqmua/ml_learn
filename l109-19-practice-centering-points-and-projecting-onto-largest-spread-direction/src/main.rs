@@ -15,10 +15,10 @@
 // Дополнительная практика: Реализуй PCA для 2D через ковариационную матрицу и проекцию на главную ось.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Шаг: Создаём точки, лежащие на одной прямой.");
     let data: [[f64; 2]; 4] = [[1., 1.], [2., 2.], [3., 3.], [4., 4.]];
     trace_step!(data);

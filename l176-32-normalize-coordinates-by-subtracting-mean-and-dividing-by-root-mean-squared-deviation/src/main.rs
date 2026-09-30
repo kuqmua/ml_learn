@@ -12,10 +12,10 @@
 // epsilon для устойчивости.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn main() {
-    enable();
+    enable_tracing();
     trace_note!("Создаём набор значений `text_unit` для следующего шага примера.");
     trace_note!("Единицу текста, которую модель обрабатывает как одно целое, называют token.");
     let text_unit: [f64; 2] = [1.0, 3.0];

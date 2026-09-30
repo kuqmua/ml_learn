@@ -9,7 +9,7 @@
 // Вход управляет коэффициентом забывания; это учебная идея selective SSM, не реализация Mamba.
 
 /// Избирательное забывание: прибавляем вход к сохранённой доле состояния; по флагу сброса оставляем только текущий вход.
-use lesson_trace::{disable, enable, trace_note, trace_step};
+use lesson_trace::{disable, enable_tracing, trace_note, trace_step};
 
 fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(
     input: &[(f64, bool)],
@@ -30,7 +30,7 @@ fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_inp
         .collect()
 }
 fn main() {
-    enable();
+    enable_tracing();
     let sequence: [(f64, bool); 4] = [(1.0, false), (0.0, false), (2.0, true), (0.0, false)];
     trace_step!(sequence);
     let states: Vec<f64> =
