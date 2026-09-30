@@ -1,10 +1,7 @@
-use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts as Counts;
-use l063_11_calculate_accuracy_as_correct_predictions_divided_by_all_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions as operation;
-
 #[test]
 fn correct_fraction_includes_both_positive_and_negative_answers() {
     assert_eq!(
-        operation(Counts {
+        l063_11_calculate_accuracy_as_correct_predictions_divided_by_all_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts {
             true_positives: 3,
             false_positives: 2,
             true_negatives: 4,
@@ -13,7 +10,7 @@ fn correct_fraction_includes_both_positive_and_negative_answers() {
         Some(0.7)
     );
     assert_eq!(
-        operation(Counts {
+        l063_11_calculate_accuracy_as_correct_predictions_divided_by_all_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts {
             true_positives: 0,
             false_positives: 0,
             true_negatives: 9,
@@ -26,7 +23,7 @@ fn correct_fraction_includes_both_positive_and_negative_answers() {
 #[test]
 fn all_correct_all_wrong_and_undefined_without_examples() {
     assert_eq!(
-        operation(Counts {
+        l063_11_calculate_accuracy_as_correct_predictions_divided_by_all_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts {
             true_positives: 2,
             false_positives: 0,
             true_negatives: 3,
@@ -35,7 +32,7 @@ fn all_correct_all_wrong_and_undefined_without_examples() {
         Some(1.0)
     );
     assert_eq!(
-        operation(Counts {
+        l063_11_calculate_accuracy_as_correct_predictions_divided_by_all_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts {
             true_positives: 0,
             false_positives: 2,
             true_negatives: 0,
@@ -44,7 +41,7 @@ fn all_correct_all_wrong_and_undefined_without_examples() {
         Some(0.0)
     );
     assert_eq!(
-        operation(Counts {
+        l063_11_calculate_accuracy_as_correct_predictions_divided_by_all_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts {
             true_positives: 0,
             false_positives: 0,
             true_negatives: 0,

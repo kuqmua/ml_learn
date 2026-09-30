@@ -2,22 +2,20 @@
 //! Проверяем синтаксическое дерево Rust: комментарии, строки и невызванные функции
 //! не считаются демонстрацией. Численное поведение проверяют тесты самих уроков.
 
-use std::collections::{BTreeMap, BTreeSet};
-use std::fs;
-use std::path::Path;
-use syn::visit::{self, Visit};
-use syn::{Expr, Item, UseTree, Visibility};
-
 type FunctionPath = Vec<String>;
 
-fn imports(tree: &UseTree, prefix: FunctionPath, names: &mut BTreeMap<String, FunctionPath>) {
+fn imports(
+    tree: &syn::UseTree,
+    prefix: FunctionPath,
+    names: &mut std::collections::BTreeMap<String, FunctionPath>,
+) {
     match tree {
-        UseTree::Path(path) => {
+        syn::UseTree::Path(path) => {
             let mut prefix = prefix;
             prefix.push(path.ident.to_string());
             imports(&path.tree, prefix, names);
         }
-        UseTree::Name(name) => {
+        syn::UseTree::Name(name) => {
             let mut path = prefix;
             if name.ident != "self" {
                 path.push(name.ident.to_string());
@@ -26,29 +24,29 @@ fn imports(tree: &UseTree, prefix: FunctionPath, names: &mut BTreeMap<String, Fu
                 names.insert(name.clone(), path);
             }
         }
-        UseTree::Rename(rename) => {
+        syn::UseTree::Rename(rename) => {
             let mut path = prefix;
             if rename.ident != "self" {
                 path.push(rename.ident.to_string());
             }
             names.insert(rename.rename.to_string(), path);
         }
-        UseTree::Group(group) => {
+        syn::UseTree::Group(group) => {
             for item in &group.items {
                 imports(item, prefix.clone(), names);
             }
         }
         // Explicit imports make the owner of a demonstrated operation unambiguous.
-        UseTree::Glob(_) => {}
+        syn::UseTree::Glob(_) => {}
     }
 }
 
 struct Calls {
-    names: BTreeMap<String, FunctionPath>,
-    paths: BTreeSet<FunctionPath>,
+    names: std::collections::BTreeMap<String, FunctionPath>,
+    paths: std::collections::BTreeSet<FunctionPath>,
 }
 
-impl<'ast> Visit<'ast> for Calls {
+impl<'ast> syn::visit::Visit<'ast> for Calls {
     fn visit_item_fn(&mut self, _: &'ast syn::ItemFn) {
         // A nested helper definition is not a call from main.
     }
@@ -60,7 +58,7 @@ impl<'ast> Visit<'ast> for Calls {
     }
 
     fn visit_expr_call(&mut self, call: &'ast syn::ExprCall) {
-        if let Expr::Path(function) = &*call.func {
+        if let syn::Expr::Path(function) = &*call.func {
             let mut path: Vec<_> = function
                 .path
                 .segments
@@ -74,29 +72,29 @@ impl<'ast> Visit<'ast> for Calls {
             }
             self.paths.insert(path);
         }
-        visit::visit_expr_call(self, call);
+        syn::visit::visit_expr_call(self, call);
     }
 
     fn visit_macro(&mut self, mac: &'ast syn::Macro) {
         // Calls inside assert_eq!, println!, trace_step!, etc. are expressions too.
-        use syn::parse::Parser;
-        let expressions = syn::punctuated::Punctuated::<Expr, syn::Token![,]>::parse_terminated;
-        if let Ok(expressions) = expressions.parse2(mac.tokens.clone()) {
+        let expressions =
+            syn::punctuated::Punctuated::<syn::Expr, syn::Token![,]>::parse_terminated;
+        if let Ok(expressions) = syn::parse::Parser::parse2(expressions, mac.tokens.clone()) {
             for expression in &expressions {
-                self.visit_expr(expression);
+                syn::visit::Visit::visit_expr(self, expression);
             }
         }
     }
 }
 
-fn calls_in_main(source: &str) -> BTreeSet<FunctionPath> {
+fn calls_in_main(source: &str) -> std::collections::BTreeSet<FunctionPath> {
     let file = syn::parse_file(source).expect("main.rs должен быть корректным Rust");
     let mut calls = Calls {
-        names: BTreeMap::new(),
-        paths: BTreeSet::new(),
+        names: std::collections::BTreeMap::new(),
+        paths: std::collections::BTreeSet::new(),
     };
     for item in &file.items {
-        if let Item::Use(item) = item {
+        if let syn::Item::Use(item) = item {
             imports(&item.tree, Vec::new(), &mut calls.names);
         }
     }
@@ -104,28 +102,28 @@ fn calls_in_main(source: &str) -> BTreeSet<FunctionPath> {
         .items
         .iter()
         .find_map(|item| match item {
-            Item::Fn(function) if function.sig.ident == "main" => Some(function),
+            syn::Item::Fn(function) if function.sig.ident == "main" => Some(function),
             _ => None,
         })
         .expect("у учебного крейта должен быть main");
-    calls.visit_block(&main.block);
+    syn::visit::Visit::visit_block(&mut calls, &main.block);
     calls.paths
 }
 
 fn exported_functions(
-    items: &[Item],
-    directory: &Path,
+    items: &[syn::Item],
+    directory: &std::path::Path,
     prefix: &[String],
     result: &mut Vec<FunctionPath>,
 ) {
     for item in items {
         match item {
-            Item::Fn(function) if matches!(function.vis, Visibility::Public(_)) => {
+            syn::Item::Fn(function) if matches!(function.vis, syn::Visibility::Public(_)) => {
                 let mut path = prefix.to_vec();
                 path.push(function.sig.ident.to_string());
                 result.push(path);
             }
-            Item::Mod(module) if matches!(module.vis, Visibility::Public(_)) => {
+            syn::Item::Mod(module) if matches!(module.vis, syn::Visibility::Public(_)) => {
                 let mut path = prefix.to_vec();
                 path.push(module.ident.to_string());
                 let child = directory.join(module.ident.to_string());
@@ -137,14 +135,14 @@ fn exported_functions(
                     } else {
                         child.join("mod.rs")
                     };
-                    let source = fs::read_to_string(&file)
+                    let source = std::fs::read_to_string(&file)
                         .unwrap_or_else(|error| panic!("{}: {error}", file.display()));
                     let parsed =
                         syn::parse_file(&source).expect("модуль должен быть корректным Rust");
                     exported_functions(&parsed.items, &child, &path, result);
                 }
             }
-            Item::Use(item) if matches!(item.vis, Visibility::Public(_)) => {
+            syn::Item::Use(item) if matches!(item.vis, syn::Visibility::Public(_)) => {
                 panic!(
                     "Учебные операции должны иметь один крейт-владелец; используйте прямую зависимость вместо pub use"
                 );
@@ -156,11 +154,13 @@ fn exported_functions(
 
 #[test]
 fn every_public_lesson_operation_is_demonstrated_in_its_own_main() {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap();
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap();
     let mut missing = Vec::new();
     let mut checked = 0;
     let mut lessons = 0;
-    for entry in fs::read_dir(root).unwrap() {
+    for entry in std::fs::read_dir(root).unwrap() {
         let directory = entry.unwrap().path();
         let name = directory.file_name().unwrap().to_string_lossy();
         if !directory.is_dir()
@@ -172,7 +172,7 @@ fn every_public_lesson_operation_is_demonstrated_in_its_own_main() {
         }
         lessons += 1;
         let source = directory.join("src");
-        let library = match fs::read_to_string(source.join("lib.rs")) {
+        let library = match std::fs::read_to_string(source.join("lib.rs")) {
             Ok(source) => source,
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => String::new(),
             Err(error) => panic!("{}: {error}", source.display()),
@@ -181,7 +181,8 @@ fn every_public_lesson_operation_is_demonstrated_in_its_own_main() {
         let mut functions = Vec::new();
         let crate_name = format!("l{}", name.replace('-', "_"));
         exported_functions(&parsed.items, &source, &[crate_name], &mut functions);
-        let main = fs::read_to_string(source.join("main.rs")).expect("у урока должен быть main.rs");
+        let main =
+            std::fs::read_to_string(source.join("main.rs")).expect("у урока должен быть main.rs");
         let calls = calls_in_main(&main);
         for function in functions {
             checked += 1;
@@ -254,7 +255,7 @@ fn indirect_library_call_still_needs_its_own_demonstration() {
     let mut functions = Vec::new();
     exported_functions(
         &library.items,
-        Path::new("."),
+        std::path::Path::new("."),
         &["lesson".into()],
         &mut functions,
     );
