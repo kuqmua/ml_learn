@@ -3,6 +3,7 @@
 /// Устойчивый softmax для конечных логитов.
 // Оценку модели до преобразования в вероятность называют logit.
 /// Softmax: вычитаем максимальную оценку, вычисляем экспоненты и делим каждую на их сумму.
+/// Число весов совпадает с числом входных оценок, которое определяется во время выполнения.
 
 pub fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
     raw_model_scores: &[f64],

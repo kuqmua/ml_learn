@@ -16,8 +16,6 @@ fn main() {
         ("разные веса", [0.2, -0.3], [-0.1, 0.4], false),
     ];
     for (_description, first_neuron, second_neuron, should_match) in cases {
-        assert_eq!(first_neuron.len(), input.len());
-        assert_eq!(second_neuron.len(), input.len());
         let first_output: f64 = first_neuron[0] * input[0] + first_neuron[1] * input[1];
         let second_output: f64 = second_neuron[0] * input[0] + second_neuron[1] * input[1];
         assert_eq!(first_output == second_output, should_match);

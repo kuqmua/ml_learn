@@ -16,7 +16,7 @@ fn main() {
             &training_data,
             30,
         );
-    let rows: Vec<(&str, usize, usize)> = training_data
+    let rows: [(&str, usize, usize); 5] = training_data
         .iter()
         .chain(validation.iter())
         .map(|&text| {
@@ -28,7 +28,9 @@ fn main() {
                     .len(),
             )
         })
-        .collect();
+        .collect::<Vec<_>>()
+        .try_into()
+        .expect("три обучающие и две проверочные строки");
     for &(text, bytes, text_units) in &rows {
         assert!(text_units <= bytes);
         assert_eq!(
@@ -44,7 +46,7 @@ fn main() {
 }
 
 // График строится отдельно от проверки кодирования.
-fn plot_number_of_text_units_after_learned_pair_merges(rows: &[(&str, usize, usize)]) {
+fn plot_number_of_text_units_after_learned_pair_merges(rows: &[(&str, usize, usize); 5]) {
     let values: Vec<(&str, f64)> = rows
         .iter()
         .map(|(text, _, count)| (*text, *count as f64))

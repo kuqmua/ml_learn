@@ -11,32 +11,31 @@
 /// Избирательное забывание: прибавляем вход к сохранённой доле состояния; по флагу сброса оставляем только текущий вход.
 use l212_40_calculate_memory_states_by_adding_weighted_input_to_retained_previous_state::calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state;
 
-fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(
-    values: &[f64],
-    reset: &[bool],
-) -> Vec<f64> {
+fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input<
+    const N: usize,
+>(
+    values: &[f64; N],
+    reset: &[bool; N],
+) -> [f64; N] {
     let mut state: f64 = 0.0;
-    values
-        .iter()
-        .zip(reset)
-        .map(|(&input_value, &clear)| {
-            state = if clear {
-                input_value
-            } else {
-                0.8 * state + input_value
-            };
-            state
-        })
-        .collect()
+    std::array::from_fn(|index| {
+        let input_value = values[index];
+        state = if reset[index] {
+            input_value
+        } else {
+            0.8 * state + input_value
+        };
+        state
+    })
 }
 fn main() {
     let values: [f64; 4] = [1.0, 0.0, 2.0, 0.0];
     let reset: [bool; 4] = [false, false, true, false];
-    let fixed: Vec<f64> =
+    let fixed: [f64; 4] =
         calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
             &values, 0.8, 1.0,
         );
-    let dynamic: Vec<f64> =
+    let dynamic: [f64; 4] =
         calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(
             &values, &reset,
         );
@@ -44,7 +43,10 @@ fn main() {
 
     plot_stored_state_with_constant_retention_and_selective_resets(&fixed, &dynamic);
 }
-fn plot_stored_state_with_constant_retention_and_selective_resets(fixed: &[f64], dynamic: &[f64]) {
+fn plot_stored_state_with_constant_retention_and_selective_resets(
+    fixed: &[f64; 4],
+    dynamic: &[f64; 4],
+) {
     let first_plot_points: Vec<(f64, f64)> = fixed
         .iter()
         .enumerate()

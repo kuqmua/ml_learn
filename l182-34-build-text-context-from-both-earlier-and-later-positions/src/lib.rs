@@ -4,18 +4,17 @@
 /// Полное self-attention: каждая позиция видит обе стороны последовательности.
 /// Двунаправленное внимание: для каждого состояния считаем произведения координат с видимыми состояниями, делим на sqrt(2), применяем softmax и суммируем состояния с этими весами.
 
-pub fn calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
-    states: &[[f64; 2]],
-    visible: &[bool],
-) -> Result<Vec<[f64; 2]>, &'static str> {
-    if states.is_empty()
-        || states.len() != visible.len()
-        || !visible.iter().any(|&input_value| input_value)
-    {
-        return Err("неверная форма или пустая маска");
+pub fn calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products<
+    const N: usize,
+>(
+    states: &[[f64; 2]; N],
+    visible: &[bool; N],
+) -> Result<[[f64; 2]; N], &'static str> {
+    if N == 0 || !visible.iter().any(|&input_value| input_value) {
+        return Err("пустая последовательность или маска");
     }
-    let mut result: Vec<[f64; 2]> = Vec::new();
-    for query in states {
+    let result: [[f64; 2]; N] = std::array::from_fn(|query_index| {
+        let query = states[query_index];
         let scores: Vec<f64> = states
             .iter()
             .enumerate()
@@ -38,8 +37,8 @@ pub fn calculate_visible_context_by_summing_states_weighted_by_exponentiated_coo
                 index += 1;
             }
         }
-        result.push(output);
-    }
+        output
+    });
     Ok(result)
 }
 #[cfg(test)]
@@ -47,13 +46,13 @@ mod tests {
 
     #[test]
     fn masked_padding_does_not_change_real_output() {
-        let base: Vec<[f64; 2]> =
+        let base: [[f64; 2]; 1] =
             super::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
                 &[[1.0, 0.0]],
                 &[true],
             )
             .unwrap();
-        let input_with_padding: Vec<[f64; 2]> =
+        let input_with_padding: [[f64; 2]; 2] =
             super::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
                 &[[1.0, 0.0], [999.0, 999.0]],
                 &[true, false],

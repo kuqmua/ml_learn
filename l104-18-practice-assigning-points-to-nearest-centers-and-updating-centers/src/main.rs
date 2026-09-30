@@ -37,15 +37,15 @@ fn main() {
             + calculate_square_by_multiplying_number_by_itself(first_point[1] - second_point[1])
     }
 
-    let _ = &((|| -> (Vec<[f64; 2]>, f64) {
+    let _ = &((|| -> ([[f64; 2]; 2], f64) {
         let data: &[[f64; 2]] = &dataset;
 
-        let mut centers: Vec<[f64; 2]> = vec![dataset[0], dataset[2]];
+        let mut centers: [[f64; 2]; 2] = [dataset[0], dataset[2]];
 
         for _ in 0..100 {
-            let mut coordinate_sums: Vec<[f64; 2]> = vec![[0., 0.]; centers.len()];
+            let mut coordinate_sums: [[f64; 2]; 2] = [[0., 0.]; 2];
 
-            let mut cluster_sizes: Vec<i32> = vec![0; centers.len()];
+            let mut cluster_sizes: [usize; 2] = [0; 2];
 
             for &point in data {
                 let center_index: usize = (0..centers.len())
@@ -79,7 +79,7 @@ fn main() {
                 cluster_sizes[center_index] += 1;
             }
 
-            let previous_centers: Vec<[f64; 2]> = centers.clone();
+            let previous_centers: [[f64; 2]; 2] = centers;
 
             for center_index in 0..centers.len() {
                 if cluster_sizes[center_index] > 0 {

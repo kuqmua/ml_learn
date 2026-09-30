@@ -16,13 +16,13 @@
 fn main() {
     let data: [&str; 4] = ["A", "B", "C", "D"];
     let sampled_indices: [usize; 4] = [0, 2, 2, 3];
-    let sample: Vec<&str> = sampled_indices.iter().map(|&index| data[index]).collect();
+    let sample: [&str; 4] = sampled_indices.map(|index| data[index]);
 
     plot_repeated_appearances_in_sample_drawn_with_replacement(sample);
 }
 
 // Строим график по результатам урока.
-fn plot_repeated_appearances_in_sample_drawn_with_replacement(sample: std::vec::Vec<&str>) {
+fn plot_repeated_appearances_in_sample_drawn_with_replacement(sample: [&str; 4]) {
     let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

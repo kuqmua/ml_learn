@@ -16,10 +16,7 @@
 fn main() {
     let probabilities: [f64; 3] = [0.2, 0.55, 0.8];
     for threshold in [0.5, 0.7] {
-        let _predictions: Vec<bool> = probabilities
-            .iter()
-            .map(|&probability| probability >= threshold)
-            .collect();
+        let _predictions: [bool; 3] = probabilities.map(|probability| probability >= threshold);
     }
 
     plot_number_of_positive_predictions_for_changing_threshold();

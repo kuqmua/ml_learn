@@ -12,21 +12,27 @@ fn main() {
     let queries: [[f64; 2]; 4] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [-1.0, 1.0]];
     let keys: [[[f64; 2]; 2]; 2] = [[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [1.0, 0.0]]];
     let values: [[[f64; 2]; 2]; 2] = [[[1.0, 0.0], [0.0, 1.0]], [[0.2, 0.8], [0.8, 0.2]]];
-    let mut output: Vec<[f64; 2]> = Vec::new();
-    for (head, &query) in queries.iter().enumerate() {
+    let output: [[f64; 2]; 4] = std::array::from_fn(|head| {
+        let query = queries[head];
         let group: usize = head / 2;
-        let raw_model_scores: Vec<f64> = keys[group]
-            .iter()
-            .map(|key_vector| query[0] * key_vector[0] + query[1] * key_vector[1])
-            .collect();
-        let weights: Vec<f64> =
+        let raw_model_scores: [f64; 2] = std::array::from_fn(|index| {
+            let key_vector = keys[group][index];
+            query[0] * key_vector[0] + query[1] * key_vector[1]
+        });
+        let weights: [f64; 2] =
             calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
                 &raw_model_scores,
-            );
-        output.push([
+            )
+            .try_into()
+            .expect("по одному весу на каждый из двух ключей");
+        [
             weights[0] * values[group][0][0] + weights[1] * values[group][1][0],
             weights[0] * values[group][0][1] + weights[1] * values[group][1][1],
-        ]);
-    }
-    assert_eq!(output.len(), 4);
+        ]
+    });
+    assert!(
+        output
+            .iter()
+            .all(|head_output| head_output.iter().all(|value| value.is_finite()))
+    );
 }

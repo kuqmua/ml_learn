@@ -18,9 +18,4 @@ fn main() {
         calculate_squared_point_distance_by_summing_squared_coordinate_differences(&first, &first),
         Ok(0.0)
     );
-    let _ = &(calculate_squared_point_distance_by_summing_squared_coordinate_differences(
-        &first,
-        &[1.0],
-    )
-    .unwrap_err());
 }

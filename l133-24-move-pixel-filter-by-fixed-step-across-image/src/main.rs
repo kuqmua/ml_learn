@@ -17,6 +17,7 @@ fn main() {
     let filter_width: i32 = 2;
     let filter_step_size: i32 = 2;
     let output_width: i32 = (image_width - filter_width) / filter_step_size + 1;
+    // Число позиций зависит от ширины изображения, ядра и шага фильтра.
     let positions: Vec<i32> = (0..output_width)
         .map(|index| index * filter_step_size)
         .collect();

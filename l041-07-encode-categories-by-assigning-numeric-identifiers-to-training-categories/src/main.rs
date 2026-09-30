@@ -24,21 +24,18 @@ fn build_category_dictionary_by_assigning_identifiers_to_unique_training_categor
     known_text_units
 }
 /// Кодирование категорий: заменяем известные категории номерами, неизвестные — нулём.
-fn encode_categories_by_replacing_with_known_identifiers_or_zero(
+fn encode_categories_by_replacing_with_known_identifiers_or_zero<const N: usize>(
     known_text_units: &std::collections::BTreeMap<String, usize>,
-    values: &[&str],
-) -> Vec<usize> {
-    values
-        .iter()
-        .map(|value| known_text_units.get(*value).copied().unwrap_or(0))
-        .collect()
+    values: &[&str; N],
+) -> [usize; N] {
+    std::array::from_fn(|index| known_text_units.get(values[index]).copied().unwrap_or(0))
 }
 fn main() {
     let known_text_units: std::collections::BTreeMap<String, usize> =
         build_category_dictionary_by_assigning_identifiers_to_unique_training_categories(&[
             "red", "blue", "red",
         ]);
-    let validation: Vec<usize> = encode_categories_by_replacing_with_known_identifiers_or_zero(
+    let validation: [usize; 2] = encode_categories_by_replacing_with_known_identifiers_or_zero(
         &known_text_units,
         &["blue", "green"],
     );

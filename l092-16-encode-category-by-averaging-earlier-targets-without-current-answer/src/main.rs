@@ -13,7 +13,7 @@ use l092_16_encode_category_by_averaging_earlier_targets_without_current_answer:
 fn main() {
     let categories: [&str; 5] = ["A", "B", "A", "A", "B"];
     let targets: [f64; 5] = [1.0, 0.0, 0.0, 1.0, 1.0];
-    let values: Vec<f64> = encode_categories_as_average_previous_targets_with_prior_weight(
+    let values: [f64; 5] = encode_categories_as_average_previous_targets_with_prior_weight(
         &categories,
         &targets,
         0.5,
@@ -28,7 +28,7 @@ fn main() {
     }
 }
 
-fn plot_category_target_averages_using_only_previous_rows(values: &[f64]) {
+fn plot_category_target_averages_using_only_previous_rows(values: &[f64; 5]) {
     let points: Vec<(f64, f64)> = values
         .iter()
         .enumerate()

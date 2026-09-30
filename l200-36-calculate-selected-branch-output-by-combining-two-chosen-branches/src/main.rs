@@ -17,10 +17,12 @@ fn main() {
         scores[second_candidate].total_cmp(&scores[first_candidate])
     });
     let selected: [usize; 2] = [order[0], order[1]];
-    let weights: Vec<f64> =
+    let weights: [f64; 2] =
         calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
             &[scores[selected[0]], scores[selected[1]]],
-        );
+        )
+        .try_into()
+        .expect("выбраны ровно две ветви");
     let expert_gain: [f64; 4] = [1.0, 2.0, -1.0, 0.5];
     let _output: f64 = selected
         .iter()

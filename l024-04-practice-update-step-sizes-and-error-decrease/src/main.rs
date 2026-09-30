@@ -67,26 +67,24 @@ fn main() {
     plot_errors_over_updates_for_different_step_sizes();
 
     fn plot_errors_over_updates_for_different_step_sizes() {
-        let histories: Vec<Vec<(f64, f64)>> = [0.01, 0.2, 1.1]
-            .into_iter()
-            .map(|rate| {
-                let mut parameter: f64 = 0.0;
-                let mut points: Vec<(f64, f64)> = vec![(
-                    0.0,
+        let rates: [f64; 3] = [0.01, 0.2, 1.1];
+        let histories: [Vec<(f64, f64)>; 3] = std::array::from_fn(|index| {
+            let rate = rates[index];
+            let mut parameter: f64 = 0.0;
+            let mut points: Vec<(f64, f64)> = vec![(
+                0.0,
+                (calculate_squared_distance_of_parameter_from_three(parameter) + 1e-12).log10(),
+            )];
+            for step in 1..=30 {
+                let rate_of_change: f64 = 2.0 * (parameter - 3.0);
+                parameter -= rate * rate_of_change;
+                points.push((
+                    step as f64,
                     (calculate_squared_distance_of_parameter_from_three(parameter) + 1e-12).log10(),
-                )];
-                for step in 1..=30 {
-                    let rate_of_change: f64 = 2.0 * (parameter - 3.0);
-                    parameter -= rate * rate_of_change;
-                    points.push((
-                        step as f64,
-                        (calculate_squared_distance_of_parameter_from_three(parameter) + 1e-12)
-                            .log10(),
-                    ));
-                }
-                points
-            })
-            .collect();
+                ));
+            }
+            points
+        });
         let _chart: std::path::PathBuf = lesson_visualization::line_chart(
             env!("CARGO_MANIFEST_DIR"),
             "lesson-chart",

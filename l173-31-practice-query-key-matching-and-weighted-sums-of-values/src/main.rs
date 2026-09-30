@@ -54,15 +54,14 @@ fn main() {
         result
     }
 
-    let (_attended_output, attention_weights): (Vec<[f64; 2]>, Vec<Vec<f64>>) =
-        (|| -> (Vec<[f64; 2]>, Vec<Vec<f64>>) {
-            let queries: &[[f64; 2]] = &sequence;
-            let keys: &[[f64; 2]] = &sequence;
-            let values: &[[f64; 2]] = &sequence;
+    let (_attended_output, attention_weights): ([[f64; 2]; 3], [[f64; 3]; 3]) =
+        (|| -> ([[f64; 2]; 3], [[f64; 3]; 3]) {
+            let queries: &[[f64; 2]; 3] = &sequence;
+            let keys: &[[f64; 2]; 3] = &sequence;
+            let values: &[[f64; 2]; 3] = &sequence;
             let past_only_attention: bool = true;
-            assert_eq!(keys.len(), values.len());
-            let mut outputs: Vec<[f64; 2]> = vec![];
-            let mut weights: Vec<Vec<f64>> = vec![];
+            let mut outputs: [[f64; 2]; 3] = [[0.0; 2]; 3];
+            let mut weights: [[f64; 3]; 3] = [[0.0; 3]; 3];
             for (query_index, query) in queries.iter().enumerate() {
                 let raw_model_scores: Vec<f64> = keys
 
@@ -122,8 +121,10 @@ fn main() {
                     attended_vector[0] += attention_weights[value_index] * values[value_index][0];
                     attended_vector[1] += attention_weights[value_index] * values[value_index][1];
                 }
-                outputs.push(attended_vector);
-                weights.push(attention_weights);
+                outputs[query_index] = attended_vector;
+                weights[query_index] = attention_weights
+                    .try_into()
+                    .expect("по одному весу на каждый из трёх ключей");
             }
             (outputs, weights)
         })();
@@ -132,14 +133,13 @@ fn main() {
 }
 
 // Строим график по результатам урока.
-fn plot_weights_assigned_to_current_and_past_positions(
-    attention_weights: std::vec::Vec<std::vec::Vec<f64>>,
-) {
+fn plot_weights_assigned_to_current_and_past_positions(attention_weights: [[f64; 3]; 3]) {
+    let chart_rows: Vec<Vec<f64>> = attention_weights.iter().map(|row| row.to_vec()).collect();
     let _chart: std::path::PathBuf = lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Причинные веса внимания",
-        &attention_weights,
+        &chart_rows,
     )
     .expect("не удалось сохранить тепловую карту");
 }

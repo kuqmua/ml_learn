@@ -30,11 +30,8 @@ fn main() {
     );
     let weight: f64 = (training[1].1 - training[0].1) / (training[1].0 - training[0].0);
     let bias: f64 = training[0].1 - weight * training[0].0;
-    let targets: Vec<f64> = test.iter().map(|&(_, target)| target).collect();
-    let predictions: Vec<f64> = test
-        .iter()
-        .map(|&(feature, _)| weight * feature + bias)
-        .collect();
+    let targets: [f64; 2] = test.map(|(_, target)| target);
+    let predictions: [f64; 2] = test.map(|(feature, _)| weight * feature + bias);
     let _mean_squared_error_value: f64 =
         calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
             &targets,

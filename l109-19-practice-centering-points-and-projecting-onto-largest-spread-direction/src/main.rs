@@ -102,16 +102,14 @@ fn main() {
             let variance: f64 = largest_eigenvalue / (first_variance_sum + second_variance_sum);
             (mean, axis, variance)
         })();
-    let projections: Vec<f64> = data
-        .iter()
-        .map(|point| (point[0] - mean[0]) * axis[0] + (point[1] - mean[1]) * axis[1])
-        .collect();
+    let projections: [f64; 4] =
+        data.map(|point| (point[0] - mean[0]) * axis[0] + (point[1] - mean[1]) * axis[1]);
 
     plot_points_projected_onto_direction_of_largest_spread(projections);
 }
 
 // Строим график по результатам урока.
-fn plot_points_projected_onto_direction_of_largest_spread(projections: std::vec::Vec<f64>) {
+fn plot_points_projected_onto_direction_of_largest_spread(projections: [f64; 4]) {
     let principal_component_analysis_points: Vec<(f64, f64)> = projections
         .iter()
         .enumerate()

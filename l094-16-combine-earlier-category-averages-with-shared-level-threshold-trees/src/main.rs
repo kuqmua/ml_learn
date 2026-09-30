@@ -14,7 +14,7 @@ use l092_16_encode_category_by_averaging_earlier_targets_without_current_answer:
 fn main() {
     let categories: [&str; 6] = ["A", "B", "A", "B", "A", "B"];
     let targets: [f64; 6] = [1.0, 0.0, 1.0, 0.0, 1.0, 0.0];
-    let category_target_mean_values: Vec<f64> =
+    let category_target_mean_values: [f64; 6] =
         encode_categories_as_average_previous_targets_with_prior_weight(
             &categories,
             &targets,

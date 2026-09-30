@@ -12,9 +12,11 @@ use l192_35_convert_text_identifiers_to_context_and_next_piece_scores::convert_t
 
 fn main() {
     let prefix: [usize; 2] = [0, 1];
-    let raw_model_scores: Vec<[f64; 3]> =
-        convert_text_identifiers_to_context_then_to_next_token_scores(&prefix);
-    let last: &[f64; 3] = raw_model_scores.last().unwrap();
+    let raw_model_scores: [[f64; 3]; 2] =
+        convert_text_identifiers_to_context_then_to_next_token_scores(&prefix)
+            .try_into()
+            .expect("на каждый идентификатор префикса приходится один набор оценок");
+    let last: &[f64; 3] = &raw_model_scores[1];
     let _next: usize = last
         .iter()
         .enumerate()

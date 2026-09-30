@@ -27,45 +27,39 @@ fn main() {
         (5., true),
     ];
 
-    let models: Vec<(f64, bool)> = (1..=9)
-        .map(|seed| {
-            (|| -> (f64, bool) {
-                let data: &[(f64, bool)] = &(|| -> Vec<(f64, bool)> {
-                    let data: &[(f64, bool)] = &data;
-                    let seed: u64 = seed;
-                    let mut generator_state: u64 = seed;
-                    (0..data.len())
-                        .map(|_| {
-                            generator_state = generator_state
-                                .wrapping_mul(6364136223846793005)
-                                .wrapping_add(1);
-                            data[(generator_state as usize) % data.len()]
+    let models: [(f64, bool); 9] = std::array::from_fn(|index| {
+        let seed = (index + 1) as u64;
+        (|| -> (f64, bool) {
+            let data: &[(f64, bool)] = &(|| -> Vec<(f64, bool)> {
+                let data: &[(f64, bool)] = &data;
+                let seed: u64 = seed;
+                let mut generator_state: u64 = seed;
+                (0..data.len())
+                    .map(|_| {
+                        generator_state = generator_state
+                            .wrapping_mul(6364136223846793005)
+                            .wrapping_add(1);
+                        data[(generator_state as usize) % data.len()]
+                    })
+                    .collect()
+            })();
+            let mut best: (f64, f64, bool) = (f64::INFINITY, 0., false);
+            for &(candidate_threshold, _) in data {
+                for reverse in [false, true] {
+                    let errors: f64 = data
+                        .iter()
+                        .filter(|&&(feature_value, label)| {
+                            ((feature_value >= candidate_threshold) ^ reverse) != label
                         })
-                        .collect()
-                })();
-                let mut best: (f64, f64, bool) = (f64::INFINITY, 0., false);
-                for &(candidate_threshold, _) in data {
-                    for reverse in [false, true] {
-                        let errors: f64 = data
-                            .iter()
-                            .filter(|&&(feature_value, label)| {
-                                ((feature_value >= candidate_threshold) ^ reverse) != label
-                            })
-                            .count() as f64;
-                        if errors < best.0 {
-                            best = (errors, candidate_threshold, reverse);
-                        }
+                        .count() as f64;
+                    if errors < best.0 {
+                        best = (errors, candidate_threshold, reverse);
                     }
                 }
-                (best.1, best.2)
-            })()
-        })
-        .collect();
-
-    assert!(
-        !models.is_empty(),
-        "для сравнения нужна хотя бы одна модель"
-    );
+            }
+            (best.1, best.2)
+        })()
+    });
     for feature_value in [0.5, 2.5, 4.5] {
         let _first_model: bool = (feature_value >= models[0].0) ^ models[0].1;
         let votes: usize = models
@@ -85,7 +79,7 @@ fn main() {
 }
 
 // Строим график по результатам урока.
-fn plot_thresholds_learned_by_resampled_models(models: std::vec::Vec<(f64, bool)>) {
+fn plot_thresholds_learned_by_resampled_models(models: [(f64, bool); 9]) {
     let ensembles_points: Vec<(f64, f64)> = models
         .iter()
         .enumerate()

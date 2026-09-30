@@ -18,12 +18,13 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let image: Vec<Vec<f64>> = vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]];
-    let filter_weights: Vec<Vec<f64>> = vec![vec![1., 0.], vec![0., -1.]];
+    let image: [[f64; 3]; 3] = [[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]];
+    let filter_weights: [[f64; 2]; 2] = [[1., 0.], [0., -1.]];
 
+    // Размер карты вычисляется из размера изображения, ядра и шага фильтра.
     let feature_map: Vec<Vec<f64>> = (|| -> Vec<Vec<f64>> {
-        let image: &[Vec<f64>] = &image;
-        let filter_weights: &[Vec<f64>] = &filter_weights;
+        let image: &[[f64; 3]; 3] = &image;
+        let filter_weights: &[[f64; 2]; 2] = &filter_weights;
         let filter_step_size: usize = 1;
         assert!(filter_step_size > 0);
         let rows: usize = (image.len() - filter_weights.len()) / filter_step_size + 1;

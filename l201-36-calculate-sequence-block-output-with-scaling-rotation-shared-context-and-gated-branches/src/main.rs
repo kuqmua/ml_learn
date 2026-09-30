@@ -15,43 +15,35 @@ use l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_
 use l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position;
 use l198_36_calculate_gated_layer_output_by_multiplying_branches_with_smooth_gate::calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate;
 
-fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and_gated_features(
-    states: &[[f64; 2]],
-) -> Vec<[f64; 2]> {
+fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and_gated_features<
+    const N: usize,
+>(
+    states: &[[f64; 2]; N],
+) -> [[f64; 2]; N] {
     let gamma: [f64; 2] = [1.0, 1.0];
-    let norm: Vec<[f64; 2]> = states
-        .iter()
-        .map(|input_value| {
-            let second_input_value: Vec<f64> =
+    let norm: [[f64; 2]; N] = std::array::from_fn(|index| {
+        let input_value = &states[index];
+        let second_input_value: [f64; 2] =
                 normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
                     input_value,
                     &gamma,
                     1e-6,
                 )
                 .unwrap();
-            [second_input_value[0], second_input_value[1]]
-        })
-        .collect();
-    let keys: Vec<[f64; 2]> = norm
-        .iter()
-        .enumerate()
-        .map(|(position, input_value)| {
-            let key: Vec<f64> =
+        [second_input_value[0], second_input_value[1]]
+    });
+    let keys: [[f64; 2]; N] = std::array::from_fn(|position| {
+        let input_value = &norm[position];
+        let key: [f64; 2] =
                 normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
                     input_value,
                     &gamma,
                     1e-6,
                 )
                 .unwrap();
-            rotate_vector_coordinate_pair_by_token_position(
-                [key[0], key[1]],
-                position,
-                0.1,
-            )
-        })
-        .collect();
-    let mut output: Vec<[f64; 2]> = Vec::new();
-    for index in 0..states.len() {
+        rotate_vector_coordinate_pair_by_token_position([key[0], key[1]], position, 0.1)
+    });
+    std::array::from_fn(|index| {
         let mut context: [f64; 2] = [0.0; 2];
         for head in 0..2 {
             let raw_query: [f64; 2] = if head == 0 {
@@ -59,7 +51,7 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
             } else {
                 [norm[index][1], -norm[index][0]]
             };
-            let query: Vec<f64> =
+            let query: [f64; 2] =
                 normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
                     &raw_query, &gamma, 1e-6,
                 )
@@ -77,14 +69,14 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
         }
         let input_plus_transformed_value: [f64; 2] =
             [states[index][0] + context[0], states[index][1] + context[1]];
-        let feed_forward_input: Vec<f64> =
+        let feed_forward_input: [f64; 2] =
             normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
                 &input_plus_transformed_value,
                 &gamma,
                 1e-6,
             )
             .unwrap();
-        output.push([
+        [
             input_plus_transformed_value[0]
                 + 0.1
                     * calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate(
@@ -97,16 +89,15 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
                         feed_forward_input[1],
                         feed_forward_input[0],
                     ),
-        ]);
-    }
-    output
+        ]
+    })
 }
 fn main() {
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    let output: Vec<[f64; 2]> =
+    let output: [[f64; 2]; 3] =
         calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and_gated_features(&states);
     assert_eq!(
-        calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and_gated_features(&states[..1])[0],
+        calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and_gated_features(&[states[0]])[0],
         output[0]
     );
 }

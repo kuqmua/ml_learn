@@ -10,7 +10,7 @@
 fn main() {
     let targets: [f64; 4] = [0.0, 0.0, 2.0, 2.0];
     let mut predictions: [f64; 4] = [1.0; 4];
-    let mut history: Vec<f64> = vec![1.0];
+    let mut history: [f64; 3] = [1.0; 3];
     for round in 0..2 {
         let target_minus_prediction_values: [f64; 4] =
             std::array::from_fn::<_, 4, _>(|step_index| {
@@ -29,14 +29,13 @@ fn main() {
             .map(|(target, prediction)| (target - prediction).powi(2))
             .sum::<f64>()
             / 4.0;
-        history.push(mean_squared_error_value);
-        let _ = &(round + 1);
+        history[round + 1] = mean_squared_error_value;
     }
     assert_eq!(predictions, [0.25, 0.25, 1.75, 1.75]);
     plot_average_squared_error_after_each_added_tree(&history);
 }
 
-fn plot_average_squared_error_after_each_added_tree(losses: &[f64]) {
+fn plot_average_squared_error_after_each_added_tree(losses: &[f64; 3]) {
     let points: Vec<(f64, f64)> = losses
         .iter()
         .enumerate()

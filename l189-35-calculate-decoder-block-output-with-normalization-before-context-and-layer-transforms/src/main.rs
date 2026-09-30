@@ -22,42 +22,42 @@ fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_d
     ]
 }
 /// Учебный блок декодера: нормализуем вход, прибавляем причинный контекст, снова нормализуем и прибавляем 0.2·max(0, x).
-fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normalized_values(
-    input: &[[f64; 2]],
-) -> Vec<[f64; 2]> {
-    let normalized: Vec<[f64; 2]> = input
-        .iter()
-        .copied()
-        .map(normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation)
-        .collect();
-    let attention: Vec<[f64; 2]> =
+fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normalized_values<
+    const N: usize,
+>(
+    input: &[[f64; 2]; N],
+) -> [[f64; 2]; N] {
+    let normalized: [[f64; 2]; N] = input
+        .map(normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation);
+    let attention: [[f64; 2]; N] =
         calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
             &normalized,
             &normalized,
             &normalized,
         )
-        .unwrap();
-    input
-        .iter()
-        .zip(&attention)
-        .map(|(&original, &context)| {
-            let input_plus_transformed_value: [f64; 2] =
-                [original[0] + context[0], original[1] + context[1]];
-            let norm: [f64; 2] = normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
+        .unwrap()
+        .try_into()
+        .expect("внимание возвращает по одному вектору на позицию");
+    std::array::from_fn(|index| {
+        let original = input[index];
+        let context = attention[index];
+        let input_plus_transformed_value: [f64; 2] =
+            [original[0] + context[0], original[1] + context[1]];
+        let norm: [f64; 2] =
+            normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
                 input_plus_transformed_value,
             );
-            [
-                input_plus_transformed_value[0] + 0.2 * norm[0].max(0.0),
-                input_plus_transformed_value[1] + 0.2 * norm[1].max(0.0),
-            ]
-        })
-        .collect()
+        [
+            input_plus_transformed_value[0] + 0.2 * norm[0].max(0.0),
+            input_plus_transformed_value[1] + 0.2 * norm[1].max(0.0),
+        ]
+    })
 }
 fn main() {
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    let output: Vec<[f64; 2]> =
+    let output: [[f64; 2]; 3] =
         calculate_decoder_block_output_by_adding_past_context_and_transformed_normalized_values(
             &states,
         );
-    assert_eq!(output.len(), states.len());
+    assert!(output.iter().flatten().all(|value| value.is_finite()));
 }

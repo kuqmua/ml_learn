@@ -12,19 +12,15 @@ fn main() {
     let alpha: f64 = 0.64;
     let training: [(f64, f64); 4] = [(1.0, -1.0), (1.0, 0.0), (1.0, 1.0), (1.0, 2.0)];
     let validation: [(f64, f64); 2] = [(2.0, -0.5), (-1.0, 0.5)];
-    let inputs: Vec<(f64, f64)> = training
-        .iter()
-        .map(|&(clean, noise)| {
-            (
-                calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
-                    clean, noise, alpha,
-                )
-                .unwrap()
-                    - alpha.sqrt() * clean,
-                noise,
+    let inputs: [(f64, f64); 4] = training.map(|(clean, noise)| {
+        (
+            calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+                clean, noise, alpha,
             )
-        })
-        .collect();
+            .unwrap() - alpha.sqrt() * clean,
+            noise,
+        )
+    });
     let mut weight: f64 = 0.0;
     for _ in 0..100 {
         let rate_of_change: f64 = inputs
@@ -40,19 +36,15 @@ fn main() {
         .sum::<f64>()
         / inputs.len() as f64;
     assert!(loss < 1e-6);
-    let held_out: Vec<(f64, f64)> = validation
-        .iter()
-        .map(|&(clean, noise)| {
-            (
-                calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
-                    clean, noise, alpha,
-                )
-                .unwrap()
-                    - alpha.sqrt() * clean,
-                noise,
+    let held_out: [(f64, f64); 2] = validation.map(|(clean, noise)| {
+        (
+            calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+                clean, noise, alpha,
             )
-        })
-        .collect();
+            .unwrap() - alpha.sqrt() * clean,
+            noise,
+        )
+    });
     let mean_squared_error_value: &dyn Fn(f64) -> f64 = &|candidate: f64| {
         held_out
             .iter()

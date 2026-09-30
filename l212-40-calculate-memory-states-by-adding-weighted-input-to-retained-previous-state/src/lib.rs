@@ -5,17 +5,17 @@
 // Долю (fraction) предыдущего состояния, сохраняемую на следующем шаге, называют retention.
 /// Линейная рекуррентная модель: h = доля_памяти·h_previous + вес_входа·x; начальное состояние нулевое.
 
-pub fn calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
-    input: &[f64],
+pub fn calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state<
+    const N: usize,
+>(
+    input: &[f64; N],
     previous_state_share_kept: f64,
     input_factor: f64,
-) -> Vec<f64> {
+) -> [f64; N] {
     let mut state: f64 = 0.0;
-    input
-        .iter()
-        .map(|&value| {
-            state = previous_state_share_kept * state + input_factor * value;
-            state
-        })
-        .collect()
+    std::array::from_fn(|index| {
+        let value = input[index];
+        state = previous_state_share_kept * state + input_factor * value;
+        state
+    })
 }

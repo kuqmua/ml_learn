@@ -33,22 +33,8 @@ fn distance_extracts_root_of_squared_differences() {
         .abs()
             < 1e-12
     );
-    assert_eq!(
-        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(&[], &[]),
-        Ok(0.0)
-    );
     assert!(
-        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
-            &[1.0],
-            &[]
-        )
-        .is_err()
-    );
-    assert!(
-        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
-            &[],
-            &[1.0]
-        )
-        .is_err()
+        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(&[], &[])
+            .is_err()
     );
 }

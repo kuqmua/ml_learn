@@ -20,13 +20,13 @@ fn main() {
         "для центрирования нужно хотя бы одно значение"
     );
     let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(&values).unwrap();
-    let centered: Vec<f64> = values.iter().map(|&value| value - mean).collect();
+    let centered: [f64; 3] = values.map(|value| value - mean);
 
     plot_feature_values_after_subtracting_mean(values, centered);
 }
 
 // Строим график по результатам урока.
-fn plot_feature_values_after_subtracting_mean(values: [f64; 3], centered: std::vec::Vec<f64>) {
+fn plot_feature_values_after_subtracting_mean(values: [f64; 3], centered: [f64; 3]) {
     let original_points: Vec<(f64, f64)> = values
         .iter()
         .enumerate()

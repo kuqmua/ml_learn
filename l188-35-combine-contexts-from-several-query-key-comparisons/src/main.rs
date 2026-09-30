@@ -11,32 +11,27 @@ use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match
 
 fn main() {
     let input: [[f64; 2]; 3] = [[1.0, 2.0], [3.0, 1.0], [2.0, 4.0]];
-    let first_attention_head: Vec<[f64; 2]> = input
-        .iter()
-        .map(|input_value| [input_value[0], 0.0])
-        .collect();
-    let second_attention_head: Vec<[f64; 2]> = input
-        .iter()
-        .map(|input_value| [0.0, input_value[1]])
-        .collect();
-    let first_output: Vec<[f64; 2]> =
+    let first_attention_head: [[f64; 2]; 3] = input.map(|input_value| [input_value[0], 0.0]);
+    let second_attention_head: [[f64; 2]; 3] = input.map(|input_value| [0.0, input_value[1]]);
+    let first_output: [[f64; 2]; 3] =
         calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
             &first_attention_head,
             &first_attention_head,
             &first_attention_head,
         )
-        .unwrap();
-    let second_output: Vec<[f64; 2]> =
+        .unwrap()
+        .try_into()
+        .expect("на каждую из трёх позиций приходится один выход");
+    let second_output: [[f64; 2]; 3] =
         calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
             &second_attention_head,
             &second_attention_head,
             &second_attention_head,
         )
-        .unwrap();
-    let combined: Vec<[f64; 2]> = first_output
-        .iter()
-        .zip(&second_output)
-        .map(|(first_value, second_value)| [first_value[0], second_value[1]])
-        .collect();
+        .unwrap()
+        .try_into()
+        .expect("на каждую из трёх позиций приходится один выход");
+    let combined: [[f64; 2]; 3] =
+        std::array::from_fn(|index| [first_output[index][0], second_output[index][1]]);
     assert_eq!(combined[0], input[0]);
 }

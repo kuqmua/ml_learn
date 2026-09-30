@@ -3,6 +3,7 @@
 
 /// Один причинный head. Строка i видит только j <= i.
 /// Причинное внимание: совпадения запроса и ключей делим на sqrt(2), превращаем в веса через softmax и суммируем значения только текущей и прошлых позиций.
+/// Длина текста задаётся во время выполнения; совпадение длин Q/K/V проверяется здесь.
 use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
 
 pub fn calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(

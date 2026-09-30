@@ -12,7 +12,7 @@ use l212_40_calculate_memory_states_by_adding_weighted_input_to_retained_previou
 
 fn main() {
     let input: [f64; 4] = [1.0, 0.0, 0.0, 0.0];
-    let states: Vec<f64> =
+    let states: [f64; 4] =
         calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
             &input, 0.5, 1.0,
         );
@@ -21,7 +21,7 @@ fn main() {
     plot_stored_state_over_repeated_weighted_updates(&states);
 }
 
-fn plot_stored_state_over_repeated_weighted_updates(states: &[f64]) {
+fn plot_stored_state_over_repeated_weighted_updates(states: &[f64; 4]) {
     let points: Vec<(f64, f64)> = states
         .iter()
         .enumerate()

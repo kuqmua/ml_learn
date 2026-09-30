@@ -10,7 +10,7 @@
 use l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values;
 
 fn main() {
-    let mut signal: Vec<f64> = vec![0.0; 9];
+    let mut signal: [f64; 9] = [0.0; 9];
     signal[0] = 1.0;
     for filter_spacing in [1, 2, 4] {
         signal = calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
@@ -19,14 +19,16 @@ fn main() {
             1.0,
             filter_spacing,
         )
-        .unwrap();
+        .unwrap()
+        .try_into()
+        .expect("фильтр выдаёт по одному значению на каждый из девяти отсчётов");
     }
     assert_eq!(signal[..8], [1.0; 8]);
     assert_eq!(signal[8], 0.0);
     plot_impulse_response_with_increasing_filter_spacing(&signal);
 }
 
-fn plot_impulse_response_with_increasing_filter_spacing(signal: &[f64]) {
+fn plot_impulse_response_with_increasing_filter_spacing(signal: &[f64; 9]) {
     let points: Vec<(f64, f64)> = signal
         .iter()
         .enumerate()

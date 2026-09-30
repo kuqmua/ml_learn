@@ -19,16 +19,16 @@ fn main() {
         dense_numeric_representations[3],
         dense_numeric_representations[original[2]],
     ];
-    let context: Vec<[f64; 2]> =
+    let context: [[f64; 2]; 3] =
         calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
             &visible, &[true; 3],
         )
         .unwrap();
     let hidden_text_unit_identifier: usize = original[1];
-    let raw_model_scores: Vec<f64> = dense_numeric_representations[..3]
-        .iter()
-        .map(|candidate| context[1][0] * candidate[0] + context[1][1] * candidate[1])
-        .collect();
+    let raw_model_scores: [f64; 3] = std::array::from_fn(|index| {
+        let candidate = dense_numeric_representations[index];
+        context[1][0] * candidate[0] + context[1][1] * candidate[1]
+    });
     let maximum_value: f64 = raw_model_scores
         .iter()
         .copied()

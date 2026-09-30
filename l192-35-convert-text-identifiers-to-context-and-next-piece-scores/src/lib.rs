@@ -3,6 +3,7 @@
 
 /// Применяет фиксированную выходную проекцию к состояниям decoder.
 /// Выходные логиты декодера: контекстные векторы превращаем в три оценки следующего токена фиксированными весами.
+/// Возвращает один набор оценок для каждой позиции входной последовательности.
 use l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calculate_text_context_vectors_by_adding_position_and_weighted_past_context;
 
 pub fn convert_text_identifiers_to_context_then_to_next_token_scores(

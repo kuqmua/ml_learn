@@ -100,78 +100,60 @@ fn main() {
         ]
     }
 
-    let transformer_output: Vec<[f64; 2]> = (|| -> Vec<[f64; 2]> {
-        let input_values: &[[f64; 2]] = &input_values;
-        input_values
-
+    let transformer_output: [[f64; 2]; 2] = std::array::from_fn(|text_unit_index| {
+        let query = input_values[text_unit_index];
+        let raw_model_scores: Vec<f64> = input_values
             .iter()
-
-            .enumerate()
-
-
-            .map(|(text_unit_index, &query)| {
-                let raw_model_scores: Vec<f64> = input_values
-
-                    .iter()
-
-                    .take(text_unit_index + 1)
-
-                    .map(|key| {
-                        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&query, key).unwrap()
-
-                                / approximate_square_root_by_repeated_averaging(2.0)
-                    })
-
-                    .collect();
-                let attention_weights: Vec<f64> = (|| -> Vec<f64> {
-                    let input_values: &[f64] = &raw_model_scores;
-                    let mut maximum_value: f64 = f64::NEG_INFINITY;
-                    for &value in input_values {
-                        if value > maximum_value {
-                            maximum_value = value;
-                        }
-                    }
-                    let mut exponentials: Vec<f64> = Vec::with_capacity(input_values.len());
-                    let mut normalizer: f64 = 0.0;
-                    for &value in input_values {
-                        let exponential_value: f64 =
-
-                                approximate_e_to_power_by_summing_power_over_factorial_terms(value - maximum_value);
-                        exponentials.push(exponential_value);
-                        normalizer += exponential_value;
-                    }
-                    for exponential_value in &mut exponentials {
-                        *exponential_value /= normalizer;
-                    }
-                    exponentials
-                })();
-                let mut attended: [f64; 2] = [0.0, 0.0];
-                for key_index in 0..attention_weights.len() {
-                    attended[0] += attention_weights[key_index] * input_values[key_index][0];
-                    attended[1] += attention_weights[key_index] * input_values[key_index][1];
-                }
-                let normalized_values: [f64; 2] = normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation([
-
-                    query[0] + attended[0],
-
-                    query[1] + attended[1],
-                ]);
-                let feed_forward_values: [f64; 2] = [
-
-                    choose_larger_number(normalized_values[0], 0.),
-
-                    choose_larger_number(normalized_values[1], 0.),
-                ];
-                normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation([
-
-                    normalized_values[0] + feed_forward_values[0],
-
-                    normalized_values[1] + feed_forward_values[1],
-                ])
+            .take(text_unit_index + 1)
+            .map(|key| {
+                calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+                    &query, key,
+                )
+                .unwrap()
+                    / approximate_square_root_by_repeated_averaging(2.0)
             })
-
-            .collect()
-    })();
+            .collect();
+        let attention_weights: Vec<f64> = (|| -> Vec<f64> {
+            let input_values: &[f64] = &raw_model_scores;
+            let mut maximum_value: f64 = f64::NEG_INFINITY;
+            for &value in input_values {
+                if value > maximum_value {
+                    maximum_value = value;
+                }
+            }
+            let mut exponentials: Vec<f64> = Vec::with_capacity(input_values.len());
+            let mut normalizer: f64 = 0.0;
+            for &value in input_values {
+                let exponential_value: f64 =
+                    approximate_e_to_power_by_summing_power_over_factorial_terms(
+                        value - maximum_value,
+                    );
+                exponentials.push(exponential_value);
+                normalizer += exponential_value;
+            }
+            for exponential_value in &mut exponentials {
+                *exponential_value /= normalizer;
+            }
+            exponentials
+        })();
+        let mut attended: [f64; 2] = [0.0, 0.0];
+        for key_index in 0..attention_weights.len() {
+            attended[0] += attention_weights[key_index] * input_values[key_index][0];
+            attended[1] += attention_weights[key_index] * input_values[key_index][1];
+        }
+        let normalized_values: [f64; 2] =
+            normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
+                [query[0] + attended[0], query[1] + attended[1]],
+            );
+        let feed_forward_values: [f64; 2] = [
+            choose_larger_number(normalized_values[0], 0.),
+            choose_larger_number(normalized_values[1], 0.),
+        ];
+        normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation([
+            normalized_values[0] + feed_forward_values[0],
+            normalized_values[1] + feed_forward_values[1],
+        ])
+    });
 
     plot_outputs_after_context_mixing_and_coordinate_transformation(
         input_values,
@@ -182,7 +164,7 @@ fn main() {
 // Строим график по результатам урока.
 fn plot_outputs_after_context_mixing_and_coordinate_transformation(
     input_values: [[f64; 2]; 2],
-    transformer_output: std::vec::Vec<[f64; 2]>,
+    transformer_output: [[f64; 2]; 2],
 ) {
     let input_matrix: Vec<Vec<f64>> = input_values.iter().map(|row| row.to_vec()).collect();
     let output_matrix: Vec<Vec<f64>> = transformer_output.iter().map(|row| row.to_vec()).collect();

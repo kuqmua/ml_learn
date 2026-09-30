@@ -25,14 +25,8 @@ fn main() {
         choose_missing_value_replacement_by_sorting_training_values_and_taking_upper_middle(
             &observed,
         );
-    let _training_filled: Vec<f64> = training_data
-        .iter()
-        .map(|input_value| input_value.unwrap_or(replacement))
-        .collect();
-    let validation_filled: Vec<f64> = validation
-        .iter()
-        .map(|input_value| input_value.unwrap_or(replacement))
-        .collect();
+    let _training_filled: [f64; 4] = training_data.map(|value| value.unwrap_or(replacement));
+    let validation_filled: [f64; 2] = validation.map(|value| value.unwrap_or(replacement));
     assert_eq!(replacement, 3.0);
     assert_eq!(validation_filled, [3.0, 100.0]);
 }

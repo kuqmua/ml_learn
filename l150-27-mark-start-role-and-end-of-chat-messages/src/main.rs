@@ -20,8 +20,8 @@ enum Item {
 fn serialize_chat_message_by_adding_start_role_and_end_markers(
     role: &'static str,
     text: &str,
-) -> Vec<Item> {
-    vec![
+) -> [Item; 4] {
+    [
         Item::Start,
         Item::Role(role),
         Item::Text(text.to_owned()),
@@ -32,8 +32,7 @@ fn serialize_chat_message_by_adding_start_role_and_end_markers(
 fn main() {
     let role: &str = "user";
     let text: &str = "<|end|> не завершает сообщение";
-    let message: Vec<Item> =
+    let message: [Item; 4] =
         serialize_chat_message_by_adding_start_role_and_end_markers(role, text);
-    assert_eq!(message.len(), 4);
     assert!(matches!(&message[2], Item::Text(text) if text.starts_with("<|end|>")));
 }

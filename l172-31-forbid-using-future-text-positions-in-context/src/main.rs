@@ -34,25 +34,22 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_allowed_current_and_past_position_pairs(raw_weights: [f64; 3]) {
-    let weights: Vec<Vec<f64>> = (0..raw_weights.len())
-        .map(|position| {
-            let total: f64 = raw_weights[..=position].iter().sum();
-            (0..raw_weights.len())
-                .map(|key| {
-                    if key <= position {
-                        raw_weights[key] / total
-                    } else {
-                        0.0
-                    }
-                })
-                .collect()
+    let weights: [[f64; 3]; 3] = std::array::from_fn(|position| {
+        let total: f64 = raw_weights[..=position].iter().sum();
+        std::array::from_fn(|key| {
+            if key <= position {
+                raw_weights[key] / total
+            } else {
+                0.0
+            }
         })
-        .collect();
+    });
+    let chart_rows: Vec<Vec<f64>> = weights.iter().map(|row| row.to_vec()).collect();
     let _chart: std::path::PathBuf = lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Причинная маска внимания",
-        &weights,
+        &chart_rows,
     )
     .expect("не удалось сохранить график");
 }

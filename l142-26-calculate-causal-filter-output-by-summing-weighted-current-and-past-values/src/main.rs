@@ -11,16 +11,18 @@ use l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_
 
 fn main() {
     let signal: [f64; 4] = [1.0, 2.0, 3.0, 4.0];
-    let output: Vec<f64> =
+    let output: [f64; 4] =
         calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &signal, 1.0, 2.0, 1,
         )
-        .unwrap();
+        .unwrap()
+        .try_into()
+        .expect("по одному выходу на каждый отсчёт сигнала");
     assert_eq!(output, [1.0, 4.0, 7.0, 10.0]);
 
     plot_input_signal_and_weighted_current_and_past_sums(&signal, &output);
 }
-fn plot_input_signal_and_weighted_current_and_past_sums(input: &[f64], output: &[f64]) {
+fn plot_input_signal_and_weighted_current_and_past_sums(input: &[f64; 4], output: &[f64; 4]) {
     let first_plot_points: Vec<(f64, f64)> = input
         .iter()
         .enumerate()

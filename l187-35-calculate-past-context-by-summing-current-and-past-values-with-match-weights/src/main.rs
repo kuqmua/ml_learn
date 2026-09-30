@@ -12,45 +12,42 @@ use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match
 
 fn main() {
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    let context: Vec<[f64; 2]> =
+    let context: [[f64; 2]; 3] =
         calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
             &states, &states, &states,
         )
-        .unwrap();
+        .unwrap()
+        .try_into()
+        .expect("на каждую из трёх позиций приходится один контекст");
     assert_eq!(context[0], states[0]);
     plot_weights_assigned_only_to_current_and_past_positions(&states);
     for (_index, _state) in context.iter().enumerate() {}
 }
 
-fn plot_weights_assigned_only_to_current_and_past_positions(states: &[[f64; 2]]) {
-    let matrix: Vec<Vec<f64>> = states
-        .iter()
-        .enumerate()
-        .map(|(item_index, query_vector)| {
-            let raw_model_scores: Vec<f64> = (0..=item_index)
-                .map(|past_index| {
-                    (query_vector[0] * states[past_index][0]
-                        + query_vector[1] * states[past_index][1])
-                        / 2.0_f64.sqrt()
-                })
-                .collect();
-            let weights: Vec<f64> = calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&raw_model_scores);
-            (0..states.len())
-                .map(|past_index| {
-                    if past_index <= item_index {
-                        weights[past_index]
-                    } else {
-                        0.0
-                    }
-                })
-                .collect()
+fn plot_weights_assigned_only_to_current_and_past_positions(states: &[[f64; 2]; 3]) {
+    let matrix: [[f64; 3]; 3] = std::array::from_fn(|item_index| {
+        let query_vector = states[item_index];
+        let raw_model_scores: Vec<f64> = (0..=item_index)
+            .map(|past_index| {
+                (query_vector[0] * states[past_index][0] + query_vector[1] * states[past_index][1])
+                    / 2.0_f64.sqrt()
+            })
+            .collect();
+        let weights: Vec<f64> = calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&raw_model_scores);
+        std::array::from_fn(|past_index| {
+            if past_index <= item_index {
+                weights[past_index]
+            } else {
+                0.0
+            }
         })
-        .collect();
+    });
+    let chart_rows: Vec<Vec<f64>> = matrix.iter().map(|row| row.to_vec()).collect();
     let _path: std::path::PathBuf = lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "causal-attention",
         "Веса причинного внимания",
-        &matrix,
+        &chart_rows,
     )
     .expect("график");
 }

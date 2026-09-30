@@ -58,12 +58,9 @@ fn main() {
     })();
     let test: [(f64, f64); 2] = [(5., 11.), (6., 13.)];
 
-    let targets: Vec<f64> = test.iter().map(|&(_, target)| target).collect();
-    let model_predictions: Vec<f64> = test
-        .iter()
-        .map(|&(feature, _)| weight * feature + bias)
-        .collect();
-    let baseline_predictions: Vec<f64> = test.iter().map(|_| 5.0).collect();
+    let targets: [f64; 2] = test.map(|(_, target)| target);
+    let model_predictions: [f64; 2] = test.map(|(feature, _)| weight * feature + bias);
+    let baseline_predictions: [f64; 2] = [5.0; 2];
     let _model_mean_squared_error: f64 =
         calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
             &targets,

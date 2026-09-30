@@ -3,6 +3,7 @@
 /// Возвращает состояния после причинного внимания и residual.
 // Единицу текста, которую модель обрабатывает как одно целое, называют token.
 /// Скрытые состояния учебного декодера: берём векторы по номерам токенов, добавляем позицию и взвешенный контекст без будущих позиций.
+/// Возвращает по одному состоянию на каждый идентификатор текста; длина текста переменна.
 use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
 pub fn calculate_text_context_vectors_by_adding_position_and_weighted_past_context(

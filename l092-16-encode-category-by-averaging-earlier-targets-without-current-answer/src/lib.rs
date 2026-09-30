@@ -3,14 +3,15 @@
 
 /// Для строки i использует только метки предыдущих строк в заданном порядке.
 /// Упорядоченная статистика категории: (сумма предыдущих ответов + prior·strength) / (их число + strength).
+/// Массивы категорий и ответов содержат по `N` строк; это проверяет компилятор.
 
-pub fn encode_categories_as_average_previous_targets_with_prior_weight(
-    categories: &[&str],
-    targets: &[f64],
+pub fn encode_categories_as_average_previous_targets_with_prior_weight<const N: usize>(
+    categories: &[&str; N],
+    targets: &[f64; N],
     prior: f64,
     strength: f64,
-) -> Result<Vec<f64>, &'static str> {
-    if categories.len() != targets.len() || strength <= 0.0 || !strength.is_finite() {
+) -> Result<[f64; N], &'static str> {
+    if strength <= 0.0 || !strength.is_finite() {
         return Err("неверные входы");
     }
     let mut stats: std::collections::BTreeMap<&str, (f64, usize)> =
@@ -26,14 +27,16 @@ pub fn encode_categories_as_average_previous_targets_with_prior_weight(
         entry.0 += target;
         entry.1 += 1;
     }
-    Ok(category_target_mean_values)
+    Ok(category_target_mean_values
+        .try_into()
+        .expect("создано ровно N значений"))
 }
 
 #[cfg(test)]
 mod tests {
     #[test]
     fn current_label_cannot_enter_own_encoding() {
-        let first_encoding: Vec<f64> =
+        let first_encoding: [f64; 2] =
             super::encode_categories_as_average_previous_targets_with_prior_weight(
                 &["a", "a"],
                 &[0.0, 1.0],
@@ -41,7 +44,7 @@ mod tests {
                 1.0,
             )
             .unwrap();
-        let second_encoding: Vec<f64> =
+        let second_encoding: [f64; 2] =
             super::encode_categories_as_average_previous_targets_with_prior_weight(
                 &["a", "a"],
                 &[0.0, 0.0],

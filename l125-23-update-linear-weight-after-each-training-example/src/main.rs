@@ -15,19 +15,19 @@
 fn main() {
     let examples: [(f64, f64); 2] = [(1.0, 2.0), (2.0, 4.0)];
     let mut weight: f64 = 0.0;
-    let mut weight_history: Vec<(f64, f64)> = vec![(0.0, weight)];
+    let mut weight_history: [(f64, f64); 3] = [(0.0, weight); 3];
     for (step, (feature, target)) in examples.into_iter().enumerate() {
         let rate_of_change: f64 = 2.0 * (weight * feature - target) * feature;
         weight -= 0.1 * rate_of_change;
 
-        weight_history.push(((step + 1) as f64, weight));
+        weight_history[step + 1] = ((step + 1) as f64, weight);
     }
 
     plot_weight_after_each_single_example_update(weight_history);
 }
 
 // Строим график по результатам урока.
-fn plot_weight_after_each_single_example_update(weight_history: std::vec::Vec<(f64, f64)>) {
+fn plot_weight_after_each_single_example_update(weight_history: [(f64, f64); 3]) {
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

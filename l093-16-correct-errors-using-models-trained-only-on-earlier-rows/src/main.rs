@@ -12,13 +12,12 @@ fn main() {
     let targets: [f64; 4] = [1.0, 0.0, 1.0, 1.0];
     let prior: f64 = 0.5;
     let mut prefix_sum: f64 = 0.0;
-    let mut rates_of_change: Vec<f64> = Vec::new();
-    for (index, &target) in targets.iter().enumerate() {
+    let rates_of_change: [f64; 4] = std::array::from_fn(|index| {
+        let target = targets[index];
         let prediction: f64 = (prefix_sum + prior) / (index as f64 + 1.0);
         let rate_of_change: f64 = prediction - target;
-        rates_of_change.push(rate_of_change);
-
         prefix_sum += target;
-    }
+        rate_of_change
+    });
     assert_eq!(rates_of_change[0], -0.5);
 }

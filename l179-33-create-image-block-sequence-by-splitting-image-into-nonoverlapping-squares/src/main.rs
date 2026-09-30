@@ -11,25 +11,32 @@
 use l179_33_create_image_block_sequence_by_splitting_image_into_nonoverlapping_squares::extract_nonoverlapping_square_patches_from_square_image;
 
 fn main() {
-    let image: Vec<Vec<f64>> = vec![
-        vec![1.0, 2.0, 3.0, 4.0],
-        vec![5.0, 6.0, 7.0, 8.0],
-        vec![9.0, 10.0, 11.0, 12.0],
-        vec![13.0, 14.0, 15.0, 16.0],
+    let image: [[f64; 4]; 4] = [
+        [1.0, 2.0, 3.0, 4.0],
+        [5.0, 6.0, 7.0, 8.0],
+        [9.0, 10.0, 11.0, 12.0],
+        [13.0, 14.0, 15.0, 16.0],
     ];
-    let image_patches: Vec<Vec<f64>> =
-        extract_nonoverlapping_square_patches_from_square_image(&image, 2).unwrap();
-    assert_eq!(image_patches.len(), 4);
+    let image_patches: [[f64; 4]; 4] =
+        extract_nonoverlapping_square_patches_from_square_image(&image, 2)
+            .unwrap()
+            .into_iter()
+            .map(|patch| patch.try_into().expect("патч 2×2 содержит четыре пикселя"))
+            .collect::<Vec<[f64; 4]>>()
+            .try_into()
+            .expect("из изображения 4×4 получаются четыре патча 2×2");
+    assert_eq!(image_patches[0], [1.0, 2.0, 5.0, 6.0]);
 
     plot_square_image_before_splitting_into_blocks(&image);
 }
 
-fn plot_square_image_before_splitting_into_blocks(image: &[Vec<f64>]) {
+fn plot_square_image_before_splitting_into_blocks(image: &[[f64; 4]; 4]) {
+    let chart_rows: Vec<Vec<f64>> = image.iter().map(|row| row.to_vec()).collect();
     let _path: std::path::PathBuf = lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "image-patches",
         "Исходное изображение 4x4",
-        image,
+        &chart_rows,
     )
     .expect("график");
 }

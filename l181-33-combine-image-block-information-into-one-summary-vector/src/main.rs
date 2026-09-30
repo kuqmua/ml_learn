@@ -9,30 +9,25 @@
 
 /// Softmax: вычитаем максимальную оценку, вычисляем экспоненты и делим каждую на их сумму.
 
-fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
-    values: &[f64],
-) -> Vec<f64> {
+fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum<
+    const N: usize,
+>(
+    values: &[f64; N],
+) -> [f64; N] {
     let maximum_value: f64 = values.iter().copied().fold(f64::NEG_INFINITY, f64::max);
-    let exponential_values: Vec<f64> = values
-        .iter()
-        .map(|&patch_value| (patch_value - maximum_value).exp())
-        .collect();
+    let exponential_values: [f64; N] =
+        std::array::from_fn(|index| (values[index] - maximum_value).exp());
     let sum: f64 = exponential_values.iter().sum();
-    exponential_values
-        .iter()
-        .map(|patch_value| patch_value / sum)
-        .collect()
+    exponential_values.map(|patch_value| patch_value / sum)
 }
 fn main() {
     let image_input_representations: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    let raw_model_scores: Vec<f64> = image_input_representations
-        .iter()
-        .map(|image_input_representation| {
-            image_input_representations[0][0] * image_input_representation[0]
-                + image_input_representations[0][1] * image_input_representation[1]
-        })
-        .collect();
-    let weights: Vec<f64> =
+    let raw_model_scores: [f64; 3] = std::array::from_fn(|index| {
+        let image_input_representation = image_input_representations[index];
+        image_input_representations[0][0] * image_input_representation[0]
+            + image_input_representations[0][1] * image_input_representation[1]
+    });
+    let weights: [f64; 3] =
         calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
             &raw_model_scores,
         );
@@ -45,11 +40,10 @@ fn main() {
             sum
         });
     let _class: u8 = u8::from(image_classification_summary[0] > image_classification_summary[1]);
-    assert_eq!(weights.len(), 3);
 
     plot_weights_used_to_combine_image_blocks_into_summary(&weights);
 }
-fn plot_weights_used_to_combine_image_blocks_into_summary(weights: &[f64]) {
+fn plot_weights_used_to_combine_image_blocks_into_summary(weights: &[f64; 3]) {
     let values: [(&str, f64); 3] = [
         ("CLS", weights[0]),
         ("patch 1", weights[1]),

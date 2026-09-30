@@ -33,17 +33,23 @@ fn known_distance_symmetry_translation_and_scaling() {
 }
 
 #[test]
-fn empty_vectors_and_mismatched_dimensions() {
-    assert_eq!(
-        calculate_squared_point_distance_by_summing_squared_coordinate_differences(&[], &[]),
-        Ok(0.0)
-    );
+fn invalid_coordinates_are_rejected() {
     assert!(
-        calculate_squared_point_distance_by_summing_squared_coordinate_differences(&[1.0], &[])
+        calculate_squared_point_distance_by_summing_squared_coordinate_differences(&[], &[])
             .is_err()
     );
     assert!(
-        calculate_squared_point_distance_by_summing_squared_coordinate_differences(&[], &[1.0])
-            .is_err()
+        calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+            &[f64::NAN],
+            &[1.0]
+        )
+        .is_err()
+    );
+    assert!(
+        calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+            &[f64::MAX],
+            &[-f64::MAX]
+        )
+        .is_err()
     );
 }

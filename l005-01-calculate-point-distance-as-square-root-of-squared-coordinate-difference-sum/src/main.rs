@@ -2,7 +2,7 @@
 // Связь с принятой терминологией: Евклидово расстояние между точками.
 // Зачем здесь эта тема: Квадрат расстояния из предыдущей части переводим в обычное расстояние.
 // Почему код устроен так: Вызываем предыдущую часть и извлекаем корень стандартным sqrt.
-//   Проверку размерностей выполняет функция квадрата расстояния.
+//   Одинаковую размерность точек задаёт тип массива в сигнатуре функции.
 // Представь: От [1, 2] до [4, 6] нужно пройти на 3 по первой оси и на 4 по второй; расстояние равно
 //   5.
 //
@@ -12,7 +12,7 @@
 use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences;
 
 fn main() {
-    let cases: [(&str, &[f64], &[f64], f64); 3] = [
+    let cases: [(&str, &[f64; 2], &[f64; 2], f64); 3] = [
         ("разные точки", &[0.0, 0.0], &[3.0, 4.0], 5.0),
         ("поменяли точки местами", &[3.0, 4.0], &[0.0, 0.0], 5.0),
         ("точки совпадают", &[3.0, 4.0], &[3.0, 4.0], 0.0),
@@ -23,18 +23,9 @@ fn main() {
                 first_point,
                 second_point,
             )
-            .expect("точки в этом примере имеют одинаковую размерность");
+            .expect("вычисление расстояния выполнено");
         assert!((distance - expected).abs() < 1e-10);
     }
-    let first_point: [f64; 2] = [0.0, 0.0];
-    let too_short: [f64; 1] = [3.0];
-    let _error: &str =
-        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
-            &first_point,
-            &too_short,
-        )
-        .expect_err("точки разной размерности нужно отклонить");
-
     plot_distance_from_origin_for_changing_first_coordinate();
 }
 
