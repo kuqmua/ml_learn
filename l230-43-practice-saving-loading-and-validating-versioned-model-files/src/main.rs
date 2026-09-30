@@ -23,17 +23,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     struct Model {
         weight: f64,
 
-        bias: f64,
+        constant_input_weight: f64,
     }
 
     let model: Model = Model {
         weight: 2.,
 
-        bias: 1.,
+        constant_input_weight: 1.,
     };
     std::fs::write(
         &model_path,
-        format!("ml_learn_v1\n{}\n{}\n", model.weight, model.bias),
+        format!(
+            "ml_learn_v1\n{}\n{}\n",
+            model.weight, model.constant_input_weight
+        ),
     )?;
     let saved_model_text_content: String = std::fs::read_to_string(&model_path)?;
     let loaded_model: Model = (|| -> Result<Model, String> {
@@ -49,13 +52,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .map_err(|parse_error| parse_error.to_string())
             };
         let weight: f64 = parse_parameter(saved_model_lines.next())?;
-        let bias: f64 = parse_parameter(saved_model_lines.next())?;
-        if !weight.is_finite() || !bias.is_finite() || saved_model_lines.next().is_some() {
+        let constant_input_weight: f64 = parse_parameter(saved_model_lines.next())?;
+        if !weight.is_finite()
+            || !constant_input_weight.is_finite()
+            || saved_model_lines.next().is_some()
+        {
             return Err("повреждённая модель".into());
         }
-        Ok(Model { weight, bias })
+        Ok(Model {
+            weight,
+            constant_input_weight,
+        })
     })()?;
-    let prediction: f64 = loaded_model.weight * 3. + loaded_model.bias;
+    let prediction: f64 = loaded_model.weight * 3. + loaded_model.constant_input_weight;
     let _ = (&(model_path.display()), &(prediction));
     std::fs::remove_file(std::path::Path::new(&model_path))?;
     Ok(())

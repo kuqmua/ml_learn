@@ -14,23 +14,26 @@
 
 fn main() {
     let weight: f64 = 2.0;
-    let bias: f64 = 1.0;
-    let saved_model_text: String = format!("{weight}\n{bias}\n");
+    let constant_input_weight: f64 = 1.0;
+    let saved_model_text: String = format!("{weight}\n{constant_input_weight}\n");
     let mut lines: std::str::Lines<'_> = saved_model_text.lines();
     let loaded_weight: f64 = lines.next().unwrap().parse().unwrap();
-    let loaded_bias: f64 = lines.next().unwrap().parse().unwrap();
+    let loaded_constant_input_weight: f64 = lines.next().unwrap().parse().unwrap();
 
-    plot_weights_loaded_from_saved_model(loaded_weight, loaded_bias);
+    plot_weights_loaded_from_saved_model(loaded_weight, loaded_constant_input_weight);
 }
 
 // Строим график по результатам урока.
-fn plot_weights_loaded_from_saved_model(loaded_weight: f64, loaded_bias: f64) {
+fn plot_weights_loaded_from_saved_model(loaded_weight: f64, loaded_constant_input_weight: f64) {
     let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Загруженные параметры",
         "значение",
-        &[("вес", loaded_weight), ("смещение", loaded_bias)],
+        &[
+            ("вес", loaded_weight),
+            ("смещение", loaded_constant_input_weight),
+        ],
     )
     .expect("не удалось сохранить график");
 }

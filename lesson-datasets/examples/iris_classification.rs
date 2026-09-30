@@ -43,11 +43,11 @@ fn classification_accuracy(
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let records = lesson_datasets::load_iris_records()?;
-    let labels: Vec<u8> = records
+    let targets: Vec<u8> = records
         .iter()
         .map(|record| record.species.class_identifier())
         .collect();
-    let split = lesson_datasets::split_indices_stratified_by_class(&labels, 42)?;
+    let split = lesson_datasets::split_indices_stratified_by_class(&targets, 42)?;
     let _ = (
         &(records.len()),
         &(split.training_indices.len()),

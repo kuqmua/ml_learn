@@ -2,16 +2,16 @@
 // Связь с принятой терминологией: Блок Transformer с вниманием, остаточными связями и полносвязным слоем.
 // Зачем здесь эта тема: Transformer объединяет обмен между токенами и преобразование каждого токена
 //   при стабильном масштабе.
-// Почему код устроен так: Собираем внимание, residual, LayerNorm и feed-forward по порядку и
+// Почему код устроен так: Собираем внимание, прибавление входа, LayerNorm и feed-forward по порядку и
 //   проверяем форму после каждого шага.
-// Представь: Токен сначала получает контекст через attention, затем сохраняет вход через residual и
+// Представь: Токен сначала получает контекст через attention, затем сохраняет вход через прибавление входа и
 //   преобразуется дальше.
 //
-// Что повторяем вместе: self-attention, residual, layer norm, feed-forward.
+// Что повторяем вместе: self-attention, прибавление входа, нормализацию слоя, feed-forward.
 // Зачем это нужно: Блок Transformer сочетает внимание, остаточные связи, нормализацию и преобразование
 //   каждого токена.
 // Что показывает программа: Создаём вход из двух токенов с двумерными признаками. Пропускаем его через
-//   attention, residual, нормализацию и feed-forward.
+//   attention, прибавление входа, нормализацию и feed-forward.
 // Что проверить при изменении примера: Проверь сохранение формы, отсутствие NaN и детерминированный forward
 //   при фиксированных весах.
 // Дополнительная практика: Собери один блок на малых тензорах и опиши порядок операций.
@@ -84,7 +84,7 @@ fn main() {
     }
 
     /// Нормализация слоя (LayerNorm): из координат вычитаем среднее и делим на sqrt(среднее квадратов отклонений + epsilon).
-    fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
+    fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square(
         input_values: [f64; 2],
     ) -> [f64; 2] {
         let mean: f64 = (input_values[0] + input_values[1]) / 2.;
@@ -139,14 +139,15 @@ fn main() {
             attended[1] += attention_weights[key_index] * input_values[key_index][1];
         }
         let normalized_values: [f64; 2] =
-            normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
-                [query[0] + attended[0], query[1] + attended[1]],
-            );
+            normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square([
+                query[0] + attended[0],
+                query[1] + attended[1],
+            ]);
         let feed_forward_values: [f64; 2] = [
             choose_larger_number(normalized_values[0], 0.),
             choose_larger_number(normalized_values[1], 0.),
         ];
-        normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation([
+        normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square([
             normalized_values[0] + feed_forward_values[0],
             normalized_values[1] + feed_forward_values[1],
         ])

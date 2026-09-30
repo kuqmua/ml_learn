@@ -10,14 +10,14 @@
 // Эти счётчики затем повторно используются в precision, recall, F1 и сводной практике.
 
 use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::{
-    BinaryClassificationCounts, count_binary_classification_outcomes_from_true_and_predicted_labels,
+    BinaryClassificationCounts, count_binary_classification_outcomes_from_targets_and_predictions,
 };
 
 fn main() {
     let truth: [bool; 4] = [true, false, true, false];
     let predicted: [bool; 4] = [true, true, false, false];
     let counts: BinaryClassificationCounts =
-        count_binary_classification_outcomes_from_true_and_predicted_labels(&truth, &predicted)
+        count_binary_classification_outcomes_from_targets_and_predictions(&truth, &predicted)
             .expect("у каждого ответа есть прогноз");
     for index in 0..truth.len() {
         let _description: &str = match (truth[index], predicted[index]) {

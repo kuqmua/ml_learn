@@ -13,14 +13,16 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
-use l032_06_calculate_sample_variance_as_squared_deviation_sum_over_count_minus_one::calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one;
+use l032_06_calculate_sample_variance_from_squared_differences_from_mean::calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one;
 
 fn main() {
     let values: [f64; 4] = [2.0, 4.0, 6.0, 8.0];
     let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(&values).unwrap();
     let sample_variance: f64 =
-        calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(&values)
-            .unwrap();
+        calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one(
+            &values,
+        )
+        .unwrap();
     let standard_error_squared: f64 = sample_variance / values.len() as f64;
     let mut standard_error: f64 = standard_error_squared;
     for _ in 0..80 {

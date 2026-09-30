@@ -16,7 +16,7 @@ pub struct BinaryClassificationCounts {
 }
 
 /// Сопоставляем метку с прогнозом и считаем четыре исхода.
-pub fn count_binary_classification_outcomes_from_true_and_predicted_labels(
+pub fn count_binary_classification_outcomes_from_targets_and_predictions(
     truth: &[bool],
     predicted: &[bool],
 ) -> Result<BinaryClassificationCounts, &'static str> {
@@ -56,7 +56,7 @@ mod tests {
     // Определяем вычисление `separates_all_four_classification_outcomes` для этого примера.
     fn separates_all_four_classification_outcomes() {
         let counts: crate::BinaryClassificationCounts =
-            super::count_binary_classification_outcomes_from_true_and_predicted_labels(
+            super::count_binary_classification_outcomes_from_targets_and_predictions(
                 &[true, false, true, false],
                 &[true, true, false, false],
             )
@@ -71,11 +71,8 @@ mod tests {
             (1, 1, 1, 1)
         );
         assert!(
-            super::count_binary_classification_outcomes_from_true_and_predicted_labels(
-                &[true],
-                &[]
-            )
-            .is_err()
+            super::count_binary_classification_outcomes_from_targets_and_predictions(&[true], &[])
+                .is_err()
         );
     }
 }

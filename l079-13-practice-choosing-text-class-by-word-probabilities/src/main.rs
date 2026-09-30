@@ -83,7 +83,7 @@ fn main() {
         for (class, score) in scores.iter_mut().enumerate() {
             let class_documents: Vec<&(&str, bool)> = training_examples
                 .iter()
-                .filter(|(_, label)| *label == (class == 1))
+                .filter(|(_, target)| *target == (class == 1))
                 .collect();
             let mut text_unit_counts: std::collections::HashMap<&str, usize> =
                 std::collections::HashMap::new();

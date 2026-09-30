@@ -11,17 +11,14 @@
 // библиотеках предыдущих уроков: позже те же функции применяются в матрицах, kNN и поиске.
 
 use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
-use l002_01_calculate_l1_vector_norm_by_summing_absolute_coordinates::calculate_l1_vector_norm_by_summing_absolute_coordinates;
+use l002_01_calculate_sum_of_absolute_vector_coordinates::calculate_sum_of_absolute_vector_coordinates;
 use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates;
 use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences;
 use l006_01_calculate_direction_similarity_by_multiplying_coordinates_then_dividing_sum_by_lengths::calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths;
 
 fn main() {
     let first: [f64; 2] = [3.0, 4.0];
-    assert_eq!(
-        calculate_l1_vector_norm_by_summing_absolute_coordinates(&first),
-        7.0
-    );
+    assert_eq!(calculate_sum_of_absolute_vector_coordinates(&first), 7.0);
     assert_eq!(
         calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&first),
         5.0
@@ -75,7 +72,7 @@ fn plot_l1_and_euclidean_lengths_as_absolute_sum_and_square_root_of_squared_sum(
             (horizontal_value, horizontal_value.abs() + 4.0)
         })
         .collect();
-    let euclidean_norm_points: Vec<(f64, f64)> = (-50..=50)
+    let vector_length_points: Vec<(f64, f64)> = (-50..=50)
         .map(|plot_step_index| {
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             (
@@ -99,7 +96,7 @@ fn plot_l1_and_euclidean_lengths_as_absolute_sum_and_square_root_of_squared_sum(
             lesson_visualization::Series {
                 name: "L2",
 
-                points: &euclidean_norm_points,
+                points: &vector_length_points,
             },
         ],
     )

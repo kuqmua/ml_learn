@@ -14,12 +14,12 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let ranked_labels: [bool; 4] = [true, false, true, false];
-    let positive_count: f64 = ranked_labels.iter().filter(|&&label| label).count() as f64;
+    let ranked_targets: [bool; 4] = [true, false, true, false];
+    let positive_count: f64 = ranked_targets.iter().filter(|&&target| target).count() as f64;
     let mut found_positive: f64 = 0.0;
     let mut _area: f64 = 0.0;
-    for (rank, label) in ranked_labels.into_iter().enumerate() {
-        if label {
+    for (rank, target) in ranked_targets.into_iter().enumerate() {
+        if target {
             found_positive += 1.0;
             let precision: f64 = found_positive / (rank + 1) as f64;
             _area += precision / positive_count;

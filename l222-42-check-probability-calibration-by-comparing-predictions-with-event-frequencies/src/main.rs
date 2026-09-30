@@ -10,13 +10,13 @@
 // Сравниваем совпадение прогноза с наблюдаемой частотой и чрезмерную уверенность.
 
 fn main() {
-    let observed_labels: [bool; 5] = [true, true, true, false, true];
+    let observed_targets: [bool; 5] = [true, true, true, false, true];
     assert!(
-        !observed_labels.is_empty(),
+        !observed_targets.is_empty(),
         "для частоты нужна хотя бы одна метка"
     );
-    let observed_frequency: f64 = observed_labels.iter().filter(|&&label| label).count() as f64
-        / observed_labels.len() as f64;
+    let observed_frequency: f64 = observed_targets.iter().filter(|&&target| target).count() as f64
+        / observed_targets.len() as f64;
     for (_description, predicted_probability, expected_gap) in [
         ("калиброванный прогноз", 0.8, 0.0),
         ("слишком уверенный", 1.0, 0.2),

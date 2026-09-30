@@ -2,16 +2,16 @@
 // Связь с принятой терминологией: Блок Transformer decoder с нормализацией перед подслоями.
 // Зачем здесь эта тема: Генеративный блок должен повторяемо соединять нормализацию, причинное
 //   внимание и feed-forward.
-// Почему код устроен так: Показываем pre-norm и residual после каждого подслоя на коротком
+// Почему код устроен так: Показываем нормализацию перед подслоем и прибавление входа после каждого подслоя на коротком
 //   префиксе.
-// Представь: Каждый подслой получает нормированный вход, а residual возвращает его в итог этого
+// Представь: Каждый подслой получает нормированный вход, а прибавление входа возвращает его в итог этого
 //   шага.
-// Нормализация, причинное внимание, residual, FFN и второй residual образуют блок.
+// Нормализация, причинное внимание, прибавление входа, FFN и второй прибавление входа образуют блок.
 
 /// Нормализация слоя (LayerNorm): из координат вычитаем среднее и делим на sqrt(среднее квадратов отклонений + epsilon).
 use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
-fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
+fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square(
     input_value: [f64; 2],
 ) -> [f64; 2] {
     let mean: f64 = (input_value[0] + input_value[1]) / 2.0;
@@ -25,8 +25,8 @@ fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_d
 fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normalized_values(
     input: &[[f64; 2]; 3],
 ) -> [[f64; 2]; 3] {
-    let normalized: [[f64; 2]; 3] = input
-        .map(normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation);
+    let normalized: [[f64; 2]; 3] =
+        input.map(normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square);
     let attention: [[f64; 2]; 3] =
         calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
             &normalized,
@@ -41,13 +41,13 @@ fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normali
         let context = attention[index];
         let input_plus_transformed_value: [f64; 2] =
             [original[0] + context[0], original[1] + context[1]];
-        let norm: [f64; 2] =
-            normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
+        let scaled_values: [f64; 2] =
+            normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square(
                 input_plus_transformed_value,
             );
         [
-            input_plus_transformed_value[0] + 0.2 * norm[0].max(0.0),
-            input_plus_transformed_value[1] + 0.2 * norm[1].max(0.0),
+            input_plus_transformed_value[0] + 0.2 * scaled_values[0].max(0.0),
+            input_plus_transformed_value[1] + 0.2 * scaled_values[1].max(0.0),
         ]
     })
 }

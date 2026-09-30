@@ -45,13 +45,13 @@ fn main() {
         );
         let mut sorted_neighbors: Vec<(f64, bool)> = training_examples
             .iter()
-            .map(|&(training_feature, label)| {
+            .map(|&(training_feature, target)| {
                 (
                     (|| -> f64 {
                         let value: f64 = training_feature - feature_value;
                         if value < 0.0 { -value } else { value }
                     })(),
-                    label,
+                    target,
                 )
             })
             .collect();
@@ -60,7 +60,7 @@ fn main() {
         sorted_neighbors
             .iter()
             .take(neighbor_count)
-            .filter(|(_, label)| *label)
+            .filter(|(_, target)| *target)
             .count()
             * 2
             > neighbor_count
@@ -110,12 +110,12 @@ fn main() {
     let test: [(f64, bool); 2] = [(2.5, false), (5.5, true)];
     let accuracy: f64 = test
         .iter()
-        .filter(|&&(feature_value, label)| {
+        .filter(|&&(feature_value, target)| {
             choose_majority_class_among_nearest_training_values(
                 &training_examples,
                 feature_value,
                 best.0,
-            ) == label
+            ) == target
         })
         .count() as f64
         / test.len() as f64;

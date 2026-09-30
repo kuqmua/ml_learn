@@ -8,7 +8,7 @@
 //   большой.
 // Логиты позиции t оцениваются по целевому токену позиции t+1.
 
-// Оценку модели до преобразования в вероятность называют logit.
+// Оценка модели до преобразования в вероятность — обычное число, которое затем переводят в диапазон от 0 до 1.
 /// Перекрёстная энтропия: получаем вероятности через softmax, выбираем правильный токен и берём −ln(p).
 use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
 

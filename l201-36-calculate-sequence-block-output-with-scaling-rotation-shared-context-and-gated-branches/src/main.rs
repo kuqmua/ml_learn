@@ -6,7 +6,7 @@
 //   вниманием.
 // Представь: Знакомые части блока соединяются в одном порядке: нормировка, внимание и
 //   преобразование токена.
-// Собираем pre-RMSNorm, QK-Norm, RoPE, GQA, residual и SwiGLU без реальных весов Qwen.
+// Собираем pre-RMSNorm, QK-Norm, RoPE, GQA, прибавление входа и SwiGLU без реальных весов Qwen.
 
 // Во всех вызовах RMSNorm в блоке ε=10⁻⁶ защищает от нулевого среднего квадрата координат.
 /// Учебный блок по мотивам Qwen: RMSNorm, поворот координат по позиции, два набора весов внимания с общими ключами и значениями, затем SwiGLU с прибавлением входа.
@@ -21,7 +21,7 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
     states: &[[f64; 2]; N],
 ) -> [[f64; 2]; N] {
     let gamma: [f64; 2] = [1.0, 1.0];
-    let norm: [[f64; 2]; N] = std::array::from_fn(|index| {
+    let scaled_states: [[f64; 2]; N] = std::array::from_fn(|index| {
         let input_value = &states[index];
         let second_input_value: [f64; 2] =
                 normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
@@ -33,7 +33,7 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
         [second_input_value[0], second_input_value[1]]
     });
     let keys: [[f64; 2]; N] = std::array::from_fn(|position| {
-        let input_value = &norm[position];
+        let input_value = &scaled_states[position];
         let key: [f64; 2] =
                 normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
                     input_value,
@@ -47,9 +47,9 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
         let mut context: [f64; 2] = [0.0; 2];
         for head in 0..2 {
             let raw_query: [f64; 2] = if head == 0 {
-                norm[index]
+                scaled_states[index]
             } else {
-                [norm[index][1], -norm[index][0]]
+                [scaled_states[index][1], -scaled_states[index][0]]
             };
             let query: [f64; 2] =
                 normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
@@ -63,8 +63,8 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
                 .collect();
             let weights: Vec<f64> = calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&raw_model_scores);
             for (past, &weight) in weights.iter().enumerate() {
-                context[0] += 0.5 * weight * norm[past][0];
-                context[1] += 0.5 * weight * norm[past][1];
+                context[0] += 0.5 * weight * scaled_states[past][0];
+                context[1] += 0.5 * weight * scaled_states[past][1];
             }
         }
         let input_plus_transformed_value: [f64; 2] =

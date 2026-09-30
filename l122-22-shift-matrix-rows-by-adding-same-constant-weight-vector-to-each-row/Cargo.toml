@@ -1,0 +1,8 @@
+[package]
+name = "l122-22-shift-matrix-rows-by-adding-same-constant-weight-vector-to-each-row"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

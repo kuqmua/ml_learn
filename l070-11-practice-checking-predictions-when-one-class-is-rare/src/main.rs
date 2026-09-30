@@ -11,20 +11,20 @@
 // При редком положительном классе высокая accuracy может скрывать бесполезную модель.
 
 use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts;
-use l062_11_count_classification_outcomes_by_comparing_scores_with_threshold::count_binary_classification_outcomes_from_true_labels_and_scores_at_threshold;
+use l062_11_count_classification_outcomes_by_comparing_scores_with_threshold::count_binary_classification_outcomes_from_targets_and_scores_at_threshold;
 use l063_11_calculate_accuracy_as_correct_predictions_divided_by_all_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions;
 use l064_11_calculate_positive_prediction_precision_as_true_positives_over_positive_predictions::calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions;
 use l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives;
 use l066_11_calculate_f1_score_as_twice_precision_times_recall_over_their_sum::calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum;
 
 fn main() {
-    let labels: [bool; 10] = [
+    let targets: [bool; 10] = [
         false, false, false, false, false, false, false, false, false, true,
     ];
     let scores: [f64; 10] = [0.1, 0.2, 0.3, 0.1, 0.2, 0.4, 0.1, 0.3, 0.2, 0.8];
     let counts: BinaryClassificationCounts =
-        count_binary_classification_outcomes_from_true_labels_and_scores_at_threshold(
-            &labels, &scores, 0.5,
+        count_binary_classification_outcomes_from_targets_and_scores_at_threshold(
+            &targets, &scores, 0.5,
         )
         .unwrap();
     let precision: Option<f64> =
@@ -40,8 +40,8 @@ fn main() {
 
     let all_negative_scores: [f64; 10] = [0.0; 10];
     let useless: BinaryClassificationCounts =
-        count_binary_classification_outcomes_from_true_labels_and_scores_at_threshold(
-            &labels,
+        count_binary_classification_outcomes_from_targets_and_scores_at_threshold(
+            &targets,
             &all_negative_scores,
             0.5,
         )

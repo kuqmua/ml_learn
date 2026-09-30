@@ -1,8 +1,0 @@
-[package]
-name = "l115-21-identify-adjustable-weights-and-biases-in-network"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

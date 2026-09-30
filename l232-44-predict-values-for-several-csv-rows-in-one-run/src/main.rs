@@ -15,8 +15,8 @@
 fn main() {
     let features: [f64; 3] = [1.0, 2.0, 3.0];
     let weight: f64 = 2.0;
-    let bias: f64 = 1.0;
+    let constant_input_weight: f64 = 1.0;
     for feature in features {
-        let _ = &(weight * feature + bias);
+        let _ = &(weight * feature + constant_input_weight);
     }
 }

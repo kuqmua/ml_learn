@@ -27,39 +27,43 @@ fn main() {
         "для обучения нужен хотя бы один пример"
     );
 
-    let (weight, bias): (f64, f64) = (|| -> (f64, f64) {
+    let (weight, constant_input_weight): (f64, f64) = (|| -> (f64, f64) {
         let data: &[(f64, f64)] = &TRAINING_EXAMPLES;
-        let (mut weight, mut bias): (f64, f64) = (0., 0.);
+        let (mut weight, mut constant_input_weight): (f64, f64) = (0., 0.);
         for _ in 0..3000 {
-            let (weight_loss_rate_of_change, bias_loss_rate_of_change): (f64, f64) =
-                (|| -> (f64, f64) {
-                    let data: &[(f64, f64)] = data;
-                    let weight: f64 = weight;
-                    let bias: f64 = bias;
-                    let (
-                        mut accumulated_weight_loss_rate_of_change,
-                        mut accumulated_bias_loss_rate_of_change,
-                    ): (f64, f64) = (0.0, 0.0);
-                    for &(feature_value, target_value) in data {
-                        let prediction_error: f64 = weight * feature_value + bias - target_value;
-                        accumulated_weight_loss_rate_of_change +=
-                            2.0 * feature_value * prediction_error;
-                        accumulated_bias_loss_rate_of_change += 2.0 * prediction_error;
-                    }
-                    (
-                        accumulated_weight_loss_rate_of_change / data.len() as f64,
-                        accumulated_bias_loss_rate_of_change / data.len() as f64,
-                    )
-                })();
+            let (weight_loss_rate_of_change, constant_input_weight_loss_rate_of_change): (
+                f64,
+                f64,
+            ) = (|| -> (f64, f64) {
+                let data: &[(f64, f64)] = data;
+                let weight: f64 = weight;
+                let constant_input_weight: f64 = constant_input_weight;
+                let (
+                    mut accumulated_weight_loss_rate_of_change,
+                    mut accumulated_constant_input_weight_loss_rate_of_change,
+                ): (f64, f64) = (0.0, 0.0);
+                for &(feature_value, target_value) in data {
+                    let prediction_error: f64 =
+                        weight * feature_value + constant_input_weight - target_value;
+                    accumulated_weight_loss_rate_of_change +=
+                        2.0 * feature_value * prediction_error;
+                    accumulated_constant_input_weight_loss_rate_of_change += 2.0 * prediction_error;
+                }
+                (
+                    accumulated_weight_loss_rate_of_change / data.len() as f64,
+                    accumulated_constant_input_weight_loss_rate_of_change / data.len() as f64,
+                )
+            })();
             weight -= 0.02 * weight_loss_rate_of_change;
-            bias -= 0.02 * bias_loss_rate_of_change;
+            constant_input_weight -= 0.02 * constant_input_weight_loss_rate_of_change;
         }
-        (weight, bias)
+        (weight, constant_input_weight)
     })();
     let test: [(f64, f64); 2] = [(5., 11.), (6., 13.)];
 
     let targets: [f64; 2] = test.map(|(_, target)| target);
-    let model_predictions: [f64; 2] = test.map(|(feature, _)| weight * feature + bias);
+    let model_predictions: [f64; 2] =
+        test.map(|(feature, _)| weight * feature + constant_input_weight);
     let baseline_predictions: [f64; 2] = [5.0; 2];
     let _model_mean_squared_error: f64 =
         calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
@@ -74,15 +78,22 @@ fn main() {
         )
         .unwrap();
 
-    plot_prediction_line_and_held_out_points(weight, bias, test);
+    plot_prediction_line_and_held_out_points(weight, constant_input_weight, test);
 }
 
 // Строим график по результатам урока.
-fn plot_prediction_line_and_held_out_points(weight: f64, bias: f64, test: [(f64, f64); 2]) {
+fn plot_prediction_line_and_held_out_points(
+    weight: f64,
+    constant_input_weight: f64,
+    test: [(f64, f64); 2],
+) {
     let model_points: Vec<(f64, f64)> = (0..=60)
         .map(|plot_step_index| {
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, weight * horizontal_value + bias)
+            (
+                horizontal_value,
+                weight * horizontal_value + constant_input_weight,
+            )
         })
         .collect();
     let test_points: Vec<(f64, f64)> = test

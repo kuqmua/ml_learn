@@ -44,14 +44,14 @@ fn main() {
 
             let mut nearest_neighbor_vote_uses_selected_count: Vec<(f64, bool)> = training_examples
                 .iter()
-                .map(|&(features, label)| {
+                .map(|&(features, target)| {
                     (
                         (calculate_square_by_multiplying_number_by_itself(
                             features[0] - query_point[0],
                         ) + calculate_square_by_multiplying_number_by_itself(
                             features[1] - query_point[1],
                         )),
-                        label,
+                        target,
                     )
                 })
                 .collect();
@@ -63,7 +63,7 @@ fn main() {
             let votes: usize = nearest_neighbor_vote_uses_selected_count
                 .iter()
                 .take(neighbor_count)
-                .filter(|(_, label)| *label)
+                .filter(|(_, target)| *target)
                 .count();
 
             votes * 2 > neighbor_count
@@ -77,12 +77,12 @@ fn main() {
 fn plot_training_points_by_class_and_query_point(training_examples: [([f64; 2], bool); 4]) {
     let class_zero: Vec<(f64, f64)> = training_examples
         .iter()
-        .filter(|(_, label)| !*label)
+        .filter(|(_, target)| !*target)
         .map(|(point, _)| (point[0], point[1]))
         .collect();
     let class_one: Vec<(f64, f64)> = training_examples
         .iter()
-        .filter(|(_, label)| *label)
+        .filter(|(_, target)| *target)
         .map(|(point, _)| (point[0], point[1]))
         .collect();
     let query_point: [(f64, f64); 1] = [(1.8, 2.1)];

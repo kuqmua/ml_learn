@@ -56,8 +56,8 @@ fn main() {
             collect_unique_words_from_text(query);
         let mut scores: std::collections::BTreeMap<&str, usize> =
             std::collections::BTreeMap::from([("code", 0usize), ("ml", 0)]);
-        for &(sample_text, label) in training_examples {
-            *scores.get_mut(label).unwrap() += query_text_units
+        for &(sample_text, target) in training_examples {
+            *scores.get_mut(target).unwrap() += query_text_units
                 .intersection(&collect_unique_words_from_text(sample_text))
                 .count();
         }

@@ -1,8 +1,0 @@
-[package]
-name = "l114-21-calculate-layer-output-by-summing-weighted-inputs-and-adding-biases"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

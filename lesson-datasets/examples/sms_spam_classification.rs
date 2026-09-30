@@ -1,4 +1,4 @@
-use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::count_binary_classification_outcomes_from_true_and_predicted_labels;
+use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::count_binary_classification_outcomes_from_targets_and_predictions;
 use l063_11_calculate_accuracy_as_correct_predictions_divided_by_all_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions;
 use l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives;
 
@@ -14,7 +14,7 @@ fn report_majority_baseline(
         .collect();
     let predictions = vec![majority_is_spam; indices.len()];
     let counts =
-        count_binary_classification_outcomes_from_true_and_predicted_labels(&truth, &predictions)?;
+        count_binary_classification_outcomes_from_targets_and_predictions(&truth, &predictions)?;
     let _ = (
         &(calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(counts)
             .unwrap()),
@@ -29,11 +29,11 @@ fn report_majority_baseline(
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let records = lesson_datasets::load_sms_spam_records()?;
-    let labels: Vec<u8> = records
+    let targets: Vec<u8> = records
         .iter()
         .map(|record| u8::from(record.is_spam))
         .collect();
-    let split = lesson_datasets::split_indices_stratified_by_class(&labels, 42)?;
+    let split = lesson_datasets::split_indices_stratified_by_class(&targets, 42)?;
     let training_spam_count = split
         .training_indices
         .iter()

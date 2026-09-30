@@ -13,7 +13,7 @@ fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score
 ) -> f64 {
     1.0 / (1.0 + (-input_value).exp())
 }
-// Оценку модели до преобразования в вероятность называют logit.
+// Оценка модели до преобразования в вероятность — обычное число, которое затем переводят в диапазон от 0 до 1.
 /// Учебная ячейка GRU: (1−update)·previous + update·candidate; кандидат учитывает долю предыдущего состояния.
 fn calculate_gru_state_by_mixing_previous_state_with_candidate_using_update_fraction(
     input: f64,

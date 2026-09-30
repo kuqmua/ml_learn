@@ -14,28 +14,31 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let labels: [bool; 5] = [false, false, true, false, true];
-    assert!(!labels.is_empty(), "для baseline нужна хотя бы одна метка");
-    let positive_count: usize = labels.iter().filter(|&&label| label).count();
-    let majority_label: bool = positive_count * 2 > labels.len();
-    let _accuracy: f64 = labels
+    let targets: [bool; 5] = [false, false, true, false, true];
+    assert!(!targets.is_empty(), "для baseline нужна хотя бы одна метка");
+    let positive_count: usize = targets.iter().filter(|&&target| target).count();
+    let majority_class: bool = positive_count * 2 > targets.len();
+    let _accuracy: f64 = targets
         .iter()
-        .filter(|&&label| label == majority_label)
+        .filter(|&&target| target == majority_class)
         .count() as f64
-        / labels.len() as f64;
+        / targets.len() as f64;
 
-    plot_counts_of_positive_and_negative_training_labels(labels, positive_count);
+    plot_counts_of_positive_and_negative_training_targets(targets, positive_count);
 }
 
 // Строим график по результатам урока.
-fn plot_counts_of_positive_and_negative_training_labels(labels: [bool; 5], positive_count: usize) {
+fn plot_counts_of_positive_and_negative_training_targets(
+    targets: [bool; 5],
+    positive_count: usize,
+) {
     let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Классы для baseline",
         "объектов",
         &[
-            ("отрицательные", (labels.len() - positive_count) as f64),
+            ("отрицательные", (targets.len() - positive_count) as f64),
             ("положительные", positive_count as f64),
         ],
     )

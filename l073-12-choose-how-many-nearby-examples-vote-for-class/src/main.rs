@@ -12,26 +12,26 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let neighbor_labels: [bool; 5] = [true, false, false, true, true];
+    let neighbor_targets: [bool; 5] = [true, false, false, true, true];
     for neighbor_count in [1, 3, 5] {
-        let positive: usize = neighbor_labels[..neighbor_count]
+        let positive: usize = neighbor_targets[..neighbor_count]
             .iter()
-            .filter(|&&label| label)
+            .filter(|&&target| target)
             .count();
         let _prediction: bool = positive * 2 > neighbor_count;
     }
 
-    plot_positive_class_share_among_nearest_examples(neighbor_labels);
+    plot_positive_class_share_among_nearest_examples(neighbor_targets);
 }
 
 // Строим график по результатам урока.
-fn plot_positive_class_share_among_nearest_examples(neighbor_labels: [bool; 5]) {
+fn plot_positive_class_share_among_nearest_examples(neighbor_targets: [bool; 5]) {
     let positive_neighbor_count_points: Vec<(f64, f64)> = [1usize, 3, 5]
         .iter()
         .map(|&neighbor_count| {
             (
                 neighbor_count as f64,
-                neighbor_labels[..neighbor_count]
+                neighbor_targets[..neighbor_count]
                     .iter()
                     .filter(|&&element_value| element_value)
                     .count() as f64

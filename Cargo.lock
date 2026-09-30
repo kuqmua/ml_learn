@@ -63,7 +63,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l002-01-calculate-l1-vector-norm-by-summing-absolute-coordinates"
+name = "l002-01-calculate-sum-of-absolute-vector-coordinates"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -103,7 +103,7 @@ name = "l007-01-practice-multiplying-coordinates-vector-lengths-and-point-distan
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coordinates-then-add-results",
- "l002-01-calculate-l1-vector-norm-by-summing-absolute-coordinates",
+ "l002-01-calculate-sum-of-absolute-vector-coordinates",
  "l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates",
  "l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum",
  "l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths",
@@ -282,7 +282,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l032-06-calculate-sample-variance-as-squared-deviation-sum-over-count-minus-one"
+name = "l032-06-calculate-sample-variance-from-squared-differences-from-mean"
 version = "0.1.0"
 dependencies = [
  "l030-06-calculate-mean-by-summing-values-and-dividing-by-count",
@@ -301,7 +301,7 @@ name = "l034-06-estimate-confidence-interval-as-uncertainty-bounds-around-sample
 version = "0.1.0"
 dependencies = [
  "l030-06-calculate-mean-by-summing-values-and-dividing-by-count",
- "l032-06-calculate-sample-variance-as-squared-deviation-sum-over-count-minus-one",
+ "l032-06-calculate-sample-variance-from-squared-differences-from-mean",
  "lesson-visualization",
 ]
 
@@ -313,11 +313,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "l036-06-practice-mean-middle-and-squared-deviations-from-csv"
+name = "l036-06-practice-mean-middle-and-squared-differences-from-mean-from-csv"
 version = "0.1.0"
 dependencies = [
  "l030-06-calculate-mean-by-summing-values-and-dividing-by-count",
- "l032-06-calculate-sample-variance-as-squared-deviation-sum-over-count-minus-one",
+ "l032-06-calculate-sample-variance-from-squared-differences-from-mean",
  "lesson-visualization",
 ]
 
@@ -403,7 +403,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l052-09-calculate-linear-prediction-by-multiplying-input-by-weight-and-adding-bias"
+name = "l052-09-calculate-linear-prediction-by-multiplying-input-and-adding-constant-weight"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -417,7 +417,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l054-09-check-weighted-input-plus-bias-on-unused-data"
+name = "l054-09-check-weighted-input-plus-constant-weight-on-unused-data"
 version = "0.1.0"
 dependencies = [
  "l050-09-calculate-mean-squared-error-as-squared-error-sum-divided-by-count",
@@ -447,7 +447,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l058-10-convert-weighted-input-plus-bias-to-positive-class-probability"
+name = "l058-10-convert-weighted-input-plus-constant-weight-to-positive-class-probability"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -793,7 +793,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l106-19-calculate-covariance-by-multiplying-paired-deviations-then-dividing-sum"
+name = "l106-19-calculate-covariance-by-multiplying-paired-differences-from-mean-then-dividing-sum"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -850,14 +850,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "l114-21-calculate-layer-output-by-summing-weighted-inputs-and-adding-biases"
+name = "l114-21-calculate-layer-output-by-summing-weighted-inputs-and-adding-constant-weights"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "l115-21-identify-adjustable-weights-and-biases-in-network"
+name = "l115-21-identify-adjustable-input-and-constant-weights-in-network"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -906,7 +906,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l122-22-shift-matrix-rows-by-adding-same-bias-vector-to-each-row"
+name = "l122-22-shift-matrix-rows-by-adding-same-constant-weight-vector-to-each-row"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -1063,7 +1063,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l145-26-calculate-residual-and-skip-outputs-by-adding-transform-to-input-and-passing-it-separately"
+name = "l145-26-add-transformed-value-to-input-and-pass-transform-separately"
 version = "0.1.0"
 
 [[package]]
@@ -1262,14 +1262,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "l175-32-calculate-residual-output-by-adding-original-input-to-transformed-output"
+name = "l175-32-calculate-output-by-adding-original-input-to-transformed-output"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "l176-32-normalize-coordinates-by-subtracting-mean-and-dividing-by-root-mean-squared-deviation"
+name = "l176-32-normalize-coordinates-by-subtracting-mean-and-dividing-by-root-mean-square"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",

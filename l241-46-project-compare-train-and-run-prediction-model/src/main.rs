@@ -50,18 +50,18 @@ fn main() {
     let baseline: f64 =
         calculate_mean_by_summing_values_and_dividing_by_count(&training_targets).unwrap();
 
-    /// Средняя абсолютная ошибка линейной модели: для каждого x считаем weight·x+bias, сравниваем с ответом и усредняем модули ошибок.
+    /// Средняя абсолютная ошибка линейной модели: для каждого x считаем weight·x+constant_input_weight, сравниваем с ответом и усредняем модули ошибок.
     fn calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
         data: &[(f64, f64)],
 
         weight: f64,
 
-        bias: f64,
+        constant_input_weight: f64,
     ) -> f64 {
         let targets: Vec<f64> = data.iter().map(|&(_, target)| target).collect();
         let predictions: Vec<f64> = data
             .iter()
-            .map(|&(feature, _)| weight * feature + bias)
+            .map(|&(feature, _)| weight * feature + constant_input_weight)
             .collect();
         calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(
             &targets,
@@ -70,7 +70,7 @@ fn main() {
         .unwrap()
     }
 
-    let (weight, bias): (f64, f64) = (|| -> (f64, f64) {
+    let (weight, constant_input_weight): (f64, f64) = (|| -> (f64, f64) {
         let data: &[(f64, f64)] = training_examples;
         let sample_count: f64 = data.len() as f64;
         let (mut feature_sum, mut target_sum): (f64, f64) = (0.0, 0.0);
@@ -80,34 +80,39 @@ fn main() {
         }
         let mean_feature: f64 = feature_sum / sample_count;
         let mean_target: f64 = target_sum / sample_count;
-        let (mut sum_after_multiplying_joint_deviations, mut variance_sum): (f64, f64) = (0.0, 0.0);
+        let (mut sum_after_multiplying_joint_differences_from_mean, mut variance_sum): (f64, f64) =
+            (0.0, 0.0);
         for &(feature_value, target_value) in data {
-            sum_after_multiplying_joint_deviations +=
+            sum_after_multiplying_joint_differences_from_mean +=
                 (feature_value - mean_feature) * (target_value - mean_target);
             variance_sum += (|| -> f64 {
                 let value: f64 = feature_value - mean_feature;
                 value * value
             })();
         }
-        let weight: f64 = sum_after_multiplying_joint_deviations / variance_sum;
+        let weight: f64 = sum_after_multiplying_joint_differences_from_mean / variance_sum;
         (weight, mean_target - weight * mean_feature)
     })();
     let _ = (&(calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
             validation, 0., baseline
         )), &(calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
-            validation, weight, bias
+            validation, weight, constant_input_weight
         )), &(calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
-            test, weight, bias
-        )), &(weight * 10. + bias));
+            test, weight, constant_input_weight
+        )), &(weight * 10. + constant_input_weight));
 
-    plot_training_points_and_fitted_prediction_line(training_examples, weight, bias);
+    plot_training_points_and_fitted_prediction_line(
+        training_examples,
+        weight,
+        constant_input_weight,
+    );
 }
 
 // Строим график по результатам урока.
 fn plot_training_points_and_fitted_prediction_line(
     training_examples: &[(f64, f64)],
     weight: f64,
-    bias: f64,
+    constant_input_weight: f64,
 ) {
     let training_points: Vec<(f64, f64)> = training_examples
         .iter()
@@ -116,7 +121,10 @@ fn plot_training_points_and_fitted_prediction_line(
     let model_points: Vec<(f64, f64)> = (0..=80)
         .map(|plot_step_index| {
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, weight * horizontal_value + bias)
+            (
+                horizontal_value,
+                weight * horizontal_value + constant_input_weight,
+            )
         })
         .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(

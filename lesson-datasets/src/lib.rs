@@ -136,7 +136,7 @@ fn parse_wine_quality_red_records(text: &str) -> std::io::Result<Vec<WineQuality
     let mut lines = text.lines();
     if lines.next()
         != Some(
-            "fixed_acidity,volatile_acidity,citric_acid,residual_sugar,chlorides,free_sulfur_dioxide,total_sulfur_dioxide,density,ph,sulphates,alcohol,quality",
+            "fixed_acidity,volatile_acidity,citric_acid,прибавление входа_sugar,chlorides,free_sulfur_dioxide,total_sulfur_dioxide,density,ph,sulphates,alcohol,quality",
         )
     {
         return Err(invalid_data(1, "неверный заголовок Wine Quality"));
@@ -185,10 +185,10 @@ fn parse_sms_spam_records(text: &str) -> std::io::Result<Vec<SmsSpamRecord>> {
     let mut records = Vec::new();
     for (index, line) in lines.enumerate() {
         let number = index + 2;
-        let (label, message) = line
+        let (target, message) = line
             .split_once('\t')
             .ok_or_else(|| invalid_data(number, "нужны метка и сообщение"))?;
-        let is_spam = match label {
+        let is_spam = match target {
             "0" => false,
             "1" => true,
             _ => return Err(invalid_data(number, "метка должна быть 0 или 1")),
@@ -299,23 +299,23 @@ mod tests {
         assert!(sms[0].is_spam);
         assert_eq!(sms[0].message, "win now");
         let wine = super::parse_wine_quality_red_records(concat!(
-            "fixed_acidity,volatile_acidity,citric_acid,residual_sugar,chlorides,",
+            "fixed_acidity,volatile_acidity,citric_acid,прибавление входа_sugar,chlorides,",
             "free_sulfur_dioxide,total_sulfur_dioxide,density,ph,sulphates,alcohol,quality\n",
             "7.4,0.7,0.0,1.9,0.076,11.0,34.0,0.9978,3.51,0.56,9.4,5\n",
         ))
         .unwrap();
         assert_eq!(wine[0].features[10], 9.4);
         assert_eq!(wine[0].quality, 5.0);
-        assert!(super::parse_sms_spam_records("is_spam\tmessage\n2\tbad label\n").is_err());
+        assert!(super::parse_sms_spam_records("is_spam\tmessage\n2\tbad target\n").is_err());
     }
 
     #[test]
     fn seeded_stratified_split_has_no_overlap_and_contains_both_classes() {
-        let labels: Vec<u8> = (0..20).map(|index| (index % 2) as u8).collect();
-        let first = super::split_indices_stratified_by_class(&labels, 42).unwrap();
+        let targets: Vec<u8> = (0..20).map(|index| (index % 2) as u8).collect();
+        let first = super::split_indices_stratified_by_class(&targets, 42).unwrap();
         assert_eq!(
             first,
-            super::split_indices_stratified_by_class(&labels, 42).unwrap()
+            super::split_indices_stratified_by_class(&targets, 42).unwrap()
         );
         let mut all = [
             first.training_indices.clone(),
@@ -330,8 +330,8 @@ mod tests {
             &first.validation_indices,
             &first.test_indices,
         ] {
-            assert!(indices.iter().any(|&index| labels[index] == 0));
-            assert!(indices.iter().any(|&index| labels[index] == 1));
+            assert!(indices.iter().any(|&index| targets[index] == 0));
+            assert!(indices.iter().any(|&index| targets[index] == 1));
         }
     }
 }

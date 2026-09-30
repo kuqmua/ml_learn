@@ -21,24 +21,30 @@ fn main() {
     );
     let target: f64 = 5.0;
     let mean: f64 = predictions.iter().sum::<f64>() / predictions.len() as f64;
-    let bias: f64 = mean - target;
+    let average_prediction_offset: f64 = mean - target;
     let variance: f64 = predictions
         .iter()
         .map(|&input_value| (input_value - mean) * (input_value - mean))
         .sum::<f64>()
         / predictions.len() as f64;
 
-    plot_squared_average_error_and_prediction_spread(bias, variance);
+    plot_squared_average_error_and_prediction_spread(average_prediction_offset, variance);
 }
 
 // Строим график по результатам урока.
-fn plot_squared_average_error_and_prediction_spread(bias: f64, variance: f64) {
+fn plot_squared_average_error_and_prediction_spread(average_prediction_offset: f64, variance: f64) {
     let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Смещение и разброс",
         "вклад в MSE",
-        &[("смещение²", bias * bias), ("разброс", variance)],
+        &[
+            (
+                "смещение²",
+                average_prediction_offset * average_prediction_offset,
+            ),
+            ("разброс", variance),
+        ],
     )
     .expect("не удалось сохранить график");
 }

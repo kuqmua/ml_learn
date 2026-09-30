@@ -1,5 +1,5 @@
 use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
-use l002_01_calculate_l1_vector_norm_by_summing_absolute_coordinates::calculate_l1_vector_norm_by_summing_absolute_coordinates;
+use l002_01_calculate_sum_of_absolute_vector_coordinates::calculate_sum_of_absolute_vector_coordinates;
 use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates;
 use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences;
 use l006_01_calculate_direction_similarity_by_multiplying_coordinates_then_dividing_sum_by_lengths::calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths;
@@ -24,7 +24,7 @@ fn combine_vector_properties() {
             .any(|&coordinate| coordinate != 0.0)
     );
     assert_eq!(
-        calculate_l1_vector_norm_by_summing_absolute_coordinates(&first_vector),
+        calculate_sum_of_absolute_vector_coordinates(&first_vector),
         7.0
     );
     assert_eq!(

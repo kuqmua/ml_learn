@@ -6,7 +6,7 @@
 //   общий ответ.
 // Представь: Сначала создаём несколько выборок, затем обучаем модель на каждой и объединяем ответы.
 //
-// Что повторяем вместе: bagging, bootstrap, majority vote, bias/variance.
+// Что повторяем вместе: bagging, bootstrap, majority vote, average_prediction_offset/variance.
 // Зачем это нужно: Ансамбль объединяет несколько простых моделей, обученных на разных выборках, чтобы
 //   снизить зависимость от одной модели.
 // Что показывает программа: Берём обучающие точки для нескольких базовых моделей. Каждый stump обучаем на
@@ -48,8 +48,8 @@ fn main() {
                 for reverse in [false, true] {
                     let errors: f64 = data
                         .iter()
-                        .filter(|&&(feature_value, label)| {
-                            ((feature_value >= candidate_threshold) ^ reverse) != label
+                        .filter(|&&(feature_value, target)| {
+                            ((feature_value >= candidate_threshold) ^ reverse) != target
                         })
                         .count() as f64;
                     if errors < best.0 {

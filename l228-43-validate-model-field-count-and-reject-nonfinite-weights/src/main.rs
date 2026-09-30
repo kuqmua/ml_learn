@@ -20,8 +20,10 @@ fn main() {
             Err("нужно ровно два параметра")
         } else {
             match (values[0].parse::<f64>(), values[1].parse::<f64>()) {
-                (Ok(weight), Ok(bias)) if weight.is_finite() && bias.is_finite() => {
-                    Ok((weight, bias))
+                (Ok(weight), Ok(constant_input_weight))
+                    if weight.is_finite() && constant_input_weight.is_finite() =>
+                {
+                    Ok((weight, constant_input_weight))
                 }
 
                 _ => Err("параметры должны быть конечными числами"),

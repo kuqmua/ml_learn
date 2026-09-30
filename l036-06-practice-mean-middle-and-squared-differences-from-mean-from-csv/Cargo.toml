@@ -1,0 +1,10 @@
+[package]
+name = "l036-06-practice-mean-middle-and-squared-differences-from-mean-from-csv"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l030_06_calculate_mean_by_summing_values_and_dividing_by_count = { package = "l030-06-calculate-mean-by-summing-values-and-dividing-by-count", path = "../l030-06-calculate-mean-by-summing-values-and-dividing-by-count" }
+l032_06_calculate_sample_variance_from_squared_differences_from_mean = { package = "l032-06-calculate-sample-variance-from-squared-differences-from-mean", path = "../l032-06-calculate-sample-variance-from-squared-differences-from-mean" }
+
+lesson-visualization = { path = "../lesson-visualization" }

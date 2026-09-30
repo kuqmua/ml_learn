@@ -60,7 +60,7 @@
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
 | 1 | Умножение соответствующих координат двух векторов и сложение результатов | `l001-01-multiply-matching-coordinates-then-add-results` |
-| 2 | Длина пути вдоль осей (норма L1): сложение модулей координат вектора | `l002-01-calculate-l1-vector-norm-by-summing-absolute-coordinates` |
+| 2 | Длина пути вдоль осей: сложение модулей координат вектора | `l002-01-calculate-sum-of-absolute-vector-coordinates` |
 | 3 | Длина вектора: квадратный корень из суммы квадратов координат | `l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates` |
 | 4 | Квадрат расстояния: сложение квадратов разностей координат | `l004-01-calculate-squared-point-distance-by-summing-squared-coordinate-differences` |
 | 5 | Расстояние между точками: квадратный корень из суммы квадратов разностей координат | `l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum` |
@@ -73,7 +73,7 @@
 ##### Практика: умножение координат, длины векторов и расстояния между точками — `l007-01-practice-multiplying-coordinates-vector-lengths-and-point-distances`
 
 - **Повторить вместе:** умножение координат попарно и сложение результатов, нормы L1/L2, расстояние, косинусное сходство.
-- **Практика:** Реализуй Vec<f64>: multiply_matching_coordinates_then_add_results, norm, distance, cosine; опиши ошибки длины и нулевого вектора.
+- **Практика:** Реализуй Vec<f64>: multiply_matching_coordinates_then_add_results, vector_length, distance, cosine; опиши ошибки длины и нулевого вектора.
 - **Готово, когда:** Сравни ортогональные, одинаковые и противоположные векторы; проверь симметрию расстояния.
 - **Артефакт:** код пакета, короткий README с входными данными, командой запуска, результатом и тем, что осталось непонятным.
 
@@ -168,12 +168,12 @@
 |---:|---|---|
 | 1 | Среднее арифметическое: сложение значений и деление суммы на их количество | `l030-06-calculate-mean-by-summing-values-and-dividing-by-count` |
 | 2 | Медиана: поиск среднего по положению значения после сортировки | `l031-06-calculate-median-by-sorting-values-and-finding-middle` |
-| 3 | Разброс значений (выборочная дисперсия): сумма квадратов отклонений от среднего, делённая на число значений минус один | `l032-06-calculate-sample-variance-as-squared-deviation-sum-over-count-minus-one` |
+| 3 | Разброс значений (выборочная дисперсия): сумма квадратов отклонений от среднего, делённая на число значений минус один | `l032-06-calculate-sample-variance-from-squared-differences-from-mean` |
 | 4 | Квантиль: значение на заданной доле упорядоченной выборки | `l033-06-calculate-quantile-by-selecting-sorted-value-at-given-sample-fraction` |
 | 5 | Доверительный интервал среднего: оценка границ неопределённости по выборке | `l034-06-estimate-confidence-interval-as-uncertainty-bounds-around-sample-mean` |
 | 6 | Изменчивость оценки: повторный набор выборок с возвращением наблюдений | `l035-06-estimate-statistic-variability-by-resampling-observations-with-replacement` |
 
-##### Практика: среднее, середина и квадраты отклонений для данных из CSV — `l036-06-practice-mean-middle-and-squared-deviations-from-csv`
+##### Практика: среднее, середина и квадраты отклонений для данных из CSV — `l036-06-practice-mean-middle-and-squared-differences-from-mean-from-csv`
 
 - **Повторить вместе:** среднее, медиана, дисперсия, квантили, доверительный интервал, bootstrap.
 - **Практика:** Напиши статистический отчёт по CSV-столбцу; отдельно обработай пропуски и нечисловые значения.
@@ -235,9 +235,9 @@
 |---:|---|---|
 | 1 | Средняя квадратичная ошибка прогноза: сумма квадратов ошибок, делённая на число примеров | `l050-09-calculate-mean-squared-error-as-squared-error-sum-divided-by-count` |
 | 2 | Средняя абсолютная ошибка прогноза: сумма модулей ошибок, делённая на число примеров | `l051-09-calculate-mean-absolute-error-as-absolute-error-sum-divided-by-count` |
-| 3 | Линейный прогноз: умножение входного значения на вес и прибавление смещения | `l052-09-calculate-linear-prediction-by-multiplying-input-by-weight-and-adding-bias` |
+| 3 | Линейный прогноз: умножение входного значения на вес и прибавление смещения | `l052-09-calculate-linear-prediction-by-multiplying-input-and-adding-constant-weight` |
 | 4 | Ограничение сложности модели: добавление штрафа за большой вес | `l053-09-penalize-model-complexity-by-adding-large-weight-penalty` |
-| 5 | Проверка прогноза по прямой на данных, не использованных для обучения | `l054-09-check-weighted-input-plus-bias-on-unused-data` |
+| 5 | Проверка прогноза по прямой на данных, не использованных для обучения | `l054-09-check-weighted-input-plus-constant-weight-on-unused-data` |
 
 ##### Практика: подбор прямой и проверка ошибок прогноза — `l055-09-practice-fitting-a-line-and-checking-prediction-errors`
 
@@ -254,7 +254,7 @@
 |---:|---|---|
 | 1 | Вероятность класса через сигмоиду: единица, делённая на сумму единицы и e в степени, противоположной оценке модели | `l056-10-calculate-class-probability-as-one-over-one-plus-e-to-negative-score` |
 | 2 | Ошибка классификации: отрицательный логарифм вероятности правильного класса | `l057-10-calculate-classification-loss-as-negative-log-correct-class-probability` |
-| 3 | Преобразование взвешенного входа со смещением в вероятность положительного класса | `l058-10-convert-weighted-input-plus-bias-to-positive-class-probability` |
+| 3 | Преобразование взвешенного входа со смещением в вероятность положительного класса | `l058-10-convert-weighted-input-plus-constant-weight-to-positive-class-probability` |
 | 4 | Выбор класса сравнением вероятности с порогом | `l059-10-choose-class-by-comparing-probability-with-threshold` |
 
 ##### Практика: обучение прогнозу вероятности класса и выбор порога — `l060-10-practice-learning-class-probabilities-and-choosing-threshold`
@@ -361,7 +361,7 @@
 
 ##### Практика: обучение моделей на повторных выборках и голосование за класс — `l089-15-practice-models-trained-on-resampled-data-and-majority-voting`
 
-- **Повторить вместе:** bagging, bootstrap, majority vote, bias/variance.
+- **Повторить вместе:** bagging, bootstrap, majority vote, average_prediction_offset/variance.
 - **Практика:** Собери несколько деревьев на bootstrap-выборках и усредни прогнозы.
 - **Готово, когда:** Сравни одно дерево с ансамблем на одинаковом split; фиксируй seed каждого дерева.
 - **Артефакт:** код пакета, короткий README с входными данными, командой запуска, результатом и тем, что осталось непонятным.
@@ -426,7 +426,7 @@
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
 | 1 | Центрирование признака: вычитание среднего по обучающим данным | `l105-19-center-feature-values-by-subtracting-training-mean` |
-| 2 | Совместное изменение признаков (ковариация): умножение парных отклонений, сложение и деление на число наблюдений минус один | `l106-19-calculate-covariance-by-multiplying-paired-deviations-then-dividing-sum` |
+| 2 | Совместное изменение признаков (ковариация): умножение парных отклонений, сложение и деление на число наблюдений минус один | `l106-19-calculate-covariance-by-multiplying-paired-differences-from-mean-then-dividing-sum` |
 | 3 | Главное направление данных: поиск наибольшего разброса проекций точек | `l107-19-find-principal-direction-by-maximizing-projected-point-spread` |
 | 4 | Сохранённая доля разброса: деление разброса вдоль выбранного направления на общий | `l108-19-calculate-explained-spread-share-by-dividing-direction-spread-by-total` |
 
@@ -462,8 +462,8 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Выход слоя нейросети: сложение взвешенных входов и прибавление смещений | `l114-21-calculate-layer-output-by-summing-weighted-inputs-and-adding-biases` |
-| 2 | Выделение весов и смещений сети, которые меняются при обучении | `l115-21-identify-adjustable-weights-and-biases-in-network` |
+| 1 | Выход слоя нейросети: сложение взвешенных входов и прибавление смещений | `l114-21-calculate-layer-output-by-summing-weighted-inputs-and-adding-constant-weights` |
+| 2 | Выделение весов и смещений сети, которые меняются при обучении | `l115-21-identify-adjustable-input-and-constant-weights-in-network` |
 | 3 | Активация ReLU: замена отрицательных выходов слоя нулями | `l116-21-calculate-rectified-activation-by-replacing-negative-outputs-with-zero` |
 | 4 | Различие нейронов при обучении: назначение разных начальных весов | `l117-21-break-neuron-symmetry-by-choosing-different-starting-weights` |
 | 5 | Обновление сети по средним скоростям изменения ошибки для небольшой группы примеров | `l118-21-update-network-using-average-error-slopes-from-small-example-group` |
@@ -483,7 +483,7 @@
 |---:|---|---|
 | 1 | Вычисление влияния каждого входа на результат обратным проходом по операциям | `l120-22-calculate-output-change-for-each-input-by-reversing-operations` |
 | 2 | Проверка размеров матриц до и после умножения | `l121-22-check-matrix-dimensions-before-and-after-multiplication` |
-| 3 | Смещение строк матрицы: прибавление одного вектора ко всем строкам | `l122-22-shift-matrix-rows-by-adding-same-bias-vector-to-each-row` |
+| 3 | Смещение строк матрицы: прибавление одного вектора ко всем строкам | `l122-22-shift-matrix-rows-by-adding-same-constant-weight-vector-to-each-row` |
 | 4 | Сравнение скоростей изменения по формуле с оценками по соседним значениям | `l123-22-compare-formula-rates-of-change-with-nearby-value-estimates` |
 
 ##### Практика: обратный проход по операциям и проверка влияния входов на результат — `l124-22-practice-reversing-operations-and-checking-input-rates-of-change`
@@ -551,7 +551,7 @@
 | 1 | Отклик фильтра без будущих данных: сложение взвешенных текущего и прошлого значений сигнала | `l142-26-calculate-causal-filter-output-by-summing-weighted-current-and-past-values` |
 | 2 | Расширение охвата истории: увеличение промежутков между значениями сигнала для фильтра | `l143-26-expand-filter-history-by-increasing-gaps-between-used-past-values` |
 | 3 | Управляемый выход сигнала: умножение ограниченного сигнала на долю, задаваемую второй ветвью | `l144-26-calculate-gated-signal-by-multiplying-bounded-signal-by-controlled-fraction` |
-| 4 | Остаточный и отдельный выходы блока: прибавление преобразования ко входу и передача его отдельно | `l145-26-calculate-residual-and-skip-outputs-by-adding-transform-to-input-and-passing-it-separately` |
+| 4 | Остаточный и отдельный выходы блока: прибавление преобразования ко входу и передача его отдельно | `l145-26-add-transformed-value-to-input-and-pass-transform-separately` |
 | 5 | Прогноз следующего значения звука только по предыдущим значениям | `l146-26-predict-next-sound-value-using-only-past-values` |
 
 ![Причинная свёртка](docs/illustrations/26-causal-convolution.svg)
@@ -664,13 +664,13 @@
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
 | 1 | Построение контекста каждой позиции по позициям той же последовательности | `l174-32-build-each-position-context-from-other-positions-in-sequence` |
-| 2 | Выход с остаточной связью: прибавление исходного входа к преобразованию | `l175-32-calculate-residual-output-by-adding-original-input-to-transformed-output` |
-| 3 | Нормализация координат: вычитание среднего и деление на корень из среднего квадрата отклонений | `l176-32-normalize-coordinates-by-subtracting-mean-and-dividing-by-root-mean-squared-deviation` |
+| 2 | Выход с остаточной связью: прибавление исходного входа к преобразованию | `l175-32-calculate-output-by-adding-original-input-to-transformed-output` |
+| 3 | Нормализация координат: вычитание среднего и деление на корень из среднего квадрата отклонений | `l176-32-normalize-coordinates-by-subtracting-mean-and-dividing-by-root-mean-square` |
 | 4 | Выход слоя для каждой позиции: взвешенное преобразование координат | `l177-32-calculate-position-layer-output-by-weighted-coordinate-transformation` |
 
 ##### Практика: сбор контекста, прибавление входа и преобразование координат — `l178-32-practice-context-mixing-input-addition-and-coordinate-transformation`
 
-- **Повторить вместе:** self-attention, residual, layer norm, feed-forward.
+- **Повторить вместе:** self-attention, прибавление входа, нормализацию слоя, feed-forward.
 - **Практика:** Собери один блок на малых тензорах и опиши порядок операций.
 - **Готово, когда:** Проверь сохранение формы, отсутствие NaN и детерминированный forward при фиксированных весах.
 - **Артефакт:** код пакета, короткий README с входными данными, командой запуска, результатом и тем, что осталось непонятным.

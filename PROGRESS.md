@@ -5,7 +5,7 @@
 ## 01. Векторы и геометрия
 
 - [x] [001 · Умножение соответствующих координат двух векторов и сложение результатов](l001-01-multiply-matching-coordinates-then-add-results/)
-- [x] [002 · Длина пути вдоль осей (норма L1): сложение модулей координат вектора](l002-01-calculate-l1-vector-norm-by-summing-absolute-coordinates/)
+- [x] [002 · Длина пути вдоль осей: сложение модулей координат вектора](l002-01-calculate-sum-of-absolute-vector-coordinates/)
 - [x] [003 · Длина вектора: квадратный корень из суммы квадратов координат](l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates/)
 - [x] [004 · Квадрат расстояния: сложение квадратов разностей координат](l004-01-calculate-squared-point-distance-by-summing-squared-coordinate-differences/)
 - [x] [005 · Расстояние между точками: квадратный корень из суммы квадратов разностей координат](l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum/)
@@ -50,11 +50,11 @@
 
 - [ ] [030 · Среднее арифметическое: сложение значений и деление суммы на их количество](l030-06-calculate-mean-by-summing-values-and-dividing-by-count/)
 - [ ] [031 · Медиана: поиск среднего по положению значения после сортировки](l031-06-calculate-median-by-sorting-values-and-finding-middle/)
-- [ ] [032 · Разброс значений (выборочная дисперсия): сумма квадратов отклонений от среднего, делённая на число значений минус один](l032-06-calculate-sample-variance-as-squared-deviation-sum-over-count-minus-one/)
+- [ ] [032 · Разброс значений (выборочная дисперсия): сумма квадратов отклонений от среднего, делённая на число значений минус один](l032-06-calculate-sample-variance-from-squared-differences-from-mean/)
 - [ ] [033 · Квантиль: значение на заданной доле упорядоченной выборки](l033-06-calculate-quantile-by-selecting-sorted-value-at-given-sample-fraction/)
 - [ ] [034 · Доверительный интервал среднего: оценка границ неопределённости по выборке](l034-06-estimate-confidence-interval-as-uncertainty-bounds-around-sample-mean/)
 - [ ] [035 · Изменчивость оценки: повторный набор выборок с возвращением наблюдений](l035-06-estimate-statistic-variability-by-resampling-observations-with-replacement/)
-- [ ] [036 · Практика: среднее, середина и квадраты отклонений для данных из CSV](l036-06-practice-mean-middle-and-squared-deviations-from-csv/)
+- [ ] [036 · Практика: среднее, середина и квадраты отклонений для данных из CSV](l036-06-practice-mean-middle-and-squared-differences-from-mean-from-csv/)
 
 ## 07. Данные и признаки
 
@@ -79,16 +79,16 @@
 
 - [ ] [050 · Средняя квадратичная ошибка прогноза: сумма квадратов ошибок, делённая на число примеров](l050-09-calculate-mean-squared-error-as-squared-error-sum-divided-by-count/)
 - [ ] [051 · Средняя абсолютная ошибка прогноза: сумма модулей ошибок, делённая на число примеров](l051-09-calculate-mean-absolute-error-as-absolute-error-sum-divided-by-count/)
-- [ ] [052 · Линейный прогноз: умножение входного значения на вес и прибавление смещения](l052-09-calculate-linear-prediction-by-multiplying-input-by-weight-and-adding-bias/)
+- [ ] [052 · Линейный прогноз: умножение входного значения на вес и прибавление смещения](l052-09-calculate-linear-prediction-by-multiplying-input-and-adding-constant-weight/)
 - [ ] [053 · Ограничение сложности модели: добавление штрафа за большой вес](l053-09-penalize-model-complexity-by-adding-large-weight-penalty/)
-- [ ] [054 · Проверка прогноза по прямой на данных, не использованных для обучения](l054-09-check-weighted-input-plus-bias-on-unused-data/)
+- [ ] [054 · Проверка прогноза по прямой на данных, не использованных для обучения](l054-09-check-weighted-input-plus-constant-weight-on-unused-data/)
 - [ ] [055 · Практика: подбор прямой и проверка ошибок прогноза](l055-09-practice-fitting-a-line-and-checking-prediction-errors/)
 
 ## 10. Логистическая регрессия
 
 - [ ] [056 · Вероятность класса через сигмоиду: единица, делённая на сумму единицы и e в степени, противоположной оценке модели](l056-10-calculate-class-probability-as-one-over-one-plus-e-to-negative-score/)
 - [ ] [057 · Ошибка классификации: отрицательный логарифм вероятности правильного класса](l057-10-calculate-classification-loss-as-negative-log-correct-class-probability/)
-- [ ] [058 · Преобразование взвешенного входа со смещением в вероятность положительного класса](l058-10-convert-weighted-input-plus-bias-to-positive-class-probability/)
+- [ ] [058 · Преобразование взвешенного входа со смещением в вероятность положительного класса](l058-10-convert-weighted-input-plus-constant-weight-to-positive-class-probability/)
 - [ ] [059 · Выбор класса сравнением вероятности с порогом](l059-10-choose-class-by-comparing-probability-with-threshold/)
 - [ ] [060 · Практика: обучение прогнозу вероятности класса и выбор порога](l060-10-practice-learning-class-probabilities-and-choosing-threshold/)
 
@@ -163,7 +163,7 @@
 ## 19. Снижение размерности PCA
 
 - [ ] [105 · Центрирование признака: вычитание среднего по обучающим данным](l105-19-center-feature-values-by-subtracting-training-mean/)
-- [ ] [106 · Совместное изменение признаков (ковариация): умножение парных отклонений, сложение и деление на число наблюдений минус один](l106-19-calculate-covariance-by-multiplying-paired-deviations-then-dividing-sum/)
+- [ ] [106 · Совместное изменение признаков (ковариация): умножение парных отклонений, сложение и деление на число наблюдений минус один](l106-19-calculate-covariance-by-multiplying-paired-differences-from-mean-then-dividing-sum/)
 - [ ] [107 · Главное направление данных: поиск наибольшего разброса проекций точек](l107-19-find-principal-direction-by-maximizing-projected-point-spread/)
 - [ ] [108 · Сохранённая доля разброса: деление разброса вдоль выбранного направления на общий](l108-19-calculate-explained-spread-share-by-dividing-direction-spread-by-total/)
 - [ ] [109 · Практика: вычитание средних и проекция точек на направление наибольшего разброса](l109-19-practice-centering-points-and-projecting-onto-largest-spread-direction/)
@@ -177,8 +177,8 @@
 
 ## 21. Многослойный перцептрон
 
-- [ ] [114 · Выход слоя нейросети: сложение взвешенных входов и прибавление смещений](l114-21-calculate-layer-output-by-summing-weighted-inputs-and-adding-biases/)
-- [ ] [115 · Выделение весов и смещений сети, которые меняются при обучении](l115-21-identify-adjustable-weights-and-biases-in-network/)
+- [ ] [114 · Выход слоя нейросети: сложение взвешенных входов и прибавление смещений](l114-21-calculate-layer-output-by-summing-weighted-inputs-and-adding-constant-weights/)
+- [ ] [115 · Выделение весов и смещений сети, которые меняются при обучении](l115-21-identify-adjustable-input-and-constant-weights-in-network/)
 - [ ] [116 · Активация ReLU: замена отрицательных выходов слоя нулями](l116-21-calculate-rectified-activation-by-replacing-negative-outputs-with-zero/)
 - [ ] [117 · Различие нейронов при обучении: назначение разных начальных весов](l117-21-break-neuron-symmetry-by-choosing-different-starting-weights/)
 - [ ] [118 · Обновление сети по средним скоростям изменения ошибки для небольшой группы примеров](l118-21-update-network-using-average-error-slopes-from-small-example-group/)
@@ -188,7 +188,7 @@
 
 - [ ] [120 · Вычисление влияния каждого входа на результат обратным проходом по операциям](l120-22-calculate-output-change-for-each-input-by-reversing-operations/)
 - [ ] [121 · Проверка размеров матриц до и после умножения](l121-22-check-matrix-dimensions-before-and-after-multiplication/)
-- [ ] [122 · Смещение строк матрицы: прибавление одного вектора ко всем строкам](l122-22-shift-matrix-rows-by-adding-same-bias-vector-to-each-row/)
+- [ ] [122 · Смещение строк матрицы: прибавление одного вектора ко всем строкам](l122-22-shift-matrix-rows-by-adding-same-constant-weight-vector-to-each-row/)
 - [ ] [123 · Сравнение скоростей изменения по формуле с оценками по соседним значениям](l123-22-compare-formula-rates-of-change-with-nearby-value-estimates/)
 - [ ] [124 · Практика: обратный проход по операциям и проверка влияния входов на результат](l124-22-practice-reversing-operations-and-checking-input-rates-of-change/)
 
@@ -223,7 +223,7 @@
 - [ ] [142 · Отклик фильтра без будущих данных: сложение взвешенных текущего и прошлого значений сигнала](l142-26-calculate-causal-filter-output-by-summing-weighted-current-and-past-values/)
 - [ ] [143 · Расширение охвата истории: увеличение промежутков между значениями сигнала для фильтра](l143-26-expand-filter-history-by-increasing-gaps-between-used-past-values/)
 - [ ] [144 · Управляемый выход сигнала: умножение ограниченного сигнала на долю, задаваемую второй ветвью](l144-26-calculate-gated-signal-by-multiplying-bounded-signal-by-controlled-fraction/)
-- [ ] [145 · Остаточный и отдельный выходы блока: прибавление преобразования ко входу и передача его отдельно](l145-26-calculate-residual-and-skip-outputs-by-adding-transform-to-input-and-passing-it-separately/)
+- [ ] [145 · Остаточный и отдельный выходы блока: прибавление преобразования ко входу и передача его отдельно](l145-26-add-transformed-value-to-input-and-pass-transform-separately/)
 - [ ] [146 · Прогноз следующего значения звука только по предыдущим значениям](l146-26-predict-next-sound-value-using-only-past-values/)
 
 ## 27. Токенизаторы и подготовка входа
@@ -271,8 +271,8 @@
 ## 32. Блок Transformer
 
 - [ ] [174 · Построение контекста каждой позиции по позициям той же последовательности](l174-32-build-each-position-context-from-other-positions-in-sequence/)
-- [ ] [175 · Выход с остаточной связью: прибавление исходного входа к преобразованию](l175-32-calculate-residual-output-by-adding-original-input-to-transformed-output/)
-- [ ] [176 · Нормализация координат: вычитание среднего и деление на корень из среднего квадрата отклонений](l176-32-normalize-coordinates-by-subtracting-mean-and-dividing-by-root-mean-squared-deviation/)
+- [ ] [175 · Выход с остаточной связью: прибавление исходного входа к преобразованию](l175-32-calculate-output-by-adding-original-input-to-transformed-output/)
+- [ ] [176 · Нормализация координат: вычитание среднего и деление на корень из среднего квадрата отклонений](l176-32-normalize-coordinates-by-subtracting-mean-and-dividing-by-root-mean-square/)
 - [ ] [177 · Выход слоя для каждой позиции: взвешенное преобразование координат](l177-32-calculate-position-layer-output-by-weighted-coordinate-transformation/)
 - [ ] [178 · Практика: сбор контекста, прибавление входа и преобразование координат](l178-32-practice-context-mixing-input-addition-and-coordinate-transformation/)
 

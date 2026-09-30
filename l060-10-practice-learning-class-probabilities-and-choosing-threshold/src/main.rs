@@ -60,21 +60,21 @@ fn main() {
     ];
 
     /// Бинарная перекрёстная энтропия: среднее −y·ln(p) − (1−y)·ln(1−p), вычисленное устойчиво из оценок линейной модели.
-    fn calculate_binary_classification_loss_as_average_negative_log_label_probability(
+    fn calculate_binary_classification_loss_as_average_negative_log_target_probability(
         data: &[(f64, f64)],
 
         weight: f64,
 
-        bias: f64,
+        constant_input_weight: f64,
     ) -> f64 {
         let mut loss_sum: f64 = 0.0;
-        for &(feature_value, target_label) in data {
-            let raw_model_score: f64 = weight * feature_value + bias;
+        for &(feature_value, target) in data {
+            let raw_model_score: f64 = weight * feature_value + constant_input_weight;
             loss_sum += (|| -> f64 {
                 let first: f64 = raw_model_score;
                 let second: f64 = 0.;
                 if first > second { first } else { second }
-            })() - target_label * raw_model_score
+            })() - target * raw_model_score
                 + (|| -> f64 {
                     let value: f64 = 1.
                         + approximate_e_to_power_by_summing_power_over_factorial_terms(
@@ -127,7 +127,7 @@ fn main() {
     }
 
     let _before: f64 =
-        calculate_binary_classification_loss_as_average_negative_log_label_probability(
+        calculate_binary_classification_loss_as_average_negative_log_target_probability(
             &TRAINING_EXAMPLES,
             0.,
             0.,
@@ -146,66 +146,71 @@ fn main() {
         }
     }
 
-    let (weight, bias): (f64, f64) = (|| -> (f64, f64) {
-        let (mut weight, mut bias): (f64, f64) = (0., 0.);
+    let (weight, constant_input_weight): (f64, f64) = (|| -> (f64, f64) {
+        let (mut weight, mut constant_input_weight): (f64, f64) = (0., 0.);
         for epoch in 0..300 {
-            let (weight_loss_rate_of_change, bias_loss_rate_of_change): (f64, f64) =
-                (|| -> (f64, f64) {
-                    let data: &[(f64, f64)] = &TRAINING_EXAMPLES;
-                    let weight: f64 = weight;
-                    let bias: f64 = bias;
-                    let (mut weight_loss_rate_of_change, mut bias_loss_rate_of_change): (f64, f64) =
+            let (weight_loss_rate_of_change, constant_input_weight_loss_rate_of_change): (
+                f64,
+                f64,
+            ) = (|| -> (f64, f64) {
+                let data: &[(f64, f64)] = &TRAINING_EXAMPLES;
+                let weight: f64 = weight;
+                let constant_input_weight: f64 = constant_input_weight;
+                let (mut weight_loss_rate_of_change, mut constant_input_weight_loss_rate_of_change): (f64, f64) =
                         (0.0, 0.0);
-                    for &(feature_value, target_label) in data {
-                        let prediction_error: f64 =
+                for &(feature_value, target) in data {
+                    let prediction_error: f64 =
 
-                        calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(weight * feature_value + bias) - target_label;
-                        weight_loss_rate_of_change += prediction_error * feature_value;
-                        bias_loss_rate_of_change += prediction_error;
-                    }
-                    (
-                        weight_loss_rate_of_change / data.len() as f64,
-                        bias_loss_rate_of_change / data.len() as f64,
-                    )
-                })();
+                        calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(weight * feature_value + constant_input_weight) - target;
+                    weight_loss_rate_of_change += prediction_error * feature_value;
+                    constant_input_weight_loss_rate_of_change += prediction_error;
+                }
+                (
+                    weight_loss_rate_of_change / data.len() as f64,
+                    constant_input_weight_loss_rate_of_change / data.len() as f64,
+                )
+            })();
             weight -= 0.1 * weight_loss_rate_of_change;
-            bias -= 0.1 * bias_loss_rate_of_change;
+            constant_input_weight -= 0.1 * constant_input_weight_loss_rate_of_change;
             if matches!(epoch, 0 | 1 | 9 | 99 | 299) {
                 let _loss: f64 =
-                    calculate_binary_classification_loss_as_average_negative_log_label_probability(
+                    calculate_binary_classification_loss_as_average_negative_log_target_probability(
                         &TRAINING_EXAMPLES,
                         weight,
-                        bias,
+                        constant_input_weight,
                     );
                 let _ = &(epoch + 1);
             }
         }
-        (weight, bias)
+        (weight, constant_input_weight)
     })();
     let _ = (
-        &(calculate_binary_classification_loss_as_average_negative_log_label_probability(
+        &(calculate_binary_classification_loss_as_average_negative_log_target_probability(
             &TRAINING_EXAMPLES,
             weight,
-            bias,
+            constant_input_weight,
         )),
         &(calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
-            2. * weight + bias,
+            2. * weight + constant_input_weight,
         )),
     );
 
-    plot_predicted_positive_probability_and_training_labels(weight, bias);
+    plot_predicted_positive_probability_and_training_targets(weight, constant_input_weight);
 
-    fn plot_predicted_positive_probability_and_training_labels(weight: f64, bias: f64) {
+    fn plot_predicted_positive_probability_and_training_targets(
+        weight: f64,
+        constant_input_weight: f64,
+    ) {
         let model_points: Vec<(f64, f64)> = (-10..=60)
             .map(|plot_step_index| {
                 let horizontal_value: f64 = plot_step_index as f64 / 10.0;
                 (
                     horizontal_value,
-                    1.0 / (1.0 + (-(weight * horizontal_value + bias)).exp()),
+                    1.0 / (1.0 + (-(weight * horizontal_value + constant_input_weight)).exp()),
                 )
             })
             .collect();
-        let training_label_points: Vec<(f64, f64)> = TRAINING_EXAMPLES
+        let training_target_points: Vec<(f64, f64)> = TRAINING_EXAMPLES
             .iter()
             .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
             .collect();
@@ -224,7 +229,7 @@ fn main() {
                 lesson_visualization::Series {
                     name: "метки обучения",
 
-                    points: &training_label_points,
+                    points: &training_target_points,
                 },
             ],
         )

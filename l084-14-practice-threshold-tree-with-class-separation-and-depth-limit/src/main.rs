@@ -40,7 +40,7 @@ fn main() {
             return 0.;
         }
         let positive_class_share: f64 =
-            data.iter().filter(|(_, label)| *label).count() as f64 / data.len() as f64;
+            data.iter().filter(|(_, target)| *target).count() as f64 / data.len() as f64;
         2. * positive_class_share * (1. - positive_class_share)
     }
     /// Дерево решений: выбираем порог с наименьшей взвешенной нечистотой Джини и повторяем до ограничения глубины.
@@ -48,7 +48,7 @@ fn main() {
         data: &[(f64, bool)],
         remaining_depth: usize,
     ) -> Tree {
-        let positive_count: usize = data.iter().filter(|(_, label)| *label).count();
+        let positive_count: usize = data.iter().filter(|(_, target)| *target).count();
         if remaining_depth == 0 || positive_count == 0 || positive_count == data.len() {
             return Tree::Leaf(positive_count * 2 >= data.len());
         }
@@ -119,7 +119,7 @@ fn main() {
         feature_value: f64,
     ) -> bool {
         match tree {
-            Tree::Leaf(label) => *label,
+            Tree::Leaf(target) => *target,
 
             Tree::Split {
                 threshold,

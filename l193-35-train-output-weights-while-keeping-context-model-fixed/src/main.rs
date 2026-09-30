@@ -17,7 +17,7 @@ fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score
     1.0 / (1.0 + (-input_value).exp())
 }
 /// Бинарная перекрёстная энтропия: из последнего контекстного вектора получаем вероятность p и считаем −y·ln(p)−(1−y)·ln(1−p).
-fn calculate_binary_prediction_loss_as_negative_log_label_probability_from_final_context(
+fn calculate_binary_prediction_loss_as_negative_log_target_probability_from_final_context(
     weight: &[f64; 2],
     sample: (&[usize], f64),
 ) -> f64 {
@@ -41,7 +41,7 @@ fn main() {
     let baseline: f64 = validation
         .iter()
         .map(|&sample| {
-            calculate_binary_prediction_loss_as_negative_log_label_probability_from_final_context(
+            calculate_binary_prediction_loss_as_negative_log_target_probability_from_final_context(
                 &weight, sample,
             )
         })
@@ -70,7 +70,7 @@ fn main() {
     let held_out: f64 = validation
         .iter()
         .map(|&sample| {
-            calculate_binary_prediction_loss_as_negative_log_label_probability_from_final_context(
+            calculate_binary_prediction_loss_as_negative_log_target_probability_from_final_context(
                 &weight, sample,
             )
         })
