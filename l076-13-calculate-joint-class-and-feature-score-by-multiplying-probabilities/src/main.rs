@@ -19,7 +19,7 @@ fn main() {
     let word_two_given_positive: f64 = 0.6;
     let joint_score: f64 = prior_positive * word_one_given_positive * word_two_given_positive;
 
-    plot_product_of_feature_probabilities_within_class(
+    plot_result_after_multiplying_feature_probabilities_within_class(
         prior_positive,
         word_one_given_positive,
         word_two_given_positive,
@@ -28,7 +28,7 @@ fn main() {
 }
 
 // Строим график по результатам урока.
-fn plot_product_of_feature_probabilities_within_class(
+fn plot_result_after_multiplying_feature_probabilities_within_class(
     prior_positive: f64,
     word_one_given_positive: f64,
     word_two_given_positive: f64,

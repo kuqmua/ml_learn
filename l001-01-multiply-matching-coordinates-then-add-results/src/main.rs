@@ -45,10 +45,10 @@ fn plot_sum_after_multiplying_coordinates_for_changing_second_coordinate(left: &
     let chart_points: Vec<(f64, f64)> = (-40..=40)
         .map(|plot_step_index| {
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            let product: f64 =
+            let sum_after_multiplying: f64 =
                 multiply_matching_coordinates_then_add_results(left, &[1.0, horizontal_value])
                     .expect("оба вектора имеют две координаты");
-            (horizontal_value, product)
+            (horizontal_value, sum_after_multiplying)
         })
         .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(

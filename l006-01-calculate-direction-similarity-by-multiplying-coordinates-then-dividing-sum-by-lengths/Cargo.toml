@@ -1,0 +1,10 @@
+[package]
+name = "l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l001_01_multiply_matching_coordinates_then_add_results = { package = "l001-01-multiply-matching-coordinates-then-add-results", path = "../l001-01-multiply-matching-coordinates-then-add-results" }
+l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates = { package = "l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates", path = "../l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates" }
+
+lesson-visualization = { path = "../lesson-visualization" }

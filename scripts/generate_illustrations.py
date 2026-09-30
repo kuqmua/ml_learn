@@ -84,7 +84,7 @@ for index, (heading, right_label, formula, result_color, pale, second_x, second_
                  "start" if second_x >= 0 else "end")
     body += text(left + 180, 405, formula, 18, result_color, 700, "middle")
 body += text(600, 481, "Знак результата зависит от угла; нулевой вектор не имеет направления.", 17, MUTED, 400, "middle")
-write("01-dot-product.svg", 510, "Скалярное произведение и угол", "Один вектор a, три направления второго вектора b", body)
+write("01-multiply-matching-coordinates.svg", 510, "Скалярное произведение и угол", "Один вектор a, три направления второго вектора b", body)
 
 
 # 05. A fraction is a part of one whole and can also be a probability threshold.

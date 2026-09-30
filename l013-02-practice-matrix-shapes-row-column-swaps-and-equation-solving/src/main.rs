@@ -115,9 +115,9 @@ fn main() {
     .unwrap();
     let _ = (&(output_vector), &(result_matrix));
 
-    plot_product_of_transposed_matrix_and_original_matrix(result_matrix);
+    plot_result_after_multiplying_transposed_and_original_matrices(result_matrix);
 
-    fn plot_product_of_transposed_matrix_and_original_matrix(result_matrix: Matrix) {
+    fn plot_result_after_multiplying_transposed_and_original_matrices(result_matrix: Matrix) {
         let _chart: std::path::PathBuf = lesson_visualization::heatmap(
             env!("CARGO_MANIFEST_DIR"),
             "lesson-chart",

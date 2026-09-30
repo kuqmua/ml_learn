@@ -18,11 +18,11 @@ fn main() {
     let _derivative_by_horizontal_coordinate: f64 = second_input_value + 1.0;
     let _derivative_by_vertical_coordinate: f64 = input_value;
 
-    plot_input_product_plus_first_input_with_second_fixed(second_input_value);
+    plot_multiply_inputs_then_add_first_with_second_fixed(second_input_value);
 }
 
 // Строим график по результатам урока.
-fn plot_input_product_plus_first_input_with_second_fixed(vertical_value: f64) {
+fn plot_multiply_inputs_then_add_first_with_second_fixed(vertical_value: f64) {
     let chart_points: Vec<(f64, f64)> = (0..=50)
         .map(|plot_step_index| {
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;

@@ -30,10 +30,10 @@ fn main() {
     assert!((same - 1.0).abs() < 1e-12);
     assert!(distant < same);
 
-    plot_coordinate_product_sum_for_relative_position_rotations();
+    plot_sum_after_multiplying_rotated_coordinates_for_relative_positions();
 }
 
-fn plot_coordinate_product_sum_for_relative_position_rotations() {
+fn plot_sum_after_multiplying_rotated_coordinates_for_relative_positions() {
     let query_vector: [f64; 2] = [1.0, 0.0];
     let query_vector: [f64; 2] =
         rotate_vector_coordinate_pair_by_token_position(query_vector, 0, 0.2);

@@ -1,10 +1,10 @@
 use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts;
-use l067_11_calculate_f1_from_counts_by_combining_precision_and_recall::calculate_f1_score_from_counts_by_combining_precision_and_recall_as_twice_product_over_sum;
+use l067_11_calculate_f1_from_counts_by_combining_precision_and_recall::calculate_f1_score_from_counts_by_multiplying_precision_and_recall_by_two_then_dividing_by_sum;
 
 #[test]
 fn f1_combines_precision_and_recall_and_ignores_true_negatives() {
     for true_negatives in [0, 4, 1000] {
-        let value = calculate_f1_score_from_counts_by_combining_precision_and_recall_as_twice_product_over_sum(BinaryClassificationCounts {
+        let value = calculate_f1_score_from_counts_by_multiplying_precision_and_recall_by_two_then_dividing_by_sum(BinaryClassificationCounts {
             true_positives: 3,
             false_positives: 1,
             true_negatives,
@@ -14,7 +14,7 @@ fn f1_combines_precision_and_recall_and_ignores_true_negatives() {
         assert!((value - 2.0 / 3.0).abs() < 1e-12);
     }
     assert_eq!(
-        calculate_f1_score_from_counts_by_combining_precision_and_recall_as_twice_product_over_sum(
+        calculate_f1_score_from_counts_by_multiplying_precision_and_recall_by_two_then_dividing_by_sum(
             BinaryClassificationCounts {
                 true_positives: 3,
                 false_positives: 0,
@@ -54,6 +54,6 @@ fn undefined_components_or_zero_metric_sum_return_none() {
             false_negatives: 0,
         },
     ] {
-        assert_eq!(calculate_f1_score_from_counts_by_combining_precision_and_recall_as_twice_product_over_sum(counts), None);
+        assert_eq!(calculate_f1_score_from_counts_by_multiplying_precision_and_recall_by_two_then_dividing_by_sum(counts), None);
     }
 }

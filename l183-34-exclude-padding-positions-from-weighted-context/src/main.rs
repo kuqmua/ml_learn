@@ -6,19 +6,19 @@
 // Представь: Добавленные PAD-позиции не должны менять смысл настоящих слов при внимании.
 // Добавленные PAD позиции не должны влиять на реальные выходные токены.
 
-use l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products;
+use l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores;
 
 fn main() {
     let real: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
     let base: [[f64; 2]; 2] =
-        calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
+        calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
             &real,
             &[true, true],
         )
         .unwrap();
     let input_with_padding_rows: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [100.0, 100.0]];
     let output_ignoring_padding: [[f64; 2]; 3] =
-        calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
+        calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
             &input_with_padding_rows,
             &[true, true, false],
         )

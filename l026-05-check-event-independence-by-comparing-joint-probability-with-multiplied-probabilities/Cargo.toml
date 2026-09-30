@@ -1,0 +1,8 @@
+[package]
+name = "l026-05-check-event-independence-by-comparing-joint-probability-with-multiplied-probabilities"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

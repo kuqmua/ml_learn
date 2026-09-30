@@ -4,7 +4,7 @@
 /// Полное self-attention: каждая позиция видит обе стороны последовательности.
 /// Двунаправленное внимание: для каждого состояния считаем произведения координат с видимыми состояниями, делим на sqrt(2), применяем softmax и суммируем состояния с этими весами.
 
-pub fn calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products<
+pub fn calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores<
     const N: usize,
 >(
     states: &[[f64; 2]; N],
@@ -47,13 +47,13 @@ mod tests {
     #[test]
     fn masked_padding_does_not_change_real_output() {
         let base: [[f64; 2]; 1] =
-            super::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
+            super::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
                 &[[1.0, 0.0]],
                 &[true],
             )
             .unwrap();
         let input_with_padding: [[f64; 2]; 2] =
-            super::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
+            super::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
                 &[[1.0, 0.0], [999.0, 999.0]],
                 &[true, false],
             )

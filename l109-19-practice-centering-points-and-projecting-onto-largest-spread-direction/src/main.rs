@@ -55,28 +55,32 @@ fn main() {
                 coordinate_sums[0] / sample_count,
                 coordinate_sums[1] / sample_count,
             ];
-            let (mut first_variance_sum, mut cross_deviation_product_sum, mut second_variance_sum): (f64, f64, f64) =
-
-            (0.0, 0.0, 0.0);
+            let (
+                mut first_variance_sum,
+                mut sum_after_multiplying_cross_deviations,
+                mut second_variance_sum,
+            ): (f64, f64, f64) = (0.0, 0.0, 0.0);
             for point in data {
                 let centered_first: f64 = point[0] - mean[0];
                 let centered_second: f64 = point[1] - mean[1];
                 first_variance_sum +=
                     calculate_square_by_multiplying_number_by_itself(centered_first);
-                cross_deviation_product_sum += centered_first * centered_second;
+                sum_after_multiplying_cross_deviations += centered_first * centered_second;
                 second_variance_sum +=
                     calculate_square_by_multiplying_number_by_itself(centered_second);
             }
             let discriminant: f64 = calculate_square_by_multiplying_number_by_itself(
                 first_variance_sum - second_variance_sum,
             ) + 4.0
-                * calculate_square_by_multiplying_number_by_itself(cross_deviation_product_sum);
+                * calculate_square_by_multiplying_number_by_itself(
+                    sum_after_multiplying_cross_deviations,
+                );
             let largest_eigenvalue: f64 = (first_variance_sum
                 + second_variance_sum
                 + approximate_square_root_by_repeated_averaging(discriminant))
                 / 2.0;
             let axis: [f64; 2] = if (|| -> f64 {
-                let value: f64 = cross_deviation_product_sum;
+                let value: f64 = sum_after_multiplying_cross_deviations;
                 if value < 0.0 { -value } else { value }
             })() < 1e-12
             {
@@ -87,7 +91,7 @@ fn main() {
                 }
             } else {
                 let unnormalized_axis: [f64; 2] = [
-                    cross_deviation_product_sum,
+                    sum_after_multiplying_cross_deviations,
                     largest_eigenvalue - first_variance_sum,
                 ];
                 let axis_length: f64 = approximate_square_root_by_repeated_averaging(

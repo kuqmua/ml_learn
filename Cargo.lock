@@ -90,7 +90,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l006-01-calculate-direction-similarity-as-coordinate-product-sum-divided-by-vector-lengths"
+name = "l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coordinates-then-add-results",
@@ -99,14 +99,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "l007-01-practice-coordinate-products-vector-lengths-and-point-distances"
+name = "l007-01-practice-multiplying-coordinates-vector-lengths-and-point-distances"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coordinates-then-add-results",
  "l002-01-calculate-l1-vector-norm-by-summing-absolute-coordinates",
  "l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates",
  "l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum",
- "l006-01-calculate-direction-similarity-as-coordinate-product-sum-divided-by-vector-lengths",
+ "l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths",
  "lesson-visualization",
 ]
 
@@ -125,7 +125,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l010-02-calculate-matrix-vector-product-by-summing-matching-row-coordinate-products"
+name = "l010-02-multiply-matrix-and-vector-by-adding-multiplied-row-coordinates"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coordinates-then-add-results",
@@ -133,7 +133,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l011-02-calculate-matrix-product-by-summing-matching-row-and-column-products"
+name = "l011-02-multiply-matrices-by-adding-multiplied-row-and-column-values"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coordinates-then-add-results",
@@ -240,7 +240,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l026-05-check-event-independence-by-comparing-joint-probability-with-product"
+name = "l026-05-check-event-independence-by-comparing-joint-probability-with-multiplied-probabilities"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -793,7 +793,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l106-19-calculate-covariance-as-paired-deviation-product-sum-over-count-minus-one"
+name = "l106-19-calculate-covariance-by-multiplying-paired-deviations-then-dividing-sum"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -1117,7 +1117,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l155-28-calculate-word-vector-similarity-as-sum-of-matching-coordinate-products"
+name = "l155-28-calculate-word-vector-similarity-by-multiplying-matching-coordinates-then-adding"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coordinates-then-add-results",
@@ -1181,10 +1181,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "l164-30-calculate-query-document-direction-similarity-as-product-sum-over-vector-lengths"
+name = "l164-30-calculate-query-document-direction-similarity-by-multiplying-coordinates-then-dividing"
 version = "0.1.0"
 dependencies = [
- "l006-01-calculate-direction-similarity-as-coordinate-product-sum-divided-by-vector-lengths",
+ "l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths",
  "lesson-visualization",
 ]
 
@@ -1225,7 +1225,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l170-31-calculate-scaled-match-score-as-query-key-product-sum-over-root-coordinate-count"
+name = "l170-31-calculate-scaled-match-score-by-multiplying-query-and-key-then-dividing-sum"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coordinates-then-add-results",
@@ -1446,7 +1446,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l202-37-adapt-model-weights-by-adding-product-of-two-small-matrices"
+name = "l202-37-adapt-model-weights-by-multiplying-small-matrices-then-adding-result"
 version = "0.1.0"
 
 [[package]]

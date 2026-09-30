@@ -18,11 +18,15 @@ fn main() {
     let score: f64 = multiply_matching_coordinates_then_add_results(&query, &key)
         .expect("запрос и ключ имеют одинаковую размерность");
 
-    plot_matching_query_and_key_coordinate_products(query, key, score);
+    plot_results_after_multiplying_matching_query_and_key_coordinates(query, key, score);
 }
 
 // Строим график по результатам урока.
-fn plot_matching_query_and_key_coordinate_products(query: [f64; 2], key: [f64; 2], score: f64) {
+fn plot_results_after_multiplying_matching_query_and_key_coordinates(
+    query: [f64; 2],
+    key: [f64; 2],
+    score: f64,
+) {
     let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

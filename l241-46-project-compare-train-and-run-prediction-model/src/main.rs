@@ -80,16 +80,16 @@ fn main() {
         }
         let mean_feature: f64 = feature_sum / sample_count;
         let mean_target: f64 = target_sum / sample_count;
-        let (mut joint_deviation_product_sum, mut variance_sum): (f64, f64) = (0.0, 0.0);
+        let (mut sum_after_multiplying_joint_deviations, mut variance_sum): (f64, f64) = (0.0, 0.0);
         for &(feature_value, target_value) in data {
-            joint_deviation_product_sum +=
+            sum_after_multiplying_joint_deviations +=
                 (feature_value - mean_feature) * (target_value - mean_target);
             variance_sum += (|| -> f64 {
                 let value: f64 = feature_value - mean_feature;
                 value * value
             })();
         }
-        let weight: f64 = joint_deviation_product_sum / variance_sum;
+        let weight: f64 = sum_after_multiplying_joint_deviations / variance_sum;
         (weight, mean_target - weight * mean_feature)
     })();
     let _ = (&(calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(

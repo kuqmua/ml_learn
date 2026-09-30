@@ -9,15 +9,15 @@
 - [x] [003 · Длина вектора: квадратный корень из суммы квадратов координат](l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates/)
 - [x] [004 · Квадрат расстояния: сложение квадратов разностей координат](l004-01-calculate-squared-point-distance-by-summing-squared-coordinate-differences/)
 - [x] [005 · Расстояние между точками: квадратный корень из суммы квадратов разностей координат](l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum/)
-- [ ] [006 · Сходство направлений векторов: сумма произведений координат, делённая на произведение длин](l006-01-calculate-direction-similarity-as-coordinate-product-sum-divided-by-vector-lengths/)
-- [ ] [007 · Практика: произведения координат, длины векторов и расстояния между точками](l007-01-practice-coordinate-products-vector-lengths-and-point-distances/)
+- [ ] [006 · Сходство направлений векторов: умножение соответствующих координат, сложение и деление на длины](l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths/)
+- [ ] [007 · Практика: умножение координат, длины векторов и расстояния между точками](l007-01-practice-multiplying-coordinates-vector-lengths-and-point-distances/)
 
 ## 02. Матрицы и линейные преобразования
 
 - [ ] [008 · Проверка числа элементов матрицы и границ строки и столбца](l008-02-validate-matrix-element-count-and-row-column-indices/)
 - [ ] [009 · Транспонирование матрицы: перестановка строк в столбцы](l009-02-transpose-matrix-by-turning-rows-into-columns/)
-- [ ] [010 · Произведение матрицы и вектора: сложение произведений координат каждой строки и вектора](l010-02-calculate-matrix-vector-product-by-summing-matching-row-coordinate-products/)
-- [ ] [011 · Произведение двух матриц: сложение произведений соответствующих элементов строк и столбцов](l011-02-calculate-matrix-product-by-summing-matching-row-and-column-products/)
+- [ ] [010 · Умножение матрицы на вектор: умножение соответствующих координат строки и вектора с последующим сложением](l010-02-multiply-matrix-and-vector-by-adding-multiplied-row-coordinates/)
+- [ ] [011 · Умножение двух матриц: умножение соответствующих элементов строк и столбцов с последующим сложением](l011-02-multiply-matrices-by-adding-multiplied-row-and-column-values/)
 - [ ] [012 · Поиск двух неизвестных, удовлетворяющих двум линейным уравнениям](l012-02-solve-system-of-two-linear-equations/)
 - [ ] [013 · Практика: размеры матриц, перестановка строк в столбцы, умножение и решение уравнений](l013-02-practice-matrix-shapes-row-column-swaps-and-equation-solving/)
 
@@ -41,7 +41,7 @@
 ## 05. Вероятность и моделирование
 
 - [ ] [025 · Вероятность события при известном условии: деление совместной вероятности на вероятность условия](l025-05-calculate-conditional-probability-by-dividing-joint-by-known-event-probability/)
-- [ ] [026 · Проверка независимости событий: сравнение совместной вероятности с произведением вероятностей](l026-05-check-event-independence-by-comparing-joint-probability-with-product/)
+- [ ] [026 · Проверка независимости событий: сравнение совместной вероятности с результатом умножения вероятностей](l026-05-check-event-independence-by-comparing-joint-probability-with-multiplied-probabilities/)
 - [ ] [027 · Пересчёт вероятности события с учётом частоты полученного наблюдения](l027-05-update-event-probability-using-observation-rates/)
 - [ ] [028 · Средний ожидаемый результат: сумма значений исходов, умноженных на их вероятности](l028-05-calculate-expected-value-by-summing-outcomes-times-probabilities/)
 - [ ] [029 · Практика: пересчёт вероятностей и сумма исходов с весами по вероятности](l029-05-practice-event-probability-updates-and-weighted-outcome-sums/)
@@ -163,7 +163,7 @@
 ## 19. Снижение размерности PCA
 
 - [ ] [105 · Центрирование признака: вычитание среднего по обучающим данным](l105-19-center-feature-values-by-subtracting-training-mean/)
-- [ ] [106 · Совместное изменение признаков (ковариация): сумма произведений отклонений, делённая на число наблюдений минус один](l106-19-calculate-covariance-as-paired-deviation-product-sum-over-count-minus-one/)
+- [ ] [106 · Совместное изменение признаков (ковариация): умножение парных отклонений, сложение и деление на число наблюдений минус один](l106-19-calculate-covariance-by-multiplying-paired-deviations-then-dividing-sum/)
 - [ ] [107 · Главное направление данных: поиск наибольшего разброса проекций точек](l107-19-find-principal-direction-by-maximizing-projected-point-spread/)
 - [ ] [108 · Сохранённая доля разброса: деление разброса вдоль выбранного направления на общий](l108-19-calculate-explained-spread-share-by-dividing-direction-spread-by-total/)
 - [ ] [109 · Практика: вычитание средних и проекция точек на направление наибольшего разброса](l109-19-practice-centering-points-and-projecting-onto-largest-spread-direction/)
@@ -239,7 +239,7 @@
 - [ ] [152 · Кодирование частей текста: назначение номеров из словаря](l152-28-encode-text-pieces-by-assigning-vocabulary-identifiers/)
 - [ ] [153 · Выделение номеров для неизвестных слов и границ последовательности](l153-28-reserve-identifiers-for-unknown-words-and-sequence-boundaries/)
 - [ ] [154 · Векторное представление слова: список числовых координат](l154-28-create-word-vector-representations-as-numeric-coordinate-lists/)
-- [ ] [155 · Сходство векторов слов: сумма произведений соответствующих координат](l155-28-calculate-word-vector-similarity-as-sum-of-matching-coordinate-products/)
+- [ ] [155 · Сходство векторов слов: умножение соответствующих координат и сложение результатов](l155-28-calculate-word-vector-similarity-by-multiplying-matching-coordinates-then-adding/)
 - [ ] [156 · Практика: номера частей текста и векторы координат слов](l156-28-practice-text-piece-identifiers-and-word-coordinate-vectors/)
 
 ## 29. Языковая модель
@@ -254,7 +254,7 @@
 
 - [ ] [162 · Поиск документов, содержащих слова запроса](l162-30-find-documents-containing-query-words/)
 - [ ] [163 · Значимость слова для поиска: умножение частоты на меру редкости среди документов](l163-30-calculate-word-importance-by-weighting-frequency-with-document-rarity/)
-- [ ] [164 · Сходство запроса и документа: сумма произведений координат, делённая на произведение длин векторов](l164-30-calculate-query-document-direction-similarity-as-product-sum-over-vector-lengths/)
+- [ ] [164 · Сходство запроса и документа: умножение координат, сложение и деление на длины векторов](l164-30-calculate-query-document-direction-similarity-by-multiplying-coordinates-then-dividing/)
 - [ ] [165 · Выбор документов с наибольшими оценками](l165-30-select-documents-with-highest-scores/)
 - [ ] [166 · Практика: поиск документов по совпадениям слов, их редкости и направлениям векторов](l166-30-practice-document-search-by-word-matches-rarity-and-vector-direction/)
 
@@ -263,7 +263,7 @@
 - [ ] [167 · Преобразование координат позиции в вектор запроса для поиска подходящего контекста](l167-31-transform-position-coordinates-into-search-query-vector/)
 - [ ] [168 · Сравнение запроса с ключом позиции через умножение соответствующих координат](l168-31-compare-query-with-position-key-by-multiplying-coordinates/)
 - [ ] [169 · Контекст позиции: объединение векторов значений с заданными весами](l169-31-calculate-context-by-combining-value-vectors-with-weights/)
-- [ ] [170 · Масштабированная оценка совпадения: сумма произведений запроса и ключа, делённая на корень из числа координат](l170-31-calculate-scaled-match-score-as-query-key-product-sum-over-root-coordinate-count/)
+- [ ] [170 · Масштабированная оценка совпадения: умножение координат запроса и ключа, сложение и деление на корень из числа координат](l170-31-calculate-scaled-match-score-by-multiplying-query-and-key-then-dividing-sum/)
 - [ ] [171 · Веса вероятностей (softmax): вычисление экспонент оценок и деление каждой на их сумму](l171-31-calculate-probability-weights-by-exponentiating-scores-and-dividing-by-sum/)
 - [ ] [172 · Запрет использования будущих позиций текста при сборе контекста](l172-31-forbid-using-future-text-positions-in-context/)
 - [ ] [173 · Практика: сравнение запросов с ключами и взвешенное сложение значений](l173-31-practice-query-key-matching-and-weighted-sums-of-values/)
@@ -313,7 +313,7 @@
 
 ## 37. Адаптация и сжатие LLM
 
-- [ ] [202 · Адаптация весов модели: прибавление произведения двух небольших матриц к исходным весам](l202-37-adapt-model-weights-by-adding-product-of-two-small-matrices/)
+- [ ] [202 · Адаптация весов модели: умножение двух небольших матриц и прибавление результата к исходным весам](l202-37-adapt-model-weights-by-multiplying-small-matrices-then-adding-result/)
 - [ ] [203 · Сжатие весов модели: масштабирование и округление до восьмибитных целых чисел](l203-37-compress-model-weights-by-scaling-and-rounding-to-eight-bit-integers/)
 
 ## 38. Retrieval augmented generation
