@@ -2,11 +2,13 @@
 
 static ENABLED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 static PRINTED: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+static NOTES_PRINTED: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
 static COUNTS: std::sync::OnceLock<
     std::sync::Mutex<std::collections::HashMap<(&'static str, u32), usize>>,
 > = std::sync::OnceLock::new();
 
 const MAX_LINES: usize = 240;
+const MAX_NOTE_LINES: usize = 240;
 const MAX_VALUE_CHARS: usize = 180;
 
 /// Включает трассировку для `cargo run`; вызовы функций из тестов остаются тихими.
@@ -45,8 +47,49 @@ pub fn show<T: std::fmt::Debug + ?Sized>(file: &'static str, line: u32, label: &
     let mut display = LimitedDebug::new(MAX_VALUE_CHARS);
     let _ = std::fmt::Write::write_fmt(&mut display, format_args!("{value:?}"));
     let suffix = if display.clipped { "…" } else { "" };
-    let part = file
-        .split('/')
+    let part = part(file);
+    if occurrence == 1 {
+        println!("  [{part}] {label} = {}{suffix}", display.text);
+    } else {
+        println!(
+            "  [{part}] {label} (повтор {occurrence}) = {}{suffix}",
+            display.text
+        );
+    }
+}
+
+/// Показывает пояснение к выполняемому шагу вместе с его значениями.
+pub fn note(file: &'static str, line: u32, message: &str) {
+    if !ENABLED.load(std::sync::atomic::Ordering::Relaxed) {
+        return;
+    }
+    let counts = COUNTS.get_or_init(|| std::sync::Mutex::new(std::collections::HashMap::new()));
+    let occurrence = {
+        let mut counts = counts.lock().expect("счётчик шагов");
+        let count = counts.entry((file, line)).or_default();
+        *count += 1;
+        *count
+    };
+    if occurrence > 4 && !(occurrence.is_power_of_two() && occurrence.trailing_zeros() % 3 == 0) {
+        return;
+    }
+    let printed = NOTES_PRINTED.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+    if printed == MAX_NOTE_LINES {
+        println!("  … дальнейшие пояснения скрыты, итоговый вывод остаётся виден");
+    }
+    if printed >= MAX_NOTE_LINES {
+        return;
+    }
+    let part = part(file);
+    if occurrence == 1 {
+        println!("  [{part}] → {message}");
+    } else {
+        println!("  [{part}] → {message} (повтор {occurrence})");
+    }
+}
+
+fn part(file: &str) -> &str {
+    file.split('/')
         .find_map(|segment| {
             let mut parts = segment.splitn(3, '-');
             let lesson = parts.next()?;
@@ -63,15 +106,7 @@ pub fn show<T: std::fmt::Debug + ?Sized>(file: &'static str, line: u32, label: &
                 None
             }
         })
-        .unwrap_or("урок");
-    if occurrence == 1 {
-        println!("  [{part}] {label} = {}{suffix}", display.text);
-    } else {
-        println!(
-            "  [{part}] {label} (повтор {occurrence}) = {}{suffix}",
-            display.text
-        );
-    }
+        .unwrap_or("урок")
 }
 
 struct LimitedDebug {
@@ -111,5 +146,13 @@ impl std::fmt::Write for LimitedDebug {
 macro_rules! trace_step {
     ($value:expr) => {
         $crate::show(file!(), line!(), stringify!($value), &$value)
+    };
+}
+
+/// Печатает пояснение, когда учебный пример выполняется через `cargo run`.
+#[macro_export]
+macro_rules! trace_note {
+    ($message:expr) => {
+        $crate::note(file!(), line!(), $message)
     };
 }

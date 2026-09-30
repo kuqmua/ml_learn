@@ -10,14 +10,18 @@
 
 fn main() {
     lesson_trace::enable();
-    // Для каждого объекта строим константную модель только на предшествующих метках.
+    lesson_trace::trace_note!(
+        "Для каждого объекта строим константную модель только на предшествующих метках."
+    );
     let targets: [f64; 4] = [1.0, 0.0, 1.0, 1.0];
     lesson_trace::trace_step!(targets);
     let prior: f64 = 0.5;
     lesson_trace::trace_step!(prior);
     let mut prefix_sum: f64 = 0.0;
     lesson_trace::trace_step!(prefix_sum);
-    // Производную функции по параметру или вектор таких производных называют gradient.
+    lesson_trace::trace_note!(
+        "Производную функции по параметру или вектор таких производных называют gradient."
+    );
     let mut rates_of_change: Vec<f64> = Vec::new();
     lesson_trace::trace_step!(rates_of_change);
     for (index, &target) in targets.iter().enumerate() {
@@ -32,6 +36,6 @@ fn main() {
         prefix_sum += target;
         lesson_trace::trace_step!(prefix_sum);
     }
-    // Первая оценка не зависит от первой метки.
+    lesson_trace::trace_note!("Первая оценка не зависит от первой метки.");
     assert_eq!(rates_of_change[0], -0.5);
 }

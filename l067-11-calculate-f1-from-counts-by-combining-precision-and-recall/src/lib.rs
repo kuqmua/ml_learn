@@ -5,7 +5,7 @@
 pub fn calculate_f1_score_from_counts_by_combining_precision_and_recall_as_twice_product_over_sum(
     counts: l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts,
 ) -> Option<f64> {
-    // Используем подготовленное значение в следующем шаге примера.
+    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
     l066_11_calculate_f1_score_as_twice_precision_times_recall_over_their_sum::calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum(
         l064_11_calculate_positive_prediction_precision_as_true_positives_over_positive_predictions::calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions(counts),
         l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(counts),

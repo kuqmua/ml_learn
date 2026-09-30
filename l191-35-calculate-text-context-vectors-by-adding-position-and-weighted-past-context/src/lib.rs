@@ -6,10 +6,14 @@
 pub fn calculate_text_context_vectors_by_adding_position_and_weighted_past_context(
     text_unit_identifiers: &[usize],
 ) -> Vec<[f64; 2]> {
-    // Три двумерных embedding заданы вручную: так весь прямой проход можно просчитать на бумаге.
+    lesson_trace::trace_note!(
+        "Три двумерных embedding заданы вручную: так весь прямой проход можно просчитать на бумаге."
+    );
     let dense_numeric_representation: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
     lesson_trace::trace_step!(dense_numeric_representation);
-    // Позиционный вклад 0.1·position добавляем только к первой координате для наглядного примера.
+    lesson_trace::trace_note!(
+        "Позиционный вклад 0.1·position добавляем только к первой координате для наглядного примера."
+    );
     let states: Vec<[f64; 2]> = text_unit_identifiers
         .iter()
         .enumerate()

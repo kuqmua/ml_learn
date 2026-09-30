@@ -15,7 +15,9 @@ pub fn encode_categories_as_average_previous_targets_with_prior_weight(
     let mut stats: std::collections::BTreeMap<&str, (f64, usize)> =
         std::collections::BTreeMap::<&str, (f64, usize)>::new();
     lesson_trace::trace_step!(stats);
-    // Замену категорий числами, рассчитанными по целям, называют target encoding.
+    lesson_trace::trace_note!(
+        "Замену категорий числами, рассчитанными по целям, называют target encoding."
+    );
     let mut category_target_mean_values: Vec<f64> = Vec::with_capacity(categories.len());
     lesson_trace::trace_step!(category_target_mean_values);
     for (&category, &target) in categories.iter().zip(targets) {

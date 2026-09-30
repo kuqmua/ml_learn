@@ -10,70 +10,71 @@
 
 fn main() {
     lesson_trace::enable();
-    // Сохраняем результат этого шага в `last_state`.
+    lesson_trace::trace_note!("Сохраняем результат этого шага в `last_state`.");
     let last_state: i32 = 4;
     lesson_trace::trace_step!(last_state);
-    // Повторяем расчёт для каждого элемента последовательности.
+    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
     for (description, state, action, expected) in [
-        // Добавляем пару значений для сравнения или построения графика.
         ("шаг вправо", 2, 1, 3),
-        // Добавляем пару значений для сравнения или построения графика.
         ("шаг влево", 2, -1, 1),
-        // Добавляем пару значений для сравнения или построения графика.
         ("левая граница", 0, -1, 0),
-        // Добавляем пару значений для сравнения или построения графика.
         ("правая граница", 4, 1, 4),
     ] {
         lesson_trace::trace_step!(description);
         lesson_trace::trace_step!(state);
         lesson_trace::trace_step!(action);
         lesson_trace::trace_step!(expected);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert!((0..=last_state).contains(&state));
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert!(action == -1 || action == 1);
-        // Сохраняем результат этого шага в `next_state`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `next_state`.");
         let next_state: i32 = (state + action).clamp(0, last_state);
         lesson_trace::trace_step!(next_state);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(next_state, expected);
-        // Печатаем рассчитанные значения для проверки примера.
+        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("{description}: {state} + {action} → {next_state}");
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_next_position_after_moving_right();
 }
 
 // Строим график по результатам урока.
 fn plot_next_position_after_moving_right() {
-    // Значения из этого урока на графике.
+    lesson_trace::trace_note!("Значения из этого урока на графике.");
     let action_points: Vec<(f64, f64)> = (0..=5)
         .map(|plot_step_index| (plot_step_index as f64, (plot_step_index + 1) as f64))
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Переход состояния",
-        // Указываем подпись горизонтальной оси.
         "текущее состояние",
-        // Указываем подпись вертикальной оси.
         "следующее состояние",
-        // Передаём ряды или значения для отрисовки графика.
         &[lesson_visualization::Series {
-            // Указываем подпись этого ряда в легенде.
             name: "действие +1",
-            // Передаём рассчитанные координаты точек.
+
             points: &action_points,
         }],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

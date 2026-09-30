@@ -10,10 +10,10 @@
 
 fn main() {
     lesson_trace::enable();
-    // Три токена A, B, C; средний заменяем отдельным MASK embedding.
+    lesson_trace::trace_note!("Три токена A, B, C; средний заменяем отдельным MASK embedding.");
     let original: [usize; 3] = [0, 1, 2];
     lesson_trace::trace_step!(original);
-    // Плотное числовое представление объекта называют embedding.
+    lesson_trace::trace_note!("Плотное числовое представление объекта называют embedding.");
     let dense_numeric_representations: [[f64; 2]; 4] =
         [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.0, 0.0]];
     lesson_trace::trace_step!(dense_numeric_representations);
@@ -29,10 +29,12 @@ fn main() {
         )
         .unwrap();
     lesson_trace::trace_step!(context);
-    // Скрытие позиции для её предсказания называют masked language modeling.
+    lesson_trace::trace_note!(
+        "Скрытие позиции для её предсказания называют masked language modeling."
+    );
     let hidden_text_unit_identifier: usize = original[1];
     lesson_trace::trace_step!(hidden_text_unit_identifier);
-    // Оценку модели до преобразования в вероятность называют logit.
+    lesson_trace::trace_note!("Оценку модели до преобразования в вероятность называют logit.");
     let raw_model_scores: Vec<f64> = dense_numeric_representations[..3]
         .iter()
         .map(|candidate| context[1][0] * candidate[0] + context[1][1] * candidate[1])
@@ -55,5 +57,5 @@ fn main() {
     lesson_trace::trace_step!(loss);
     assert!(loss.is_finite());
     println!("цель скрытой позиции={hidden_text_unit_identifier}; MLM loss={loss:.4}");
-    // Фиксированные embeddings иллюстрируют loss, а не обученный BERT.
+    lesson_trace::trace_note!("Фиксированные embeddings иллюстрируют loss, а не обученный BERT.");
 }

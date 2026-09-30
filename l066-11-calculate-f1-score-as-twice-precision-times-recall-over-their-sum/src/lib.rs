@@ -6,11 +6,12 @@ pub fn calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum(
     precision: Option<f64>,
     recall: Option<f64>,
 ) -> Option<f64> {
-    // Разбираем результат по его возможным вариантам.
+    lesson_trace::trace_note!("Разбираем результат по его возможным вариантам.");
+    lesson_trace::trace_note!("Коэффициент 2 делает 2pr/(p+r) гармоническим средним двух метрик.");
+    lesson_trace::trace_note!("Выполняем действие для этого варианта данных.");
     match (precision, recall) {
-        // Коэффициент 2 делает 2pr/(p+r) гармоническим средним двух метрик.
         (Some(p), Some(r)) if p + r > 0.0 => Some(2.0 * p * r / (p + r)),
-        // Выполняем действие для этого варианта данных.
+
         _ => None,
     }
 }

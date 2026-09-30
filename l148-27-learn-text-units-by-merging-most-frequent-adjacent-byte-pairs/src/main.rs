@@ -9,7 +9,7 @@
 
 fn main() {
     lesson_trace::enable();
-    // Повторяющийся корпус даёт устойчивые кандидаты на слияние.
+    lesson_trace::trace_note!("Повторяющийся корпус даёт устойчивые кандидаты на слияние.");
     let corpus: [&str; 3] = ["мама мыла", "мама дома", "мама мыла"];
     lesson_trace::trace_step!(corpus);
     let model: l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding = l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding::train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair(
@@ -17,7 +17,7 @@ fn main() {
     );
     lesson_trace::trace_step!(model);
     assert!(!model.merges.is_empty());
-    // Показываем, как растёт словарь после каждого слияния.
+    lesson_trace::trace_note!("Показываем, как растёт словарь после каждого слияния.");
     println!(
         "слияний: {}; размер словаря: {}",
         model.merges.len(),

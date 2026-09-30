@@ -12,42 +12,51 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Соседи отсортированы от ближайшего к дальнему.
+    lesson_trace::trace_note!("Соседи отсортированы от ближайшего к дальнему.");
     let neighbor_labels: [bool; 5] = [true, false, false, true, true];
     lesson_trace::trace_step!(neighbor_labels);
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for neighbor_count in [1, 3, 5] {
         lesson_trace::trace_step!(neighbor_count);
-        // Преобразуем входные данные и сохраняем полученную коллекцию в `positive`.
+        lesson_trace::trace_note!(
+            "Преобразуем входные данные и сохраняем полученную коллекцию в `positive`."
+        );
         let positive: usize = neighbor_labels[..neighbor_count]
             .iter()
             .filter(|&&label| label)
             .count();
         lesson_trace::trace_step!(positive);
-        // Умножаем значения и сохраняем результат в `prediction`.
+        lesson_trace::trace_note!("Умножаем значения и сохраняем результат в `prediction`.");
         let prediction: bool = positive * 2 > neighbor_count;
         lesson_trace::trace_step!(prediction);
-        // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+        lesson_trace::trace_note!(
+            "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+        );
         println!("k={neighbor_count}: прогноз={prediction}");
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_positive_class_share_among_nearest_examples(neighbor_labels);
 }
 
 // Строим график по результатам урока.
 fn plot_positive_class_share_among_nearest_examples(neighbor_labels: [bool; 5]) {
-    // Показываем значения, рассчитанные по данным примера.
+    lesson_trace::trace_note!("Показываем значения, рассчитанные по данным примера.");
+    lesson_trace::trace_note!("Просматриваем элементы коллекции по ссылке.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let positive_neighbor_count_points: Vec<(f64, f64)> = [1usize, 3, 5]
-        // Просматриваем элементы коллекции по ссылке.
         .iter()
-        // Преобразуем каждый элемент в новое значение.
         .map(|&neighbor_count| {
+            lesson_trace::trace_note!(
+                "Используем подготовленное значение в следующем шаге примера."
+            );
+            lesson_trace::trace_note!("Вычисляем значение по указанной формуле.");
             (
-                // Используем подготовленное значение в следующем шаге примера.
                 neighbor_count as f64,
-                // Вычисляем значение по указанной формуле.
                 neighbor_labels[..neighbor_count]
                     .iter()
                     .filter(|&&element_value| element_value)
@@ -55,42 +64,43 @@ fn plot_positive_class_share_among_nearest_examples(neighbor_labels: [bool; 5]) 
                     / neighbor_count as f64,
             )
         })
-        // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `decision_boundary_points` в коллекцию.
+    lesson_trace::trace_note!("Собираем значения для `decision_boundary_points` в коллекцию.");
     let decision_boundary_points: Vec<(f64, f64)> = [(1.0, 0.5), (5.0, 0.5)].to_vec();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Соседи и доля положительных",
-        // Указываем подпись горизонтальной оси.
         "k",
-        // Указываем подпись вертикальной оси.
         "доля",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "положительные среди k",
-                // Передаём рассчитанные координаты точек.
+
                 points: &positive_neighbor_count_points,
             },
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "граница решения",
-                // Передаём рассчитанные координаты точек.
+
                 points: &decision_boundary_points,
             },
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

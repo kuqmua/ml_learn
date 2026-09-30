@@ -14,58 +14,62 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Создаём набор значений `labels` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `labels` для следующего шага примера.");
     let labels: [bool; 5] = [false, false, true, false, true];
     lesson_trace::trace_step!(labels);
-    // Проверяем ожидаемое свойство учебного примера.
+    lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
     assert!(!labels.is_empty(), "для baseline нужна хотя бы одна метка");
-    // Преобразуем входные данные и сохраняем полученную коллекцию в `positive_count`.
+    lesson_trace::trace_note!(
+        "Преобразуем входные данные и сохраняем полученную коллекцию в `positive_count`."
+    );
     let positive_count: usize = labels.iter().filter(|&&label| label).count();
     lesson_trace::trace_step!(positive_count);
-    // Считаем количество элементов и сохраняем его в `majority_label`.
+    lesson_trace::trace_note!("Считаем количество элементов и сохраняем его в `majority_label`.");
     let majority_label: bool = positive_count * 2 > labels.len();
     lesson_trace::trace_step!(majority_label);
-    // Сохраняем рассчитанное значение `accuracy` для следующих операций.
+    lesson_trace::trace_note!("Сохраняем рассчитанное значение `accuracy` для следующих операций.");
+    lesson_trace::trace_note!("Перебираем элементы по ссылке, не копируя исходную коллекцию.");
+    lesson_trace::trace_note!("Оставляем только элементы, прошедшие указанную проверку.");
+    lesson_trace::trace_note!("Подсчитываем число элементов после отбора.");
+    lesson_trace::trace_note!("Делим значения, получая нормированную величину или среднее.");
     let accuracy: f64 = labels
-        // Перебираем элементы по ссылке, не копируя исходную коллекцию.
         .iter()
-        // Оставляем только элементы, прошедшие указанную проверку.
         .filter(|&&label| label == majority_label)
-        // Подсчитываем число элементов после отбора.
         .count() as f64
-        // Делим значения, получая нормированную величину или среднее.
         / labels.len() as f64;
     lesson_trace::trace_step!(accuracy);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("класс большинства={majority_label}, accuracy={accuracy:.2}");
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_counts_of_positive_and_negative_training_labels(labels, positive_count);
 }
 
 // Строим график по результатам урока.
 fn plot_counts_of_positive_and_negative_training_labels(labels: [bool; 5], positive_count: usize) {
-    // Сравниваем величины, вычисленные в примере.
+    lesson_trace::trace_note!("Сравниваем величины, вычисленные в примере.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок диаграммы.
         "Классы для baseline",
-        // Указываем подпись вертикальной оси.
         "объектов",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем пару значений для сравнения или построения графика.
             ("отрицательные", (labels.len() - positive_count) as f64),
-            // Добавляем пару значений для сравнения или построения графика.
             ("положительные", positive_count as f64),
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

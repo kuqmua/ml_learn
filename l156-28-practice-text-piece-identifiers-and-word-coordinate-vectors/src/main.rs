@@ -19,93 +19,133 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Шаг: Создаём корпус из двух коротких предложений.
+    lesson_trace::trace_note!("Шаг: Создаём корпус из двух коротких предложений.");
     let corpus: [&str; 2] = ["кот спит", "пёс спит"];
     lesson_trace::trace_step!(corpus);
 
-    // Шаг: Назначаем индекс каждому слову и резервируем индекс для неизвестных слов.
-    // Набор известных модели текстовых единиц называют vocabulary.
+    lesson_trace::trace_note!(
+        "Шаг: Назначаем индекс каждому слову и резервируем индекс для неизвестных слов."
+    );
+    lesson_trace::trace_note!("Набор известных модели текстовых единиц называют vocabulary.");
     let known_text_units: std::collections::BTreeMap<String, usize> =
         (|| -> std::collections::BTreeMap<String, usize> {
-            // Используем подготовленное значение в следующем шаге примера.
-            /* Нумеруем слова корпуса; нулевой индекс оставляем неизвестному токену. */
-            // Сохраняем результат этого шага в `corpus`.
+            lesson_trace::trace_note!(
+                "Используем подготовленное значение в следующем шаге примера."
+            );
+            lesson_trace::trace_note!(
+                "Нумеруем слова корпуса; нулевой индекс оставляем неизвестному токену."
+            );
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `corpus`.");
             let corpus: &[&str] = &corpus;
             lesson_trace::trace_step!(corpus);
-            // Инициализируем изменяемый накопитель `known_text_units` начальным состоянием.
+            lesson_trace::trace_note!(
+                "Инициализируем изменяемый накопитель `known_text_units` начальным состоянием."
+            );
             let mut known_text_units: std::collections::BTreeMap<String, usize> =
                 std::collections::BTreeMap::new();
             lesson_trace::trace_step!(known_text_units);
-            // Выполняем очередное действие, после которого продолжаем следующий шаг.
+            lesson_trace::trace_note!(
+                "Выполняем очередное действие, после которого продолжаем следующий шаг."
+            );
             known_text_units.insert("<unk>".into(), 0);
-            // Повторяем следующий блок для каждого элемента указанной последовательности.
+            lesson_trace::trace_note!(
+                "Повторяем следующий блок для каждого элемента указанной последовательности."
+            );
+            lesson_trace::trace_note!(
+                "Перебираем элементы по ссылке, не копируя исходную коллекцию."
+            );
+            lesson_trace::trace_note!("Разделяем текст по пробельным символам на отдельные слова.");
             for word in corpus
-                // Перебираем элементы по ссылке, не копируя исходную коллекцию.
                 .iter()
-                // Разделяем текст по пробельным символам на отдельные слова.
                 .flat_map(|sentence| sentence.split_whitespace())
             {
                 lesson_trace::trace_step!(word);
-                // Проверяем условие и выбираем соответствующую ветку алгоритма.
+                lesson_trace::trace_note!(
+                    "Проверяем условие и выбираем соответствующую ветку алгоритма."
+                );
                 if !known_text_units.contains_key(word) {
-                    // Считаем количество элементов и сохраняем его в `text_unit_identifier`.
-                    // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+                    lesson_trace::trace_note!(
+                        "Считаем количество элементов и сохраняем его в `text_unit_identifier`."
+                    );
+                    lesson_trace::trace_note!(
+                        "Единицу текста, которую модель обрабатывает как одно целое, называют token."
+                    );
                     let text_unit_identifier: usize = known_text_units.len();
                     lesson_trace::trace_step!(text_unit_identifier);
-                    // Выполняем очередное действие, после которого продолжаем следующий шаг.
+                    lesson_trace::trace_note!(
+                        "Выполняем очередное действие, после которого продолжаем следующий шаг."
+                    );
                     known_text_units.insert(word.into(), text_unit_identifier);
                 }
             }
-            // Используем ранее рассчитанное значение `known_text_units` в текущем выражении.
+            lesson_trace::trace_note!(
+                "Используем ранее рассчитанное значение `known_text_units` в текущем выражении."
+            );
             known_text_units
         })();
     lesson_trace::trace_step!(known_text_units);
 
-    // Шаг: Создаём таблицу векторов и читаем строки по индексам токенов.
-    // Плотное числовое представление объекта называют embedding.
+    lesson_trace::trace_note!("Шаг: Создаём таблицу векторов и читаем строки по индексам токенов.");
+    lesson_trace::trace_note!("Плотное числовое представление объекта называют embedding.");
     let mut dense_numeric_representations: Vec<[f64; 2]> = vec![[0., 0.]; known_text_units.len()];
     lesson_trace::trace_step!(dense_numeric_representations);
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for (text_unit_index, row) in dense_numeric_representations.iter_mut().enumerate() {
         lesson_trace::trace_step!(text_unit_index);
         lesson_trace::trace_step!(row);
-        // Передаём данные по ссылке или разыменовываем их для следующей операции.
+        lesson_trace::trace_note!(
+            "Передаём данные по ссылке или разыменовываем их для следующей операции."
+        );
         *row = [text_unit_index as f64 * 0.1, text_unit_index as f64 * 0.2];
         lesson_trace::trace_step!(row);
     }
-    // Выполняем встроенный расчёт один раз и сохраняем результат в `text_unit_indices`.
+    lesson_trace::trace_note!(
+        "Выполняем встроенный расчёт один раз и сохраняем результат в `text_unit_indices`."
+    );
     let text_unit_indices: Vec<usize> = (|| -> Vec<usize> {
-        // Используем подготовленное значение в следующем шаге примера.
-        /* Каждое слово превращаем в индекс словаря, неизвестным словам даём нулевой индекс. */
-        // Сохраняем результат этого шага в `text`.
+        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        lesson_trace::trace_note!(
+            "Каждое слово превращаем в индекс словаря, неизвестным словам даём нулевой индекс."
+        );
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `text`.");
         let text: &str = "кот неизвестно";
         lesson_trace::trace_step!(text);
-        // Сохраняем рассчитанное значение `known_text_units` для следующих операций.
+        lesson_trace::trace_note!(
+            "Сохраняем рассчитанное значение `known_text_units` для следующих операций."
+        );
         let known_text_units: &std::collections::BTreeMap<String, usize> = &known_text_units;
         lesson_trace::trace_step!(known_text_units);
-        // Разделяем текст по пробельным символам на отдельные слова.
+        lesson_trace::trace_note!("Разделяем текст по пробельным символам на отдельные слова.");
+        lesson_trace::trace_note!("Преобразуем каждый элемент последовательности.");
+        lesson_trace::trace_note!("Собираем элементы итератора в итоговую коллекцию.");
         text.split_whitespace()
-            // Преобразуем каждый элемент последовательности.
             .map(|word| *known_text_units.get(word).unwrap_or(&0))
-            // Собираем элементы итератора в итоговую коллекцию.
             .collect()
     })();
     lesson_trace::trace_step!(text_unit_indices);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
+    lesson_trace::trace_note!(
+        "Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями."
+    );
+    lesson_trace::trace_note!(
+        "Используем ранее рассчитанное значение `text_unit_indices` в текущем выражении."
+    );
+    lesson_trace::trace_note!("Перебираем элементы по ссылке, не копируя исходную коллекцию.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент последовательности.");
+    lesson_trace::trace_note!("Собираем полученные элементы в вектор.");
     println!(
-        // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
         "vocab={known_text_units:?}, ids={text_unit_indices:?}, vectors={:?}",
-        // Используем ранее рассчитанное значение `text_unit_indices` в текущем выражении.
         text_unit_indices
-            // Перебираем элементы по ссылке, не копируя исходную коллекцию.
             .iter()
-            // Преобразуем каждый элемент последовательности.
             .map(|&token_index| dense_numeric_representations[token_index])
-            // Собираем полученные элементы в вектор.
             .collect::<Vec<_>>()
     );
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_number_of_known_text_units_and_sequence_length(known_text_units, text_unit_indices);
 }
@@ -115,26 +155,26 @@ fn plot_number_of_known_text_units_and_sequence_length(
     known_text_units: std::collections::BTreeMap<std::string::String, usize>,
     text_unit_indices: std::vec::Vec<usize>,
 ) {
-    // Наглядное сравнение результатов сводной практики.
+    lesson_trace::trace_note!("Наглядное сравнение результатов сводной практики.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок диаграммы.
         "Размер словаря и последовательности",
-        // Указываем подпись вертикальной оси.
         "число элементов",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем пару значений для сравнения или построения графика.
             ("словарь", known_text_units.len() as f64),
-            // Добавляем пару значений для сравнения или построения графика.
             ("токены", text_unit_indices.len() as f64),
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

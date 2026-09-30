@@ -8,7 +8,7 @@
 
 fn main() {
     lesson_trace::enable();
-    // Новые строки не участвуют в выборе слияний.
+    lesson_trace::trace_note!("Новые строки не участвуют в выборе слияний.");
     let training_data: [&str; 3] = ["кот спит", "кот ест", "пёс спит"];
     lesson_trace::trace_step!(training_data);
     let validation: [&str; 2] = ["кот играет", "🐈 спит"];
@@ -32,7 +32,9 @@ fn main() {
         })
         .collect();
     lesson_trace::trace_step!(rows);
-    // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+    lesson_trace::trace_note!(
+        "Единицу текста, которую модель обрабатывает как одно целое, называют token."
+    );
     for &(text, bytes, text_units) in &rows {
         lesson_trace::trace_step!(text);
         lesson_trace::trace_step!(bytes);

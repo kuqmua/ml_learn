@@ -13,74 +13,86 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Инициализируем значение `observed_count` начальным состоянием.
+    lesson_trace::trace_note!("Инициализируем значение `observed_count` начальным состоянием.");
     let observed_count: f64 = 0.0;
     lesson_trace::trace_step!(observed_count);
-    // Сохраняем рассчитанное значение `total_words_in_class` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `total_words_in_class` для следующих операций."
+    );
     let total_words_in_class: f64 = 8.0;
     lesson_trace::trace_step!(total_words_in_class);
-    // Сохраняем рассчитанное значение `known_text_unit_count` для следующих операций.
-    // Набор известных модели текстовых единиц называют vocabulary.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `known_text_unit_count` для следующих операций."
+    );
+    lesson_trace::trace_note!("Набор известных модели текстовых единиц называют vocabulary.");
     let known_text_unit_count: f64 = 4.0;
     lesson_trace::trace_step!(known_text_unit_count);
-    // Нормируем или усредняем величину делением и сохраняем её в `unsmoothed`.
+    lesson_trace::trace_note!(
+        "Нормируем или усредняем величину делением и сохраняем её в `unsmoothed`."
+    );
     let unsmoothed: f64 = observed_count / total_words_in_class;
     lesson_trace::trace_step!(unsmoothed);
-    // Нормируем или усредняем величину делением и сохраняем её в `smoothed`.
+    lesson_trace::trace_note!(
+        "Нормируем или усредняем величину делением и сохраняем её в `smoothed`."
+    );
     let smoothed: f64 = (observed_count + 1.0) / (total_words_in_class + known_text_unit_count);
     lesson_trace::trace_step!(smoothed);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("без сглаживания={unsmoothed}, со сглаживанием={smoothed}");
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_word_probabilities_before_and_after_adding_one_to_counts();
 }
 
 // Строим график по результатам урока.
 fn plot_word_probabilities_before_and_after_adding_one_to_counts() {
-    // График величин и зависимостей, изученных в этом уроке.
+    lesson_trace::trace_note!("График величин и зависимостей, изученных в этом уроке.");
     let unsmoothed_probability_points: Vec<(f64, f64)> = (0..=8)
         .map(|sample_count| (sample_count as f64, sample_count as f64 / 10.0))
         .collect();
-    // Собираем значения для `smoothed_probability_points` в коллекцию.
+    lesson_trace::trace_note!("Собираем значения для `smoothed_probability_points` в коллекцию.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let smoothed_probability_points: Vec<(f64, f64)> = (0..=8)
-        // Преобразуем каждый элемент в новое значение.
         .map(|sample_count| (sample_count as f64, (sample_count as f64 + 1.0) / 12.0))
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Сглаживание Лапласа",
-        // Указываем подпись горизонтальной оси.
         "частота токена",
-        // Указываем подпись вертикальной оси.
         "оценка вероятности",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "без сглаживания",
-                // Передаём рассчитанные координаты точек.
+
                 points: &unsmoothed_probability_points,
             },
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "со сглаживанием",
-                // Передаём рассчитанные координаты точек.
+
                 points: &smoothed_probability_points,
             },
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

@@ -19,192 +19,290 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Учебные реализации математических операций для этого урока.
+    lesson_trace::trace_note!("Учебные реализации математических операций для этого урока.");
 
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
     /// Само умножение не обязательно медленнее библиотечного метода.
     fn calculate_square_by_multiplying_number_by_itself(value: f64) -> f64 {
-        // Умножаем величины согласно используемой формуле.
+        lesson_trace::trace_note!("Умножаем величины согласно используемой формуле.");
         value * value
     }
 
-    // Объявляем повторно используемое вычисление `calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three`; параметры ниже задают его входы.
+    lesson_trace::trace_note!(
+        "Объявляем повторно используемое вычисление `calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three`; параметры ниже задают его входы."
+    );
     /// Квадратичная функция: (x − 2)² + 3(y + 1)².
     fn calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
         first_parameter: f64,
         second_parameter: f64,
     ) -> f64 {
-        // Складываем или вычитаем величины согласно используемой формуле.
+        lesson_trace::trace_note!(
+            "Складываем или вычитаем величины согласно используемой формуле."
+        );
+        lesson_trace::trace_note!("Умножаем величины согласно используемой формуле.");
         calculate_square_by_multiplying_number_by_itself(first_parameter - 2.0)
-            // Умножаем величины согласно используемой формуле.
             + 3.0 * calculate_square_by_multiplying_number_by_itself(second_parameter + 1.0)
     }
 
-    // Интегрируем по первому параметру, считая второй постоянным; константа интегрирования равна нулю.
+    lesson_trace::trace_note!(
+        "Интегрируем по первому параметру, считая второй постоянным; константа интегрирования равна нулю."
+    );
     /// Первообразная по x: (x − 2)³ / 3 + 3(y + 1)²x; её производная по x равна исходной функции.
     fn calculate_antiderivative_by_cubing_first_shift_dividing_by_three_and_adding_second_shift_term(
-        // `first_parameter` задаёт соответствующее входное значение или поле структуры.
         first_parameter: f64,
-        // `second_parameter` задаёт соответствующее входное значение или поле структуры.
+
         second_parameter: f64,
-        // Указываем тип возвращаемого значения.
     ) -> f64 {
-        // Комбинируем исходные величины и сохраняем результат в `shifted_first`.
+        lesson_trace::trace_note!(
+            "`first_parameter` задаёт соответствующее входное значение или поле структуры."
+        );
+        lesson_trace::trace_note!(
+            "`second_parameter` задаёт соответствующее входное значение или поле структуры."
+        );
+        lesson_trace::trace_note!("Указываем тип возвращаемого значения.");
+        lesson_trace::trace_note!(
+            "Комбинируем исходные величины и сохраняем результат в `shifted_first`."
+        );
         let shifted_first: f64 = first_parameter - 2.0;
         lesson_trace::trace_step!(shifted_first);
-        // Делим значения, получая нормированную величину или среднее.
+        lesson_trace::trace_note!("Делим значения, получая нормированную величину или среднее.");
+        lesson_trace::trace_note!("Умножаем величины согласно используемой формуле.");
         shifted_first * shifted_first * shifted_first / 3.0
-            // Умножаем величины согласно используемой формуле.
-            + 3.0 * calculate_square_by_multiplying_number_by_itself(second_parameter + 1.0) * first_parameter
+            + 3.0
+                * calculate_square_by_multiplying_number_by_itself(second_parameter + 1.0)
+                * first_parameter
     }
 
-    // Сравниваем h=10⁻², 10⁻⁴ и 10⁻⁸: большой h даёт ошибку приближения, слишком малый усиливает округление f64.
+    lesson_trace::trace_note!(
+        "Сравниваем h=10⁻², 10⁻⁴ и 10⁻⁸: большой h даёт ошибку приближения, слишком малый усиливает округление f64."
+    );
     for step_size in [1e-2, 1e-4, 1e-8] {
         lesson_trace::trace_step!(step_size);
-        // Шаг: Сравниваем численный градиент с производными, найденными вручную.
+        lesson_trace::trace_note!(
+            "Шаг: Сравниваем численный градиент с производными, найденными вручную."
+        );
+        lesson_trace::trace_note!(
+            "Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями."
+        );
+        lesson_trace::trace_note!(
+            "Составляем результат из вычисленных значений в указанном порядке."
+        );
+        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        lesson_trace::trace_note!("Вычисляем обе частные производные квадратичной функции.");
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `first_parameter`.");
+        lesson_trace::trace_note!(
+            "Сохраняем рассчитанное значение `second_parameter` для следующих операций."
+        );
+        lesson_trace::trace_note!(
+            "Составляем результат из вычисленных значений в указанном порядке."
+        );
+        lesson_trace::trace_note!("Умножаем величины согласно используемой формуле.");
+        lesson_trace::trace_note!("Умножаем величины согласно используемой формуле.");
+        lesson_trace::trace_note!(
+            "Составляем результат из вычисленных значений в указанном порядке."
+        );
+        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        lesson_trace::trace_note!(
+            "Центральная конечная разность приближает каждую частную производную."
+        );
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `first_parameter`.");
+        lesson_trace::trace_note!(
+            "Сохраняем рассчитанное значение `second_parameter` для следующих операций."
+        );
+        lesson_trace::trace_note!(
+            "Сохраняем рассчитанное значение `step_size` для следующих операций."
+        );
+        lesson_trace::trace_note!(
+            "Составляем результат из вычисленных значений в указанном порядке."
+        );
+        lesson_trace::trace_note!(
+            "Составляем результат из вычисленных значений в указанном порядке."
+        );
+        lesson_trace::trace_note!(
+            "Складываем или вычитаем величины согласно используемой формуле."
+        );
+        lesson_trace::trace_note!(
+            "Используем ранее рассчитанное значение `second_parameter` в текущем выражении."
+        );
+        lesson_trace::trace_note!("Вычисляем значение по указанной формуле.");
+        lesson_trace::trace_note!(
+            "Складываем или вычитаем величины согласно используемой формуле."
+        );
+        lesson_trace::trace_note!(
+            "Используем ранее рассчитанное значение `second_parameter` в текущем выражении."
+        );
+        lesson_trace::trace_note!("Вычисляем значение по указанной формуле.");
+        lesson_trace::trace_note!(
+            "Составляем результат из вычисленных значений в указанном порядке."
+        );
+        lesson_trace::trace_note!(
+            "Используем ранее рассчитанное значение `first_parameter` в текущем выражении."
+        );
+        lesson_trace::trace_note!(
+            "Складываем или вычитаем величины согласно используемой формуле."
+        );
+        lesson_trace::trace_note!("Вычисляем значение по указанной формуле.");
+        lesson_trace::trace_note!(
+            "Используем ранее рассчитанное значение `first_parameter` в текущем выражении."
+        );
+        lesson_trace::trace_note!(
+            "Складываем или вычитаем величины согласно используемой формуле."
+        );
+        lesson_trace::trace_note!("Вычисляем значение по указанной формуле.");
         println!(
-            // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
             "h={step_size:e}: analytic={:?}, numeric={:?}",
-            // Составляем результат из вычисленных значений в указанном порядке.
             (|| -> [f64; 2] {
-                // Используем подготовленное значение в следующем шаге примера.
-                /* Вычисляем обе частные производные квадратичной функции. */
-                // Сохраняем результат этого шага в `first_parameter`.
                 let first_parameter: f64 = 0.3;
                 lesson_trace::trace_step!(first_parameter);
                 lesson_trace::trace_step!(first_parameter);
-                // Сохраняем рассчитанное значение `second_parameter` для следующих операций.
+
                 let second_parameter: f64 = 2.0;
                 lesson_trace::trace_step!(second_parameter);
                 lesson_trace::trace_step!(second_parameter);
-                // Составляем результат из вычисленных значений в указанном порядке.
+
                 [
-                    // Умножаем величины согласно используемой формуле.
                     2.0 * (first_parameter - 2.0),
-                    // Умножаем величины согласно используемой формуле.
                     6.0 * (second_parameter + 1.0),
                 ]
             })(),
-            // Составляем результат из вычисленных значений в указанном порядке.
             (|| -> [f64; 2] {
-                // Используем подготовленное значение в следующем шаге примера.
-                /* Центральная конечная разность приближает каждую частную производную. */
-                // Сохраняем результат этого шага в `first_parameter`.
                 let first_parameter: f64 = 0.3;
                 lesson_trace::trace_step!(first_parameter);
                 lesson_trace::trace_step!(first_parameter);
-                // Сохраняем рассчитанное значение `second_parameter` для следующих операций.
+
                 let second_parameter: f64 = 2.0;
                 lesson_trace::trace_step!(second_parameter);
                 lesson_trace::trace_step!(second_parameter);
-                // Сохраняем рассчитанное значение `step_size` для следующих операций.
+
                 let step_size: f64 = step_size;
                 lesson_trace::trace_step!(step_size);
                 lesson_trace::trace_step!(step_size);
-                // Составляем результат из вычисленных значений в указанном порядке.
+
                 [
-                    // Составляем результат из вычисленных значений в указанном порядке.
+
                     (calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
-                        // Складываем или вычитаем величины согласно используемой формуле.
+
                         first_parameter + step_size,
-                        // Используем ранее рассчитанное значение `second_parameter` в текущем выражении.
+
                         second_parameter,
-                        // Вычисляем значение по указанной формуле.
+
                     ) - calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
-                        // Складываем или вычитаем величины согласно используемой формуле.
+
                         first_parameter - step_size,
-                        // Используем ранее рассчитанное значение `second_parameter` в текущем выражении.
+
                         second_parameter,
-                        // Вычисляем значение по указанной формуле.
+
                     )) / (2.0 * step_size),
-                    // Составляем результат из вычисленных значений в указанном порядке.
+
                     (calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
-                        // Используем ранее рассчитанное значение `first_parameter` в текущем выражении.
+
                         first_parameter,
-                        // Складываем или вычитаем величины согласно используемой формуле.
+
                         second_parameter + step_size,
-                        // Вычисляем значение по указанной формуле.
+
                     ) - calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
-                        // Используем ранее рассчитанное значение `first_parameter` в текущем выражении.
+
                         first_parameter,
-                        // Складываем или вычитаем величины согласно используемой формуле.
+
                         second_parameter - step_size,
-                        // Вычисляем значение по указанной формуле.
+
                     )) / (2.0 * step_size),
                 ]
             })()
         );
     }
-    // Производная первообразной по первому параметру должна возвращать исходную функцию.
-    // h=10⁻⁵ — отдельный небольшой шаг для проверки, что производная первообразной возвращает функцию.
+    lesson_trace::trace_note!(
+        "Производная первообразной по первому параметру должна возвращать исходную функцию."
+    );
+    lesson_trace::trace_note!(
+        "h=10⁻⁵ — отдельный небольшой шаг для проверки, что производная первообразной возвращает функцию."
+    );
     let step_size: f64 = 1e-5;
     lesson_trace::trace_step!(step_size);
-    // Сохраняем рассчитанное значение `recovered_value` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `recovered_value` для следующих операций."
+    );
+    lesson_trace::trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
+    lesson_trace::trace_note!("Складываем или вычитаем величины согласно используемой формуле.");
+    lesson_trace::trace_note!("Делим значения, получая нормированную величину или среднее.");
     let recovered_value: f64 =
-        // Составляем результат из вычисленных значений в указанном порядке.
+
         (calculate_antiderivative_by_cubing_first_shift_dividing_by_three_and_adding_second_shift_term(0.3 + step_size, 2.0)
-            // Складываем или вычитаем величины согласно используемой формуле.
+
             - calculate_antiderivative_by_cubing_first_shift_dividing_by_three_and_adding_second_shift_term(0.3 - step_size, 2.0))
-            // Делим значения, получая нормированную величину или среднее.
+
             / (2.0 * step_size);
     lesson_trace::trace_step!(recovered_value);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
+    lesson_trace::trace_note!(
+        "Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями."
+    );
+    lesson_trace::trace_note!("Вызываем нужное вычисление с подготовленными аргументами.");
     println!(
-        // Задаём шаблон строки: плейсхолдеры ниже заменятся рассчитанными значениями.
         "f(0.3, 2)={}, производная первообразной={recovered_value}",
-        // Вызываем нужное вычисление с подготовленными аргументами.
         calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
             0.3, 2.0
         )
     );
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_coordinate_slope_estimation_error_for_shrinking_step();
 
-    // Строим график по результатам урока.
+    lesson_trace::trace_note!("Строим график по результатам урока.");
     fn plot_coordinate_slope_estimation_error_for_shrinking_step() {
-        // Собираем значения для `points` в коллекцию.
+        lesson_trace::trace_note!("Собираем значения для `points` в коллекцию.");
+        lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+        lesson_trace::trace_note!("Собираем результаты в коллекцию.");
         let points: Vec<(f64, f64)> = (1..=12)
-            // Преобразуем каждый элемент в новое значение.
+
             .map(|step_exponent| {
-                // Сохраняем результат этого шага в `step_size`.
+                lesson_trace::trace_note!("Сохраняем результат этого шага в `step_size`.");
                 let step_size: f64 = 10f64.powi(-step_exponent);
-                // Сохраняем результат этого шага в `numeric`.
+                lesson_trace::trace_note!("Сохраняем результат этого шага в `numeric`.");
+                lesson_trace::trace_note!("Вычисляем значение по указанной формуле.");
+                lesson_trace::trace_note!("Вычисляем значение по указанной формуле.");
                 let numeric: f64 = (calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(0.3 + step_size, 2.0)
-                    // Вычисляем значение по указанной формуле.
+
                     - calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(0.3 - step_size, 2.0))
-                    // Вычисляем значение по указанной формуле.
+
                     / (2.0 * step_size);
-                // Добавляем пару значений для сравнения или построения графика.
+                lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
                 (step_exponent as f64, (numeric - 2.0 * (0.3 - 2.0)).abs())
             })
-            // Собираем результаты в коллекцию.
+
             .collect();
-        // Строим график по рассчитанным значениям и сохраняем его как SVG.
+        lesson_trace::trace_note!(
+            "Строим график по рассчитанным значениям и сохраняем его как SVG."
+        );
+        lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+        lesson_trace::trace_note!("Указываем имя SVG-файла.");
+        lesson_trace::trace_note!("Указываем заголовок графика.");
+        lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+        lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+        lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+        lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+        lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+        lesson_trace::trace_note!(
+            "Прерываем пример с понятной ошибкой, если SVG не удалось записать."
+        );
         let chart: std::path::PathBuf = lesson_visualization::line_chart(
-            // Передаём путь к каталогу текущего урока.
             env!("CARGO_MANIFEST_DIR"),
-            // Указываем имя SVG-файла.
             "lesson-chart",
-            // Указываем заголовок графика.
             "Ошибка численного градиента",
-            // Указываем подпись горизонтальной оси.
             "k для h=10⁻ᵏ",
-            // Указываем подпись вертикальной оси.
             "абсолютная ошибка",
-            // Передаём ряды или значения для отрисовки графика.
             &[lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "∂f/∂x",
-                // Передаём рассчитанные координаты точек.
+
                 points: &points,
             }],
         )
-        // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
         .expect("не удалось сохранить график");
-        // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+        lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
         println!("график: {}", chart.display());
     }
 }

@@ -26,7 +26,7 @@ fn main() {
             scores[selected[1]],
         ]);
     lesson_trace::trace_step!(weights);
-    // У каждого эксперта своя простая линейная функция.
+    lesson_trace::trace_note!("У каждого эксперта своя простая линейная функция.");
     let expert_gain: [f64; 4] = [1.0, 2.0, -1.0, 0.5];
     lesson_trace::trace_step!(expert_gain);
     let output: f64 = selected

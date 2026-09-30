@@ -12,49 +12,57 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Создаём набор значений `matrix` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `matrix` для следующего шага примера.");
     let matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
     lesson_trace::trace_step!(matrix);
-    // Создаём набор значений `bias` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `bias` для следующего шага примера.");
     let bias: [f64; 2] = [10.0, 20.0];
     lesson_trace::trace_step!(bias);
-    // Создаём изменяемое значение `result` для следующих операций.
+    lesson_trace::trace_note!("Создаём изменяемое значение `result` для следующих операций.");
     let mut result: [[f64; 2]; 2] = matrix;
     lesson_trace::trace_step!(result);
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for row in 0..2 {
         lesson_trace::trace_step!(row);
-        // Повторяем следующий блок для каждого элемента указанной последовательности.
+        lesson_trace::trace_note!(
+            "Повторяем следующий блок для каждого элемента указанной последовательности."
+        );
         for column in 0..2 {
             lesson_trace::trace_step!(column);
-            // Прибавляем очередной вклад к ранее накопленному результату.
+            lesson_trace::trace_note!(
+                "Прибавляем очередной вклад к ранее накопленному результату."
+            );
             result[row][column] += bias[column];
             lesson_trace::trace_step!(result);
         }
     }
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("после broadcasting: {result:?}");
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_matrix_after_adding_same_bias_vector_to_each_row(result);
 }
 
 // Строим график по результатам урока.
 fn plot_matrix_after_adding_same_bias_vector_to_each_row(result: [[f64; 2]; 2]) {
-    // Значения ячеек видны по цвету и подписи.
+    lesson_trace::trace_note!("Значения ячеек видны по цвету и подписи.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок тепловой карты.");
+    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::heatmap(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок тепловой карты.
         "Broadcasting: результат",
-        // Используем подготовленное значение в следующем шаге примера.
         &result.iter().map(|row| row.to_vec()).collect::<Vec<_>>(),
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить тепловую карту");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

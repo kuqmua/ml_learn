@@ -6,24 +6,30 @@
 /// Для отрицательного входа здесь panic, тогда как `sqrt` возвращает NaN.
 /// Метод Ньютона для корня: повторяем estimate = (estimate + value / estimate) / 2.
 fn approximate_square_root_by_repeated_averaging(value: f64) -> f64 {
-    // Проверяем ожидаемое свойство учебного примера.
+    lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
     assert!(value >= 0.0, "корень из отрицательного числа");
-    // Выбираем дальнейший шаг по выполнению условия.
+    lesson_trace::trace_note!("Выбираем дальнейший шаг по выполнению условия.");
     if value == 0.0 {
-        // Завершаем вычисление с полученным результатом.
+        lesson_trace::trace_note!("Завершаем вычисление с полученным результатом.");
         return 0.0;
     }
-    // Начинаем с положительной оценки: value при value > 1, иначе 1, чтобы не делить на ноль.
+    lesson_trace::trace_note!(
+        "Начинаем с положительной оценки: value при value > 1, иначе 1, чтобы не делить на ноль."
+    );
     let mut estimate: f64 = if value > 1.0 { value } else { 1.0 };
     lesson_trace::trace_step!(estimate);
-    // 80 шагов — консервативный предел для небольших учебных входов, не часть формулы корня.
-    // В общем случае число шагов лучше определять по изменению оценки или требуемой точности.
+    lesson_trace::trace_note!(
+        "80 шагов — консервативный предел для небольших учебных входов, не часть формулы корня."
+    );
+    lesson_trace::trace_note!(
+        "В общем случае число шагов лучше определять по изменению оценки или требуемой точности."
+    );
     for _ in 0..80 {
-        // Метод Ньютона для f(x)=x²−value: x−f(x)/f'(x) = (x+value/x)/2.
+        lesson_trace::trace_note!("Метод Ньютона для f(x)=x²−value: x−f(x)/f'(x) = (x+value/x)/2.");
         estimate = (estimate + value / estimate) / 2.0;
         lesson_trace::trace_step!(estimate);
     }
-    // Используем подготовленное значение в следующем шаге примера.
+    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
     estimate
 }
 
@@ -32,14 +38,19 @@ fn approximate_square_root_by_repeated_averaging(value: f64) -> f64 {
 /// По теореме Пифагора это расстояние от начала координат до конца вектора.
 /// Например, для [3, 4]: sqrt(9 + 16) = 5.
 pub fn calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(vector: &[f64]) -> f64 {
-    // Умножаем каждую координату на саму себя и складываем: получаем сумму квадратов.
+    lesson_trace::trace_note!(
+        "Умножаем каждую координату на саму себя и складываем: получаем сумму квадратов."
+    );
+    lesson_trace::trace_note!(
+        "Передаём один вектор дважды, поэтому число координат гарантированно совпадает."
+    );
     let sum_of_squared_coordinates: f64 =
         l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             vector, vector,
         )
-        // Передаём один вектор дважды, поэтому число координат гарантированно совпадает.
+
         .expect("у вектора и его самого одинаковое число координат");
     lesson_trace::trace_step!(sum_of_squared_coordinates);
-    // Извлекаем корень из суммы квадратов и получаем длину вектора.
+    lesson_trace::trace_note!("Извлекаем корень из суммы квадратов и получаем длину вектора.");
     approximate_square_root_by_repeated_averaging(sum_of_squared_coordinates)
 }

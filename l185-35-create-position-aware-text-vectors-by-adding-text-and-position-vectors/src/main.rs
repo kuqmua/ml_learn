@@ -7,13 +7,17 @@
 
 fn main() {
     lesson_trace::enable();
-    // Строки таблиц — обучаемые параметры; здесь числа фиксированы для проверки.
-    // Плотное числовое представление объекта называют embedding.
+    lesson_trace::trace_note!(
+        "Строки таблиц — обучаемые параметры; здесь числа фиксированы для проверки."
+    );
+    lesson_trace::trace_note!("Плотное числовое представление объекта называют embedding.");
     let text_unit_dense_representation: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]];
     lesson_trace::trace_step!(text_unit_dense_representation);
     let position_dense_representation: [[f64; 2]; 3] = [[0.0, 0.0], [0.1, 0.0], [0.2, 0.0]];
     lesson_trace::trace_step!(position_dense_representation);
-    // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+    lesson_trace::trace_note!(
+        "Единицу текста, которую модель обрабатывает как одно целое, называют token."
+    );
     let text_unit_identifiers: [usize; 3] = [0, 1, 0];
     lesson_trace::trace_step!(text_unit_identifiers);
     let states: Vec<[f64; 2]> = text_unit_identifiers

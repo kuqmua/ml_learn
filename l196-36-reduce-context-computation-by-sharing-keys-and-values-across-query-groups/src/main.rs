@@ -8,7 +8,7 @@
 
 fn main() {
     lesson_trace::enable();
-    // Четырём Q-головам соответствуют две K/V-головы.
+    lesson_trace::trace_note!("Четырём Q-головам соответствуют две K/V-головы.");
     let queries: [[f64; 2]; 4] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [-1.0, 1.0]];
     lesson_trace::trace_step!(queries);
     let keys: [[[f64; 2]; 2]; 2] = [[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [1.0, 0.0]]];
@@ -22,7 +22,7 @@ fn main() {
         lesson_trace::trace_step!(query);
         let group: usize = head / 2;
         lesson_trace::trace_step!(group);
-        // Оценку модели до преобразования в вероятность называют logit.
+        lesson_trace::trace_note!("Оценку модели до преобразования в вероятность называют logit.");
         let raw_model_scores: Vec<f64> = keys[group]
             .iter()
             .map(|key_vector| query[0] * key_vector[0] + query[1] * key_vector[1])

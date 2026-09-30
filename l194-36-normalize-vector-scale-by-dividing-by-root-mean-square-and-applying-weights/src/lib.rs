@@ -17,7 +17,9 @@ pub fn normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_a
         .sum::<f64>()
         / input.len() as f64;
     lesson_trace::trace_step!(mean_square);
-    // epsilon добавляем до корня, чтобы RMS не оказался нулём для нулевого вектора.
+    lesson_trace::trace_note!(
+        "epsilon добавляем до корня, чтобы RMS не оказался нулём для нулевого вектора."
+    );
     let scale: f64 = 1.0 / (mean_square + epsilon).sqrt();
     lesson_trace::trace_step!(scale);
     Ok(input

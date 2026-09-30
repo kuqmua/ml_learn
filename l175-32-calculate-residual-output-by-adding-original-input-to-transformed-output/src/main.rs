@@ -14,40 +14,42 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Создаём набор значений `input` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `input` для следующего шага примера.");
     let input: [f64; 2] = [1.0, 2.0];
     lesson_trace::trace_step!(input);
-    // Создаём набор значений `transformed` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `transformed` для следующего шага примера.");
     let transformed: [f64; 2] = [0.2, -0.5];
     lesson_trace::trace_step!(transformed);
-    // Создаём набор значений `output` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `output` для следующего шага примера.");
     let output: [f64; 2] = [input[0] + transformed[0], input[1] + transformed[1]];
     lesson_trace::trace_step!(output);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("вход={input:?}, после residual={output:?}");
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_first_coordinate_before_and_after_adding_block_input(input, output);
 }
 
 // Строим график по результатам урока.
 fn plot_first_coordinate_before_and_after_adding_block_input(input: [f64; 2], output: [f64; 2]) {
-    // Сравнение величин из этого урока.
+    lesson_trace::trace_note!("Сравнение величин из этого урока.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок диаграммы.
         "Остаточная связь",
-        // Указываем подпись вертикальной оси.
         "первая компонента",
-        // Передаём ряды или значения для отрисовки графика.
         &[("вход", input[0]), ("после", output[0])],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

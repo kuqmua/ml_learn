@@ -17,7 +17,7 @@ fn main() {
         [0.0, 0.0, 0.0, 1.0],
     ];
     lesson_trace::trace_step!(frozen);
-    // Rank 1: A имеет форму 4x1, B — 1x4.
+    lesson_trace::trace_note!("Rank 1: A имеет форму 4x1, B — 1x4.");
     let adapter_output_weights: [f64; 4] = [0.1, 0.2, 0.3, 0.4];
     lesson_trace::trace_step!(adapter_output_weights);
     let adapter_input_weights: [f64; 4] = [1.0, 0.0, -1.0, 0.0];

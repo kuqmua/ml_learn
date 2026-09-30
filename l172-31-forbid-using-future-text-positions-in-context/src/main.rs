@@ -11,93 +11,101 @@
 
 fn main() {
     lesson_trace::enable();
-    // Задаём учебные значения для `raw_weights`.
+    lesson_trace::trace_note!("Задаём учебные значения для `raw_weights`.");
     let raw_weights: [f64; 3] = [0.2, 0.3, 0.5];
     lesson_trace::trace_step!(raw_weights);
-    // Повторяем расчёт для каждого элемента последовательности.
+    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for current_position in 0..raw_weights.len() {
         lesson_trace::trace_step!(current_position);
-        // Задаём учебные значения для `future_position_filtered_weights`.
-        // Запрет внимания к будущим позициям называют causal mask.
+        lesson_trace::trace_note!(
+            "Задаём учебные значения для `future_position_filtered_weights`."
+        );
+        lesson_trace::trace_note!("Запрет внимания к будущим позициям называют causal mask.");
         let mut future_position_filtered_weights: [f64; 3] = [0.0; 3];
         lesson_trace::trace_step!(future_position_filtered_weights);
-        // Вычисляем `allowed_sum` по элементам исходной коллекции.
+        lesson_trace::trace_note!("Вычисляем `allowed_sum` по элементам исходной коллекции.");
         let allowed_sum: f64 = raw_weights[..=current_position].iter().sum();
         lesson_trace::trace_step!(allowed_sum);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
         assert!(
-            // Используем подготовленное значение в следующем шаге примера.
             allowed_sum > 0.0,
-            // Передаём подпись или текстовое значение для следующего шага.
             "доступные позиции должны иметь положительную сумму весов"
         );
-        // Повторяем расчёт для каждого элемента последовательности.
+        lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
         for index in 0..=current_position {
             lesson_trace::trace_step!(index);
-            // Обновляем значение результатом текущего вычисления.
+            lesson_trace::trace_note!("Обновляем значение результатом текущего вычисления.");
             future_position_filtered_weights[index] = raw_weights[index] / allowed_sum;
             lesson_trace::trace_step!(future_position_filtered_weights);
         }
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert!((future_position_filtered_weights.iter().sum::<f64>() - 1.0).abs() < 1e-10);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+        lesson_trace::trace_note!("Вычисляем значение по указанной формуле.");
+        lesson_trace::trace_note!("Просматриваем элементы коллекции по ссылке.");
+        lesson_trace::trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
         assert!(
-            // Вычисляем значение по указанной формуле.
             future_position_filtered_weights[current_position + 1..]
-                // Просматриваем элементы коллекции по ссылке.
                 .iter()
-                // Настраиваем или преобразуем результат предыдущего шага.
                 .all(|&weight| weight == 0.0)
         );
-        // Печатаем рассчитанные значения для проверки примера.
+        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("позиция {current_position}: веса {future_position_filtered_weights:?}");
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_allowed_current_and_past_position_pairs(raw_weights);
 }
 
 // Строим график по результатам урока.
 fn plot_allowed_current_and_past_position_pairs(raw_weights: [f64; 3]) {
-    // Каждая строка показывает допустимые ключи для текущей позиции.
+    lesson_trace::trace_note!("Каждая строка показывает допустимые ключи для текущей позиции.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let weights: Vec<Vec<f64>> = (0..raw_weights.len())
-        // Преобразуем каждый элемент в новое значение.
         .map(|position| {
-            // Вычисляем `total` по элементам исходной коллекции.
+            lesson_trace::trace_note!("Вычисляем `total` по элементам исходной коллекции.");
             let total: f64 = raw_weights[..=position].iter().sum();
-            // Используем подготовленное значение в следующем шаге примера.
+            lesson_trace::trace_note!(
+                "Используем подготовленное значение в следующем шаге примера."
+            );
+            lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+            lesson_trace::trace_note!("Собираем результаты в коллекцию.");
             (0..raw_weights.len())
-                // Преобразуем каждый элемент в новое значение.
                 .map(|key| {
-                    // Выбираем дальнейший шаг по выполнению условия.
+                    lesson_trace::trace_note!("Выбираем дальнейший шаг по выполнению условия.");
                     if key <= position {
-                        // Вычисляем значение по указанной формуле.
+                        lesson_trace::trace_note!("Вычисляем значение по указанной формуле.");
                         raw_weights[key] / total
-                    // Обрабатываем случай, когда предыдущее условие не выполнено.
                     } else {
-                        // Используем подготовленное значение в следующем шаге примера.
+                        lesson_trace::trace_note!(
+                            "Обрабатываем случай, когда предыдущее условие не выполнено."
+                        );
+                        lesson_trace::trace_note!(
+                            "Используем подготовленное значение в следующем шаге примера."
+                        );
                         0.0
                     }
                 })
-                // Собираем результаты в коллекцию.
                 .collect()
         })
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок тепловой карты.");
+    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::heatmap(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок тепловой карты.
         "Причинная маска внимания",
-        // Используем подготовленное значение в следующем шаге примера.
         &weights,
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

@@ -14,69 +14,79 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Создаём набор значений `first` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `first` для следующего шага примера.");
     let first: [f64; 2] = [0.8, 0.2];
     lesson_trace::trace_step!(first);
-    // Создаём набор значений `second` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `second` для следующего шага примера.");
     let second: [f64; 2] = [0.7, 0.3];
     lesson_trace::trace_step!(second);
-    // Умножаем значения и сохраняем результат в `sum_after_multiplying_coordinates`.
+    lesson_trace::trace_note!(
+        "Умножаем значения и сохраняем результат в `sum_after_multiplying_coordinates`."
+    );
+    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    lesson_trace::trace_note!("Используем результат, ожидая успешного выполнения шага.");
     let sum_after_multiplying_coordinates: f64 =
-        // Используем подготовленное значение в следующем шаге примера.
+
         l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&first, &second)
-            // Используем результат, ожидая успешного выполнения шага.
+
             .expect("представления имеют одинаковую размерность");
     lesson_trace::trace_step!(sum_after_multiplying_coordinates);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
+    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
     println!(
-        // Передаём подпись или текстовое значение для следующего шага.
         "сумма после попарного умножения координат представлений = {sum_after_multiplying_coordinates}"
     );
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_coordinates_of_two_word_representations(first, second);
 }
 
 // Строим график по результатам урока.
 fn plot_coordinates_of_two_word_representations(first: [f64; 2], second: [f64; 2]) {
-    // Значения из этого урока на графике.
-    // Плотное числовое представление объекта называют embedding.
+    lesson_trace::trace_note!("Значения из этого урока на графике.");
+    lesson_trace::trace_note!("Плотное числовое представление объекта называют embedding.");
     let first_dense_representation_points: Vec<(f64, f64)> = vec![(first[0], first[1])];
-    // Собираем значения для `second_dense_representation_points` в коллекцию.
+    lesson_trace::trace_note!(
+        "Собираем значения для `second_dense_representation_points` в коллекцию."
+    );
     let second_dense_representation_points: Vec<(f64, f64)> = vec![(second[0], second[1])];
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::scatter_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок диаграммы.
         "Похожие эмбеддинги",
-        // Указываем подпись горизонтальной оси.
         "первая координата",
-        // Указываем подпись вертикальной оси.
         "вторая координата",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "первый",
-                // Передаём рассчитанные координаты точек.
+
                 points: &first_dense_representation_points,
             },
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "второй",
-                // Передаём рассчитанные координаты точек.
+
                 points: &second_dense_representation_points,
             },
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

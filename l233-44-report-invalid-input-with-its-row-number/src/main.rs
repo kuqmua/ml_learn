@@ -10,18 +10,21 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Создаём набор значений `rows` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `rows` для следующего шага примера.");
     let rows: [&str; 3] = ["1.0", "oops", "3.0"];
     lesson_trace::trace_step!(rows);
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for (index, row) in rows.into_iter().enumerate() {
         lesson_trace::trace_step!(index);
         lesson_trace::trace_step!(row);
-        // Разбираем каждый возможный вариант значения отдельно.
+        lesson_trace::trace_note!("Разбираем каждый возможный вариант значения отдельно.");
+        lesson_trace::trace_note!("Возвращаем успешное значение в типе `Result`.");
+        lesson_trace::trace_note!("Возвращаем описание ошибки в типе `Result`.");
         match row.parse::<f64>() {
-            // Возвращаем успешное значение в типе `Result`.
             Ok(value) => println!("строка {}: {value}", index + 1),
-            // Возвращаем описание ошибки в типе `Result`.
+
             Err(_) => println!("строка {}: не число", index + 1),
         }
     }

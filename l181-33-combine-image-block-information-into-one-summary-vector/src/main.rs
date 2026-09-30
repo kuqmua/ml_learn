@@ -27,11 +27,11 @@ fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_
 }
 fn main() {
     lesson_trace::enable();
-    // Первый токен обозначает CLS; остальные представляют патчи.
-    // Патчи и элемент классификации в ViT называют visual tokens.
+    lesson_trace::trace_note!("Первый токен обозначает CLS; остальные представляют патчи.");
+    lesson_trace::trace_note!("Патчи и элемент классификации в ViT называют visual tokens.");
     let image_input_representations: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
     lesson_trace::trace_step!(image_input_representations);
-    // Оценку модели до преобразования в вероятность называют logit.
+    lesson_trace::trace_note!("Оценку модели до преобразования в вероятность называют logit.");
     let raw_model_scores: Vec<f64> = image_input_representations
         .iter()
         .map(|image_input_representation| {
@@ -45,7 +45,9 @@ fn main() {
             &raw_model_scores,
         );
     lesson_trace::trace_step!(weights);
-    // Итоговое представление элемента классификации получают через class token pooling.
+    lesson_trace::trace_note!(
+        "Итоговое представление элемента классификации получают через class token pooling."
+    );
     let image_classification_summary: [f64; 2] = image_input_representations
         .iter()
         .zip(&weights)

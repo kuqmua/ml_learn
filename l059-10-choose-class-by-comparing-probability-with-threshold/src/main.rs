@@ -14,69 +14,80 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Создаём набор значений `probabilities` для следующего шага примера.
+    lesson_trace::trace_note!(
+        "Создаём набор значений `probabilities` для следующего шага примера."
+    );
     let probabilities: [f64; 3] = [0.2, 0.55, 0.8];
     lesson_trace::trace_step!(probabilities);
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for threshold in [0.5, 0.7] {
         lesson_trace::trace_step!(threshold);
-        // Преобразуем входные данные и сохраняем полученную коллекцию в `predictions`.
+        lesson_trace::trace_note!(
+            "Преобразуем входные данные и сохраняем полученную коллекцию в `predictions`."
+        );
         let predictions: Vec<bool> = probabilities
             .iter()
             .map(|&probability| probability >= threshold)
             .collect();
         lesson_trace::trace_step!(predictions);
-        // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+        lesson_trace::trace_note!(
+            "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+        );
         println!("порог {threshold}: {predictions:?}");
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_number_of_positive_predictions_for_changing_threshold();
 }
 
 // Строим график по результатам урока.
 fn plot_number_of_positive_predictions_for_changing_threshold() {
-    // График величин и зависимостей, изученных в этом уроке.
+    lesson_trace::trace_note!("График величин и зависимостей, изученных в этом уроке.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let threshold_points: Vec<(f64, f64)> = (0..=100)
-        // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
-            // Сохраняем результат этого шага в `threshold_value`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `threshold_value`.");
             let threshold_value: f64 = plot_step_index as f64 / 100.0;
+            lesson_trace::trace_note!(
+                "Используем подготовленное значение в следующем шаге примера."
+            );
+            lesson_trace::trace_note!("Задаём значения следующей строки или последовательности.");
             (
-                // Используем подготовленное значение в следующем шаге примера.
                 threshold_value,
-                // Задаём значения следующей строки или последовательности.
                 [0.2, 0.55, 0.8]
                     .iter()
                     .filter(|&&probability| probability >= threshold_value)
                     .count() as f64,
             )
         })
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Число положительных прогнозов",
-        // Указываем подпись горизонтальной оси.
         "порог",
-        // Указываем подпись вертикальной оси.
         "количество",
-        // Передаём ряды или значения для отрисовки графика.
         &[lesson_visualization::Series {
-            // Указываем подпись этого ряда в легенде.
             name: "оценки 0.2, 0.55, 0.8",
-            // Передаём рассчитанные координаты точек.
+
             points: &threshold_points,
         }],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

@@ -5,28 +5,28 @@
 pub fn calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(
     values: &[f64],
 ) -> Result<f64, &'static str> {
-    // Выбираем дальнейший шаг по выполнению условия.
+    lesson_trace::trace_note!("Выбираем дальнейший шаг по выполнению условия.");
     if values.len() < 2 {
-        // Прерываем вычисление и возвращаем причину ошибки.
+        lesson_trace::trace_note!("Прерываем вычисление и возвращаем причину ошибки.");
         return Err("для выборочной дисперсии нужны хотя бы два значения");
     }
-    // Сохраняем результат этого шага в `average`.
+    lesson_trace::trace_note!("Сохраняем результат этого шага в `average`.");
     let average: f64 =
         l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(values)?;
     lesson_trace::trace_step!(average);
-    // Сохраняем результат этого шага в `squared_deviation_sum`.
+    lesson_trace::trace_note!("Сохраняем результат этого шага в `squared_deviation_sum`.");
     let mut squared_deviation_sum: f64 = 0.0;
     lesson_trace::trace_step!(squared_deviation_sum);
-    // Повторяем расчёт для каждого элемента последовательности.
+    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for &value in values {
         lesson_trace::trace_step!(value);
-        // Сохраняем результат этого шага в `deviation`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `deviation`.");
         let deviation: f64 = value - average;
         lesson_trace::trace_step!(deviation);
-        // Обновляем значение результатом текущего вычисления.
+        lesson_trace::trace_note!("Обновляем значение результатом текущего вычисления.");
         squared_deviation_sum += deviation * deviation;
         lesson_trace::trace_step!(squared_deviation_sum);
     }
-    // Возвращаем успешный результат.
+    lesson_trace::trace_note!("Возвращаем успешный результат.");
     Ok(squared_deviation_sum / (values.len() - 1) as f64)
 }

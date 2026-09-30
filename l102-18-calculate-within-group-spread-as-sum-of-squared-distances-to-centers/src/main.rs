@@ -13,93 +13,104 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Создаём набор значений `points` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `points` для следующего шага примера.");
     let points: [[f64; 2]; 4] = [[0.0, 0.0], [1.0, 0.0], [5.0, 0.0], [6.0, 0.0]];
     lesson_trace::trace_step!(points);
-    // Создаём набор значений `centers` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `centers` для следующего шага примера.");
     let centers: [[f64; 2]; 2] = [[0.5, 0.0], [5.5, 0.0]];
     lesson_trace::trace_step!(centers);
-    // Создаём набор значений `assignments` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `assignments` для следующего шага примера.");
     let assignments: [usize; 4] = [0, 0, 1, 1];
     lesson_trace::trace_step!(assignments);
-    // Инициализируем изменяемый накопитель `total_squared_distance_to_cluster_centers` начальным состоянием.
-    // Каждой точке нужен индекс существующего центра.
+    lesson_trace::trace_note!(
+        "Инициализируем изменяемый накопитель `total_squared_distance_to_cluster_centers` начальным состоянием."
+    );
+    lesson_trace::trace_note!("Каждой точке нужен индекс существующего центра.");
+    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
     assert_eq!(
-        // Используем подготовленное значение в следующем шаге примера.
         points.len(),
-        // Используем подготовленное значение в следующем шаге примера.
         assignments.len(),
-        // Передаём подпись или текстовое значение для следующего шага.
         "каждой точке нужен номер центра"
     );
-    // Проверяем ожидаемое свойство учебного примера.
+    lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
     assert!(
-        // Используем подготовленное значение в следующем шаге примера.
         assignments.iter().all(|&index| index < centers.len()),
-        // Передаём подпись или текстовое значение для следующего шага.
         "номер центра выходит за границы списка"
     );
-    // Сохраняем результат этого шага в `total_squared_distance_to_cluster_centers`.
-    // Сумму квадратов расстояний до центров кластеров называют inertia.
+    lesson_trace::trace_note!(
+        "Сохраняем результат этого шага в `total_squared_distance_to_cluster_centers`."
+    );
+    lesson_trace::trace_note!("Сумму квадратов расстояний до центров кластеров называют inertia.");
     let mut total_squared_distance_to_cluster_centers: f64 = 0.0;
     lesson_trace::trace_step!(total_squared_distance_to_cluster_centers);
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for index in 0..points.len() {
         lesson_trace::trace_step!(index);
-        // Комбинируем исходные величины и сохраняем результат в `delta`.
+        lesson_trace::trace_note!("Комбинируем исходные величины и сохраняем результат в `delta`.");
         let delta: f64 = points[index][0] - centers[assignments[index]][0];
         lesson_trace::trace_step!(delta);
-        // Прибавляем очередной вклад к ранее накопленному результату.
+        lesson_trace::trace_note!("Прибавляем очередной вклад к ранее накопленному результату.");
         total_squared_distance_to_cluster_centers += delta * delta;
         lesson_trace::trace_step!(total_squared_distance_to_cluster_centers);
     }
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("инерция = {total_squared_distance_to_cluster_centers}");
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_squared_distance_to_nearest_fixed_center_for_changing_point();
 }
 
 // Строим график по результатам урока.
 fn plot_squared_distance_to_nearest_fixed_center_for_changing_point() {
-    // График величин и зависимостей, изученных в этом уроке.
+    lesson_trace::trace_note!("График величин и зависимостей, изученных в этом уроке.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let squared_distance_sum_points: Vec<(f64, f64)> = (0..=60)
-        // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
-            // Сохраняем результат этого шага в `horizontal_value`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            // Добавляем пару значений для сравнения или построения графика.
+            lesson_trace::trace_note!(
+                "Добавляем пару значений для сравнения или построения графика."
+            );
             (
                 horizontal_value,
                 ((horizontal_value - 0.5) * (horizontal_value - 0.5))
                     .min((horizontal_value - 5.5) * (horizontal_value - 5.5)),
             )
         })
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Инерция для двух центров",
-        // Указываем подпись горизонтальной оси.
         "точка x",
-        // Указываем подпись вертикальной оси.
         "квадрат расстояния",
-        // Передаём ряды или значения для отрисовки графика.
         &[lesson_visualization::Series {
-            // Указываем подпись этого ряда в легенде.
             name: "ближайший из 0.5 и 5.5",
-            // Передаём рассчитанные координаты точек.
+
             points: &squared_distance_sum_points,
         }],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

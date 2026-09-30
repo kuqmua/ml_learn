@@ -14,38 +14,48 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Создаём набор значений `data` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `data` для следующего шага примера.");
     let data: [&str; 4] = ["A", "B", "C", "D"];
     lesson_trace::trace_step!(data);
-    // Создаём набор значений `sampled_indices` для следующего шага примера.
+    lesson_trace::trace_note!(
+        "Создаём набор значений `sampled_indices` для следующего шага примера."
+    );
     let sampled_indices: [usize; 4] = [0, 2, 2, 3];
     lesson_trace::trace_step!(sampled_indices);
-    // Преобразуем входные данные и сохраняем полученную коллекцию в `sample`.
+    lesson_trace::trace_note!(
+        "Преобразуем входные данные и сохраняем полученную коллекцию в `sample`."
+    );
     let sample: Vec<&str> = sampled_indices.iter().map(|&index| data[index]).collect();
     lesson_trace::trace_step!(sample);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("исходные={data:?}, bootstrap={sample:?}");
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_repeated_appearances_in_sample_drawn_with_replacement(sample);
 }
 
 // Строим график по результатам урока.
 fn plot_repeated_appearances_in_sample_drawn_with_replacement(sample: std::vec::Vec<&str>) {
-    // Сравниваем величины, вычисленные в примере.
+    lesson_trace::trace_note!("Сравниваем величины, вычисленные в примере.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок диаграммы.
         "Повторы в bootstrap-выборке",
-        // Указываем подпись вертикальной оси.
         "число появлений",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем пару значений для сравнения или построения графика.
             (
                 "A",
                 sample
@@ -53,7 +63,6 @@ fn plot_repeated_appearances_in_sample_drawn_with_replacement(sample: std::vec::
                     .filter(|&&horizontal_value| horizontal_value == "A")
                     .count() as f64,
             ),
-            // Добавляем пару значений для сравнения или построения графика.
             (
                 "B",
                 sample
@@ -61,7 +70,6 @@ fn plot_repeated_appearances_in_sample_drawn_with_replacement(sample: std::vec::
                     .filter(|&&horizontal_value| horizontal_value == "B")
                     .count() as f64,
             ),
-            // Добавляем пару значений для сравнения или построения графика.
             (
                 "C",
                 sample
@@ -69,7 +77,6 @@ fn plot_repeated_appearances_in_sample_drawn_with_replacement(sample: std::vec::
                     .filter(|&&horizontal_value| horizontal_value == "C")
                     .count() as f64,
             ),
-            // Добавляем пару значений для сравнения или построения графика.
             (
                 "D",
                 sample
@@ -79,8 +86,7 @@ fn plot_repeated_appearances_in_sample_drawn_with_replacement(sample: std::vec::
             ),
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

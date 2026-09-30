@@ -12,91 +12,110 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Создаём набор значений `data` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `data` для следующего шага примера.");
     let data: [(f64, bool); 4] = [(1.0, false), (2.0, false), (3.0, true), (4.0, true)];
     lesson_trace::trace_step!(data);
-    // Создаём изменяемое значение `best` для следующих операций.
+    lesson_trace::trace_note!("Создаём изменяемое значение `best` для следующих операций.");
     let mut best: (f64, f64) = (f64::INFINITY, 0.0);
     lesson_trace::trace_step!(best);
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for threshold in [1.5, 2.5, 3.5] {
         lesson_trace::trace_step!(threshold);
-        // Преобразуем входные данные и сохраняем полученную коллекцию в `left`.
+        lesson_trace::trace_note!(
+            "Преобразуем входные данные и сохраняем полученную коллекцию в `left`."
+        );
         let left: Vec<&(f64, bool)> = data.iter().filter(|sample| sample.0 < threshold).collect();
         lesson_trace::trace_step!(left);
-        // Преобразуем входные данные и сохраняем полученную коллекцию в `right`.
+        lesson_trace::trace_note!(
+            "Преобразуем входные данные и сохраняем полученную коллекцию в `right`."
+        );
         let right: Vec<&(f64, bool)> = data.iter().filter(|sample| sample.0 >= threshold).collect();
         lesson_trace::trace_step!(right);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
         assert!(
-            // Используем подготовленное значение в следующем шаге примера.
             !left.is_empty() && !right.is_empty(),
-            // Передаём подпись или текстовое значение для следующего шага.
             "порог должен оставлять примеры с обеих сторон"
         );
-        // Сохраняем рассчитанное значение `left_positive` для следующих операций.
+        lesson_trace::trace_note!(
+            "Сохраняем рассчитанное значение `left_positive` для следующих операций."
+        );
+        lesson_trace::trace_note!("Делим значения, получая нормированную величину или среднее.");
         let left_positive: f64 =
-            // Делим значения, получая нормированную величину или среднее.
             left.iter().filter(|sample| sample.1).count() as f64 / left.len() as f64;
         lesson_trace::trace_step!(left_positive);
-        // Сохраняем рассчитанное значение `right_positive` для следующих операций.
+        lesson_trace::trace_note!(
+            "Сохраняем рассчитанное значение `right_positive` для следующих операций."
+        );
+        lesson_trace::trace_note!("Делим значения, получая нормированную величину или среднее.");
         let right_positive: f64 =
-            // Делим значения, получая нормированную величину или среднее.
             right.iter().filter(|sample| sample.1).count() as f64 / right.len() as f64;
         lesson_trace::trace_step!(right_positive);
-        // Умножаем значения и сохраняем результат в `left_gini`.
+        lesson_trace::trace_note!("Умножаем значения и сохраняем результат в `left_gini`.");
         let left_gini: f64 = 2.0 * left_positive * (1.0 - left_positive);
         lesson_trace::trace_step!(left_gini);
-        // Умножаем значения и сохраняем результат в `right_gini`.
+        lesson_trace::trace_note!("Умножаем значения и сохраняем результат в `right_gini`.");
         let right_gini: f64 = 2.0 * right_positive * (1.0 - right_positive);
         lesson_trace::trace_step!(right_gini);
-        // Сохраняем рассчитанное значение `score` для следующих операций.
+        lesson_trace::trace_note!(
+            "Сохраняем рассчитанное значение `score` для следующих операций."
+        );
+        lesson_trace::trace_note!(
+            "Составляем результат из вычисленных значений в указанном порядке."
+        );
         let score: f64 =
-            // Составляем результат из вычисленных значений в указанном порядке.
             (left.len() as f64 * left_gini + right.len() as f64 * right_gini) / data.len() as f64;
         lesson_trace::trace_step!(score);
-        // Проверяем условие и выбираем соответствующую ветку алгоритма.
+        lesson_trace::trace_note!("Проверяем условие и выбираем соответствующую ветку алгоритма.");
         if score < best.0 {
-            // Присваиваем вычисленное значение соответствующей переменной или полю.
+            lesson_trace::trace_note!(
+                "Присваиваем вычисленное значение соответствующей переменной или полю."
+            );
             best = (score, threshold);
             lesson_trace::trace_step!(best);
         }
     }
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("лучший порог={}, Gini={}", best.1, best.0);
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_weighted_class_mixing_for_different_thresholds();
 }
 
 // Строим график по результатам урока.
 fn plot_weighted_class_mixing_for_different_thresholds() {
-    // Значения из этого урока на графике.
+    lesson_trace::trace_note!("Значения из этого урока на графике.");
     let greedy_split_points: Vec<(f64, f64)> =
         [(1.5, 1.0 / 3.0), (2.5, 0.0), (3.5, 1.0 / 3.0)].to_vec();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Чистота разбиения",
-        // Указываем подпись горизонтальной оси.
         "порог",
-        // Указываем подпись вертикальной оси.
         "взвешенный Gini",
-        // Передаём ряды или значения для отрисовки графика.
         &[lesson_visualization::Series {
-            // Указываем подпись этого ряда в легенде.
             name: "данные −−++",
-            // Передаём рассчитанные координаты точек.
+
             points: &greedy_split_points,
         }],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

@@ -12,113 +12,127 @@
 
 fn main() {
     lesson_trace::enable();
-    // Задаём учебные значения для `cases`.
+    lesson_trace::trace_note!("Задаём учебные значения для `cases`.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
     let cases: [(&str, &[f64], &[f64], f64); 4] = [
-        // Добавляем пару значений для сравнения или построения графика.
         ("идеальный порядок", &[0.9, 0.7], &[0.6, 0.2], 1.0),
-        // Добавляем пару значений для сравнения или построения графика.
         ("обратный порядок", &[0.1, 0.2], &[0.8, 0.9], 0.0),
-        // Добавляем пару значений для сравнения или построения графика.
         ("одинаковые оценки", &[0.5, 0.5], &[0.5, 0.5], 0.5),
-        // Добавляем пару значений для сравнения или построения графика.
         ("смешанный порядок", &[0.8, 0.2], &[0.6, 0.4], 0.5),
     ];
     lesson_trace::trace_step!(cases);
-    // Повторяем расчёт для каждого элемента последовательности.
+    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for (description, positive_scores, negative_scores, expected) in cases {
         lesson_trace::trace_step!(description);
         lesson_trace::trace_step!(positive_scores);
         lesson_trace::trace_step!(negative_scores);
         lesson_trace::trace_step!(expected);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
         assert!(
-            // Используем подготовленное значение в следующем шаге примера.
             !positive_scores.is_empty() && !negative_scores.is_empty(),
-            // Передаём подпись или текстовое значение для следующего шага.
             "для ROC-AUC нужны оба класса"
         );
-        // Сохраняем результат этого шага в `ordered_pairs`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `ordered_pairs`.");
         let mut ordered_pairs: f64 = 0.0;
         lesson_trace::trace_step!(ordered_pairs);
-        // Повторяем расчёт для каждого элемента последовательности.
+        lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
         for &positive in positive_scores {
             lesson_trace::trace_step!(positive);
-            // Повторяем расчёт для каждого элемента последовательности.
+            lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
             for &negative in negative_scores {
                 lesson_trace::trace_step!(negative);
-                // Обновляем значение результатом текущего вычисления.
+                lesson_trace::trace_note!("Обновляем значение результатом текущего вычисления.");
                 ordered_pairs += if positive > negative {
-                    // Используем подготовленное значение в следующем шаге примера.
+                    lesson_trace::trace_note!(
+                        "Используем подготовленное значение в следующем шаге примера."
+                    );
+                    lesson_trace::trace_note!(
+                        "Обновляем значение результатом текущего вычисления."
+                    );
                     1.0
-                // Обновляем значение результатом текущего вычисления.
                 } else if positive == negative {
-                    // Используем подготовленное значение в следующем шаге примера.
+                    lesson_trace::trace_note!(
+                        "Используем подготовленное значение в следующем шаге примера."
+                    );
                     0.5
-                // Обрабатываем случай, когда предыдущее условие не выполнено.
                 } else {
-                    // Используем подготовленное значение в следующем шаге примера.
+                    lesson_trace::trace_note!(
+                        "Обрабатываем случай, когда предыдущее условие не выполнено."
+                    );
+                    lesson_trace::trace_note!(
+                        "Используем подготовленное значение в следующем шаге примера."
+                    );
                     0.0
                 };
                 lesson_trace::trace_step!(ordered_pairs);
             }
         }
-        // Определяем размер данных и сохраняем его в `pair_count`.
+        lesson_trace::trace_note!("Определяем размер данных и сохраняем его в `pair_count`.");
         let pair_count: f64 = (positive_scores.len() * negative_scores.len()) as f64;
         lesson_trace::trace_step!(pair_count);
-        // Сохраняем результат этого шага в `area_under_curve`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `area_under_curve`.");
         let area_under_curve: f64 = ordered_pairs / pair_count;
         lesson_trace::trace_step!(area_under_curve);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(area_under_curve, expected);
-        // Печатаем рассчитанные значения для проверки примера.
+        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("{description}: ROC-AUC = {area_under_curve}");
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_detected_positive_share_against_false_positive_share();
 }
 
 // Строим график по результатам урока.
 fn plot_detected_positive_share_against_false_positive_share() {
-    // Значения из этого урока на графике.
+    lesson_trace::trace_note!("Значения из этого урока на графике.");
     let ideal_receiver_operating_characteristic_points: Vec<(f64, f64)> =
         [(0.0, 0.0), (0.0, 1.0), (1.0, 1.0)].to_vec();
-    // Собираем значения для `random_receiver_operating_characteristic_points` в коллекцию.
+    lesson_trace::trace_note!(
+        "Собираем значения для `random_receiver_operating_characteristic_points` в коллекцию."
+    );
     let random_receiver_operating_characteristic_points: Vec<(f64, f64)> =
         [(0.0, 0.0), (1.0, 1.0)].to_vec();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "ROC-кривая: идеальное ранжирование",
-        // Указываем подпись горизонтальной оси.
         "доля ложных срабатываний",
-        // Указываем подпись вертикальной оси.
         "полнота",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "идеал",
-                // Передаём рассчитанные координаты точек.
+
                 points: &ideal_receiver_operating_characteristic_points,
             },
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "случайный порядок",
-                // Передаём рассчитанные координаты точек.
+
                 points: &random_receiver_operating_characteristic_points,
             },
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

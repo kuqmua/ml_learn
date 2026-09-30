@@ -14,22 +14,28 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Создаём набор значений `rows` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `rows` для следующего шага примера.");
     let rows: [i32; 10] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     lesson_trace::trace_step!(rows);
-    // Сохраняем рассчитанное значение `training_data` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `training_data` для следующих операций."
+    );
     let training_data: &[i32] = &rows[..6];
     lesson_trace::trace_step!(training_data);
-    // Сохраняем рассчитанное значение `validation` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `validation` для следующих операций."
+    );
     let validation: &[i32] = &rows[6..8];
     lesson_trace::trace_step!(validation);
-    // Сохраняем рассчитанное значение `test` для следующих операций.
+    lesson_trace::trace_note!("Сохраняем рассчитанное значение `test` для следующих операций.");
     let test: &[i32] = &rows[8..];
     lesson_trace::trace_step!(test);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("train={training_data:?}, validation={validation:?}, test={test:?}");
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_row_counts_in_training_validation_and_test_sets(training_data, validation, test);
 }
@@ -40,28 +46,28 @@ fn plot_row_counts_in_training_validation_and_test_sets(
     validation: &[i32],
     test: &[i32],
 ) {
-    // Сравнение величин из этого урока.
+    lesson_trace::trace_note!("Сравнение величин из этого урока.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок диаграммы.
         "Разделение набора",
-        // Указываем подпись вертикальной оси.
         "число строк",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем пару значений для сравнения или построения графика.
             ("train", training_data.len() as f64),
-            // Добавляем пару значений для сравнения или построения графика.
             ("validation", validation.len() as f64),
-            // Добавляем пару значений для сравнения или построения графика.
             ("test", test.len() as f64),
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

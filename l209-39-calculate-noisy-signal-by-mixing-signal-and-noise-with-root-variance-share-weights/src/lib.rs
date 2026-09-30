@@ -6,9 +6,12 @@
 pub fn calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
     clean: f64,
     epsilon: f64,
-    // Долю (fraction) дисперсии исходного сигнала обозначают alpha_bar; её сохранение называют retention.
+
     original_signal_variance_share: f64,
 ) -> Result<f64, &'static str> {
+    lesson_trace::trace_note!(
+        "Долю (fraction) дисперсии исходного сигнала обозначают alpha_bar; её сохранение называют retention."
+    );
     if !(0.0..=1.0).contains(&original_signal_variance_share) {
         return Err("alpha_bar вне [0,1]");
     }

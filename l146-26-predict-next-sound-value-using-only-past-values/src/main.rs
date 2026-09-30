@@ -33,10 +33,12 @@ fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f6
         )
         .unwrap();
     lesson_trace::trace_step!(gate_one);
+    lesson_trace::trace_note!(
+        "Производную функции по параметру или вектор таких производных называют gradient."
+    );
     let layer_one: Vec<f64> = filter_one
         .iter()
         .zip(&gate_one)
-        // Производную функции по параметру или вектор таких производных называют gradient.
         .map(|(&filter_value, &rate_of_change_value)| {
             filter_value.tanh()
                 * calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
@@ -70,18 +72,24 @@ fn main() {
     lesson_trace::enable();
     let mut samples: Vec<u8> = vec![1, 0, 1, 1];
     lesson_trace::trace_step!(samples);
-    // Начальная история содержит четыре отсчёта; генерируем ещё четыре для короткого примера.
+    lesson_trace::trace_note!(
+        "Начальная история содержит четыре отсчёта; генерируем ещё четыре для короткого примера."
+    );
     for _ in 0..4 {
         let probability: f64 = calculate_probability_of_next_sound_sample_from_history(&samples);
         lesson_trace::trace_step!(probability);
-        // 0.5 — порог бинарного решения: вероятность не ниже половины даёт отсчёт 1.
+        lesson_trace::trace_note!(
+            "0.5 — порог бинарного решения: вероятность не ниже половины даёт отсчёт 1."
+        );
         let next: u8 = u8::from(probability >= 0.5);
         lesson_trace::trace_step!(next);
         samples.push(next);
         println!("P(следующий отсчёт=1)={probability:.3}; выбор={next}");
     }
     assert_eq!(samples.len(), 8);
-    // Фиксированные веса здесь показывают только прямой проход; обучение остаётся отдельной задачей.
+    lesson_trace::trace_note!(
+        "Фиксированные веса здесь показывают только прямой проход; обучение остаётся отдельной задачей."
+    );
     println!("дискретный звук: {samples:?}");
     lesson_trace::disable();
     plot_generated_discrete_sound_values(&samples);

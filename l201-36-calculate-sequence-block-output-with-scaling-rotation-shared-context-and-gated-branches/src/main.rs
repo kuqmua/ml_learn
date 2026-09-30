@@ -30,7 +30,7 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
         })
         .collect();
     lesson_trace::trace_step!(norm);
-    // Одна K/V-голова хранит общие ключи и значения для двух Q-голов.
+    lesson_trace::trace_note!("Одна K/V-голова хранит общие ключи и значения для двух Q-голов.");
     let keys: Vec<[f64; 2]> = norm
         .iter()
         .enumerate()
@@ -59,7 +59,9 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
         lesson_trace::trace_step!(context);
         for head in 0..2 {
             lesson_trace::trace_step!(head);
-            // Разные проекции Q обращаются к одним и тем же сохранённым K/V.
+            lesson_trace::trace_note!(
+                "Разные проекции Q обращаются к одним и тем же сохранённым K/V."
+            );
             let raw_query: [f64; 2] = if head == 0 {
                 norm[index]
             } else {
@@ -79,7 +81,9 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
                     0.1,
                 );
             lesson_trace::trace_step!(query);
-            // Оценку модели до преобразования в вероятность называют logit.
+            lesson_trace::trace_note!(
+                "Оценку модели до преобразования в вероятность называют logit."
+            );
             let raw_model_scores: Vec<f64> = (0..=index)
                 .map(|past| (query[0] * keys[past][0] + query[1] * keys[past][1]) / 2.0_f64.sqrt())
                 .collect();
@@ -95,7 +99,9 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
                 lesson_trace::trace_step!(context);
             }
         }
-        // Добавление входа блока к его преобразованному выходу называют residual connection.
+        lesson_trace::trace_note!(
+            "Добавление входа блока к его преобразованному выходу называют residual connection."
+        );
         let input_plus_transformed_value: [f64; 2] =
             [states[index][0] + context[0], states[index][1] + context[1]];
         lesson_trace::trace_step!(input_plus_transformed_value);
@@ -136,5 +142,7 @@ fn main() {
         output[0]
     );
     println!("выход учебного блока: {output:?}");
-    // Реальный Qwen3 имеет многомерные проекции, обученные веса и масштабные данные.
+    lesson_trace::trace_note!(
+        "Реальный Qwen3 имеет многомерные проекции, обученные веса и масштабные данные."
+    );
 }

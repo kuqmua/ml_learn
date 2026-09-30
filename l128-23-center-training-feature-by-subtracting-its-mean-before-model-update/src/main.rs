@@ -12,28 +12,36 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Создаём набор значений `training_data` для следующего шага примера.
+    lesson_trace::trace_note!(
+        "Создаём набор значений `training_data` для следующего шага примера."
+    );
     let training_data: [f64; 3] = [10.0, 20.0, 30.0];
     lesson_trace::trace_step!(training_data);
-    // Проверяем ожидаемое свойство учебного примера.
+    lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
     assert!(
         !training_data.is_empty(),
         "обучающая выборка не должна быть пустой"
     );
-    // Преобразуем входные данные и сохраняем полученную коллекцию в `mean`.
+    lesson_trace::trace_note!(
+        "Преобразуем входные данные и сохраняем полученную коллекцию в `mean`."
+    );
     let mean: f64 =
         l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
             &training_data,
         )
         .unwrap();
     lesson_trace::trace_step!(mean);
-    // Преобразуем входные данные и сохраняем полученную коллекцию в `centered`.
+    lesson_trace::trace_note!(
+        "Преобразуем входные данные и сохраняем полученную коллекцию в `centered`."
+    );
     let centered: Vec<f64> = training_data.iter().map(|&value| value - mean).collect();
     lesson_trace::trace_step!(centered);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("среднее train={mean}, центрировано={centered:?}");
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_feature_before_and_after_subtracting_mean(training_data, centered);
 }
@@ -43,58 +51,60 @@ fn plot_feature_before_and_after_subtracting_mean(
     training_data: [f64; 3],
     centered: std::vec::Vec<f64>,
 ) {
-    // График величин и зависимостей, изученных в этом уроке.
+    lesson_trace::trace_note!("График величин и зависимостей, изученных в этом уроке.");
+    lesson_trace::trace_note!("Просматриваем элементы коллекции по ссылке.");
+    lesson_trace::trace_note!("Добавляем порядковый номер к каждому элементу.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let original_points: Vec<(f64, f64)> = training_data
-        // Просматриваем элементы коллекции по ссылке.
         .iter()
-        // Добавляем порядковый номер к каждому элементу.
         .enumerate()
-        // Преобразуем каждый элемент в новое значение.
         .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `normalized_points` в коллекцию.
+    lesson_trace::trace_note!("Собираем значения для `normalized_points` в коллекцию.");
+    lesson_trace::trace_note!("Просматриваем элементы коллекции по ссылке.");
+    lesson_trace::trace_note!("Добавляем порядковый номер к каждому элементу.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let normalized_points: Vec<(f64, f64)> = centered
-        // Просматриваем элементы коллекции по ссылке.
         .iter()
-        // Добавляем порядковый номер к каждому элементу.
         .enumerate()
-        // Преобразуем каждый элемент в новое значение.
         .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Центрирование признака",
-        // Указываем подпись горизонтальной оси.
         "номер объекта",
-        // Указываем подпись вертикальной оси.
         "значение",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "до",
-                // Передаём рассчитанные координаты точек.
+
                 points: &original_points,
             },
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "после",
-                // Передаём рассчитанные координаты точек.
+
                 points: &normalized_points,
             },
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

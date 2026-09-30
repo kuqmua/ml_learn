@@ -13,13 +13,19 @@ fn main() {
     lesson_trace::trace_step!(weights);
     let maximum: f64 = weights.iter().copied().map(f64::abs).fold(0.0, f64::max);
     lesson_trace::trace_step!(maximum);
-    // 127 — наибольший положительный i8: масштаб переводит максимальный |вес| в код ±127.
+    lesson_trace::trace_note!(
+        "127 — наибольший положительный i8: масштаб переводит максимальный |вес| в код ±127."
+    );
     let scale: f64 = maximum / 127.0;
     lesson_trace::trace_step!(scale);
-    // Представление весов целыми числами меньшей точности называют quantization.
+    lesson_trace::trace_note!(
+        "Представление весов целыми числами меньшей точности называют quantization."
+    );
+    lesson_trace::trace_note!(
+        "Симметричный диапазон −127..127 оставляет ноль точным и не использует лишний код −128."
+    );
     let reduced_precision_weights: Vec<i8> = weights
         .iter()
-        // Симметричный диапазон −127..127 оставляет ноль точным и не использует лишний код −128.
         .map(|&weight_value| (weight_value / scale).round().clamp(-127.0, 127.0) as i8)
         .collect();
     lesson_trace::trace_step!(reduced_precision_weights);
@@ -36,5 +42,7 @@ fn main() {
     lesson_trace::trace_step!(error);
     assert!(error <= scale / 2.0 + 1e-12);
     println!("INT8={reduced_precision_weights:?}; максимум ошибки={error:.6}");
-    // Это per-tensor учебный пример, не алгоритм LLM.int8() с обработкой выбросов.
+    lesson_trace::trace_note!(
+        "Это per-tensor учебный пример, не алгоритм LLM.int8() с обработкой выбросов."
+    );
 }

@@ -9,7 +9,9 @@
 
 fn main() {
     lesson_trace::enable();
-    // ε=10⁻⁶ добавляется к среднему квадрату координат Q и K, чтобы RMSNorm был определён и для нуля.
+    lesson_trace::trace_note!(
+        "ε=10⁻⁶ добавляется к среднему квадрату координат Q и K, чтобы RMSNorm был определён и для нуля."
+    );
     let query_vector: Vec<f64> =
         l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
             &[2.0, 1.0],

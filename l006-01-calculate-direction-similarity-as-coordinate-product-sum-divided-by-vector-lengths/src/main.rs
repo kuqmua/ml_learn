@@ -13,111 +13,124 @@
 
 fn main() {
     lesson_trace::enable();
-    // Задаём учебные значения для `left`.
+    lesson_trace::trace_note!("Задаём учебные значения для `left`.");
     let left: [f64; 2] = [1.0, 0.0];
     lesson_trace::trace_step!(left);
-    // Задаём учебные значения для `cases`.
+    lesson_trace::trace_note!("Задаём учебные значения для `cases`.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
     let cases: [(&str, &[f64], f64); 5] = [
-        // Добавляем пару значений для сравнения или построения графика.
         ("то же направление", &[2.0, 0.0], 1.0),
-        // Добавляем пару значений для сравнения или построения графика.
         ("острый угол", &[1.0, 1.0], 0.7071067811865475),
-        // Добавляем пару значений для сравнения или построения графика.
         ("перпендикулярные векторы", &[0.0, 2.0], 0.0),
-        // Добавляем пару значений для сравнения или построения графика.
         ("тупой угол", &[-1.0, 1.0], -0.7071067811865475),
-        // Добавляем пару значений для сравнения или построения графика.
         ("противоположные направления", &[-2.0, 0.0], -1.0),
     ];
     lesson_trace::trace_step!(cases);
 
-    // Повторяем расчёт для каждого элемента последовательности.
+    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for (description, right, expected) in cases {
         lesson_trace::trace_step!(description);
         lesson_trace::trace_step!(right);
         lesson_trace::trace_step!(expected);
-        // Числитель и длины уже изучены; общий код соединяет их в косинусное сходство.
+        lesson_trace::trace_note!(
+            "Числитель и длины уже изучены; общий код соединяет их в косинусное сходство."
+        );
+        lesson_trace::trace_note!("Используем результат, ожидая успешного выполнения шага.");
         let similarity: f64 = l006_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&left, right)
-            // Используем результат, ожидая успешного выполнения шага.
+
             .expect("оба вектора ненулевые и одинаковой длины");
         lesson_trace::trace_step!(similarity);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert!((similarity - expected).abs() < 1e-10);
-        // Печатаем рассчитанные значения для проверки примера.
+        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("{description}: {left:?} и {right:?} → {similarity:.3}");
     }
 
-    // Показанные ниже входы не имеют косинусного сходства.
+    lesson_trace::trace_note!("Показанные ниже входы не имеют косинусного сходства.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
     for (description, right) in [
-        // Добавляем пару значений для сравнения или построения графика.
         ("нулевой вектор", &[0.0, 0.0][..]),
-        // Добавляем пару значений для сравнения или построения графика.
         ("разная длина", &[1.0][..]),
     ] {
         lesson_trace::trace_step!(description);
         lesson_trace::trace_step!(right);
-        // Сохраняем результат этого шага в `error`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `error`.");
+        lesson_trace::trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
         let error: &str = l006_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&left, right)
-            // Настраиваем или преобразуем результат предыдущего шага.
+
             .expect_err("этот вход должен быть отклонён");
         lesson_trace::trace_step!(error);
-        // Печатаем рассчитанные значения для проверки примера.
+        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("{description}: {error}");
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_direction_similarity_as_coordinate_product_sum_divided_by_lengths_for_changing_angle();
 }
 
 // Строим график по результатам урока.
 fn plot_direction_similarity_as_coordinate_product_sum_divided_by_lengths_for_changing_angle() {
-    // Наглядное представление величин из этого урока.
+    lesson_trace::trace_note!("Наглядное представление величин из этого урока.");
+    lesson_trace::trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let cosine_similarity_between_two_vectors_points: Vec<(f64, f64)> = (0..=180)
-        // Настраиваем или преобразуем результат предыдущего шага.
+
         .step_by(5)
-        // Преобразуем каждый элемент в новое значение.
+
         .map(|plot_step_index| {
-            // Сохраняем результат этого шага в `angle`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `angle`.");
             let angle: f64 = (plot_step_index as f64).to_radians();
+            lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+            lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+            lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+            lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+            lesson_trace::trace_note!("Используем результат, ожидая успешного выполнения шага.");
             (
-                // Используем подготовленное значение в следующем шаге примера.
+
                 plot_step_index as f64,
-                // Используем подготовленное значение в следующем шаге примера.
+
                 l006_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(
-                    // Передаём ряды или значения для отрисовки графика.
+
                     &[1.0, 0.0],
-                    // Передаём ряды или значения для отрисовки графика.
+
                     &[angle.cos(), angle.sin()],
                 )
-                // Используем результат, ожидая успешного выполнения шага.
+
                 .unwrap(),
             )
         })
-        // Собираем результаты в коллекцию.
+
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Косинусное сходство двух векторов",
-        // Указываем подпись горизонтальной оси.
         "угол, градусы",
-        // Указываем подпись вертикальной оси.
         "сходство",
-        // Передаём ряды или значения для отрисовки графика.
         &[lesson_visualization::Series {
-            // Указываем подпись этого ряда в легенде.
             name: "вектор [1, 0]",
-            // Передаём рассчитанные координаты точек.
+
             points: &cosine_similarity_between_two_vectors_points,
         }],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

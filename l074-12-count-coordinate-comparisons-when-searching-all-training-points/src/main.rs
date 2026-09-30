@@ -13,59 +13,70 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for training_size in [10, 100, 1000] {
         lesson_trace::trace_step!(training_size);
-        // Сохраняем рассчитанное значение `feature_count` для следующих операций.
+        lesson_trace::trace_note!(
+            "Сохраняем рассчитанное значение `feature_count` для следующих операций."
+        );
         let feature_count: i32 = 4;
         lesson_trace::trace_step!(feature_count);
-        // Умножаем значения и сохраняем результат в `coordinate_comparisons`.
+        lesson_trace::trace_note!(
+            "Умножаем значения и сохраняем результат в `coordinate_comparisons`."
+        );
         let coordinate_comparisons: i32 = training_size * feature_count;
         lesson_trace::trace_step!(coordinate_comparisons);
-        // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+        lesson_trace::trace_note!(
+            "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+        );
         println!("объектов={training_size}, сравнений координат={coordinate_comparisons}");
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_coordinate_comparison_count_for_growing_training_set();
 }
 
 // Строим график по результатам урока.
 fn plot_coordinate_comparison_count_for_growing_training_set() {
-    // График величин и зависимостей, изученных в этом уроке.
+    lesson_trace::trace_note!("График величин и зависимостей, изученных в этом уроке.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let prediction_cost_points: Vec<(f64, f64)> = (1..=100)
-        // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
-            // Сохраняем результат этого шага в `sample_count`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `sample_count`.");
             let sample_count: f64 = (plot_step_index * 10) as f64;
-            // Добавляем пару значений для сравнения или построения графика.
+            lesson_trace::trace_note!(
+                "Добавляем пару значений для сравнения или построения графика."
+            );
             (sample_count, 2.0 * sample_count)
         })
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Стоимость kNN",
-        // Указываем подпись горизонтальной оси.
         "число обучающих объектов",
-        // Указываем подпись вертикальной оси.
         "сравнения координат",
-        // Передаём ряды или значения для отрисовки графика.
         &[lesson_visualization::Series {
-            // Указываем подпись этого ряда в легенде.
             name: "4 признака",
-            // Передаём рассчитанные координаты точек.
+
             points: &prediction_cost_points,
         }],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

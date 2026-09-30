@@ -13,62 +13,69 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Сохраняем рассчитанное значение `weight` для следующих операций.
+    lesson_trace::trace_note!("Сохраняем рассчитанное значение `weight` для следующих операций.");
     let weight: f64 = 2.0;
     lesson_trace::trace_step!(weight);
-    // Сохраняем рассчитанное значение `bias` для следующих операций.
+    lesson_trace::trace_note!("Сохраняем рассчитанное значение `bias` для следующих операций.");
     let bias: f64 = 1.0;
     lesson_trace::trace_step!(bias);
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for feature in [0.0, 1.0, 3.0] {
         lesson_trace::trace_step!(feature);
-        // Умножаем значения и сохраняем результат в `prediction`.
+        lesson_trace::trace_note!("Умножаем значения и сохраняем результат в `prediction`.");
         let prediction: f64 = weight * feature + bias;
         lesson_trace::trace_step!(prediction);
-        // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+        lesson_trace::trace_note!(
+            "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+        );
         println!("x={feature} -> y={prediction}");
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_linear_prediction_as_weighted_input_plus_bias();
 }
 
 // Строим график по результатам урока.
 fn plot_linear_prediction_as_weighted_input_plus_bias() {
-    // График величин и зависимостей, изученных в этом уроке.
+    lesson_trace::trace_note!("График величин и зависимостей, изученных в этом уроке.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let coefficients_points: Vec<(f64, f64)> = (0..=50)
-        // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
-            // Сохраняем результат этого шага в `horizontal_value`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            // Добавляем пару значений для сравнения или построения графика.
+            lesson_trace::trace_note!(
+                "Добавляем пару значений для сравнения или построения графика."
+            );
             (horizontal_value, 2.0 * horizontal_value + 1.0)
         })
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Линейная модель",
-        // Указываем подпись горизонтальной оси.
         "признак x",
-        // Указываем подпись вертикальной оси.
         "предсказание",
-        // Передаём ряды или значения для отрисовки графика.
         &[lesson_visualization::Series {
-            // Указываем подпись этого ряда в легенде.
             name: "y=2x+1",
-            // Передаём рассчитанные координаты точек.
+
             points: &coefficients_points,
         }],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

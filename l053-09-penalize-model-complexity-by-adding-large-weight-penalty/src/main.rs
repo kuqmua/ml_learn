@@ -14,84 +14,96 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Сохраняем рассчитанное значение `prediction_error` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `prediction_error` для следующих операций."
+    );
     let prediction_error: f64 = 1.0;
     lesson_trace::trace_step!(prediction_error);
-    // Сохраняем рассчитанное значение `weight` для следующих операций.
+    lesson_trace::trace_note!("Сохраняем рассчитанное значение `weight` для следующих операций.");
     let weight: f64 = 3.0;
     lesson_trace::trace_step!(weight);
-    // Инициализируем значение `penalty_strength` начальным состоянием.
+    lesson_trace::trace_note!("Инициализируем значение `penalty_strength` начальным состоянием.");
     let penalty_strength: f64 = 0.2;
     lesson_trace::trace_step!(penalty_strength);
-    // Умножаем значения и сохраняем результат в `squared_weight`.
+    lesson_trace::trace_note!("Умножаем значения и сохраняем результат в `squared_weight`.");
     let squared_weight: f64 = weight * weight;
     lesson_trace::trace_step!(squared_weight);
-    // Умножаем значения и сохраняем результат в `objective`.
+    lesson_trace::trace_note!("Умножаем значения и сохраняем результат в `objective`.");
     let objective: f64 = prediction_error + penalty_strength * squared_weight;
     lesson_trace::trace_step!(objective);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
+    lesson_trace::trace_note!(
+        "Присваиваем вычисленное значение соответствующей переменной или полю."
+    );
+    lesson_trace::trace_note!("Умножаем величины согласно используемой формуле.");
     println!(
-        // Присваиваем вычисленное значение соответствующей переменной или полю.
         "ошибка={prediction_error}, штраф={}, итог={objective}",
-        // Умножаем величины согласно используемой формуле.
         penalty_strength * squared_weight
     );
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_error_with_and_without_squared_weight_penalty();
 }
 
 // Строим график по результатам урока.
 fn plot_error_with_and_without_squared_weight_penalty() {
-    // График величин и зависимостей, изученных в этом уроке.
+    lesson_trace::trace_note!("График величин и зависимостей, изученных в этом уроке.");
     let unregularized_model_points: Vec<(f64, f64)> = (-30..=30)
         .map(|plot_step_index| (plot_step_index as f64 / 10.0, 1.0))
         .collect();
-    // Собираем значения для `penalty_constrained_model_points` в коллекцию.
-    // Штраф за сложность модели называют regularization.
+    lesson_trace::trace_note!(
+        "Собираем значения для `penalty_constrained_model_points` в коллекцию."
+    );
+    lesson_trace::trace_note!("Штраф за сложность модели называют regularization.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let penalty_constrained_model_points: Vec<(f64, f64)> = (-30..=30)
-        // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
-            // Сохраняем результат этого шага в `weight_value`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `weight_value`.");
             let weight_value: f64 = plot_step_index as f64 / 10.0;
-            // Добавляем пару значений для сравнения или построения графика.
+            lesson_trace::trace_note!(
+                "Добавляем пару значений для сравнения или построения графика."
+            );
             (weight_value, 1.0 + weight_value * weight_value)
         })
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Штраф за большой вес",
-        // Указываем подпись горизонтальной оси.
         "вес",
-        // Указываем подпись вертикальной оси.
         "целевая функция",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "без регуляризации",
-                // Передаём рассчитанные координаты точек.
+
                 points: &unregularized_model_points,
             },
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "со штрафом",
-                // Передаём рассчитанные координаты точек.
+
                 points: &penalty_constrained_model_points,
             },
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

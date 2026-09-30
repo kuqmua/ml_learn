@@ -8,14 +8,18 @@
 
 fn main() {
     lesson_trace::enable();
-    // α=0.64 сохраняет 64% дисперсии чистого сигнала; оставшиеся 36% приходятся на шум.
+    lesson_trace::trace_note!(
+        "α=0.64 сохраняет 64% дисперсии чистого сигнала; оставшиеся 36% приходятся на шум."
+    );
     let alpha: f64 = 0.64;
     lesson_trace::trace_step!(alpha);
     let training: [(f64, f64); 4] = [(1.0, -1.0), (1.0, 0.0), (1.0, 1.0), (1.0, 2.0)];
     lesson_trace::trace_step!(training);
     let validation: [(f64, f64); 2] = [(2.0, -0.5), (-1.0, 0.5)];
     lesson_trace::trace_step!(validation);
-    // Условный предсказатель получает известное clean: пример изолирует MSE обучения.
+    lesson_trace::trace_note!(
+        "Условный предсказатель получает известное clean: пример изолирует MSE обучения."
+    );
     let inputs: Vec<(f64, f64)> = training
         .iter()
         .map(|&(clean, noise)| {
@@ -32,10 +36,16 @@ fn main() {
     lesson_trace::trace_step!(inputs);
     let mut weight: f64 = 0.0;
     lesson_trace::trace_step!(weight);
-    // 100 шагов градиентного спуска подгоняют один вес к четырём обучающим парам.
-    // Множитель 0.2 ниже — выбранная скорость обучения, то есть доля градиента за шаг.
+    lesson_trace::trace_note!(
+        "100 шагов градиентного спуска подгоняют один вес к четырём обучающим парам."
+    );
+    lesson_trace::trace_note!(
+        "Множитель 0.2 ниже — выбранная скорость обучения, то есть доля градиента за шаг."
+    );
     for _ in 0..100 {
-        // Производную функции по параметру или вектор таких производных называют gradient.
+        lesson_trace::trace_note!(
+            "Производную функции по параметру или вектор таких производных называют gradient."
+        );
         let rate_of_change: f64 = inputs
             .iter()
             .map(|&(input_value, target)| 2.0 * (weight * input_value - target) * input_value)
@@ -51,9 +61,11 @@ fn main() {
         .sum::<f64>()
         / inputs.len() as f64;
     lesson_trace::trace_step!(loss);
-    // Требуем MSE ниже 10⁻⁶: это проверка, что один вес действительно подогнал учебные пары.
+    lesson_trace::trace_note!(
+        "Требуем MSE ниже 10⁻⁶: это проверка, что один вес действительно подогнал учебные пары."
+    );
     assert!(loss < 1e-6);
-    // Отложенные пары не участвовали в изменении веса.
+    lesson_trace::trace_note!("Отложенные пары не участвовали в изменении веса.");
     let held_out: Vec<(f64, f64)> = validation
         .iter()
         .map(|&(clean, noise)| {
@@ -83,5 +95,7 @@ fn main() {
     println!(
         "вес={weight:.3}; train MSE={loss:.8}; validation MSE={validation_loss:.8}; baseline={baseline:.3}"
     );
-    // В реальной модели clean при генерации неизвестен; это только проверка loss и градиента.
+    lesson_trace::trace_note!(
+        "В реальной модели clean при генерации неизвестен; это только проверка loss и градиента."
+    );
 }

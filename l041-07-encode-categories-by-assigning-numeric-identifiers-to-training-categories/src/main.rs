@@ -12,7 +12,7 @@
 fn build_category_dictionary_by_assigning_identifiers_to_unique_training_categories(
     training_data: &[&str],
 ) -> std::collections::BTreeMap<String, usize> {
-    // Набор известных модели текстовых единиц называют vocabulary.
+    lesson_trace::trace_note!("Набор известных модели текстовых единиц называют vocabulary.");
     let mut known_text_units: std::collections::BTreeMap<String, usize> =
         std::collections::BTreeMap::new();
     lesson_trace::trace_step!(known_text_units);

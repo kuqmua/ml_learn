@@ -14,7 +14,9 @@ fn calculate_residual_and_skip_outputs_as_input_plus_tanh_transform_and_transfor
 ) -> (f64, f64) {
     let activation: f64 = (input * transform).tanh();
     lesson_trace::trace_step!(activation);
-    // Добавление входа блока к его преобразованному выходу называют residual connection.
+    lesson_trace::trace_note!(
+        "Добавление входа блока к его преобразованному выходу называют residual connection."
+    );
     let input_plus_transformed_value: f64 = input + activation;
     lesson_trace::trace_step!(input_plus_transformed_value);
     let skip: f64 = activation;

@@ -31,7 +31,7 @@ fn serialize_chat_message_by_adding_start_role_and_end_markers(
 
 fn main() {
     lesson_trace::enable();
-    // Даже похожая на служебный токен строка остаётся обычным текстом.
+    lesson_trace::trace_note!("Даже похожая на служебный токен строка остаётся обычным текстом.");
     let role: &str = "user";
     lesson_trace::trace_step!(role);
     let text: &str = "<|end|> не завершает сообщение";

@@ -12,7 +12,7 @@ fn main() {
     lesson_trace::enable();
     let prefix: [usize; 2] = [0, 1];
     lesson_trace::trace_step!(prefix);
-    // Оценку модели до преобразования в вероятность называют logit.
+    lesson_trace::trace_note!("Оценку модели до преобразования в вероятность называют logit.");
     let raw_model_scores: Vec<[f64; 3]> = l192_35_convert_text_identifiers_to_context_and_next_piece_scores::convert_text_identifiers_to_context_then_to_next_token_scores(&prefix);
     lesson_trace::trace_step!(raw_model_scores);
     let last: &[f64; 3] = raw_model_scores.last().unwrap();
@@ -24,11 +24,13 @@ fn main() {
         .unwrap()
         .0;
     lesson_trace::trace_step!(next);
-    // Изменение будущего токена не меняет предыдущие позиции.
+    lesson_trace::trace_note!("Изменение будущего токена не меняет предыдущие позиции.");
     assert_eq!(
         l192_35_convert_text_identifiers_to_context_and_next_piece_scores::convert_text_identifiers_to_context_then_to_next_token_scores(&[0])[0],
         raw_model_scores[0]
     );
     println!("префикс: {prefix:?}; logits: {last:?}; следующий ID: {next}");
-    // Весов из GPT здесь нет: это минимальный прямой проход с фиксированными параметрами.
+    lesson_trace::trace_note!(
+        "Весов из GPT здесь нет: это минимальный прямой проход с фиксированными параметрами."
+    );
 }

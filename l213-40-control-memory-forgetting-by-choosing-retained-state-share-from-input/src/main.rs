@@ -17,8 +17,8 @@ fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_inp
     input
         .iter()
         .map(|&(value, reset)| {
-            // Долю (fraction) предыдущего состояния, сохраняемую на следующем шаге, называют retention.
-            // При reset полностью забываем прошлое (0); иначе сохраняем 90% прежнего состояния.
+            lesson_trace::trace_note!("Долю (fraction) предыдущего состояния, сохраняемую на следующем шаге, называют retention.");
+            lesson_trace::trace_note!("При reset полностью забываем прошлое (0); иначе сохраняем 90% прежнего состояния.");
             let previous_state_share_kept: f64 = if reset { 0.0 } else { 0.9 };
             lesson_trace::trace_step!(previous_state_share_kept);
             state = previous_state_share_kept * state + value;
@@ -35,7 +35,9 @@ fn main() {
         calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(&sequence);
     lesson_trace::trace_step!(states);
     assert_eq!(states[0], 1.0);
-    assert_eq!(states[2], 2.0); // reset удаляет прошлый контекст.
+    assert_eq!(states[2], 2.0);
+    lesson_trace::trace_note!("reset удаляет прошлый контекст.");
+
     println!("селективное состояние: {states:?}");
     lesson_trace::disable();
     plot_stored_state_with_reset_on_third_step(&states);

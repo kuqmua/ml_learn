@@ -6,7 +6,9 @@
 pub fn convert_text_identifiers_to_context_then_to_next_token_scores(
     text_unit_identifiers: &[usize],
 ) -> Vec<[f64; 3]> {
-    // Третий logit — среднее двух координат (веса 0.5 и 0.5) фиксированной выходной проекции.
+    lesson_trace::trace_note!(
+        "Третий logit — среднее двух координат (веса 0.5 и 0.5) фиксированной выходной проекции."
+    );
     l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calculate_text_context_vectors_by_adding_position_and_weighted_past_context(
         text_unit_identifiers,
     )

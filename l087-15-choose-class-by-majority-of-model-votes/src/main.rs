@@ -10,59 +10,59 @@
 
 fn main() {
     lesson_trace::enable();
-    // Задаём учебные значения для `cases`.
+    lesson_trace::trace_note!("Задаём учебные значения для `cases`.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
     let cases: [(&str, &[bool], bool); 4] = [
-        // Добавляем пару значений для сравнения или построения графика.
         ("большинство за true", &[true, true, false], true),
-        // Добавляем пару значений для сравнения или построения графика.
         ("большинство за false", &[true, false, false], false),
-        // Добавляем пару значений для сравнения или построения графика.
         ("ничья", &[true, false], false),
-        // Добавляем пару значений для сравнения или построения графика.
         ("один голос", &[true], true),
     ];
     lesson_trace::trace_step!(cases);
-    // Повторяем расчёт для каждого элемента последовательности.
+    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for (description, votes, expected) in cases {
         lesson_trace::trace_step!(description);
         lesson_trace::trace_step!(votes);
         lesson_trace::trace_step!(expected);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert!(!votes.is_empty(), "для решения нужен хотя бы один голос");
-        // Вычисляем `positives` по элементам исходной коллекции.
+        lesson_trace::trace_note!("Вычисляем `positives` по элементам исходной коллекции.");
         let positives: usize = votes.iter().filter(|&&vote| vote).count();
         lesson_trace::trace_step!(positives);
-        // Определяем размер данных и сохраняем его в `result`.
+        lesson_trace::trace_note!("Определяем размер данных и сохраняем его в `result`.");
         let result: bool = positives * 2 > votes.len();
         lesson_trace::trace_step!(result);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(result, expected);
-        // Печатаем рассчитанные значения для проверки примера.
+        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("{description}: {votes:?} → {result}");
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_number_of_votes_for_each_class();
 }
 
 // Строим график по результатам урока.
 fn plot_number_of_votes_for_each_class() {
-    // Сравнение величин из этого урока.
+    lesson_trace::trace_note!("Сравнение величин из этого урока.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок диаграммы.
         "Большинство голосов",
-        // Указываем подпись вертикальной оси.
         "количество голосов",
-        // Передаём ряды или значения для отрисовки графика.
         &[("за", 3.0), ("против", 2.0)],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

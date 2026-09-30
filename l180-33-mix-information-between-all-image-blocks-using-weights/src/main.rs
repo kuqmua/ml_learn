@@ -38,8 +38,10 @@ fn main() {
     let patches: Vec<Vec<f64>> =
         l179_33_create_image_block_sequence_by_splitting_image_into_nonoverlapping_squares::extract_nonoverlapping_square_patches_from_square_image(&image, 1).unwrap();
     lesson_trace::trace_step!(patches);
-    // Упрощённая проекция одномерного патча в двухмерный токен.
-    // Представление патча изображения для трансформера называют visual token.
+    lesson_trace::trace_note!("Упрощённая проекция одномерного патча в двухмерный токен.");
+    lesson_trace::trace_note!(
+        "Представление патча изображения для трансформера называют visual token."
+    );
     let image_patch_representations: Vec<[f64; 2]> = patches
         .iter()
         .map(|patch| [patch[0], 1.0 - patch[0]])
@@ -58,7 +60,9 @@ fn main() {
         );
     lesson_trace::trace_step!(weights);
     assert_eq!(weights.len(), 4);
-    assert!(weights[3] > 0.0); // Последний патч виден первому.
+    assert!(weights[3] > 0.0);
+    lesson_trace::trace_note!("Последний патч виден первому.");
+
     println!("веса внимания первого патча ко всем патчам: {weights:?}");
     lesson_trace::disable();
     plot_weights_assigned_from_first_image_block_to_all_blocks(&weights);

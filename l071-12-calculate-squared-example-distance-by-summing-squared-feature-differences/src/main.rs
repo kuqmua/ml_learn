@@ -14,70 +14,80 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Создаём набор значений `query` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `query` для следующего шага примера.");
     let query: [f64; 2] = [1.0, 2.0];
     lesson_trace::trace_step!(query);
-    // Создаём набор значений `candidates` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `candidates` для следующего шага примера.");
     let candidates: [[f64; 2]; 2] = [[2.0, 2.0], [4.0, 6.0]];
     lesson_trace::trace_step!(candidates);
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for candidate in candidates {
         lesson_trace::trace_step!(candidate);
-        // Для поиска ближайшего кандидата нужен квадрат расстояния из урока 01.4.
+        lesson_trace::trace_note!(
+            "Для поиска ближайшего кандидата нужен квадрат расстояния из урока 01.4."
+        );
+        lesson_trace::trace_note!("Используем результат, ожидая успешного выполнения шага.");
         let squared_distance: f64 =
             l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences(
                 &query, &candidate,
             )
-            // Используем результат, ожидая успешного выполнения шага.
+
             .expect("запрос и кандидат имеют одинаковое число координат");
         lesson_trace::trace_step!(squared_distance);
-        // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+        lesson_trace::trace_note!(
+            "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+        );
         println!("кандидат {candidate:?}: квадрат расстояния={squared_distance}");
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_distance_from_query_for_changing_coordinate();
 }
 
 // Строим график по результатам урока.
 fn plot_distance_from_query_for_changing_coordinate() {
-    // Значения из этого урока на графике.
+    lesson_trace::trace_note!("Значения из этого урока на графике.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let distances_points: Vec<(f64, f64)> = (-50..=50)
-        // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
-            // Сохраняем результат этого шага в `horizontal_value`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            // Добавляем пару значений для сравнения или построения графика.
+            lesson_trace::trace_note!(
+                "Добавляем пару значений для сравнения или построения графика."
+            );
             (
                 horizontal_value,
                 (horizontal_value * horizontal_value + 1.0).sqrt(),
             )
         })
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Расстояние до запроса",
-        // Указываем подпись горизонтальной оси.
         "первая координата",
-        // Указываем подпись вертикальной оси.
         "евклидово расстояние",
-        // Передаём ряды или значения для отрисовки графика.
         &[lesson_visualization::Series {
-            // Указываем подпись этого ряда в легенде.
             name: "запрос [0,0]",
-            // Передаём рассчитанные координаты точек.
+
             points: &distances_points,
         }],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

@@ -11,86 +11,95 @@
 
 fn main() {
     lesson_trace::enable();
-    // Повторяем расчёт для каждого элемента последовательности.
+    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
     for (description, precision, recall, expected) in [
-        // Добавляем пару значений для сравнения или построения графика.
         ("обе метрики высоки", 1.0, 1.0, Some(1.0)),
-        // Добавляем пару значений для сравнения или построения графика.
         ("одна ниже", 1.0, 0.5, Some(2.0 / 3.0)),
-        // Добавляем пару значений для сравнения или построения графика.
         ("одна равна нулю", 0.0, 0.5, Some(0.0)),
-        // Добавляем пару значений для сравнения или построения графика.
         ("обе равны нулю", 0.0, 0.0, None),
     ] {
         lesson_trace::trace_step!(description);
         lesson_trace::trace_step!(precision);
         lesson_trace::trace_step!(recall);
         lesson_trace::trace_step!(expected);
-        // Сохраняем результат этого шага в `calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum`.
+        lesson_trace::trace_note!(
+            "Сохраняем результат этого шага в `calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum`."
+        );
         let harmonic_mean_score: Option<f64> = l066_11_calculate_f1_score_as_twice_precision_times_recall_over_their_sum::calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum(
             Some(precision),
             Some(recall),
         );
         lesson_trace::trace_step!(harmonic_mean_score);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(harmonic_mean_score, expected);
-        // Печатаем рассчитанные значения для проверки примера.
+        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!(
             "{description}: precision={precision}, recall={recall}, F1={harmonic_mean_score:?}"
         );
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_f1_score_as_twice_precision_times_recall_over_their_sum();
 }
 
 // Строим график по результатам урока.
 fn plot_f1_score_as_twice_precision_times_recall_over_their_sum() {
-    // График величин и зависимостей, изученных в этом уроке.
+    lesson_trace::trace_note!("График величин и зависимостей, изученных в этом уроке.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let harmonic_mean_score_points: Vec<(f64, f64)> = (0..=100)
-        // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
-            // Сохраняем результат этого шага в `recall_value`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `recall_value`.");
             let recall_value: f64 = plot_step_index as f64 / 100.0;
+            lesson_trace::trace_note!(
+                "Используем подготовленное значение в следующем шаге примера."
+            );
+            lesson_trace::trace_note!("Выбираем дальнейший шаг по выполнению условия.");
             (
-                // Используем подготовленное значение в следующем шаге примера.
                 recall_value,
-                // Выбираем дальнейший шаг по выполнению условия.
                 if recall_value == 0.0 {
-                    // Используем подготовленное значение в следующем шаге примера.
+                    lesson_trace::trace_note!(
+                        "Используем подготовленное значение в следующем шаге примера."
+                    );
                     0.0
-                // Обрабатываем случай, когда предыдущее условие не выполнено.
                 } else {
-                    // Вычисляем значение по указанной формуле.
+                    lesson_trace::trace_note!(
+                        "Обрабатываем случай, когда предыдущее условие не выполнено."
+                    );
+                    lesson_trace::trace_note!("Вычисляем значение по указанной формуле.");
                     2.0 * 0.8 * recall_value / (0.8 + recall_value)
                 },
             )
         })
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "F1 при precision=0.8",
-        // Указываем подпись горизонтальной оси.
         "recall",
-        // Указываем подпись вертикальной оси.
         "F1",
-        // Передаём ряды или значения для отрисовки графика.
         &[lesson_visualization::Series {
-            // Указываем подпись этого ряда в легенде.
             name: "F1",
-            // Передаём рассчитанные координаты точек.
+
             points: &harmonic_mean_score_points,
         }],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

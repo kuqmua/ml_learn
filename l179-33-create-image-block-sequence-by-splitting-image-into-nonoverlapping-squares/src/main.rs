@@ -17,7 +17,9 @@ fn main() {
         vec![13.0, 14.0, 15.0, 16.0],
     ];
     lesson_trace::trace_step!(image);
-    // Участок изображения, передаваемый трансформеру, называют visual token.
+    lesson_trace::trace_note!(
+        "Участок изображения, передаваемый трансформеру, называют visual token."
+    );
     let image_patches: Vec<Vec<f64>> =
         l179_33_create_image_block_sequence_by_splitting_image_into_nonoverlapping_squares::extract_nonoverlapping_square_patches_from_square_image(&image, 2).unwrap();
     lesson_trace::trace_step!(image_patches);

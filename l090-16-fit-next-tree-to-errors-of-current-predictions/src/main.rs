@@ -9,18 +9,26 @@
 
 fn main() {
     lesson_trace::enable();
-    // Простая регрессия без случайности позволяет проверить каждый шаг вручную.
+    lesson_trace::trace_note!(
+        "Простая регрессия без случайности позволяет проверить каждый шаг вручную."
+    );
     let targets: [f64; 4] = [0.0, 0.0, 2.0, 2.0];
     lesson_trace::trace_step!(targets);
     let mut predictions: [f64; 4] = [1.0; 4];
     lesson_trace::trace_step!(predictions);
     let mut history: Vec<f64> = vec![1.0];
     lesson_trace::trace_step!(history);
-    // Два раунда позволяют увидеть, как второй маленький «деревянный» шаг исправляет первый.
+    lesson_trace::trace_note!(
+        "Два раунда позволяют увидеть, как второй маленький «деревянный» шаг исправляет первый."
+    );
     for round in 0..2 {
         lesson_trace::trace_step!(round);
-        // Для квадратичной ошибки отрицательный градиент равен y - prediction.
-        // Разность целевого значения и прогноза называют residual (остатком).
+        lesson_trace::trace_note!(
+            "Для квадратичной ошибки отрицательный градиент равен y - prediction."
+        );
+        lesson_trace::trace_note!(
+            "Разность целевого значения и прогноза называют residual (остатком)."
+        );
         let target_minus_prediction_values: [f64; 4] =
             std::array::from_fn::<_, 4, _>(|step_index| {
                 targets[step_index] - predictions[step_index]
@@ -32,7 +40,9 @@ fn main() {
         let right: f64 =
             (target_minus_prediction_values[2] + target_minus_prediction_values[3]) / 2.0;
         lesson_trace::trace_step!(right);
-        // Берём половину предсказанного остатка (shrinkage = 0.5), чтобы исправлять ошибку постепенно.
+        lesson_trace::trace_note!(
+            "Берём половину предсказанного остатка (shrinkage = 0.5), чтобы исправлять ошибку постепенно."
+        );
         for (index, value) in predictions.iter_mut().enumerate() {
             lesson_trace::trace_step!(index);
             lesson_trace::trace_step!(value);

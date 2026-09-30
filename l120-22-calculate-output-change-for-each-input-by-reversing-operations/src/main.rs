@@ -12,70 +12,81 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // f(x,y)=x*y+x.
+    lesson_trace::trace_note!("f(x,y)=x*y+x.");
     let (input_value, second_input_value): (f64, f64) = (2.0, 3.0);
     lesson_trace::trace_step!(input_value);
     lesson_trace::trace_step!(second_input_value);
-    // Умножаем значения и сохраняем результат в `multiplied_coordinates`.
+    lesson_trace::trace_note!(
+        "Умножаем значения и сохраняем результат в `multiplied_coordinates`."
+    );
     let multiplied_coordinates: f64 = input_value * second_input_value;
     lesson_trace::trace_step!(multiplied_coordinates);
-    // Комбинируем исходные величины и сохраняем результат в `output`.
+    lesson_trace::trace_note!("Комбинируем исходные величины и сохраняем результат в `output`.");
     let output: f64 = multiplied_coordinates + input_value;
     lesson_trace::trace_step!(output);
-    // Комбинируем исходные величины и сохраняем результат в `derivative_by_horizontal_coordinate`.
+    lesson_trace::trace_note!(
+        "Комбинируем исходные величины и сохраняем результат в `derivative_by_horizontal_coordinate`."
+    );
     let derivative_by_horizontal_coordinate: f64 = second_input_value + 1.0;
     lesson_trace::trace_step!(derivative_by_horizontal_coordinate);
-    // Сохраняем рассчитанное значение `derivative_by_vertical_coordinate` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `derivative_by_vertical_coordinate` для следующих операций."
+    );
     let derivative_by_vertical_coordinate: f64 = input_value;
     lesson_trace::trace_step!(derivative_by_vertical_coordinate);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!(
         "f={output}, df/dx={derivative_by_horizontal_coordinate}, df/dy={derivative_by_vertical_coordinate}"
     );
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_input_product_plus_first_input_with_second_fixed(second_input_value);
 }
 
 // Строим график по результатам урока.
 fn plot_input_product_plus_first_input_with_second_fixed(vertical_value: f64) {
-    // Собираем значения для `chart_points` в коллекцию.
+    lesson_trace::trace_note!("Собираем значения для `chart_points` в коллекцию.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let chart_points: Vec<(f64, f64)> = (0..=50)
-        // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
-            // Сохраняем результат этого шага в `horizontal_value`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            // Добавляем пару значений для сравнения или построения графика.
+            lesson_trace::trace_note!(
+                "Добавляем пару значений для сравнения или построения графика."
+            );
             (
                 horizontal_value,
                 horizontal_value * vertical_value + horizontal_value,
             )
         })
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "f(x,y)=xy+x при y=3",
-        // Указываем подпись горизонтальной оси.
         "x",
-        // Указываем подпись вертикальной оси.
         "f(x,3)",
-        // Передаём ряды или значения для отрисовки графика.
         &[lesson_visualization::Series {
-            // Указываем подпись этого ряда в легенде.
             name: "прямой проход",
-            // Передаём рассчитанные координаты точек.
+
             points: &chart_points,
         }],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

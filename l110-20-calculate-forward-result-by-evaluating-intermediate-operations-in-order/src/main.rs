@@ -13,79 +13,93 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Сохраняем рассчитанное значение `input_value` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `input_value` для следующих операций."
+    );
     let input_value: f64 = 2.0;
     lesson_trace::trace_step!(input_value);
-    // Умножаем значения и сохраняем результат в `square`.
+    lesson_trace::trace_note!("Умножаем значения и сохраняем результат в `square`.");
     let square: f64 = input_value * input_value;
     lesson_trace::trace_step!(square);
-    // Комбинируем исходные величины и сохраняем результат в `doubled_square`.
+    lesson_trace::trace_note!(
+        "Комбинируем исходные величины и сохраняем результат в `doubled_square`."
+    );
     let doubled_square: f64 = square + square;
     lesson_trace::trace_step!(doubled_square);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("x={input_value}, x²={square}, 2x²={doubled_square}");
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_intermediate_values_of_squared_input_computation();
 }
 
 // Строим график по результатам урока.
 fn plot_intermediate_values_of_squared_input_computation() {
-    // График величин и зависимостей, изученных в этом уроке.
+    lesson_trace::trace_note!("График величин и зависимостей, изученных в этом уроке.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let squared_function_points: Vec<(f64, f64)> = (-30..=30)
-        // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
-            // Сохраняем результат этого шага в `horizontal_value`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            // Добавляем пару значений для сравнения или построения графика.
+            lesson_trace::trace_note!(
+                "Добавляем пару значений для сравнения или построения графика."
+            );
             (horizontal_value, horizontal_value * horizontal_value)
         })
-        // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `doubled_squared_function_points` в коллекцию.
+    lesson_trace::trace_note!(
+        "Собираем значения для `doubled_squared_function_points` в коллекцию."
+    );
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let doubled_squared_function_points: Vec<(f64, f64)> = (-30..=30)
-        // Преобразуем каждый элемент в новое значение.
         .map(|plot_step_index| {
-            // Сохраняем результат этого шага в `horizontal_value`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            // Добавляем пару значений для сравнения или построения графика.
+            lesson_trace::trace_note!(
+                "Добавляем пару значений для сравнения или построения графика."
+            );
             (horizontal_value, 2.0 * horizontal_value * horizontal_value)
         })
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Прямой проход вычислительного графа",
-        // Указываем подпись горизонтальной оси.
         "x",
-        // Указываем подпись вертикальной оси.
         "значение",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "x²",
-                // Передаём рассчитанные координаты точек.
+
                 points: &squared_function_points,
             },
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "2x²",
-                // Передаём рассчитанные координаты точек.
+
                 points: &doubled_squared_function_points,
             },
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

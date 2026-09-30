@@ -13,19 +13,25 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Инициализируем значение `unknown_identifier` начальным состоянием.
+    lesson_trace::trace_note!("Инициализируем значение `unknown_identifier` начальным состоянием.");
     let unknown_identifier: i32 = 0;
     lesson_trace::trace_step!(unknown_identifier);
-    // Сохраняем рассчитанное значение `begin_identifier` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `begin_identifier` для следующих операций."
+    );
     let begin_identifier: i32 = 1;
     lesson_trace::trace_step!(begin_identifier);
-    // Сохраняем рассчитанное значение `end_identifier` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `end_identifier` для следующих операций."
+    );
     let end_identifier: i32 = 2;
     lesson_trace::trace_step!(end_identifier);
-    // Сохраняем рассчитанное значение `known_word_identifier` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `known_word_identifier` для следующих операций."
+    );
     let known_word_identifier: i32 = 3;
     lesson_trace::trace_step!(known_word_identifier);
-    // Создаём набор значений `sequence` для следующего шага примера.
+    lesson_trace::trace_note!("Создаём набор значений `sequence` для следующего шага примера.");
     let sequence: [i32; 4] = [
         begin_identifier,
         known_word_identifier,
@@ -33,6 +39,8 @@ fn main() {
         end_identifier,
     ];
     lesson_trace::trace_step!(sequence);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("индексы последовательности: {sequence:?}");
 }

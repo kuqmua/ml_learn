@@ -25,7 +25,7 @@ fn main() {
         lesson_trace::trace_step!(new_state);
         cached_keys.push(new_state);
         cached_values.push(new_state);
-        // Оценку модели до преобразования в вероятность называют logit.
+        lesson_trace::trace_note!("Оценку модели до преобразования в вероятность называют logit.");
         let raw_model_scores: Vec<f64> = cached_keys
             .iter()
             .map(|key| (new_state[0] * key[0] + new_state[1] * key[1]) / 2.0_f64.sqrt())

@@ -12,12 +12,16 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Сохраняем рассчитанное значение `source_identifier` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `source_identifier` для следующих операций."
+    );
     let source_identifier: &str = "docs/rust/cargo";
     lesson_trace::trace_step!(source_identifier);
-    // Сохраняем рассчитанное значение `fact` для следующих операций.
+    lesson_trace::trace_note!("Сохраняем рассчитанное значение `fact` для следующих операций.");
     let fact: &str = "Cargo собирает проект";
     lesson_trace::trace_step!(fact);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("{fact} [источник: {source_identifier}]");
 }

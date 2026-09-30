@@ -20,195 +20,266 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Автоматически получаем стандартные реализации перечисленных трейтов для этого типа.
+    lesson_trace::trace_note!(
+        "Автоматически получаем стандартные реализации перечисленных трейтов для этого типа."
+    );
+    lesson_trace::trace_note!(
+        "Описываем тип `Matrix`, чтобы явно хранить состояние и допустимые варианты."
+    );
+    lesson_trace::trace_note!("`rows` задаёт соответствующее входное значение или поле структуры.");
+    lesson_trace::trace_note!(
+        "`column_count` задаёт соответствующее входное значение или поле структуры."
+    );
+    lesson_trace::trace_note!("`data` задаёт соответствующее входное значение или поле структуры.");
     #[derive(Debug, PartialEq)]
-    // Описываем тип `Matrix`, чтобы явно хранить состояние и допустимые варианты.
     struct Matrix {
-        // `rows` задаёт соответствующее входное значение или поле структуры.
         rows: usize,
-        // `column_count` задаёт соответствующее входное значение или поле структуры.
+
         column_count: usize,
-        // `data` задаёт соответствующее входное значение или поле структуры.
+
         data: Vec<f64>,
     }
 
-    // Группируем методы рядом с типом, к которому они относятся.
+    lesson_trace::trace_note!("Группируем методы рядом с типом, к которому они относятся.");
+    lesson_trace::trace_note!(
+        "Объявляем повторно используемое вычисление `create_matrix_from_elements_listed_row_by_row`; параметры ниже задают его входы."
+    );
+    lesson_trace::trace_note!(
+        "Объявляем повторно используемое вычисление `value_at_row_and_column`; параметры ниже задают его входы."
+    );
     impl Matrix {
-        // Объявляем повторно используемое вычисление `create_matrix_from_elements_listed_row_by_row`; параметры ниже задают его входы.
         /// Создаём матрицу из элементов, перечисленных строка за строкой (row-major order).
         fn create_matrix_from_elements_listed_row_by_row(
-            // `rows` задаёт соответствующее входное значение или поле структуры.
             rows: usize,
-            // `column_count` задаёт соответствующее входное значение или поле структуры.
+
             column_count: usize,
-            // `data` задаёт соответствующее входное значение или поле структуры.
+
             data: Vec<f64>,
-            // Указываем тип возвращаемого значения.
         ) -> Result<Self, &'static str> {
-            // Число элементов обязано совпадать с заявленной формой матрицы.
+            lesson_trace::trace_note!(
+                "`rows` задаёт соответствующее входное значение или поле структуры."
+            );
+            lesson_trace::trace_note!(
+                "`column_count` задаёт соответствующее входное значение или поле структуры."
+            );
+            lesson_trace::trace_note!(
+                "`data` задаёт соответствующее входное значение или поле структуры."
+            );
+            lesson_trace::trace_note!("Указываем тип возвращаемого значения.");
+            lesson_trace::trace_note!(
+                "Число элементов обязано совпадать с заявленной формой матрицы."
+            );
             if rows * column_count != data.len() {
-                // Прерываем расчёт и явно сообщаем причину некорректного входа.
+                lesson_trace::trace_note!(
+                    "Прерываем расчёт и явно сообщаем причину некорректного входа."
+                );
                 return Err("неверная форма");
             }
-            // Возвращаем успешное значение в типе `Result`.
+            lesson_trace::trace_note!("Возвращаем успешное значение в типе `Result`.");
             Ok(Self {
                 rows,
                 column_count,
                 data,
             })
         }
-        // Объявляем повторно используемое вычисление `value_at_row_and_column`; параметры ниже задают его входы.
+
         fn value_at_row_and_column(&self, row_index: usize, column_index: usize) -> f64 {
-            // Обновляем состояние объекта результатом текущей операции.
+            lesson_trace::trace_note!("Обновляем состояние объекта результатом текущей операции.");
             self.data[row_index * self.column_count + column_index]
         }
     }
 
-    // Шаг: Создаём матрицу 2×2 с известными элементами.
+    lesson_trace::trace_note!("Шаг: Создаём матрицу 2×2 с известными элементами.");
     let left_matrix: Matrix =
         Matrix::create_matrix_from_elements_listed_row_by_row(2, 2, vec![1., 2., 3., 4.]).unwrap();
     lesson_trace::trace_step!(left_matrix);
-    // Шаг: Умножаем матрицу на вектор: каждая координата ответа — сумма после попарного умножения элементов строки.
+    lesson_trace::trace_note!(
+        "Шаг: Умножаем матрицу на вектор: каждая координата ответа — сумма после попарного умножения элементов строки."
+    );
     let input_vector: [f64; 2] = [1., 1.];
     lesson_trace::trace_step!(input_vector);
-    // Проверяем, что сравниваемые размерности или значения действительно совпадают.
+    lesson_trace::trace_note!(
+        "Проверяем, что сравниваемые размерности или значения действительно совпадают."
+    );
     assert_eq!(
         left_matrix.column_count,
         input_vector.len(),
         "несовместимые формы"
     );
-    // Создаём изменяемое значение `output_vector` для следующих операций.
+    lesson_trace::trace_note!(
+        "Создаём изменяемое значение `output_vector` для следующих операций."
+    );
     let mut output_vector: Vec<f64> = Vec::with_capacity(left_matrix.rows);
     lesson_trace::trace_step!(output_vector);
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for row_index in 0..left_matrix.rows {
         lesson_trace::trace_step!(row_index);
-        // Сохраняем результат этого шага в `row_start`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `row_start`.");
         let row_start: usize = row_index * left_matrix.column_count;
         lesson_trace::trace_step!(row_start);
-        // Сохраняем результат этого шага в `row_end`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `row_end`.");
         let row_end: usize = row_start + left_matrix.column_count;
         lesson_trace::trace_step!(row_end);
-        // Сохраняем результат этого шага в `row_result`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `row_result`.");
+        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        lesson_trace::trace_note!("Используем результат, ожидая успешного выполнения шага.");
         let row_result: f64 = l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-            // Используем подготовленное значение в следующем шаге примера.
+
             &left_matrix.data[row_start..row_end],
-            // Используем подготовленное значение в следующем шаге примера.
+
             &input_vector,
         )
-        // Используем результат, ожидая успешного выполнения шага.
+
         .expect("длина строки совпадает с длиной вектора");
         lesson_trace::trace_step!(row_result);
-        // Сохраняем очередной рассчитанный элемент в коллекции.
+        lesson_trace::trace_note!("Сохраняем очередной рассчитанный элемент в коллекции.");
         output_vector.push(row_result);
     }
-    // Шаг: Транспонируем матрицу, меняя строки и столбцы местами.
+    lesson_trace::trace_note!("Шаг: Транспонируем матрицу, меняя строки и столбцы местами.");
     let mut transposed_elements: Vec<f64> = Vec::with_capacity(left_matrix.data.len());
     lesson_trace::trace_step!(transposed_elements);
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for column_index in 0..left_matrix.column_count {
         lesson_trace::trace_step!(column_index);
-        // Повторяем следующий блок для каждого элемента указанной последовательности.
+        lesson_trace::trace_note!(
+            "Повторяем следующий блок для каждого элемента указанной последовательности."
+        );
         for row_index in 0..left_matrix.rows {
             lesson_trace::trace_step!(row_index);
-            // Сохраняем очередной рассчитанный элемент в коллекции.
+            lesson_trace::trace_note!("Сохраняем очередной рассчитанный элемент в коллекции.");
             transposed_elements.push(left_matrix.value_at_row_and_column(row_index, column_index));
         }
     }
-    // Сохраняем рассчитанное значение `transposed_matrix` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `transposed_matrix` для следующих операций."
+    );
+    lesson_trace::trace_note!("`rows` задаёт соответствующее входное значение или поле структуры.");
+    lesson_trace::trace_note!(
+        "`column_count` задаёт соответствующее входное значение или поле структуры."
+    );
+    lesson_trace::trace_note!("`data` задаёт соответствующее входное значение или поле структуры.");
     let transposed_matrix: Matrix = Matrix {
-        // `rows` задаёт соответствующее входное значение или поле структуры.
         rows: left_matrix.column_count,
-        // `column_count` задаёт соответствующее входное значение или поле структуры.
+
         column_count: left_matrix.rows,
-        // `data` задаёт соответствующее входное значение или поле структуры.
+
         data: transposed_elements,
     };
     lesson_trace::trace_step!(transposed_matrix);
-    // Шаг: Считаем каждый элемент результата умножения как сумму после попарного умножения координат строки и столбца.
+    lesson_trace::trace_note!(
+        "Шаг: Считаем каждый элемент результата умножения как сумму после попарного умножения координат строки и столбца."
+    );
+    lesson_trace::trace_note!("Передаём очередное значение в составе результата или вызова.");
+    lesson_trace::trace_note!("Передаём число строк результата как первую размерность матрицы.");
+    lesson_trace::trace_note!(
+        "Подставляем результаты в этот шаблон вывода или текстового значения."
+    );
     assert_eq!(
-        // Передаём очередное значение в составе результата или вызова.
-        transposed_matrix.column_count,
-        // Передаём число строк результата как первую размерность матрицы.
-        left_matrix.rows,
-        // Подставляем результаты в этот шаблон вывода или текстового значения.
+        transposed_matrix.column_count, left_matrix.rows,
         "несовместимые формы"
     );
-    // Умножаем значения и сохраняем результат в `result_elements`.
+    lesson_trace::trace_note!("Умножаем значения и сохраняем результат в `result_elements`.");
     let mut result_elements: Vec<f64> =
         Vec::with_capacity(transposed_matrix.rows * left_matrix.column_count);
     lesson_trace::trace_step!(result_elements);
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for row_index in 0..transposed_matrix.rows {
         lesson_trace::trace_step!(row_index);
-        // Повторяем следующий блок для каждого элемента указанной последовательности.
+        lesson_trace::trace_note!(
+            "Повторяем следующий блок для каждого элемента указанной последовательности."
+        );
         for column_index in 0..left_matrix.column_count {
             lesson_trace::trace_step!(column_index);
-            // Сохраняем результат этого шага в `row_start`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `row_start`.");
             let row_start: usize = row_index * transposed_matrix.column_count;
             lesson_trace::trace_step!(row_start);
-            // Сохраняем результат этого шага в `row_end`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `row_end`.");
             let row_end: usize = row_start + transposed_matrix.column_count;
             lesson_trace::trace_step!(row_end);
-            // Собираем значения для `column_values` в коллекцию.
+            lesson_trace::trace_note!("Собираем значения для `column_values` в коллекцию.");
+            lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+            lesson_trace::trace_note!("Собираем результаты в коллекцию.");
             let column_values: Vec<f64> = (0..left_matrix.rows)
-                // Преобразуем каждый элемент в новое значение.
                 .map(|shared_index| left_matrix.value_at_row_and_column(shared_index, column_index))
-                // Собираем результаты в коллекцию.
                 .collect();
             lesson_trace::trace_step!(column_values);
-            // Сохраняем результат этого шага в `cell_value`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `cell_value`.");
+            lesson_trace::trace_note!(
+                "Используем подготовленное значение в следующем шаге примера."
+            );
+            lesson_trace::trace_note!(
+                "Используем подготовленное значение в следующем шаге примера."
+            );
+            lesson_trace::trace_note!("Используем результат, ожидая успешного выполнения шага.");
             let cell_value: f64 = l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-                // Используем подготовленное значение в следующем шаге примера.
+
                 &transposed_matrix.data[row_start..row_end],
-                // Используем подготовленное значение в следующем шаге примера.
+
                 &column_values,
             )
-            // Используем результат, ожидая успешного выполнения шага.
+
             .expect("внутренние размеры матриц совпадают");
             lesson_trace::trace_step!(cell_value);
-            // Сохраняем очередной рассчитанный элемент в коллекции.
+            lesson_trace::trace_note!("Сохраняем очередной рассчитанный элемент в коллекции.");
             result_elements.push(cell_value);
         }
     }
-    // Сохраняем рассчитанное значение `result_matrix` для следующих операций.
-    let result_matrix: Matrix =
-        // Собираем матрицу после умножения с рассчитанными размерностями и элементами.
-        Matrix::create_matrix_from_elements_listed_row_by_row(transposed_matrix.rows, left_matrix.column_count, result_elements)
-            // Извлекаем значение: выше в примере обеспечено отсутствие ошибки.
-            .unwrap();
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `result_matrix` для следующих операций."
+    );
+    lesson_trace::trace_note!(
+        "Собираем матрицу после умножения с рассчитанными размерностями и элементами."
+    );
+    lesson_trace::trace_note!("Извлекаем значение: выше в примере обеспечено отсутствие ошибки.");
+    let result_matrix: Matrix = Matrix::create_matrix_from_elements_listed_row_by_row(
+        transposed_matrix.rows,
+        left_matrix.column_count,
+        result_elements,
+    )
+    .unwrap();
     lesson_trace::trace_step!(result_matrix);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("A*x={:?}, A^T*A={:?}", output_vector, result_matrix);
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_product_of_transposed_matrix_and_original_matrix(result_matrix);
 
-    // Строим график по результатам урока.
+    lesson_trace::trace_note!("Строим график по результатам урока.");
     fn plot_product_of_transposed_matrix_and_original_matrix(result_matrix: Matrix) {
-        // Значения ячеек видны по цвету и подписи.
+        lesson_trace::trace_note!("Значения ячеек видны по цвету и подписи.");
+        lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+        lesson_trace::trace_note!("Указываем имя SVG-файла.");
+        lesson_trace::trace_note!("Указываем заголовок тепловой карты.");
+        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        lesson_trace::trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
+        lesson_trace::trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
+        lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+        lesson_trace::trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
+        lesson_trace::trace_note!(
+            "Прерываем пример с понятной ошибкой, если SVG не удалось записать."
+        );
         let chart: std::path::PathBuf = lesson_visualization::heatmap(
-            // Передаём путь к каталогу текущего урока.
             env!("CARGO_MANIFEST_DIR"),
-            // Указываем имя SVG-файла.
             "lesson-chart",
-            // Указываем заголовок тепловой карты.
             "Матрица AᵀA",
-            // Используем подготовленное значение в следующем шаге примера.
             &result_matrix
-                // Настраиваем или преобразуем результат предыдущего шага.
                 .data
-                // Настраиваем или преобразуем результат предыдущего шага.
                 .chunks(result_matrix.column_count)
-                // Преобразуем каждый элемент в новое значение.
                 .map(|row| row.to_vec())
-                // Настраиваем или преобразуем результат предыдущего шага.
                 .collect::<Vec<_>>(),
         )
-        // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
         .expect("не удалось сохранить тепловую карту");
-        // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+        lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
         println!("график: {}", chart.display());
     }
 }

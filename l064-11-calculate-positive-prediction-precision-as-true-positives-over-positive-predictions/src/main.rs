@@ -12,83 +12,88 @@
 
 fn main() {
     lesson_trace::enable();
-    // Повторяем расчёт для каждого элемента последовательности.
+    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
     for (description, true_positives, false_positives, expected) in [
-        // Добавляем пару значений для сравнения или построения графика.
         ("все положительные прогнозы верны", 8, 0, Some(1.0)),
-        // Добавляем пару значений для сравнения или построения графика.
         ("часть прогнозов ошибочна", 8, 2, Some(0.8)),
-        // Добавляем пару значений для сравнения или построения графика.
         ("все положительные прогнозы ошибочны", 0, 2, Some(0.0)),
-        // Добавляем пару значений для сравнения или построения графика.
         ("положительных прогнозов нет", 0, 0, None),
     ] {
         lesson_trace::trace_step!(description);
         lesson_trace::trace_step!(true_positives);
         lesson_trace::trace_step!(false_positives);
         lesson_trace::trace_step!(expected);
-        // Сохраняем результат этого шага в `counts`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `counts`.");
+        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        lesson_trace::trace_note!("Задаём именованное поле или параметр.");
+        lesson_trace::trace_note!("Задаём именованное поле или параметр.");
         let counts: l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts = l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts {
-            // Используем подготовленное значение в следующем шаге примера.
+
             true_positives,
-            // Используем подготовленное значение в следующем шаге примера.
+
             false_positives,
-            // Задаём именованное поле или параметр.
+
             true_negatives: 0,
-            // Задаём именованное поле или параметр.
+
             false_negatives: 0,
         };
         lesson_trace::trace_step!(counts);
-        // Сохраняем результат этого шага в `precision`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `precision`.");
         let precision: Option<f64> =
             l064_11_calculate_positive_prediction_precision_as_true_positives_over_positive_predictions::calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions(counts);
         lesson_trace::trace_step!(precision);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(precision, expected);
-        // Печатаем рассчитанные значения для проверки примера.
+        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("{description}: precision={precision:?}");
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_true_positive_share_among_positive_predictions();
 }
 
 // Строим график по результатам урока.
 fn plot_true_positive_share_among_positive_predictions() {
-    // График величин и зависимостей, изученных в этом уроке.
+    lesson_trace::trace_note!("График величин и зависимостей, изученных в этом уроке.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let precision_points: Vec<(f64, f64)> = (0..=10)
-        // Преобразуем каждый элемент в новое значение.
         .map(|false_positive_count| {
             (
                 false_positive_count as f64,
                 2.0 / (2.0 + false_positive_count as f64),
             )
         })
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Precision при фиксированном TP=2",
-        // Указываем подпись горизонтальной оси.
         "FP",
-        // Указываем подпись вертикальной оси.
         "precision",
-        // Передаём ряды или значения для отрисовки графика.
         &[lesson_visualization::Series {
-            // Указываем подпись этого ряда в легенде.
             name: "precision",
-            // Передаём рассчитанные координаты точек.
+
             points: &precision_points,
         }],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

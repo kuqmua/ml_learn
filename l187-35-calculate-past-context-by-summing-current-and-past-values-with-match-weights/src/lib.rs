@@ -18,8 +18,12 @@ pub fn calculate_past_context_by_summing_current_and_past_values_weighted_by_que
     lesson_trace::trace_step!(output);
     for index in 0..query_vector.len() {
         lesson_trace::trace_step!(index);
-        // Ключи после index скрыты причинной маской; 2 под корнем — размерность Q и K.
-        // Деление на √2 удерживает величину dot product при переходе к softmax.
+        lesson_trace::trace_note!(
+            "Ключи после index скрыты причинной маской; 2 под корнем — размерность Q и K."
+        );
+        lesson_trace::trace_note!(
+            "Деление на √2 удерживает величину dot product при переходе к softmax."
+        );
         let raw_model_scores: Vec<f64> = (0..=index)
             .map(|past| {
                 (query_vector[index][0] * key_vector[past][0]

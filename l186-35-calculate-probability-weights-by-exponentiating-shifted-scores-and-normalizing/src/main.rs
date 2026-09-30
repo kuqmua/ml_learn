@@ -2,7 +2,7 @@
 
 fn main() {
     lesson_trace::enable();
-    // Без вычитания максимума экспоненты таких оценок переполнились бы.
+    lesson_trace::trace_note!("Без вычитания максимума экспоненты таких оценок переполнились бы.");
     let scores = [1000.0, 1001.0, 1002.0];
     lesson_trace::trace_step!(scores);
     let probabilities = l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&scores);

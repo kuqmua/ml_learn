@@ -8,9 +8,10 @@ pub fn calculate_causal_filter_output_by_summing_weighted_current_and_spaced_pas
     input: &[f64],
     weight_current: f64,
     weight_previous: f64,
-    // Промежуток между используемыми точками фильтра называют dilation.
+
     filter_spacing: usize,
 ) -> Result<Vec<f64>, &'static str> {
+    lesson_trace::trace_note!("Промежуток между используемыми точками фильтра называют dilation.");
     if filter_spacing == 0 {
         return Err("dilation должен быть положительным");
     }

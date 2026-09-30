@@ -17,7 +17,7 @@ pub fn calculate_visible_context_by_summing_states_weighted_by_exponentiated_coo
     lesson_trace::trace_step!(result);
     for query in states {
         lesson_trace::trace_step!(query);
-        // Делим Q·K на √2, потому что у каждого вектора две координаты.
+        lesson_trace::trace_note!("Делим Q·K на √2, потому что у каждого вектора две координаты.");
         let scores: Vec<f64> = states
             .iter()
             .enumerate()
@@ -66,7 +66,9 @@ mod tests {
                 &[true],
             )
             .unwrap();
-        // Добавление пустых позиций к последовательности называют padding.
+        lesson_trace::trace_note!(
+            "Добавление пустых позиций к последовательности называют padding."
+        );
         let input_with_padding: Vec<[f64; 2]> =
             super::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
                 &[[1.0, 0.0], [999.0, 999.0]],

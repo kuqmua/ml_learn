@@ -12,7 +12,9 @@
 fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
     input_value: [f64; 2],
 ) -> [f64; 2] {
-    // Среднее и дисперсию считаем по двум координатам токена; 10⁻⁵ не даёт делить на ноль.
+    lesson_trace::trace_note!(
+        "Среднее и дисперсию считаем по двум координатам токена; 10⁻⁵ не даёт делить на ноль."
+    );
     let mean: f64 = (input_value[0] + input_value[1]) / 2.0;
     lesson_trace::trace_step!(mean);
     let variance: f64 = ((input_value[0] - mean).powi(2) + (input_value[1] - mean).powi(2)) / 2.0;
@@ -43,7 +45,7 @@ fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normali
         .iter()
         .zip(&attention)
         .map(|(&original, &context)| {
-            // Добавление входа блока к его преобразованному выходу называют residual connection.
+            lesson_trace::trace_note!("Добавление входа блока к его преобразованному выходу называют residual connection.");
             let input_plus_transformed_value: [f64; 2] =
                 [original[0] + context[0], original[1] + context[1]];
             lesson_trace::trace_step!(input_plus_transformed_value);
@@ -51,7 +53,7 @@ fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normali
                 input_plus_transformed_value,
             );
             lesson_trace::trace_step!(norm);
-            // Упрощённый FFN: два ReLU-канала и фиксированная выходная проекция.
+            lesson_trace::trace_note!("Упрощённый FFN: два ReLU-канала и фиксированная выходная проекция.");
             [
                 input_plus_transformed_value[0] + 0.2 * norm[0].max(0.0),
                 input_plus_transformed_value[1] + 0.2 * norm[1].max(0.0),

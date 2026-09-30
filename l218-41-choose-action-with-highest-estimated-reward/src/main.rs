@@ -12,47 +12,53 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Инициализируем значение `left_action_value` начальным состоянием.
+    lesson_trace::trace_note!("Инициализируем значение `left_action_value` начальным состоянием.");
     let left_action_value: f64 = 0.2;
     lesson_trace::trace_step!(left_action_value);
-    // Инициализируем значение `right_action_value` начальным состоянием.
+    lesson_trace::trace_note!("Инициализируем значение `right_action_value` начальным состоянием.");
     let right_action_value: f64 = 0.8;
     lesson_trace::trace_step!(right_action_value);
-    // Сохраняем рассчитанное значение `action` для следующих операций.
+    lesson_trace::trace_note!("Сохраняем рассчитанное значение `action` для следующих операций.");
     let action: &str = if right_action_value > left_action_value {
-        // Подставляем результаты в этот шаблон вывода или текстового значения.
+        lesson_trace::trace_note!(
+            "Подставляем результаты в этот шаблон вывода или текстового значения."
+        );
         "вправо"
-    // Обрабатываем случай, когда предыдущее условие не выполнено.
     } else {
-        // Подставляем результаты в этот шаблон вывода или текстового значения.
+        lesson_trace::trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
+        lesson_trace::trace_note!(
+            "Подставляем результаты в этот шаблон вывода или текстового значения."
+        );
         "влево"
     };
     lesson_trace::trace_step!(action);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("политика выбирает: {action}");
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_estimated_rewards_for_available_actions(left_action_value, right_action_value);
 }
 
 // Строим график по результатам урока.
 fn plot_estimated_rewards_for_available_actions(left_action_value: f64, right_action_value: f64) {
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок диаграммы.
         "Оценки действий политики",
-        // Указываем подпись вертикальной оси.
         "Q-значение",
-        // Передаём ряды или значения для отрисовки графика.
         &[("влево", left_action_value), ("вправо", right_action_value)],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

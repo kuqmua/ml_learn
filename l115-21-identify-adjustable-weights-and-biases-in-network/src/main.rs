@@ -13,52 +13,56 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Сохраняем рассчитанное значение `input` для следующих операций.
+    lesson_trace::trace_note!("Сохраняем рассчитанное значение `input` для следующих операций.");
     let input: f64 = 2.0;
     lesson_trace::trace_step!(input);
-    // Инициализируем изменяемый накопитель `weight` начальным состоянием.
+    lesson_trace::trace_note!(
+        "Инициализируем изменяемый накопитель `weight` начальным состоянием."
+    );
     let mut weight: f64 = 0.5;
     lesson_trace::trace_step!(weight);
-    // Инициализируем изменяемый накопитель `bias` начальным состоянием.
+    lesson_trace::trace_note!("Инициализируем изменяемый накопитель `bias` начальным состоянием.");
     let mut bias: f64 = 0.1;
     lesson_trace::trace_step!(bias);
-    // Умножаем значения и сохраняем результат в `before`.
+    lesson_trace::trace_note!("Умножаем значения и сохраняем результат в `before`.");
     let before: f64 = weight * input + bias;
     lesson_trace::trace_step!(before);
-    // Прибавляем очередной вклад к ранее накопленному результату.
+    lesson_trace::trace_note!("Прибавляем очередной вклад к ранее накопленному результату.");
     weight += 0.2;
     lesson_trace::trace_step!(weight);
-    // Вычитаем очередной вклад из текущего значения параметра.
+    lesson_trace::trace_note!("Вычитаем очередной вклад из текущего значения параметра.");
     bias -= 0.1;
     lesson_trace::trace_step!(bias);
-    // Умножаем значения и сохраняем результат в `after`.
+    lesson_trace::trace_note!("Умножаем значения и сохраняем результат в `after`.");
     let after: f64 = weight * input + bias;
     lesson_trace::trace_step!(after);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("до={before}, после обновления={after}");
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_parameter_before_and_after_training_update(before, after);
 }
 
 // Строим график по результатам урока.
 fn plot_parameter_before_and_after_training_update(before: f64, after: f64) {
-    // Сравнение величин из этого урока.
+    lesson_trace::trace_note!("Сравнение величин из этого урока.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок диаграммы.
         "Обновление веса сети",
-        // Указываем подпись вертикальной оси.
         "значение",
-        // Передаём ряды или значения для отрисовки графика.
         &[("до", before), ("после", after)],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

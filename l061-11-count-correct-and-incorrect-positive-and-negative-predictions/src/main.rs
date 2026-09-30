@@ -11,63 +11,66 @@
 
 fn main() {
     lesson_trace::enable();
-    // Задаём учебные значения для `truth`.
+    lesson_trace::trace_note!("Задаём учебные значения для `truth`.");
     let truth: [bool; 4] = [true, false, true, false];
     lesson_trace::trace_step!(truth);
-    // Задаём учебные значения для `predicted`.
+    lesson_trace::trace_note!("Задаём учебные значения для `predicted`.");
     let predicted: [bool; 4] = [true, true, false, false];
     lesson_trace::trace_step!(predicted);
-    // Сохраняем результат этого шага в `counts`.
+    lesson_trace::trace_note!("Сохраняем результат этого шага в `counts`.");
+    lesson_trace::trace_note!("Используем результат, ожидая успешного выполнения шага.");
     let counts: l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts = l061_11_count_correct_and_incorrect_positive_and_negative_predictions::count_binary_classification_outcomes_from_true_and_predicted_labels(
         &truth, &predicted,
     )
-    // Используем результат, ожидая успешного выполнения шага.
+
     .expect("у каждого ответа есть прогноз");
     lesson_trace::trace_step!(counts);
-    // Повторяем расчёт для каждого элемента последовательности.
+    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for index in 0..truth.len() {
         lesson_trace::trace_step!(index);
-        // Сохраняем результат этого шага в `description`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `description`.");
+        lesson_trace::trace_note!("Выполняем действие для этого варианта данных.");
+        lesson_trace::trace_note!("Выполняем действие для этого варианта данных.");
+        lesson_trace::trace_note!("Выполняем действие для этого варианта данных.");
+        lesson_trace::trace_note!("Выполняем действие для этого варианта данных.");
         let description: &str = match (truth[index], predicted[index]) {
-            // Выполняем действие для этого варианта данных.
             (true, true) => "TP: верно найден положительный класс",
-            // Выполняем действие для этого варианта данных.
+
             (false, true) => "FP: ложная тревога",
-            // Выполняем действие для этого варианта данных.
+
             (true, false) => "FN: положительный класс пропущен",
-            // Выполняем действие для этого варианта данных.
+
             (false, false) => "TN: верно найден отрицательный класс",
         };
         lesson_trace::trace_step!(description);
-        // Печатаем рассчитанные значения для проверки примера.
+        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
+        lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
+        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        lesson_trace::trace_note!("Печатаем прогноз для того же объекта.");
         println!(
-            // Передаём подпись или текстовое значение для следующего шага.
             "истина={}, прогноз={} → {description}",
-            // Используем подготовленное значение в следующем шаге примера.
-            truth[index],
-            // Печатаем прогноз для того же объекта.
-            predicted[index]
+            truth[index], predicted[index]
         );
     }
-    // Проверяем ожидаемое свойство учебного примера.
+    lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
+    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
     assert_eq!(
         (
-            // Используем подготовленное значение в следующем шаге примера.
             counts.true_positives,
-            // Используем подготовленное значение в следующем шаге примера.
             counts.false_positives,
-            // Используем подготовленное значение в следующем шаге примера.
             counts.false_negatives,
-            // Используем подготовленное значение в следующем шаге примера.
             counts.true_negatives
         ),
-        // Добавляем пару значений для сравнения или построения графика.
         (1, 1, 1, 1)
     );
-    // Печатаем рассчитанные значения для проверки примера.
+    lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
     println!("итоговые счётчики: {counts:?}");
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_counts_of_correct_and_incorrect_class_predictions(counts);
 }
@@ -76,30 +79,30 @@ fn main() {
 fn plot_counts_of_correct_and_incorrect_class_predictions(
     counts: l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts,
 ) {
-    // Сравнение величин из этого урока.
+    lesson_trace::trace_note!("Сравнение величин из этого урока.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок диаграммы.
         "Матрица ошибок: исходы",
-        // Указываем подпись вертикальной оси.
         "количество",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем пару значений для сравнения или построения графика.
             ("TP", counts.true_positives as f64),
-            // Добавляем пару значений для сравнения или построения графика.
             ("FP", counts.false_positives as f64),
-            // Добавляем пару значений для сравнения или построения графика.
             ("TN", counts.true_negatives as f64),
-            // Добавляем пару значений для сравнения или построения графика.
             ("FN", counts.false_negatives as f64),
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

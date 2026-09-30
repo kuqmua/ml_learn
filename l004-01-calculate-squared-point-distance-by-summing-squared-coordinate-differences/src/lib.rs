@@ -6,24 +6,24 @@ pub fn calculate_squared_point_distance_by_summing_squared_coordinate_difference
     left: &[f64],
     right: &[f64],
 ) -> Result<f64, &'static str> {
-    // Выбираем дальнейший шаг по выполнению условия.
+    lesson_trace::trace_note!("Выбираем дальнейший шаг по выполнению условия.");
     if left.len() != right.len() {
-        // Прерываем вычисление и возвращаем причину ошибки.
+        lesson_trace::trace_note!("Прерываем вычисление и возвращаем причину ошибки.");
         return Err("точки должны иметь одинаковое число координат");
     }
-    // Сохраняем результат этого шага в `squared_sum`.
+    lesson_trace::trace_note!("Сохраняем результат этого шага в `squared_sum`.");
     let mut squared_sum: f64 = 0.0;
     lesson_trace::trace_step!(squared_sum);
-    // Повторяем расчёт для каждого элемента последовательности.
+    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for index in 0..left.len() {
         lesson_trace::trace_step!(index);
-        // Сохраняем результат этого шага в `difference`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `difference`.");
         let difference: f64 = left[index] - right[index];
         lesson_trace::trace_step!(difference);
-        // Обновляем значение результатом текущего вычисления.
+        lesson_trace::trace_note!("Обновляем значение результатом текущего вычисления.");
         squared_sum += difference * difference;
         lesson_trace::trace_step!(squared_sum);
     }
-    // Возвращаем успешный результат.
+    lesson_trace::trace_note!("Возвращаем успешный результат.");
     Ok(squared_sum)
 }

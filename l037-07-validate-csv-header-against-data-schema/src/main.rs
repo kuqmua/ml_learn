@@ -13,20 +13,26 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Сохраняем рассчитанное значение `comma_separated_values_text` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `comma_separated_values_text` для следующих операций."
+    );
     let comma_separated_values_text: &str = "feature,target\n1.5,0\n2.5,1\n";
     lesson_trace::trace_step!(comma_separated_values_text);
-    // Создаём изменяемое значение `lines` для следующих операций.
+    lesson_trace::trace_note!("Создаём изменяемое значение `lines` для следующих операций.");
     let mut lines: std::str::Lines<'_> = comma_separated_values_text.lines();
     lesson_trace::trace_step!(lines);
-    // Сохраняем рассчитанное значение `header` для следующих операций.
+    lesson_trace::trace_note!("Сохраняем рассчитанное значение `header` для следующих операций.");
     let header: &str = lines.next().expect("CSV не пустой");
     lesson_trace::trace_step!(header);
-    // Проверяем, что сравниваемые размерности или значения действительно совпадают.
+    lesson_trace::trace_note!(
+        "Проверяем, что сравниваемые размерности или значения действительно совпадают."
+    );
     assert_eq!(header, "feature,target", "неверная схема CSV");
-    // Считаем количество элементов и сохраняем его в `row_count`.
+    lesson_trace::trace_note!("Считаем количество элементов и сохраняем его в `row_count`.");
     let row_count: usize = lines.count();
     lesson_trace::trace_step!(row_count);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("схема верна, строк данных = {row_count}");
 }

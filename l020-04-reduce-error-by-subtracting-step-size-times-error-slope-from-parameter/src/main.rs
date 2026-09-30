@@ -14,27 +14,35 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Инициализируем значение `parameter` начальным состоянием.
+    lesson_trace::trace_note!("Инициализируем значение `parameter` начальным состоянием.");
     let parameter: f64 = 0.0;
     lesson_trace::trace_step!(parameter);
-    // Умножаем значения и сохраняем результат в `rate_of_change`.
-    // Производную функции по параметру или вектор таких производных называют gradient.
+    lesson_trace::trace_note!("Умножаем значения и сохраняем результат в `rate_of_change`.");
+    lesson_trace::trace_note!(
+        "Производную функции по параметру или вектор таких производных называют gradient."
+    );
     let rate_of_change: f64 = 2.0 * (parameter - 3.0);
     lesson_trace::trace_step!(rate_of_change);
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for rate in [0.1, 1.0, 2.0] {
         lesson_trace::trace_step!(rate);
-        // Делаем ровно одно обновление, чтобы изолировать влияние скорости.
+        lesson_trace::trace_note!(
+            "Делаем ровно одно обновление, чтобы изолировать влияние скорости."
+        );
         let updated: f64 = parameter - rate * rate_of_change;
         lesson_trace::trace_step!(updated);
-        // Умножаем значения и сохраняем результат в `error`.
+        lesson_trace::trace_note!("Умножаем значения и сохраняем результат в `error`.");
         let error: f64 = (updated - 3.0) * (updated - 3.0);
         lesson_trace::trace_step!(error);
-        // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+        lesson_trace::trace_note!(
+            "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+        );
         println!("rate={rate}: параметр={updated}, ошибка={error}");
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_squared_error_after_one_update_for_different_step_sizes(parameter, rate_of_change);
 }
@@ -44,43 +52,46 @@ fn plot_squared_error_after_one_update_for_different_step_sizes(
     parameter: f64,
     rate_of_change: f64,
 ) {
-    // Задаём учебные значения для `learning_rates`.
+    lesson_trace::trace_note!("Задаём учебные значения для `learning_rates`.");
     let learning_rates: [f64; 3] = [0.1, 1.0, 2.0];
-    // Собираем значения для `errors` в коллекцию.
+    lesson_trace::trace_note!("Собираем значения для `errors` в коллекцию.");
+    lesson_trace::trace_note!("Передаём элементы коллекции в итератор.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let errors: Vec<(f64, f64)> = learning_rates
-        // Передаём элементы коллекции в итератор.
         .into_iter()
-        // Преобразуем каждый элемент в новое значение.
         .map(|rate| {
-            // Сохраняем результат этого шага в `updated`.
+            lesson_trace::trace_note!("Сохраняем результат этого шага в `updated`.");
             let updated: f64 = parameter - rate * rate_of_change;
-            // Добавляем пару значений для сравнения или построения графика.
+            lesson_trace::trace_note!(
+                "Добавляем пару значений для сравнения или построения графика."
+            );
             (rate, (updated - 3.0) * (updated - 3.0))
         })
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "learning-rate",
-        // Указываем заголовок графика.
         "Ошибка после одного шага",
-        // Указываем подпись горизонтальной оси.
         "Скорость обучения",
-        // Указываем подпись вертикальной оси.
         "Квадратичная ошибка",
-        // Передаём ряды или значения для отрисовки графика.
         &[lesson_visualization::Series {
-            // Указываем подпись этого ряда в легенде.
             name: "Ошибка",
-            // Передаём рассчитанные координаты точек.
+
             points: &errors,
         }],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

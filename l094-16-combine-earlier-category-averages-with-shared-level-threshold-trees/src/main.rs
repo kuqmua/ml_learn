@@ -14,7 +14,9 @@ fn main() {
     lesson_trace::trace_step!(categories);
     let targets: [f64; 6] = [1.0, 0.0, 1.0, 0.0, 1.0, 0.0];
     lesson_trace::trace_step!(targets);
-    // Замену категорий числами, рассчитанными по целям, называют target encoding.
+    lesson_trace::trace_note!(
+        "Замену категорий числами, рассчитанными по целям, называют target encoding."
+    );
     let category_target_mean_values: Vec<f64> =
         l092_16_encode_category_by_averaging_earlier_targets_without_current_answer::encode_categories_as_average_previous_targets_with_prior_weight(
             &categories,
@@ -24,17 +26,23 @@ fn main() {
         )
         .unwrap();
     lesson_trace::trace_step!(category_target_mean_values);
-    // Порог фиксирован для прозрачности примера; настоящий алгоритм выбирает split по данным.
+    lesson_trace::trace_note!(
+        "Порог фиксирован для прозрачности примера; настоящий алгоритм выбирает split по данным."
+    );
     let tree: l091_16_build_symmetric_tree_using_shared_threshold_test_at_each_level::ObliviousTree =
         l091_16_build_symmetric_tree_using_shared_threshold_test_at_each_level::ObliviousTree {
             splits: vec![(0, 0.5)],
             leaves: vec![-0.25, 0.25],
         };
     lesson_trace::trace_step!(tree);
-    // 0.5 — начальный прогноз для бинарной метки; дерево ниже добавляет поправку к нему.
+    lesson_trace::trace_note!(
+        "0.5 — начальный прогноз для бинарной метки; дерево ниже добавляет поправку к нему."
+    );
     let base: f64 = 0.5;
     lesson_trace::trace_step!(base);
-    // Коэффициент 0.5 берёт половину поправки дерева, чтобы пример показал постепенное усиление.
+    lesson_trace::trace_note!(
+        "Коэффициент 0.5 берёт половину поправки дерева, чтобы пример показал постепенное усиление."
+    );
     let learning_rate: f64 = 0.5;
     lesson_trace::trace_step!(learning_rate);
     let mut before: f64 = 0.0;

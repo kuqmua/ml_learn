@@ -17,10 +17,10 @@ fn main() {
         )
         .unwrap();
     lesson_trace::trace_step!(base);
-    // Добавление пустых позиций к последовательности называют padding.
+    lesson_trace::trace_note!("Добавление пустых позиций к последовательности называют padding.");
     let input_with_padding_rows: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [100.0, 100.0]];
     lesson_trace::trace_step!(input_with_padding_rows);
-    // Игнорирование добавленных пустых позиций называют padding mask.
+    lesson_trace::trace_note!("Игнорирование добавленных пустых позиций называют padding mask.");
     let output_ignoring_padding: Vec<[f64; 2]> =
         l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
             &input_with_padding_rows,

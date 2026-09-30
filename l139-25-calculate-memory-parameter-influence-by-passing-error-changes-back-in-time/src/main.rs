@@ -39,7 +39,9 @@ fn main() {
         recurrent_weight,
     );
     lesson_trace::trace_step!(history);
-    // Производную функции по параметру или вектор таких производных называют gradient.
+    lesson_trace::trace_note!(
+        "Производную функции по параметру или вектор таких производных называют gradient."
+    );
     let mut hidden_state_loss_rate_of_change: f64 = history.last().unwrap() - target;
     lesson_trace::trace_step!(hidden_state_loss_rate_of_change);
     let mut recurrent_weight_loss_rate_of_change: f64 = 0.0;
@@ -62,7 +64,9 @@ fn main() {
         hidden_state_loss_rate_of_change = preactivation_loss_rate_of_change * recurrent_weight;
         lesson_trace::trace_step!(hidden_state_loss_rate_of_change);
     }
-    // ε=10⁻⁵ сдвигает рекуррентный вес в обе стороны для численной проверки градиента.
+    lesson_trace::trace_note!(
+        "ε=10⁻⁵ сдвигает рекуррентный вес в обе стороны для численной проверки градиента."
+    );
     let epsilon: f64 = 1e-5;
     lesson_trace::trace_step!(epsilon);
     let numerically_estimated_rate_of_change: f64 =

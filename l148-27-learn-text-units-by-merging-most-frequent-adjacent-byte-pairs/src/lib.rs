@@ -17,7 +17,7 @@ impl BytePairEncoding {
         corpus: &[&str],
         merge_count: usize,
     ) -> Self {
-        // Начальный словарь покрывает любой UTF-8 текст.
+        lesson_trace::trace_note!("Начальный словарь покрывает любой UTF-8 текст.");
         let mut pieces: Vec<Vec<u8>> = (0..=255).map(|byte| vec![byte as u8]).collect::<Vec<_>>();
         lesson_trace::trace_step!(pieces);
         let mut rows: Vec<Vec<usize>> = corpus
@@ -28,7 +28,9 @@ impl BytePairEncoding {
         let mut merges: Vec<(usize, usize)> = Vec::new();
         lesson_trace::trace_step!(merges);
         for _ in 0..merge_count {
-            // Частоты считаем только у соседних токенов внутри одной строки.
+            lesson_trace::trace_note!(
+                "Частоты считаем только у соседних токенов внутри одной строки."
+            );
             let mut frequencies: std::collections::BTreeMap<(usize, usize), usize> =
                 std::collections::BTreeMap::<(usize, usize), usize>::new();
             lesson_trace::trace_step!(frequencies);
@@ -40,7 +42,7 @@ impl BytePairEncoding {
                     lesson_trace::trace_step!(frequencies);
                 }
             }
-            // BTreeMap делает выбор при равных частотах воспроизводимым.
+            lesson_trace::trace_note!("BTreeMap делает выбор при равных частотах воспроизводимым.");
             let Some((&pair, _)) = frequencies
                 .iter()
                 .max_by_key(|(pair, count)| (*count, std::cmp::Reverse(**pair)))
@@ -48,7 +50,9 @@ impl BytePairEncoding {
                 break;
             };
             lesson_trace::trace_step!(pair);
-            // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+            lesson_trace::trace_note!(
+                "Единицу текста, которую модель обрабатывает как одно целое, называют token."
+            );
             let text_unit_identifier: usize = pieces.len();
             lesson_trace::trace_step!(text_unit_identifier);
             let mut joined: Vec<u8> = pieces[pair.0].clone();
@@ -56,7 +60,7 @@ impl BytePairEncoding {
             joined.extend_from_slice(&pieces[pair.1]);
             pieces.push(joined);
             merges.push(pair);
-            // Заменяем выбранную пару во всём обучающем корпусе.
+            lesson_trace::trace_note!("Заменяем выбранную пару во всём обучающем корпусе.");
             for row in &mut rows {
                 lesson_trace::trace_step!(row);
                 *row = replace_matching_adjacent_identifier_pair_with_new_identifier(
@@ -82,9 +86,14 @@ impl BytePairEncoding {
         for (offset, &pair) in self.merges.iter().enumerate() {
             lesson_trace::trace_step!(offset);
             lesson_trace::trace_step!(pair);
-            text_unit_identifiers =
-                // 0..255 заняты одиночными байтами; новое слияние получает ID 256 + его номер.
-                replace_matching_adjacent_identifier_pair_with_new_identifier(&text_unit_identifiers, pair, 256 + offset);
+            lesson_trace::trace_note!(
+                "0..255 заняты одиночными байтами; новое слияние получает ID 256 + его номер."
+            );
+            text_unit_identifiers = replace_matching_adjacent_identifier_pair_with_new_identifier(
+                &text_unit_identifiers,
+                pair,
+                256 + offset,
+            );
             lesson_trace::trace_step!(text_unit_identifiers);
         }
         text_unit_identifiers

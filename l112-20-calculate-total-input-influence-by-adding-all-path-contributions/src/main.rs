@@ -11,26 +11,38 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Сохраняем рассчитанное значение `input_value` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `input_value` для следующих операций."
+    );
     let input_value: f64 = 3.0;
     lesson_trace::trace_step!(input_value);
-    // f(x)=x*x: вход x участвует как левый и правый множитель.
-    // Производную функции по параметру или вектор таких производных называют gradient.
+    lesson_trace::trace_note!("f(x)=x*x: вход x участвует как левый и правый множитель.");
+    lesson_trace::trace_note!(
+        "Производную функции по параметру или вектор таких производных называют gradient."
+    );
     let left_path_rate_of_change: f64 = input_value;
     lesson_trace::trace_step!(left_path_rate_of_change);
-    // Сохраняем рассчитанное значение `right_path_rate_of_change` для следующих операций.
+    lesson_trace::trace_note!(
+        "Сохраняем рассчитанное значение `right_path_rate_of_change` для следующих операций."
+    );
     let right_path_rate_of_change: f64 = input_value;
     lesson_trace::trace_step!(right_path_rate_of_change);
-    // Комбинируем исходные величины и сохраняем результат в `combined_rate_of_change`.
+    lesson_trace::trace_note!(
+        "Комбинируем исходные величины и сохраняем результат в `combined_rate_of_change`."
+    );
     let combined_rate_of_change: f64 = left_path_rate_of_change + right_path_rate_of_change;
     lesson_trace::trace_step!(combined_rate_of_change);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
+    lesson_trace::trace_note!(
+        "Присваиваем вычисленное значение соответствующей переменной или полю."
+    );
     println!(
-        // Присваиваем вычисленное значение соответствующей переменной или полю.
         "градиент слева={left_path_rate_of_change}, справа={right_path_rate_of_change}, всего={combined_rate_of_change}"
     );
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_contributions_to_input_rate_of_change_from_each_path(
         left_path_rate_of_change,
@@ -45,28 +57,28 @@ fn plot_contributions_to_input_rate_of_change_from_each_path(
     right_path_rate_of_change: f64,
     combined_rate_of_change: f64,
 ) {
-    // Сравнение величин из этого урока.
+    lesson_trace::trace_note!("Сравнение величин из этого урока.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок диаграммы.
         "Накопление градиентов",
-        // Указываем подпись вертикальной оси.
         "вклад",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем пару значений для сравнения или построения графика.
             ("левый путь", left_path_rate_of_change),
-            // Добавляем пару значений для сравнения или построения графика.
             ("правый путь", right_path_rate_of_change),
-            // Добавляем пару значений для сравнения или построения графика.
             ("всего", combined_rate_of_change),
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

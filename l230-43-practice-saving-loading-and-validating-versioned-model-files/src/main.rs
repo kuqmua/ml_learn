@@ -17,88 +17,119 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     lesson_trace::enable();
-    // Шаг: Выбираем временный файл для учебного примера.
+    lesson_trace::trace_note!("Шаг: Выбираем временный файл для учебного примера.");
+    lesson_trace::trace_note!(
+        "Берём системный каталог временных файлов и добавляем имя с ID процесса."
+    );
     let model_path: std::path::PathBuf =
-        // Берём системный каталог временных файлов и добавляем имя с ID процесса.
         std::env::temp_dir().join(format!("ml_learn_model_{}.txt", std::process::id()));
     lesson_trace::trace_step!(model_path);
-    // Автоматически получаем стандартные реализации перечисленных трейтов для этого типа.
+    lesson_trace::trace_note!(
+        "Автоматически получаем стандартные реализации перечисленных трейтов для этого типа."
+    );
+    lesson_trace::trace_note!(
+        "Описываем тип `Model`, чтобы явно хранить состояние и допустимые варианты."
+    );
+    lesson_trace::trace_note!("Поле `weight` хранит коэффициент при входном признаке.");
+    lesson_trace::trace_note!("Поле `bias` хранит свободный член линейной модели.");
     #[derive(Debug, PartialEq)]
-    // Описываем тип `Model`, чтобы явно хранить состояние и допустимые варианты.
     struct Model {
-        // Поле `weight` хранит коэффициент при входном признаке.
         weight: f64,
-        // Поле `bias` хранит свободный член линейной модели.
+
         bias: f64,
     }
 
-    // Шаг: Создаём модель и сохраняем её вместе с версией формата.
+    lesson_trace::trace_note!("Шаг: Создаём модель и сохраняем её вместе с версией формата.");
+    lesson_trace::trace_note!("Заполняем поле `weight` соответствующим рассчитанным значением.");
+    lesson_trace::trace_note!("Заполняем поле `bias` соответствующим рассчитанным значением.");
     let model: Model = Model {
-        // Заполняем поле `weight` соответствующим рассчитанным значением.
         weight: 2.,
-        // Заполняем поле `bias` соответствующим рассчитанным значением.
+
         bias: 1.,
     };
     lesson_trace::trace_step!(model);
-    // Сохраняем версию формата, вес и смещение по одному полю на строку.
+    lesson_trace::trace_note!("Сохраняем версию формата, вес и смещение по одному полю на строку.");
+    lesson_trace::trace_note!(
+        "Передаём данные по ссылке или разыменовываем их для следующей операции."
+    );
+    lesson_trace::trace_note!("Формируем строковое представление значений по указанному шаблону.");
+    lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
     std::fs::write(
-        // Передаём данные по ссылке или разыменовываем их для следующей операции.
         &model_path,
-        // Формируем строковое представление значений по указанному шаблону.
         format!("ml_learn_v1\n{}\n{}\n", model.weight, model.bias),
-        // Используем подготовленное значение в следующем шаге примера.
     )?;
-    // Шаг: Читаем модель заново и используем её для прогноза.
-    // Проверяем версию, оба числовых поля и отсутствие лишних данных.
-    // Текстовое представление модели получают с помощью serialization.
+    lesson_trace::trace_note!("Шаг: Читаем модель заново и используем её для прогноза.");
+    lesson_trace::trace_note!("Проверяем версию, оба числовых поля и отсутствие лишних данных.");
+    lesson_trace::trace_note!("Текстовое представление модели получают с помощью serialization.");
     let saved_model_text_content: String = std::fs::read_to_string(&model_path)?;
     lesson_trace::trace_step!(saved_model_text_content);
-    // Выполняем встроенный расчёт один раз и сохраняем результат в `loaded_model`.
+    lesson_trace::trace_note!(
+        "Выполняем встроенный расчёт один раз и сохраняем результат в `loaded_model`."
+    );
     let loaded_model: Model = (|| -> Result<Model, String> {
-        // Создаём изменяемое значение `saved_model_lines` для следующих операций.
-        // Построчное чтение сохранённой модели относится к serialization.
+        lesson_trace::trace_note!(
+            "Создаём изменяемое значение `saved_model_lines` для следующих операций."
+        );
+        lesson_trace::trace_note!(
+            "Построчное чтение сохранённой модели относится к serialization."
+        );
         let mut saved_model_lines: std::str::Lines<'_> = saved_model_text_content.lines();
         lesson_trace::trace_step!(saved_model_lines);
-        // Разбираем наличие значения перед использованием результата.
+        lesson_trace::trace_note!("Разбираем наличие значения перед использованием результата.");
         if saved_model_lines.next() != Some("ml_learn_v1") {
-            // Прерываем расчёт и явно сообщаем причину некорректного входа.
+            lesson_trace::trace_note!(
+                "Прерываем расчёт и явно сообщаем причину некорректного входа."
+            );
             return Err("неизвестная версия".into());
         }
-        // Сохраняем рассчитанное значение `parse_parameter` для следующих операций.
-        let parse_parameter: fn(Option<&str>) -> Result<f64, String> =
-            |field_text: Option<&str>| {
-                // Используем ранее рассчитанное значение `field_text` в текущем выражении.
-                field_text
-                    // Если поле отсутствует, возвращаем понятную ошибку разбора.
-                    .ok_or("нет параметра".to_string())?
-                    // Преобразуем текстовое поле CSV в число с плавающей точкой.
-                    .parse::<f64>()
-                    // Превращаем ошибку разбора числа в строку для общего формата ошибок.
-                    .map_err(|parse_error| parse_error.to_string())
-            };
-        // Читаем или разбираем входные данные в значение `weight`.
+        lesson_trace::trace_note!(
+            "Сохраняем рассчитанное значение `parse_parameter` для следующих операций."
+        );
+        let parse_parameter: fn(Option<&str>) -> Result<f64, String> = |field_text: Option<
+            &str,
+        >| {
+            lesson_trace::trace_note!(
+                "Используем ранее рассчитанное значение `field_text` в текущем выражении."
+            );
+            lesson_trace::trace_note!("Если поле отсутствует, возвращаем понятную ошибку разбора.");
+            lesson_trace::trace_note!("Преобразуем текстовое поле CSV в число с плавающей точкой.");
+            lesson_trace::trace_note!(
+                "Превращаем ошибку разбора числа в строку для общего формата ошибок."
+            );
+            field_text
+                .ok_or("нет параметра".to_string())?
+                .parse::<f64>()
+                .map_err(|parse_error| parse_error.to_string())
+        };
+        lesson_trace::trace_note!("Читаем или разбираем входные данные в значение `weight`.");
         let weight: f64 = parse_parameter(saved_model_lines.next())?;
         lesson_trace::trace_step!(weight);
-        // Читаем или разбираем входные данные в значение `bias`.
+        lesson_trace::trace_note!("Читаем или разбираем входные данные в значение `bias`.");
         let bias: f64 = parse_parameter(saved_model_lines.next())?;
         lesson_trace::trace_step!(bias);
-        // Отсекаем бесконечные и неопределённые числовые значения.
+        lesson_trace::trace_note!("Отсекаем бесконечные и неопределённые числовые значения.");
         if !weight.is_finite() || !bias.is_finite() || saved_model_lines.next().is_some() {
-            // Прерываем расчёт и явно сообщаем причину некорректного входа.
+            lesson_trace::trace_note!(
+                "Прерываем расчёт и явно сообщаем причину некорректного входа."
+            );
             return Err("повреждённая модель".into());
         }
-        // Возвращаем успешное значение в типе `Result`.
+        lesson_trace::trace_note!("Возвращаем успешное значение в типе `Result`.");
+        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
         Ok(Model { weight, bias })
-        // Используем подготовленное значение в следующем шаге примера.
     })()?;
     lesson_trace::trace_step!(loaded_model);
-    // Линейный прогноз равен весу, умноженному на признак, плюс смещение.
+    lesson_trace::trace_note!(
+        "Линейный прогноз равен весу, умноженному на признак, плюс смещение."
+    );
     let prediction: f64 = loaded_model.weight * 3. + loaded_model.bias;
     lesson_trace::trace_step!(prediction);
-    // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+    lesson_trace::trace_note!(
+        "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+    );
     println!("path={}, prediction={}", model_path.display(), prediction);
-    // Шаг: Удаляем временный файл после проверки.
+    lesson_trace::trace_note!("Шаг: Удаляем временный файл после проверки.");
     std::fs::remove_file(std::path::Path::new(&model_path))?;
-    // Возвращаем успешное значение в типе `Result`.
+    lesson_trace::trace_note!("Возвращаем успешное значение в типе `Result`.");
     Ok(())
 }

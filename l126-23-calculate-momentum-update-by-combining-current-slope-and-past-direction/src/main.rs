@@ -13,41 +13,53 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() {
     lesson_trace::enable();
-    // Создаём набор значений `rates_of_change` для следующего шага примера.
-    // Производную функции по параметру или вектор таких производных называют gradient.
+    lesson_trace::trace_note!(
+        "Создаём набор значений `rates_of_change` для следующего шага примера."
+    );
+    lesson_trace::trace_note!(
+        "Производную функции по параметру или вектор таких производных называют gradient."
+    );
     let rates_of_change: [f64; 3] = [2.0, 1.0, -0.5];
     lesson_trace::trace_step!(rates_of_change);
-    // Инициализируем изменяемый накопитель `velocity` начальным состоянием.
+    lesson_trace::trace_note!(
+        "Инициализируем изменяемый накопитель `velocity` начальным состоянием."
+    );
     let mut velocity: f64 = 0.0;
     lesson_trace::trace_step!(velocity);
-    // Создаём изменяемое значение `weight` для следующих операций.
+    lesson_trace::trace_note!("Создаём изменяемое значение `weight` для следующих операций.");
     let mut weight: f64 = 1.0;
     lesson_trace::trace_step!(weight);
-    // Собираем значения для `weight_history` в коллекцию.
+    lesson_trace::trace_note!("Собираем значения для `weight_history` в коллекцию.");
     let mut weight_history: Vec<(f64, f64)> = vec![(0.0, weight)];
     lesson_trace::trace_step!(weight_history);
-    // Собираем значения для `velocity_history` в коллекцию.
+    lesson_trace::trace_note!("Собираем значения для `velocity_history` в коллекцию.");
     let mut velocity_history: Vec<(f64, f64)> = vec![(0.0, velocity)];
     lesson_trace::trace_step!(velocity_history);
-    // Повторяем следующий блок для каждого элемента указанной последовательности.
+    lesson_trace::trace_note!(
+        "Повторяем следующий блок для каждого элемента указанной последовательности."
+    );
     for (step, rate_of_change) in rates_of_change.into_iter().enumerate() {
         lesson_trace::trace_step!(step);
         lesson_trace::trace_step!(rate_of_change);
-        // Присваиваем вычисленное значение соответствующей переменной или полю.
+        lesson_trace::trace_note!(
+            "Присваиваем вычисленное значение соответствующей переменной или полю."
+        );
         velocity = 0.8 * velocity + rate_of_change;
         lesson_trace::trace_step!(velocity);
-        // Вычитаем очередной вклад из текущего значения параметра.
+        lesson_trace::trace_note!("Вычитаем очередной вклад из текущего значения параметра.");
         weight -= 0.1 * velocity;
         lesson_trace::trace_step!(weight);
-        // Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.
+        lesson_trace::trace_note!(
+            "Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением."
+        );
         println!("градиент={rate_of_change}, скорость={velocity}, вес={weight}");
-        // Вычисляем значение по указанной формуле.
+        lesson_trace::trace_note!("Вычисляем значение по указанной формуле.");
         weight_history.push(((step + 1) as f64, weight));
-        // Вычисляем значение по указанной формуле.
+        lesson_trace::trace_note!("Вычисляем значение по указанной формуле.");
         velocity_history.push(((step + 1) as f64, velocity));
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_weight_and_accumulated_update_direction(weight_history, velocity_history);
 }
@@ -57,38 +69,40 @@ fn plot_weight_and_accumulated_update_direction(
     weight_history: std::vec::Vec<(f64, f64)>,
     velocity_history: std::vec::Vec<(f64, f64)>,
 ) {
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Momentum: накопление скорости",
-        // Указываем подпись горизонтальной оси.
         "шаг",
-        // Указываем подпись вертикальной оси.
         "значение",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "вес",
-                // Передаём рассчитанные координаты точек.
+
                 points: &weight_history,
             },
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "скорость",
-                // Передаём рассчитанные координаты точек.
+
                 points: &velocity_history,
             },
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

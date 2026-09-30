@@ -9,7 +9,7 @@
 
 fn main() {
     lesson_trace::enable();
-    // Сравниваем три разных размера одной и той же строки.
+    lesson_trace::trace_note!("Сравниваем три разных размера одной и той же строки.");
     let text: &str = "кот 🐈";
     lesson_trace::trace_step!(text);
     let bytes: &[u8] = text.as_bytes();
@@ -18,7 +18,9 @@ fn main() {
     lesson_trace::trace_step!(characters);
     assert_eq!(String::from_utf8(bytes.to_vec()).unwrap(), text);
     assert!(bytes.len() > characters.len());
-    // Один токен модели может содержать часть слова, слово или несколько слов.
+    lesson_trace::trace_note!(
+        "Один токен модели может содержать часть слова, слово или несколько слов."
+    );
     println!(
         "строка: {text:?}; символов: {}; байтов: {}",
         characters.len(),

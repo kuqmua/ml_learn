@@ -2,7 +2,9 @@
 
 fn main() {
     lesson_trace::enable();
-    // При редком положительном классе высокая accuracy может скрыть все пропуски.
+    lesson_trace::trace_note!(
+        "При редком положительном классе высокая accuracy может скрыть все пропуски."
+    );
     let counts = l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts {
         true_positives: 0,
         false_positives: 0,

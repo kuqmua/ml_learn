@@ -11,55 +11,55 @@
 
 fn main() {
     lesson_trace::enable();
-    // Задаём учебные значения для `reference`.
+    lesson_trace::trace_note!("Задаём учебные значения для `reference`.");
     let reference: [f64; 3] = [1.0, 2.0, 3.0];
     lesson_trace::trace_step!(reference);
-    // Задаём учебные значения для `cases`.
+    lesson_trace::trace_note!("Задаём учебные значения для `cases`.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
     let cases: [(&str, [f64; 3], f64); 3] = [
-        // Добавляем пару значений для сравнения или построения графика.
         ("без сдвига среднего", [3.0, 2.0, 1.0], 0.0),
-        // Добавляем пару значений для сравнения или построения графика.
         ("сдвиг к большим значениям", [5.0, 6.0, 7.0], 4.0),
-        // Добавляем пару значений для сравнения или построения графика.
         ("то же среднее, другой разброс", [0.0, 2.0, 4.0], 0.0),
     ];
     lesson_trace::trace_step!(cases);
-    // Проверяем ожидаемое свойство учебного примера.
+    lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
     assert!(!reference.is_empty());
-    // Сохраняем результат этого шага в `reference_mean`.
+    lesson_trace::trace_note!("Сохраняем результат этого шага в `reference_mean`.");
     let reference_mean: f64 =
         l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
             &reference,
         )
         .unwrap();
     lesson_trace::trace_step!(reference_mean);
-    // Повторяем расчёт для каждого элемента последовательности.
+    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for (description, current, expected_difference) in cases {
         lesson_trace::trace_step!(description);
         lesson_trace::trace_step!(current);
         lesson_trace::trace_step!(expected_difference);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert!(!current.is_empty());
-        // Сохраняем результат этого шага в `current_mean`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `current_mean`.");
         let current_mean: f64 =
             l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
                 &current,
             )
             .unwrap();
         lesson_trace::trace_step!(current_mean);
-        // Сохраняем результат этого шага в `difference`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `difference`.");
         let difference: f64 = current_mean - reference_mean;
         lesson_trace::trace_step!(difference);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(difference, expected_difference);
-        // Печатаем рассчитанные значения для проверки примера.
+        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
+        lesson_trace::trace_note!("Передаём подпись или текстовое значение для следующего шага.");
         println!(
-            // Передаём подпись или текстовое значение для следующего шага.
             "{description}: эталон={reference_mean}, новые данные={current_mean}, разница={difference}"
         );
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_reference_shifted_and_more_spread_out_feature_values(reference, cases);
 }
@@ -69,79 +69,82 @@ fn plot_reference_shifted_and_more_spread_out_feature_values(
     reference: [f64; 3],
     cases: [(&str, [f64; 3], f64); 3],
 ) {
-    // Показываем значения, рассчитанные по данным примера.
+    lesson_trace::trace_note!("Показываем значения, рассчитанные по данным примера.");
+    lesson_trace::trace_note!("Просматриваем элементы коллекции по ссылке.");
+    lesson_trace::trace_note!("Добавляем порядковый номер к каждому элементу.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let reference_distribution_points: Vec<(f64, f64)> = reference
-        // Просматриваем элементы коллекции по ссылке.
         .iter()
-        // Добавляем порядковый номер к каждому элементу.
         .enumerate()
-        // Преобразуем каждый элемент в новое значение.
         .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `shifted_distribution_points` в коллекцию.
+    lesson_trace::trace_note!("Собираем значения для `shifted_distribution_points` в коллекцию.");
+    lesson_trace::trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
+    lesson_trace::trace_note!("Просматриваем элементы коллекции по ссылке.");
+    lesson_trace::trace_note!("Добавляем порядковый номер к каждому элементу.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let shifted_distribution_points: Vec<(f64, f64)> = cases[1]
-        // Настраиваем или преобразуем результат предыдущего шага.
         .1
-        // Просматриваем элементы коллекции по ссылке.
         .iter()
-        // Добавляем порядковый номер к каждому элементу.
         .enumerate()
-        // Преобразуем каждый элемент в новое значение.
         .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        // Собираем результаты в коллекцию.
         .collect();
-    // Собираем значения для `spread_distribution_points` в коллекцию.
+    lesson_trace::trace_note!("Собираем значения для `spread_distribution_points` в коллекцию.");
+    lesson_trace::trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
+    lesson_trace::trace_note!("Просматриваем элементы коллекции по ссылке.");
+    lesson_trace::trace_note!("Добавляем порядковый номер к каждому элементу.");
+    lesson_trace::trace_note!("Преобразуем каждый элемент в новое значение.");
+    lesson_trace::trace_note!("Собираем результаты в коллекцию.");
     let spread_distribution_points: Vec<(f64, f64)> = cases[2]
-        // Настраиваем или преобразуем результат предыдущего шага.
         .1
-        // Просматриваем элементы коллекции по ссылке.
         .iter()
-        // Добавляем порядковый номер к каждому элементу.
         .enumerate()
-        // Преобразуем каждый элемент в новое значение.
         .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        // Собираем результаты в коллекцию.
         .collect();
-    // Строим график по рассчитанным значениям и сохраняем его как SVG.
+    lesson_trace::trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок графика.");
+    lesson_trace::trace_note!("Указываем подпись горизонтальной оси.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Добавляем ряд данных с подписью к графику.");
+    lesson_trace::trace_note!("Указываем подпись этого ряда в легенде.");
+    lesson_trace::trace_note!("Передаём рассчитанные координаты точек.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::line_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок графика.
         "Сдвиг среднего",
-        // Указываем подпись горизонтальной оси.
         "номер наблюдения",
-        // Указываем подпись вертикальной оси.
         "значение",
-        // Передаём ряды или значения для отрисовки графика.
         &[
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "эталон",
-                // Передаём рассчитанные координаты точек.
+
                 points: &reference_distribution_points,
             },
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "сдвиг",
-                // Передаём рассчитанные координаты точек.
+
                 points: &shifted_distribution_points,
             },
-            // Добавляем ряд данных с подписью к графику.
             lesson_visualization::Series {
-                // Указываем подпись этого ряда в легенде.
                 name: "изменение разброса",
-                // Передаём рассчитанные координаты точек.
+
                 points: &spread_distribution_points,
             },
         ],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

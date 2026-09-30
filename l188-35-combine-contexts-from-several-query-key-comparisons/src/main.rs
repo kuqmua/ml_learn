@@ -11,7 +11,7 @@ fn main() {
     lesson_trace::enable();
     let input: [[f64; 2]; 3] = [[1.0, 2.0], [3.0, 1.0], [2.0, 4.0]];
     lesson_trace::trace_step!(input);
-    // Первая голова смотрит на первый признак, вторая — на второй.
+    lesson_trace::trace_note!("Первая голова смотрит на первый признак, вторая — на второй.");
     let first_attention_head: Vec<[f64; 2]> = input
         .iter()
         .map(|input_value| [input_value[0], 0.0])
@@ -36,7 +36,9 @@ fn main() {
     )
     .unwrap();
     lesson_trace::trace_step!(second_output);
-    // Конкатенация двух одномерных выходов здесь сразу даёт размерность 2.
+    lesson_trace::trace_note!(
+        "Конкатенация двух одномерных выходов здесь сразу даёт размерность 2."
+    );
     let combined: Vec<[f64; 2]> = first_output
         .iter()
         .zip(&second_output)

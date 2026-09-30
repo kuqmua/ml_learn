@@ -18,68 +18,87 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     lesson_trace::enable();
-    // Шаг: Считываем CSV из стандартного ввода.
+    lesson_trace::trace_note!("Шаг: Считываем CSV из стандартного ввода.");
     let mut input_comma_separated_values: String = String::new();
     lesson_trace::trace_step!(input_comma_separated_values);
-    // Читаем весь CSV из стандартного ввода через трейт `Read`.
+    lesson_trace::trace_note!("Читаем весь CSV из стандартного ввода через трейт `Read`.");
     std::io::Read::read_to_string(&mut std::io::stdin(), &mut input_comma_separated_values)?;
-    // Шаг: При пустом stdin запускаем встроенный демонстрационный набор.
+    lesson_trace::trace_note!("Шаг: При пустом stdin запускаем встроенный демонстрационный набор.");
     if input_comma_separated_values.is_empty() {
-        // Обновляем `input_comma_separated_values` результатом текущего шага.
+        lesson_trace::trace_note!(
+            "Обновляем `input_comma_separated_values` результатом текущего шага."
+        );
         input_comma_separated_values = "feature\n1\n2\n3\n".into();
         lesson_trace::trace_step!(input_comma_separated_values);
     }
 
-    // Шаг: Печатаем прогнозы либо явную ошибку формата.
+    lesson_trace::trace_note!("Шаг: Печатаем прогнозы либо явную ошибку формата.");
+    lesson_trace::trace_note!("Возвращаем успешное значение в типе `Result`.");
+    lesson_trace::trace_note!("Возвращаем описание ошибки в типе `Result`.");
     match (|| -> Result<String, String> {
-        // Используем подготовленное значение в следующем шаге примера.
-        /* Проверяем схему CSV и обрабатываем строки в исходном порядке. */
-        // Сохраняем результат этого шага в `input_comma_separated_values`.
+        lesson_trace::trace_note!("Используем подготовленное значение в следующем шаге примера.");
+        lesson_trace::trace_note!("Проверяем схему CSV и обрабатываем строки в исходном порядке.");
+        lesson_trace::trace_note!(
+            "Сохраняем результат этого шага в `input_comma_separated_values`."
+        );
         let input_comma_separated_values: &str = &input_comma_separated_values;
         lesson_trace::trace_step!(input_comma_separated_values);
-        // Создаём изменяемое значение `lines` для следующих операций.
+        lesson_trace::trace_note!("Создаём изменяемое значение `lines` для следующих операций.");
         let mut lines: std::str::Lines<'_> = input_comma_separated_values.lines();
         lesson_trace::trace_step!(lines);
-        // Разбираем наличие значения перед использованием результата.
+        lesson_trace::trace_note!("Разбираем наличие значения перед использованием результата.");
         if lines.next() != Some("feature") {
-            // Прерываем расчёт и явно сообщаем причину некорректного входа.
+            lesson_trace::trace_note!(
+                "Прерываем расчёт и явно сообщаем причину некорректного входа."
+            );
             return Err("ожидается заголовок feature".into());
         }
-        // Создаём изменяемое значение `output_comma_separated_values` для следующих операций.
+        lesson_trace::trace_note!(
+            "Создаём изменяемое значение `output_comma_separated_values` для следующих операций."
+        );
         let mut output_comma_separated_values: String = String::from("prediction\n");
         lesson_trace::trace_step!(output_comma_separated_values);
-        // Повторяем следующий блок для каждого элемента указанной последовательности.
+        lesson_trace::trace_note!(
+            "Повторяем следующий блок для каждого элемента указанной последовательности."
+        );
         for (row_index, line) in lines.enumerate() {
             lesson_trace::trace_step!(row_index);
             lesson_trace::trace_step!(line);
-            // Сохраняем рассчитанное значение `feature_value` для следующих операций.
+            lesson_trace::trace_note!(
+                "Сохраняем рассчитанное значение `feature_value` для следующих операций."
+            );
+            lesson_trace::trace_note!("Преобразуем текстовое поле в требуемый числовой тип.");
+            lesson_trace::trace_note!(
+                "Складываем или вычитаем величины согласно используемой формуле."
+            );
             let feature_value: f64 = line
-                // Преобразуем текстовое поле в требуемый числовой тип.
                 .parse()
-                // Складываем или вычитаем величины согласно используемой формуле.
                 .map_err(|_| format!("строка {}: не число", row_index + 2))?;
             lesson_trace::trace_step!(feature_value);
-            // Отсекаем бесконечные и неопределённые числовые значения.
+            lesson_trace::trace_note!("Отсекаем бесконечные и неопределённые числовые значения.");
             if !feature_value.is_finite() {
-                // Прерываем расчёт и явно сообщаем причину некорректного входа.
+                lesson_trace::trace_note!(
+                    "Прерываем расчёт и явно сообщаем причину некорректного входа."
+                );
                 return Err(format!("строка {}: не конечное число", row_index + 2));
             }
-            // Умножаем величины согласно используемой формуле.
+            lesson_trace::trace_note!("Умножаем величины согласно используемой формуле.");
             output_comma_separated_values.push_str(&format!("{}\n", 2. * feature_value + 1.));
         }
-        // Возвращаем успешное значение в типе `Result`.
+        lesson_trace::trace_note!("Возвращаем успешное значение в типе `Result`.");
         Ok(output_comma_separated_values)
     })() {
-        // Возвращаем успешное значение в типе `Result`.
         Ok(result) => print!("{result}"),
-        // Возвращаем описание ошибки в типе `Result`.
+
         Err(error) => {
-            // Выполняем очередное действие, после которого продолжаем следующий шаг.
+            lesson_trace::trace_note!(
+                "Выполняем очередное действие, после которого продолжаем следующий шаг."
+            );
             eprintln!("{error}");
-            // При ошибке формата завершаем процесс с ненулевым кодом.
+            lesson_trace::trace_note!("При ошибке формата завершаем процесс с ненулевым кодом.");
             std::process::exit(1)
         }
     }
-    // Возвращаем успешное значение в типе `Result`.
+    lesson_trace::trace_note!("Возвращаем успешное значение в типе `Result`.");
     Ok(())
 }

@@ -21,8 +21,10 @@ fn calculate_next_token_loss_as_negative_log_of_target_probability_from_exponent
 }
 fn main() {
     lesson_trace::enable();
-    // BOS, A, B, EOS: на последней позиции нет следующей цели.
-    // Единицу текста, которую модель обрабатывает как одно целое, называют token.
+    lesson_trace::trace_note!("BOS, A, B, EOS: на последней позиции нет следующей цели.");
+    lesson_trace::trace_note!(
+        "Единицу текста, которую модель обрабатывает как одно целое, называют token."
+    );
     let text_unit_identifiers: [usize; 4] = [0, 1, 2, 3];
     lesson_trace::trace_step!(text_unit_identifiers);
     let raw_model_scores: [[f64; 4]; 3] = [

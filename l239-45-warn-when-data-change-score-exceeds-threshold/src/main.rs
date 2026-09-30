@@ -11,54 +11,54 @@
 
 fn main() {
     lesson_trace::enable();
-    // Сохраняем результат этого шага в `alert_threshold`.
+    lesson_trace::trace_note!("Сохраняем результат этого шага в `alert_threshold`.");
     let alert_threshold: f64 = 0.2;
     lesson_trace::trace_step!(alert_threshold);
-    // Повторяем расчёт для каждого элемента последовательности.
+    lesson_trace::trace_note!("Повторяем расчёт для каждого элемента последовательности.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
+    lesson_trace::trace_note!("Добавляем пару значений для сравнения или построения графика.");
     for (description, drift_score, expected) in [
-        // Добавляем пару значений для сравнения или построения графика.
         ("ниже порога", 0.1, false),
-        // Добавляем пару значений для сравнения или построения графика.
         ("на пороге", 0.2, false),
-        // Добавляем пару значений для сравнения или построения графика.
         ("выше порога", 0.35, true),
     ] {
         lesson_trace::trace_step!(description);
         lesson_trace::trace_step!(drift_score);
         lesson_trace::trace_step!(expected);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert!(drift_score >= 0.0);
-        // Сохраняем результат этого шага в `alert`.
+        lesson_trace::trace_note!("Сохраняем результат этого шага в `alert`.");
         let alert: bool = drift_score > alert_threshold;
         lesson_trace::trace_step!(alert);
-        // Проверяем ожидаемое свойство учебного примера.
+        lesson_trace::trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(alert, expected);
-        // Печатаем рассчитанные значения для проверки примера.
+        lesson_trace::trace_note!("Печатаем рассчитанные значения для проверки примера.");
         println!("{description}: дрейф={drift_score}, требуется проверка={alert}");
     }
 
-    // Построение графика вынесено из основного кода урока.
+    lesson_trace::trace_note!("Построение графика вынесено из основного кода урока.");
     lesson_trace::disable();
     plot_distribution_change_scores_and_alert_threshold(alert_threshold);
 }
 
 // Строим график по результатам урока.
 fn plot_distribution_change_scores_and_alert_threshold(alert_threshold: f64) {
-    // Сравниваем величины, вычисленные в примере.
+    lesson_trace::trace_note!("Сравниваем величины, вычисленные в примере.");
+    lesson_trace::trace_note!("Передаём путь к каталогу текущего урока.");
+    lesson_trace::trace_note!("Указываем имя SVG-файла.");
+    lesson_trace::trace_note!("Указываем заголовок диаграммы.");
+    lesson_trace::trace_note!("Указываем подпись вертикальной оси.");
+    lesson_trace::trace_note!("Передаём ряды или значения для отрисовки графика.");
+    lesson_trace::trace_note!("Прерываем пример с понятной ошибкой, если SVG не удалось записать.");
     let chart: std::path::PathBuf = lesson_visualization::bar_chart(
-        // Передаём путь к каталогу текущего урока.
         env!("CARGO_MANIFEST_DIR"),
-        // Указываем имя SVG-файла.
         "lesson-chart",
-        // Указываем заголовок диаграммы.
         "Порог алерта и два случая",
-        // Указываем подпись вертикальной оси.
         "оценка дрейфа",
-        // Передаём ряды или значения для отрисовки графика.
         &[("ниже", 0.1), ("порог", alert_threshold), ("выше", 0.35)],
     )
-    // Прерываем пример с понятной ошибкой, если SVG не удалось записать.
     .expect("не удалось сохранить график");
-    // Печатаем путь к созданному SVG, чтобы его можно было открыть.
+    lesson_trace::trace_note!("Печатаем путь к созданному SVG, чтобы его можно было открыть.");
     println!("график: {}", chart.display());
 }

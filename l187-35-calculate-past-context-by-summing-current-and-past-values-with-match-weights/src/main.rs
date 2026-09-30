@@ -30,7 +30,7 @@ fn plot_weights_assigned_only_to_current_and_past_positions(states: &[[f64; 2]])
         .iter()
         .enumerate()
         .map(|(item_index, query_vector)| {
-            // Оценку модели до преобразования в вероятность называют logit.
+            lesson_trace::trace_note!("Оценку модели до преобразования в вероятность называют logit.");
             let raw_model_scores: Vec<f64> = (0..=item_index)
                 .map(|past_index| {
                     (query_vector[0] * states[past_index][0]
