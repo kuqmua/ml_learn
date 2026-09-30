@@ -3,17 +3,15 @@
 
 /// RMSNorm без вычитания среднего; gamma задаётся отдельно для каждой координаты.
 /// RMSNorm: делим координаты на sqrt(среднее квадратов + epsilon), затем умножаем каждую на её вес gamma.
-/// Массивы входа, весов и результата имеют одну и ту же длину `N`.
+/// В учебном блоке вход, веса и результат имеют по две координаты.
 
-pub fn normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights<
-    const N: usize,
->(
-    input: &[f64; N],
-    gamma: &[f64; N],
+pub fn normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
+    input: &[f64; 2],
+    gamma: &[f64; 2],
     epsilon: f64,
-) -> Result<[f64; N], &'static str> {
-    if N == 0 || epsilon <= 0.0 {
-        return Err("неверная форма или epsilon");
+) -> Result<[f64; 2], &'static str> {
+    if epsilon <= 0.0 {
+        return Err("epsilon должен быть положительным");
     }
     let mean_square: f64 = input
         .iter()
@@ -28,8 +26,8 @@ pub fn normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_a
 #[cfg(test)]
 mod tests {
     #[test]
-    /// Проверяем размеры весов и приведение среднего квадрата координат к единице с численным допуском.
-    fn rejects_mismatched_weights_and_scales_mean_square_to_one() {
+    /// Проверяем epsilon и приведение среднего квадрата координат к единице с численным допуском.
+    fn rejects_nonpositive_epsilon_and_scales_mean_square_to_one() {
         let output: [f64; 2] = super::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
             &[3.0, 4.0],
             &[1.0, 1.0],
@@ -37,6 +35,6 @@ mod tests {
         )
         .unwrap();
         assert!(((output[0] * output[0] + output[1] * output[1]) / 2.0 - 1.0).abs() < 1e-7);
-        assert!(super::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(&[], &[], 1e-8).is_err());
+        assert!(super::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(&[3.0, 4.0], &[1.0, 1.0], 0.0).is_err());
     }
 }

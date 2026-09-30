@@ -22,14 +22,12 @@ fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_d
     ]
 }
 /// Учебный блок декодера: нормализуем вход, прибавляем причинный контекст, снова нормализуем и прибавляем 0.2·max(0, x).
-fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normalized_values<
-    const N: usize,
->(
-    input: &[[f64; 2]; N],
-) -> [[f64; 2]; N] {
-    let normalized: [[f64; 2]; N] = input
+fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normalized_values(
+    input: &[[f64; 2]; 3],
+) -> [[f64; 2]; 3] {
+    let normalized: [[f64; 2]; 3] = input
         .map(normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation);
-    let attention: [[f64; 2]; N] =
+    let attention: [[f64; 2]; 3] =
         calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
             &normalized,
             &normalized,

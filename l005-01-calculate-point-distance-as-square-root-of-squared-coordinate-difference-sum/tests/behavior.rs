@@ -34,7 +34,10 @@ fn distance_extracts_root_of_squared_differences() {
             < 1e-12
     );
     assert!(
-        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(&[], &[])
-            .is_err()
+        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+            &[f64::NAN, 0.0],
+            &[0.0, 0.0]
+        )
+        .is_err()
     );
 }
