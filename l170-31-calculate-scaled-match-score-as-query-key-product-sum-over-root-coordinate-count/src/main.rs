@@ -11,13 +11,13 @@
 // softmax слишком резким.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
     let query: [f64; 2] = [1.0, 1.0];
     let key: [f64; 2] = [2.0, 2.0];
     let sum_after_multiplying_coordinates: f64 =
-        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&query, &key)
+        multiply_matching_coordinates_then_add_results(&query, &key)
             .expect("запрос и ключ имеют одинаковую размерность");
     let dimension: f64 = 2.0;
     let mut scale: f64 = dimension;

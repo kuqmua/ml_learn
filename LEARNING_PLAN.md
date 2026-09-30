@@ -59,7 +59,7 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Скалярное произведение: умножение соответствующих координат двух векторов и сложение произведений | `l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding` |
+| 1 | Умножение соответствующих координат двух векторов и сложение результатов | `l001-01-multiply-matching-coordinates-then-add-results` |
 | 2 | Длина пути вдоль осей (норма L1): сложение модулей координат вектора | `l002-01-calculate-l1-vector-norm-by-summing-absolute-coordinates` |
 | 3 | Длина вектора: квадратный корень из суммы квадратов координат | `l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates` |
 | 4 | Квадрат расстояния: сложение квадратов разностей координат | `l004-01-calculate-squared-point-distance-by-summing-squared-coordinate-differences` |
@@ -73,7 +73,7 @@
 ##### Практика: произведения координат, длины векторов и расстояния между точками — `l007-01-practice-coordinate-products-vector-lengths-and-point-distances`
 
 - **Повторить вместе:** умножение координат попарно и сложение результатов, нормы L1/L2, расстояние, косинусное сходство.
-- **Практика:** Реализуй Vec<f64>: calculate_scalar_product_by_multiplying_matching_coordinates_then_adding, norm, distance, cosine; опиши ошибки длины и нулевого вектора.
+- **Практика:** Реализуй Vec<f64>: multiply_matching_coordinates_then_add_results, norm, distance, cosine; опиши ошибки длины и нулевого вектора.
 - **Готово, когда:** Сравни ортогональные, одинаковые и противоположные векторы; проверь симметрию расстояния.
 - **Артефакт:** код пакета, короткий README с входными данными, командой запуска, результатом и тем, что осталось непонятным.
 

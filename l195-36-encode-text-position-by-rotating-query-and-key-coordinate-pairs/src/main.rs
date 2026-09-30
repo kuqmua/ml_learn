@@ -10,7 +10,7 @@
 /// Скалярное произведение: умножаем соответствующие координаты двух векторов и складываем произведения.
 use l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position;
 
-fn calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+fn multiply_matching_coordinates_then_add_results(
     first_value: [f64; 2],
     second_value: [f64; 2],
 ) -> f64 {
@@ -19,11 +19,11 @@ fn calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
 fn main() {
     let query_vector: [f64; 2] = [1.0, 0.0];
     let key_vector: [f64; 2] = [1.0, 0.0];
-    let same: f64 = calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+    let same: f64 = multiply_matching_coordinates_then_add_results(
         rotate_vector_coordinate_pair_by_token_position(query_vector, 3, 0.2),
         rotate_vector_coordinate_pair_by_token_position(key_vector, 3, 0.2),
     );
-    let distant: f64 = calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+    let distant: f64 = multiply_matching_coordinates_then_add_results(
         rotate_vector_coordinate_pair_by_token_position(query_vector, 3, 0.2),
         rotate_vector_coordinate_pair_by_token_position(key_vector, 8, 0.2),
     );
@@ -43,10 +43,7 @@ fn plot_coordinate_product_sum_for_relative_position_rotations() {
                 rotate_vector_coordinate_pair_by_token_position([1.0, 0.0], position_index, 0.2);
             (
                 position_index as f64,
-                calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-                    query_vector,
-                    key_vector,
-                ),
+                multiply_matching_coordinates_then_add_results(query_vector, key_vector),
             )
         })
         .collect();

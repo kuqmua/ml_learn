@@ -3,7 +3,7 @@ members = [
     "lesson-structure",
     "lesson-datasets",
     "lesson-visualization",
-    "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding",
+    "l001-01-multiply-matching-coordinates-then-add-results",
     "l002-01-calculate-l1-vector-norm-by-summing-absolute-coordinates",
     "l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates",
     "l004-01-calculate-squared-point-distance-by-summing-squared-coordinate-differences",

@@ -5,7 +5,7 @@
 /// Учебный аналог `f64::sqrt`: показывает шаги метода Ньютона и может работать медленнее.
 /// Для отрицательного входа здесь panic, тогда как `sqrt` возвращает NaN.
 /// Метод Ньютона для корня: повторяем estimate = (estimate + value / estimate) / 2.
-use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn approximate_square_root_by_repeated_averaging(value: f64) -> f64 {
     assert!(value >= 0.0, "корень из отрицательного числа");
@@ -25,7 +25,7 @@ fn approximate_square_root_by_repeated_averaging(value: f64) -> f64 {
 /// Например, для [3, 4]: sqrt(9 + 16) = 5.
 pub fn calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(vector: &[f64]) -> f64 {
     let sum_of_squared_coordinates: f64 =
-        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(vector, vector)
+        multiply_matching_coordinates_then_add_results(vector, vector)
             .expect("у вектора и его самого одинаковое число координат");
     approximate_square_root_by_repeated_averaging(sum_of_squared_coordinates)
 }

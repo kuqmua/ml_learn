@@ -9,7 +9,7 @@
 // Каждая ячейка ответа получается попарным умножением строки и столбца со сложением.
 // Единичная матрица не меняет значения; порядок множителей обычно влияет на ответ.
 
-use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
     let left: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
@@ -36,11 +36,8 @@ fn main() {
             for column in 0..second[0].len() {
                 let column_values: [f64; 2] = [second[0][column], second[1][column]];
                 result[row][column] =
-                    calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-                        &first[row],
-                        &column_values,
-                    )
-                    .expect("внутренние размеры матриц совпадают");
+                    multiply_matching_coordinates_then_add_results(&first[row], &column_values)
+                        .expect("внутренние размеры матриц совпадают");
             }
         }
         assert_eq!(result, expected);

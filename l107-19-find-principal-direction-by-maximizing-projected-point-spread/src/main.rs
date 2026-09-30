@@ -11,18 +11,14 @@
 // x эта ось совпадает с x.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
     let centered_points: [[f64; 2]; 4] = [[-2.0, 0.0], [-1.0, 0.0], [1.0, 0.0], [2.0, 0.0]];
     let principal_axis: [f64; 2] = [1.0, 0.0];
     for point in centered_points {
         let _projection: f64 =
-            calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-                &point,
-                &principal_axis,
-            )
-            .unwrap();
+            multiply_matching_coordinates_then_add_results(&point, &principal_axis).unwrap();
     }
 
     plot_centered_points_to_show_direction_of_greatest_spread(centered_points);

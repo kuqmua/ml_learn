@@ -10,7 +10,7 @@
 // Здесь соединяем вычисления из уроков 01.1–01.5. Их реализации находятся в общей
 // библиотеках предыдущих уроков: позже те же функции применяются в матрицах, kNN и поиске.
 
-use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 use l002_01_calculate_l1_vector_norm_by_summing_absolute_coordinates::calculate_l1_vector_norm_by_summing_absolute_coordinates;
 use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates;
 use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences;
@@ -34,9 +34,8 @@ fn main() {
         ("нулевой без направления", &[0.0, 0.0], 0.0, None),
     ];
     for (_description, other, expected_sum, expected_cosine) in cases {
-        let sum: f64 =
-            calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&first, other)
-                .expect("у этих векторов одинаковое число координат");
+        let sum: f64 = multiply_matching_coordinates_then_add_results(&first, other)
+            .expect("у этих векторов одинаковое число координат");
         let distance: f64 =
             calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
                 &first, other,
@@ -62,10 +61,8 @@ fn main() {
     }
 
     let too_short: [f64; 1] = [1.0];
-    let _error: &str = calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-        &first, &too_short,
-    )
-    .expect_err("векторы разной длины нужно отклонить");
+    let _error: &str = multiply_matching_coordinates_then_add_results(&first, &too_short)
+        .expect_err("векторы разной длины нужно отклонить");
 
     plot_l1_and_euclidean_lengths_as_absolute_sum_and_square_root_of_squared_sum();
 }

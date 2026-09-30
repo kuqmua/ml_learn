@@ -12,13 +12,13 @@
 // направлений.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
     let first: [f64; 2] = [0.8, 0.2];
     let second: [f64; 2] = [0.7, 0.3];
     let _sum_after_multiplying_coordinates: f64 =
-        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&first, &second)
+        multiply_matching_coordinates_then_add_results(&first, &second)
             .expect("представления имеют одинаковую размерность");
 
     plot_coordinates_of_two_word_representations(first, second);

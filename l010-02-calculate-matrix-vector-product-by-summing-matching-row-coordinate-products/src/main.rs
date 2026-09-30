@@ -9,7 +9,7 @@
 // Для каждой строки умножаем её значения на координаты вектора и складываем.
 // Нулевой вектор даёт нулевой ответ; число столбцов должно совпадать с длиной вектора.
 
-use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
     let matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
@@ -19,19 +19,14 @@ fn main() {
     ] {
         let mut result: [f64; 2] = [0.0; 2];
         for row in 0..matrix.len() {
-            result[row] = calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-                &matrix[row],
-                &vector,
-            )
-            .expect("число столбцов совпадает с длиной вектора");
+            result[row] = multiply_matching_coordinates_then_add_results(&matrix[row], &vector)
+                .expect("число столбцов совпадает с длиной вектора");
         }
         assert_eq!(result, expected);
     }
     let too_short: [f64; 1] = [5.0];
-    let _error: &str = calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-        &matrix[0], &too_short,
-    )
-    .expect_err("разные длины нужно отклонить");
+    let _error: &str = multiply_matching_coordinates_then_add_results(&matrix[0], &too_short)
+        .expect_err("разные длины нужно отклонить");
 
     plot_matrix_coefficients_used_in_weighted_row_sums(matrix);
 }

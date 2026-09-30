@@ -56,7 +56,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding"
+name = "l001-01-multiply-matching-coordinates-then-add-results"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -73,7 +73,7 @@ dependencies = [
 name = "l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates"
 version = "0.1.0"
 dependencies = [
- "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding",
+ "l001-01-multiply-matching-coordinates-then-add-results",
  "lesson-visualization",
 ]
 
@@ -93,7 +93,7 @@ dependencies = [
 name = "l006-01-calculate-direction-similarity-as-coordinate-product-sum-divided-by-vector-lengths"
 version = "0.1.0"
 dependencies = [
- "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding",
+ "l001-01-multiply-matching-coordinates-then-add-results",
  "l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates",
  "lesson-visualization",
 ]
@@ -102,7 +102,7 @@ dependencies = [
 name = "l007-01-practice-coordinate-products-vector-lengths-and-point-distances"
 version = "0.1.0"
 dependencies = [
- "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding",
+ "l001-01-multiply-matching-coordinates-then-add-results",
  "l002-01-calculate-l1-vector-norm-by-summing-absolute-coordinates",
  "l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates",
  "l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum",
@@ -128,7 +128,7 @@ dependencies = [
 name = "l010-02-calculate-matrix-vector-product-by-summing-matching-row-coordinate-products"
 version = "0.1.0"
 dependencies = [
- "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding",
+ "l001-01-multiply-matching-coordinates-then-add-results",
  "lesson-visualization",
 ]
 
@@ -136,7 +136,7 @@ dependencies = [
 name = "l011-02-calculate-matrix-product-by-summing-matching-row-and-column-products"
 version = "0.1.0"
 dependencies = [
- "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding",
+ "l001-01-multiply-matching-coordinates-then-add-results",
  "lesson-visualization",
 ]
 
@@ -151,7 +151,7 @@ dependencies = [
 name = "l013-02-practice-matrix-shapes-row-column-swaps-and-equation-solving"
 version = "0.1.0"
 dependencies = [
- "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding",
+ "l001-01-multiply-matching-coordinates-then-add-results",
  "lesson-visualization",
 ]
 
@@ -803,7 +803,7 @@ dependencies = [
 name = "l107-19-find-principal-direction-by-maximizing-projected-point-spread"
 version = "0.1.0"
 dependencies = [
- "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding",
+ "l001-01-multiply-matching-coordinates-then-add-results",
  "lesson-visualization",
 ]
 
@@ -1120,7 +1120,7 @@ dependencies = [
 name = "l155-28-calculate-word-vector-similarity-as-sum-of-matching-coordinate-products"
 version = "0.1.0"
 dependencies = [
- "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding",
+ "l001-01-multiply-matching-coordinates-then-add-results",
  "lesson-visualization",
 ]
 
@@ -1213,7 +1213,7 @@ dependencies = [
 name = "l168-31-compare-query-with-position-key-by-multiplying-coordinates"
 version = "0.1.0"
 dependencies = [
- "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding",
+ "l001-01-multiply-matching-coordinates-then-add-results",
  "lesson-visualization",
 ]
 
@@ -1228,7 +1228,7 @@ dependencies = [
 name = "l170-31-calculate-scaled-match-score-as-query-key-product-sum-over-root-coordinate-count"
 version = "0.1.0"
 dependencies = [
- "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding",
+ "l001-01-multiply-matching-coordinates-then-add-results",
  "lesson-visualization",
 ]
 
@@ -1250,7 +1250,7 @@ dependencies = [
 name = "l173-31-practice-query-key-matching-and-weighted-sums-of-values"
 version = "0.1.0"
 dependencies = [
- "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding",
+ "l001-01-multiply-matching-coordinates-then-add-results",
  "lesson-visualization",
 ]
 
@@ -1286,7 +1286,7 @@ dependencies = [
 name = "l178-32-practice-context-mixing-input-addition-and-coordinate-transformation"
 version = "0.1.0"
 dependencies = [
- "l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding",
+ "l001-01-multiply-matching-coordinates-then-add-results",
  "lesson-visualization",
 ]
 

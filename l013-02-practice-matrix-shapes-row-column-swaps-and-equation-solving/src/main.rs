@@ -18,7 +18,7 @@
 //   библиотек.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
     #[derive(Debug, PartialEq)]
@@ -66,12 +66,11 @@ fn main() {
     for row_index in 0..left_matrix.rows {
         let row_start: usize = row_index * left_matrix.column_count;
         let row_end: usize = row_start + left_matrix.column_count;
-        let row_result: f64 =
-            calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-                &left_matrix.data[row_start..row_end],
-                &input_vector,
-            )
-            .expect("длина строки совпадает с длиной вектора");
+        let row_result: f64 = multiply_matching_coordinates_then_add_results(
+            &left_matrix.data[row_start..row_end],
+            &input_vector,
+        )
+        .expect("длина строки совпадает с длиной вектора");
         output_vector.push(row_result);
     }
     let mut transposed_elements: Vec<f64> = Vec::with_capacity(left_matrix.data.len());
@@ -100,12 +99,11 @@ fn main() {
             let column_values: Vec<f64> = (0..left_matrix.rows)
                 .map(|shared_index| left_matrix.value_at_row_and_column(shared_index, column_index))
                 .collect();
-            let cell_value: f64 =
-                calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-                    &transposed_matrix.data[row_start..row_end],
-                    &column_values,
-                )
-                .expect("внутренние размеры матриц совпадают");
+            let cell_value: f64 = multiply_matching_coordinates_then_add_results(
+                &transposed_matrix.data[row_start..row_end],
+                &column_values,
+            )
+            .expect("внутренние размеры матриц совпадают");
             result_elements.push(cell_value);
         }
     }

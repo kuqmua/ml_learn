@@ -1,4 +1,4 @@
-use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 use l002_01_calculate_l1_vector_norm_by_summing_absolute_coordinates::calculate_l1_vector_norm_by_summing_absolute_coordinates;
 use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates;
 use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences;
@@ -15,10 +15,7 @@ fn combine_vector_properties() {
     let expected_distance: f64 = expected_distance.expect("заполни ответ перед запуском теста");
 
     assert_eq!(
-        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-            &first_vector,
-            &perpendicular_vector
-        ),
+        multiply_matching_coordinates_then_add_results(&first_vector, &perpendicular_vector),
         Ok(0.0)
     );
     assert!(

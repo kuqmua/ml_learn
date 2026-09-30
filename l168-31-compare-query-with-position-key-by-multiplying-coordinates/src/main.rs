@@ -10,14 +10,13 @@
 // Зачем это нужно: Key описывает, на какой запрос позиция отвечает; сравнение Q·K даёт оценку внимания.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
     let query: [f64; 2] = [1.0, 0.5];
     let key: [f64; 2] = [0.8, 0.2];
-    let score: f64 =
-        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&query, &key)
-            .expect("запрос и ключ имеют одинаковую размерность");
+    let score: f64 = multiply_matching_coordinates_then_add_results(&query, &key)
+        .expect("запрос и ключ имеют одинаковую размерность");
 
     plot_matching_query_and_key_coordinate_products(query, key, score);
 }

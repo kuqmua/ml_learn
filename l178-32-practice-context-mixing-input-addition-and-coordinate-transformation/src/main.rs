@@ -17,7 +17,7 @@
 // Дополнительная практика: Собери один блок на малых тензорах и опиши порядок операций.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
     let input_values: [[f64; 2]; 2] = [[1., 0.], [0., 1.]];
@@ -106,10 +106,7 @@ fn main() {
             .iter()
             .take(text_unit_index + 1)
             .map(|key| {
-                calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-                    &query, key,
-                )
-                .unwrap()
+                multiply_matching_coordinates_then_add_results(&query, key).unwrap()
                     / approximate_square_root_by_repeated_averaging(2.0)
             })
             .collect();

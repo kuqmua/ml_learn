@@ -17,7 +17,7 @@
 // Дополнительная практика: Реализуй single-head attention для короткой последовательности без готового слоя.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
     let sequence: [[f64; 2]; 3] = [[1., 0.], [0., 1.], [1., 1.]];
@@ -64,35 +64,28 @@ fn main() {
             let mut weights: [[f64; 3]; 3] = [[0.0; 3]; 3];
             for (query_index, query) in queries.iter().enumerate() {
                 let raw_model_scores: Vec<f64> = keys
-
-                .iter()
-
-                .enumerate()
-
-                .map(|(key_index, key)| {
-                    if past_only_attention && key_index > query_index {
-                        f64::NEG_INFINITY
-
-                    } else {
-                        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(query, key).unwrap()
-
-                            / (|| -> f64 {
-        let value: f64 = 2.0;
-        assert!(value >= 0.0, "корень из отрицательного числа");
-        if value == 0.0 {
-            return 0.0;
-        }
-        let mut estimate: f64 = if value > 1.0 { value } else { 1.0 };
-        for _ in 0..80 {
-            estimate = (estimate + value / estimate) / 2.0;
-        }
-        estimate
-
-    })()
-                    }
-                })
-
-                .collect();
+                    .iter()
+                    .enumerate()
+                    .map(|(key_index, key)| {
+                        if past_only_attention && key_index > query_index {
+                            f64::NEG_INFINITY
+                        } else {
+                            multiply_matching_coordinates_then_add_results(query, key).unwrap()
+                                / (|| -> f64 {
+                                    let value: f64 = 2.0;
+                                    assert!(value >= 0.0, "корень из отрицательного числа");
+                                    if value == 0.0 {
+                                        return 0.0;
+                                    }
+                                    let mut estimate: f64 = if value > 1.0 { value } else { 1.0 };
+                                    for _ in 0..80 {
+                                        estimate = (estimate + value / estimate) / 2.0;
+                                    }
+                                    estimate
+                                })()
+                        }
+                    })
+                    .collect();
                 let attention_weights: Vec<f64> = (|| -> Vec<f64> {
                     let raw_model_scores: &[f64] = &raw_model_scores;
                     let mut maximum_raw_model_score: f64 = f64::NEG_INFINITY;

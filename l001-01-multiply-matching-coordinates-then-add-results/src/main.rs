@@ -1,4 +1,4 @@
-// Урок 01.1. Скалярное произведение: умножение соответствующих координат двух векторов и сложение произведений.
+// Урок 01.1. Умножение соответствующих координат двух векторов и сложение результатов.
 // Зачем здесь эта тема: Скалярное произведение связывает координаты с направлением; оно понадобится
 //   для длины, матриц и сходства.
 // Почему код устроен так: Берём две координаты и разные углы, чтобы знак суммы можно было проверить
@@ -13,7 +13,7 @@
 // Нулевой вектор тоже даёт ноль, хотя направления у него нет.
 // Что делает пример: показывает все варианты знака, включая граничные случаи и разную длину.
 
-use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
     let left: [f64; 2] = [1.0, 2.0];
@@ -28,39 +28,35 @@ fn main() {
 
     for (_description, right, expected) in cases {
         let sum_after_multiplying_coordinates: f64 =
-            calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&left, right)
+            multiply_matching_coordinates_then_add_results(&left, right)
                 .expect("у этой пары одинаковое число координат");
         assert_eq!(sum_after_multiplying_coordinates, expected);
     }
 
     let too_short: [f64; 1] = [3.0];
-    let _error: &str =
-        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&left, &too_short)
-            .expect_err("разная длина должна быть отклонена");
+    let _error: &str = multiply_matching_coordinates_then_add_results(&left, &too_short)
+        .expect_err("разная длина должна быть отклонена");
     let _ = &(left);
-    plot_scalar_product_as_coordinate_product_sum_for_changing_second_coordinate(&left);
+    plot_sum_after_multiplying_coordinates_for_changing_second_coordinate(&left);
 }
 
 // Визуализация вынесена из основного сценария урока.
-fn plot_scalar_product_as_coordinate_product_sum_for_changing_second_coordinate(left: &[f64; 2]) {
+fn plot_sum_after_multiplying_coordinates_for_changing_second_coordinate(left: &[f64; 2]) {
     let chart_points: Vec<(f64, f64)> = (-40..=40)
         .map(|plot_step_index| {
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             let product: f64 =
-                calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-                    left,
-                    &[1.0, horizontal_value],
-                )
-                .expect("оба вектора имеют две координаты");
+                multiply_matching_coordinates_then_add_results(left, &[1.0, horizontal_value])
+                    .expect("оба вектора имеют две координаты");
             (horizontal_value, product)
         })
         .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
-        "Скалярное произведение [1, 2] · [1, x]",
+        "Умножение координат и сложение результатов: [1, 2] и [1, x]",
         "вторая координата правого вектора, x",
-        "скалярное произведение",
+        "сумма после умножения координат",
         &[lesson_visualization::Series {
             name: "вектор [1, 2]",
 
