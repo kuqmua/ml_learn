@@ -8,6 +8,8 @@
 //   словаря.
 // Собираем токены, позиции, причинное внимание и выходные логиты в один decoder-only проход.
 
+use l192_35_convert_text_identifiers_to_context_and_next_piece_scores::convert_text_identifiers_to_context_then_to_next_token_scores;
+
 use lesson_trace::{enable, trace_note, trace_step};
 
 fn main() {
@@ -15,7 +17,8 @@ fn main() {
     let prefix: [usize; 2] = [0, 1];
     trace_step!(prefix);
     trace_note!("Оценку модели до преобразования в вероятность называют logit.");
-    let raw_model_scores: Vec<[f64; 3]> = l192_35_convert_text_identifiers_to_context_and_next_piece_scores::convert_text_identifiers_to_context_then_to_next_token_scores(&prefix);
+    let raw_model_scores: Vec<[f64; 3]> =
+        convert_text_identifiers_to_context_then_to_next_token_scores(&prefix);
     trace_step!(raw_model_scores);
     let last: &[f64; 3] = raw_model_scores.last().unwrap();
     trace_step!(last);
@@ -28,7 +31,7 @@ fn main() {
     trace_step!(next);
     trace_note!("Изменение будущего токена не меняет предыдущие позиции.");
     assert_eq!(
-        l192_35_convert_text_identifiers_to_context_and_next_piece_scores::convert_text_identifiers_to_context_then_to_next_token_scores(&[0])[0],
+        convert_text_identifiers_to_context_then_to_next_token_scores(&[0])[0],
         raw_model_scores[0]
     );
     println!("префикс: {prefix:?}; logits: {last:?}; следующий ID: {next}");

@@ -10,6 +10,12 @@
 // Здесь соединяем вычисления из уроков 01.1–01.5. Их реализации находятся в общей
 // библиотеках предыдущих уроков: позже те же функции применяются в матрицах, kNN и поиске.
 
+use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+use l002_01_calculate_l1_vector_norm_by_summing_absolute_coordinates::calculate_l1_vector_norm_by_summing_absolute_coordinates;
+use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates;
+use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences;
+use l006_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -19,14 +25,12 @@ fn main() {
     trace_step!(first);
     trace_note!("Проверяем ожидаемое свойство учебного примера.");
     assert_eq!(
-        l002_01_calculate_l1_vector_norm_by_summing_absolute_coordinates::calculate_l1_vector_norm_by_summing_absolute_coordinates(&first),
+        calculate_l1_vector_norm_by_summing_absolute_coordinates(&first),
         7.0
     );
     trace_note!("Проверяем ожидаемое свойство учебного примера.");
     assert_eq!(
-        l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(
-            &first
-        ),
+        calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&first),
         5.0
     );
     trace_note!("Печатаем рассчитанные значения для проверки примера.");
@@ -52,16 +56,23 @@ fn main() {
         trace_step!(expected_cosine);
         trace_note!("Сохраняем результат этого шага в `sum`.");
         trace_note!("Используем результат, ожидая успешного выполнения шага.");
-        let sum: f64 = l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&first, other)
-
-            .expect("у этих векторов одинаковое число координат");
+        let sum: f64 =
+            calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&first, other)
+                .expect("у этих векторов одинаковое число координат");
         trace_step!(sum);
         trace_note!("Сохраняем результат этого шага в `distance`.");
         let distance: f64 =
-            l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(&first, other).unwrap();
+            calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+                &first, other,
+            )
+            .unwrap();
         trace_step!(distance);
         trace_note!("Сохраняем результат этого шага в `cosine`.");
-        let cosine: Option<f64> = l006_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&first, other).ok();
+        let cosine: Option<f64> =
+            calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(
+                &first, other,
+            )
+            .ok();
         trace_step!(cosine);
         trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(sum, expected_sum);
@@ -76,7 +87,10 @@ fn main() {
         }
         trace_note!("Сохраняем результат этого шага в `reverse_distance`.");
         let reverse_distance: f64 =
-            l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(other, &first).unwrap();
+            calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+                other, &first,
+            )
+            .unwrap();
         trace_step!(reverse_distance);
         trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert!((distance - reverse_distance).abs() < 1e-10);
@@ -89,12 +103,10 @@ fn main() {
     trace_step!(too_short);
     trace_note!("Сохраняем результат этого шага в `error`.");
     trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
-    let error: &str =
-        l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-            &first, &too_short,
-        )
-
-        .expect_err("векторы разной длины нужно отклонить");
+    let error: &str = calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+        &first, &too_short,
+    )
+    .expect_err("векторы разной длины нужно отклонить");
     trace_step!(error);
     trace_note!("Печатаем рассчитанные значения для проверки примера.");
     println!("разная длина: {error}");

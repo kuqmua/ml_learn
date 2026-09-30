@@ -9,6 +9,8 @@
 // Объединяем precision и recall из двух предыдущих уроков.
 // Если обе равны нулю, формула даёт 0/0, поэтому возвращаем None.
 
+use l066_11_calculate_f1_score_as_twice_precision_times_recall_over_their_sum::calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -31,10 +33,11 @@ fn main() {
         trace_note!(
             "Сохраняем результат этого шага в `calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum`."
         );
-        let harmonic_mean_score: Option<f64> = l066_11_calculate_f1_score_as_twice_precision_times_recall_over_their_sum::calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum(
-            Some(precision),
-            Some(recall),
-        );
+        let harmonic_mean_score: Option<f64> =
+            calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum(
+                Some(precision),
+                Some(recall),
+            );
         trace_step!(harmonic_mean_score);
         trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(harmonic_mean_score, expected);

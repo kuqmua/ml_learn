@@ -13,6 +13,8 @@
 // Нулевой вектор тоже даёт ноль, хотя направления у него нет.
 // Что делает пример: показывает все варианты знака, включая граничные случаи и разную длину.
 
+use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -50,9 +52,7 @@ fn main() {
         trace_note!("Используем подготовленное значение в следующем шаге примера.");
         trace_note!("Используем результат, ожидая успешного выполнения шага.");
         let sum_after_multiplying_coordinates: f64 =
-
-            l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&left, right)
-
+            calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&left, right)
                 .expect("у этой пары одинаковое число координат");
         trace_step!(sum_after_multiplying_coordinates);
         trace_note!("Например, для [1, 2] и [-2, 1] получаем 1·(-2) + 2·1 = 0.");
@@ -69,13 +69,8 @@ fn main() {
     trace_note!("Используем подготовленное значение в следующем шаге примера.");
     trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
     let error: &str =
-
-        l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-
-            &left, &too_short,
-        )
-
-        .expect_err("разная длина должна быть отклонена");
+        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&left, &too_short)
+            .expect_err("разная длина должна быть отклонена");
     trace_step!(error);
     trace_note!("Печатаем рассчитанные значения для проверки примера.");
     println!("разная длина: {:?} и {too_short:?} → {error}", left);
@@ -95,15 +90,15 @@ fn plot_scalar_product_as_coordinate_product_sum_for_changing_second_coordinate(
     );
     trace_note!("Превращаем целые числа в значения x с шагом 0,1.");
     let chart_points: Vec<(f64, f64)> = (-40..=40)
-
         .map(|plot_step_index| {
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             trace_note!("Вычисляем скалярное произведение той же функцией, что использовали выше.");
-            let product: f64 = l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-                left,
-                &[1.0, horizontal_value],
-            )
-            .expect("оба вектора имеют две координаты");
+            let product: f64 =
+                calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+                    left,
+                    &[1.0, horizontal_value],
+                )
+                .expect("оба вектора имеют две координаты");
             (horizontal_value, product)
         })
         .collect();

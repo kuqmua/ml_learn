@@ -9,6 +9,8 @@
 // Для каждой строки умножаем её значения на координаты вектора и складываем.
 // Нулевой вектор даёт нулевой ответ; число столбцов должно совпадать с длиной вектора.
 
+use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -34,9 +36,11 @@ fn main() {
             trace_step!(row);
             trace_note!("Урок 01.1 теперь работает и для каждой строки матрицы.");
             trace_note!("Используем результат, ожидая успешного выполнения шага.");
-            result[row] = l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&matrix[row], &vector)
-
-                .expect("число столбцов совпадает с длиной вектора");
+            result[row] = calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+                &matrix[row],
+                &vector,
+            )
+            .expect("число столбцов совпадает с длиной вектора");
             trace_step!(result);
         }
         trace_note!("Проверяем ожидаемое свойство учебного примера.");
@@ -49,12 +53,10 @@ fn main() {
     trace_step!(too_short);
     trace_note!("Сохраняем результат этого шага в `error`.");
     trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
-    let error: &str =
-        l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-            &matrix[0], &too_short,
-        )
-
-        .expect_err("разные длины нужно отклонить");
+    let error: &str = calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+        &matrix[0], &too_short,
+    )
+    .expect_err("разные длины нужно отклонить");
     trace_step!(error);
     trace_note!("Печатаем рассчитанные значения для проверки примера.");
     println!("разная длина строки и вектора: {error}");

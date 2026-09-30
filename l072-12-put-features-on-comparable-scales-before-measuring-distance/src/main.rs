@@ -11,6 +11,8 @@
 // координаты перед сравнением соседей.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -33,7 +35,7 @@ fn main() {
     );
     trace_note!("Сохраняем результат этого шага в `raw_squared`.");
     let raw_squared: f64 =
-        l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences(&first, &second)
+        calculate_squared_point_distance_by_summing_squared_coordinate_differences(&first, &second)
             .unwrap();
     trace_step!(raw_squared);
     trace_note!("Задаём учебные значения для `scaled_first`.");
@@ -43,11 +45,12 @@ fn main() {
     let scaled_second: [f64; 2] = [second[0] / scale[0], second[1] / scale[1]];
     trace_step!(scaled_second);
     trace_note!("Сохраняем результат этого шага в `scaled_squared`.");
-    let scaled_squared: f64 = l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences(
-        &scaled_first,
-        &scaled_second,
-    )
-    .unwrap();
+    let scaled_squared: f64 =
+        calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+            &scaled_first,
+            &scaled_second,
+        )
+        .unwrap();
     trace_step!(scaled_squared);
     trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
     println!("до={raw_squared}, после масштабирования={scaled_squared}");

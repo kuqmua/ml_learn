@@ -8,6 +8,8 @@
 //   единицы.
 // Метка текущей строки не попадает в её закодированный признак.
 
+use l092_16_encode_category_by_averaging_earlier_targets_without_current_answer::encode_categories_as_average_previous_targets_with_prior_weight;
+
 use lesson_trace::{disable, enable, trace_step};
 
 fn main() {
@@ -16,7 +18,7 @@ fn main() {
     trace_step!(categories);
     let targets: [f64; 5] = [1.0, 0.0, 0.0, 1.0, 1.0];
     trace_step!(targets);
-    let values: Vec<f64> = l092_16_encode_category_by_averaging_earlier_targets_without_current_answer::encode_categories_as_average_previous_targets_with_prior_weight(
+    let values: Vec<f64> = encode_categories_as_average_previous_targets_with_prior_weight(
         &categories,
         &targets,
         0.5,

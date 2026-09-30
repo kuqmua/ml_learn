@@ -5,6 +5,8 @@
 // Представь: Если gate подавлен, даже большой сигнал ветки up почти не проходит в выход.
 // Одна проекция открывает gate, другая несёт значения; затем идёт выходная проекция.
 
+use l198_36_calculate_gated_layer_output_by_multiplying_branches_with_smooth_gate::calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate;
+
 use lesson_trace::{enable, trace_step};
 
 fn main() {
@@ -16,7 +18,10 @@ fn main() {
     let up_projection: f64 = input[0] + input[1];
     trace_step!(up_projection);
     let hidden: f64 =
-        l198_36_calculate_gated_layer_output_by_multiplying_branches_with_smooth_gate::calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate(gate, up_projection);
+        calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate(
+            gate,
+            up_projection,
+        );
     trace_step!(hidden);
     let down: f64 = hidden * 0.5;
     trace_step!(down);

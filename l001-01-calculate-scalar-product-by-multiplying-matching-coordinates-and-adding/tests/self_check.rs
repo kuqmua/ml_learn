@@ -1,3 +1,5 @@
+use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+
 #[test]
 #[ignore = "заполни три вектора и запусти cargo test -p l001-01-calculate-scalar-product-by-multiplying-matching-coordinates-and-adding --test self_check -- --ignored"]
 fn predict_signs_of_summed_matching_coordinate_products() {
@@ -13,19 +15,19 @@ fn predict_signs_of_summed_matching_coordinate_products() {
         vector_with_positive_result.expect("заполни ответ перед запуском теста");
 
     let negative_result: f64 =
-        l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             &fixed_vector,
             &vector_with_negative_result,
         )
         .unwrap();
     let zero_result: f64 =
-        l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             &fixed_vector,
             &vector_with_zero_result,
         )
         .unwrap();
     let positive_result: f64 =
-        l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
             &fixed_vector,
             &vector_with_positive_result,
         )

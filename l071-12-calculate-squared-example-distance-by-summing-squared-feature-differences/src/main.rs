@@ -12,6 +12,8 @@
 // требуется только порядок соседей.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -28,10 +30,9 @@ fn main() {
         trace_note!("Для поиска ближайшего кандидата нужен квадрат расстояния из урока 01.4.");
         trace_note!("Используем результат, ожидая успешного выполнения шага.");
         let squared_distance: f64 =
-            l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+            calculate_squared_point_distance_by_summing_squared_coordinate_differences(
                 &query, &candidate,
             )
-
             .expect("запрос и кандидат имеют одинаковое число координат");
         trace_step!(squared_distance);
         trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");

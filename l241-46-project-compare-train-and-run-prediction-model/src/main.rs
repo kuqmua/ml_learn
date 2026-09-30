@@ -18,6 +18,9 @@
 //   воспроизводимый pipeline из предыдущих пакетов.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
+use l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -74,10 +77,7 @@ fn main() {
     trace_step!(training_targets);
     trace_note!("Сохраняем результат этого шага в `baseline`.");
     let baseline: f64 =
-        l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
-            &training_targets,
-        )
-        .unwrap();
+        calculate_mean_by_summing_values_and_dividing_by_count(&training_targets).unwrap();
     trace_step!(baseline);
 
     trace_note!("Учебные реализации математических операций для этого урока.");
@@ -114,7 +114,11 @@ fn main() {
             .collect();
         trace_step!(predictions);
         trace_note!("Используем подготовленное значение в следующем шаге примера.");
-        l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(&targets, &predictions).unwrap()
+        calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(
+            &targets,
+            &predictions,
+        )
+        .unwrap()
     }
 
     trace_note!("Шаг: Обучаем линейную модель и сравниваем её с baseline на validation и test.");

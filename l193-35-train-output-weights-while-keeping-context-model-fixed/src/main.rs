@@ -9,6 +9,8 @@
 // Фиксируем decoder и подгоняем только выходные веса на train; качество проверяем отдельно.
 
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
+use l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calculate_text_context_vectors_by_adding_position_and_weighted_past_context;
+
 use lesson_trace::{enable, trace_note, trace_step};
 
 fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
@@ -21,9 +23,10 @@ fn calculate_binary_prediction_loss_as_negative_log_label_probability_from_final
     weight: &[f64; 2],
     sample: (&[usize], f64),
 ) -> f64 {
-    let final_hidden_state: [f64; 2] = *l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calculate_text_context_vectors_by_adding_position_and_weighted_past_context(sample.0)
-        .last()
-        .unwrap();
+    let final_hidden_state: [f64; 2] =
+        *calculate_text_context_vectors_by_adding_position_and_weighted_past_context(sample.0)
+            .last()
+            .unwrap();
     trace_step!(final_hidden_state);
     trace_note!("Оценку модели до преобразования в вероятность называют logit.");
     let raw_model_score: f64 =
@@ -72,7 +75,10 @@ fn main() {
         for &(text_unit_identifiers, target) in &training_data {
             trace_step!(text_unit_identifiers);
             trace_step!(target);
-            let final_hidden_state: [f64; 2] = *l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calculate_text_context_vectors_by_adding_position_and_weighted_past_context(text_unit_identifiers)
+            let final_hidden_state: [f64; 2] =
+                *calculate_text_context_vectors_by_adding_position_and_weighted_past_context(
+                    text_unit_identifiers,
+                )
                 .last()
                 .unwrap();
             trace_step!(final_hidden_state);

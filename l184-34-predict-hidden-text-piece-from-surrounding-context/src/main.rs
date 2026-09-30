@@ -8,6 +8,8 @@
 //   пропуск.
 // Цель содержит только скрытые позиции, а encoder видит левый и правый контекст.
 
+use l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products;
+
 use lesson_trace::{enable, trace_note, trace_step};
 
 fn main() {
@@ -26,7 +28,7 @@ fn main() {
     ];
     trace_step!(visible);
     let context: Vec<[f64; 2]> =
-        l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
+        calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
             &visible, &[true; 3],
         )
         .unwrap();

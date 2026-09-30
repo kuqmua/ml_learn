@@ -18,6 +18,8 @@
 //   baseline.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -145,13 +147,19 @@ fn main() {
     trace_step!(baseline_predictions);
     trace_note!("Сохраняем результат этого шага в `model_mean_squared_error`.");
     let model_mean_squared_error: f64 =
-        l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &model_predictions)
-            .unwrap();
+        calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+            &targets,
+            &model_predictions,
+        )
+        .unwrap();
     trace_step!(model_mean_squared_error);
     trace_note!("Сохраняем результат этого шага в `baseline_mean_squared_error`.");
     let baseline_mean_squared_error: f64 =
-        l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &baseline_predictions)
-            .unwrap();
+        calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+            &targets,
+            &baseline_predictions,
+        )
+        .unwrap();
     trace_step!(baseline_mean_squared_error);
     trace_note!("Печатаем рассчитанные значения для проверки примера.");
     println!(

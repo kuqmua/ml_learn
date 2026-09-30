@@ -9,6 +9,8 @@
 // Сравнение средних — первый сигнал: при похожих данных разница мала, при сдвиге растёт.
 // Совпадение средних само по себе не доказывает совпадения распределений.
 
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -30,10 +32,7 @@ fn main() {
     assert!(!reference.is_empty());
     trace_note!("Сохраняем результат этого шага в `reference_mean`.");
     let reference_mean: f64 =
-        l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
-            &reference,
-        )
-        .unwrap();
+        calculate_mean_by_summing_values_and_dividing_by_count(&reference).unwrap();
     trace_step!(reference_mean);
     trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for (description, current, expected_difference) in cases {
@@ -44,10 +43,7 @@ fn main() {
         assert!(!current.is_empty());
         trace_note!("Сохраняем результат этого шага в `current_mean`.");
         let current_mean: f64 =
-            l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
-                &current,
-            )
-            .unwrap();
+            calculate_mean_by_summing_values_and_dividing_by_count(&current).unwrap();
         trace_step!(current_mean);
         trace_note!("Сохраняем результат этого шага в `difference`.");
         let difference: f64 = current_mean - reference_mean;

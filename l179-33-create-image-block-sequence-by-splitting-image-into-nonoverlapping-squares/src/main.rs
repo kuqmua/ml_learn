@@ -8,6 +8,8 @@
 //   последовательность.
 // Изображение превращается в последовательность неперекрывающихся патчей.
 
+use l179_33_create_image_block_sequence_by_splitting_image_into_nonoverlapping_squares::extract_nonoverlapping_square_patches_from_square_image;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -21,7 +23,7 @@ fn main() {
     trace_step!(image);
     trace_note!("Участок изображения, передаваемый трансформеру, называют visual token.");
     let image_patches: Vec<Vec<f64>> =
-        l179_33_create_image_block_sequence_by_splitting_image_into_nonoverlapping_squares::extract_nonoverlapping_square_patches_from_square_image(&image, 2).unwrap();
+        extract_nonoverlapping_square_patches_from_square_image(&image, 2).unwrap();
     trace_step!(image_patches);
     assert_eq!(image_patches.len(), 4);
     println!("4 патча 2x2: {image_patches:?}");

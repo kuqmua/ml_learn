@@ -7,6 +7,8 @@
 // Представь: Ранний вход влияет на позднюю ошибку через несколько обновлений состояния.
 // Градиент рекуррентного веса учитывает все предыдущие шаги.
 
+use l138_25_update_memory_from_weighted_input_and_previous_memory::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state;
+
 use lesson_trace::{enable, trace_note, trace_step};
 
 fn half_squared_error_of_last_recurrent_state_against_target(
@@ -15,13 +17,14 @@ fn half_squared_error_of_last_recurrent_state_against_target(
     recurrent_weight: f64,
     target: f64,
 ) -> f64 {
-    let last: f64 = *l138_25_update_memory_from_weighted_input_and_previous_memory::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
-        input,
-        input_weight,
-        recurrent_weight,
-    )
-    .last()
-    .unwrap();
+    let last: f64 =
+        *calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
+            input,
+            input_weight,
+            recurrent_weight,
+        )
+        .last()
+        .unwrap();
     trace_step!(last);
     0.5 * (last - target).powi(2)
 }
@@ -35,11 +38,12 @@ fn main() {
     trace_step!(recurrent_weight);
     let target: f64 = 0.7;
     trace_step!(target);
-    let history: Vec<f64> = l138_25_update_memory_from_weighted_input_and_previous_memory::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
-        &input,
-        input_weight,
-        recurrent_weight,
-    );
+    let history: Vec<f64> =
+        calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
+            &input,
+            input_weight,
+            recurrent_weight,
+        );
     trace_step!(history);
     trace_note!("Производную функции по параметру или вектор таких производных называют gradient.");
     let mut hidden_state_loss_rate_of_change: f64 = history.last().unwrap() - target;

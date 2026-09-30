@@ -6,6 +6,8 @@
 // Представь: Четыре головы Q могут обращаться к меньшему числу общих наборов K/V, экономя хранение.
 // Несколько Q-голов совместно используют меньшее число K/V-голов.
 
+use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
+
 use lesson_trace::{enable, trace_note, trace_step};
 
 fn main() {
@@ -31,7 +33,7 @@ fn main() {
             .collect();
         trace_step!(raw_model_scores);
         let weights: Vec<f64> =
-            l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+            calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
                 &raw_model_scores,
             );
         trace_step!(weights);

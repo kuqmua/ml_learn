@@ -17,6 +17,8 @@
 // Дополнительная практика: Реализуй single-head attention для короткой последовательности без готового слоя.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -152,7 +154,7 @@ fn main() {
                     trace_note!("Обрабатываем случай, когда предыдущее условие не выполнено.");
                         trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
                         trace_note!("Делим значения, получая нормированную величину или среднее.");
-                        l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(query, key).unwrap()
+                        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(query, key).unwrap()
 
                             / (|| -> f64 {
         trace_note!("Обновляем значение результатом текущего вычисления.");

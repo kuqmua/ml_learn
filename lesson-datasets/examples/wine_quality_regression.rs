@@ -1,3 +1,7 @@
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
+use l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count;
+use l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count;
+
 fn report_error(
     name: &str,
     records: &[lesson_datasets::WineQualityRedRecord],
@@ -17,10 +21,20 @@ fn report_error(
         .collect();
     println!(
         "{name}: baseline MAE={:.3}, MSE={:.3}; alcohol model MAE={:.3}, MSE={:.3}",
-        l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(&targets, &baseline)?,
-        l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &baseline)?,
-        l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(&targets, &predictions)?,
-        l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &predictions)?
+        calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(
+            &targets, &baseline
+        )?,
+        calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+            &targets, &baseline
+        )?,
+        calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(
+            &targets,
+            &predictions
+        )?,
+        calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+            &targets,
+            &predictions
+        )?
     );
     Ok(())
 }
@@ -38,14 +52,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .iter()
         .map(|&index| records[index].features[10])
         .collect();
-    let target_mean =
-        l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
-            &training_targets,
-        )?;
-    let alcohol_mean =
-        l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
-            &training_alcohol,
-        )?;
+    let target_mean = calculate_mean_by_summing_values_and_dividing_by_count(&training_targets)?;
+    let alcohol_mean = calculate_mean_by_summing_values_and_dividing_by_count(&training_alcohol)?;
     let covariance: f64 = training_alcohol
         .iter()
         .zip(&training_targets)

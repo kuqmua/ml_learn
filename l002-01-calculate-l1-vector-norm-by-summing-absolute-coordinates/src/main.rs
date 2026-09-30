@@ -10,6 +10,8 @@
 // Что изучаем: складываем модули всех координат. Отрицательное число даёт положительный вклад,
 // поэтому смена знаков не меняет ответ. У нулевого вектора результат равен нулю.
 
+use l002_01_calculate_l1_vector_norm_by_summing_absolute_coordinates::calculate_l1_vector_norm_by_summing_absolute_coordinates as calculate_l1_norm;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -33,9 +35,7 @@ fn main() {
         trace_step!(expected);
         trace_note!("Формула из общей библиотеки пригодится и в сводной практике.");
         let calculate_l1_vector_norm_by_summing_absolute_coordinates: f64 =
-            l002_01_calculate_l1_vector_norm_by_summing_absolute_coordinates::calculate_l1_vector_norm_by_summing_absolute_coordinates(
-                &vector,
-            );
+            calculate_l1_norm(&vector);
         trace_step!(calculate_l1_vector_norm_by_summing_absolute_coordinates);
         trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(
@@ -59,19 +59,15 @@ fn plot_l1_vector_norm_as_absolute_coordinate_sum_for_changing_first_coordinate(
     trace_note!("Преобразуем каждый элемент в новое значение.");
     trace_note!("Собираем результаты в коллекцию.");
     let sum_absolute_values_of_vector_coordinates_points: Vec<(f64, f64)> = (-50..=50)
-
         .map(|plot_step_index| {
             trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             trace_note!("Добавляем пару значений для сравнения или построения графика.");
             (
                 horizontal_value,
-                l002_01_calculate_l1_vector_norm_by_summing_absolute_coordinates::calculate_l1_vector_norm_by_summing_absolute_coordinates(
-                    &[horizontal_value, 4.0],
-                ),
+                calculate_l1_norm(&[horizontal_value, 4.0]),
             )
         })
-
         .collect();
     trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
     trace_note!("Передаём путь к каталогу текущего урока.");

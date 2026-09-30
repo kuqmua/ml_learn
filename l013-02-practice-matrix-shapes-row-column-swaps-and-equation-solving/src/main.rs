@@ -18,6 +18,8 @@
 //   библиотек.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -110,14 +112,12 @@ fn main() {
         trace_note!("Используем подготовленное значение в следующем шаге примера.");
         trace_note!("Используем подготовленное значение в следующем шаге примера.");
         trace_note!("Используем результат, ожидая успешного выполнения шага.");
-        let row_result: f64 = l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-
-            &left_matrix.data[row_start..row_end],
-
-            &input_vector,
-        )
-
-        .expect("длина строки совпадает с длиной вектора");
+        let row_result: f64 =
+            calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+                &left_matrix.data[row_start..row_end],
+                &input_vector,
+            )
+            .expect("длина строки совпадает с длиной вектора");
         trace_step!(row_result);
         trace_note!("Сохраняем очередной рассчитанный элемент в коллекции.");
         output_vector.push(row_result);
@@ -184,14 +184,12 @@ fn main() {
             trace_note!("Используем подготовленное значение в следующем шаге примера.");
             trace_note!("Используем подготовленное значение в следующем шаге примера.");
             trace_note!("Используем результат, ожидая успешного выполнения шага.");
-            let cell_value: f64 = l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-
-                &transposed_matrix.data[row_start..row_end],
-
-                &column_values,
-            )
-
-            .expect("внутренние размеры матриц совпадают");
+            let cell_value: f64 =
+                calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+                    &transposed_matrix.data[row_start..row_end],
+                    &column_values,
+                )
+                .expect("внутренние размеры матриц совпадают");
             trace_step!(cell_value);
             trace_note!("Сохраняем очередной рассчитанный элемент в коллекции.");
             result_elements.push(cell_value);

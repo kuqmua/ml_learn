@@ -7,6 +7,9 @@
 //   префикса.
 // Сохраняем K/V прошлых токенов и сверяем последний выход с полным причинным пересчётом.
 
+use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
+use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
+
 use lesson_trace::{enable, trace_note, trace_step};
 
 fn main() {
@@ -14,8 +17,10 @@ fn main() {
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
     trace_step!(states);
     let full: Vec<[f64; 2]> =
-        l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(&states, &states, &states)
-            .unwrap();
+        calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
+            &states, &states, &states,
+        )
+        .unwrap();
     trace_step!(full);
     let mut cached_keys: Vec<[f64; 2]> = Vec::new();
     trace_step!(cached_keys);
@@ -34,7 +39,7 @@ fn main() {
             .collect();
         trace_step!(raw_model_scores);
         let weights: Vec<f64> =
-            l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+            calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
                 &raw_model_scores,
             );
         trace_step!(weights);

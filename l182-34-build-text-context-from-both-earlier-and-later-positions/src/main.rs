@@ -7,6 +7,8 @@
 //   всю фразу.
 // В отличие от decoder, текущий токен читает контекст и слева, и справа.
 
+use l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products;
+
 use lesson_trace::{enable, trace_step};
 
 fn main() {
@@ -14,7 +16,7 @@ fn main() {
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
     trace_step!(states);
     let output: Vec<[f64; 2]> =
-        l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
+        calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
             &states, &[true; 3],
         )
         .unwrap();
@@ -22,7 +24,7 @@ fn main() {
     let changed: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [9.0, 9.0]];
     trace_step!(changed);
     let after: Vec<[f64; 2]> =
-        l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
+        calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
             &changed, &[true; 3],
         )
         .unwrap();

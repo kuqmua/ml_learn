@@ -7,6 +7,8 @@
 // Представь: Из четырёх экспертов считаем только два выбранных, затем смешиваем их ответы.
 // Два выбранных эксперта обрабатывают токен; пример относится к MoE-вариантам Qwen3.
 
+use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -23,10 +25,9 @@ fn main() {
     let selected: [usize; 2] = [order[0], order[1]];
     trace_step!(selected);
     let weights: Vec<f64> =
-        l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&[
-            scores[selected[0]],
-            scores[selected[1]],
-        ]);
+        calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+            &[scores[selected[0]], scores[selected[1]]],
+        );
     trace_step!(weights);
     trace_note!("У каждого эксперта своя простая линейная функция.");
     let expert_gain: [f64; 4] = [1.0, 2.0, -1.0, 0.5];

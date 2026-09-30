@@ -7,6 +7,8 @@
 //   вектора.
 // Нормируем средний квадрат координат и применяем обучаемый масштаб.
 
+use l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights;
+
 use lesson_trace::{enable, trace_note, trace_step};
 
 fn main() {
@@ -15,10 +17,9 @@ fn main() {
     trace_step!(input_component);
     trace_note!("ε=10⁻⁸ защищает от нулевого RMS и почти не меняет обычный ненулевой вектор.");
     let result: Vec<f64> =
-        l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
+        normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
             &input_component,
             &[1.0, 1.0],
-
             1e-8,
         )
         .unwrap();

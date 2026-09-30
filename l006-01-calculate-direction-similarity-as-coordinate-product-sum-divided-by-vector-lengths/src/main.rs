@@ -11,6 +11,8 @@
 // 1 означает одинаковое направление, 0 — перпендикулярность, −1 — противоположное.
 // Промежуточные значения показывают острый или тупой угол. Для нулевого вектора направления нет.
 
+use l006_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -40,8 +42,10 @@ fn main() {
         trace_step!(expected);
         trace_note!("Числитель и длины уже изучены; общий код соединяет их в косинусное сходство.");
         trace_note!("Используем результат, ожидая успешного выполнения шага.");
-        let similarity: f64 = l006_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&left, right)
-
+        let similarity: f64 =
+            calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(
+                &left, right,
+            )
             .expect("оба вектора ненулевые и одинаковой длины");
         trace_step!(similarity);
         trace_note!("Проверяем ожидаемое свойство учебного примера.");
@@ -61,8 +65,10 @@ fn main() {
         trace_step!(right);
         trace_note!("Сохраняем результат этого шага в `error`.");
         trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
-        let error: &str = l006_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&left, right)
-
+        let error: &str =
+            calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(
+                &left, right,
+            )
             .expect_err("этот вход должен быть отклонён");
         trace_step!(error);
         trace_note!("Печатаем рассчитанные значения для проверки примера.");
@@ -81,9 +87,7 @@ fn plot_direction_similarity_as_coordinate_product_sum_divided_by_lengths_for_ch
     trace_note!("Преобразуем каждый элемент в новое значение.");
     trace_note!("Собираем результаты в коллекцию.");
     let cosine_similarity_between_two_vectors_points: Vec<(f64, f64)> = (0..=180)
-
         .step_by(5)
-
         .map(|plot_step_index| {
             trace_note!("Сохраняем результат этого шага в `angle`.");
             let angle: f64 = (plot_step_index as f64).to_radians();
@@ -93,20 +97,14 @@ fn plot_direction_similarity_as_coordinate_product_sum_divided_by_lengths_for_ch
             trace_note!("Передаём ряды или значения для отрисовки графика.");
             trace_note!("Используем результат, ожидая успешного выполнения шага.");
             (
-
                 plot_step_index as f64,
-
-                l006_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(
-
+                calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(
                     &[1.0, 0.0],
-
                     &[angle.cos(), angle.sin()],
                 )
-
                 .unwrap(),
             )
         })
-
         .collect();
     trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
     trace_note!("Передаём путь к каталогу текущего урока.");

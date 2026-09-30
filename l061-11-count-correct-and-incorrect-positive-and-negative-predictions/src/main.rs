@@ -9,6 +9,10 @@
 // Каждая пара «истина, прогноз» попадает ровно в одну из четырёх ячеек.
 // Эти счётчики затем повторно используются в precision, recall, F1 и сводной практике.
 
+use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::{
+    BinaryClassificationCounts, count_binary_classification_outcomes_from_true_and_predicted_labels,
+};
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -21,11 +25,9 @@ fn main() {
     trace_step!(predicted);
     trace_note!("Сохраняем результат этого шага в `counts`.");
     trace_note!("Используем результат, ожидая успешного выполнения шага.");
-    let counts: l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts = l061_11_count_correct_and_incorrect_positive_and_negative_predictions::count_binary_classification_outcomes_from_true_and_predicted_labels(
-        &truth, &predicted,
-    )
-
-    .expect("у каждого ответа есть прогноз");
+    let counts: BinaryClassificationCounts =
+        count_binary_classification_outcomes_from_true_and_predicted_labels(&truth, &predicted)
+            .expect("у каждого ответа есть прогноз");
     trace_step!(counts);
     trace_note!("Повторяем расчёт для каждого элемента последовательности.");
     for index in 0..truth.len() {
@@ -78,9 +80,7 @@ fn main() {
 }
 
 // Строим график по результатам урока.
-fn plot_counts_of_correct_and_incorrect_class_predictions(
-    counts: l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts,
-) {
+fn plot_counts_of_correct_and_incorrect_class_predictions(counts: BinaryClassificationCounts) {
     trace_note!("Сравнение величин из этого урока.");
     trace_note!("Передаём путь к каталогу текущего урока.");
     trace_note!("Указываем имя SVG-файла.");

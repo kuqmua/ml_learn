@@ -8,6 +8,8 @@
 // Позиция вращает пары координат Q и K, сохраняя их длину.
 
 /// Скалярное произведение: умножаем соответствующие координаты двух векторов и складываем произведения.
+use l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position;
+
 use lesson_trace::{disable, enable, trace_step};
 
 fn calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
@@ -23,25 +25,13 @@ fn main() {
     let key_vector: [f64; 2] = [1.0, 0.0];
     trace_step!(key_vector);
     let same: f64 = calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-        l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position(
-            query_vector,
-            3,
-            0.2,
-        ),
-        l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position(
-            key_vector, 3, 0.2,
-        ),
+        rotate_vector_coordinate_pair_by_token_position(query_vector, 3, 0.2),
+        rotate_vector_coordinate_pair_by_token_position(key_vector, 3, 0.2),
     );
     trace_step!(same);
     let distant: f64 = calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-        l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position(
-            query_vector,
-            3,
-            0.2,
-        ),
-        l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position(
-            key_vector, 8, 0.2,
-        ),
+        rotate_vector_coordinate_pair_by_token_position(query_vector, 3, 0.2),
+        rotate_vector_coordinate_pair_by_token_position(key_vector, 8, 0.2),
     );
     trace_step!(distant);
     assert!((same - 1.0).abs() < 1e-12);
@@ -54,22 +44,17 @@ fn main() {
 fn plot_coordinate_product_sum_for_relative_position_rotations() {
     let query_vector: [f64; 2] = [1.0, 0.0];
     let query_vector: [f64; 2] =
-        l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position(
-            query_vector,
-            0,
-            0.2,
-        );
+        rotate_vector_coordinate_pair_by_token_position(query_vector, 0, 0.2);
     let points: Vec<(f64, f64)> = (0..=20)
         .map(|position_index| {
             let key_vector: [f64; 2] =
-                l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position(
-                    [1.0, 0.0],
-                    position_index,
-                    0.2,
-                );
+                rotate_vector_coordinate_pair_by_token_position([1.0, 0.0], position_index, 0.2);
             (
                 position_index as f64,
-                calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(query_vector, key_vector),
+                calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+                    query_vector,
+                    key_vector,
+                ),
             )
         })
         .collect();

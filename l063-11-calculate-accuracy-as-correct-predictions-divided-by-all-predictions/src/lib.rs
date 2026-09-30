@@ -2,10 +2,12 @@
 
 /// Общая доля верных прогнозов.
 /// Доля правильных прогнозов (accuracy): (верные положительные + верные отрицательные) / все прогнозы.
+use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts;
+
 use lesson_trace::{trace_note, trace_step};
 
 pub fn calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(
-    counts: l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts,
+    counts: BinaryClassificationCounts,
 ) -> Option<f64> {
     trace_note!("Сохраняем результат этого шага в `total`.");
     trace_note!("Используем подготовленное значение в следующем шаге примера.");

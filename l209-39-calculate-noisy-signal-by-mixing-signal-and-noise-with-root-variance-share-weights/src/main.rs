@@ -7,6 +7,8 @@
 //   число.
 // При уменьшении доли исходного сигнала смесь становится ближе к шуму.
 
+use l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -20,7 +22,7 @@ fn main() {
     );
     for original_signal_variance_share in [1.0, 0.75, 0.25, 0.0] {
         trace_step!(original_signal_variance_share);
-        let noisy: f64 = l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+        let noisy: f64 = calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
             clean,
             noise,
             original_signal_variance_share,
@@ -30,14 +32,14 @@ fn main() {
         println!("alpha_bar={original_signal_variance_share:.2}; x_t={noisy:.3}");
     }
     assert_eq!(
-        l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+        calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
             clean, noise, 1.0
         )
         .unwrap(),
         clean
     );
     assert_eq!(
-        l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+        calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
             clean, noise, 0.0
         )
         .unwrap(),
@@ -53,7 +55,7 @@ fn plot_signal_and_noise_mixture_for_changing_signal_share(clean: f64, noise: f6
             let original_signal_variance_share: f64 = plot_step_index as f64 / 100.0;
             (
                 original_signal_variance_share,
-                l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+                calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
                     clean,
                     noise,
                     original_signal_variance_share,

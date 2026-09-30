@@ -6,6 +6,8 @@
 //   закодировать байтами.
 // Сравниваем длину byte-level и BPE кодирования на train и новых строках.
 
+use l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -15,10 +17,11 @@ fn main() {
     trace_step!(training_data);
     let validation: [&str; 2] = ["кот играет", "🐈 спит"];
     trace_step!(validation);
-    let model: l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding = l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding::train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair(
-        &training_data,
-        30,
-    );
+    let model: BytePairEncoding =
+        BytePairEncoding::train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair(
+            &training_data,
+            30,
+        );
     trace_step!(model);
     let rows: Vec<(&str, usize, usize)> = training_data
         .iter()

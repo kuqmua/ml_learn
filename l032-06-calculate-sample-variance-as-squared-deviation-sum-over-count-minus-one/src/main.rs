@@ -9,6 +9,8 @@
 // Общая функция использует среднее из урока 06.1. При одинаковых значениях разброс равен нулю;
 // для выборочной оценки нужны хотя бы два значения.
 
+use l032_06_calculate_sample_variance_as_squared_deviation_sum_over_count_minus_one::calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -30,9 +32,9 @@ fn main() {
         trace_step!(expected);
         trace_note!("Сохраняем результат этого шага в `variance`.");
         trace_note!("Используем результат, ожидая успешного выполнения шага.");
-        let variance: f64 = l032_06_calculate_sample_variance_as_squared_deviation_sum_over_count_minus_one::calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(values)
-
-            .expect("для этой выборки дисперсия определена");
+        let variance: f64 =
+            calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(values)
+                .expect("для этой выборки дисперсия определена");
         trace_step!(variance);
         trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(variance, expected);
@@ -42,11 +44,8 @@ fn main() {
     trace_note!("Сохраняем результат этого шага в `error`.");
     trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
     let error: &str =
-        l032_06_calculate_sample_variance_as_squared_deviation_sum_over_count_minus_one::calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(&[
-            4.0,
-        ])
-
-        .expect_err("одного значения недостаточно");
+        calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(&[4.0])
+            .expect_err("одного значения недостаточно");
     trace_step!(error);
     trace_note!("Печатаем рассчитанные значения для проверки примера.");
     println!("одно значение: {error}");

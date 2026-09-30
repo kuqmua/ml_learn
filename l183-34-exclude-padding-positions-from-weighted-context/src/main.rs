@@ -6,6 +6,8 @@
 // Представь: Добавленные PAD-позиции не должны менять смысл настоящих слов при внимании.
 // Добавленные PAD позиции не должны влиять на реальные выходные токены.
 
+use l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products;
+
 use lesson_trace::{enable, trace_note, trace_step};
 
 fn main() {
@@ -13,7 +15,7 @@ fn main() {
     let real: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
     trace_step!(real);
     let base: Vec<[f64; 2]> =
-        l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
+        calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
             &real,
             &[true, true],
         )
@@ -24,7 +26,7 @@ fn main() {
     trace_step!(input_with_padding_rows);
     trace_note!("Игнорирование добавленных пустых позиций называют padding mask.");
     let output_ignoring_padding: Vec<[f64; 2]> =
-        l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
+        calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_products(
             &input_with_padding_rows,
             &[true, true, false],
         )

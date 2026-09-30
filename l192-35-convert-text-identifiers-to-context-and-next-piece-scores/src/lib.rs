@@ -3,6 +3,8 @@
 
 /// Применяет фиксированную выходную проекцию к состояниям decoder.
 /// Выходные логиты декодера: контекстные векторы превращаем в три оценки следующего токена фиксированными весами.
+use l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calculate_text_context_vectors_by_adding_position_and_weighted_past_context;
+
 use lesson_trace::trace_note;
 
 pub fn convert_text_identifiers_to_context_then_to_next_token_scores(
@@ -11,7 +13,7 @@ pub fn convert_text_identifiers_to_context_then_to_next_token_scores(
     trace_note!(
         "Третий logit — среднее двух координат (веса 0.5 и 0.5) фиксированной выходной проекции."
     );
-    l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calculate_text_context_vectors_by_adding_position_and_weighted_past_context(
+    calculate_text_context_vectors_by_adding_position_and_weighted_past_context(
         text_unit_identifiers,
     )
     .into_iter()

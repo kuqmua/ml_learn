@@ -9,6 +9,8 @@
 // Нормализация, причинное внимание, residual, FFN и второй residual образуют блок.
 
 /// Нормализация слоя (LayerNorm): из координат вычитаем среднее и делим на sqrt(среднее квадратов отклонений + epsilon).
+use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
+
 use lesson_trace::{enable, trace_note, trace_step};
 
 fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation(
@@ -36,12 +38,13 @@ fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normali
         .map(normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_squared_deviation)
         .collect();
     trace_step!(normalized);
-    let attention: Vec<[f64; 2]> = l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
-        &normalized,
-        &normalized,
-        &normalized,
-    )
-    .unwrap();
+    let attention: Vec<[f64; 2]> =
+        calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
+            &normalized,
+            &normalized,
+            &normalized,
+        )
+        .unwrap();
     trace_step!(attention);
     input
         .iter()

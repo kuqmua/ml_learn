@@ -1,5 +1,7 @@
 // Исходы классификации: сравнение оценок с порогом и подсчёт меток.
 
+use l062_11_count_classification_outcomes_by_comparing_scores_with_threshold::count_binary_classification_outcomes_from_true_labels_and_scores_at_threshold;
+
 use lesson_trace::{enable, trace_step};
 
 fn main() {
@@ -10,7 +12,10 @@ fn main() {
     trace_step!(scores);
     for threshold in [0.5, 0.7] {
         trace_step!(threshold);
-        let counts = l062_11_count_classification_outcomes_by_comparing_scores_with_threshold::count_binary_classification_outcomes_from_true_labels_and_scores_at_threshold(&truth, &scores, threshold).unwrap();
+        let counts = count_binary_classification_outcomes_from_true_labels_and_scores_at_threshold(
+            &truth, &scores, threshold,
+        )
+        .unwrap();
         trace_step!(counts);
         println!("Порог {threshold}: {counts:?}");
     }

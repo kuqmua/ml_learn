@@ -9,6 +9,9 @@
 // Разбираем CSV и объединяем вычисления среднего и дисперсии из общей библиотеки.
 // Медиану находим после сортировки. Пустые строки пропускаем, неверное число сообщаем явно.
 
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
+use l032_06_calculate_sample_variance_as_squared_deviation_sum_over_count_minus_one::calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -43,16 +46,12 @@ fn main() {
     values.sort_by(f64::total_cmp);
 
     trace_note!("Сохраняем результат этого шага в `mean`.");
-    let mean: f64 =
-        l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(&values)
-            .unwrap();
+    let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(&values).unwrap();
     trace_step!(mean);
     trace_note!("Сохраняем результат этого шага в `sample_variance`.");
     let sample_variance: f64 =
-        l032_06_calculate_sample_variance_as_squared_deviation_sum_over_count_minus_one::calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(
-            &values,
-        )
-        .unwrap();
+        calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(&values)
+            .unwrap();
     trace_step!(sample_variance);
     trace_note!("Определяем размер данных и сохраняем его в `middle`.");
     let middle: usize = values.len() / 2;

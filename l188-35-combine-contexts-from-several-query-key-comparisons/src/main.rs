@@ -7,6 +7,8 @@
 //   результаты объединяются.
 // Разные головы получают собственные проекции и соединяются перед выходной проекцией.
 
+use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
+
 use lesson_trace::{enable, trace_note, trace_step};
 
 fn main() {
@@ -24,19 +26,21 @@ fn main() {
         .map(|input_value| [0.0, input_value[1]])
         .collect();
     trace_step!(second_attention_head);
-    let first_output: Vec<[f64; 2]> = l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
-        &first_attention_head,
-        &first_attention_head,
-        &first_attention_head,
-    )
-    .unwrap();
+    let first_output: Vec<[f64; 2]> =
+        calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
+            &first_attention_head,
+            &first_attention_head,
+            &first_attention_head,
+        )
+        .unwrap();
     trace_step!(first_output);
-    let second_output: Vec<[f64; 2]> = l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
-        &second_attention_head,
-        &second_attention_head,
-        &second_attention_head,
-    )
-    .unwrap();
+    let second_output: Vec<[f64; 2]> =
+        calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
+            &second_attention_head,
+            &second_attention_head,
+            &second_attention_head,
+        )
+        .unwrap();
     trace_step!(second_output);
     trace_note!("Конкатенация двух одномерных выходов здесь сразу даёт размерность 2.");
     let combined: Vec<[f64; 2]> = first_output

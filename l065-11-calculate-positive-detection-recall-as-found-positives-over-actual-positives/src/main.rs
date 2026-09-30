@@ -10,6 +10,9 @@
 // Используем те же четыре счётчика. Если положительных объектов нет,
 // значение здесь считаем неопределённым.
 
+use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts;
+use l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -34,8 +37,7 @@ fn main() {
         trace_note!("Задаём именованное поле или параметр.");
         trace_note!("Задаём именованное поле или параметр.");
         trace_note!("Используем подготовленное значение в следующем шаге примера.");
-        let counts: l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts = l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts {
-
+        let counts: BinaryClassificationCounts = BinaryClassificationCounts {
             true_positives,
 
             false_positives: 0,
@@ -46,7 +48,10 @@ fn main() {
         };
         trace_step!(counts);
         trace_note!("Сохраняем результат этого шага в `recall`.");
-        let recall: Option<f64> = l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(counts);
+        let recall: Option<f64> =
+            calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(
+                counts,
+            );
         trace_step!(recall);
         trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(recall, expected);

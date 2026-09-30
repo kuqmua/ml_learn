@@ -1,6 +1,11 @@
+use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
+
 #[test]
 fn known_probabilities_are_positive_and_sum_to_one() {
-    let weights = l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&[0.0, 1.0, 2.0]);
+    let weights =
+        calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+            &[0.0, 1.0, 2.0],
+        );
     let expected = [0.09003057317038046, 0.24472847105479764, 0.6652409557748218];
     assert_eq!(weights.len(), expected.len());
     for (actual, expected) in weights.iter().zip(expected) {
@@ -12,9 +17,12 @@ fn known_probabilities_are_positive_and_sum_to_one() {
 
 #[test]
 fn common_shift_does_not_change_weights_or_overflow() {
-    let expected = l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&[0.0, 1.0, 2.0]);
+    let expected =
+        calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+            &[0.0, 1.0, 2.0],
+        );
     for scores in [[1000.0, 1001.0, 1002.0], [-1000.0, -999.0, -998.0]] {
-        let actual = l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&scores);
+        let actual = calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&scores);
         assert_eq!(actual, expected);
         assert!(actual.iter().all(|value| value.is_finite()));
     }
@@ -22,8 +30,28 @@ fn common_shift_does_not_change_weights_or_overflow() {
 
 #[test]
 fn empty_single_equal_and_extreme_scores() {
-    assert!(l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&[]).is_empty());
-    assert_eq!(l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&[42.0]), vec![1.0]);
-    assert_eq!(l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&[3.0, 3.0, 3.0, 3.0]), vec![0.25; 4]);
-    assert_eq!(l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&[-1000.0, 1000.0]), vec![0.0, 1.0]);
+    assert!(
+        calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+            &[]
+        )
+        .is_empty()
+    );
+    assert_eq!(
+        calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+            &[42.0]
+        ),
+        vec![1.0]
+    );
+    assert_eq!(
+        calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+            &[3.0, 3.0, 3.0, 3.0]
+        ),
+        vec![0.25; 4]
+    );
+    assert_eq!(
+        calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+            &[-1000.0, 1000.0]
+        ),
+        vec![0.0, 1.0]
+    );
 }

@@ -12,6 +12,8 @@
 // направлений.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -26,9 +28,7 @@ fn main() {
     trace_note!("Используем подготовленное значение в следующем шаге примера.");
     trace_note!("Используем результат, ожидая успешного выполнения шага.");
     let sum_after_multiplying_coordinates: f64 =
-
-        l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&first, &second)
-
+        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&first, &second)
             .expect("представления имеют одинаковую размерность");
     trace_step!(sum_after_multiplying_coordinates);
     trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");

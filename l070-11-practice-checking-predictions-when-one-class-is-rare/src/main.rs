@@ -10,6 +10,13 @@
 // Объединяем четыре исхода, precision, recall и F1 из уроков 11.1–11.4.
 // При редком положительном классе высокая accuracy может скрывать бесполезную модель.
 
+use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts;
+use l062_11_count_classification_outcomes_by_comparing_scores_with_threshold::count_binary_classification_outcomes_from_true_labels_and_scores_at_threshold;
+use l063_11_calculate_accuracy_as_correct_predictions_divided_by_all_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions;
+use l064_11_calculate_positive_prediction_precision_as_true_positives_over_positive_predictions::calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions;
+use l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives;
+use l066_11_calculate_f1_score_as_twice_precision_times_recall_over_their_sum::calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -24,25 +31,31 @@ fn main() {
     let scores: [f64; 10] = [0.1, 0.2, 0.3, 0.1, 0.2, 0.4, 0.1, 0.3, 0.2, 0.8];
     trace_step!(scores);
     trace_note!("Сохраняем результат этого шага в `counts`.");
-    let counts: l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts = l062_11_count_classification_outcomes_by_comparing_scores_with_threshold::count_binary_classification_outcomes_from_true_labels_and_scores_at_threshold(&labels, &scores, 0.5).unwrap();
+    let counts: BinaryClassificationCounts =
+        count_binary_classification_outcomes_from_true_labels_and_scores_at_threshold(
+            &labels, &scores, 0.5,
+        )
+        .unwrap();
     trace_step!(counts);
     trace_note!("Сохраняем результат этого шага в `precision`.");
     let precision: Option<f64> =
-        l064_11_calculate_positive_prediction_precision_as_true_positives_over_positive_predictions::calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions(counts);
+        calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions(
+            counts,
+        );
     trace_step!(precision);
     trace_note!("Сохраняем результат этого шага в `recall`.");
-    let recall: Option<f64> = l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(counts);
+    let recall: Option<f64> =
+        calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(counts);
     trace_step!(recall);
     trace_note!(
         "Сохраняем результат этого шага в `calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum`."
     );
-    let harmonic_mean_score: Option<f64> = l066_11_calculate_f1_score_as_twice_precision_times_recall_over_their_sum::calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum(precision, recall);
+    let harmonic_mean_score: Option<f64> =
+        calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum(precision, recall);
     trace_step!(harmonic_mean_score);
     trace_note!("Сохраняем результат этого шага в `accuracy`.");
     let accuracy: Option<f64> =
-        l063_11_calculate_accuracy_as_correct_predictions_divided_by_all_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(
-            counts,
-        );
+        calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(counts);
     trace_step!(accuracy);
     trace_note!("Печатаем рассчитанные значения для проверки примера.");
     trace_note!("Передаём подпись или текстовое значение для следующего шага.");
@@ -55,19 +68,21 @@ fn main() {
     trace_step!(all_negative_scores);
     trace_note!("Сохраняем результат этого шага в `useless`.");
     trace_note!("Используем подготовленное значение в следующем шаге примера.");
-    let useless: l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts =
-
-        l062_11_count_classification_outcomes_by_comparing_scores_with_threshold::count_binary_classification_outcomes_from_true_labels_and_scores_at_threshold(&labels, &all_negative_scores, 0.5).unwrap();
+    let useless: BinaryClassificationCounts =
+        count_binary_classification_outcomes_from_true_labels_and_scores_at_threshold(
+            &labels,
+            &all_negative_scores,
+            0.5,
+        )
+        .unwrap();
     trace_step!(useless);
     trace_note!("Сохраняем результат этого шага в `useless_accuracy`.");
     let useless_accuracy: Option<f64> =
-        l063_11_calculate_accuracy_as_correct_predictions_divided_by_all_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(
-            useless,
-        );
+        calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(useless);
     trace_step!(useless_accuracy);
     trace_note!("Сохраняем результат этого шага в `useless_recall`.");
     let useless_recall: Option<f64> =
-        l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(useless);
+        calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(useless);
     trace_step!(useless_recall);
     trace_note!("Проверяем ожидаемое свойство учебного примера.");
     assert!(useless_accuracy.unwrap() > 0.8);

@@ -12,6 +12,8 @@
 // длину документов.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use l006_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -24,8 +26,10 @@ fn main() {
     trace_step!(document);
     trace_note!("Тот же косинус из урока 01.6 теперь сравнивает векторы слов документов.");
     trace_note!("Используем результат, ожидая успешного выполнения шага.");
-    let similarity: f64 = l006_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&query, &document)
-
+    let similarity: f64 =
+        calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(
+            &query, &document,
+        )
         .expect("ненулевые векторы слов одинаковой размерности");
     trace_step!(similarity);
     trace_note!("Печатаем рассчитанные значения для проверки примера.");
@@ -45,9 +49,7 @@ fn plot_document_direction_similarity_as_coordinate_product_sum_divided_by_lengt
     trace_note!("Преобразуем каждый элемент в новое значение.");
     trace_note!("Собираем результаты в коллекцию.");
     let points: Vec<(f64, f64)> = (0..=180)
-
         .step_by(5)
-
         .map(|degrees| {
             trace_note!("Сохраняем результат этого шага в `angle`.");
             let angle: f64 = (degrees as f64).to_radians();
@@ -56,14 +58,14 @@ fn plot_document_direction_similarity_as_coordinate_product_sum_divided_by_lengt
             trace_note!("Используем подготовленное значение в следующем шаге примера.");
             trace_note!("Задаём именованное поле или параметр.");
             (
-
                 degrees as f64,
-
-                l006_01_calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths::calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(&query, &rotated_document)
-                    .unwrap(),
+                calculate_direction_similarity_as_coordinate_product_sum_divided_by_vector_lengths(
+                    &query,
+                    &rotated_document,
+                )
+                .unwrap(),
             )
         })
-
         .collect();
     trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
     trace_note!("Передаём путь к каталогу текущего урока.");

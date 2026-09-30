@@ -10,6 +10,8 @@
 // Зачем это нужно: Key описывает, на какой запрос позиция отвечает; сравнение Q·K даёт оценку внимания.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -23,11 +25,8 @@ fn main() {
     trace_note!("Умножаем значения и сохраняем результат в `score`.");
     trace_note!("Используем результат, ожидая успешного выполнения шага.");
     let score: f64 =
-        l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-            &query, &key,
-        )
-
-        .expect("запрос и ключ имеют одинаковую размерность");
+        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&query, &key)
+            .expect("запрос и ключ имеют одинаковую размерность");
     trace_step!(score);
     trace_note!("Выводим рассчитанные значения, чтобы сравнить их с ожидаемым поведением.");
     println!("Q·K = {score}");

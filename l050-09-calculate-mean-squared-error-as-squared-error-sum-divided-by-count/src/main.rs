@@ -7,6 +7,8 @@
 // При точном прогнозе MSE равна нулю. Ошибка вдвое больше даёт вклад вчетверо больше.
 // Та же общая функция будет использоваться для оценки моделей в следующих уроках.
 
+use l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -32,9 +34,11 @@ fn main() {
         trace_note!("Сохраняем результат этого шага в `mean_squared_error_value`.");
         trace_note!("Используем результат, ожидая успешного выполнения шага.");
         let mean_squared_error_value: f64 =
-            l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, predictions)
-
-                .expect("у каждого прогноза есть правильный ответ");
+            calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+                &targets,
+                predictions,
+            )
+            .expect("у каждого прогноза есть правильный ответ");
         trace_step!(mean_squared_error_value);
         trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert!((mean_squared_error_value - expected).abs() < 1e-10);
@@ -43,9 +47,11 @@ fn main() {
     }
     trace_note!("Сохраняем результат этого шага в `error`.");
     trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
-    let error: &str = l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &[2.0, 4.0])
-
-        .expect_err("длины должны совпадать");
+    let error: &str = calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+        &targets,
+        &[2.0, 4.0],
+    )
+    .expect_err("длины должны совпадать");
     trace_step!(error);
     trace_note!("Печатаем рассчитанные значения для проверки примера.");
     println!("разная длина: {error}");
@@ -61,7 +67,6 @@ fn plot_average_squared_prediction_error_for_changing_offset() {
     trace_note!("Преобразуем каждый элемент в новое значение.");
     trace_note!("Собираем результаты в коллекцию.");
     let mean_squared_error_points: Vec<(f64, f64)> = (-30..=30)
-
         .map(|plot_step_index| {
             trace_note!("Сохраняем результат этого шага в `prediction_difference`.");
             let prediction_difference: f64 = plot_step_index as f64 / 10.0;
@@ -71,24 +76,18 @@ fn plot_average_squared_prediction_error_for_changing_offset() {
             trace_note!("Передаём ряды или значения для отрисовки графика.");
             trace_note!("Используем результат, ожидая успешного выполнения шага.");
             (
-
                 prediction_difference,
-
-                l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
-
+                calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
                     &[2.0, 4.0, 6.0],
-
                     &[
                         2.0 + prediction_difference,
                         4.0 + prediction_difference,
                         6.0 + prediction_difference,
                     ],
                 )
-
                 .unwrap(),
             )
         })
-
         .collect();
     trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
     trace_note!("Передаём путь к каталогу текущего урока.");

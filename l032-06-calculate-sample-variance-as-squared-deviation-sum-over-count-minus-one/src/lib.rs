@@ -2,6 +2,8 @@
 
 /// Выборочная дисперсия использует среднее из урока 06.1.
 /// Выборочная дисперсия: сумму квадратов отклонений от среднего делим на (число значений − 1).
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
+
 use lesson_trace::{trace_note, trace_step};
 
 pub fn calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(
@@ -13,8 +15,7 @@ pub fn calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus
         return Err("для выборочной дисперсии нужны хотя бы два значения");
     }
     trace_note!("Сохраняем результат этого шага в `average`.");
-    let average: f64 =
-        l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(values)?;
+    let average: f64 = calculate_mean_by_summing_values_and_dividing_by_count(values)?;
     trace_step!(average);
     trace_note!("Сохраняем результат этого шага в `squared_deviation_sum`.");
     let mut squared_deviation_sum: f64 = 0.0;

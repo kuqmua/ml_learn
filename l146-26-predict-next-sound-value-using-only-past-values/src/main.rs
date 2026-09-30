@@ -8,6 +8,8 @@
 // Сочетаем причинные дилатированные свёртки, gate и вероятность следующего дискретного отсчёта.
 
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
+use l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
@@ -24,13 +26,13 @@ fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f6
         .collect();
     trace_step!(input);
     let filter_one: Vec<f64> =
-        l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+        calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &input, 0.8, 0.4, 1,
         )
         .unwrap();
     trace_step!(filter_one);
     let gate_one: Vec<f64> =
-        l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+        calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &input, 0.2, -0.3, 1,
         )
         .unwrap();
@@ -48,13 +50,13 @@ fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f6
         .collect();
     trace_step!(layer_one);
     let filter_two: Vec<f64> =
-        l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+        calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &layer_one, 1.0, 0.5, 2,
         )
         .unwrap();
     trace_step!(filter_two);
     let gate_two: Vec<f64> =
-        l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+        calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &layer_one, 0.1, 0.6, 2,
         )
         .unwrap();

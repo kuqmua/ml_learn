@@ -11,6 +11,8 @@
 // участвовавших в обучении.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -63,7 +65,11 @@ fn main() {
     trace_step!(predictions);
     trace_note!("Сохраняем результат этого шага в `mean_squared_error_value`.");
     let mean_squared_error_value: f64 =
-        l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(&targets, &predictions).unwrap();
+        calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+            &targets,
+            &predictions,
+        )
+        .unwrap();
     trace_step!(mean_squared_error_value);
     trace_note!("Печатаем рассчитанные значения для проверки примера.");
     println!("test MSE = {mean_squared_error_value}");

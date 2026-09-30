@@ -10,6 +10,11 @@
 
 // Во всех вызовах RMSNorm в блоке ε=10⁻⁶ защищает от нулевого среднего квадрата координат.
 /// Учебный блок по мотивам Qwen: RMSNorm, поворот координат по позиции, два набора весов внимания с общими ключами и значениями, затем SwiGLU с прибавлением входа.
+use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
+use l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights;
+use l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position;
+use l198_36_calculate_gated_layer_output_by_multiplying_branches_with_smooth_gate::calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate;
+
 use lesson_trace::{enable, trace_note, trace_step};
 
 fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and_gated_features(
@@ -21,7 +26,7 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
         .iter()
         .map(|input_value| {
             let second_input_value: Vec<f64> =
-                l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
+                normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
                     input_value,
                     &gamma,
                     1e-6,
@@ -38,14 +43,14 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
         .enumerate()
         .map(|(position, input_value)| {
             let key: Vec<f64> =
-                l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
+                normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
                     input_value,
                     &gamma,
                     1e-6,
                 )
                 .unwrap();
             trace_step!(key);
-            l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position(
+            rotate_vector_coordinate_pair_by_token_position(
                 [key[0], key[1]],
                 position,
                 0.1,
@@ -69,24 +74,20 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
             };
             trace_step!(raw_query);
             let query: Vec<f64> =
-                l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
+                normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
                     &raw_query, &gamma, 1e-6,
                 )
                 .unwrap();
             trace_step!(query);
             let query: [f64; 2] =
-                l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position(
-                    [query[0], query[1]],
-                    index,
-                    0.1,
-                );
+                rotate_vector_coordinate_pair_by_token_position([query[0], query[1]], index, 0.1);
             trace_step!(query);
             trace_note!("Оценку модели до преобразования в вероятность называют logit.");
             let raw_model_scores: Vec<f64> = (0..=index)
                 .map(|past| (query[0] * keys[past][0] + query[1] * keys[past][1]) / 2.0_f64.sqrt())
                 .collect();
             trace_step!(raw_model_scores);
-            let weights: Vec<f64> = l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&raw_model_scores);
+            let weights: Vec<f64> = calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&raw_model_scores);
             trace_step!(weights);
             for (past, &weight) in weights.iter().enumerate() {
                 trace_step!(past);
@@ -104,7 +105,7 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
             [states[index][0] + context[0], states[index][1] + context[1]];
         trace_step!(input_plus_transformed_value);
         let feed_forward_input: Vec<f64> =
-            l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
+            normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
                 &input_plus_transformed_value,
                 &gamma,
                 1e-6,
@@ -114,13 +115,13 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
         output.push([
             input_plus_transformed_value[0]
                 + 0.1
-                    * l198_36_calculate_gated_layer_output_by_multiplying_branches_with_smooth_gate::calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate(
+                    * calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate(
                         feed_forward_input[0],
                         feed_forward_input[1],
                     ),
             input_plus_transformed_value[1]
                 + 0.1
-                    * l198_36_calculate_gated_layer_output_by_multiplying_branches_with_smooth_gate::calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate(
+                    * calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate(
                         feed_forward_input[1],
                         feed_forward_input[0],
                     ),

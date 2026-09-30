@@ -12,6 +12,9 @@
 // 1.96·SE для небольшого учебного набора.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
+use l032_06_calculate_sample_variance_as_squared_deviation_sum_over_count_minus_one::calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -20,16 +23,12 @@ fn main() {
     let values: [f64; 4] = [2.0, 4.0, 6.0, 8.0];
     trace_step!(values);
     trace_note!("Сохраняем результат этого шага в `mean`.");
-    let mean: f64 =
-        l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(&values)
-            .unwrap();
+    let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(&values).unwrap();
     trace_step!(mean);
     trace_note!("Сохраняем результат этого шага в `sample_variance`.");
     let sample_variance: f64 =
-        l032_06_calculate_sample_variance_as_squared_deviation_sum_over_count_minus_one::calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(
-            &values,
-        )
-        .unwrap();
+        calculate_sample_variance_as_squared_deviation_sum_divided_by_count_minus_one(&values)
+            .unwrap();
     trace_step!(sample_variance);
     trace_note!("Считаем количество элементов и сохраняем его в `standard_error_squared`.");
     let standard_error_squared: f64 = sample_variance / values.len() as f64;

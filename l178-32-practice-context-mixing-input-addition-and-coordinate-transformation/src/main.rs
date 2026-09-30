@@ -17,6 +17,8 @@
 // Дополнительная практика: Собери один блок на малых тензорах и опиши порядок операций.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -204,7 +206,7 @@ fn main() {
                     .map(|key| {
                         trace_note!("Составляем результат из вычисленных значений в указанном порядке.");
                         trace_note!("Делим значения, получая нормированную величину или среднее.");
-                        l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&query, key).unwrap()
+                        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&query, key).unwrap()
 
                                 / approximate_square_root_by_repeated_averaging(2.0)
                     })

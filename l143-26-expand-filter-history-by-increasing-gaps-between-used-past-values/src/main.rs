@@ -7,6 +7,8 @@
 // Представь: Фильтр с промежутками между весами видит более далёкое прошлое при том же числе весов.
 // Дилатации 1, 2, 4 расширяют область прошлого без длинных фильтров.
 
+use l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -18,14 +20,13 @@ fn main() {
     trace_note!("Промежуток между используемыми точками фильтра называют dilation.");
     for filter_spacing in [1, 2, 4] {
         trace_step!(filter_spacing);
-        signal =
-            l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
-                &signal,
-                1.0,
-                1.0,
-                filter_spacing,
-            )
-            .unwrap();
+        signal = calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+            &signal,
+            1.0,
+            1.0,
+            filter_spacing,
+        )
+        .unwrap();
         trace_step!(signal);
         println!("после dilation={filter_spacing}: {signal:?}");
     }

@@ -9,6 +9,8 @@
 // Что изучаем: длина вектора — корень из суммы квадратов координат.
 // Смена знаков длину не меняет; длина нулевого вектора равна нулю.
 
+use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -34,9 +36,7 @@ fn main() {
             "Длина вектора — корень из суммы квадратов координат: для [3, 4] это sqrt(9 + 16) = 5."
         );
         let length: f64 =
-            l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(
-                &vector,
-            );
+            calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&vector);
         trace_step!(length);
         trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert!((length - expected).abs() < 1e-10);
@@ -55,20 +55,18 @@ fn plot_vector_length_for_changing_first_coordinate() {
     trace_note!("Преобразуем каждый элемент в новое значение.");
     trace_note!("Собираем результаты в коллекцию.");
     let vector_length_points: Vec<(f64, f64)> = (-50..=50)
-
         .map(|plot_step_index| {
             trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             trace_note!("Добавляем пару значений для сравнения или построения графика.");
             (
                 horizontal_value,
-                l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&[
+                calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&[
                     horizontal_value,
                     4.0,
                 ]),
             )
         })
-
         .collect();
     trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
     trace_note!("Передаём путь к каталогу текущего урока.");

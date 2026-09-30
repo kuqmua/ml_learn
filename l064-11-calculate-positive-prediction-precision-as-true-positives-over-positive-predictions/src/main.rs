@@ -10,6 +10,9 @@
 // Используем четыре счётчика из урока 11.1. Если положительных прогнозов нет,
 // значение здесь считаем неопределённым.
 
+use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts;
+use l064_11_calculate_positive_prediction_precision_as_true_positives_over_positive_predictions::calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -34,8 +37,7 @@ fn main() {
         trace_note!("Используем подготовленное значение в следующем шаге примера.");
         trace_note!("Задаём именованное поле или параметр.");
         trace_note!("Задаём именованное поле или параметр.");
-        let counts: l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts = l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts {
-
+        let counts: BinaryClassificationCounts = BinaryClassificationCounts {
             true_positives,
 
             false_positives,
@@ -47,7 +49,7 @@ fn main() {
         trace_step!(counts);
         trace_note!("Сохраняем результат этого шага в `precision`.");
         let precision: Option<f64> =
-            l064_11_calculate_positive_prediction_precision_as_true_positives_over_positive_predictions::calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions(counts);
+            calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions(counts);
         trace_step!(precision);
         trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert_eq!(precision, expected);

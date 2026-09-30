@@ -5,6 +5,8 @@
 /// Учебный аналог `f64::sqrt`: показывает шаги метода Ньютона и может работать медленнее.
 /// Для отрицательного входа здесь panic, тогда как `sqrt` возвращает NaN.
 /// Метод Ньютона для корня: повторяем estimate = (estimate + value / estimate) / 2.
+use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+
 use lesson_trace::{trace_note, trace_step};
 
 fn approximate_square_root_by_repeated_averaging(value: f64) -> f64 {
@@ -43,11 +45,8 @@ pub fn calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(vect
     trace_note!("Умножаем каждую координату на саму себя и складываем: получаем сумму квадратов.");
     trace_note!("Передаём один вектор дважды, поэтому число координат гарантированно совпадает.");
     let sum_of_squared_coordinates: f64 =
-        l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
-            vector, vector,
-        )
-
-        .expect("у вектора и его самого одинаковое число координат");
+        calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(vector, vector)
+            .expect("у вектора и его самого одинаковое число координат");
     trace_step!(sum_of_squared_coordinates);
     trace_note!("Извлекаем корень из суммы квадратов и получаем длину вектора.");
     approximate_square_root_by_repeated_averaging(sum_of_squared_coordinates)

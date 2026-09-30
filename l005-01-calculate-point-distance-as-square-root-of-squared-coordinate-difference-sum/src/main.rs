@@ -9,6 +9,8 @@
 // Что изучаем: разности по каждой координате возводим в квадрат, складываем и извлекаем корень.
 // Для совпадающих точек ответ 0. Порядок точек не влияет на расстояние.
 
+use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -31,12 +33,12 @@ fn main() {
         trace_step!(expected);
         trace_note!("Общая функция проверяет размерности и вычисляет расстояние.");
         trace_note!("Используем результат, ожидая успешного выполнения шага.");
-        let distance: f64 = l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
-            first_point,
-            second_point,
-        )
-
-        .expect("точки в этом примере имеют одинаковую размерность");
+        let distance: f64 =
+            calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+                first_point,
+                second_point,
+            )
+            .expect("точки в этом примере имеют одинаковую размерность");
         trace_step!(distance);
         trace_note!("Проверяем ожидаемое свойство учебного примера.");
         assert!((distance - expected).abs() < 1e-10);
@@ -52,9 +54,11 @@ fn main() {
     trace_note!("Сохраняем результат этого шага в `error`.");
     trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
     let error: &str =
-        l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(&first_point, &too_short)
-
-            .expect_err("точки разной размерности нужно отклонить");
+        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+            &first_point,
+            &too_short,
+        )
+        .expect_err("точки разной размерности нужно отклонить");
     trace_step!(error);
     trace_note!("Печатаем рассчитанные значения для проверки примера.");
     println!("разная размерность: {error}");
@@ -70,24 +74,20 @@ fn plot_distance_from_origin_for_changing_first_coordinate() {
     trace_note!("Преобразуем каждый элемент в новое значение.");
     trace_note!("Собираем результаты в коллекцию.");
     let distance_points: Vec<(f64, f64)> = (-50..=50)
-
         .map(|plot_step_index| {
             trace_note!("Сохраняем результат этого шага в `horizontal_value`.");
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
             trace_note!("Используем подготовленное значение в следующем шаге примера.");
             trace_note!("Задаём именованное поле или параметр.");
             (
-
                 horizontal_value,
-
-                l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+                calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
                     &[0.0, 0.0],
                     &[horizontal_value, 4.0],
                 )
                 .unwrap(),
             )
         })
-
         .collect();
     trace_note!("Строим график по рассчитанным значениям и сохраняем его как SVG.");
     trace_note!("Передаём путь к каталогу текущего урока.");

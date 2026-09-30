@@ -9,6 +9,8 @@
 // Каждая ячейка ответа получается попарным умножением строки и столбца со сложением.
 // Единичная матрица не меняет значения; порядок множителей обычно влияет на ответ.
 
+use l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -72,10 +74,11 @@ fn main() {
                 trace_note!("Используем подготовленное значение в следующем шаге примера.");
                 trace_note!("Используем результат, ожидая успешного выполнения шага.");
                 result[row][column] =
-
-                    l001_01_calculate_scalar_product_by_multiplying_matching_coordinates_and_adding::calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(&first[row], &column_values)
-
-                        .expect("внутренние размеры матриц совпадают");
+                    calculate_scalar_product_by_multiplying_matching_coordinates_then_adding(
+                        &first[row],
+                        &column_values,
+                    )
+                    .expect("внутренние размеры матриц совпадают");
                 trace_step!(result);
             }
         }

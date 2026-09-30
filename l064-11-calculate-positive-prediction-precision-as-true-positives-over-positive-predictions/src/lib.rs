@@ -2,10 +2,12 @@
 
 /// Доля верных среди положительных прогнозов.
 /// Точность положительных прогнозов (precision): верные положительные / все положительные прогнозы.
+use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts;
+
 use lesson_trace::{trace_note, trace_step};
 
 pub fn calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions(
-    counts: l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts,
+    counts: BinaryClassificationCounts,
 ) -> Option<f64> {
     trace_note!("Сохраняем результат этого шага в `predicted_positives`.");
     let predicted_positives: usize = counts.true_positives + counts.false_positives;

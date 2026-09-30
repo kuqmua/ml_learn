@@ -7,6 +7,8 @@
 // Представь: Если пара байтов часто повторяется, BPE может заменить её одним новым токеном.
 // Частые соседние токены сливаются в новый токен; словарь учится только на train.
 
+use l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding;
+
 use lesson_trace::{enable, trace_note, trace_step};
 
 fn main() {
@@ -14,9 +16,10 @@ fn main() {
     trace_note!("Повторяющийся корпус даёт устойчивые кандидаты на слияние.");
     let corpus: [&str; 3] = ["мама мыла", "мама дома", "мама мыла"];
     trace_step!(corpus);
-    let model: l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding = l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding::train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair(
-        &corpus, 16,
-    );
+    let model: BytePairEncoding =
+        BytePairEncoding::train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair(
+            &corpus, 16,
+        );
     trace_step!(model);
     assert!(!model.merges.is_empty());
     trace_note!("Показываем, как растёт словарь после каждого слияния.");

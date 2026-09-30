@@ -10,13 +10,15 @@
 
 // Оценку модели до преобразования в вероятность называют logit.
 /// Перекрёстная энтропия: получаем вероятности через softmax, выбираем правильный токен и берём −ln(p).
+use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn calculate_next_token_loss_as_negative_log_of_target_probability_from_exponentiated_scores(
     raw_model_scores: &[f64],
     target: usize,
 ) -> f64 {
-    -l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+    -calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
         raw_model_scores,
     )[target]
         .ln()

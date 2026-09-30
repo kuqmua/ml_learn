@@ -10,6 +10,8 @@
 // разными координатами.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -23,11 +25,7 @@ fn main() {
         "обучающая выборка не должна быть пустой"
     );
     trace_note!("Преобразуем входные данные и сохраняем полученную коллекцию в `mean`.");
-    let mean: f64 =
-        l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
-            &training_data,
-        )
-        .unwrap();
+    let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(&training_data).unwrap();
     trace_step!(mean);
     trace_note!("Преобразуем входные данные и сохраняем полученную коллекцию в `centered`.");
     let centered: Vec<f64> = training_data.iter().map(|&value| value - mean).collect();

@@ -10,6 +10,8 @@
 // Складываем значения и делим на их количество. Для одного значения среднее равно ему,
 // отрицательные числа могут уменьшить среднее, а для пустого набора делить не на что.
 
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
+
 use lesson_trace::{disable, enable, trace_note, trace_step};
 
 fn main() {
@@ -30,10 +32,7 @@ fn main() {
         trace_step!(values);
         trace_step!(expected);
         trace_note!("Общая функция среднего повторно понадобится в дисперсии и нормализации.");
-        let mean: f64 =
-            l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(
-                values,
-            )
+        let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(values)
             .expect("в этой строке есть значения");
         trace_step!(mean);
         trace_note!("Проверяем ожидаемое свойство учебного примера.");
@@ -46,10 +45,8 @@ fn main() {
     trace_step!(empty);
     trace_note!("Сохраняем результат этого шага в `error`.");
     trace_note!("Настраиваем или преобразуем результат предыдущего шага.");
-    let error: &str =
-        l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count(&empty)
-
-            .expect_err("среднее пустого набора должно быть отклонено");
+    let error: &str = calculate_mean_by_summing_values_and_dividing_by_count(&empty)
+        .expect_err("среднее пустого набора должно быть отклонено");
     trace_step!(error);
     trace_note!("Печатаем рассчитанные значения для проверки примера.");
     println!("пустой набор: {error}");
