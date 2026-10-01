@@ -31,7 +31,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_largest_values_in_local_image_windows(feature_map: [[f64; 2]; 2], maximum: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Max pooling",

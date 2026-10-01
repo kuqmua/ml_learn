@@ -31,7 +31,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_random_action_choice_below_exploration_threshold() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Исследование и использование",

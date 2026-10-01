@@ -21,7 +21,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_numeric_coordinates_representing_one_text_unit(dense_numeric_representation: [f64; 2]) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Плотное представление токена",

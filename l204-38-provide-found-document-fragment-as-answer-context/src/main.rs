@@ -14,8 +14,8 @@
 
 fn main() {
     let context: &str = "Rust использует Cargo для сборки проектов.";
-    let _question: &str = "Чем собирают проект Rust?";
-    let _answer: &str = if context.contains("Cargo") {
+    let _: &str = "Чем собирают проект Rust?";
+    let _: &str = if context.contains("Cargo") {
         "Cargo"
     } else {
         "не знаю"

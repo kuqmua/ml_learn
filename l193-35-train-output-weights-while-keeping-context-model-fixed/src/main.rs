@@ -35,7 +35,6 @@ fn calculate_binary_prediction_loss_as_negative_log_target_probability_from_fina
     -sample.1 * probability.ln() - (1.0 - sample.1) * (1.0 - probability).ln()
 }
 fn main() {
-    let training_data: [(&[usize], f64); 2] = [(&[0][..], 1.0), (&[1][..], 0.0)];
     let validation: [(&[usize], f64); 2] = [(&[0, 0][..], 1.0), (&[1, 1][..], 0.0)];
     let mut weight: [f64; 2] = [0.0; 2];
     let baseline: f64 = validation
@@ -47,6 +46,7 @@ fn main() {
         })
         .sum::<f64>()
         / validation.len() as f64;
+    let training_data: [(&[usize], f64); 2] = [(&[0][..], 1.0), (&[1][..], 0.0)];
     for _ in 0..100 {
         let mut rate_of_change: [f64; 2] = [0.0; 2];
         for &(text_unit_identifiers, target) in &training_data {

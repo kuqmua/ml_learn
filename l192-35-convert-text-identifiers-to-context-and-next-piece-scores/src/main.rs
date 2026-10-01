@@ -17,7 +17,7 @@ fn main() {
             .try_into()
             .expect("ожидался один набор оценок на каждый идентификатор префикса");
     let last: &[f64; 3] = &raw_model_scores[1];
-    let _next: usize = last
+    let _: usize = last
         .iter()
         .enumerate()
         .max_by(|first_candidate, second_candidate| first_candidate.1.total_cmp(second_candidate.1))

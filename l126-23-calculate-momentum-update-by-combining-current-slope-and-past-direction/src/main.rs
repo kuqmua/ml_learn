@@ -13,11 +13,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let rates_of_change: [f64; 3] = [2.0, 1.0, -0.5];
     let mut velocity: f64 = 0.0;
     let mut weight: f64 = 1.0;
     let mut weight_history: [(f64, f64); 4] = [(0.0, weight); 4];
     let mut velocity_history: [(f64, f64); 4] = [(0.0, velocity); 4];
+    let rates_of_change: [f64; 3] = [2.0, 1.0, -0.5];
     for (step, rate_of_change) in rates_of_change.into_iter().enumerate() {
         velocity = 0.8 * velocity + rate_of_change;
         weight -= 0.1 * velocity;
@@ -34,7 +34,7 @@ fn plot_weight_and_accumulated_update_direction(
     weight_history: [(f64, f64); 4],
     velocity_history: [(f64, f64); 4],
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Momentum: накопление скорости",

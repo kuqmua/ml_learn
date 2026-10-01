@@ -20,7 +20,7 @@ fn main() {
         count_binary_classification_outcomes_from_targets_and_predictions(&truth, &predicted)
             .expect("число ответов и прогнозов должно совпадать");
     for index in 0..truth.len() {
-        let _description: &str = match (truth[index], predicted[index]) {
+        let _: &str = match (truth[index], predicted[index]) {
             (true, true) => "TP: верно найден положительный класс",
 
             (false, true) => "FP: ложная тревога",
@@ -46,7 +46,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_counts_of_correct_and_incorrect_class_predictions(counts: BinaryClassificationCounts) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Матрица ошибок: исходы",

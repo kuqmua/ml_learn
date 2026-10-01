@@ -11,7 +11,7 @@ use l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_
 
 fn main() {
     let input_component: [f64; 2] = [3.0, 4.0];
-    let _result: [f64; 2] =
+    let _: [f64; 2] =
         normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
             &input_component,
             &[1.0, 1.0],

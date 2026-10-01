@@ -18,11 +18,10 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let image: [[f64; 3]; 3] = [[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]];
-    let filter_weights: [[f64; 2]; 2] = [[1., 0.], [0., -1.]];
-
     // Размер карты вычисляется из размера изображения, ядра и шага фильтра.
     let feature_map: Vec<Vec<f64>> = (|| -> Vec<Vec<f64>> {
+        let image: [[f64; 3]; 3] = [[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]];
+        let filter_weights: [[f64; 2]; 2] = [[1., 0.], [0., -1.]];
         let image: &[[f64; 3]; 3] = &image;
         let filter_weights: &[[f64; 2]; 2] = &filter_weights;
         let filter_step_size: usize = 1;
@@ -79,7 +78,7 @@ fn main() {
 fn plot_image_feature_map_as_local_weighted_pixel_sums(
     feature_map: std::vec::Vec<std::vec::Vec<f64>>,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::heatmap(
+    lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Карта признаков после свёртки",

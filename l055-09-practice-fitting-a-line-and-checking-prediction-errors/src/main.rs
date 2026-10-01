@@ -62,19 +62,17 @@ fn main() {
     let test: [(f64, f64); 2] = [(5., 11.), (6., 13.)];
 
     let targets: [f64; 2] = test.map(|(_, target)| target);
+    let _: f64 = calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+        &targets,
+        &test.map(|(feature, _)| weight * feature + constant_input_weight),
+    )
+    .unwrap();
     let baseline_predictions: [f64; 2] = [5.0; 2];
-    let _model_mean_squared_error: f64 =
-        calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
-            &targets,
-            &test.map(|(feature, _)| weight * feature + constant_input_weight),
-        )
-        .unwrap();
-    let _baseline_mean_squared_error: f64 =
-        calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
-            &targets,
-            &baseline_predictions,
-        )
-        .unwrap();
+    let _: f64 = calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+        &targets,
+        &baseline_predictions,
+    )
+    .unwrap();
 
     plot_prediction_line_and_held_out_points(weight, constant_input_weight, test);
 }
@@ -85,7 +83,7 @@ fn plot_prediction_line_and_held_out_points(
     constant_input_weight: f64,
     test: [(f64, f64); 2],
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Линейная регрессия и тест",

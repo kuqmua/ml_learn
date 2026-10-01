@@ -3,7 +3,6 @@ use l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::
 use l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count;
 
 fn report_error(
-    name: &str,
     records: &[lesson_datasets::WineQualityRedRecord],
     indices: &[usize],
     baseline_quality: f64,
@@ -71,20 +70,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         &(split.test_indices.len()),
     );
     report_error(
-        "validation",
         &records,
         &split.validation_indices,
         target_mean,
         slope,
         intercept,
     )?;
-    report_error(
-        "test",
-        &records,
-        &split.test_indices,
-        target_mean,
-        slope,
-        intercept,
-    )?;
+    report_error(&records, &split.test_indices, target_mean, slope, intercept)?;
     Ok(())
 }

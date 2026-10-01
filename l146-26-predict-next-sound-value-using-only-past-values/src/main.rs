@@ -71,7 +71,7 @@ fn main() {
 }
 
 fn plot_generated_discrete_sound_values(samples: &[u8]) {
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "samples",
         "Дискретные отсчёты",

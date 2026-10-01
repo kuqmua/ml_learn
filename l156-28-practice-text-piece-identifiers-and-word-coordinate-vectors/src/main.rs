@@ -19,10 +19,9 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let corpus: [&str; 2] = ["кот спит", "пёс спит"];
-
     let known_text_units: std::collections::BTreeMap<String, usize> =
         (|| -> std::collections::BTreeMap<String, usize> {
+            let corpus: [&str; 2] = ["кот спит", "пёс спит"];
             let corpus: &[&str] = &corpus;
             let mut known_text_units: std::collections::BTreeMap<String, usize> =
                 std::collections::BTreeMap::new();
@@ -43,8 +42,8 @@ fn main() {
         *row = [text_unit_index as f64 * 0.1, text_unit_index as f64 * 0.2];
     }
     let text_unit_indices: Vec<usize> = (|| -> Vec<usize> {
-        let text: &str = "кот неизвестно";
         let known_text_units: &std::collections::BTreeMap<String, usize> = &known_text_units;
+        let text: &str = "кот неизвестно";
         text.split_whitespace()
             .map(|word| *known_text_units.get(word).unwrap_or(&0))
             .collect()
@@ -62,7 +61,7 @@ fn plot_number_of_known_text_units_and_sequence_length(
     known_text_units: std::collections::BTreeMap<std::string::String, usize>,
     text_unit_indices: std::vec::Vec<usize>,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Размер словаря и последовательности",

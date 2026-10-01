@@ -153,7 +153,7 @@ fn main() {
     plot_output_rate_of_change_for_each_computation_node(graph);
 
     fn plot_output_rate_of_change_for_each_computation_node(graph: Graph) {
-        let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+        lesson_visualization::line_chart(
             env!("CARGO_MANIFEST_DIR"),
             "lesson-chart",
             "Градиенты вычислительного графа",

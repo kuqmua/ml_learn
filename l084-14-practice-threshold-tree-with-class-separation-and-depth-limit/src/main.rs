@@ -17,8 +17,6 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let data: [(f64, bool); 4] = [(1., false), (2., false), (3., true), (4., true)];
-
     #[derive(Debug)]
     enum Tree {
         Leaf(bool),
@@ -114,7 +112,6 @@ fn main() {
         }
     }
 
-    let tree: Tree = build_threshold_tree_by_minimizing_weighted_class_mixing(&data, 2);
     /// Прогноз дерева: сравниваем признак с порогами, идём по ветвям и возвращаем класс листа.
     fn predict_class_by_following_threshold_branches_to_leaf(
         tree: &Tree,
@@ -140,12 +137,14 @@ fn main() {
         }
     }
 
+    let data: [(f64, bool); 4] = [(1., false), (2., false), (3., true), (4., true)];
+    let tree: Tree = build_threshold_tree_by_minimizing_weighted_class_mixing(&data, 2);
     let _ = &(predict_class_by_following_threshold_branches_to_leaf(&tree, 3.5));
 
     plot_predicted_leaf_class_for_changing_feature(tree);
 
     fn plot_predicted_leaf_class_for_changing_feature(tree: Tree) {
-        let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+        lesson_visualization::line_chart(
             env!("CARGO_MANIFEST_DIR"),
             "lesson-chart",
             "Решение дерева по признаку",

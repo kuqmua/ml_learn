@@ -20,8 +20,6 @@
 use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
-    let sequence: [[f64; 2]; 3] = [[1., 0.], [0., 1.], [1., 1.]];
-
     /// e^x по ряду Тейлора. Деление аргумента пополам ускоряет сходимость.
     /// Учебный аналог `f64::exp`; показывает вычисление ряда и может работать медленнее.
     /// При замене возможны небольшие отличия из-за точности и обработки крайних значений.
@@ -56,6 +54,7 @@ fn main() {
 
     let (_attended_output, attention_weights): ([[f64; 2]; 3], [[f64; 3]; 3]) =
         (|| -> ([[f64; 2]; 3], [[f64; 3]; 3]) {
+            let sequence: [[f64; 2]; 3] = [[1., 0.], [0., 1.], [1., 1.]];
             let queries: &[[f64; 2]; 3] = &sequence;
             let keys: &[[f64; 2]; 3] = &sequence;
             let values: &[[f64; 2]; 3] = &sequence;
@@ -63,52 +62,55 @@ fn main() {
             let mut outputs: [[f64; 2]; 3] = [[0.0; 2]; 3];
             let mut weights: [[f64; 3]; 3] = [[0.0; 3]; 3];
             for (query_index, query) in queries.iter().enumerate() {
-                let raw_model_scores: Vec<f64> = keys
-                    .iter()
-                    .enumerate()
-                    .map(|(key_index, key)| {
-                        if past_only_attention && key_index > query_index {
-                            f64::NEG_INFINITY
-                        } else {
-                            multiply_matching_coordinates_then_add_results(query, key).unwrap()
-                                / (|| -> f64 {
-                                    let value: f64 = 2.0;
-                                    assert!(value >= 0.0, "корень из отрицательного числа");
-                                    if value == 0.0 {
-                                        return 0.0;
-                                    }
-                                    let mut estimate: f64 = if value > 1.0 { value } else { 1.0 };
-                                    for _ in 0..80 {
-                                        estimate = (estimate + value / estimate) / 2.0;
-                                    }
-                                    estimate
-                                })()
+                let attention_weights: Vec<f64> = {
+                    let raw_model_scores: Vec<f64> = keys
+                        .iter()
+                        .enumerate()
+                        .map(|(key_index, key)| {
+                            if past_only_attention && key_index > query_index {
+                                f64::NEG_INFINITY
+                            } else {
+                                multiply_matching_coordinates_then_add_results(query, key).unwrap()
+                                    / (|| -> f64 {
+                                        let value: f64 = 2.0;
+                                        assert!(value >= 0.0, "корень из отрицательного числа");
+                                        if value == 0.0 {
+                                            return 0.0;
+                                        }
+                                        let mut estimate: f64 =
+                                            if value > 1.0 { value } else { 1.0 };
+                                        for _ in 0..80 {
+                                            estimate = (estimate + value / estimate) / 2.0;
+                                        }
+                                        estimate
+                                    })()
+                            }
+                        })
+                        .collect();
+                    (|| -> Vec<f64> {
+                        let raw_model_scores: &[f64] = &raw_model_scores;
+                        let mut maximum_raw_model_score: f64 = f64::NEG_INFINITY;
+                        for &raw_model_score in raw_model_scores {
+                            if raw_model_score > maximum_raw_model_score {
+                                maximum_raw_model_score = raw_model_score;
+                            }
                         }
-                    })
-                    .collect();
-                let attention_weights: Vec<f64> = (|| -> Vec<f64> {
-                    let raw_model_scores: &[f64] = &raw_model_scores;
-                    let mut maximum_raw_model_score: f64 = f64::NEG_INFINITY;
-                    for &raw_model_score in raw_model_scores {
-                        if raw_model_score > maximum_raw_model_score {
-                            maximum_raw_model_score = raw_model_score;
+                        let mut exponentials: Vec<f64> = Vec::with_capacity(raw_model_scores.len());
+                        let mut normalizer: f64 = 0.0;
+                        for &raw_model_score in raw_model_scores {
+                            let exponential_value: f64 =
+                                approximate_e_to_power_by_summing_power_over_factorial_terms(
+                                    raw_model_score - maximum_raw_model_score,
+                                );
+                            exponentials.push(exponential_value);
+                            normalizer += exponential_value;
                         }
-                    }
-                    let mut exponentials: Vec<f64> = Vec::with_capacity(raw_model_scores.len());
-                    let mut normalizer: f64 = 0.0;
-                    for &raw_model_score in raw_model_scores {
-                        let exponential_value: f64 =
-                            approximate_e_to_power_by_summing_power_over_factorial_terms(
-                                raw_model_score - maximum_raw_model_score,
-                            );
-                        exponentials.push(exponential_value);
-                        normalizer += exponential_value;
-                    }
-                    for exponential_value in &mut exponentials {
-                        *exponential_value /= normalizer;
-                    }
-                    exponentials
-                })();
+                        for exponential_value in &mut exponentials {
+                            *exponential_value /= normalizer;
+                        }
+                        exponentials
+                    })()
+                };
                 let mut attended_vector: [f64; 2] = [0.0, 0.0];
                 for value_index in 0..values.len() {
                     attended_vector[0] += attention_weights[value_index] * values[value_index][0];
@@ -127,7 +129,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_weights_assigned_to_current_and_past_positions(attention_weights: [[f64; 3]; 3]) {
-    let _chart: std::path::PathBuf = lesson_visualization::heatmap(
+    lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Причинные веса внимания",

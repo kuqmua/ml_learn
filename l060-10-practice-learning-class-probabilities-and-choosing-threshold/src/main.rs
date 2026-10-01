@@ -130,12 +130,11 @@ fn main() {
         loss_sum / data.len() as f64
     }
 
-    let _before: f64 =
-        calculate_binary_classification_loss_as_average_negative_log_target_probability(
-            &TRAINING_EXAMPLES,
-            0.,
-            0.,
-        );
+    let _: f64 = calculate_binary_classification_loss_as_average_negative_log_target_probability(
+        &TRAINING_EXAMPLES,
+        0.,
+        0.,
+    );
     /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
     fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
         raw_model_score: f64,
@@ -177,7 +176,7 @@ fn main() {
             weight -= 0.1 * weight_loss_rate_of_change;
             constant_input_weight -= 0.1 * constant_input_weight_loss_rate_of_change;
             if matches!(epoch, 0 | 1 | 9 | 99 | 299) {
-                let _loss: f64 =
+                let _: f64 =
                     calculate_binary_classification_loss_as_average_negative_log_target_probability(
                         &TRAINING_EXAMPLES,
                         weight,
@@ -205,7 +204,7 @@ fn main() {
         weight: f64,
         constant_input_weight: f64,
     ) {
-        let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+        lesson_visualization::line_chart(
             env!("CARGO_MANIFEST_DIR"),
             "lesson-chart",
             "Обученная логистическая модель",

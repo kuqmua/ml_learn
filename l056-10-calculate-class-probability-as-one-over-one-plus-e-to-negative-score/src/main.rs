@@ -37,7 +37,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_class_probability_as_one_over_one_plus_e_to_negative_score() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Сигмоида",

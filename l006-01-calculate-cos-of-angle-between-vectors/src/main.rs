@@ -37,7 +37,7 @@ fn main() {
         ("нулевой вектор", &[0.0, 0.0][..]),
         ("разное число координат", &[1.0][..]),
     ] {
-        let _error: &str = calculate_cos_of_angle_between_vectors(&first_vector, second_vector)
+        let _: &str = calculate_cos_of_angle_between_vectors(&first_vector, second_vector)
             .expect_err("ожидалась ошибка для нулевого вектора или разного числа координат");
     }
 
@@ -46,7 +46,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_cos_of_angle_between_vectors() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Косинусное сходство двух векторов",

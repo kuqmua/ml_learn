@@ -26,7 +26,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_local_pixel_values_and_weighted_sum(patch: [[f64; 2]; 2], response: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Ядро свёртки и отклик",

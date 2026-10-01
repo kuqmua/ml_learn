@@ -10,8 +10,8 @@
 fn main() {
     let text: &str = "кот 🐈";
     let bytes: &[u8] = text.as_bytes();
-    let characters: Vec<char> = text.chars().collect();
     assert_eq!(String::from_utf8(bytes.to_vec()).unwrap(), text);
+    let characters: Vec<char> = text.chars().collect();
     assert!(bytes.len() > characters.len());
     let _ = (&(characters.len()), &(bytes.len()));
 }

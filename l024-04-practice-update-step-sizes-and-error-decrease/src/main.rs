@@ -30,11 +30,11 @@ fn main() {
     for learning_rate in [0.01, 0.2, 1.1] {
         let history: Vec<f64> = (|| -> Vec<f64> {
             let learning_rate: f64 = learning_rate;
-            let steps: usize = 30;
             let mut parameter: f64 = 0.0;
             let mut history: Vec<f64> = vec![calculate_squared_distance_of_parameter_from_three(
                 parameter,
             )];
+            let steps: usize = 30;
             for _ in 0..steps {
                 let rate_of_change: f64 = (|| -> f64 {
                     let parameter: f64 = parameter;
@@ -85,7 +85,7 @@ fn main() {
             }
             points
         });
-        let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+        lesson_visualization::line_chart(
             env!("CARGO_MANIFEST_DIR"),
             "lesson-chart",
             "Скорость обучения и ошибка",

@@ -28,19 +28,18 @@ fn main() {
                 < 1e-10
         );
     }
-    let _error: &str =
-        calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
-            &targets,
-            &[2.0, 4.0],
-        )
-        .expect_err("ожидалась ошибка: число прогнозов и ответов различается");
+    let _: &str = calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+        &targets,
+        &[2.0, 4.0],
+    )
+    .expect_err("ожидалась ошибка: число прогнозов и ответов различается");
 
     plot_average_squared_prediction_error_for_changing_offset();
 }
 
 // Строим график по результатам урока.
 fn plot_average_squared_prediction_error_for_changing_offset() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Среднеквадратичная ошибка",

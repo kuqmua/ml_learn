@@ -14,14 +14,13 @@
 use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
-    let query: [f64; 2] = [1.0, 1.0];
-    let key: [f64; 2] = [2.0, 2.0];
-
     let dimension: f64 = 2.0;
     let mut scale: f64 = dimension;
     for _ in 0..80 {
         scale = (scale + dimension / scale) / 2.0;
     }
+    let query: [f64; 2] = [1.0, 1.0];
+    let key: [f64; 2] = [2.0, 2.0];
     let _ = &(multiply_matching_coordinates_then_add_results(&query, &key)
         .expect("запрос и ключ должны иметь одинаковое число координат")
         / scale);
@@ -31,7 +30,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_attention_scale_as_one_divided_by_square_root_of_coordinate_count() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Масштабирование скалярного произведения векторов запроса и ключа",

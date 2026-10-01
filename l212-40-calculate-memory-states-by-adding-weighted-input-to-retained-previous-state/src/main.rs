@@ -22,7 +22,7 @@ fn main() {
 }
 
 fn plot_stored_state_over_repeated_weighted_updates(states: &[f64; 4]) {
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "state-space",
         "Затухание состояния",

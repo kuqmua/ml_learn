@@ -28,7 +28,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_feature_before_and_after_subtracting_mean(training_data: [f64; 3], centered: [f64; 3]) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Центрирование признака",

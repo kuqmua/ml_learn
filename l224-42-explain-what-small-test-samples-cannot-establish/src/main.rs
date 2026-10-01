@@ -14,5 +14,5 @@
 fn main() {
     let correct_prediction_count: i32 = 2;
     let all_prediction_count: i32 = 2;
-    let _accuracy: f64 = correct_prediction_count as f64 / all_prediction_count as f64;
+    let _: f64 = correct_prediction_count as f64 / all_prediction_count as f64;
 }

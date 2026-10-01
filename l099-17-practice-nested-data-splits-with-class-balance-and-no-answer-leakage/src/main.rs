@@ -19,18 +19,6 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let training_examples: [(f64, bool); 9] = [
-        (0., false),
-        (1., false),
-        (2., false),
-        (3., true),
-        (4., true),
-        (5., true),
-        (6., true),
-        (7., false),
-        (8., false),
-    ];
-
     /// Метод ближайших соседей: сортируем обучающие значения по расстоянию и выбираем большинство среди заданного числа ближайших.
     fn choose_majority_class_among_nearest_training_values(
         training_examples: &[(f64, bool)],
@@ -66,6 +54,17 @@ fn main() {
             > neighbor_count
     }
 
+    let training_examples: [(f64, bool); 9] = [
+        (0., false),
+        (1., false),
+        (2., false),
+        (3., true),
+        (4., true),
+        (5., true),
+        (6., true),
+        (7., false),
+        (8., false),
+    ];
     let best: (usize, f64) = [1, 3, 5]
         .into_iter()
         .map(|neighbor_count| {
@@ -126,7 +125,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_correct_prediction_shares_on_validation_and_test_data(best: (usize, f64), accuracy: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Кросс-валидация и тест",

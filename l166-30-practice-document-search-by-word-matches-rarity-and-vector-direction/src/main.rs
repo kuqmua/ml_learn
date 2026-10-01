@@ -117,7 +117,7 @@ fn main() {
 fn plot_document_scores_from_word_frequency_and_rarity(
     highest_ranked_items: std::vec::Vec<(&str, f64)>,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Оценки найденных документов",

@@ -61,7 +61,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_second_probability_weight_as_its_exponential_divided_by_sum_of_two_exponentials() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Softmax двух логитов",

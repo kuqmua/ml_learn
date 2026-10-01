@@ -29,7 +29,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_source_score_compared_with_acceptance_threshold(minimum_reliable_score: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Порог проверки источника",

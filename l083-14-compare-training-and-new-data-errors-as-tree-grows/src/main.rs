@@ -27,7 +27,7 @@ fn plot_training_and_validation_errors_for_growing_tree_depth(
     training_error: [f64; 3],
     validation_error: [f64; 3],
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Переобучение дерева",

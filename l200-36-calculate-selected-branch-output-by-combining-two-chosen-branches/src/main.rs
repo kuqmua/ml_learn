@@ -18,7 +18,7 @@ fn main() {
     });
     let selected: [usize; 2] = [order[0], order[1]];
     let expert_gain: [f64; 4] = [1.0, 2.0, -1.0, 0.5];
-    let _output: f64 = selected
+    let _: f64 = selected
         .iter()
         .zip(
             std::convert::TryInto::<[f64; 2]>::try_into(
@@ -42,7 +42,7 @@ fn plot_scores_used_to_select_two_processing_branches(scores: &[f64; 4]) {
         ("expert 2", scores[2]),
         ("expert 3", scores[3]),
     ];
-    let _path: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "router",
         "Оценки маршрутизатора",

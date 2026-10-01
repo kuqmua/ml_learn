@@ -29,7 +29,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_training_class_shares(code_prior: f64, machine_learning_prior: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Априорные вероятности",

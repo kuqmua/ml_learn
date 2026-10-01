@@ -17,7 +17,7 @@ fn main() {
     let begin_identifier: i32 = 1;
     let end_identifier: i32 = 2;
     let known_word_identifier: i32 = 3;
-    let _sequence: [i32; 4] = [
+    let _: [i32; 4] = [
         begin_identifier,
         known_word_identifier,
         unknown_identifier,

@@ -259,25 +259,29 @@ pub fn split_indices_stratified_by_class(
     class_identifiers: &[u8],
     seed: u64,
 ) -> Result<DatasetSplit, &'static str> {
-    let mut groups: std::collections::BTreeMap<u8, Vec<usize>> = std::collections::BTreeMap::new();
-    for (index, &class_identifier) in class_identifiers.iter().enumerate() {
-        groups.entry(class_identifier).or_default().push(index);
-    }
-    if groups.is_empty() || groups.values().any(|indices| indices.len() < 7) {
-        return Err("для стратификации нужно хотя бы семь записей каждого класса");
-    }
-    let mut split = DatasetSplit {
-        training_indices: Vec::new(),
-        validation_indices: Vec::new(),
-        test_indices: Vec::new(),
+    let mut split = {
+        let mut groups: std::collections::BTreeMap<u8, Vec<usize>> =
+            std::collections::BTreeMap::new();
+        for (index, &class_identifier) in class_identifiers.iter().enumerate() {
+            groups.entry(class_identifier).or_default().push(index);
+        }
+        if groups.is_empty() || groups.values().any(|indices| indices.len() < 7) {
+            return Err("для стратификации нужно хотя бы семь записей каждого класса");
+        }
+        let mut split = DatasetSplit {
+            training_indices: Vec::new(),
+            validation_indices: Vec::new(),
+            test_indices: Vec::new(),
+        };
+        for (&class_identifier, indices) in &groups {
+            append_split_group(
+                &mut split,
+                indices.clone(),
+                seed ^ u64::from(class_identifier),
+            );
+        }
+        split
     };
-    for (&class_identifier, indices) in &groups {
-        append_split_group(
-            &mut split,
-            indices.clone(),
-            seed ^ u64::from(class_identifier),
-        );
-    }
     shuffle_indices(&mut split.training_indices, seed ^ 0x11);
     shuffle_indices(&mut split.validation_indices, seed ^ 0x22);
     shuffle_indices(&mut split.test_indices, seed ^ 0x33);

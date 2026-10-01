@@ -12,8 +12,8 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let data: [(f64, bool); 4] = [(1.0, false), (2.0, false), (3.0, true), (4.0, true)];
     let mut best: (f64, f64) = (f64::INFINITY, 0.0);
+    let data: [(f64, bool); 4] = [(1.0, false), (2.0, false), (3.0, true), (4.0, true)];
     for threshold in [1.5, 2.5, 3.5] {
         let samples_below_threshold: Vec<&(f64, bool)> =
             data.iter().filter(|sample| sample.0 < threshold).collect();
@@ -52,7 +52,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_weighted_class_mixing_for_different_thresholds() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Чистота разбиения",

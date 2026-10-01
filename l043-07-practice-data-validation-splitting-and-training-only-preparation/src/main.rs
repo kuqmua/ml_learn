@@ -70,7 +70,7 @@ fn plot_feature_means_for_training_data_and_whole_dataset(
     records: std::vec::Vec<(f64, u8)>,
     training_mean: f64,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Среднее признака",

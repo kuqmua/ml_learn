@@ -27,7 +27,7 @@ fn main() {
     assert!(!values.is_empty(), "для статистики нужны числовые значения");
     values.sort_by(f64::total_cmp);
 
-    let _sample_variance: f64 =
+    let _: f64 =
         calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one(
             &values,
         )
@@ -49,7 +49,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_csv_values_mean_and_middle_of_sorted_values(values: &[f64], mean: f64, median: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Статистика выборки",

@@ -227,7 +227,7 @@ fn main() {
 fn plot_next_word_counts_after_start_of_sentence(
     bigram_counts: std::collections::BTreeMap<(std::string::String, std::string::String), usize>,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Частоты переходов после начала строки",

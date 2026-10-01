@@ -35,7 +35,7 @@ fn main() {
     }
 
     let too_short: [f64; 1] = [3.0];
-    let _error: &str = multiply_matching_coordinates_then_add_results(&first_vector, &too_short)
+    let _: &str = multiply_matching_coordinates_then_add_results(&first_vector, &too_short)
         .expect_err("разная длина должна быть отклонена");
     let _ = &(first_vector);
     plot_sum_after_multiplying_coordinates_for_changing_second_coordinate(&first_vector);
@@ -43,7 +43,7 @@ fn main() {
 
 // Визуализация вынесена из основного сценария урока.
 fn plot_sum_after_multiplying_coordinates_for_changing_second_coordinate(first_vector: &[f64; 2]) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Умножение координат и сложение результатов: [1, 2] и [1, x]",

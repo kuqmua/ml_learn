@@ -18,11 +18,10 @@ fn main() {
     let query: [f64; 2] = [1.0, 2.0];
     let candidates: [[f64; 2]; 2] = [[2.0, 2.0], [4.0, 6.0]];
     for candidate in candidates {
-        let _squared_distance: f64 =
-            calculate_squared_point_distance_by_summing_squared_coordinate_differences(
-                &query, &candidate,
-            )
-            .expect("координаты должны быть конечными, а квадрат расстояния — помещаться в f64");
+        let _: f64 = calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+            &query, &candidate,
+        )
+        .expect("координаты должны быть конечными, а квадрат расстояния — помещаться в f64");
     }
 
     plot_distance_from_query_for_changing_coordinate();
@@ -30,7 +29,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_distance_from_query_for_changing_coordinate() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Расстояние до запроса",

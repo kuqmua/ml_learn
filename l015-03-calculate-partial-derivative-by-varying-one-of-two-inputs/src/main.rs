@@ -15,15 +15,15 @@
 
 fn main() {
     let (input_value, second_input_value): (f64, f64) = (2.0, -1.0);
-    let _derivative_by_horizontal_coordinate: f64 = 2.0 * input_value;
-    let _derivative_by_vertical_coordinate: f64 = 6.0 * second_input_value;
+    let _: f64 = 2.0 * input_value;
+    let _: f64 = 6.0 * second_input_value;
 
     plot_function_values_while_changing_one_coordinate();
 }
 
 // Строим график по результатам урока.
 fn plot_function_values_while_changing_one_coordinate() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Сечения функции x² + 3y²",

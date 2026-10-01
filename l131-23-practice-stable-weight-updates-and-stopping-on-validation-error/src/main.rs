@@ -65,7 +65,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_best_validation_error_during_training(results: std::vec::Vec<(f64, f64)>) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Momentum и лучшая validation error",

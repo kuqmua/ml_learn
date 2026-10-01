@@ -14,7 +14,7 @@
 fn main() {
     let left_action_value: f64 = 0.2;
     let right_action_value: f64 = 0.8;
-    let _action: &str = if right_action_value > left_action_value {
+    let _: &str = if right_action_value > left_action_value {
         "вправо"
     } else {
         "влево"
@@ -25,7 +25,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_estimated_rewards_for_available_actions(left_action_value: f64, right_action_value: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Оценки действий политики",

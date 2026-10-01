@@ -27,7 +27,7 @@ fn plot_number_of_documents_with_and_without_query_matches(
     documents: [(&str, &str); 2],
     query: &str,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Лексический поиск",

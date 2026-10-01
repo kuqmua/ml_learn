@@ -20,13 +20,6 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let training_examples: [(&str, bool); 4] = [
-        ("хороший фильм", true),
-        ("отличный фильм", true),
-        ("плохой фильм", false),
-        ("ужасный фильм", false),
-    ];
-
     /// ln(x) через ряд 2 * (t + t³/3 + t⁵/5 + ...), t=(x-1)/(x+1).
     /// Учебный аналог `f64::ln`; показывает вычисление ряда и может работать медленнее.
     /// Здесь неположительный вход вызывает panic, а `ln` возвращает NaN или −∞.
@@ -109,6 +102,12 @@ fn main() {
         (scores[1] > scores[0], scores)
     }
 
+    let training_examples: [(&str, bool); 4] = [
+        ("хороший фильм", true),
+        ("отличный фильм", true),
+        ("плохой фильм", false),
+        ("ужасный фильм", false),
+    ];
     let _ = &(choose_class_by_summed_log_probabilities_of_words(
         &training_examples,
         "хороший отличный",
@@ -120,7 +119,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_number_of_training_documents_in_each_class(training_examples: [(&str, bool); 4]) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Классы обучающих документов",

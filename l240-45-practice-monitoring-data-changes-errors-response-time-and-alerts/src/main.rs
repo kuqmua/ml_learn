@@ -20,10 +20,6 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let reference: [f64; 6] = [-1., -0.5, 0.1, 0.2, 1.2, 1.5];
-    let stable: [f64; 6] = reference;
-    let shifted: [f64; 6] = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6];
-
     /// Выбираем большее из двух чисел для формул softmax, log-loss и Q-learning.
     /// Аналог `first_number.max(second_number)` для обычных чисел; при NaN результат может отличаться.
     fn choose_larger_number(first_number: f64, second_number: f64) -> f64 {
@@ -112,6 +108,9 @@ fn main() {
         stability_index
     }
 
+    let reference: [f64; 6] = [-1., -0.5, 0.1, 0.2, 1.2, 1.5];
+    let stable: [f64; 6] = reference;
+    let shifted: [f64; 6] = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6];
     let _ = (&(reference.len()), &(shifted.len()), &(calculate_distribution_shift_score_as_sum_of_bin_share_differences_times_log_share_ratios(
             &reference, &stable
         )), &(calculate_distribution_shift_score_as_sum_of_bin_share_differences_times_log_share_ratios(
@@ -127,7 +126,7 @@ fn main() {
         stable: [f64; 6],
         shifted: [f64; 6],
     ) {
-        let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+        lesson_visualization::bar_chart(
 
             env!("CARGO_MANIFEST_DIR"),
 

@@ -15,17 +15,17 @@
 fn main() {
     let input_value: f64 = 2.0;
     let square: f64 = input_value * input_value;
-    let _output: f64 = 2.0 * square;
-    let derivative_output_by_square: f64 = 2.0;
+    let _: f64 = 2.0 * square;
     let derivative_square_by_input: f64 = 2.0 * input_value;
-    let _derivative_output_by_input: f64 = derivative_output_by_square * derivative_square_by_input;
+    let derivative_output_by_square: f64 = 2.0;
+    let _: f64 = derivative_output_by_square * derivative_square_by_input;
 
     plot_function_values_and_output_change_per_input_change();
 }
 
 // Строим график по результатам урока.
 fn plot_function_values_and_output_change_per_input_change() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Обратное распространение для 2x²",

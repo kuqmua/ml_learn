@@ -39,7 +39,7 @@ fn main() {
 }
 
 fn plot_filter_output_multiplied_by_fraction_controlled_by_gate(filter: f64) {
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "gate",
         "Управляемая активация",

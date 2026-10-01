@@ -61,12 +61,10 @@ fn main() {
                 ]
             })()),
             &((|| -> [f64; 2] {
-                let first_parameter: f64 = 0.3;
-
-                let second_parameter: f64 = 2.0;
-
                 let step_size: f64 = step_size;
 
+                let first_parameter: f64 = 0.3;
+                let second_parameter: f64 = 2.0;
                 [
 
                     (calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
@@ -101,7 +99,7 @@ fn main() {
         );
     }
     let step_size: f64 = 1e-5;
-    let _recovered_value: f64 =
+    let _: f64 =
 
         (calculate_antiderivative_by_cubing_first_shift_dividing_by_three_and_adding_second_shift_term(0.3 + step_size, 2.0)
 
@@ -115,7 +113,7 @@ fn main() {
     plot_coordinate_slope_estimation_error_for_shrinking_step();
 
     fn plot_coordinate_slope_estimation_error_for_shrinking_step() {
-        let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+        lesson_visualization::line_chart(
             env!("CARGO_MANIFEST_DIR"),
             "lesson-chart",
             "Ошибка численного градиента",

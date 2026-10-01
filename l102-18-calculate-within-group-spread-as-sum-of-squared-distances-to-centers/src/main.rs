@@ -14,13 +14,13 @@
 
 fn main() {
     let points: [[f64; 2]; 4] = [[0.0, 0.0], [1.0, 0.0], [5.0, 0.0], [6.0, 0.0]];
-    let centers: [[f64; 2]; 2] = [[0.5, 0.0], [5.5, 0.0]];
     let assignments: [usize; 4] = [0, 0, 1, 1];
     assert_eq!(
         points.len(),
         assignments.len(),
         "каждой точке нужен номер центра"
     );
+    let centers: [[f64; 2]; 2] = [[0.5, 0.0], [5.5, 0.0]];
     assert!(
         assignments.iter().all(|&index| index < centers.len()),
         "номер центра выходит за границы списка"
@@ -36,7 +36,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_squared_distance_to_nearest_fixed_center_for_changing_point() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Инерция для двух центров",

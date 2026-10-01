@@ -15,7 +15,7 @@
 fn main() {
     for training_size in [10, 100, 1000] {
         let feature_count: i32 = 4;
-        let _coordinate_comparisons: i32 = training_size * feature_count;
+        let _: i32 = training_size * feature_count;
     }
 
     plot_coordinate_comparison_count_for_growing_training_set();
@@ -23,7 +23,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_coordinate_comparison_count_for_growing_training_set() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Стоимость kNN",

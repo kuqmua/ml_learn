@@ -29,7 +29,7 @@ fn main() {
 }
 
 fn plot_category_target_averages_using_only_previous_rows(values: &[f64; 5]) {
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "ordered-stats",
         "Префиксная статистика",

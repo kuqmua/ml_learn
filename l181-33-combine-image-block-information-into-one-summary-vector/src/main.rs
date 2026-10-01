@@ -37,7 +37,7 @@ fn main() {
                 weighted_coordinate_sums
             },
         );
-    let _class: u8 = u8::from(image_classification_summary[0] > image_classification_summary[1]);
+    let _: u8 = u8::from(image_classification_summary[0] > image_classification_summary[1]);
 
     plot_weights_used_to_combine_image_blocks_into_summary(&weights);
 }
@@ -47,7 +47,7 @@ fn plot_weights_used_to_combine_image_blocks_into_summary(weights: &[f64; 3]) {
         ("patch 1", weights[1]),
         ("patch 2", weights[2]),
     ];
-    let _path: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "cls-weights",
         "Что читает CLS",

@@ -11,9 +11,9 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let words: [&str; 3] = ["кот", "спит", "кот"];
     let mut known_text_units: std::collections::BTreeMap<&str, usize> =
         std::collections::BTreeMap::new();
+    let words: [&str; 3] = ["кот", "спит", "кот"];
     for word in words {
         if !known_text_units.contains_key(word) {
             let text_unit_identifier: usize = known_text_units.len() + 1;

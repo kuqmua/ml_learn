@@ -17,7 +17,7 @@ use l006_01_calculate_cos_of_angle_between_vectors::calculate_cos_of_angle_betwe
 fn main() {
     let query: [f64; 2] = [1.0, 0.0];
     let document: [f64; 2] = [2.0, 0.0];
-    let _cos: f64 = calculate_cos_of_angle_between_vectors(&query, &document)
+    let _: f64 = calculate_cos_of_angle_between_vectors(&query, &document)
         .expect("для вычисления cos нужны ненулевые векторы слов с одинаковым числом координат");
 
     plot_query_document_cos_of_angle(query);
@@ -25,7 +25,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_query_document_cos_of_angle(query: [f64; 2]) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Сходство документов при изменении направления",

@@ -28,7 +28,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_image_positions_visited_with_fixed_step_size(positions: std::vec::Vec<i32>) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Stride и позиции ядра",

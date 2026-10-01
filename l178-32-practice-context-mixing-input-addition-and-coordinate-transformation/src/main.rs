@@ -20,8 +20,6 @@
 use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
-    let input_values: [[f64; 2]; 2] = [[1., 0.], [0., 1.]];
-
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
     /// Само умножение не обязательно медленнее библиотечного метода.
@@ -107,37 +105,39 @@ fn main() {
     fn calculate_transformer_output(input_values: &[[f64; 2]; 2]) -> [[f64; 2]; 2] {
         std::array::from_fn(|text_unit_index| {
             let query = input_values[text_unit_index];
-            let raw_model_scores: Vec<f64> = input_values
-                .iter()
-                .take(text_unit_index + 1)
-                .map(|key| {
-                    multiply_matching_coordinates_then_add_results(&query, key).unwrap()
-                        / approximate_square_root_by_repeated_averaging(2.0)
-                })
-                .collect();
-            let attention_weights: Vec<f64> = (|| -> Vec<f64> {
-                let input_values: &[f64] = &raw_model_scores;
-                let mut maximum_value: f64 = f64::NEG_INFINITY;
-                for &value in input_values {
-                    if value > maximum_value {
-                        maximum_value = value;
+            let attention_weights: Vec<f64> = {
+                let raw_model_scores: Vec<f64> = input_values
+                    .iter()
+                    .take(text_unit_index + 1)
+                    .map(|key| {
+                        multiply_matching_coordinates_then_add_results(&query, key).unwrap()
+                            / approximate_square_root_by_repeated_averaging(2.0)
+                    })
+                    .collect();
+                (|| -> Vec<f64> {
+                    let input_values: &[f64] = &raw_model_scores;
+                    let mut maximum_value: f64 = f64::NEG_INFINITY;
+                    for &value in input_values {
+                        if value > maximum_value {
+                            maximum_value = value;
+                        }
                     }
-                }
-                let mut exponentials: Vec<f64> = Vec::with_capacity(input_values.len());
-                let mut normalizer: f64 = 0.0;
-                for &value in input_values {
-                    let exponential_value: f64 =
-                        approximate_e_to_power_by_summing_power_over_factorial_terms(
-                            value - maximum_value,
-                        );
-                    exponentials.push(exponential_value);
-                    normalizer += exponential_value;
-                }
-                for exponential_value in &mut exponentials {
-                    *exponential_value /= normalizer;
-                }
-                exponentials
-            })();
+                    let mut exponentials: Vec<f64> = Vec::with_capacity(input_values.len());
+                    let mut normalizer: f64 = 0.0;
+                    for &value in input_values {
+                        let exponential_value: f64 =
+                            approximate_e_to_power_by_summing_power_over_factorial_terms(
+                                value - maximum_value,
+                            );
+                        exponentials.push(exponential_value);
+                        normalizer += exponential_value;
+                    }
+                    for exponential_value in &mut exponentials {
+                        *exponential_value /= normalizer;
+                    }
+                    exponentials
+                })()
+            };
             let mut attended: [f64; 2] = [0.0, 0.0];
             for key_index in 0..attention_weights.len() {
                 attended[0] += attention_weights[key_index] * input_values[key_index][0];
@@ -159,6 +159,7 @@ fn main() {
         })
     }
 
+    let input_values: [[f64; 2]; 2] = [[1., 0.], [0., 1.]];
     plot_outputs_after_context_mixing_and_coordinate_transformation(
         input_values,
         calculate_transformer_output(&input_values),
@@ -188,8 +189,7 @@ fn plot_outputs_after_context_mixing_and_coordinate_transformation(
                 .collect::<Vec<_>>(),
         ),
     ] {
-        let _chart: std::path::PathBuf =
-            lesson_visualization::heatmap(env!("CARGO_MANIFEST_DIR"), name, title, &values)
-                .expect("не удалось сохранить график");
+        lesson_visualization::heatmap(env!("CARGO_MANIFEST_DIR"), name, title, &values)
+            .expect("не удалось сохранить график");
     }
 }

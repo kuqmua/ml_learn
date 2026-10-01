@@ -28,7 +28,7 @@ fn main() {
 // Строим график по результатам урока.
 fn plot_cluster_points_and_coordinate_averages(cluster: [[f64; 2]; 2], cluster_center: [f64; 2]) {
     let cluster_center_points: Vec<(f64, f64)> = vec![(cluster_center[0], cluster_center[1])];
-    let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
+    lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Точки кластера и центроид",

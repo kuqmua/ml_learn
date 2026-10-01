@@ -28,7 +28,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_activations_after_transforming_each_position(activated: [f64; 2]) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Feed-forward",

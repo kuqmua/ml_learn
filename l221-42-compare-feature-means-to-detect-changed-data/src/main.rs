@@ -13,14 +13,14 @@ use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_me
 
 fn main() {
     let reference: [f64; 3] = [1.0, 2.0, 3.0];
+    assert!(!reference.is_empty());
+    let reference_mean: f64 =
+        calculate_mean_by_summing_values_and_dividing_by_count(&reference).unwrap();
     let cases: [(&str, [f64; 3], f64); 3] = [
         ("без сдвига среднего", [3.0, 2.0, 1.0], 0.0),
         ("сдвиг к большим значениям", [5.0, 6.0, 7.0], 4.0),
         ("то же среднее, другой разброс", [0.0, 2.0, 4.0], 0.0),
     ];
-    assert!(!reference.is_empty());
-    let reference_mean: f64 =
-        calculate_mean_by_summing_values_and_dividing_by_count(&reference).unwrap();
     for (_description, current, expected_difference) in cases {
         assert!(!current.is_empty());
 
@@ -38,7 +38,7 @@ fn plot_reference_shifted_and_more_spread_out_feature_values(
     reference: [f64; 3],
     cases: [(&str, [f64; 3], f64); 3],
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Сдвиг среднего",

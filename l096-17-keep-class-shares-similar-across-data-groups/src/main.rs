@@ -12,8 +12,8 @@
 
 fn main() {
     let positive: [i32; 4] = [1, 3, 5, 7];
-    let negative: [i32; 4] = [0, 2, 4, 6];
     let bad_first: [i32; 4] = positive;
+    let negative: [i32; 4] = [0, 2, 4, 6];
     let bad_second: [i32; 4] = negative;
     let first_fold: [i32; 4] = [positive[0], positive[1], negative[0], negative[1]];
     let second_fold: [i32; 4] = [positive[2], positive[3], negative[2], negative[3]];
@@ -33,7 +33,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_positive_example_count_in_each_validation_group() {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Положительные в каждой части",

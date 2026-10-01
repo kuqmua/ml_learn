@@ -14,8 +14,8 @@
 
 fn main() {
     let values: [f64; 3] = [2.0, 4.0, 6.0];
-    let resamples: [[usize; 3]; 4] = [[0, 1, 2], [0, 0, 2], [1, 2, 2], [0, 1, 1]];
     assert!(!values.is_empty(), "исходная выборка не должна быть пустой");
+    let resamples: [[usize; 3]; 4] = [[0, 1, 2], [0, 0, 2], [1, 2, 2], [0, 1, 1]];
     for indices in resamples {
         assert!(
             !indices.is_empty(),
@@ -29,7 +29,7 @@ fn main() {
         for index in indices {
             sum_of_resampled_values += values[index];
         }
-        let _mean: f64 = sum_of_resampled_values / indices.len() as f64;
+        let _: f64 = sum_of_resampled_values / indices.len() as f64;
     }
 
     plot_means_of_samples_drawn_with_replacement(values, resamples);
@@ -37,7 +37,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_means_of_samples_drawn_with_replacement(values: [f64; 3], resamples: [[usize; 3]; 4]) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Bootstrap: средние повторных выборок",

@@ -40,7 +40,7 @@ fn plot_observations_mean_and_uncertainty_bounds(values: [f64; 4], mean: f64, ma
     let mean_line: [(f64, f64); 2] = [(1.0, mean), (values.len() as f64, mean)];
     let lower: [(f64, f64); 2] = [(1.0, mean - margin), (values.len() as f64, mean - margin)];
     let upper: [(f64, f64); 2] = [(1.0, mean + margin), (values.len() as f64, mean + margin)];
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Приближённый доверительный интервал",

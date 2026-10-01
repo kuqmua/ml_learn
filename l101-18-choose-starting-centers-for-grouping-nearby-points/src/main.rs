@@ -26,7 +26,7 @@ fn plot_initial_cluster_centers(
     first_start: [[f64; 2]; 2],
     second_start: [[f64; 2]; 2],
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
+    lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Инициализация k-means",

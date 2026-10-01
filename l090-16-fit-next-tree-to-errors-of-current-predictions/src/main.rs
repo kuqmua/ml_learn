@@ -41,7 +41,7 @@ fn main() {
 }
 
 fn plot_average_squared_error_after_each_added_tree(losses: &[f64; 3]) {
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "boosting-error",
         "Ошибка после каждого дерева",

@@ -30,7 +30,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_operation_count_for_growing_number_of_input_rows() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Стоимость пакетного инференса",

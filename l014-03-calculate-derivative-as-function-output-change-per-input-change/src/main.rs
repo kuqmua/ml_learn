@@ -15,14 +15,14 @@
 
 fn main() {
     let input_value: f64 = 3.0;
-    let _derivative: f64 = 2.0 * input_value;
+    let _: f64 = 2.0 * input_value;
 
     plot_squared_input_and_tangent_line();
 }
 
 // Строим график по результатам урока.
 fn plot_squared_input_and_tangent_line() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Функция и касательная в x=3",

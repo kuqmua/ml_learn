@@ -30,7 +30,7 @@ fn plot_results_after_multiplying_matching_query_and_key_coordinates(
     key: [f64; 2],
     score: f64,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Вклады координат в Q·K",

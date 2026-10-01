@@ -23,5 +23,5 @@ fn main() {
         "feature,target",
         "неверная схема CSV"
     );
-    let _row_count: usize = lines.count();
+    let _: usize = lines.count();
 }

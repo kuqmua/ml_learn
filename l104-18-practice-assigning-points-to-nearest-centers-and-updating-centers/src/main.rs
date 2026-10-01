@@ -18,8 +18,6 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let dataset: [[f64; 2]; 4] = [[0., 0.], [0., 1.], [10., 10.], [10., 11.]];
-
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
     /// Само умножение не обязательно медленнее библиотечного метода.
@@ -37,6 +35,7 @@ fn main() {
             + calculate_square_by_multiplying_number_by_itself(first_point[1] - second_point[1])
     }
 
+    let dataset: [[f64; 2]; 4] = [[0., 0.], [0., 1.], [10., 10.], [10., 11.]];
     let _ = &((|| -> ([[f64; 2]; 2], f64) {
         let data: &[[f64; 2]] = &dataset;
 
@@ -122,7 +121,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_training_points_for_grouping_by_nearest_center(dataset: [[f64; 2]; 4]) {
-    let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
+    lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Две группы точек k-means",

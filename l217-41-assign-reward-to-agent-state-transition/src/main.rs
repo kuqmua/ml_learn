@@ -14,5 +14,5 @@
 fn main() {
     let next_state: i32 = 4;
     let goal: i32 = 4;
-    let _reward: f64 = if next_state == goal { 1.0 } else { -0.01 };
+    let _: f64 = if next_state == goal { 1.0 } else { -0.01 };
 }

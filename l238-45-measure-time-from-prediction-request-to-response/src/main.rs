@@ -16,6 +16,6 @@
 fn main() {
     let start: std::time::Instant = std::time::Instant::now();
     let feature: f64 = 3.0;
-    let _prediction: f64 = 2.0 * feature + 1.0;
-    let _response_delay: std::time::Duration = start.elapsed();
+    let _: f64 = 2.0 * feature + 1.0;
+    let _: std::time::Duration = start.elapsed();
 }

@@ -17,7 +17,7 @@ fn main() {
     let centered_points: [[f64; 2]; 4] = [[-2.0, 0.0], [-1.0, 0.0], [1.0, 0.0], [2.0, 0.0]];
     let principal_axis: [f64; 2] = [1.0, 0.0];
     for point in centered_points {
-        let _projection: f64 =
+        let _: f64 =
             multiply_matching_coordinates_then_add_results(&point, &principal_axis).unwrap();
     }
 
@@ -26,7 +26,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_centered_points_to_show_direction_of_greatest_spread(centered_points: [[f64; 2]; 4]) {
-    let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
+    lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Проекция на главное направление",

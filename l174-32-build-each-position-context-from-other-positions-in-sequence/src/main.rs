@@ -25,7 +25,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_weighted_context_coordinates(context: [f64; 2]) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Self-attention: контекст",

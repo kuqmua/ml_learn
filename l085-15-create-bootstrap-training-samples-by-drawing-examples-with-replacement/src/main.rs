@@ -24,7 +24,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_repeated_appearances_in_sample_drawn_with_replacement(sample: [&str; 4]) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Повторы в bootstrap-выборке",

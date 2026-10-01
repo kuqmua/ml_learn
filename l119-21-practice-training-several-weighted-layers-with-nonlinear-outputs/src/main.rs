@@ -86,7 +86,6 @@ fn main() {
         };
         for epoch in 0..20_000 {
             for &(features, expected_output) in &XOR {
-                let learning_rate: f64 = 0.5;
                 let hidden_outputs: [f64; 2] = [
                     calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
                         network.hidden_weights[0][0] * features[0]
@@ -125,6 +124,7 @@ fn main() {
                             hidden_outputs[1],
                         ),
                 ];
+                let learning_rate: f64 = 0.5;
                 for hidden_neuron_index in 0..2 {
                     network.output_weights[hidden_neuron_index] -= learning_rate
                         * output_loss_rate_of_change
@@ -173,7 +173,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_two_feature_training_points_by_class() {
-    let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
+    lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "XOR: обучающие примеры",

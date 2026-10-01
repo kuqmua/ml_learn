@@ -21,7 +21,7 @@ fn main() {
                 4.0 * input_value * input_value * input_value - 4.0 * input_value;
             input_value -= 0.1 * rate_of_change;
         }
-        let _loss: f64 =
+        let _: f64 =
             input_value * input_value * input_value * input_value - 2.0 * input_value * input_value;
     }
 
@@ -30,7 +30,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_function_with_two_valleys() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Два локальных минимума",

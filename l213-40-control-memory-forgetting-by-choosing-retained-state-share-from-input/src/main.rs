@@ -34,7 +34,7 @@ fn main() {
 }
 
 fn plot_stored_state_with_reset_on_third_step(states: &[f64; 4]) {
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "selective-state",
         "Сброс состояния на третьем шаге",

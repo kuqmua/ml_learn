@@ -18,13 +18,6 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let training_examples: [([f64; 2], bool); 4] = [
-        ([0., 0.], false),
-        ([0., 1.], false),
-        ([2., 2.], true),
-        ([2., 3.], true),
-    ];
-
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
     /// Само умножение не обязательно медленнее библиотечного метода.
@@ -32,16 +25,21 @@ fn main() {
         value * value
     }
 
+    let training_examples: [([f64; 2], bool); 4] = [
+        ([0., 0.], false),
+        ([0., 1.], false),
+        ([2., 2.], true),
+        ([2., 3.], true),
+    ];
     for neighbor_count in [1, 3] {
         let _ = &((|| -> bool {
             let training_examples: &[([f64; 2], bool)] = &training_examples;
-
-            let query_point: [f64; 2] = [1.8, 2.1];
 
             let neighbor_count: usize = neighbor_count;
 
             assert!(neighbor_count > 0 && neighbor_count <= training_examples.len());
 
+            let query_point: [f64; 2] = [1.8, 2.1];
             let mut nearest_neighbor_vote_uses_selected_count: Vec<(f64, bool)> = training_examples
                 .iter()
                 .map(|&(features, target)| {
@@ -76,7 +74,7 @@ fn main() {
 // Строим график по результатам урока.
 fn plot_training_points_by_class_and_query_point(training_examples: [([f64; 2], bool); 4]) {
     let query_point: [(f64, f64); 1] = [(1.8, 2.1)];
-    let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
+    lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Ближайшие соседи и запрос",

@@ -46,7 +46,7 @@ fn plot_classification_loss_as_negative_log_probability_for_each_correct_class(l
     assert!(losses[0] < losses[1] && losses[1] < losses[2]);
     assert!((losses[0] - losses[3]).abs() < 1e-10);
 
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Логарифмическая ошибка",

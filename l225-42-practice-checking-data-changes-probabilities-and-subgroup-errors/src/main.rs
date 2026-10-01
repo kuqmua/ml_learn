@@ -116,9 +116,8 @@ fn main() {
                 let mut squared_error_sum: f64 = 0.0;
 
                 for case in data {
-                    let target: f64 = if case.truth { 1.0 } else { 0.0 };
-
                     squared_error_sum += (|| -> f64 {
+                        let target: f64 = if case.truth { 1.0 } else { 0.0 };
                         let value: f64 = case.score - target;
 
                         value * value
@@ -144,7 +143,7 @@ fn main() {
                 .count() as f64
                 / cases.len() as f64
         };
-        let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+        lesson_visualization::bar_chart(
             env!("CARGO_MANIFEST_DIR"),
             "lesson-chart",
             "Accuracy по подгруппам",

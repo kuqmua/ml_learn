@@ -37,7 +37,7 @@ fn main() {
 }
 
 fn plot_square_image_before_splitting_into_blocks(image: &[[f64; 4]; 4]) {
-    let _path: std::path::PathBuf = lesson_visualization::heatmap(
+    lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "image-patches",
         "Исходное изображение 4x4",

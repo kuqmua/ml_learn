@@ -39,7 +39,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_joint_event_probabilities(cases: [(&str, f64, f64, f64, bool); 3]) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Зависимость событий",

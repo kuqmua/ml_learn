@@ -26,7 +26,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_parameter_before_and_after_training_update(before: f64, after: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Обновление веса сети",

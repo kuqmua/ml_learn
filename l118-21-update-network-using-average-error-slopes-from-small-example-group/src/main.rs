@@ -29,7 +29,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_weight_before_and_after_averaged_example_update(old_weight: f64, new_weight: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Mini-batch обновление",

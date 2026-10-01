@@ -31,7 +31,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_sum_of_absolute_coordinates_for_changing_first_coordinate() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Сумма модулей координат одного вектора",

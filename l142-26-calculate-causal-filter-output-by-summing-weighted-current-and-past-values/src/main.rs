@@ -23,7 +23,7 @@ fn main() {
     plot_input_signal_and_weighted_current_and_past_sums(&signal, &output);
 }
 fn plot_input_signal_and_weighted_current_and_past_sums(input: &[f64; 4], output: &[f64; 4]) {
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "causal-conv",
         "Причинная свёртка",

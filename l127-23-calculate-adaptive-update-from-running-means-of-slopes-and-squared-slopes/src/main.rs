@@ -41,7 +41,7 @@ fn plot_first_weight_update_using_running_gradient_averages(
     old_weight: f64,
     updated: f64,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Adam: первый шаг",

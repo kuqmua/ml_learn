@@ -15,16 +15,16 @@
 fn main() {
     let observed_count: f64 = 0.0;
     let total_words_in_class: f64 = 8.0;
+    let _: f64 = observed_count / total_words_in_class;
     let known_text_unit_count: f64 = 4.0;
-    let _unsmoothed: f64 = observed_count / total_words_in_class;
-    let _smoothed: f64 = (observed_count + 1.0) / (total_words_in_class + known_text_unit_count);
+    let _: f64 = (observed_count + 1.0) / (total_words_in_class + known_text_unit_count);
 
     plot_word_probabilities_before_and_after_adding_one_to_counts();
 }
 
 // Строим график по результатам урока.
 fn plot_word_probabilities_before_and_after_adding_one_to_counts() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Сглаживание Лапласа",

@@ -25,7 +25,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_coordinates_after_multiplying_by_query_weights(query: [f64; 2]) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Проекция в Q",

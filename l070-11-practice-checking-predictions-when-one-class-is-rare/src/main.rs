@@ -33,7 +33,7 @@ fn main() {
         );
     let recall: Option<f64> =
         calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(counts);
-    let _harmonic_mean_score: Option<f64> =
+    let _: Option<f64> =
         calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum(precision, recall);
 
     let all_negative_scores: [f64; 10] = [0.0; 10];
@@ -68,7 +68,7 @@ fn plot_prediction_quality_shares_for_imbalanced_classes(
     recall: core::option::Option<f64>,
     accuracy: core::option::Option<f64>,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Метрики при дисбалансе классов",

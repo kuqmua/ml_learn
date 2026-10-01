@@ -51,7 +51,7 @@ fn main() {
 
 fn plot_weights_assigned_from_first_image_block_to_all_blocks(weights: &[f64; 4]) {
     let labels: [&str; 4] = ["patch 0", "patch 1", "patch 2", "patch 3"];
-    let _path: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "vit-attention",
         "Внимание первого патча",

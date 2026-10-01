@@ -38,7 +38,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_true_positive_share_among_positive_predictions() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Precision при фиксированном TP=2",

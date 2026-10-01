@@ -34,7 +34,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_allowed_current_and_past_position_pairs(raw_weights: [f64; 3]) {
-    let _chart: std::path::PathBuf = lesson_visualization::heatmap(
+    lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Причинная маска внимания",

@@ -17,7 +17,7 @@ use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_co
 fn main() {
     let first_word_vector: [f64; 2] = [0.8, 0.2];
     let second_word_vector: [f64; 2] = [0.7, 0.3];
-    let _sum_after_multiplying_coordinates: f64 =
+    let _: f64 =
         multiply_matching_coordinates_then_add_results(&first_word_vector, &second_word_vector)
             .expect("представления должны иметь одинаковое число координат");
 
@@ -33,7 +33,7 @@ fn plot_coordinates_of_two_word_representations(
         vec![(first_word_vector[0], first_word_vector[1])];
     let second_dense_representation_points: Vec<(f64, f64)> =
         vec![(second_word_vector[0], second_word_vector[1])];
-    let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
+    lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Похожие эмбеддинги",

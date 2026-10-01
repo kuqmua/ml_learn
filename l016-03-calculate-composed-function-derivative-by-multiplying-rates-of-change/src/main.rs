@@ -18,14 +18,14 @@ fn main() {
     let inner: f64 = 2.0 * input_value + 1.0;
     let outer_derivative: f64 = 2.0 * inner;
     let inner_derivative: f64 = 2.0;
-    let _derivative: f64 = outer_derivative * inner_derivative;
+    let _: f64 = outer_derivative * inner_derivative;
 
     plot_fourth_power_and_its_rate_of_change();
 }
 
 // Строим график по результатам урока.
 fn plot_fourth_power_and_its_rate_of_change() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Правило цепочки: (2x+1)²",

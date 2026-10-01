@@ -32,7 +32,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_f1_score_as_twice_precision_times_recall_over_their_sum() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "F1 при precision=0.8",

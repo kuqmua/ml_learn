@@ -38,7 +38,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_average_absolute_prediction_error_for_changing_offset() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Средняя абсолютная ошибка",

@@ -17,8 +17,6 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let data: [[f64; 2]; 4] = [[1., 1.], [2., 2.], [3., 3.], [4., 4.]];
-
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
     /// Само умножение не обязательно медленнее библиотечного метода.
@@ -42,6 +40,7 @@ fn main() {
         estimate
     }
 
+    let data: [[f64; 2]; 4] = [[1., 1.], [2., 2.], [3., 3.], [4., 4.]];
     let (mean, axis, _variance_share_explained_by_first_axis): ([f64; 2], [f64; 2], f64) =
         (|| -> ([f64; 2], [f64; 2], f64) {
             let data: &[[f64; 2]] = &data;
@@ -114,7 +113,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_points_projected_onto_direction_of_largest_spread(projections: [f64; 4]) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "PCA: координаты вдоль главной оси",

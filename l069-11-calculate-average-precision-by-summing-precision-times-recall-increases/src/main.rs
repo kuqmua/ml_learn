@@ -31,7 +31,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_correct_positive_prediction_share_against_detected_positive_share() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "PR-кривая по ранжированным меткам",

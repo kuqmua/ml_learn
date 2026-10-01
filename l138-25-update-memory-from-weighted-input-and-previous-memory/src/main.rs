@@ -22,7 +22,7 @@ fn main() {
     );
 }
 fn plot_state_after_each_weighted_input_and_memory_update(states: &[f64; 4]) {
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "rnn-state",
         "Память RNN",

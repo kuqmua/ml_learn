@@ -19,7 +19,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_error_after_each_training_pass(losses: [f64; 3]) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Журнал обучения",

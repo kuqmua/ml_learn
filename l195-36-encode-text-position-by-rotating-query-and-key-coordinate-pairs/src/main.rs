@@ -40,7 +40,7 @@ fn plot_sum_after_multiplying_rotated_coordinates_for_relative_positions() {
     let query_vector: [f64; 2] =
         rotate_vector_coordinate_pair_by_token_position(query_vector, 0, 0.2);
 
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "rope-relative",
         "RoPE и расстояние между позициями",

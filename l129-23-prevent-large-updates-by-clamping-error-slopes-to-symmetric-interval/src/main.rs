@@ -33,7 +33,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_rate_of_change_clamped_to_symmetric_interval() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Ограничение градиента",

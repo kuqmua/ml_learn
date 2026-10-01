@@ -14,7 +14,7 @@
 fn main() {
     let neighbor_targets: [bool; 5] = [true, false, false, true, true];
     for neighbor_count in [1, 3, 5] {
-        let _prediction: bool = neighbor_targets[..neighbor_count]
+        let _: bool = neighbor_targets[..neighbor_count]
             .iter()
             .filter(|&&target| target)
             .count()
@@ -27,7 +27,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_positive_class_share_among_nearest_examples(neighbor_targets: [bool; 5]) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Соседи и доля положительных",

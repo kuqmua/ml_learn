@@ -30,7 +30,7 @@ fn main() {
         "для внешней оценки нужен хотя бы один пример"
     );
 
-    let _outer_test_accuracy: f64 = (0..outer_truth.len())
+    let _: f64 = (0..outer_truth.len())
         .filter(|&index| outer_truth[index] == outer_predictions[index])
         .count() as f64
         / outer_truth.len() as f64;
@@ -47,7 +47,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_validation_score_for_different_neighbor_counts(inner_scores: [(usize, f64); 3]) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Выбор k внутри вложенной оценки",

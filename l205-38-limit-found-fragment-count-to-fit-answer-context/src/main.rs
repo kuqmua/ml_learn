@@ -26,7 +26,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_included_document_count_for_different_context_limits() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Лимит контекста",

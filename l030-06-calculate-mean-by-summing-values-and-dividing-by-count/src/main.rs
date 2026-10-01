@@ -26,7 +26,7 @@ fn main() {
         );
     }
     let empty: [f64; 0] = [];
-    let _error: &str = calculate_mean_by_summing_values_and_dividing_by_count(&empty)
+    let _: &str = calculate_mean_by_summing_values_and_dividing_by_count(&empty)
         .expect_err("среднее пустого набора должно быть отклонено");
 
     plot_values_and_mean_as_their_sum_divided_by_count();
@@ -34,7 +34,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_values_and_mean_as_their_sum_divided_by_count() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Среднее и отдельные значения",

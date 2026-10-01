@@ -33,11 +33,6 @@ fn main() {
         !TRAINING_EXAMPLES.is_empty(),
         "для baseline нужны обучающие примеры"
     );
-    let baseline: f64 = TRAINING_EXAMPLES
-        .iter()
-        .filter(|(_, expected_topic)| *expected_topic == "code")
-        .count() as f64
-        / TRAINING_EXAMPLES.len() as f64;
     const TEST_EXAMPLES: [(&str, &str); 2] = [("ошибка cargo", "code"), ("метрики модели", "ml")];
     assert!(
         !TEST_EXAMPLES.is_empty(),
@@ -90,10 +85,15 @@ fn main() {
             choose_topic_and_count_matching_training_words(sample_text, &TRAINING_EXAMPLES);
     }
 
+    let baseline: f64 = TRAINING_EXAMPLES
+        .iter()
+        .filter(|(_, expected_topic)| *expected_topic == "code")
+        .count() as f64
+        / TRAINING_EXAMPLES.len() as f64;
     plot_correct_prediction_shares_for_compared_text_classifiers(baseline, correct);
 
     fn plot_correct_prediction_shares_for_compared_text_classifiers(baseline: f64, correct: usize) {
-        let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+        lesson_visualization::bar_chart(
             env!("CARGO_MANIFEST_DIR"),
             "lesson-chart",
             "Итоговый AI-проект",

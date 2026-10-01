@@ -11,7 +11,6 @@ use l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance
 fn main() {
     let alpha: f64 = 0.64;
     let training: [(f64, f64); 4] = [(1.0, -1.0), (1.0, 0.0), (1.0, 1.0), (1.0, 2.0)];
-    let validation: [(f64, f64); 2] = [(2.0, -0.5), (-1.0, 0.5)];
     let inputs: [(f64, f64); 4] = training.map(|(clean, noise)| {
         (
             calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
@@ -36,6 +35,7 @@ fn main() {
         .sum::<f64>()
         / inputs.len() as f64;
     assert!(loss < 1e-6);
+    let validation: [(f64, f64); 2] = [(2.0, -0.5), (-1.0, 0.5)];
     let held_out: [(f64, f64); 2] = validation.map(|(clean, noise)| {
         (
             calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(

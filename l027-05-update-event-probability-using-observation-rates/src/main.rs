@@ -15,8 +15,8 @@
 fn main() {
     let prevalence: f64 = 0.01;
     let sensitivity: f64 = 0.90;
-    let specificity: f64 = 0.95;
     let true_positive: f64 = prevalence * sensitivity;
+    let specificity: f64 = 0.95;
     let false_positive: f64 = (1.0 - prevalence) * (1.0 - specificity);
     let posterior: f64 = true_positive / (true_positive + false_positive);
 
@@ -25,7 +25,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_disease_probability_before_and_after_positive_test(posterior: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Байес: до и после теста",

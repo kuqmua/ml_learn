@@ -35,7 +35,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_first_direction_share_for_changing_variance() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Объяснённая дисперсия первой оси",

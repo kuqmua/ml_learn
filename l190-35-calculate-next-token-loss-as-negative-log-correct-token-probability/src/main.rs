@@ -46,7 +46,7 @@ fn main() {
 fn plot_next_token_loss_as_negative_log_correct_text_unit_probability_by_position(
     losses: &[f64; 3],
 ) {
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "next-token-loss",
         "Потери по позициям",

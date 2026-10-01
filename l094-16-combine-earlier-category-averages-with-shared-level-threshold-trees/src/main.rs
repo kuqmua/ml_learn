@@ -12,8 +12,6 @@ use l091_16_build_symmetric_tree_using_shared_threshold_test_at_each_level::Obli
 use l092_16_encode_category_by_averaging_earlier_targets_without_current_answer::encode_categories_as_average_previous_targets_with_prior_weight;
 
 fn main() {
-    let categories: [&str; 6] = ["A", "B", "A", "B", "A", "B"];
-    let targets: [f64; 6] = [1.0, 0.0, 1.0, 0.0, 1.0, 0.0];
     let tree: ObliviousTree = ObliviousTree {
         splits: vec![(0, 0.5)],
         leaves: vec![-0.25, 0.25],
@@ -22,6 +20,8 @@ fn main() {
     let learning_rate: f64 = 0.5;
     let mut before: f64 = 0.0;
     let mut after: f64 = 0.0;
+    let categories: [&str; 6] = ["A", "B", "A", "B", "A", "B"];
+    let targets: [f64; 6] = [1.0, 0.0, 1.0, 0.0, 1.0, 0.0];
     for (_index, (&feature, &target)) in
         encode_categories_as_average_previous_targets_with_prior_weight(
             &categories,
@@ -47,7 +47,7 @@ fn main() {
 }
 
 fn plot_average_squared_error_before_and_after_training(before: f64, after: f64) {
-    let _path: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "mse",
         "Ошибка учебной схемы",

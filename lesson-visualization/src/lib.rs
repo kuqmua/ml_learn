@@ -81,26 +81,27 @@ fn draw_chart(
 ) -> Result<std::path::PathBuf, Box<dyn std::error::Error>> {
     // Проверяем имя файла и подготавливаем каталог visualizations.
     let path = output_path(lesson_directory, name)?;
-    // Собираем только конечные координаты для выбора диапазона осей.
-    let points: Vec<(f64, f64)> = series
-        // Просматриваем элементы коллекции по ссылке.
-        .iter()
-        // Объединяем вложенные последовательности.
-        .flat_map(|series| series.points.iter().copied())
-        // Оставляем элементы, отвечающие условию.
-        .filter(|(horizontal_value, vertical_value)| {
-            horizontal_value.is_finite() && vertical_value.is_finite()
-        })
-        // Собираем результаты в коллекцию.
-        .collect();
-    // Пустому графику невозможно назначить диапазон осей.
-    if points.is_empty() {
-        // Прерываем вычисление и возвращаем причину ошибки.
-        return Err("нет конечных точек для графика".into());
-    }
     // Определяем диапазоны осей с небольшими полями.
-    let ((horizontal_minimum, horizontal_maximum), (vertical_minimum, vertical_maximum)) =
-        bounds(&points);
+    let ((horizontal_minimum, horizontal_maximum), (vertical_minimum, vertical_maximum)) = {
+        // Собираем только конечные координаты для выбора диапазона осей.
+        let points: Vec<(f64, f64)> = series
+            // Просматриваем элементы коллекции по ссылке.
+            .iter()
+            // Объединяем вложенные последовательности.
+            .flat_map(|series| series.points.iter().copied())
+            // Оставляем элементы, отвечающие условию.
+            .filter(|(horizontal_value, vertical_value)| {
+                horizontal_value.is_finite() && vertical_value.is_finite()
+            })
+            // Собираем результаты в коллекцию.
+            .collect();
+        // Пустому графику невозможно назначить диапазон осей.
+        if points.is_empty() {
+            // Прерываем вычисление и возвращаем причину ошибки.
+            return Err("нет конечных точек для графика".into());
+        }
+        bounds(&points)
+    };
     // Создаём SVG-холст заданного размера.
     let root = plotters::prelude::IntoDrawingArea::into_drawing_area(
         plotters::prelude::SVGBackend::new(&path, (900, 560)),

@@ -15,14 +15,14 @@
 
 fn main() {
     let (input_value, second_input_value): (f64, f64) = (0.0, 0.0);
-    let _rate_of_change: [f64; 2] = [2.0 * (input_value - 2.0), 6.0 * (second_input_value + 1.0)];
+    let _: [f64; 2] = [2.0 * (input_value - 2.0), 6.0 * (second_input_value + 1.0)];
 
     plot_rate_of_change_along_first_coordinate();
 }
 
 // Строим график по результатам урока.
 fn plot_rate_of_change_along_first_coordinate() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Градиент квадратичной функции",

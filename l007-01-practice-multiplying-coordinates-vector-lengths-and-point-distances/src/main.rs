@@ -62,7 +62,7 @@ fn main() {
     }
 
     let too_short: [f64; 1] = [1.0];
-    let _error: &str = multiply_matching_coordinates_then_add_results(&first_vector, &too_short)
+    let _: &str = multiply_matching_coordinates_then_add_results(&first_vector, &too_short)
         .expect_err("векторы разной длины нужно отклонить");
 
     plot_l1_and_euclidean_lengths_as_absolute_sum_and_square_root_of_squared_sum();
@@ -70,7 +70,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_l1_and_euclidean_lengths_as_absolute_sum_and_square_root_of_squared_sum() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Сравнение норм",

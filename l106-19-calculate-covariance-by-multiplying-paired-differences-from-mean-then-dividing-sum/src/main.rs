@@ -13,13 +13,13 @@
 fn main() {
     // Оба ряда имеют три значения: число пар задано типами массивов.
     let first_feature_values: [f64; 3] = [1.0, 2.0, 3.0];
-    let second_feature_values: [f64; 3] = [2.0, 4.0, 6.0];
     assert!(
         first_feature_values.len() >= 2,
         "для выборочной ковариации нужны хотя бы две пары"
     );
     let mean_horizontal_coordinate: f64 =
         first_feature_values.iter().sum::<f64>() / first_feature_values.len() as f64;
+    let second_feature_values: [f64; 3] = [2.0, 4.0, 6.0];
     let mean_vertical_coordinate: f64 =
         second_feature_values.iter().sum::<f64>() / second_feature_values.len() as f64;
     let mut sum_after_multiplying_paired_differences_from_mean: f64 = 0.0;
@@ -39,7 +39,7 @@ fn plot_paired_feature_values_to_show_joint_variation(
     horizontal_value: [f64; 3],
     vertical_value: [f64; 3],
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
+    lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Ковариация: совместное изменение",

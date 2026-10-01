@@ -18,7 +18,7 @@ fn main() {
     let rate_of_change: f64 = 2.0 * (parameter - 3.0);
     for rate in [0.1, 1.0, 2.0] {
         let updated: f64 = parameter - rate * rate_of_change;
-        let _error: f64 = (updated - 3.0) * (updated - 3.0);
+        let _: f64 = (updated - 3.0) * (updated - 3.0);
     }
 
     plot_squared_error_after_one_update_for_different_step_sizes(parameter, rate_of_change);
@@ -31,7 +31,7 @@ fn plot_squared_error_after_one_update_for_different_step_sizes(
 ) {
     let learning_rates: [f64; 3] = [0.1, 1.0, 2.0];
 
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "learning-rate",
         "Ошибка после одного шага",

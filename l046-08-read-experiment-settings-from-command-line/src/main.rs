@@ -13,12 +13,12 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let _seed: u64 = std::env::args()
+    let _: u64 = std::env::args()
         .nth(1)
         .map(|text| {
             text.parse::<u64>()
                 .expect("seed должен быть целым неотрицательным числом")
         })
         .unwrap_or(42);
-    let _iterations: i32 = 3;
+    let _: i32 = 3;
 }

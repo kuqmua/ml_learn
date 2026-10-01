@@ -29,7 +29,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_squared_error_after_each_parameter_update() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Сходимость градиентного спуска",

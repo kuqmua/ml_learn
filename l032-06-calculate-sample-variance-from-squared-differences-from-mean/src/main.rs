@@ -21,7 +21,7 @@ fn main() {
         assert_eq!(calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one(values)
                 .expect("для выборочной дисперсии нужны хотя бы два значения"), expected);
     }
-    let _error: &str =
+    let _: &str =
         calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one(&[
             4.0,
         ])
@@ -32,7 +32,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_squared_differences_from_mean() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Разброс относительно среднего",

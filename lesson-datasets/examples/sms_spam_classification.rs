@@ -3,7 +3,6 @@ use l063_11_calculate_accuracy_as_correct_predictions_divided_by_all_predictions
 use l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives;
 
 fn report_majority_baseline(
-    name: &str,
     records: &[lesson_datasets::SmsSpamRecord],
     indices: &[usize],
     majority_is_spam: bool,
@@ -46,12 +45,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         &(split.validation_indices.len()),
         &(split.test_indices.len()),
     );
-    report_majority_baseline(
-        "validation",
-        &records,
-        &split.validation_indices,
-        majority_is_spam,
-    )?;
-    report_majority_baseline("test", &records, &split.test_indices, majority_is_spam)?;
+    report_majority_baseline(&records, &split.validation_indices, majority_is_spam)?;
+    report_majority_baseline(&records, &split.test_indices, majority_is_spam)?;
     Ok(())
 }

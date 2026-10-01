@@ -24,7 +24,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_value_coordinates_after_weighted_summing(output: [f64; 2]) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Взвешенная сумма V",

@@ -12,10 +12,10 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
+    let mut best: (&str, i32) = ("", 0);
     let transitions: [(&str, &str, i32); 3] =
         [("я", "учу", 3), ("я", "пишу", 1), ("учу", "rust", 2)];
     let current: &str = "я";
-    let mut best: (&str, i32) = ("", 0);
     for (previous, next, count) in transitions {
         if previous == current && count > best.1 {
             best = (next, count);
@@ -28,7 +28,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_counts_of_next_text_units_after_current_one() {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Переходы после текущего токена",

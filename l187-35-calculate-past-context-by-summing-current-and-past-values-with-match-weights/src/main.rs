@@ -25,7 +25,7 @@ fn main() {
 }
 
 fn plot_weights_assigned_only_to_current_and_past_positions(states: &[[f64; 2]; 3]) {
-    let _path: std::path::PathBuf = lesson_visualization::heatmap(
+    lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "causal-attention",
         "Веса причинного внимания",

@@ -24,7 +24,7 @@ fn main() {
 fn plot_within_cluster_squared_distance_sums_for_different_cluster_counts(
     candidates: [(i32, f64); 4],
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Метод локтя",

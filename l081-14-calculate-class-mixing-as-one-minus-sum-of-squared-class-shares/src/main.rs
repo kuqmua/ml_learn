@@ -13,7 +13,7 @@
 fn main() {
     for positive_class_share in [0.0, 0.5, 1.0] {
         let negative_class_share: f64 = 1.0 - positive_class_share;
-        let _gini: f64 = 1.0
+        let _: f64 = 1.0
             - positive_class_share * positive_class_share
             - negative_class_share * negative_class_share;
     }
@@ -23,7 +23,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_class_mixing_as_twice_positive_share_times_negative_share() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Нечистота Gini",

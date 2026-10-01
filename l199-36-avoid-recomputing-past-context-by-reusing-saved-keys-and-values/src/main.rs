@@ -11,10 +11,10 @@ use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_n
 use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
 fn main() {
-    let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
     let mut cached_keys: Vec<[f64; 2]> = Vec::new();
     let mut cached_values: Vec<[f64; 2]> = Vec::new();
     let mut cached_outputs: Vec<[f64; 2]> = Vec::new();
+    let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
     for &new_state in &states {
         cached_keys.push(new_state);
         cached_values.push(new_state);

@@ -10,10 +10,10 @@
 use l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares;
 
 fn main() {
-    let clean: f64 = 2.0;
     let noise: f64 = -1.0;
+    let clean: f64 = 2.0;
     for original_signal_variance_share in [1.0, 0.75, 0.25, 0.0] {
-        let _noisy: f64 = calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+        let _: f64 = calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
             clean,
             noise,
             original_signal_variance_share,
@@ -38,7 +38,7 @@ fn main() {
 }
 
 fn plot_signal_and_noise_mixture_for_changing_signal_share(clean: f64, noise: f64) {
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "diffusion-forward",
         "Смесь сигнала и шума",

@@ -9,13 +9,6 @@
 // Замороженную матрицу дополняют произведением маленьких обучаемых матриц.
 
 fn main() {
-    let frozen: [[f64; 4]; 4] = [
-        [1.0, 0.0, 0.0, 0.0],
-        [0.0, 1.0, 0.0, 0.0],
-        [0.0, 0.0, 1.0, 0.0],
-        [0.0, 0.0, 0.0, 1.0],
-    ];
-    let adapter_output_weights: [f64; 4] = [0.1, 0.2, 0.3, 0.4];
     let adapter_input_weights: [f64; 4] = [1.0, 0.0, -1.0, 0.0];
     let input: [f64; 4] = [1.0, 2.0, 3.0, 4.0];
     let projected_input: f64 = adapter_input_weights
@@ -23,6 +16,13 @@ fn main() {
         .zip(input)
         .map(|(adapter_component, input_component)| adapter_component * input_component)
         .sum();
+    let frozen: [[f64; 4]; 4] = [
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0],
+    ];
+    let adapter_output_weights: [f64; 4] = [0.1, 0.2, 0.3, 0.4];
     assert_eq!(
         std::array::from_fn::<f64, 4, _>(|row| {
             frozen[row]

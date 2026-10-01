@@ -23,7 +23,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_image_surrounded_by_zeros(image_with_zero_border: [[i32; 4]; 4]) {
-    let _chart: std::path::PathBuf = lesson_visualization::heatmap(
+    lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Padding: дополненное изображение",

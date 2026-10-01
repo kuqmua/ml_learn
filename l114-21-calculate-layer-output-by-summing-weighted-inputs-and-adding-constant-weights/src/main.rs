@@ -28,7 +28,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_weights_used_to_sum_input_coordinates(weights: [[f64; 2]; 2]) {
-    let _chart: std::path::PathBuf = lesson_visualization::heatmap(
+    lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Веса слоя",

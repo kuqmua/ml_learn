@@ -33,7 +33,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_matrix_after_turning_rows_into_columns(transposed: [[i32; 2]; 3]) {
-    let _chart: std::path::PathBuf = lesson_visualization::heatmap(
+    lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Транспонированная матрица",

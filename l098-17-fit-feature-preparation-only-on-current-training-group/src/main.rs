@@ -18,8 +18,8 @@ fn main() {
         !training_data.is_empty(),
         "обучающая выборка не должна быть пустой"
     );
-    let validation: [f64; 1] = [100.0];
     let training_mean: f64 = training_data.iter().sum::<f64>() / training_data.len() as f64;
+    let validation: [f64; 1] = [100.0];
     let validation_centered: f64 = validation[0] - training_mean;
 
     plot_training_mean_and_centered_validation_value(training_mean, validation_centered);
@@ -27,7 +27,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_training_mean_and_centered_validation_value(training_mean: f64, validation_centered: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Центрирование по train",

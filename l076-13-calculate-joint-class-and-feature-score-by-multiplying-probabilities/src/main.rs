@@ -34,7 +34,7 @@ fn plot_result_after_multiplying_feature_probabilities_within_class(
     word_two_given_positive: f64,
     joint_score: f64,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Условно независимые признаки",

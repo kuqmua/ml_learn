@@ -34,7 +34,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_disease_probability_among_positive_tests() {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Условная вероятность",

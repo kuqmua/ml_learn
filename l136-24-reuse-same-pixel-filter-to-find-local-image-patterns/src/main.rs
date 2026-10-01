@@ -13,20 +13,19 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let image: [f64; 4] = [1.0, 3.0, 2.0, 5.0];
     let filter_weights: [f64; 2] = [-1.0, 1.0];
     assert_eq!(
         filter_weights.len(),
         2,
         "этот пример рассчитан на ядро из двух значений"
     );
+    let image: [f64; 4] = [1.0, 3.0, 2.0, 5.0];
     assert!(
         !filter_weights.is_empty() && image.len() >= filter_weights.len(),
         "ядро должно быть непустым и не длиннее изображения"
     );
     for start in 0..=image.len() - filter_weights.len() {
-        let _response: f64 =
-            image[start] * filter_weights[0] + image[start + 1] * filter_weights[1];
+        let _: f64 = image[start] * filter_weights[0] + image[start + 1] * filter_weights[1];
     }
 
     plot_image_filter_response_as_local_weighted_pixel_sums_at_each_position(image, filter_weights);
@@ -37,7 +36,7 @@ fn plot_image_filter_response_as_local_weighted_pixel_sums_at_each_position(
     image: [f64; 4],
     filter_weights: [f64; 2],
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Отклик ядра на локальные границы",

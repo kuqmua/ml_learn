@@ -26,7 +26,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_distribution_change_scores_and_alert_threshold(alert_threshold: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Порог алерта и два случая",

@@ -12,7 +12,6 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let term_frequency: f64 = 3.0;
     let document_count: f64 = 10.0;
     let documents_with_term: f64 = 2.0;
     let rarity_ratio: f64 = (document_count + 1.0) / (documents_with_term + 1.0);
@@ -24,14 +23,15 @@ fn main() {
         term *= normalized * normalized;
     }
     let inverse_document_frequency: f64 = 2.0 * logarithm;
-    let _score: f64 = term_frequency * inverse_document_frequency;
+    let term_frequency: f64 = 3.0;
+    let _: f64 = term_frequency * inverse_document_frequency;
 
     plot_word_frequency_weighted_by_rarity_across_documents(inverse_document_frequency);
 }
 
 // Строим график по результатам урока.
 fn plot_word_frequency_weighted_by_rarity_across_documents(inverse_document_frequency: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "TF-IDF",

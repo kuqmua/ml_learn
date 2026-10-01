@@ -14,16 +14,16 @@
 fn main() {
     let (input_value, second_input_value): (f64, f64) = (2.0, 3.0);
     let multiplied_coordinates: f64 = input_value * second_input_value;
-    let _output: f64 = multiplied_coordinates + input_value;
-    let _derivative_by_horizontal_coordinate: f64 = second_input_value + 1.0;
-    let _derivative_by_vertical_coordinate: f64 = input_value;
+    let _: f64 = multiplied_coordinates + input_value;
+    let _: f64 = second_input_value + 1.0;
+    let _: f64 = input_value;
 
     plot_multiply_inputs_then_add_first_with_second_fixed(second_input_value);
 }
 
 // Строим график по результатам урока.
 fn plot_multiply_inputs_then_add_first_with_second_fixed(vertical_value: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "f(x,y)=xy+x при y=3",

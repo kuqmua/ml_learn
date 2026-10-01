@@ -28,11 +28,10 @@ fn main() {
     ];
 
     let models: [(f64, bool); 9] = std::array::from_fn(|index| {
-        let seed = (index + 1) as u64;
         (|| -> (f64, bool) {
             let data: &[(f64, bool)] = &(|| -> Vec<(f64, bool)> {
                 let data: &[(f64, bool)] = &data;
-                let seed: u64 = seed;
+                let seed: u64 = (index + 1) as u64;
                 let mut generator_state: u64 = seed;
                 (0..data.len())
                     .map(|_| {
@@ -61,7 +60,7 @@ fn main() {
         })()
     });
     for feature_value in [0.5, 2.5, 4.5] {
-        let _first_model: bool = (feature_value >= models[0].0) ^ models[0].1;
+        let _: bool = (feature_value >= models[0].0) ^ models[0].1;
 
         let _ = (
             &(models.len()),
@@ -85,7 +84,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_thresholds_learned_by_resampled_models(models: [(f64, bool); 9]) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Пороги моделей ансамбля",

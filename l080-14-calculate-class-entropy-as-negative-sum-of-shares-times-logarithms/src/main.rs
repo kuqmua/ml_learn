@@ -44,7 +44,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_class_entropy_as_negative_sum_of_class_shares_times_their_logarithms() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Энтропия бинарного класса",

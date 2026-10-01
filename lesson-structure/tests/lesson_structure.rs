@@ -173,18 +173,23 @@ fn every_public_lesson_operation_is_demonstrated_in_its_own_main() {
         }
         lessons += 1;
         let source = directory.join("src");
-        let library = match std::fs::read_to_string(source.join("lib.rs")) {
-            Ok(source) => source,
-            Err(error) if error.kind() == std::io::ErrorKind::NotFound => String::new(),
-            Err(error) => panic!("{}: {error}", source.display()),
+        let functions = {
+            let library = match std::fs::read_to_string(source.join("lib.rs")) {
+                Ok(source) => source,
+                Err(error) if error.kind() == std::io::ErrorKind::NotFound => String::new(),
+                Err(error) => panic!("{}: {error}", source.display()),
+            };
+            let parsed = syn::parse_file(&library).expect("lib.rs должен быть корректным Rust");
+            let mut functions = Vec::new();
+            let crate_name = name.replace('-', "_");
+            exported_functions(&parsed.items, &source, &[crate_name], &mut functions);
+            functions
         };
-        let parsed = syn::parse_file(&library).expect("lib.rs должен быть корректным Rust");
-        let mut functions = Vec::new();
-        let crate_name = name.replace('-', "_");
-        exported_functions(&parsed.items, &source, &[crate_name], &mut functions);
-        let main =
-            std::fs::read_to_string(source.join("main.rs")).expect("у урока должен быть main.rs");
-        let calls = calls_in_main(&main);
+        let calls = {
+            let main = std::fs::read_to_string(source.join("main.rs"))
+                .expect("у урока должен быть main.rs");
+            calls_in_main(&main)
+        };
         for function in functions {
             checked += 1;
             if !calls.contains(&function) {

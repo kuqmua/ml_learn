@@ -12,6 +12,6 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let _source_identifier: &str = "docs/rust/cargo";
-    let _fact: &str = "Cargo собирает проект";
+    let _: &str = "docs/rust/cargo";
+    let _: &str = "Cargo собирает проект";
 }

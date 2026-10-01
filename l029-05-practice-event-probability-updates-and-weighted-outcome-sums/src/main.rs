@@ -59,10 +59,9 @@ fn main() {
 
             let sensitivity: f64 = 0.9;
 
-            let specificity: f64 = 0.95;
-
             let true_positive_probability: f64 = prevalence * sensitivity;
 
+            let specificity: f64 = 0.95;
             true_positive_probability
                 / (true_positive_probability + (1.0 - prevalence) * (1.0 - specificity))
         })()),
@@ -79,7 +78,7 @@ fn plot_simulated_and_calculated_disease_rates_after_positive_test(
     positive_test_count: i32,
     true_positive_count: i32,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Монте-Карло и формула Байеса",

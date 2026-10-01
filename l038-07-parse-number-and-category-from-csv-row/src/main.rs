@@ -17,8 +17,8 @@ fn main() {
     let (number_text, category): (&str, &str) = row
         .split_once(',')
         .expect("в строке нет запятой между числом и категорией");
-    let _numeric_feature: f64 = number_text
+    let _: f64 = number_text
         .parse()
         .expect("первая колонка должна содержать число");
-    let _categorical_feature: &str = category;
+    let _: &str = category;
 }

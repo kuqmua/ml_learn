@@ -53,15 +53,15 @@ fn main() {
                 };
                 let (next_state, reward): (usize, f64) =
                     move_agent_in_bounded_world_and_calculate_reward(current_state, action);
-                let future: f64 = if action_values[next_state][0] > action_values[next_state][1] {
-                    action_values[next_state][0]
-                } else {
-                    action_values[next_state][1]
-                };
                 action_values[current_state][action] = (|| -> f64 {
                     let current_value: f64 = action_values[current_state][action];
                     let reward: f64 = reward;
-                    let best_future_value: f64 = future;
+                    let best_future_value: f64 =
+                        if action_values[next_state][0] > action_values[next_state][1] {
+                            action_values[next_state][0]
+                        } else {
+                            action_values[next_state][1]
+                        };
                     let learning_rate: f64 = 0.2;
                     let discount_factor: f64 = 0.95;
                     current_value
@@ -94,7 +94,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_best_estimated_action_reward_at_each_position(action_values: [[f64; 2]; 5]) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Ценность состояния после обучения",

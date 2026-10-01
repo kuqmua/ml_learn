@@ -29,7 +29,6 @@ fn main() {
     let input: [f64; 3] = [1.0, 0.5, -0.2];
     let input_weight: f64 = 0.3;
     let recurrent_weight: f64 = 0.4;
-    let target: f64 = 0.7;
     let history: [f64; 3] =
         calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
             &input,
@@ -38,6 +37,7 @@ fn main() {
         )
         .try_into()
         .expect("ожидалось по одному состоянию на каждый входной шаг");
+    let target: f64 = 0.7;
     let mut hidden_state_loss_rate_of_change: f64 = history.last().unwrap() - target;
     let mut recurrent_weight_loss_rate_of_change: f64 = 0.0;
     for time_index in (0..input.len()).rev() {

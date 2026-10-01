@@ -38,7 +38,7 @@ fn plot_counts_of_correct_and_incorrect_predictions_after_release(
     truth: [bool; 3],
     correct: usize,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Качество после релиза",

@@ -116,8 +116,7 @@ fn plot_output_rates_of_change_for_left_and_right_matrix_entries(
             &right_input_rates_of_change,
         ),
     ] {
-        let _chart: std::path::PathBuf =
-            lesson_visualization::heatmap(env!("CARGO_MANIFEST_DIR"), name, title, values)
-                .expect("не удалось сохранить график градиента");
+        lesson_visualization::heatmap(env!("CARGO_MANIFEST_DIR"), name, title, values)
+            .expect("не удалось сохранить график градиента");
     }
 }

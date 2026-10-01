@@ -32,10 +32,10 @@ fn main() {
         let determinant: f64 = first_row_first_coefficient * second_row_second_coefficient
             - first_row_second_coefficient * second_row_first_coefficient;
         if determinant != 0.0 {
-            let _first_unknown: f64 = (first_right_hand_side * second_row_second_coefficient
+            let _: f64 = (first_right_hand_side * second_row_second_coefficient
                 - first_row_second_coefficient * second_right_hand_side)
                 / determinant;
-            let _second_unknown: f64 = (first_row_first_coefficient * second_right_hand_side
+            let _: f64 = (first_row_first_coefficient * second_right_hand_side
                 - first_right_hand_side * second_row_first_coefficient)
                 / determinant;
         } else {
@@ -64,7 +64,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_two_lines_and_their_intersection() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Две прямые с единственным пересечением",

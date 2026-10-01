@@ -14,7 +14,7 @@
 fn main() {
     let model_predictions: [bool; 5] = [true, false, true, true, false];
     let positive_votes: usize = model_predictions.iter().filter(|&&vote| vote).count();
-    let _majority_vote_from_models: bool = positive_votes * 2 > model_predictions.len();
+    let _: bool = positive_votes * 2 > model_predictions.len();
 
     plot_votes_of_models_trained_on_resampled_data(model_predictions, positive_votes);
 }
@@ -24,7 +24,7 @@ fn plot_votes_of_models_trained_on_resampled_data(
     model_predictions: [bool; 5],
     positive_votes: usize,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Голосование bagging",

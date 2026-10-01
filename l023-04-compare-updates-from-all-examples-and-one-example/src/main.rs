@@ -37,7 +37,7 @@ fn plot_average_rate_of_change_and_single_example_rates(
     batch_loss_rate_of_change: f64,
     single_example_loss_rate_of_change: f64,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Batch и stochastic градиенты",

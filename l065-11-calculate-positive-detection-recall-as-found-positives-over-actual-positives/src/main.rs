@@ -43,7 +43,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_detected_share_of_actual_positive_examples() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Recall при фиксированном TP=2",

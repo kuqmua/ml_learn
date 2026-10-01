@@ -23,7 +23,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_first_coordinate_before_and_after_adding_block_input(input: [f64; 2], output: [f64; 2]) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Остаточная связь",

@@ -27,7 +27,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_row_and_column_counts_of_input_and_output_matrices() {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Размеры тензоров",

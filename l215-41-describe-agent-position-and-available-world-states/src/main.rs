@@ -14,14 +14,14 @@
 fn main() {
     let current_cell: i32 = 2;
     let goal_cell: i32 = 4;
-    let _distance_to_goal: i32 = goal_cell - current_cell;
+    let _: i32 = goal_cell - current_cell;
 
     plot_remaining_steps_to_target_for_each_position();
 }
 
 // Строим график по результатам урока.
 fn plot_remaining_steps_to_target_for_each_position() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Расстояние до цели",

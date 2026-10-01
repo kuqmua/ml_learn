@@ -14,12 +14,12 @@ fn main() {
     let rows: [i32; 6] = [0, 1, 2, 3, 4, 5];
     let folds: i32 = 3;
     for fold in 0..folds {
-        let _validation: Vec<i32> = rows
+        let _: Vec<i32> = rows
             .iter()
             .copied()
             .filter(|&row| row % folds == fold)
             .collect();
-        let _training_data: Vec<i32> = rows
+        let _: Vec<i32> = rows
             .iter()
             .copied()
             .filter(|&row| row % folds != fold)
@@ -31,7 +31,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_validation_group_assigned_to_each_row() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "K-fold: номер fold для строки",

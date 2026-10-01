@@ -38,32 +38,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             model.weight, model.constant_input_weight
         ),
     )?;
-    let saved_model_text_content: String = std::fs::read_to_string(&model_path)?;
-    let loaded_model: Model = (|| -> Result<Model, String> {
-        let mut saved_model_lines: std::str::Lines<'_> = saved_model_text_content.lines();
-        if saved_model_lines.next() != Some("ml_learn_v1") {
-            return Err("неизвестная версия".into());
-        }
-        let parse_parameter: fn(Option<&str>) -> Result<f64, String> =
-            |field_text: Option<&str>| {
-                field_text
-                    .ok_or("нет параметра".to_string())?
-                    .parse::<f64>()
-                    .map_err(|parse_error| parse_error.to_string())
-            };
-        let weight: f64 = parse_parameter(saved_model_lines.next())?;
-        let constant_input_weight: f64 = parse_parameter(saved_model_lines.next())?;
-        if !weight.is_finite()
-            || !constant_input_weight.is_finite()
-            || saved_model_lines.next().is_some()
-        {
-            return Err("повреждённая модель".into());
-        }
-        Ok(Model {
-            weight,
-            constant_input_weight,
-        })
-    })()?;
+    let loaded_model: Model = {
+        let saved_model_text_content: String = std::fs::read_to_string(&model_path)?;
+        (|| -> Result<Model, String> {
+            let mut saved_model_lines: std::str::Lines<'_> = saved_model_text_content.lines();
+            if saved_model_lines.next() != Some("ml_learn_v1") {
+                return Err("неизвестная версия".into());
+            }
+            let parse_parameter: fn(Option<&str>) -> Result<f64, String> =
+                |field_text: Option<&str>| {
+                    field_text
+                        .ok_or("нет параметра".to_string())?
+                        .parse::<f64>()
+                        .map_err(|parse_error| parse_error.to_string())
+                };
+            let weight: f64 = parse_parameter(saved_model_lines.next())?;
+            let constant_input_weight: f64 = parse_parameter(saved_model_lines.next())?;
+            if !weight.is_finite()
+                || !constant_input_weight.is_finite()
+                || saved_model_lines.next().is_some()
+            {
+                return Err("повреждённая модель".into());
+            }
+            Ok(Model {
+                weight,
+                constant_input_weight,
+            })
+        })()?
+    };
     let prediction: f64 = loaded_model.weight * 3. + loaded_model.constant_input_weight;
     let _ = (&(model_path.display()), &(prediction));
     std::fs::remove_file(std::path::Path::new(&model_path))?;

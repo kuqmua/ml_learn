@@ -28,7 +28,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_number_of_votes_for_each_class() {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Большинство голосов",

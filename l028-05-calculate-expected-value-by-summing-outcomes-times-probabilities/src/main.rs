@@ -29,7 +29,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_probabilities_of_die_outcomes() {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Честный кубик",

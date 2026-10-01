@@ -34,7 +34,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_quantiles_as_sorted_values_at_each_fraction_of_sample() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Квантили выборки",

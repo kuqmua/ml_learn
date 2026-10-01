@@ -14,7 +14,7 @@
 
 fn main() {
     let probability_positive: f64 = 0.7;
-    let _probability_negative: f64 = 1.0 - probability_positive;
+    let _: f64 = 1.0 - probability_positive;
     assert!(probability_positive >= 0.0 && probability_positive <= 1.0);
 
     plot_positive_and_negative_class_probabilities();
@@ -22,7 +22,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_positive_and_negative_class_probabilities() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Вероятности двух классов",

@@ -15,14 +15,14 @@
 fn main() {
     let input_value: f64 = 2.0;
     let square: f64 = input_value * input_value;
-    let _doubled_square: f64 = square + square;
+    let _: f64 = square + square;
 
     plot_intermediate_values_of_squared_input_computation();
 }
 
 // Строим график по результатам урока.
 fn plot_intermediate_values_of_squared_input_computation() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Прямой проход вычислительного графа",

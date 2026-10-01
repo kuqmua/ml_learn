@@ -25,7 +25,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_weights_loaded_from_saved_model(loaded_weight: f64, loaded_constant_input_weight: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Загруженные параметры",

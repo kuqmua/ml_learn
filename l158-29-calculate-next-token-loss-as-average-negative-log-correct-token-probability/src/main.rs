@@ -47,7 +47,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_next_token_loss_as_negative_log_of_correct_text_unit_probability() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Cross-entropy правильного токена",

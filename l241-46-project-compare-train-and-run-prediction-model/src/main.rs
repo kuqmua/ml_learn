@@ -39,10 +39,6 @@ fn main() {
         EXAMPLE_DATA.len() >= 9,
         "для разделения нужны train, validation и test"
     );
-    let training_examples: &[(f64, f64)] = &EXAMPLE_DATA[..6];
-    let validation: &[(f64, f64)] = &EXAMPLE_DATA[6..8];
-    let test: &[(f64, f64)] = &EXAMPLE_DATA[8..];
-
     /// Средняя абсолютная ошибка линейной модели: для каждого x считаем weight·x+constant_input_weight, сравниваем с ответом и усредняем модули ошибок.
     fn calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
         data: &[(f64, f64)],
@@ -61,6 +57,7 @@ fn main() {
         .unwrap()
     }
 
+    let training_examples: &[(f64, f64)] = &EXAMPLE_DATA[..6];
     let (weight, constant_input_weight): (f64, f64) = (|| -> (f64, f64) {
         let data: &[(f64, f64)] = training_examples;
         let sample_count: f64 = data.len() as f64;
@@ -84,6 +81,7 @@ fn main() {
         let weight: f64 = sum_after_multiplying_joint_differences_from_mean / variance_sum;
         (weight, mean_target - weight * mean_feature)
     })();
+    let validation: &[(f64, f64)] = &EXAMPLE_DATA[6..8];
     let _ =
         calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
             validation,
@@ -102,6 +100,7 @@ fn main() {
             weight,
             constant_input_weight,
         );
+    let test: &[(f64, f64)] = &EXAMPLE_DATA[8..];
     let _ =
         calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
             test,
@@ -123,7 +122,7 @@ fn plot_training_points_and_fitted_prediction_line(
     weight: f64,
     constant_input_weight: f64,
 ) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Регрессия: данные и модель",

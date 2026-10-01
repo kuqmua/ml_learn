@@ -21,9 +21,9 @@ fn recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scal
         / original_signal_variance_share.sqrt()
 }
 fn main() {
-    let clean: f64 = 2.0;
     let noise: f64 = -0.7;
     let original_signal_variance_share: f64 = 0.36;
+    let clean: f64 = 2.0;
     let noisy: f64 =
         calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
             clean,

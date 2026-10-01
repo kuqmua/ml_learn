@@ -51,7 +51,7 @@ fn plot_correct_prediction_share_in_each_subgroup(groups: [(&str, bool, bool); 4
             .count() as f64
             / examples.len() as f64
     };
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Точность по подгруппам",

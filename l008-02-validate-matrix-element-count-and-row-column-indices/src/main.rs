@@ -24,7 +24,7 @@ fn main() {
         if row >= rows || column >= columns {
             continue;
         }
-        let _value: i32 = elements[row * columns + column];
+        let _: i32 = elements[row * columns + column];
     }
 
     plot_matrix_with_two_rows_and_three_columns();
@@ -32,7 +32,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_matrix_with_two_rows_and_three_columns() {
-    let _chart: std::path::PathBuf = lesson_visualization::heatmap(
+    lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Форма 2 × 3",

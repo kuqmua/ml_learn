@@ -33,7 +33,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_values_and_median_as_middle_of_sorted_values() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Медиана и отдельные значения",

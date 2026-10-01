@@ -16,7 +16,7 @@ fn main() {
     let weight: f64 = 2.0;
     let constant_input_weight: f64 = 1.0;
     for feature in [0.0, 1.0, 3.0] {
-        let _prediction: f64 = weight * feature + constant_input_weight;
+        let _: f64 = weight * feature + constant_input_weight;
     }
 
     plot_linear_prediction_as_weighted_input_plus_constant_input_weight();
@@ -24,7 +24,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_linear_prediction_as_weighted_input_plus_constant_input_weight() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Линейная модель",

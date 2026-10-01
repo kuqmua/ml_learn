@@ -19,8 +19,8 @@ fn main() {
         !predictions.is_empty(),
         "для оценки разброса нужен хотя бы один прогноз"
     );
-    let target: f64 = 5.0;
     let mean: f64 = predictions.iter().sum::<f64>() / predictions.len() as f64;
+    let target: f64 = 5.0;
     let average_prediction_offset: f64 = mean - target;
     let variance: f64 = predictions
         .iter()
@@ -33,7 +33,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_squared_average_error_and_prediction_spread(average_prediction_offset: f64, variance: f64) {
-    let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
+    lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Смещение и разброс",

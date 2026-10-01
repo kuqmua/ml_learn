@@ -14,7 +14,7 @@
 
 fn main() {
     for raw_model_score in [-2.0, 0.0, 2.0] {
-        let _rectified_linear_output: f64 = if raw_model_score > 0.0 {
+        let _: f64 = if raw_model_score > 0.0 {
             raw_model_score
         } else {
             0.0
@@ -26,7 +26,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_rectified_activation_as_input_with_negative_values_replaced_by_zero() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "ReLU",

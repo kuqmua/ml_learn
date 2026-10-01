@@ -59,7 +59,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_matrix_multiplication_as_sums_after_multiplying_matching_row_and_column_values() {
-    let _chart: std::path::PathBuf = lesson_visualization::heatmap(
+    lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Произведение матриц A × B",

@@ -30,11 +30,11 @@ fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_inp
 }
 fn main() {
     let values: [f64; 4] = [1.0, 0.0, 2.0, 0.0];
-    let reset: [bool; 4] = [false, false, true, false];
     let fixed: [f64; 4] =
         calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
             &values, 0.8, 1.0,
         );
+    let reset: [bool; 4] = [false, false, true, false];
     let dynamic: [f64; 4] =
         calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(
             &values, &reset,
@@ -47,7 +47,7 @@ fn plot_stored_state_with_constant_retention_and_selective_resets(
     fixed: &[f64; 4],
     dynamic: &[f64; 4],
 ) {
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "memory",
         "Постоянное и выборочное забывание",

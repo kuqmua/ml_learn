@@ -26,7 +26,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_perplexity_as_e_to_average_negative_log_probability() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Perplexity",

@@ -14,11 +14,11 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let prediction_error: f64 = 1.0;
     let weight: f64 = 3.0;
-    let penalty_strength: f64 = 0.2;
     let squared_weight: f64 = weight * weight;
-    let _objective: f64 = prediction_error + penalty_strength * squared_weight;
+    let prediction_error: f64 = 1.0;
+    let penalty_strength: f64 = 0.2;
+    let _: f64 = prediction_error + penalty_strength * squared_weight;
     let _ = &(penalty_strength * squared_weight);
 
     plot_error_with_and_without_squared_weight_penalty();
@@ -26,7 +26,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_error_with_and_without_squared_weight_penalty() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Штраф за большой вес",

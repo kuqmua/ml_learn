@@ -29,7 +29,7 @@ fn main() {
 }
 
 fn plot_impulse_response_with_increasing_filter_spacing(signal: &[f64; 9]) {
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "receptive-field",
         "Отклик на импульс",

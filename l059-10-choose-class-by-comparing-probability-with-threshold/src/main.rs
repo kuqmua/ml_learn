@@ -16,7 +16,7 @@
 fn main() {
     let probabilities: [f64; 3] = [0.2, 0.55, 0.8];
     for threshold in [0.5, 0.7] {
-        let _predictions: [bool; 3] = probabilities.map(|probability| probability >= threshold);
+        let _: [bool; 3] = probabilities.map(|probability| probability >= threshold);
     }
 
     plot_number_of_positive_predictions_for_changing_threshold();
@@ -24,7 +24,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_number_of_positive_predictions_for_changing_threshold() {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Число положительных прогнозов",

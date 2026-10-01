@@ -26,7 +26,7 @@ fn main() {
         assert_eq!(matrix_vector_output, expected);
     }
     let too_short: [f64; 1] = [5.0];
-    let _error: &str = multiply_matching_coordinates_then_add_results(&matrix[0], &too_short)
+    let _: &str = multiply_matching_coordinates_then_add_results(&matrix[0], &too_short)
         .expect_err("разные длины нужно отклонить");
 
     plot_matrix_coefficients_used_in_weighted_row_sums(matrix);
@@ -34,7 +34,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_matrix_coefficients_used_in_weighted_row_sums(matrix: [[f64; 2]; 2]) {
-    let _chart: std::path::PathBuf = lesson_visualization::heatmap(
+    lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Коэффициенты матрицы",

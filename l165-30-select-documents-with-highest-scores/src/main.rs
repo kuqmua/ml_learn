@@ -24,7 +24,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_scores_of_highest_ranked_documents(highest_ranked_items: &[(&str, f64)]) {
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+    lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Оценки top-k",
