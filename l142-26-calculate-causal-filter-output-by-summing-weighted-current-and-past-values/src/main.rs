@@ -17,7 +17,7 @@ fn main() {
         )
         .unwrap()
         .try_into()
-        .expect("по одному выходу на каждый отсчёт сигнала");
+        .expect("ожидалось по одному выходу на каждый отсчёт сигнала");
     assert_eq!(output, [1.0, 4.0, 7.0, 10.0]);
 
     plot_input_signal_and_weighted_current_and_past_sums(&signal, &output);

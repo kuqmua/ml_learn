@@ -26,7 +26,7 @@ fn main() {
                 &targets,
                 predictions,
             )
-            .expect("у каждого прогноза есть правильный ответ");
+            .expect("нужен непустой набор прогнозов и правильных ответов одинаковой длины");
         assert!((mean_absolute_error_value - expected).abs() < 1e-10);
     }
 

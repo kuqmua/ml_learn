@@ -15,7 +15,7 @@ fn main() {
     let raw_model_scores: [[f64; 3]; 2] =
         convert_text_identifiers_to_context_then_to_next_token_scores(&prefix)
             .try_into()
-            .expect("на каждый идентификатор префикса приходится один набор оценок");
+            .expect("ожидался один набор оценок на каждый идентификатор префикса");
     let last: &[f64; 3] = &raw_model_scores[1];
     let _next: usize = last
         .iter()

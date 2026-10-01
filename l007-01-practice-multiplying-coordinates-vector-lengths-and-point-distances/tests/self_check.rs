@@ -2,7 +2,7 @@ use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_co
 use l002_01_calculate_sum_of_absolute_vector_coordinates::calculate_sum_of_absolute_vector_coordinates;
 use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates;
 use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences;
-use l006_01_calculate_direction_similarity_by_multiplying_coordinates_then_dividing_sum_by_lengths::calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths;
+use l006_01_calculate_cos_of_angle_between_vectors::calculate_cos_of_angle_between_vectors;
 
 #[test]
 #[ignore = "подбери второй вектор и запусти тест с --ignored"]
@@ -42,10 +42,7 @@ fn combine_vector_properties() {
             < 1e-10
     );
     assert_eq!(
-        calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths(
-            &first_vector,
-            &perpendicular_vector
-        ),
+        calculate_cos_of_angle_between_vectors(&first_vector, &perpendicular_vector),
         Ok(0.0)
     );
 }

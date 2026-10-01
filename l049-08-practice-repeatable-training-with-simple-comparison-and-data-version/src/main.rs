@@ -23,7 +23,11 @@
 fn main() {
     let seed: u64 = std::env::args()
         .nth(1)
-        .map(|seed_text| seed_text.parse::<u64>().expect("seed: целое число"))
+        .map(|seed_text| {
+            seed_text
+                .parse::<u64>()
+                .expect("seed должен быть целым неотрицательным числом")
+        })
         .unwrap_or(42);
     const SAMPLE_DATA: &str = "1,0\n2,0\n3,1\n4,1\n";
 

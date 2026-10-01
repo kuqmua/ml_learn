@@ -50,5 +50,5 @@ fn plot_stored_state_with_reset_on_third_step(states: &[f64; 4]) {
             points: &points,
         }],
     )
-    .expect("график");
+    .expect("не удалось сохранить график");
 }

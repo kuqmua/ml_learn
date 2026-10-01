@@ -17,7 +17,7 @@ pub fn calculate_squared_point_distance_by_summing_squared_coordinate_difference
             .chain(second_point)
             .any(|value| !value.is_finite())
     {
-        return Err("точки должны содержать конечные координаты");
+        return Err("точки должны быть непустыми и содержать только конечные координаты");
     }
     let mut squared_sum: f64 = 0.0;
     for index in 0..first_point.len() {

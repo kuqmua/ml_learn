@@ -35,7 +35,7 @@ fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normali
         )
         .unwrap()
         .try_into()
-        .expect("внимание возвращает по одному вектору на позицию");
+        .expect("ожидался один вектор внимания на каждую позицию");
     std::array::from_fn(|index| {
         let original = input[index];
         let context = attention[index];

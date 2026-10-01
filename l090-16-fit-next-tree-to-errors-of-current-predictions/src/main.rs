@@ -57,5 +57,5 @@ fn plot_average_squared_error_after_each_added_tree(losses: &[f64; 3]) {
             points: &points,
         }],
     )
-    .expect("график");
+    .expect("не удалось сохранить график");
 }

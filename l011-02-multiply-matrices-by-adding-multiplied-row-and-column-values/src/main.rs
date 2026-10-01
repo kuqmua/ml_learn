@@ -45,7 +45,7 @@ fn main() {
                     &matrix_on_left[row],
                     &column_values,
                 )
-                .expect("внутренние размеры матриц совпадают");
+                .expect("внутренние размеры матриц должны совпадать");
             }
         }
         assert_eq!(multiplied_matrix, expected);

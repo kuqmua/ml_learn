@@ -38,5 +38,5 @@ fn plot_stored_state_over_repeated_weighted_updates(states: &[f64; 4]) {
             points: &points,
         }],
     )
-    .expect("график");
+    .expect("не удалось сохранить график");
 }

@@ -24,8 +24,9 @@ fn approximate_square_root_by_repeated_averaging(value: f64) -> f64 {
 /// По теореме Пифагора это расстояние от начала координат до конца вектора.
 /// Например, для [3, 4]: sqrt(9 + 16) = 5.
 pub fn calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(vector: &[f64]) -> f64 {
-    let sum_of_squared_coordinates: f64 =
-        multiply_matching_coordinates_then_add_results(vector, vector)
-            .expect("у вектора и его самого одинаковое число координат");
+    let sum_of_squared_coordinates: f64 = multiply_matching_coordinates_then_add_results(
+        vector, vector,
+    )
+    .expect("внутренняя ошибка: сравнение вектора с самим собой не должно завершаться ошибкой");
     approximate_square_root_by_repeated_averaging(sum_of_squared_coordinates)
 }

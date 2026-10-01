@@ -23,7 +23,7 @@ fn main() {
                 first_point,
                 second_point,
             )
-            .expect("вычисление расстояния выполнено");
+            .expect("не удалось вычислить расстояние: координаты должны быть конечными, а квадрат расстояния — помещаться в f64");
         assert!((distance - expected).abs() < 1e-10);
     }
     plot_distance_from_origin_for_changing_first_coordinate();

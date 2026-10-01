@@ -22,7 +22,7 @@ fn main() {
                 &targets,
                 predictions,
             )
-            .expect("у каждого прогноза есть правильный ответ");
+            .expect("нужен непустой набор прогнозов и правильных ответов одинаковой длины");
         assert!((mean_squared_error_value - expected).abs() < 1e-10);
     }
     let _error: &str =
@@ -30,7 +30,7 @@ fn main() {
             &targets,
             &[2.0, 4.0],
         )
-        .expect_err("длины должны совпадать");
+        .expect_err("ожидалась ошибка: число прогнозов и ответов различается");
 
     plot_average_squared_prediction_error_for_changing_offset();
 }

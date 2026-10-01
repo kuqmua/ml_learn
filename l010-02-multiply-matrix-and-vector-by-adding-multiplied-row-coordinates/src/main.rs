@@ -21,7 +21,7 @@ fn main() {
         for row in 0..matrix.len() {
             matrix_vector_output[row] =
                 multiply_matching_coordinates_then_add_results(&matrix[row], &vector)
-                    .expect("число столбцов совпадает с длиной вектора");
+                    .expect("число столбцов матрицы должно совпадать с числом координат вектора");
         }
         assert_eq!(matrix_vector_output, expected);
     }

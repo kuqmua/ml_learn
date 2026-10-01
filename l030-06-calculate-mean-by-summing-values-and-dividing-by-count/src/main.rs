@@ -20,7 +20,7 @@ fn main() {
     ];
     for (_description, values, expected) in cases {
         let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(values)
-            .expect("в этой строке есть значения");
+            .expect("для среднего нужен непустой набор значений");
         assert_eq!(mean, expected);
     }
     let empty: [f64; 0] = [];

@@ -24,7 +24,7 @@ fn main() {
                 &raw_model_scores,
             )
             .try_into()
-            .expect("по одному весу на каждый из двух ключей");
+            .expect("ожидалось по одному весу на каждый из двух ключей");
         [
             weights[0] * values[group][0][0] + weights[1] * values[group][1][0],
             weights[0] * values[group][0][1] + weights[1] * values[group][1][1],

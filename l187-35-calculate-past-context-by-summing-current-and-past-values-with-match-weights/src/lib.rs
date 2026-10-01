@@ -15,7 +15,7 @@ pub fn calculate_past_context_by_summing_current_and_past_values_weighted_by_que
         || key_vector.len() != value_vectors.len()
         || query_vector.is_empty()
     {
-        return Err("неверная форма Q/K/V");
+        return Err("Q, K и V должны быть непустыми последовательностями одинаковой длины");
     }
     let mut output: Vec<[f64; 2]> = Vec::with_capacity(query_vector.len());
     for index in 0..query_vector.len() {

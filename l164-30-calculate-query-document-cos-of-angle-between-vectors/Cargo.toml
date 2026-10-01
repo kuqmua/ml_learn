@@ -1,0 +1,8 @@
+[package]
+name = "l164-30-calculate-query-document-cos-of-angle-between-vectors"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l006_01_calculate_cos_of_angle_between_vectors = { package = "l006-01-calculate-cos-of-angle-between-vectors", path = "../l006-01-calculate-cos-of-angle-between-vectors" }
+lesson-visualization = { path = "../lesson-visualization" }

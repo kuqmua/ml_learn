@@ -21,7 +21,7 @@ fn main() {
         )
         .unwrap()
         .try_into()
-        .expect("на каждую из трёх позиций приходится один выход");
+        .expect("ожидался один выход на каждую из трёх позиций");
     let second_output: [[f64; 2]; 3] =
         calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
             &second_attention_head,
@@ -30,7 +30,7 @@ fn main() {
         )
         .unwrap()
         .try_into()
-        .expect("на каждую из трёх позиций приходится один выход");
+        .expect("ожидался один выход на каждую из трёх позиций");
     let combined: [[f64; 2]; 3] =
         std::array::from_fn(|index| [first_output[index][0], second_output[index][1]]);
     assert_eq!(combined[0], input[0]);

@@ -18,7 +18,7 @@ fn main() {
     let predicted: [bool; 4] = [true, true, false, false];
     let counts: BinaryClassificationCounts =
         count_binary_classification_outcomes_from_targets_and_predictions(&truth, &predicted)
-            .expect("у каждого ответа есть прогноз");
+            .expect("число ответов и прогнозов должно совпадать");
     for index in 0..truth.len() {
         let _description: &str = match (truth[index], predicted[index]) {
             (true, true) => "TP: верно найден положительный класс",

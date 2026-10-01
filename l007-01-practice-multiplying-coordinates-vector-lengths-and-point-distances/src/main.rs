@@ -14,7 +14,7 @@ use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_co
 use l002_01_calculate_sum_of_absolute_vector_coordinates::calculate_sum_of_absolute_vector_coordinates;
 use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates;
 use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences;
-use l006_01_calculate_direction_similarity_by_multiplying_coordinates_then_dividing_sum_by_lengths::calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths;
+use l006_01_calculate_cos_of_angle_between_vectors::calculate_cos_of_angle_between_vectors;
 
 fn main() {
     let first_vector: [f64; 2] = [3.0, 4.0];
@@ -33,26 +33,23 @@ fn main() {
         ("противоположный", &[-3.0, -4.0], -25.0, Some(-1.0)),
         ("нулевой без направления", &[0.0, 0.0], 0.0, None),
     ];
-    for (_description, second_vector, expected_sum, expected_cosine) in cases {
+    for (_description, second_vector, expected_sum, expected_cos) in cases {
         let sum_after_multiplying_coordinates: f64 =
             multiply_matching_coordinates_then_add_results(&first_vector, second_vector)
-                .expect("у этих векторов одинаковое число координат");
+                .expect("ожидались векторы с одинаковым числом координат");
         let distance: f64 =
             calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
                 &first_vector,
                 second_vector,
             )
             .unwrap();
-        let cosine: Option<f64> =
-            calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths(
-                &first_vector, second_vector,
-            )
-            .ok();
+        let cos: Option<f64> =
+            calculate_cos_of_angle_between_vectors(&first_vector, second_vector).ok();
         assert_eq!(sum_after_multiplying_coordinates, expected_sum);
-        if let (Some(actual), Some(expected)) = (cosine, expected_cosine) {
+        if let (Some(actual), Some(expected)) = (cos, expected_cos) {
             assert!((actual - expected).abs() < 1e-10);
         } else {
-            assert_eq!(cosine, expected_cosine);
+            assert_eq!(cos, expected_cos);
         }
         let reverse_distance: f64 =
             calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(

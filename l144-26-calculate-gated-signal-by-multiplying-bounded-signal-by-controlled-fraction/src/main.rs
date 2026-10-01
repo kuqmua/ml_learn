@@ -60,5 +60,5 @@ fn plot_filter_output_multiplied_by_fraction_controlled_by_gate(filter: f64) {
             points: &points,
         }],
     )
-    .expect("график");
+    .expect("не удалось сохранить график");
 }

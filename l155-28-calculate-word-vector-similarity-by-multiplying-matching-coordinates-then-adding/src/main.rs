@@ -19,7 +19,7 @@ fn main() {
     let second_word_vector: [f64; 2] = [0.7, 0.3];
     let _sum_after_multiplying_coordinates: f64 =
         multiply_matching_coordinates_then_add_results(&first_word_vector, &second_word_vector)
-            .expect("представления имеют одинаковую размерность");
+            .expect("представления должны иметь одинаковое число координат");
 
     plot_coordinates_of_two_word_representations(first_word_vector, second_word_vector);
 }

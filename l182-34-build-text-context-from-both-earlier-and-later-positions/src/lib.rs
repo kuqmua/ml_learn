@@ -11,7 +11,7 @@ pub fn calculate_visible_context_by_summing_states_weighted_by_exponentiated_coo
     visible: &[bool; N],
 ) -> Result<[[f64; 2]; N], &'static str> {
     if N == 0 || !visible.iter().any(|&input_value| input_value) {
-        return Err("пустая последовательность или маска");
+        return Err("нужна непустая последовательность хотя бы с одной видимой позицией");
     }
     let context_vectors: [[f64; 2]; N] = std::array::from_fn(|query_index| {
         let query = states[query_index];

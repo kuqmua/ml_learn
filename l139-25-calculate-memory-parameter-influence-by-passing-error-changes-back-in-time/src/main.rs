@@ -37,7 +37,7 @@ fn main() {
             recurrent_weight,
         )
         .try_into()
-        .expect("на каждый входной шаг приходится одно состояние");
+        .expect("ожидалось по одному состоянию на каждый входной шаг");
     let mut hidden_state_loss_rate_of_change: f64 = history.last().unwrap() - target;
     let mut recurrent_weight_loss_rate_of_change: f64 = 0.0;
     for time_index in (0..input.len()).rev() {

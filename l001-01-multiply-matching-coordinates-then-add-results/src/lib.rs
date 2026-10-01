@@ -8,7 +8,7 @@ pub fn multiply_matching_coordinates_then_add_results(
     second_vector: &[f64],
 ) -> Result<f64, &'static str> {
     if first_vector.len() != second_vector.len() {
-        return Err("векторы должны быть одинаковой длины");
+        return Err("векторы должны иметь одинаковое число координат");
     }
     let mut sum_after_multiplying_matching_coordinates: f64 = 0.0;
     for index in 0..first_vector.len() {

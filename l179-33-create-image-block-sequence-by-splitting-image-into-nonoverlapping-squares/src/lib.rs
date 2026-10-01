@@ -11,7 +11,9 @@ pub fn extract_nonoverlapping_square_patches_from_square_image<const N: usize>(
 ) -> Result<Vec<Vec<f64>>, &'static str> {
     let height: usize = N;
     if side == 0 || height == 0 || height % side != 0 {
-        return Err("размер патча должен делить сторону непустого изображения");
+        return Err(
+            "изображение должно быть непустым, а положительный размер патча — делить его сторону",
+        );
     }
     let mut image_patches: Vec<Vec<f64>> = Vec::new();
     for top in (0..height).step_by(side) {

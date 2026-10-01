@@ -21,10 +21,14 @@ fn main() {
         extract_nonoverlapping_square_patches_from_square_image(&image, 2)
             .unwrap()
             .into_iter()
-            .map(|patch| patch.try_into().expect("патч 2×2 содержит четыре пикселя"))
+            .map(|patch| {
+                patch
+                    .try_into()
+                    .expect("ожидалось четыре пикселя в патче 2×2")
+            })
             .collect::<Vec<[f64; 4]>>()
             .try_into()
-            .expect("из изображения 4×4 получаются четыре патча 2×2");
+            .expect("ожидалось четыре патча 2×2 из изображения 4×4");
     assert_eq!(image_patches[0], [1.0, 2.0, 5.0, 6.0]);
 
     plot_square_image_before_splitting_into_blocks(&image);
@@ -38,5 +42,5 @@ fn plot_square_image_before_splitting_into_blocks(image: &[[f64; 4]; 4]) {
         "Исходное изображение 4x4",
         &chart_rows,
     )
-    .expect("график");
+    .expect("не удалось сохранить тепловую карту");
 }

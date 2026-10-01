@@ -14,7 +14,11 @@
 
 fn main() {
     let row: &str = "3.5,red";
-    let (number_text, category): (&str, &str) = row.split_once(',').expect("две колонки");
-    let _numeric_feature: f64 = number_text.parse().expect("число");
+    let (number_text, category): (&str, &str) = row
+        .split_once(',')
+        .expect("в строке нет запятой между числом и категорией");
+    let _numeric_feature: f64 = number_text
+        .parse()
+        .expect("первая колонка должна содержать число");
     let _categorical_feature: &str = category;
 }

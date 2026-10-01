@@ -11,7 +11,7 @@ pub fn calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_v
     original_signal_variance_share: f64,
 ) -> Result<f64, &'static str> {
     if !(0.0..=1.0).contains(&original_signal_variance_share) {
-        return Err("alpha_bar вне [0,1]");
+        return Err("доля исходного сигнала должна быть числом от 0 до 1");
     }
     Ok(original_signal_variance_share.sqrt() * clean
         + (1.0 - original_signal_variance_share).sqrt() * epsilon)

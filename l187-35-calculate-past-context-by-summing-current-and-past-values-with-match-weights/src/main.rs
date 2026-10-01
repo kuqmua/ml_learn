@@ -18,7 +18,7 @@ fn main() {
         )
         .unwrap()
         .try_into()
-        .expect("на каждую из трёх позиций приходится один контекст");
+        .expect("ожидался один контекст на каждую из трёх позиций");
     assert_eq!(context[0], states[0]);
     plot_weights_assigned_only_to_current_and_past_positions(&states);
     for (_index, _state) in context.iter().enumerate() {}
@@ -49,5 +49,5 @@ fn plot_weights_assigned_only_to_current_and_past_positions(states: &[[f64; 2]; 
         "Веса причинного внимания",
         &chart_rows,
     )
-    .expect("график");
+    .expect("не удалось сохранить тепловую карту");
 }

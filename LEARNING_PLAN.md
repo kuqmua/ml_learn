@@ -64,7 +64,7 @@
 | 3 | Длина вектора: квадратный корень из суммы квадратов координат | `l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates` |
 | 4 | Квадрат расстояния: сложение квадратов разностей координат | `l004-01-calculate-squared-point-distance-by-summing-squared-coordinate-differences` |
 | 5 | Расстояние между точками: квадратный корень из суммы квадратов разностей координат | `l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum` |
-| 6 | Сходство направлений векторов: умножение соответствующих координат, сложение и деление на длины | `l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths` |
+| 6 | `cos` угла между векторами: умножение соответствующих координат, сложение и деление на длины | `l006-01-calculate-cos-of-angle-between-vectors` |
 
 ![Скалярное произведение и угол](docs/illustrations/01-multiply-matching-coordinates.svg)
 
@@ -73,7 +73,7 @@
 ##### Практика: умножение координат, длины векторов и расстояния между точками — `l007-01-practice-multiplying-coordinates-vector-lengths-and-point-distances`
 
 - **Повторить вместе:** умножение координат попарно и сложение результатов, нормы L1/L2, расстояние, косинусное сходство.
-- **Практика:** Реализуй Vec<f64>: multiply_matching_coordinates_then_add_results, vector_length, distance, cosine; опиши ошибки длины и нулевого вектора.
+- **Практика:** Реализуй Vec<f64>: multiply_matching_coordinates_then_add_results, vector_length, distance, cos; опиши ошибки длины и нулевого вектора.
 - **Готово, когда:** Сравни ортогональные, одинаковые и противоположные векторы; проверь симметрию расстояния.
 - **Артефакт:** код пакета, короткий README с входными данными, командой запуска, результатом и тем, что осталось непонятным.
 
@@ -623,7 +623,7 @@
 |---:|---|---|
 | 1 | Поиск документов, содержащих слова запроса | `l162-30-find-documents-containing-query-words` |
 | 2 | Значимость слова для поиска: умножение частоты на меру редкости среди документов | `l163-30-calculate-word-importance-by-weighting-frequency-with-document-rarity` |
-| 3 | Сходство запроса и документа: умножение координат, сложение и деление на длины векторов | `l164-30-calculate-query-document-direction-similarity-by-multiplying-coordinates-then-dividing` |
+| 3 | `cos` угла между векторами запроса и документа: умножение координат, сложение и деление на длины | `l164-30-calculate-query-document-cos-of-angle-between-vectors` |
 | 4 | Выбор документов с наибольшими оценками | `l165-30-select-documents-with-highest-scores` |
 
 ##### Практика: поиск документов по совпадениям слов, их редкости и направлениям векторов — `l166-30-practice-document-search-by-word-matches-rarity-and-vector-direction`

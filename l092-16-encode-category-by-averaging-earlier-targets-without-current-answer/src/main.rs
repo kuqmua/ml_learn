@@ -45,5 +45,5 @@ fn plot_category_target_averages_using_only_previous_rows(values: &[f64; 5]) {
             points: &points,
         }],
     )
-    .expect("график");
+    .expect("не удалось сохранить график");
 }

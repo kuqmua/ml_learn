@@ -90,7 +90,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths"
+name = "l006-01-calculate-cos-of-angle-between-vectors"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coordinates-then-add-results",
@@ -106,7 +106,7 @@ dependencies = [
  "l002-01-calculate-sum-of-absolute-vector-coordinates",
  "l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates",
  "l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum",
- "l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths",
+ "l006-01-calculate-cos-of-angle-between-vectors",
  "lesson-visualization",
 ]
 
@@ -1181,10 +1181,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "l164-30-calculate-query-document-direction-similarity-by-multiplying-coordinates-then-dividing"
+name = "l164-30-calculate-query-document-cos-of-angle-between-vectors"
 version = "0.1.0"
 dependencies = [
- "l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths",
+ "l006-01-calculate-cos-of-angle-between-vectors",
  "lesson-visualization",
 ]
 

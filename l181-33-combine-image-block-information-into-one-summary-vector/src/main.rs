@@ -55,5 +55,5 @@ fn plot_weights_used_to_combine_image_blocks_into_summary(weights: &[f64; 3]) {
         "вес",
         &values,
     )
-    .expect("график");
+    .expect("не удалось сохранить график");
 }

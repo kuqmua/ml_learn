@@ -1,5 +1,5 @@
 [package]
-name = "l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths"
+name = "l006-01-calculate-cos-of-angle-between-vectors"
 version = "0.1.0"
 edition = "2024"
 

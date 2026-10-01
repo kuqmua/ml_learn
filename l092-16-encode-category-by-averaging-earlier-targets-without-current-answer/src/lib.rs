@@ -12,14 +12,14 @@ pub fn encode_categories_as_average_previous_targets_with_prior_weight<const N: 
     strength: f64,
 ) -> Result<[f64; N], &'static str> {
     if strength <= 0.0 || !strength.is_finite() {
-        return Err("неверные входы");
+        return Err("strength должен быть положительным конечным числом");
     }
     let mut stats: std::collections::BTreeMap<&str, (f64, usize)> =
         std::collections::BTreeMap::<&str, (f64, usize)>::new();
     let mut category_target_mean_values: Vec<f64> = Vec::with_capacity(categories.len());
     for (&category, &target) in categories.iter().zip(targets) {
         if !target.is_finite() {
-            return Err("нечисловая метка");
+            return Err("метка должна быть конечным числом");
         }
         let &(sum, count) = stats.get(category).unwrap_or(&(0.0, 0));
         category_target_mean_values.push((sum + prior * strength) / (count as f64 + strength));
@@ -29,7 +29,7 @@ pub fn encode_categories_as_average_previous_targets_with_prior_weight<const N: 
     }
     Ok(category_target_mean_values
         .try_into()
-        .expect("создано ровно N значений"))
+        .expect("ожидалось ровно N значений статистики по категориям"))
 }
 
 #[cfg(test)]

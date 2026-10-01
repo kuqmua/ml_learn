@@ -63,5 +63,5 @@ fn plot_signal_and_noise_mixture_for_changing_signal_share(clean: f64, noise: f6
             points: &points,
         }],
     )
-    .expect("график");
+    .expect("не удалось сохранить график");
 }

@@ -9,7 +9,7 @@
 - [x] [003 · Длина вектора: квадратный корень из суммы квадратов координат](l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates/)
 - [x] [004 · Квадрат расстояния: сложение квадратов разностей координат](l004-01-calculate-squared-point-distance-by-summing-squared-coordinate-differences/)
 - [x] [005 · Расстояние между точками: квадратный корень из суммы квадратов разностей координат](l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum/)
-- [x] [006 · Сходство направлений векторов: умножение соответствующих координат, сложение и деление на длины](l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths/)
+- [x] [006 · `cos` угла между векторами: умножение соответствующих координат, сложение и деление на длины](l006-01-calculate-cos-of-angle-between-vectors/)
 - [ ] [007 · Практика: умножение координат, длины векторов и расстояния между точками](l007-01-practice-multiplying-coordinates-vector-lengths-and-point-distances/)
 
 ## 02. Матрицы и линейные преобразования
@@ -254,7 +254,7 @@
 
 - [ ] [162 · Поиск документов, содержащих слова запроса](l162-30-find-documents-containing-query-words/)
 - [ ] [163 · Значимость слова для поиска: умножение частоты на меру редкости среди документов](l163-30-calculate-word-importance-by-weighting-frequency-with-document-rarity/)
-- [ ] [164 · Сходство запроса и документа: умножение координат, сложение и деление на длины векторов](l164-30-calculate-query-document-direction-similarity-by-multiplying-coordinates-then-dividing/)
+- [ ] [164 · `cos` угла между векторами запроса и документа: умножение координат, сложение и деление на длины](l164-30-calculate-query-document-cos-of-angle-between-vectors/)
 - [ ] [165 · Выбор документов с наибольшими оценками](l165-30-select-documents-with-highest-scores/)
 - [ ] [166 · Практика: поиск документов по совпадениям слов, их редкости и направлениям векторов](l166-30-practice-document-search-by-word-matches-rarity-and-vector-direction/)
 

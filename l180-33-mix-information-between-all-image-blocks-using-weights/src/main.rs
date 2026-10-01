@@ -34,7 +34,7 @@ fn main() {
         .map(|patch| [patch[0], 1.0 - patch[0]])
         .collect::<Vec<_>>()
         .try_into()
-        .expect("из изображения 2×2 получаются четыре патча 1×1");
+        .expect("ожидалось четыре патча 1×1 из изображения 2×2");
     let first_patch_representation: [f64; 2] = image_patch_representations[0];
     let raw_model_scores: [f64; 4] = std::array::from_fn(|index| {
         let key = image_patch_representations[index];
@@ -59,5 +59,5 @@ fn plot_weights_assigned_from_first_image_block_to_all_blocks(weights: &[f64; 4]
         "вес",
         &values,
     )
-    .expect("график");
+    .expect("не удалось сохранить график");
 }

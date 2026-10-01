@@ -8,6 +8,6 @@ l001_01_multiply_matching_coordinates_then_add_results = { package = "l001-01-mu
 l002_01_calculate_sum_of_absolute_vector_coordinates = { package = "l002-01-calculate-sum-of-absolute-vector-coordinates", path = "../l002-01-calculate-sum-of-absolute-vector-coordinates" }
 l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates = { package = "l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates", path = "../l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates" }
 l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum = { package = "l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum", path = "../l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum" }
-l006_01_calculate_direction_similarity_by_multiplying_coordinates_then_dividing_sum_by_lengths = { package = "l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths", path = "../l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths" }
+l006_01_calculate_cos_of_angle_between_vectors = { package = "l006-01-calculate-cos-of-angle-between-vectors", path = "../l006-01-calculate-cos-of-angle-between-vectors" }
 
 lesson-visualization = { path = "../lesson-visualization" }

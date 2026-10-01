@@ -22,7 +22,7 @@ fn main() {
             &[scores[selected[0]], scores[selected[1]]],
         )
         .try_into()
-        .expect("выбраны ровно две ветви");
+        .expect("ожидалось ровно две выбранные ветви");
     let expert_gain: [f64; 4] = [1.0, 2.0, -1.0, 0.5];
     let _output: f64 = selected
         .iter()
@@ -48,5 +48,5 @@ fn plot_scores_used_to_select_two_processing_branches(scores: &[f64; 4]) {
         "score",
         &values,
     )
-    .expect("график");
+    .expect("не удалось сохранить график");
 }

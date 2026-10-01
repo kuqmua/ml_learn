@@ -17,7 +17,7 @@ fn main() {
             &input, 0.8, 0.7,
         )
         .try_into()
-        .expect("по одному состоянию на каждый входной шаг");
+        .expect("ожидалось по одному состоянию на каждый входной шаг");
 
     plot_state_after_each_weighted_input_and_memory_update(&history);
 }
@@ -38,5 +38,5 @@ fn plot_state_after_each_weighted_input_and_memory_update(states: &[f64; 4]) {
             points: &points,
         }],
     )
-    .expect("график");
+    .expect("не удалось сохранить график");
 }

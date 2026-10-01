@@ -1,4 +1,4 @@
-// Урок 01.5. Сходство направлений векторов: умножение соответствующих координат, сложение и деление на длины.
+// Урок 01.5. cos угла между векторами: умножение соответствующих координат, сложение и деление на длины.
 // Связь с принятой терминологией: Косинусное сходство двух векторов.
 // Зачем здесь эта тема: Для сравнения направления одной длины недостаточно; нормированное скалярное
 //   произведение убирает влияние масштаба.
@@ -11,7 +11,7 @@
 // 1 означает одинаковое направление, 0 — перпендикулярность, −1 — противоположное.
 // Промежуточные значения показывают острый или тупой угол. Для нулевого вектора направления нет.
 
-use l006_01_calculate_direction_similarity_by_multiplying_coordinates_then_dividing_sum_by_lengths::calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths;
+use l006_01_calculate_cos_of_angle_between_vectors::calculate_cos_of_angle_between_vectors;
 
 fn main() {
     let first_vector: [f64; 2] = [1.0, 0.0];
@@ -24,42 +24,32 @@ fn main() {
     ];
 
     for (_description, second_vector, expected) in cases {
-        let similarity: f64 =
-            calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths(
-                &first_vector, second_vector,
-            )
-            .expect("оба вектора ненулевые и одинаковой длины");
-        assert!((similarity - expected).abs() < 1e-10);
+        let cos: f64 = calculate_cos_of_angle_between_vectors(&first_vector, second_vector)
+            .expect("для вычисления cos нужны два ненулевых вектора с одинаковым числом координат");
+        assert!((cos - expected).abs() < 1e-10);
     }
 
     for (_description, second_vector) in [
         ("нулевой вектор", &[0.0, 0.0][..]),
-        ("разная длина", &[1.0][..]),
+        ("разное число координат", &[1.0][..]),
     ] {
-        let _error: &str =
-            calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths(
-                &first_vector, second_vector,
-            )
-            .expect_err("этот вход должен быть отклонён");
+        let _error: &str = calculate_cos_of_angle_between_vectors(&first_vector, second_vector)
+            .expect_err("ожидалась ошибка для нулевого вектора или разного числа координат");
     }
 
-    plot_direction_similarity_after_multiplying_coordinates_and_dividing_by_lengths_for_changing_angle();
+    plot_cos_of_angle_between_vectors();
 }
 
 // Строим график по результатам урока.
-fn plot_direction_similarity_after_multiplying_coordinates_and_dividing_by_lengths_for_changing_angle()
- {
-    let cosine_similarity_between_two_vectors_points: Vec<(f64, f64)> = (0..=180)
+fn plot_cos_of_angle_between_vectors() {
+    let cos_of_angle_between_two_vectors_points: Vec<(f64, f64)> = (0..=180)
         .step_by(5)
         .map(|plot_step_index| {
             let angle: f64 = (plot_step_index as f64).to_radians();
             (
                 plot_step_index as f64,
-                calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths(
-                    &[1.0, 0.0],
-                    &[angle.cos(), angle.sin()],
-                )
-                .unwrap(),
+                calculate_cos_of_angle_between_vectors(&[1.0, 0.0], &[angle.cos(), angle.sin()])
+                    .unwrap(),
             )
         })
         .collect();
@@ -72,7 +62,7 @@ fn plot_direction_similarity_after_multiplying_coordinates_and_dividing_by_lengt
         &[lesson_visualization::Series {
             name: "вектор [1, 0]",
 
-            points: &cosine_similarity_between_two_vectors_points,
+            points: &cos_of_angle_between_two_vectors_points,
         }],
     )
     .expect("не удалось сохранить график");

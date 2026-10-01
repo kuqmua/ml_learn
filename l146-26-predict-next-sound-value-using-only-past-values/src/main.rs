@@ -88,5 +88,5 @@ fn plot_generated_discrete_sound_values(samples: &[u8]) {
             points: &points,
         }],
     )
-    .expect("график");
+    .expect("не удалось сохранить график");
 }

@@ -22,7 +22,7 @@ fn main() {
             calculate_squared_point_distance_by_summing_squared_coordinate_differences(
                 &query, &candidate,
             )
-            .expect("запрос и кандидат имеют одинаковое число координат");
+            .expect("координаты должны быть конечными, а квадрат расстояния — помещаться в f64");
     }
 
     plot_distance_from_query_for_changing_coordinate();

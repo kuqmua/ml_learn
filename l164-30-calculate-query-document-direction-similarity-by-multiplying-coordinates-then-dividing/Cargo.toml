@@ -1,8 +1,0 @@
-[package]
-name = "l164-30-calculate-query-document-direction-similarity-by-multiplying-coordinates-then-dividing"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-l006_01_calculate_direction_similarity_by_multiplying_coordinates_then_dividing_sum_by_lengths = { package = "l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths", path = "../l006-01-calculate-direction-similarity-by-multiplying-coordinates-then-dividing-sum-by-lengths" }
-lesson-visualization = { path = "../lesson-visualization" }

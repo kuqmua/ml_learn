@@ -21,7 +21,7 @@ fn main() {
         )
         .unwrap()
         .try_into()
-        .expect("фильтр выдаёт по одному значению на каждый из девяти отсчётов");
+        .expect("ожидалось по одному значению на каждый из девяти отсчётов");
     }
     assert_eq!(signal[..8], [1.0; 8]);
     assert_eq!(signal[8], 0.0);
@@ -45,5 +45,5 @@ fn plot_impulse_response_with_increasing_filter_spacing(signal: &[f64; 9]) {
             points: &points,
         }],
     )
-    .expect("график");
+    .expect("не удалось сохранить график");
 }

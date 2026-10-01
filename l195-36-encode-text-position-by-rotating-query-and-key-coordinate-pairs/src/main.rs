@@ -58,5 +58,5 @@ fn plot_sum_after_multiplying_rotated_coordinates_for_relative_positions() {
             points: &points,
         }],
     )
-    .expect("график");
+    .expect("не удалось сохранить график");
 }

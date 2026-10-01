@@ -29,7 +29,7 @@ fn main() {
     for (_description, second_vector, expected) in cases {
         let sum_after_multiplying_coordinates: f64 =
             multiply_matching_coordinates_then_add_results(&first_vector, second_vector)
-                .expect("у этой пары одинаковое число координат");
+                .expect("ожидались векторы с одинаковым числом координат");
         assert_eq!(sum_after_multiplying_coordinates, expected);
     }
 
@@ -49,7 +49,7 @@ fn plot_sum_after_multiplying_coordinates_for_changing_second_coordinate(first_v
                 first_vector,
                 &[1.0, horizontal_value],
             )
-            .expect("оба вектора имеют две координаты");
+            .expect("ожидалось по две координаты у каждого вектора");
             (horizontal_value, sum_after_multiplying)
         })
         .collect();

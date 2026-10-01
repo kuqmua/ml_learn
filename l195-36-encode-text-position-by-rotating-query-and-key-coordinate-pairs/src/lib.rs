@@ -9,10 +9,10 @@ pub fn rotate_vector_coordinate_pair_by_token_position(
     theta: f64,
 ) -> [f64; 2] {
     let angle: f64 = position as f64 * theta;
-    let (sine_value, cosine_value): (f64, f64) = angle.sin_cos();
+    let (sin, cos): (f64, f64) = angle.sin_cos();
     [
-        vector[0] * cosine_value - vector[1] * sine_value,
-        vector[0] * sine_value + vector[1] * cosine_value,
+        vector[0] * cos - vector[1] * sin,
+        vector[0] * sin + vector[1] * cos,
     ]
 }
 #[cfg(test)]

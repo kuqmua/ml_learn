@@ -74,5 +74,5 @@ fn plot_stored_state_with_constant_retention_and_selective_resets(
             },
         ],
     )
-    .expect("график");
+    .expect("не удалось сохранить график");
 }

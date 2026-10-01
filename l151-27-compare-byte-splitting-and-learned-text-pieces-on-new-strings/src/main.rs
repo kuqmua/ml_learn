@@ -30,7 +30,7 @@ fn main() {
         })
         .collect::<Vec<_>>()
         .try_into()
-        .expect("три обучающие и две проверочные строки");
+        .expect("ожидалось три обучающие и две проверочные строки");
     for &(text, bytes, text_units) in &rows {
         assert!(text_units <= bytes);
         assert_eq!(

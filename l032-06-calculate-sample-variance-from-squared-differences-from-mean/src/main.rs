@@ -20,7 +20,7 @@ fn main() {
     for (_description, values, expected) in cases {
         let variance: f64 =
             calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one(values)
-                .expect("для этой выборки дисперсия определена");
+                .expect("для выборочной дисперсии нужны хотя бы два значения");
         assert_eq!(variance, expected);
     }
     let _error: &str =

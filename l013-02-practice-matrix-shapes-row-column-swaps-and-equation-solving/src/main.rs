@@ -40,7 +40,9 @@ fn main() {
             data: Vec<f64>,
         ) -> Result<Self, &'static str> {
             if rows * column_count != data.len() {
-                return Err("неверная форма");
+                return Err(
+                    "число элементов должно равняться произведению числа строк на число столбцов",
+                );
             }
             Ok(Self {
                 rows,
@@ -70,7 +72,7 @@ fn main() {
             &left_matrix.data[row_start..row_end],
             &input_vector,
         )
-        .expect("длина строки совпадает с длиной вектора");
+        .expect("число элементов строки должно совпадать с числом координат вектора");
         output_vector.push(row_result);
     }
     let mut transposed_elements: Vec<f64> = Vec::with_capacity(left_matrix.data.len());
@@ -103,7 +105,7 @@ fn main() {
                 &transposed_matrix.data[row_start..row_end],
                 &column_values,
             )
-            .expect("внутренние размеры матриц совпадают");
+            .expect("внутренние размеры матриц должны совпадать");
             result_elements.push(cell_value);
         }
     }

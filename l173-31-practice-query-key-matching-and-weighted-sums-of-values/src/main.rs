@@ -117,7 +117,7 @@ fn main() {
                 outputs[query_index] = attended_vector;
                 weights[query_index] = attention_weights
                     .try_into()
-                    .expect("по одному весу на каждый из трёх ключей");
+                    .expect("ожидалось по одному весу на каждый из трёх ключей");
             }
             (outputs, weights)
         })();

@@ -1,11 +1,11 @@
-//! Урок 006. Сходство направлений векторов: умножение соответствующих координат, сложение и деление на длины.
+//! Урок 006. cos угла между векторами: умножение соответствующих координат, сложение и деление на длины.
 
 /// Сходство направлений использует вычисление 01.1 и длину 01.3.
 /// Косинусное сходство: сумму произведений соответствующих координат делим на произведение длин векторов.
 use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates;
 
-pub fn calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths(
+pub fn calculate_cos_of_angle_between_vectors(
     first_vector: &[f64],
     second_vector: &[f64],
 ) -> Result<f64, &'static str> {
@@ -30,18 +30,13 @@ mod tests {
     // Определяем вычисление `reuses_earlier_lessons_and_rejects_zero_vector` для этого примера.
     fn reuses_earlier_lessons_and_rejects_zero_vector() {
         assert_eq!(
-            super::calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths(&[1.0, 0.0], &[0.0, 1.0]),
+            super::calculate_cos_of_angle_between_vectors(&[1.0, 0.0], &[0.0, 1.0]),
             Ok(0.0)
         );
         assert_eq!(
-
-            super::calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths(&[1.0, 0.0], &[-1.0, 0.0]),
-
+            super::calculate_cos_of_angle_between_vectors(&[1.0, 0.0], &[-1.0, 0.0]),
             Ok(-1.0)
         );
-        assert!(
-            super::calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths(&[1.0, 0.0], &[0.0, 0.0])
-                .is_err()
-        );
+        assert!(super::calculate_cos_of_angle_between_vectors(&[1.0, 0.0], &[0.0, 0.0]).is_err());
     }
 }

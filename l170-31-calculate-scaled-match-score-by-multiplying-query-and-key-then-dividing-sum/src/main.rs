@@ -18,7 +18,7 @@ fn main() {
     let key: [f64; 2] = [2.0, 2.0];
     let sum_after_multiplying_coordinates: f64 =
         multiply_matching_coordinates_then_add_results(&query, &key)
-            .expect("запрос и ключ имеют одинаковую размерность");
+            .expect("запрос и ключ должны иметь одинаковое число координат");
     let dimension: f64 = 2.0;
     let mut scale: f64 = dimension;
     for _ in 0..80 {
