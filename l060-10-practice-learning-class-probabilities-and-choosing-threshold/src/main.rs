@@ -71,9 +71,13 @@ fn main() {
         for &(feature_value, target) in data {
             let raw_model_score: f64 = weight * feature_value + constant_input_weight;
             loss_sum += (|| -> f64 {
-                let first: f64 = raw_model_score;
-                let second: f64 = 0.;
-                if first > second { first } else { second }
+                let raw_score_to_compare: f64 = raw_model_score;
+                let zero_to_compare: f64 = 0.;
+                if raw_score_to_compare > zero_to_compare {
+                    raw_score_to_compare
+                } else {
+                    zero_to_compare
+                }
             })() - target * raw_model_score
                 + (|| -> f64 {
                     let value: f64 = 1.

@@ -2,12 +2,12 @@
 //! Связь с принятой терминологией: Причинная свёртка одномерного сигнала.
 
 /// Фильтр длины два читает только текущий и предыдущий элементы.
-/// При генерации прогноз после `input` нельзя использовать будущий элемент.
+/// При генерации прогноз после `input_signal` нельзя использовать будущий элемент.
 /// Причинная свёртка: вес текущего отсчёта умножаем на него и прибавляем взвешенный прошлый отсчёт с заданным отступом.
 /// Возвращает по одному значению на каждый входной отсчёт; длина сигнала может меняться.
 
 pub fn calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
-    input: &[f64],
+    input_signal: &[f64],
     weight_current: f64,
     weight_previous: f64,
 
@@ -16,13 +16,13 @@ pub fn calculate_causal_filter_output_by_summing_weighted_current_and_spaced_pas
     if filter_spacing == 0 {
         return Err("dilation должен быть положительным");
     }
-    Ok(input
+    Ok(input_signal
         .iter()
         .enumerate()
         .map(|(index, &current)| {
             let previous: f64 = index
                 .checked_sub(filter_spacing)
-                .map_or(0.0, |past| input[past]);
+                .map_or(0.0, |past| input_signal[past]);
             weight_current * current + weight_previous * previous
         })
         .collect())

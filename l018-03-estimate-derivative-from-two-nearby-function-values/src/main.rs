@@ -16,9 +16,10 @@
 fn main() {
     let input_value: f64 = 3.0;
     let step: f64 = 0.0001;
-    let right: f64 = (input_value + step) * (input_value + step);
-    let left: f64 = (input_value - step) * (input_value - step);
-    let _numerical_derivative: f64 = (right - left) / (2.0 * step);
+    let value_after_adding_step: f64 = (input_value + step) * (input_value + step);
+    let value_after_subtracting_step: f64 = (input_value - step) * (input_value - step);
+    let _numerical_derivative: f64 =
+        (value_after_adding_step - value_after_subtracting_step) / (2.0 * step);
     let analytical_derivative: f64 = 2.0 * input_value;
 
     plot_slope_estimation_error_for_shrinking_step(input_value, analytical_derivative);

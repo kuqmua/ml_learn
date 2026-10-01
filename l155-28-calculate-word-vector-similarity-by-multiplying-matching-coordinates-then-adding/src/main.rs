@@ -15,19 +15,24 @@
 use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
-    let first: [f64; 2] = [0.8, 0.2];
-    let second: [f64; 2] = [0.7, 0.3];
+    let first_word_vector: [f64; 2] = [0.8, 0.2];
+    let second_word_vector: [f64; 2] = [0.7, 0.3];
     let _sum_after_multiplying_coordinates: f64 =
-        multiply_matching_coordinates_then_add_results(&first, &second)
+        multiply_matching_coordinates_then_add_results(&first_word_vector, &second_word_vector)
             .expect("представления имеют одинаковую размерность");
 
-    plot_coordinates_of_two_word_representations(first, second);
+    plot_coordinates_of_two_word_representations(first_word_vector, second_word_vector);
 }
 
 // Строим график по результатам урока.
-fn plot_coordinates_of_two_word_representations(first: [f64; 2], second: [f64; 2]) {
-    let first_dense_representation_points: Vec<(f64, f64)> = vec![(first[0], first[1])];
-    let second_dense_representation_points: Vec<(f64, f64)> = vec![(second[0], second[1])];
+fn plot_coordinates_of_two_word_representations(
+    first_word_vector: [f64; 2],
+    second_word_vector: [f64; 2],
+) {
+    let first_dense_representation_points: Vec<(f64, f64)> =
+        vec![(first_word_vector[0], first_word_vector[1])];
+    let second_dense_representation_points: Vec<(f64, f64)> =
+        vec![(second_word_vector[0], second_word_vector[1])];
     let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

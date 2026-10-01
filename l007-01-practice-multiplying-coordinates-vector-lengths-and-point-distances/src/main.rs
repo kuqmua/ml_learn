@@ -17,10 +17,13 @@ use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_differ
 use l006_01_calculate_direction_similarity_by_multiplying_coordinates_then_dividing_sum_by_lengths::calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths;
 
 fn main() {
-    let first: [f64; 2] = [3.0, 4.0];
-    assert_eq!(calculate_sum_of_absolute_vector_coordinates(&first), 7.0);
+    let first_vector: [f64; 2] = [3.0, 4.0];
     assert_eq!(
-        calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&first),
+        calculate_sum_of_absolute_vector_coordinates(&first_vector),
+        7.0
+    );
+    assert_eq!(
+        calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&first_vector),
         5.0
     );
 
@@ -30,17 +33,18 @@ fn main() {
         ("противоположный", &[-3.0, -4.0], -25.0, Some(-1.0)),
         ("нулевой без направления", &[0.0, 0.0], 0.0, None),
     ];
-    for (_description, other, expected_sum, expected_cosine) in cases {
-        let sum: f64 = multiply_matching_coordinates_then_add_results(&first, other)
+    for (_description, second_vector, expected_sum, expected_cosine) in cases {
+        let sum: f64 = multiply_matching_coordinates_then_add_results(&first_vector, second_vector)
             .expect("у этих векторов одинаковое число координат");
         let distance: f64 =
             calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
-                &first, other,
+                &first_vector,
+                second_vector,
             )
             .unwrap();
         let cosine: Option<f64> =
             calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths(
-                &first, other,
+                &first_vector, second_vector,
             )
             .ok();
         assert_eq!(sum, expected_sum);
@@ -51,14 +55,15 @@ fn main() {
         }
         let reverse_distance: f64 =
             calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
-                other, &first,
+                second_vector,
+                &first_vector,
             )
             .unwrap();
         assert!((distance - reverse_distance).abs() < 1e-10);
     }
 
     let too_short: [f64; 1] = [1.0];
-    let _error: &str = multiply_matching_coordinates_then_add_results(&first, &too_short)
+    let _error: &str = multiply_matching_coordinates_then_add_results(&first_vector, &too_short)
         .expect_err("векторы разной длины нужно отклонить");
 
     plot_l1_and_euclidean_lengths_as_absolute_sum_and_square_root_of_squared_sum();

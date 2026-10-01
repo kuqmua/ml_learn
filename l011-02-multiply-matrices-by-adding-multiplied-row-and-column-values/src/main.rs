@@ -12,32 +12,40 @@
 use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
-    let left: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
+    let first_matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
     let identity: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
-    let right: [[f64; 2]; 2] = [[5.0, 6.0], [7.0, 8.0]];
-    for (_description, first, second, expected) in [
-        ("обычный порядок", left, right, [[19.0, 22.0], [43.0, 50.0]]),
+    let second_matrix: [[f64; 2]; 2] = [[5.0, 6.0], [7.0, 8.0]];
+    for (_description, matrix_on_left, matrix_on_right, expected) in [
+        (
+            "обычный порядок",
+            first_matrix,
+            second_matrix,
+            [[19.0, 22.0], [43.0, 50.0]],
+        ),
         (
             "обратный порядок",
-            right,
-            left,
+            second_matrix,
+            first_matrix,
             [[23.0, 34.0], [31.0, 46.0]],
         ),
-        ("единичная справа", left, identity, left),
-        ("единичная слева", identity, left, left),
+        ("единичная справа", first_matrix, identity, first_matrix),
+        ("единичная слева", identity, first_matrix, first_matrix),
     ] {
         assert_eq!(
-            first[0].len(),
-            second.len(),
+            matrix_on_left[0].len(),
+            matrix_on_right.len(),
             "внутренние размеры матриц должны совпадать"
         );
         let mut result: [[f64; 2]; 2] = [[0.0; 2]; 2];
-        for row in 0..first.len() {
-            for column in 0..second[0].len() {
-                let column_values: [f64; 2] = [second[0][column], second[1][column]];
-                result[row][column] =
-                    multiply_matching_coordinates_then_add_results(&first[row], &column_values)
-                        .expect("внутренние размеры матриц совпадают");
+        for row in 0..matrix_on_left.len() {
+            for column in 0..matrix_on_right[0].len() {
+                let column_values: [f64; 2] =
+                    [matrix_on_right[0][column], matrix_on_right[1][column]];
+                result[row][column] = multiply_matching_coordinates_then_add_results(
+                    &matrix_on_left[row],
+                    &column_values,
+                )
+                .expect("внутренние размеры матриц совпадают");
             }
         }
         assert_eq!(result, expected);

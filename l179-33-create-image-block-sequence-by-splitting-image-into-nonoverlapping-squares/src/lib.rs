@@ -15,10 +15,10 @@ pub fn extract_nonoverlapping_square_patches_from_square_image<const N: usize>(
     }
     let mut result: Vec<Vec<f64>> = Vec::new();
     for top in (0..height).step_by(side) {
-        for left in (0..height).step_by(side) {
+        for column_start in (0..height).step_by(side) {
             let mut patch: Vec<f64> = Vec::new();
             for row in &image[top..top + side] {
-                patch.extend_from_slice(&row[left..left + side]);
+                patch.extend_from_slice(&row[column_start..column_start + side]);
             }
             result.push(patch);
         }

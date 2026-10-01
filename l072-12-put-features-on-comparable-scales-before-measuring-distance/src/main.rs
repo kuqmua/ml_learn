@@ -14,22 +14,26 @@
 use l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences;
 
 fn main() {
-    let first: [f64; 2] = [1.0, 1000.0];
-    let second: [f64; 2] = [2.0, 1010.0];
+    let first_example: [f64; 2] = [1.0, 1000.0];
+    let second_example: [f64; 2] = [2.0, 1010.0];
     let scale: [f64; 2] = [1.0, 1000.0];
     assert!(
         scale.iter().all(|&value| value > 0.0),
         "масштабы должны быть положительными"
     );
     let raw_squared: f64 =
-        calculate_squared_point_distance_by_summing_squared_coordinate_differences(&first, &second)
-            .unwrap();
-    let scaled_first: [f64; 2] = [first[0] / scale[0], first[1] / scale[1]];
-    let scaled_second: [f64; 2] = [second[0] / scale[0], second[1] / scale[1]];
+        calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+            &first_example,
+            &second_example,
+        )
+        .unwrap();
+    let scaled_first_example: [f64; 2] = [first_example[0] / scale[0], first_example[1] / scale[1]];
+    let scaled_second_example: [f64; 2] =
+        [second_example[0] / scale[0], second_example[1] / scale[1]];
     let scaled_squared: f64 =
         calculate_squared_point_distance_by_summing_squared_coordinate_differences(
-            &scaled_first,
-            &scaled_second,
+            &scaled_first_example,
+            &scaled_second_example,
         )
         .unwrap();
 

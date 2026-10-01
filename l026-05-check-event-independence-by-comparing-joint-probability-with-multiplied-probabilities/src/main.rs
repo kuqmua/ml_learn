@@ -16,10 +16,21 @@ fn main() {
         ("зависимые события", 0.5, 0.5, 0.5, false),
         ("несовместимые события", 0.5, 0.5, 0.0, false),
     ];
-    for (_description, first, second, both, expected) in cases {
-        assert!((0.0..=1.0).contains(&first) && (0.0..=1.0).contains(&second));
-        assert!((0.0..=1.0).contains(&both));
-        let independent: bool = (both - first * second).abs() < 1e-10;
+    for (
+        _description,
+        first_event_probability,
+        second_event_probability,
+        joint_probability,
+        expected,
+    ) in cases
+    {
+        assert!(
+            (0.0..=1.0).contains(&first_event_probability)
+                && (0.0..=1.0).contains(&second_event_probability)
+        );
+        assert!((0.0..=1.0).contains(&joint_probability));
+        let independent: bool =
+            (joint_probability - first_event_probability * second_event_probability).abs() < 1e-10;
         assert_eq!(independent, expected);
     }
 

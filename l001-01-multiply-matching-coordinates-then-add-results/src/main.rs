@@ -16,7 +16,7 @@
 use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
 
 fn main() {
-    let left: [f64; 2] = [1.0, 2.0];
+    let first_vector: [f64; 2] = [1.0, 2.0];
     let cases: [(&str, &[f64], f64); 6] = [
         ("то же направление", &[2.0, 4.0], 10.0),
         ("острый угол", &[2.0, 1.0], 4.0),
@@ -26,28 +26,30 @@ fn main() {
         ("нулевой вектор без направления", &[0.0, 0.0], 0.0),
     ];
 
-    for (_description, right, expected) in cases {
+    for (_description, second_vector, expected) in cases {
         let sum_after_multiplying_coordinates: f64 =
-            multiply_matching_coordinates_then_add_results(&left, right)
+            multiply_matching_coordinates_then_add_results(&first_vector, second_vector)
                 .expect("у этой пары одинаковое число координат");
         assert_eq!(sum_after_multiplying_coordinates, expected);
     }
 
     let too_short: [f64; 1] = [3.0];
-    let _error: &str = multiply_matching_coordinates_then_add_results(&left, &too_short)
+    let _error: &str = multiply_matching_coordinates_then_add_results(&first_vector, &too_short)
         .expect_err("разная длина должна быть отклонена");
-    let _ = &(left);
-    plot_sum_after_multiplying_coordinates_for_changing_second_coordinate(&left);
+    let _ = &(first_vector);
+    plot_sum_after_multiplying_coordinates_for_changing_second_coordinate(&first_vector);
 }
 
 // Визуализация вынесена из основного сценария урока.
-fn plot_sum_after_multiplying_coordinates_for_changing_second_coordinate(left: &[f64; 2]) {
+fn plot_sum_after_multiplying_coordinates_for_changing_second_coordinate(first_vector: &[f64; 2]) {
     let chart_points: Vec<(f64, f64)> = (-40..=40)
         .map(|plot_step_index| {
             let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            let sum_after_multiplying: f64 =
-                multiply_matching_coordinates_then_add_results(left, &[1.0, horizontal_value])
-                    .expect("оба вектора имеют две координаты");
+            let sum_after_multiplying: f64 = multiply_matching_coordinates_then_add_results(
+                first_vector,
+                &[1.0, horizontal_value],
+            )
+            .expect("оба вектора имеют две координаты");
             (horizontal_value, sum_after_multiplying)
         })
         .collect();

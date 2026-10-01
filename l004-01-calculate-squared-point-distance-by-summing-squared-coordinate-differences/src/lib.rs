@@ -8,15 +8,20 @@
 pub fn calculate_squared_point_distance_by_summing_squared_coordinate_differences<
     const N: usize,
 >(
-    left: &[f64; N],
-    right: &[f64; N],
+    first_point: &[f64; N],
+    second_point: &[f64; N],
 ) -> Result<f64, &'static str> {
-    if N == 0 || left.iter().chain(right).any(|value| !value.is_finite()) {
+    if N == 0
+        || first_point
+            .iter()
+            .chain(second_point)
+            .any(|value| !value.is_finite())
+    {
         return Err("точки должны содержать конечные координаты");
     }
     let mut squared_sum: f64 = 0.0;
-    for index in 0..left.len() {
-        let difference: f64 = left[index] - right[index];
+    for index in 0..first_point.len() {
+        let difference: f64 = first_point[index] - second_point[index];
         squared_sum += difference * difference;
     }
     if !squared_sum.is_finite() {

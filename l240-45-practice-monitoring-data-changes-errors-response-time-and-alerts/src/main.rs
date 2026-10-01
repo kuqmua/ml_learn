@@ -25,9 +25,13 @@ fn main() {
     let shifted: [f64; 6] = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6];
 
     /// Выбираем большее из двух чисел для формул softmax, log-loss и Q-learning.
-    /// Аналог `first.max(second)` для обычных чисел; при NaN результат может отличаться.
-    fn choose_larger_number(first: f64, second: f64) -> f64 {
-        if first > second { first } else { second }
+    /// Аналог `first_number.max(second_number)` для обычных чисел; при NaN результат может отличаться.
+    fn choose_larger_number(first_number: f64, second_number: f64) -> f64 {
+        if first_number > second_number {
+            first_number
+        } else {
+            second_number
+        }
     }
 
     fn calculate_shares_of_feature_values_in_three_bins(data: &[f64]) -> [f64; 3] {

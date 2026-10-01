@@ -45,21 +45,24 @@ mod tests {
     fn first_output_ignores_future_values() {
         let query_vector: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
         let key_vector: [[f64; 2]; 2] = query_vector;
-        let first: Vec<[f64; 2]> =
+        let context_with_original_future: Vec<[f64; 2]> =
             super::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
                 &query_vector,
                 &key_vector,
                 &[[2.0, 3.0], [4.0, 5.0]],
             )
             .unwrap();
-        let second: Vec<[f64; 2]> =
+        let context_with_changed_future: Vec<[f64; 2]> =
             super::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
                 &query_vector,
                 &key_vector,
                 &[[2.0, 3.0], [999.0, 999.0]],
             )
             .unwrap();
-        assert_eq!(first[0], second[0]);
-        assert_eq!(first[0], [2.0, 3.0]);
+        assert_eq!(
+            context_with_original_future[0],
+            context_with_changed_future[0]
+        );
+        assert_eq!(context_with_original_future[0], [2.0, 3.0]);
     }
 }

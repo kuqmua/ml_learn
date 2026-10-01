@@ -6,12 +6,12 @@
 /// Возвращает по одному состоянию на каждый вход; длина последовательности задаётся вызывающим кодом.
 
 pub fn calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
-    input: &[f64],
+    input_sequence: &[f64],
     input_weight: f64,
     recurrent_weight: f64,
 ) -> Vec<f64> {
     let mut hidden_state: f64 = 0.0;
-    input
+    input_sequence
         .iter()
         .map(|&input_value| {
             hidden_state = (input_weight * input_value + recurrent_weight * hidden_state).tanh();

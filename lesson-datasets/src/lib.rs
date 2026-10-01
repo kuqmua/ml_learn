@@ -312,23 +312,23 @@ mod tests {
     #[test]
     fn seeded_stratified_split_has_no_overlap_and_contains_both_classes() {
         let targets: Vec<u8> = (0..20).map(|index| (index % 2) as u8).collect();
-        let first = super::split_indices_stratified_by_class(&targets, 42).unwrap();
+        let first_split = super::split_indices_stratified_by_class(&targets, 42).unwrap();
         assert_eq!(
-            first,
+            first_split,
             super::split_indices_stratified_by_class(&targets, 42).unwrap()
         );
         let mut all = [
-            first.training_indices.clone(),
-            first.validation_indices.clone(),
-            first.test_indices.clone(),
+            first_split.training_indices.clone(),
+            first_split.validation_indices.clone(),
+            first_split.test_indices.clone(),
         ]
         .concat();
         all.sort_unstable();
         assert_eq!(all, (0..20).collect::<Vec<_>>());
         for indices in [
-            &first.training_indices,
-            &first.validation_indices,
-            &first.test_indices,
+            &first_split.training_indices,
+            &first_split.validation_indices,
+            &first_split.test_indices,
         ] {
             assert!(indices.iter().any(|&index| targets[index] == 0));
             assert!(indices.iter().any(|&index| targets[index] == 1));

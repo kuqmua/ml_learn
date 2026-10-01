@@ -4,15 +4,15 @@
 /// Скалярное произведение: умножаем соответствующие координаты двух векторов и складываем произведения.
 
 pub fn multiply_matching_coordinates_then_add_results(
-    left: &[f64],
-    right: &[f64],
+    first_vector: &[f64],
+    second_vector: &[f64],
 ) -> Result<f64, &'static str> {
-    if left.len() != right.len() {
+    if first_vector.len() != second_vector.len() {
         return Err("векторы должны быть одинаковой длины");
     }
     let mut sum: f64 = 0.0;
-    for index in 0..left.len() {
-        sum += left[index] * right[index];
+    for index in 0..first_vector.len() {
+        sum += first_vector[index] * second_vector[index];
     }
     Ok(sum)
 }

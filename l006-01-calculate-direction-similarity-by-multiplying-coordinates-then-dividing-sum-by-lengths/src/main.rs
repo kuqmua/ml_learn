@@ -14,7 +14,7 @@
 use l006_01_calculate_direction_similarity_by_multiplying_coordinates_then_dividing_sum_by_lengths::calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths;
 
 fn main() {
-    let left: [f64; 2] = [1.0, 0.0];
+    let first_vector: [f64; 2] = [1.0, 0.0];
     let cases: [(&str, &[f64], f64); 5] = [
         ("то же направление", &[2.0, 0.0], 1.0),
         ("острый угол", &[1.0, 1.0], 0.7071067811865475),
@@ -23,22 +23,22 @@ fn main() {
         ("противоположные направления", &[-2.0, 0.0], -1.0),
     ];
 
-    for (_description, right, expected) in cases {
+    for (_description, second_vector, expected) in cases {
         let similarity: f64 =
             calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths(
-                &left, right,
+                &first_vector, second_vector,
             )
             .expect("оба вектора ненулевые и одинаковой длины");
         assert!((similarity - expected).abs() < 1e-10);
     }
 
-    for (_description, right) in [
+    for (_description, second_vector) in [
         ("нулевой вектор", &[0.0, 0.0][..]),
         ("разная длина", &[1.0][..]),
     ] {
         let _error: &str =
             calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths(
-                &left, right,
+                &first_vector, second_vector,
             )
             .expect_err("этот вход должен быть отклонён");
     }

@@ -26,9 +26,9 @@ fn main() {
         Split {
             threshold: f64,
 
-            left: Box<Tree>,
+            below_threshold_tree: Box<Tree>,
 
-            right: Box<Tree>,
+            at_or_above_threshold_tree: Box<Tree>,
         },
     }
 
@@ -60,23 +60,23 @@ fn main() {
                 continue;
             }
             let candidate_threshold: f64 = (pair[0] + pair[1]) / 2.;
-            let left_samples: Vec<(f64, bool)> = data
+            let samples_below_threshold: Vec<(f64, bool)> = data
                 .iter()
                 .copied()
                 .filter(|sample| sample.0 < candidate_threshold)
                 .collect();
-            let right_samples: Vec<(f64, bool)> = data
+            let samples_at_or_above_threshold: Vec<(f64, bool)> = data
                 .iter()
                 .copied()
                 .filter(|sample| sample.0 >= candidate_threshold)
                 .collect();
-            let score: f64 = (left_samples.len() as f64
+            let score: f64 = (samples_below_threshold.len() as f64
                 * calculate_class_mixing_as_twice_positive_share_times_negative_share(
-                    &left_samples,
+                    &samples_below_threshold,
                 )
-                + right_samples.len() as f64
+                + samples_at_or_above_threshold.len() as f64
                     * calculate_class_mixing_as_twice_positive_share_times_negative_share(
-                        &right_samples,
+                        &samples_at_or_above_threshold,
                     ))
                 / data.len() as f64;
             if best_split.is_none_or(|(previous_score, _)| score < previous_score) {
@@ -84,12 +84,12 @@ fn main() {
             }
         }
         if let Some((_, threshold)) = best_split {
-            let left_samples: Vec<(f64, bool)> = data
+            let samples_below_threshold: Vec<(f64, bool)> = data
                 .iter()
                 .copied()
                 .filter(|sample| sample.0 < threshold)
                 .collect();
-            let right_samples: Vec<(f64, bool)> = data
+            let samples_at_or_above_threshold: Vec<(f64, bool)> = data
                 .iter()
                 .copied()
                 .filter(|sample| sample.0 >= threshold)
@@ -97,15 +97,19 @@ fn main() {
             Tree::Split {
                 threshold,
 
-                left: Box::new(build_threshold_tree_by_minimizing_weighted_class_mixing(
-                    &left_samples,
-                    remaining_depth - 1,
-                )),
+                below_threshold_tree: Box::new(
+                    build_threshold_tree_by_minimizing_weighted_class_mixing(
+                        &samples_below_threshold,
+                        remaining_depth - 1,
+                    ),
+                ),
 
-                right: Box::new(build_threshold_tree_by_minimizing_weighted_class_mixing(
-                    &right_samples,
-                    remaining_depth - 1,
-                )),
+                at_or_above_threshold_tree: Box::new(
+                    build_threshold_tree_by_minimizing_weighted_class_mixing(
+                        &samples_at_or_above_threshold,
+                        remaining_depth - 1,
+                    ),
+                ),
             }
         } else {
             Tree::Leaf(positive_count * 2 >= data.len())
@@ -124,14 +128,14 @@ fn main() {
             Tree::Split {
                 threshold,
 
-                left,
+                below_threshold_tree,
 
-                right,
+                at_or_above_threshold_tree,
             } => predict_class_by_following_threshold_branches_to_leaf(
                 if feature_value < *threshold {
-                    left
+                    below_threshold_tree
                 } else {
-                    right
+                    at_or_above_threshold_tree
                 },
                 feature_value,
             ),

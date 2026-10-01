@@ -78,9 +78,13 @@ fn main() {
     }
 
     /// Выбираем большее из двух чисел для формул softmax, log-loss и Q-learning.
-    /// Аналог `first.max(second)` для обычных чисел; при NaN результат может отличаться.
-    fn choose_larger_number(first: f64, second: f64) -> f64 {
-        if first > second { first } else { second }
+    /// Аналог `first_number.max(second_number)` для обычных чисел; при NaN результат может отличаться.
+    fn choose_larger_number(first_number: f64, second_number: f64) -> f64 {
+        if first_number > second_number {
+            first_number
+        } else {
+            second_number
+        }
     }
 
     /// Нормализация слоя (LayerNorm): из координат вычитаем среднее и делим на sqrt(среднее квадратов отклонений + epsilon).

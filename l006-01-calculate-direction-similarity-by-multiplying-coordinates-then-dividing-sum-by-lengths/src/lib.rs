@@ -6,13 +6,14 @@ use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_co
 use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates;
 
 pub fn calculate_direction_similarity_by_multiplying_matching_coordinates_then_dividing_sum_by_vector_lengths(
-    left: &[f64],
-    right: &[f64],
+    first_vector: &[f64],
+    second_vector: &[f64],
 ) -> Result<f64, &'static str> {
-    let numerator: f64 = multiply_matching_coordinates_then_add_results(left, right)?;
+    let numerator: f64 =
+        multiply_matching_coordinates_then_add_results(first_vector, second_vector)?;
     let denominator: f64 =
-        calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(left)
-            * calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(right);
+        calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(first_vector)
+            * calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(second_vector);
     if denominator == 0.0 {
         return Err("у нулевого вектора нет направления");
     }

@@ -1,26 +1,26 @@
 //! Урок 194. Нормализация масштаба вектора: деление координат на корень из среднего квадрата и умножение на веса.
 //! Связь с принятой терминологией: RMSNorm перед подслоем.
 
-/// RMSNorm без вычитания среднего; gamma задаётся отдельно для каждой координаты.
-/// RMSNorm: делим координаты на sqrt(среднее квадратов + epsilon), затем умножаем каждую на её вес gamma.
+/// RMSNorm без вычитания среднего; coordinate_weights задаётся отдельно для каждой координаты.
+/// RMSNorm: делим координаты на sqrt(среднее квадратов + epsilon), затем умножаем каждую на её вес coordinate_weights.
 /// В учебном блоке вход, веса и результат имеют по две координаты.
 
 pub fn normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
-    input: &[f64; 2],
-    gamma: &[f64; 2],
+    input_vector: &[f64; 2],
+    coordinate_weights: &[f64; 2],
     epsilon: f64,
 ) -> Result<[f64; 2], &'static str> {
     if epsilon <= 0.0 {
         return Err("epsilon должен быть положительным");
     }
-    let mean_square: f64 = input
+    let mean_square: f64 = input_vector
         .iter()
         .map(|input_component| input_component * input_component)
         .sum::<f64>()
-        / input.len() as f64;
+        / input_vector.len() as f64;
     let scale: f64 = 1.0 / (mean_square + epsilon).sqrt();
     Ok(std::array::from_fn(|index| {
-        input[index] * scale * gamma[index]
+        input_vector[index] * scale * coordinate_weights[index]
     }))
 }
 #[cfg(test)]

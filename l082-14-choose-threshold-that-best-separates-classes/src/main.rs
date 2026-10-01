@@ -15,20 +15,32 @@ fn main() {
     let data: [(f64, bool); 4] = [(1.0, false), (2.0, false), (3.0, true), (4.0, true)];
     let mut best: (f64, f64) = (f64::INFINITY, 0.0);
     for threshold in [1.5, 2.5, 3.5] {
-        let left: Vec<&(f64, bool)> = data.iter().filter(|sample| sample.0 < threshold).collect();
-        let right: Vec<&(f64, bool)> = data.iter().filter(|sample| sample.0 >= threshold).collect();
+        let samples_below_threshold: Vec<&(f64, bool)> =
+            data.iter().filter(|sample| sample.0 < threshold).collect();
+        let samples_at_or_above_threshold: Vec<&(f64, bool)> =
+            data.iter().filter(|sample| sample.0 >= threshold).collect();
         assert!(
-            !left.is_empty() && !right.is_empty(),
+            !samples_below_threshold.is_empty() && !samples_at_or_above_threshold.is_empty(),
             "порог должен оставлять примеры с обеих сторон"
         );
-        let left_positive: f64 =
-            left.iter().filter(|sample| sample.1).count() as f64 / left.len() as f64;
-        let right_positive: f64 =
-            right.iter().filter(|sample| sample.1).count() as f64 / right.len() as f64;
-        let left_gini: f64 = 2.0 * left_positive * (1.0 - left_positive);
-        let right_gini: f64 = 2.0 * right_positive * (1.0 - right_positive);
-        let score: f64 =
-            (left.len() as f64 * left_gini + right.len() as f64 * right_gini) / data.len() as f64;
+        let positive_share_below_threshold: f64 = samples_below_threshold
+            .iter()
+            .filter(|sample| sample.1)
+            .count() as f64
+            / samples_below_threshold.len() as f64;
+        let positive_share_at_or_above_threshold: f64 = samples_at_or_above_threshold
+            .iter()
+            .filter(|sample| sample.1)
+            .count() as f64
+            / samples_at_or_above_threshold.len() as f64;
+        let class_mixing_below_threshold: f64 =
+            2.0 * positive_share_below_threshold * (1.0 - positive_share_below_threshold);
+        let class_mixing_at_or_above_threshold: f64 = 2.0
+            * positive_share_at_or_above_threshold
+            * (1.0 - positive_share_at_or_above_threshold);
+        let score: f64 = (samples_below_threshold.len() as f64 * class_mixing_below_threshold
+            + samples_at_or_above_threshold.len() as f64 * class_mixing_at_or_above_threshold)
+            / data.len() as f64;
         if score < best.0 {
             best = (score, threshold);
         }
