@@ -17,12 +17,13 @@ fn main() {
         ("обычный вектор", [5.0, 6.0], [17.0, 39.0]),
         ("нулевой вектор", [0.0, 0.0], [0.0, 0.0]),
     ] {
-        let mut result: [f64; 2] = [0.0; 2];
+        let mut matrix_vector_output: [f64; 2] = [0.0; 2];
         for row in 0..matrix.len() {
-            result[row] = multiply_matching_coordinates_then_add_results(&matrix[row], &vector)
-                .expect("число столбцов совпадает с длиной вектора");
+            matrix_vector_output[row] =
+                multiply_matching_coordinates_then_add_results(&matrix[row], &vector)
+                    .expect("число столбцов совпадает с длиной вектора");
         }
-        assert_eq!(result, expected);
+        assert_eq!(matrix_vector_output, expected);
     }
     let too_short: [f64; 1] = [5.0];
     let _error: &str = multiply_matching_coordinates_then_add_results(&matrix[0], &too_short)

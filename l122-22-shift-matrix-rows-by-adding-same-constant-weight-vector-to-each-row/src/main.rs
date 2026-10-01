@@ -14,23 +14,30 @@
 fn main() {
     let matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
     let constant_input_weight: [f64; 2] = [10.0, 20.0];
-    let mut result: [[f64; 2]; 2] = matrix;
+    let mut matrix_after_adding_constant_weight: [[f64; 2]; 2] = matrix;
     for row in 0..2 {
         for column in 0..2 {
-            result[row][column] += constant_input_weight[column];
+            matrix_after_adding_constant_weight[row][column] += constant_input_weight[column];
         }
     }
 
-    plot_matrix_after_adding_same_constant_input_weight_vector_to_each_row(result);
+    plot_matrix_after_adding_same_constant_input_weight_vector_to_each_row(
+        matrix_after_adding_constant_weight,
+    );
 }
 
 // Строим график по результатам урока.
-fn plot_matrix_after_adding_same_constant_input_weight_vector_to_each_row(result: [[f64; 2]; 2]) {
+fn plot_matrix_after_adding_same_constant_input_weight_vector_to_each_row(
+    matrix_after_adding_constant_weight: [[f64; 2]; 2],
+) {
     let _chart: std::path::PathBuf = lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Broadcasting: результат",
-        &result.iter().map(|row| row.to_vec()).collect::<Vec<_>>(),
+        &matrix_after_adding_constant_weight
+            .iter()
+            .map(|row| row.to_vec())
+            .collect::<Vec<_>>(),
     )
     .expect("не удалось сохранить тепловую карту");
 }

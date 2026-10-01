@@ -16,7 +16,7 @@ fn main() {
         ("бесконечный вес", "inf\n1.0\n", false),
     ] {
         let values: Vec<&str> = saved_model_text.lines().collect();
-        let result: Result<(f64, f64), &str> = if values.len() != 2 {
+        let parsed_model_weights: Result<(f64, f64), &str> = if values.len() != 2 {
             Err("нужно ровно два параметра")
         } else {
             match (values[0].parse::<f64>(), values[1].parse::<f64>()) {
@@ -29,6 +29,6 @@ fn main() {
                 _ => Err("параметры должны быть конечными числами"),
             }
         };
-        assert_eq!(result.is_ok(), should_be_valid);
+        assert_eq!(parsed_model_weights.is_ok(), should_be_valid);
     }
 }

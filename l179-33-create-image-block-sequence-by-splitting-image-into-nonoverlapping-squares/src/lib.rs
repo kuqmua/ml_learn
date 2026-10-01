@@ -13,17 +13,17 @@ pub fn extract_nonoverlapping_square_patches_from_square_image<const N: usize>(
     if side == 0 || height == 0 || height % side != 0 {
         return Err("размер патча должен делить сторону непустого изображения");
     }
-    let mut result: Vec<Vec<f64>> = Vec::new();
+    let mut image_patches: Vec<Vec<f64>> = Vec::new();
     for top in (0..height).step_by(side) {
         for column_start in (0..height).step_by(side) {
             let mut patch: Vec<f64> = Vec::new();
             for row in &image[top..top + side] {
                 patch.extend_from_slice(&row[column_start..column_start + side]);
             }
-            result.push(patch);
+            image_patches.push(patch);
         }
     }
-    Ok(result)
+    Ok(image_patches)
 }
 #[cfg(test)]
 mod tests {

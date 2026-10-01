@@ -18,8 +18,8 @@ fn main() {
     for (_description, votes, expected) in cases {
         assert!(!votes.is_empty(), "для решения нужен хотя бы один голос");
         let positives: usize = votes.iter().filter(|&&vote| vote).count();
-        let result: bool = positives * 2 > votes.len();
-        assert_eq!(result, expected);
+        let predicted_majority_class: bool = positives * 2 > votes.len();
+        assert_eq!(predicted_majority_class, expected);
     }
 
     plot_number_of_votes_for_each_class();

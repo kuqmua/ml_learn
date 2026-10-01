@@ -18,20 +18,23 @@ fn main() {
     for (description, raw_model_scores) in cases {
         let mut exponentials: [f64; 2] = [0.0; 2];
         for index in 0..2 {
-            let mut term: f64 = 1.0;
-            let mut sum: f64 = 1.0;
+            let mut current_series_term: f64 = 1.0;
+            let mut exponential_approximation: f64 = 1.0;
             for order in 1..=30 {
-                term *= raw_model_scores[index] / order as f64;
-                sum += term;
+                current_series_term *= raw_model_scores[index] / order as f64;
+                exponential_approximation += current_series_term;
             }
-            exponentials[index] = sum;
+            exponentials[index] = exponential_approximation;
         }
-        let denominator: f64 = exponentials[0] + exponentials[1];
+        let sum_of_exponentials: f64 = exponentials[0] + exponentials[1];
         assert!(
-            denominator > 0.0,
+            sum_of_exponentials > 0.0,
             "сумма экспонент должна быть положительной"
         );
-        let weights: [f64; 2] = [exponentials[0] / denominator, exponentials[1] / denominator];
+        let weights: [f64; 2] = [
+            exponentials[0] / sum_of_exponentials,
+            exponentials[1] / sum_of_exponentials,
+        ];
         assert!((weights[0] + weights[1] - 1.0).abs() < 1e-10);
         assert!(weights.iter().all(|&weight| (0.0..=1.0).contains(&weight)));
         match description {

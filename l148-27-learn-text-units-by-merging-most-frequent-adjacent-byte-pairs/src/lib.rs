@@ -97,20 +97,20 @@ fn replace_matching_adjacent_identifier_pair_with_new_identifier(
     pair: (usize, usize),
     new_identifier: usize,
 ) -> Vec<usize> {
-    let mut result: Vec<usize> = Vec::new();
+    let mut merged_text_unit_identifiers: Vec<usize> = Vec::new();
     let mut index: usize = 0;
     while index < text_unit_identifiers.len() {
         if text_unit_identifiers.get(index) == Some(&pair.0)
             && text_unit_identifiers.get(index + 1) == Some(&pair.1)
         {
-            result.push(new_identifier);
+            merged_text_unit_identifiers.push(new_identifier);
             index += 2;
         } else {
-            result.push(text_unit_identifiers[index]);
+            merged_text_unit_identifiers.push(text_unit_identifiers[index]);
             index += 1;
         }
     }
-    result
+    merged_text_unit_identifiers
 }
 
 #[cfg(test)]

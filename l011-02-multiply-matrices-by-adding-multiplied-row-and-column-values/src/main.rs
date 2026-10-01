@@ -36,19 +36,19 @@ fn main() {
             matrix_on_right.len(),
             "внутренние размеры матриц должны совпадать"
         );
-        let mut result: [[f64; 2]; 2] = [[0.0; 2]; 2];
+        let mut multiplied_matrix: [[f64; 2]; 2] = [[0.0; 2]; 2];
         for row in 0..matrix_on_left.len() {
             for column in 0..matrix_on_right[0].len() {
                 let column_values: [f64; 2] =
                     [matrix_on_right[0][column], matrix_on_right[1][column]];
-                result[row][column] = multiply_matching_coordinates_then_add_results(
+                multiplied_matrix[row][column] = multiply_matching_coordinates_then_add_results(
                     &matrix_on_left[row],
                     &column_values,
                 )
                 .expect("внутренние размеры матриц совпадают");
             }
         }
-        assert_eq!(result, expected);
+        assert_eq!(multiplied_matrix, expected);
     }
     let incompatible_left_shape: (i32, i32) = (2, 3);
     let incompatible_right_shape: (i32, i32) = (2, 2);

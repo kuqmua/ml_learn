@@ -13,13 +13,13 @@ fn main() {
     let raw_weights: [f64; 3] = [0.2, 0.3, 0.5];
     for current_position in 0..raw_weights.len() {
         let mut future_position_filtered_weights: [f64; 3] = [0.0; 3];
-        let allowed_sum: f64 = raw_weights[..=current_position].iter().sum();
+        let sum_of_allowed_weights: f64 = raw_weights[..=current_position].iter().sum();
         assert!(
-            allowed_sum > 0.0,
+            sum_of_allowed_weights > 0.0,
             "доступные позиции должны иметь положительную сумму весов"
         );
         for index in 0..=current_position {
-            future_position_filtered_weights[index] = raw_weights[index] / allowed_sum;
+            future_position_filtered_weights[index] = raw_weights[index] / sum_of_allowed_weights;
         }
         assert!((future_position_filtered_weights.iter().sum::<f64>() - 1.0).abs() < 1e-10);
         assert!(
@@ -35,10 +35,10 @@ fn main() {
 // Строим график по результатам урока.
 fn plot_allowed_current_and_past_position_pairs(raw_weights: [f64; 3]) {
     let weights: [[f64; 3]; 3] = std::array::from_fn(|position| {
-        let total: f64 = raw_weights[..=position].iter().sum();
+        let sum_of_allowed_weights: f64 = raw_weights[..=position].iter().sum();
         std::array::from_fn(|key| {
             if key <= position {
-                raw_weights[key] / total
+                raw_weights[key] / sum_of_allowed_weights
             } else {
                 0.0
             }

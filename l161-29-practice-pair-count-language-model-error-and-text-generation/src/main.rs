@@ -60,15 +60,15 @@ fn main() {
             halving_count += 1;
         }
         let mut term: f64 = 1.0;
-        let mut result: f64 = 1.0;
+        let mut exponential_approximation: f64 = 1.0;
         for term_index in 1..=30 {
             term *= reduced / term_index as f64;
-            result += term;
+            exponential_approximation += term;
         }
         for _ in 0..halving_count {
-            result *= result;
+            exponential_approximation *= exponential_approximation;
         }
-        result
+        exponential_approximation
     }
 
     /// Сглаженная вероятность следующего токена: (число пары + 1) / (число переходов из контекста + размер словаря).
@@ -81,17 +81,17 @@ fn main() {
 
         next_text_unit: &str,
     ) -> f64 {
-        let mut total: usize = 0;
+        let mut count_after_previous_text_unit: usize = 0;
         for ((previous_context, _), &text_unit_count) in counts {
             if previous_context == previous_text_unit {
-                total += text_unit_count;
+                count_after_previous_text_unit += text_unit_count;
             }
         }
         (*counts
             .get(&(previous_text_unit.into(), next_text_unit.into()))
             .unwrap_or(&0) as f64
             + 1.)
-            / (total + known_text_units.len()) as f64
+            / (count_after_previous_text_unit + known_text_units.len()) as f64
     }
 
     /// Перплексия: e в степени среднего отрицательного логарифма вероятности следующего слова, включая конец строки.
@@ -142,12 +142,12 @@ fn main() {
                         let ratio: f64 = (value - 1.0) / (value + 1.0);
                         let ratio_squared: f64 = ratio * ratio;
                         let mut term: f64 = ratio;
-                        let mut result: f64 = 0.0;
+                        let mut logarithm_series_sum: f64 = 0.0;
                         for term_index in 0..40 {
-                            result += term / (2 * term_index + 1) as f64;
+                            logarithm_series_sum += term / (2 * term_index + 1) as f64;
                             term *= ratio_squared;
                         }
-                        2.0 * result
+                        2.0 * logarithm_series_sum
                     }
                     let logarithm_of_two: f64 =
                         approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(

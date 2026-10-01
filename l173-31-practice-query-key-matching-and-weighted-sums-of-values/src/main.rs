@@ -43,15 +43,15 @@ fn main() {
             halving_count += 1;
         }
         let mut term: f64 = 1.0;
-        let mut result: f64 = 1.0;
+        let mut exponential_approximation: f64 = 1.0;
         for term_index in 1..=30 {
             term *= reduced / term_index as f64;
-            result += term;
+            exponential_approximation += term;
         }
         for _ in 0..halving_count {
-            result *= result;
+            exponential_approximation *= exponential_approximation;
         }
-        result
+        exponential_approximation
     }
 
     let (_attended_output, attention_weights): ([[f64; 2]; 3], [[f64; 3]; 3]) =

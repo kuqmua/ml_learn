@@ -22,8 +22,8 @@ fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_
         .fold(f64::NEG_INFINITY, f64::max);
     let exponential_values: [f64; 4] =
         std::array::from_fn(|index| (raw_model_scores[index] - maximum).exp());
-    let sum: f64 = exponential_values.iter().sum();
-    exponential_values.map(|patch_value| patch_value / sum)
+    let sum_of_exponential_values: f64 = exponential_values.iter().sum();
+    exponential_values.map(|patch_value| patch_value / sum_of_exponential_values)
 }
 fn main() {
     let image: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];

@@ -12,7 +12,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let correct: i32 = 2;
-    let total: i32 = 2;
-    let _accuracy: f64 = correct as f64 / total as f64;
+    let correct_prediction_count: i32 = 2;
+    let all_prediction_count: i32 = 2;
+    let _accuracy: f64 = correct_prediction_count as f64 / all_prediction_count as f64;
 }

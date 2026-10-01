@@ -25,11 +25,11 @@ fn main() {
             indices.iter().all(|&index| index < values.len()),
             "индекс выходит за границы исходной выборки"
         );
-        let mut sum: f64 = 0.0;
+        let mut sum_of_resampled_values: f64 = 0.0;
         for index in indices {
-            sum += values[index];
+            sum_of_resampled_values += values[index];
         }
-        let _mean: f64 = sum / indices.len() as f64;
+        let _mean: f64 = sum_of_resampled_values / indices.len() as f64;
     }
 
     plot_means_of_samples_drawn_with_replacement(values, resamples);

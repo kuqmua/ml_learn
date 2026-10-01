@@ -9,9 +9,9 @@ pub fn calculate_mean_by_summing_values_and_dividing_by_count(
     if values.is_empty() {
         return Err("для среднего нужно хотя бы одно значение");
     }
-    let mut sum: f64 = 0.0;
+    let mut sum_of_values: f64 = 0.0;
     for &value in values {
-        sum += value;
+        sum_of_values += value;
     }
-    Ok(sum / values.len() as f64)
+    Ok(sum_of_values / values.len() as f64)
 }

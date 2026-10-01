@@ -15,8 +15,8 @@ fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_
     let maximum_value: f64 = values.iter().copied().fold(f64::NEG_INFINITY, f64::max);
     let exponential_values: [f64; 3] =
         std::array::from_fn(|index| (values[index] - maximum_value).exp());
-    let sum: f64 = exponential_values.iter().sum();
-    exponential_values.map(|patch_value| patch_value / sum)
+    let sum_of_exponential_values: f64 = exponential_values.iter().sum();
+    exponential_values.map(|patch_value| patch_value / sum_of_exponential_values)
 }
 fn main() {
     let image_input_representations: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
@@ -29,14 +29,15 @@ fn main() {
         calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
             &raw_model_scores,
         );
-    let image_classification_summary: [f64; 2] = image_input_representations
-        .iter()
-        .zip(&weights)
-        .fold([0.0; 2], |mut sum, (patch_value, &weight)| {
-            sum[0] += weight * patch_value[0];
-            sum[1] += weight * patch_value[1];
-            sum
-        });
+    let image_classification_summary: [f64; 2] =
+        image_input_representations.iter().zip(&weights).fold(
+            [0.0; 2],
+            |mut weighted_coordinate_sums, (patch_value, &weight)| {
+                weighted_coordinate_sums[0] += weight * patch_value[0];
+                weighted_coordinate_sums[1] += weight * patch_value[1];
+                weighted_coordinate_sums
+            },
+        );
     let _class: u8 = u8::from(image_classification_summary[0] > image_classification_summary[1]);
 
     plot_weights_used_to_combine_image_blocks_into_summary(&weights);

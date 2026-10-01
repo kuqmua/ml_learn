@@ -9,15 +9,15 @@ pub fn calculate_direction_similarity_by_multiplying_matching_coordinates_then_d
     first_vector: &[f64],
     second_vector: &[f64],
 ) -> Result<f64, &'static str> {
-    let numerator: f64 =
+    let sum_after_multiplying_coordinates: f64 =
         multiply_matching_coordinates_then_add_results(first_vector, second_vector)?;
-    let denominator: f64 =
+    let multiplied_vector_lengths: f64 =
         calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(first_vector)
             * calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(second_vector);
-    if denominator == 0.0 {
+    if multiplied_vector_lengths == 0.0 {
         return Err("у нулевого вектора нет направления");
     }
-    Ok(numerator / denominator)
+    Ok(sum_after_multiplying_coordinates / multiplied_vector_lengths)
 }
 
 // Добавляем свойство для следующего определения.

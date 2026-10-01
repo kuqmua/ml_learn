@@ -22,12 +22,14 @@ fn main() {
         first_feature_values.iter().sum::<f64>() / first_feature_values.len() as f64;
     let mean_vertical_coordinate: f64 =
         second_feature_values.iter().sum::<f64>() / second_feature_values.len() as f64;
-    let mut sum: f64 = 0.0;
+    let mut sum_after_multiplying_paired_differences_from_mean: f64 = 0.0;
     for index in 0..first_feature_values.len() {
-        sum += (first_feature_values[index] - mean_horizontal_coordinate)
+        sum_after_multiplying_paired_differences_from_mean += (first_feature_values[index]
+            - mean_horizontal_coordinate)
             * (second_feature_values[index] - mean_vertical_coordinate);
     }
-    let _ = &(sum / (first_feature_values.len() - 1) as f64);
+    let _ = &(sum_after_multiplying_paired_differences_from_mean
+        / (first_feature_values.len() - 1) as f64);
 
     plot_paired_feature_values_to_show_joint_variation(first_feature_values, second_feature_values);
 }

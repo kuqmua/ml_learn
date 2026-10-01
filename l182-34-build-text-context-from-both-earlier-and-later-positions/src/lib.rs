@@ -13,7 +13,7 @@ pub fn calculate_visible_context_by_summing_states_weighted_by_exponentiated_coo
     if N == 0 || !visible.iter().any(|&input_value| input_value) {
         return Err("пустая последовательность или маска");
     }
-    let result: [[f64; 2]; N] = std::array::from_fn(|query_index| {
+    let context_vectors: [[f64; 2]; N] = std::array::from_fn(|query_index| {
         let query = states[query_index];
         let scores: Vec<f64> = states
             .iter()
@@ -26,12 +26,12 @@ pub fn calculate_visible_context_by_summing_states_weighted_by_exponentiated_coo
             .iter()
             .map(|&input_value| (input_value - maximum).exp())
             .collect();
-        let sum: f64 = exponential_values.iter().sum();
+        let sum_of_exponential_values: f64 = exponential_values.iter().sum();
         let mut output: [f64; 2] = [0.0; 2];
         let mut index: usize = 0;
         for (position, value) in states.iter().enumerate() {
             if visible[position] {
-                let weight: f64 = exponential_values[index] / sum;
+                let weight: f64 = exponential_values[index] / sum_of_exponential_values;
                 output[0] += weight * value[0];
                 output[1] += weight * value[1];
                 index += 1;
@@ -39,7 +39,7 @@ pub fn calculate_visible_context_by_summing_states_weighted_by_exponentiated_coo
         }
         output
     });
-    Ok(result)
+    Ok(context_vectors)
 }
 #[cfg(test)]
 mod tests {

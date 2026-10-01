@@ -34,8 +34,9 @@ fn main() {
         ("нулевой без направления", &[0.0, 0.0], 0.0, None),
     ];
     for (_description, second_vector, expected_sum, expected_cosine) in cases {
-        let sum: f64 = multiply_matching_coordinates_then_add_results(&first_vector, second_vector)
-            .expect("у этих векторов одинаковое число координат");
+        let sum_after_multiplying_coordinates: f64 =
+            multiply_matching_coordinates_then_add_results(&first_vector, second_vector)
+                .expect("у этих векторов одинаковое число координат");
         let distance: f64 =
             calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
                 &first_vector,
@@ -47,7 +48,7 @@ fn main() {
                 &first_vector, second_vector,
             )
             .ok();
-        assert_eq!(sum, expected_sum);
+        assert_eq!(sum_after_multiplying_coordinates, expected_sum);
         if let (Some(actual), Some(expected)) = (cosine, expected_cosine) {
             assert!((actual - expected).abs() < 1e-10);
         } else {

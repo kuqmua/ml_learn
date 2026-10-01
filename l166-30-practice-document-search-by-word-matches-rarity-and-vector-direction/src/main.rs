@@ -80,12 +80,12 @@ fn main() {
                         let ratio: f64 = (value - 1.0) / (value + 1.0);
                         let ratio_squared: f64 = ratio * ratio;
                         let mut term: f64 = ratio;
-                        let mut result: f64 = 0.0;
+                        let mut logarithm_series_sum: f64 = 0.0;
                         for term_index in 0..40 {
-                            result += term / (2 * term_index + 1) as f64;
+                            logarithm_series_sum += term / (2 * term_index + 1) as f64;
                             term *= ratio_squared;
                         }
-                        2.0 * result
+                        2.0 * logarithm_series_sum
                     }
                     let logarithm_of_two: f64 =
                         approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(

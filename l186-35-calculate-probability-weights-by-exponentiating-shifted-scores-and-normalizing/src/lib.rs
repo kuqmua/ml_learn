@@ -16,6 +16,9 @@ pub fn calculate_probability_weights_by_exponentiating_shifted_scores_then_divid
         .iter()
         .map(|&value| (value - maximum).exp())
         .collect();
-    let total: f64 = weights.iter().sum();
-    weights.into_iter().map(|weight| weight / total).collect()
+    let sum_of_exponentiated_scores: f64 = weights.iter().sum();
+    weights
+        .into_iter()
+        .map(|weight| weight / sum_of_exponentiated_scores)
+        .collect()
 }
