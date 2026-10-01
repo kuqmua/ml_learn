@@ -58,11 +58,18 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
                 .unwrap();
             let query: [f64; 2] =
                 rotate_vector_coordinate_pair_by_token_position([query[0], query[1]], index, 0.1);
-            let raw_model_scores: Vec<f64> = (0..=index)
-                .map(|past| (query[0] * keys[past][0] + query[1] * keys[past][1]) / 2.0_f64.sqrt())
-                .collect();
-            let weights: Vec<f64> = calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(&raw_model_scores);
-            for (past, &weight) in weights.iter().enumerate() {
+
+            for (past, weight) in calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+                &(0..=index)
+                    .map(|past| {
+                        (query[0] * keys[past][0] + query[1] * keys[past][1])
+                            / 2.0_f64.sqrt()
+                    })
+                    .collect::<Vec<_>>(),
+            )
+            .into_iter()
+            .enumerate()
+            {
                 context[0] += 0.5 * weight * scaled_states[past][0];
                 context[1] += 0.5 * weight * scaled_states[past][1];
             }
@@ -94,10 +101,9 @@ fn calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_value
 }
 fn main() {
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    let output: [[f64; 2]; 3] =
-        calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and_gated_features(&states);
+
     assert_eq!(
         calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and_gated_features(&[states[0]])[0],
-        output[0]
+        calculate_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and_gated_features(&states)[0]
     );
 }

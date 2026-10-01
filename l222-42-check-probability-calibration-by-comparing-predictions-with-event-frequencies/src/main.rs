@@ -23,8 +23,8 @@ fn main() {
         ("недооценка", 0.6, 0.2),
     ] {
         assert!((0.0..=1.0).contains(&predicted_probability));
-        let gap: f64 = (predicted_probability - observed_frequency).abs();
-        assert!((gap - expected_gap).abs() < 1e-10);
+
+        assert!(((predicted_probability - observed_frequency).abs() - expected_gap).abs() < 1e-10);
     }
 
     plot_predicted_probabilities_and_observed_event_frequencies(observed_frequency);
@@ -32,14 +32,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_predicted_probabilities_and_observed_event_frequencies(observed_frequency: f64) {
-    let ideal_probability_frequency_points: Vec<(f64, f64)> = (0..=10)
-        .map(|plot_step_index| {
-            let probability: f64 = plot_step_index as f64 / 10.0;
-            (probability, probability)
-        })
-        .collect();
-    let observed_probability_frequency_points: Vec<(f64, f64)> =
-        [(0.0, observed_frequency), (1.0, observed_frequency)].to_vec();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -50,12 +42,17 @@ fn plot_predicted_probabilities_and_observed_event_frequencies(observed_frequenc
             lesson_visualization::Series {
                 name: "идеальная",
 
-                points: &ideal_probability_frequency_points,
+                points: &(0..=10)
+                    .map(|plot_step_index| {
+                        let probability: f64 = plot_step_index as f64 / 10.0;
+                        (probability, probability)
+                    })
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "частота в примере",
 
-                points: &observed_probability_frequency_points,
+                points: &[(0.0, observed_frequency), (1.0, observed_frequency)].to_vec(),
             },
         ],
     )

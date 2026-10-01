@@ -31,8 +31,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_correct_positive_prediction_share_against_detected_positive_share() {
-    let precision_recall_area_under_curve_points: Vec<(f64, f64)> =
-        [(0.0, 1.0), (0.5, 1.0), (1.0, 2.0 / 3.0)].to_vec();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -42,7 +40,7 @@ fn plot_correct_positive_prediction_share_against_detected_positive_share() {
         &[lesson_visualization::Series {
             name: "метки +−+−",
 
-            points: &precision_recall_area_under_curve_points,
+            points: &[(0.0, 1.0), (0.5, 1.0), (1.0, 2.0 / 3.0)].to_vec(),
         }],
     )
     .expect("не удалось сохранить график");

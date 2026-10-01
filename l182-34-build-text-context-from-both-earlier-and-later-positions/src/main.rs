@@ -17,11 +17,13 @@ fn main() {
         )
         .unwrap();
     let changed: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [9.0, 9.0]];
-    let after: [[f64; 2]; 3] =
+
+    assert_ne!(
+        output[0],
         calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
             &changed, &[true; 3],
         )
-        .unwrap();
-    assert_ne!(output[0], after[0]);
+        .unwrap()[0]
+    );
     let _ = &(output[0]);
 }

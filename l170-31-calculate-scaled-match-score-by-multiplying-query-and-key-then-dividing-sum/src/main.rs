@@ -16,29 +16,21 @@ use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_co
 fn main() {
     let query: [f64; 2] = [1.0, 1.0];
     let key: [f64; 2] = [2.0, 2.0];
-    let sum_after_multiplying_coordinates: f64 =
-        multiply_matching_coordinates_then_add_results(&query, &key)
-            .expect("запрос и ключ должны иметь одинаковое число координат");
+
     let dimension: f64 = 2.0;
     let mut scale: f64 = dimension;
     for _ in 0..80 {
         scale = (scale + dimension / scale) / 2.0;
     }
-    let _ = &(sum_after_multiplying_coordinates / scale);
+    let _ = &(multiply_matching_coordinates_then_add_results(&query, &key)
+        .expect("запрос и ключ должны иметь одинаковое число координат")
+        / scale);
 
     plot_attention_scale_as_one_divided_by_square_root_of_coordinate_count();
 }
 
 // Строим график по результатам урока.
 fn plot_attention_scale_as_one_divided_by_square_root_of_coordinate_count() {
-    let multiply_coordinates_add_and_scale_points: Vec<(f64, f64)> = (1..=64)
-        .map(|vector_dimension| {
-            (
-                vector_dimension as f64,
-                1.0 / (vector_dimension as f64).sqrt(),
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -48,7 +40,14 @@ fn plot_attention_scale_as_one_divided_by_square_root_of_coordinate_count() {
         &[lesson_visualization::Series {
             name: "масштаб",
 
-            points: &multiply_coordinates_add_and_scale_points,
+            points: &(1..=64)
+                .map(|vector_dimension| {
+                    (
+                        vector_dimension as f64,
+                        1.0 / (vector_dimension as f64).sqrt(),
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

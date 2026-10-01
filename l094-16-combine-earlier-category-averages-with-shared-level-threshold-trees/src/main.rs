@@ -14,14 +14,6 @@ use l092_16_encode_category_by_averaging_earlier_targets_without_current_answer:
 fn main() {
     let categories: [&str; 6] = ["A", "B", "A", "B", "A", "B"];
     let targets: [f64; 6] = [1.0, 0.0, 1.0, 0.0, 1.0, 0.0];
-    let category_target_mean_values: [f64; 6] =
-        encode_categories_as_average_previous_targets_with_prior_weight(
-            &categories,
-            &targets,
-            0.5,
-            1.0,
-        )
-        .unwrap();
     let tree: ObliviousTree = ObliviousTree {
         splits: vec![(0, 0.5)],
         leaves: vec![-0.25, 0.25],
@@ -31,7 +23,16 @@ fn main() {
     let mut before: f64 = 0.0;
     let mut after: f64 = 0.0;
     for (_index, (&feature, &target)) in
-        category_target_mean_values.iter().zip(&targets).enumerate()
+        encode_categories_as_average_previous_targets_with_prior_weight(
+            &categories,
+            &targets,
+            0.5,
+            1.0,
+        )
+        .unwrap()
+        .iter()
+        .zip(&targets)
+        .enumerate()
     {
         let prediction: f64 = base
             + learning_rate

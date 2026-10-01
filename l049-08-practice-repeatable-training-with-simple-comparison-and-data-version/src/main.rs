@@ -33,13 +33,15 @@ fn main() {
 
     let (_random_state, _baseline_accuracy): (u64, f64) = (|| -> (u64, f64) {
         let seed: u64 = seed;
-        let state: u64 = seed.wrapping_mul(6364136223846793005).wrapping_add(1);
         let baseline_accuracy: f64 = SAMPLE_DATA
             .lines()
             .filter(|line| line.ends_with(",1"))
             .count() as f64
             / SAMPLE_DATA.lines().count() as f64;
-        (state, baseline_accuracy)
+        (
+            seed.wrapping_mul(6364136223846793005).wrapping_add(1),
+            baseline_accuracy,
+        )
     })();
 
     let _ = &((|| -> u64 {

@@ -15,10 +15,13 @@ use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_co
 fn main() {
     let query: [f64; 2] = [1.0, 0.5];
     let key: [f64; 2] = [0.8, 0.2];
-    let score: f64 = multiply_matching_coordinates_then_add_results(&query, &key)
-        .expect("запрос и ключ должны иметь одинаковое число координат");
 
-    plot_results_after_multiplying_matching_query_and_key_coordinates(query, key, score);
+    plot_results_after_multiplying_matching_query_and_key_coordinates(
+        query,
+        key,
+        multiply_matching_coordinates_then_add_results(&query, &key)
+            .expect("запрос и ключ должны иметь одинаковое число координат"),
+    );
 }
 
 // Строим график по результатам урока.

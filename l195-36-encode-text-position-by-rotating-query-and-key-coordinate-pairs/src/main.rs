@@ -23,12 +23,14 @@ fn main() {
         rotate_vector_coordinate_pair_by_token_position(query_vector, 3, 0.2),
         rotate_vector_coordinate_pair_by_token_position(key_vector, 3, 0.2),
     );
-    let distant: f64 = multiply_matching_coordinates_then_add_results(
-        rotate_vector_coordinate_pair_by_token_position(query_vector, 3, 0.2),
-        rotate_vector_coordinate_pair_by_token_position(key_vector, 8, 0.2),
-    );
+
     assert!((same - 1.0).abs() < 1e-12);
-    assert!(distant < same);
+    assert!(
+        multiply_matching_coordinates_then_add_results(
+            rotate_vector_coordinate_pair_by_token_position(query_vector, 3, 0.2),
+            rotate_vector_coordinate_pair_by_token_position(key_vector, 8, 0.2),
+        ) < same
+    );
 
     plot_sum_after_multiplying_rotated_coordinates_for_relative_positions();
 }
@@ -37,16 +39,7 @@ fn plot_sum_after_multiplying_rotated_coordinates_for_relative_positions() {
     let query_vector: [f64; 2] = [1.0, 0.0];
     let query_vector: [f64; 2] =
         rotate_vector_coordinate_pair_by_token_position(query_vector, 0, 0.2);
-    let points: Vec<(f64, f64)> = (0..=20)
-        .map(|position_index| {
-            let key_vector: [f64; 2] =
-                rotate_vector_coordinate_pair_by_token_position([1.0, 0.0], position_index, 0.2);
-            (
-                position_index as f64,
-                multiply_matching_coordinates_then_add_results(query_vector, key_vector),
-            )
-        })
-        .collect();
+
     let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "rope-relative",
@@ -55,7 +48,21 @@ fn plot_sum_after_multiplying_rotated_coordinates_for_relative_positions() {
         "скалярное произведение",
         &[lesson_visualization::Series {
             name: "score",
-            points: &points,
+            points: &(0..=20)
+                .map(|position_index| {
+                    (
+                        position_index as f64,
+                        multiply_matching_coordinates_then_add_results(
+                            query_vector,
+                            rotate_vector_coordinate_pair_by_token_position(
+                                [1.0, 0.0],
+                                position_index,
+                                0.2,
+                            ),
+                        ),
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

@@ -100,13 +100,13 @@ fn main() {
                         }
                         2.0 * logarithm_series_sum
                     }
-                    let logarithm_of_two: f64 =
-                        approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
-                            2.0,
-                        );
+
                     approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
                         scaled,
-                    ) + power_of_two as f64 * logarithm_of_two
+                    ) + power_of_two as f64
+                        * approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
+                            2.0,
+                        )
                 })();
         }
         stability_index

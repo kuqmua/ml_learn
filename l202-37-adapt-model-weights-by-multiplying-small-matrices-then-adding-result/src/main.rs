@@ -23,13 +23,15 @@ fn main() {
         .zip(input)
         .map(|(adapter_component, input_component)| adapter_component * input_component)
         .sum();
-    let output: [f64; 4] = std::array::from_fn(|row| {
-        frozen[row]
-            .iter()
-            .zip(input)
-            .map(|(weight_value, input_component)| weight_value * input_component)
-            .sum::<f64>()
-            + adapter_output_weights[row] * projected_input
-    });
-    assert_eq!(output[0], 0.8);
+    assert_eq!(
+        std::array::from_fn::<f64, 4, _>(|row| {
+            frozen[row]
+                .iter()
+                .zip(input)
+                .map(|(weight_value, input_component)| weight_value * input_component)
+                .sum::<f64>()
+                + adapter_output_weights[row] * projected_input
+        })[0],
+        0.8
+    );
 }

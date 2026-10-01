@@ -27,10 +27,11 @@ fn main() {
     ];
 
     for (_description, second_vector, expected) in cases {
-        let sum_after_multiplying_coordinates: f64 =
+        assert_eq!(
             multiply_matching_coordinates_then_add_results(&first_vector, second_vector)
-                .expect("ожидались векторы с одинаковым числом координат");
-        assert_eq!(sum_after_multiplying_coordinates, expected);
+                .expect("ожидались векторы с одинаковым числом координат"),
+            expected
+        );
     }
 
     let too_short: [f64; 1] = [3.0];
@@ -42,17 +43,6 @@ fn main() {
 
 // Визуализация вынесена из основного сценария урока.
 fn plot_sum_after_multiplying_coordinates_for_changing_second_coordinate(first_vector: &[f64; 2]) {
-    let chart_points: Vec<(f64, f64)> = (-40..=40)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            let sum_after_multiplying: f64 = multiply_matching_coordinates_then_add_results(
-                first_vector,
-                &[1.0, horizontal_value],
-            )
-            .expect("ожидалось по две координаты у каждого вектора");
-            (horizontal_value, sum_after_multiplying)
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -62,7 +52,20 @@ fn plot_sum_after_multiplying_coordinates_for_changing_second_coordinate(first_v
         &[lesson_visualization::Series {
             name: "вектор [1, 2]",
 
-            points: &chart_points,
+            points: &(-40..=40)
+                .map(|plot_step_index| {
+                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+
+                    (
+                        horizontal_value,
+                        multiply_matching_coordinates_then_add_results(
+                            first_vector,
+                            &[1.0, horizontal_value],
+                        )
+                        .expect("ожидалось по две координаты у каждого вектора"),
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

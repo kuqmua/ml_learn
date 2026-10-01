@@ -36,16 +36,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_squared_distance_to_nearest_fixed_center_for_changing_point() {
-    let squared_distance_sum_points: Vec<(f64, f64)> = (0..=60)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (
-                horizontal_value,
-                ((horizontal_value - 0.5) * (horizontal_value - 0.5))
-                    .min((horizontal_value - 5.5) * (horizontal_value - 5.5)),
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -55,7 +45,16 @@ fn plot_squared_distance_to_nearest_fixed_center_for_changing_point() {
         &[lesson_visualization::Series {
             name: "ближайший из 0.5 и 5.5",
 
-            points: &squared_distance_sum_points,
+            points: &(0..=60)
+                .map(|plot_step_index| {
+                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                    (
+                        horizontal_value,
+                        ((horizontal_value - 0.5) * (horizontal_value - 0.5))
+                            .min((horizontal_value - 5.5) * (horizontal_value - 5.5)),
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

@@ -53,9 +53,13 @@ fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normali
 }
 fn main() {
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    let output: [[f64; 2]; 3] =
+
+    assert!(
         calculate_decoder_block_output_by_adding_past_context_and_transformed_normalized_values(
             &states,
-        );
-    assert!(output.iter().flatten().all(|value| value.is_finite()));
+        )
+        .iter()
+        .flatten()
+        .all(|value| value.is_finite())
+    );
 }

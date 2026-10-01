@@ -173,8 +173,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_two_feature_training_points_by_class() {
-    let class_zero_points: Vec<(f64, f64)> = [(0.0, 0.0), (1.0, 1.0)].to_vec();
-    let class_one_points: Vec<(f64, f64)> = [(0.0, 1.0), (1.0, 0.0)].to_vec();
     let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -185,12 +183,12 @@ fn plot_two_feature_training_points_by_class() {
             lesson_visualization::Series {
                 name: "класс 0",
 
-                points: &class_zero_points,
+                points: &[(0.0, 0.0), (1.0, 1.0)].to_vec(),
             },
             lesson_visualization::Series {
                 name: "класс 1",
 
-                points: &class_one_points,
+                points: &[(0.0, 1.0), (1.0, 0.0)].to_vec(),
             },
         ],
     )

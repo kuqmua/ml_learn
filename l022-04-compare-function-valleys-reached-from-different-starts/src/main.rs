@@ -30,16 +30,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_function_with_two_valleys() {
-    let local_minima_points: Vec<(f64, f64)> = (-150..=150)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 100.0;
-            (
-                horizontal_value,
-                horizontal_value * horizontal_value * horizontal_value * horizontal_value
-                    - 2.0 * horizontal_value * horizontal_value,
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -49,7 +39,16 @@ fn plot_function_with_two_valleys() {
         &[lesson_visualization::Series {
             name: "x⁴−2x²",
 
-            points: &local_minima_points,
+            points: &(-150..=150)
+                .map(|plot_step_index| {
+                    let horizontal_value: f64 = plot_step_index as f64 / 100.0;
+                    (
+                        horizontal_value,
+                        horizontal_value * horizontal_value * horizontal_value * horizontal_value
+                            - 2.0 * horizontal_value * horizontal_value,
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

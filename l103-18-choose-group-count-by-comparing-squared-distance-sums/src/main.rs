@@ -24,17 +24,6 @@ fn main() {
 fn plot_within_cluster_squared_distance_sums_for_different_cluster_counts(
     candidates: [(i32, f64); 4],
 ) {
-    let cluster_count_candidate_points: Vec<(f64, f64)> = candidates
-        .iter()
-        .map(
-            |&(cluster_count, total_squared_distance_to_cluster_centers)| {
-                (
-                    cluster_count as f64,
-                    total_squared_distance_to_cluster_centers,
-                )
-            },
-        )
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -44,7 +33,17 @@ fn plot_within_cluster_squared_distance_sums_for_different_cluster_counts(
         &[lesson_visualization::Series {
             name: "варианты из урока",
 
-            points: &cluster_count_candidate_points,
+            points: &candidates
+                .iter()
+                .map(
+                    |&(cluster_count, total_squared_distance_to_cluster_centers)| {
+                        (
+                            cluster_count as f64,
+                            total_squared_distance_to_cluster_centers,
+                        )
+                    },
+                )
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

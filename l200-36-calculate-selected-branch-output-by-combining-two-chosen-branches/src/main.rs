@@ -17,16 +17,17 @@ fn main() {
         scores[second_candidate].total_cmp(&scores[first_candidate])
     });
     let selected: [usize; 2] = [order[0], order[1]];
-    let weights: [f64; 2] =
-        calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
-            &[scores[selected[0]], scores[selected[1]]],
-        )
-        .try_into()
-        .expect("ожидалось ровно две выбранные ветви");
     let expert_gain: [f64; 4] = [1.0, 2.0, -1.0, 0.5];
     let _output: f64 = selected
         .iter()
-        .zip(weights)
+        .zip(
+            std::convert::TryInto::<[f64; 2]>::try_into(
+                calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+                    &[scores[selected[0]], scores[selected[1]]],
+                ),
+            )
+            .expect("ожидалось ровно две выбранные ветви"),
+        )
         .map(|(&expert, weight)| weight * expert_gain[expert] * input[0])
         .sum::<f64>();
     assert_eq!(selected, [0, 1]);

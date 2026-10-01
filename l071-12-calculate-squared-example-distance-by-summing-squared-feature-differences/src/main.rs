@@ -30,15 +30,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_distance_from_query_for_changing_coordinate() {
-    let distances_points: Vec<(f64, f64)> = (-50..=50)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (
-                horizontal_value,
-                (horizontal_value * horizontal_value + 1.0).sqrt(),
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -48,7 +39,15 @@ fn plot_distance_from_query_for_changing_coordinate() {
         &[lesson_visualization::Series {
             name: "запрос [0,0]",
 
-            points: &distances_points,
+            points: &(-50..=50)
+                .map(|plot_step_index| {
+                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                    (
+                        horizontal_value,
+                        (horizontal_value * horizontal_value + 1.0).sqrt(),
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

@@ -17,30 +17,31 @@ fn main() {
         [9.0, 10.0, 11.0, 12.0],
         [13.0, 14.0, 15.0, 16.0],
     ];
-    let image_patches: [[f64; 4]; 4] =
-        extract_nonoverlapping_square_patches_from_square_image(&image, 2)
-            .unwrap()
-            .into_iter()
-            .map(|patch| {
-                patch
-                    .try_into()
-                    .expect("ожидалось четыре пикселя в патче 2×2")
-            })
-            .collect::<Vec<[f64; 4]>>()
-            .try_into()
-            .expect("ожидалось четыре патча 2×2 из изображения 4×4");
-    assert_eq!(image_patches[0], [1.0, 2.0, 5.0, 6.0]);
+    assert_eq!(
+        std::convert::TryInto::<[[f64; 4]; 4]>::try_into(
+            extract_nonoverlapping_square_patches_from_square_image(&image, 2)
+                .unwrap()
+                .into_iter()
+                .map(|patch| {
+                    patch
+                        .try_into()
+                        .expect("ожидалось четыре пикселя в патче 2×2")
+                })
+                .collect::<Vec<[f64; 4]>>(),
+        )
+        .expect("ожидалось четыре патча 2×2 из изображения 4×4")[0],
+        [1.0, 2.0, 5.0, 6.0]
+    );
 
     plot_square_image_before_splitting_into_blocks(&image);
 }
 
 fn plot_square_image_before_splitting_into_blocks(image: &[[f64; 4]; 4]) {
-    let chart_rows: Vec<Vec<f64>> = image.iter().map(|row| row.to_vec()).collect();
     let _path: std::path::PathBuf = lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "image-patches",
         "Исходное изображение 4x4",
-        &chart_rows,
+        &image.iter().map(|row| row.to_vec()).collect::<Vec<_>>(),
     )
     .expect("не удалось сохранить тепловую карту");
 }

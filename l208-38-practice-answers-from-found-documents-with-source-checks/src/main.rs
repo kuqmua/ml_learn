@@ -46,11 +46,15 @@ fn main() {
             .iter()
             .map(|&(source_identifier, document)| {
                 let lower: String = document.to_lowercase();
-                let score: usize = query_terms
-                    .iter()
-                    .filter(|term| lower.contains(term.as_str()))
-                    .count();
-                (score, source_identifier, document)
+
+                (
+                    query_terms
+                        .iter()
+                        .filter(|term| lower.contains(term.as_str()))
+                        .count(),
+                    source_identifier,
+                    document,
+                )
             })
             .max_by_key(|candidate| candidate.0)
             .unwrap();

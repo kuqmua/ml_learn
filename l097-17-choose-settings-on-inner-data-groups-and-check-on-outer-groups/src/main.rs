@@ -18,12 +18,6 @@ fn main() {
         !inner_scores.is_empty(),
         "для выбора k нужна хотя бы одна оценка"
     );
-    let best: &(usize, f64) = inner_scores
-        .iter()
-        .max_by(|first_candidate, second_candidate| {
-            first_candidate.1.total_cmp(&second_candidate.1)
-        })
-        .unwrap();
     let outer_truth: [bool; 4] = [true, false, true, false];
     let outer_predictions: [bool; 4] = [true, false, false, false];
     assert_eq!(
@@ -35,21 +29,24 @@ fn main() {
         !outer_truth.is_empty(),
         "для внешней оценки нужен хотя бы один пример"
     );
-    let outer_correct: usize = (0..outer_truth.len())
+
+    let _outer_test_accuracy: f64 = (0..outer_truth.len())
         .filter(|&index| outer_truth[index] == outer_predictions[index])
-        .count();
-    let _outer_test_accuracy: f64 = outer_correct as f64 / outer_truth.len() as f64;
-    let _ = &(best.0);
+        .count() as f64
+        / outer_truth.len() as f64;
+    let _ = inner_scores
+        .iter()
+        .max_by(|first_candidate, second_candidate| {
+            first_candidate.1.total_cmp(&second_candidate.1)
+        })
+        .unwrap()
+        .0;
 
     plot_validation_score_for_different_neighbor_counts(inner_scores);
 }
 
 // Строим график по результатам урока.
 fn plot_validation_score_for_different_neighbor_counts(inner_scores: [(usize, f64); 3]) {
-    let nested_evaluation_points: Vec<(f64, f64)> = inner_scores
-        .iter()
-        .map(|&(neighbor_count, score)| (neighbor_count as f64, score))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -59,7 +56,10 @@ fn plot_validation_score_for_different_neighbor_counts(inner_scores: [(usize, f6
         &[lesson_visualization::Series {
             name: "validation",
 
-            points: &nested_evaluation_points,
+            points: &inner_scores
+                .iter()
+                .map(|&(neighbor_count, score)| (neighbor_count as f64, score))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

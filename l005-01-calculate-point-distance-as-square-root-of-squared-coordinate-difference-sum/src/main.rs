@@ -18,32 +18,17 @@ fn main() {
         ("точки совпадают", &[3.0, 4.0], &[3.0, 4.0], 0.0),
     ];
     for (_description, first_point, second_point, expected) in cases {
-        let distance: f64 =
-            calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+        assert!((calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
                 first_point,
                 second_point,
             )
-            .expect("не удалось вычислить расстояние: координаты должны быть конечными, а квадрат расстояния — помещаться в f64");
-        assert!((distance - expected).abs() < 1e-10);
+            .expect("не удалось вычислить расстояние: координаты должны быть конечными, а квадрат расстояния — помещаться в f64") - expected).abs() < 1e-10);
     }
     plot_distance_from_origin_for_changing_first_coordinate();
 }
 
 // Строим график по результатам урока.
 fn plot_distance_from_origin_for_changing_first_coordinate() {
-    let distance_points: Vec<(f64, f64)> = (-50..=50)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (
-                horizontal_value,
-                calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
-                    &[0.0, 0.0],
-                    &[horizontal_value, 4.0],
-                )
-                .unwrap(),
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -53,7 +38,19 @@ fn plot_distance_from_origin_for_changing_first_coordinate() {
         &[lesson_visualization::Series {
             name: "расстояние",
 
-            points: &distance_points,
+            points: &(-50..=50)
+                .map(|plot_step_index| {
+                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                    (
+                horizontal_value,
+                calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+                    &[0.0, 0.0],
+                    &[horizontal_value, 4.0],
+                )
+                .unwrap(),
+            )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

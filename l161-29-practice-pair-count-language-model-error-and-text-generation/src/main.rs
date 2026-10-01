@@ -149,13 +149,13 @@ fn main() {
                         }
                         2.0 * logarithm_series_sum
                     }
-                    let logarithm_of_two: f64 =
-                        approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
-                            2.0,
-                        );
+
                     approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
                         scaled,
-                    ) + power_of_two as f64 * logarithm_of_two
+                    ) + power_of_two as f64
+                        * approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
+                            2.0,
+                        )
                 })();
                 text_unit_count += 1;
                 previous_text_unit = word;
@@ -227,12 +227,6 @@ fn main() {
 fn plot_next_word_counts_after_start_of_sentence(
     bigram_counts: std::collections::BTreeMap<(std::string::String, std::string::String), usize>,
 ) {
-    let language_model_points: Vec<(f64, f64)> = bigram_counts
-        .iter()
-        .filter(|((previous, _), _)| previous == "<s>")
-        .enumerate()
-        .map(|(item_index, (_, count))| (item_index as f64, *count as f64))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -242,7 +236,12 @@ fn plot_next_word_counts_after_start_of_sentence(
         &[lesson_visualization::Series {
             name: "биграммы",
 
-            points: &language_model_points,
+            points: &bigram_counts
+                .iter()
+                .filter(|((previous, _), _)| previous == "<s>")
+                .enumerate()
+                .map(|(item_index, (_, count))| (item_index as f64, *count as f64))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

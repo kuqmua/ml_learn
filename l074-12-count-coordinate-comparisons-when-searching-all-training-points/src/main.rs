@@ -23,12 +23,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_coordinate_comparison_count_for_growing_training_set() {
-    let prediction_cost_points: Vec<(f64, f64)> = (1..=100)
-        .map(|plot_step_index| {
-            let sample_count: f64 = (plot_step_index * 10) as f64;
-            (sample_count, 2.0 * sample_count)
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -38,7 +32,12 @@ fn plot_coordinate_comparison_count_for_growing_training_set() {
         &[lesson_visualization::Series {
             name: "4 признака",
 
-            points: &prediction_cost_points,
+            points: &(1..=100)
+                .map(|plot_step_index| {
+                    let sample_count: f64 = (plot_step_index * 10) as f64;
+                    (sample_count, 2.0 * sample_count)
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

@@ -43,13 +43,6 @@ fn main() {
     let validation: &[(f64, f64)] = &EXAMPLE_DATA[6..8];
     let test: &[(f64, f64)] = &EXAMPLE_DATA[8..];
 
-    let training_targets: Vec<f64> = training_examples
-        .iter()
-        .map(|&(_, target)| target)
-        .collect();
-    let baseline: f64 =
-        calculate_mean_by_summing_values_and_dividing_by_count(&training_targets).unwrap();
-
     /// Средняя абсолютная ошибка линейной модели: для каждого x считаем weight·x+constant_input_weight, сравниваем с ответом и усредняем модули ошибок.
     fn calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
         data: &[(f64, f64)],
@@ -58,14 +51,12 @@ fn main() {
 
         constant_input_weight: f64,
     ) -> f64 {
-        let targets: Vec<f64> = data.iter().map(|&(_, target)| target).collect();
-        let predictions: Vec<f64> = data
-            .iter()
-            .map(|&(feature, _)| weight * feature + constant_input_weight)
-            .collect();
         calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(
-            &targets,
-            &predictions,
+            &data.iter().map(|&(_, target)| target).collect::<Vec<_>>(),
+            &data
+                .iter()
+                .map(|&(feature, _)| weight * feature + constant_input_weight)
+                .collect::<Vec<_>>(),
         )
         .unwrap()
     }
@@ -93,13 +84,31 @@ fn main() {
         let weight: f64 = sum_after_multiplying_joint_differences_from_mean / variance_sum;
         (weight, mean_target - weight * mean_feature)
     })();
-    let _ = (&(calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
-            validation, 0., baseline
-        )), &(calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
-            validation, weight, constant_input_weight
-        )), &(calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
-            test, weight, constant_input_weight
-        )), &(weight * 10. + constant_input_weight));
+    let _ =
+        calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
+            validation,
+            0.,
+            calculate_mean_by_summing_values_and_dividing_by_count(
+                &training_examples
+                    .iter()
+                    .map(|&(_, target)| target)
+                    .collect::<Vec<_>>(),
+            )
+            .unwrap(),
+        );
+    let _ =
+        calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
+            validation,
+            weight,
+            constant_input_weight,
+        );
+    let _ =
+        calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
+            test,
+            weight,
+            constant_input_weight,
+        );
+    let _ = weight * 10. + constant_input_weight;
 
     plot_training_points_and_fitted_prediction_line(
         training_examples,
@@ -114,19 +123,6 @@ fn plot_training_points_and_fitted_prediction_line(
     weight: f64,
     constant_input_weight: f64,
 ) {
-    let training_points: Vec<(f64, f64)> = training_examples
-        .iter()
-        .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
-        .collect();
-    let model_points: Vec<(f64, f64)> = (0..=80)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (
-                horizontal_value,
-                weight * horizontal_value + constant_input_weight,
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -137,12 +133,23 @@ fn plot_training_points_and_fitted_prediction_line(
             lesson_visualization::Series {
                 name: "train",
 
-                points: &training_points,
+                points: &training_examples
+                    .iter()
+                    .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "модель",
 
-                points: &model_points,
+                points: &(0..=80)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (
+                            horizontal_value,
+                            weight * horizontal_value + constant_input_weight,
+                        )
+                    })
+                    .collect::<Vec<_>>(),
             },
         ],
     )

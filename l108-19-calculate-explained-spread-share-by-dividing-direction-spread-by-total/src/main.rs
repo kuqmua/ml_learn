@@ -35,12 +35,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_first_direction_share_for_changing_variance() {
-    let explained_variance_points: Vec<(f64, f64)> = (0..=50)
-        .map(|plot_step_index| {
-            let loss_value: f64 = plot_step_index as f64 / 10.0;
-            (loss_value, loss_value / (loss_value + 1.0))
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -50,7 +44,12 @@ fn plot_first_direction_share_for_changing_variance() {
         &[lesson_visualization::Series {
             name: "λ₂=1",
 
-            points: &explained_variance_points,
+            points: &(0..=50)
+                .map(|plot_step_index| {
+                    let loss_value: f64 = plot_step_index as f64 / 10.0;
+                    (loss_value, loss_value / (loss_value + 1.0))
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

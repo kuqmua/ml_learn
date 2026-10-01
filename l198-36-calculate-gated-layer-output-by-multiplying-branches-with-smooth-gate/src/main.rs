@@ -11,11 +11,11 @@ fn main() {
     let input: [f64; 2] = [1.0, -2.0];
     let gate: f64 = input[0] - input[1];
     let up_projection: f64 = input[0] + input[1];
-    let hidden: f64 =
+
+    let down: f64 =
         calculate_gated_layer_output_as_gate_times_up_value_over_one_plus_e_to_negative_gate(
             gate,
             up_projection,
-        );
-    let down: f64 = hidden * 0.5;
+        ) * 0.5;
     assert!(down.is_finite());
 }

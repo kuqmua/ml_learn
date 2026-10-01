@@ -25,18 +25,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_function_values_and_output_change_per_input_change() {
-    let function_points: Vec<(f64, f64)> = (-30..=30)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, 2.0 * horizontal_value * horizontal_value)
-        })
-        .collect();
-    let derivative_points: Vec<(f64, f64)> = (-30..=30)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, 4.0 * horizontal_value)
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -47,12 +35,22 @@ fn plot_function_values_and_output_change_per_input_change() {
             lesson_visualization::Series {
                 name: "f(x)",
 
-                points: &function_points,
+                points: &(-30..=30)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (horizontal_value, 2.0 * horizontal_value * horizontal_value)
+                    })
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "df/dx",
 
-                points: &derivative_points,
+                points: &(-30..=30)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (horizontal_value, 4.0 * horizontal_value)
+                    })
+                    .collect::<Vec<_>>(),
             },
         ],
     )

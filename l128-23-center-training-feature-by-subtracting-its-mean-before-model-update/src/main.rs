@@ -19,23 +19,15 @@ fn main() {
         "обучающая выборка не должна быть пустой"
     );
     let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(&training_data).unwrap();
-    let centered: [f64; 3] = training_data.map(|value| value - mean);
 
-    plot_feature_before_and_after_subtracting_mean(training_data, centered);
+    plot_feature_before_and_after_subtracting_mean(
+        training_data,
+        training_data.map(|value| value - mean),
+    );
 }
 
 // Строим график по результатам урока.
 fn plot_feature_before_and_after_subtracting_mean(training_data: [f64; 3], centered: [f64; 3]) {
-    let original_points: Vec<(f64, f64)> = training_data
-        .iter()
-        .enumerate()
-        .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        .collect();
-    let normalized_points: Vec<(f64, f64)> = centered
-        .iter()
-        .enumerate()
-        .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -46,12 +38,20 @@ fn plot_feature_before_and_after_subtracting_mean(training_data: [f64; 3], cente
             lesson_visualization::Series {
                 name: "до",
 
-                points: &original_points,
+                points: &training_data
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &element_value)| (item_index as f64, element_value))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "после",
 
-                points: &normalized_points,
+                points: &centered
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &element_value)| (item_index as f64, element_value))
+                    .collect::<Vec<_>>(),
             },
         ],
     )

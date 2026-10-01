@@ -84,29 +84,27 @@ fn main() {
             }
         }
         if let Some((_, threshold)) = best_split {
-            let samples_below_threshold: Vec<(f64, bool)> = data
-                .iter()
-                .copied()
-                .filter(|sample| sample.0 < threshold)
-                .collect();
-            let samples_at_or_above_threshold: Vec<(f64, bool)> = data
-                .iter()
-                .copied()
-                .filter(|sample| sample.0 >= threshold)
-                .collect();
             Tree::Split {
                 threshold,
 
                 below_threshold_tree: Box::new(
                     build_threshold_tree_by_minimizing_weighted_class_mixing(
-                        &samples_below_threshold,
+                        &data
+                            .iter()
+                            .copied()
+                            .filter(|sample| sample.0 < threshold)
+                            .collect::<Vec<_>>(),
                         remaining_depth - 1,
                     ),
                 ),
 
                 at_or_above_threshold_tree: Box::new(
                     build_threshold_tree_by_minimizing_weighted_class_mixing(
-                        &samples_at_or_above_threshold,
+                        &data
+                            .iter()
+                            .copied()
+                            .filter(|sample| sample.0 >= threshold)
+                            .collect::<Vec<_>>(),
                         remaining_depth - 1,
                     ),
                 ),
@@ -147,18 +145,6 @@ fn main() {
     plot_predicted_leaf_class_for_changing_feature(tree);
 
     fn plot_predicted_leaf_class_for_changing_feature(tree: Tree) {
-        let decision_tree_points: Vec<(f64, f64)> = (0..=50)
-            .map(|plot_step_index| {
-                let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                (
-                    horizontal_value,
-                    f64::from(predict_class_by_following_threshold_branches_to_leaf(
-                        &tree,
-                        horizontal_value,
-                    )),
-                )
-            })
-            .collect();
         let _chart: std::path::PathBuf = lesson_visualization::line_chart(
             env!("CARGO_MANIFEST_DIR"),
             "lesson-chart",
@@ -168,7 +154,18 @@ fn main() {
             &[lesson_visualization::Series {
                 name: "прогноз",
 
-                points: &decision_tree_points,
+                points: &(0..=50)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (
+                            horizontal_value,
+                            f64::from(predict_class_by_following_threshold_branches_to_leaf(
+                                &tree,
+                                horizontal_value,
+                            )),
+                        )
+                    })
+                    .collect::<Vec<_>>(),
             }],
         )
         .expect("не удалось сохранить график");

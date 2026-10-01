@@ -20,14 +20,13 @@ fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_
 }
 fn main() {
     let image_input_representations: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    let raw_model_scores: [f64; 3] = std::array::from_fn(|index| {
-        let image_input_representation = image_input_representations[index];
-        image_input_representations[0][0] * image_input_representation[0]
-            + image_input_representations[0][1] * image_input_representation[1]
-    });
     let weights: [f64; 3] =
         calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
-            &raw_model_scores,
+            &std::array::from_fn::<f64, 3, _>(|index| {
+                let image_input_representation = image_input_representations[index];
+                image_input_representations[0][0] * image_input_representation[0]
+                    + image_input_representations[0][1] * image_input_representation[1]
+            }),
         );
     let image_classification_summary: [f64; 2] =
         image_input_representations.iter().zip(&weights).fold(

@@ -153,12 +153,6 @@ fn main() {
     plot_output_rate_of_change_for_each_computation_node(graph);
 
     fn plot_output_rate_of_change_for_each_computation_node(graph: Graph) {
-        let computation_graph_points: Vec<(f64, f64)> = graph
-            .0
-            .iter()
-            .enumerate()
-            .map(|(item_index, node)| (item_index as f64, node.gradient))
-            .collect();
         let _chart: std::path::PathBuf = lesson_visualization::line_chart(
             env!("CARGO_MANIFEST_DIR"),
             "lesson-chart",
@@ -168,7 +162,12 @@ fn main() {
             &[lesson_visualization::Series {
                 name: "обратный проход",
 
-                points: &computation_graph_points,
+                points: &graph
+                    .0
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, node)| (item_index as f64, node.gradient))
+                    .collect::<Vec<_>>(),
             }],
         )
         .expect("не удалось сохранить график");

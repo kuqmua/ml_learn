@@ -19,9 +19,11 @@ fn main() {
         ("значения разных знаков", &[-2.0, 2.0], 0.0),
     ];
     for (_description, values, expected) in cases {
-        let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(values)
-            .expect("для среднего нужен непустой набор значений");
-        assert_eq!(mean, expected);
+        assert_eq!(
+            calculate_mean_by_summing_values_and_dividing_by_count(values)
+                .expect("для среднего нужен непустой набор значений"),
+            expected
+        );
     }
     let empty: [f64; 0] = [];
     let _error: &str = calculate_mean_by_summing_values_and_dividing_by_count(&empty)
@@ -32,8 +34,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_values_and_mean_as_their_sum_divided_by_count() {
-    let observation_points: Vec<(f64, f64)> = [(1.0, 2.0), (2.0, 4.0), (3.0, 6.0)].to_vec();
-    let mean_points: Vec<(f64, f64)> = [(1.0, 4.0), (3.0, 4.0)].to_vec();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -44,12 +44,12 @@ fn plot_values_and_mean_as_their_sum_divided_by_count() {
             lesson_visualization::Series {
                 name: "наблюдения",
 
-                points: &observation_points,
+                points: &[(1.0, 2.0), (2.0, 4.0), (3.0, 6.0)].to_vec(),
             },
             lesson_visualization::Series {
                 name: "среднее",
 
-                points: &mean_points,
+                points: &[(1.0, 4.0), (3.0, 4.0)].to_vec(),
             },
         ],
     )

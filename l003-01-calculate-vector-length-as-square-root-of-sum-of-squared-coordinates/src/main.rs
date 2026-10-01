@@ -19,9 +19,12 @@ fn main() {
         ("нулевой вектор", [0.0, 0.0], 0.0),
     ];
     for (_description, vector, expected) in cases {
-        let length: f64 =
-            calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&vector);
-        assert!((length - expected).abs() < 1e-10);
+        assert!(
+            (calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&vector)
+                - expected)
+                .abs()
+                < 1e-10
+        );
     }
 
     plot_vector_length_for_changing_first_coordinate();
@@ -29,18 +32,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_vector_length_for_changing_first_coordinate() {
-    let vector_length_points: Vec<(f64, f64)> = (-50..=50)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (
-                horizontal_value,
-                calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&[
-                    horizontal_value,
-                    4.0,
-                ]),
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -50,7 +41,18 @@ fn plot_vector_length_for_changing_first_coordinate() {
         &[lesson_visualization::Series {
             name: "вектор [x, 4]",
 
-            points: &vector_length_points,
+            points: &(-50..=50)
+                .map(|plot_step_index| {
+                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                    (
+                        horizontal_value,
+                        calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&[
+                            horizontal_value,
+                            4.0,
+                        ]),
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

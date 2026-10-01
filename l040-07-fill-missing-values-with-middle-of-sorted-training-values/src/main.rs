@@ -20,13 +20,15 @@ fn choose_missing_value_replacement_by_sorting_training_values_and_taking_upper_
 fn main() {
     let training_data: [Option<f64>; 4] = [Some(1.0), None, Some(3.0), Some(5.0)];
     let validation: [Option<f64>; 2] = [None, Some(100.0)];
-    let observed: Vec<f64> = training_data.iter().flatten().copied().collect();
+
     let replacement: f64 =
         choose_missing_value_replacement_by_sorting_training_values_and_taking_upper_middle(
-            &observed,
+            &training_data.iter().flatten().copied().collect::<Vec<_>>(),
         );
     let _training_filled: [f64; 4] = training_data.map(|value| value.unwrap_or(replacement));
-    let validation_filled: [f64; 2] = validation.map(|value| value.unwrap_or(replacement));
     assert_eq!(replacement, 3.0);
-    assert_eq!(validation_filled, [3.0, 100.0]);
+    assert_eq!(
+        validation.map(|value| value.unwrap_or(replacement)),
+        [3.0, 100.0]
+    );
 }

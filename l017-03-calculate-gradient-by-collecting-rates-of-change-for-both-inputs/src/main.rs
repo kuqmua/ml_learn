@@ -22,12 +22,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_rate_of_change_along_first_coordinate() {
-    let derivative_values_points: Vec<(f64, f64)> = (-40..=40)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, 2.0 * (horizontal_value - 3.0))
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -37,7 +31,12 @@ fn plot_rate_of_change_along_first_coordinate() {
         &[lesson_visualization::Series {
             name: "∂f/∂x при y=0",
 
-            points: &derivative_values_points,
+            points: &(-40..=40)
+                .map(|plot_step_index| {
+                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                    (horizontal_value, 2.0 * (horizontal_value - 3.0))
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

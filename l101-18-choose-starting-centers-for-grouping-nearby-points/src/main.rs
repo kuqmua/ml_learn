@@ -26,18 +26,6 @@ fn plot_initial_cluster_centers(
     first_start: [[f64; 2]; 2],
     second_start: [[f64; 2]; 2],
 ) {
-    let observation_points: Vec<(f64, f64)> = points
-        .iter()
-        .map(|data_point| (data_point[0], data_point[1]))
-        .collect();
-    let separated_cluster_center_points: Vec<(f64, f64)> = first_start
-        .iter()
-        .map(|data_point| (data_point[0], data_point[1]))
-        .collect();
-    let nearby_cluster_center_points: Vec<(f64, f64)> = second_start
-        .iter()
-        .map(|data_point| (data_point[0], data_point[1]))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -48,17 +36,26 @@ fn plot_initial_cluster_centers(
             lesson_visualization::Series {
                 name: "объекты",
 
-                points: &observation_points,
+                points: &points
+                    .iter()
+                    .map(|data_point| (data_point[0], data_point[1]))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "разнесённые центры",
 
-                points: &separated_cluster_center_points,
+                points: &first_start
+                    .iter()
+                    .map(|data_point| (data_point[0], data_point[1]))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "соседние центры",
 
-                points: &nearby_cluster_center_points,
+                points: &second_start
+                    .iter()
+                    .map(|data_point| (data_point[0], data_point[1]))
+                    .collect::<Vec<_>>(),
             },
         ],
     )

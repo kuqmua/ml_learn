@@ -38,7 +38,15 @@ fn main() {
 }
 
 fn plot_signal_and_noise_mixture_for_changing_signal_share(clean: f64, noise: f64) {
-    let points: Vec<(f64, f64)> = (0..=100)
+    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "diffusion-forward",
+        "Смесь сигнала и шума",
+        "alpha_bar",
+        "x_t",
+        &[lesson_visualization::Series {
+            name: "x_t",
+            points: &(0..=100)
         .map(|plot_step_index| {
             let original_signal_variance_share: f64 = plot_step_index as f64 / 100.0;
             (
@@ -51,16 +59,7 @@ fn plot_signal_and_noise_mixture_for_changing_signal_share(clean: f64, noise: f6
                 .unwrap(),
             )
         })
-        .collect();
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "diffusion-forward",
-        "Смесь сигнала и шума",
-        "alpha_bar",
-        "x_t",
-        &[lesson_visualization::Series {
-            name: "x_t",
-            points: &points,
+        .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

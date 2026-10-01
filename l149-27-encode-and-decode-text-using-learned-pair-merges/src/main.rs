@@ -17,12 +17,11 @@ fn main() {
             24,
         );
     let unseen: &str = "кот 🐈 спит";
-    let text_unit_identifiers: Vec<usize> = model
-        .encode_text_as_token_identifiers_by_converting_bytes_and_applying_learned_merges(unseen);
-    let reconstructed: String = model
-        .restore_text_by_joining_token_bytes_and_decoding_them(&text_unit_identifiers)
-        .expect("не удалось восстановить текст: неизвестный ID токена или неверная последовательность UTF-8");
-    assert_eq!(reconstructed, unseen);
+
+    assert_eq!(model
+        .restore_text_by_joining_token_bytes_and_decoding_them(&model
+        .encode_text_as_token_identifiers_by_converting_bytes_and_applying_learned_merges(unseen))
+        .expect("не удалось восстановить текст: неизвестный ID токена или неверная последовательность UTF-8"), unseen);
     assert!(
         model
             .restore_text_by_joining_token_bytes_and_decoding_them(&[usize::MAX])

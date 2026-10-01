@@ -31,9 +31,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_validation_group_assigned_to_each_row() {
-    let cross_validation_fold_points: Vec<(f64, f64)> = (0..9)
-        .map(|plot_step_index| (plot_step_index as f64, (plot_step_index % 3) as f64))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -43,7 +40,9 @@ fn plot_validation_group_assigned_to_each_row() {
         &[lesson_visualization::Series {
             name: "3 части",
 
-            points: &cross_validation_fold_points,
+            points: &(0..9)
+                .map(|plot_step_index| (plot_step_index as f64, (plot_step_index % 3) as f64))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

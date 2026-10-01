@@ -44,10 +44,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_detected_positive_share_against_false_positive_share() {
-    let ideal_receiver_operating_characteristic_points: Vec<(f64, f64)> =
-        [(0.0, 0.0), (0.0, 1.0), (1.0, 1.0)].to_vec();
-    let random_receiver_operating_characteristic_points: Vec<(f64, f64)> =
-        [(0.0, 0.0), (1.0, 1.0)].to_vec();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -58,12 +54,12 @@ fn plot_detected_positive_share_against_false_positive_share() {
             lesson_visualization::Series {
                 name: "идеал",
 
-                points: &ideal_receiver_operating_characteristic_points,
+                points: &[(0.0, 0.0), (0.0, 1.0), (1.0, 1.0)].to_vec(),
             },
             lesson_visualization::Series {
                 name: "случайный порядок",
 
-                points: &random_receiver_operating_characteristic_points,
+                points: &[(0.0, 0.0), (1.0, 1.0)].to_vec(),
             },
         ],
     )

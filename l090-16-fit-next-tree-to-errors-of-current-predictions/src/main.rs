@@ -41,11 +41,6 @@ fn main() {
 }
 
 fn plot_average_squared_error_after_each_added_tree(losses: &[f64; 3]) {
-    let points: Vec<(f64, f64)> = losses
-        .iter()
-        .enumerate()
-        .map(|(item_index, &loss)| (item_index as f64, loss))
-        .collect();
     let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "boosting-error",
@@ -54,7 +49,11 @@ fn plot_average_squared_error_after_each_added_tree(losses: &[f64; 3]) {
         "MSE",
         &[lesson_visualization::Series {
             name: "MSE",
-            points: &points,
+            points: &losses
+                .iter()
+                .enumerate()
+                .map(|(item_index, &loss)| (item_index as f64, loss))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

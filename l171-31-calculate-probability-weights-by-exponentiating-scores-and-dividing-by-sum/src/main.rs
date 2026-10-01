@@ -61,12 +61,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_second_probability_weight_as_its_exponential_divided_by_sum_of_two_exponentials() {
-    let normalized_probability_points: Vec<(f64, f64)> = (-60..=60)
-        .map(|plot_step_index| {
-            let distance_value: f64 = plot_step_index as f64 / 10.0;
-            (distance_value, 1.0 / (1.0 + (-distance_value).exp()))
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -76,7 +70,12 @@ fn plot_second_probability_weight_as_its_exponential_divided_by_sum_of_two_expon
         &[lesson_visualization::Series {
             name: "softmax",
 
-            points: &normalized_probability_points,
+            points: &(-60..=60)
+                .map(|plot_step_index| {
+                    let distance_value: f64 = plot_step_index as f64 / 10.0;
+                    (distance_value, 1.0 / (1.0 + (-distance_value).exp()))
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

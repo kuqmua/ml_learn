@@ -29,11 +29,6 @@ fn main() {
 }
 
 fn plot_category_target_averages_using_only_previous_rows(values: &[f64; 5]) {
-    let points: Vec<(f64, f64)> = values
-        .iter()
-        .enumerate()
-        .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
-        .collect();
     let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "ordered-stats",
@@ -42,7 +37,11 @@ fn plot_category_target_averages_using_only_previous_rows(values: &[f64; 5]) {
         "оценка",
         &[lesson_visualization::Series {
             name: "ordered mean",
-            points: &points,
+            points: &values
+                .iter()
+                .enumerate()
+                .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

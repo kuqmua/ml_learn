@@ -29,11 +29,6 @@ fn main() {
 }
 
 fn plot_impulse_response_with_increasing_filter_spacing(signal: &[f64; 9]) {
-    let points: Vec<(f64, f64)> = signal
-        .iter()
-        .enumerate()
-        .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
-        .collect();
     let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "receptive-field",
@@ -42,7 +37,11 @@ fn plot_impulse_response_with_increasing_filter_spacing(signal: &[f64; 9]) {
         "отклик",
         &[lesson_visualization::Series {
             name: "dilation 1,2,4",
-            points: &points,
+            points: &signal
+                .iter()
+                .enumerate()
+                .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

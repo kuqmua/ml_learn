@@ -62,13 +62,11 @@ fn main() {
     let test: [(f64, f64); 2] = [(5., 11.), (6., 13.)];
 
     let targets: [f64; 2] = test.map(|(_, target)| target);
-    let model_predictions: [f64; 2] =
-        test.map(|(feature, _)| weight * feature + constant_input_weight);
     let baseline_predictions: [f64; 2] = [5.0; 2];
     let _model_mean_squared_error: f64 =
         calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
             &targets,
-            &model_predictions,
+            &test.map(|(feature, _)| weight * feature + constant_input_weight),
         )
         .unwrap();
     let _baseline_mean_squared_error: f64 =
@@ -87,19 +85,6 @@ fn plot_prediction_line_and_held_out_points(
     constant_input_weight: f64,
     test: [(f64, f64); 2],
 ) {
-    let model_points: Vec<(f64, f64)> = (0..=60)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (
-                horizontal_value,
-                weight * horizontal_value + constant_input_weight,
-            )
-        })
-        .collect();
-    let test_points: Vec<(f64, f64)> = test
-        .iter()
-        .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -110,12 +95,23 @@ fn plot_prediction_line_and_held_out_points(
             lesson_visualization::Series {
                 name: "модель",
 
-                points: &model_points,
+                points: &(0..=60)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (
+                            horizontal_value,
+                            weight * horizontal_value + constant_input_weight,
+                        )
+                    })
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "тест",
 
-                points: &test_points,
+                points: &test
+                    .iter()
+                    .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
+                    .collect::<Vec<_>>(),
             },
         ],
     )

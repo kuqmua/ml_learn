@@ -23,16 +23,6 @@ fn main() {
     plot_input_signal_and_weighted_current_and_past_sums(&signal, &output);
 }
 fn plot_input_signal_and_weighted_current_and_past_sums(input: &[f64; 4], output: &[f64; 4]) {
-    let first_plot_points: Vec<(f64, f64)> = input
-        .iter()
-        .enumerate()
-        .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
-        .collect();
-    let second_plot_points: Vec<(f64, f64)> = output
-        .iter()
-        .enumerate()
-        .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
-        .collect();
     let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "causal-conv",
@@ -42,11 +32,19 @@ fn plot_input_signal_and_weighted_current_and_past_sums(input: &[f64; 4], output
         &[
             lesson_visualization::Series {
                 name: "вход",
-                points: &first_plot_points,
+                points: &input
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "выход",
-                points: &second_plot_points,
+                points: &output
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
+                    .collect::<Vec<_>>(),
             },
         ],
     )

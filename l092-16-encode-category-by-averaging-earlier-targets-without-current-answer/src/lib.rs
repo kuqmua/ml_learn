@@ -44,16 +44,17 @@ mod tests {
                 1.0,
             )
             .unwrap();
-        let second_encoding: [f64; 2] =
+        assert_eq!(first_encoding[0], 0.5);
+        assert_eq!(first_encoding[1], 0.25);
+        assert_eq!(
+            first_encoding[1],
             super::encode_categories_as_average_previous_targets_with_prior_weight(
                 &["a", "a"],
                 &[0.0, 0.0],
                 0.5,
                 1.0,
             )
-            .unwrap();
-        assert_eq!(first_encoding[0], 0.5);
-        assert_eq!(first_encoding[1], 0.25);
-        assert_eq!(first_encoding[1], second_encoding[1]);
+            .unwrap()[1]
+        );
     }
 }

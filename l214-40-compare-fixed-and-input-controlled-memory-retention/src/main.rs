@@ -47,16 +47,6 @@ fn plot_stored_state_with_constant_retention_and_selective_resets(
     fixed: &[f64; 4],
     dynamic: &[f64; 4],
 ) {
-    let first_plot_points: Vec<(f64, f64)> = fixed
-        .iter()
-        .enumerate()
-        .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
-        .collect();
-    let second_plot_points: Vec<(f64, f64)> = dynamic
-        .iter()
-        .enumerate()
-        .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
-        .collect();
     let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "memory",
@@ -66,11 +56,19 @@ fn plot_stored_state_with_constant_retention_and_selective_resets(
         &[
             lesson_visualization::Series {
                 name: "fixed",
-                points: &first_plot_points,
+                points: &fixed
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "selective",
-                points: &second_plot_points,
+                points: &dynamic
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
+                    .collect::<Vec<_>>(),
             },
         ],
     )

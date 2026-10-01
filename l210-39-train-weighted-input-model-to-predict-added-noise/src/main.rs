@@ -52,7 +52,6 @@ fn main() {
             .sum::<f64>()
             / held_out.len() as f64
     };
-    let baseline: f64 = mean_squared_error_value(0.0);
-    let validation_loss: f64 = mean_squared_error_value(weight);
-    assert!(validation_loss < baseline);
+
+    assert!(mean_squared_error_value(0.0) > mean_squared_error_value(weight));
 }

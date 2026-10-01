@@ -8,7 +8,10 @@ fn main() {
         calculate_text_context_vectors_by_adding_position_and_weighted_past_context(&identifiers);
 
     assert_eq!(states[0], [2.0, 0.0]);
-    let extended =
-        calculate_text_context_vectors_by_adding_position_and_weighted_past_context(&[0, 1, 2]);
-    assert_eq!(states.as_slice(), &extended[..2]);
+
+    assert_eq!(
+        states.as_slice(),
+        &calculate_text_context_vectors_by_adding_position_and_weighted_past_context(&[0, 1, 2])
+            [..2]
+    );
 }

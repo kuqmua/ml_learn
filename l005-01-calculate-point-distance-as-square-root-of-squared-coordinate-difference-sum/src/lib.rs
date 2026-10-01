@@ -12,6 +12,6 @@ pub fn calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_diff
         first_point,
         second_point,
     )?;
-    let distance = squared_sum.sqrt();
-    Ok(distance)
+
+    Ok(squared_sum.sqrt())
 }

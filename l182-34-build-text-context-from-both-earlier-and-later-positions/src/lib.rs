@@ -13,7 +13,7 @@ pub fn calculate_visible_context_by_summing_states_weighted_by_exponentiated_coo
     if N == 0 || !visible.iter().any(|&input_value| input_value) {
         return Err("нужна непустая последовательность хотя бы с одной видимой позицией");
     }
-    let context_vectors: [[f64; 2]; N] = std::array::from_fn(|query_index| {
+    Ok(std::array::from_fn(|query_index| {
         let query = states[query_index];
         let scores: Vec<f64> = states
             .iter()
@@ -38,26 +38,21 @@ pub fn calculate_visible_context_by_summing_states_weighted_by_exponentiated_coo
             }
         }
         output
-    });
-    Ok(context_vectors)
+    }))
 }
 #[cfg(test)]
 mod tests {
 
     #[test]
     fn masked_padding_does_not_change_real_output() {
-        let base: [[f64; 2]; 1] =
-            super::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
+        assert_eq!(super::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
                 &[[1.0, 0.0]],
                 &[true],
             )
-            .unwrap();
-        let input_with_padding: [[f64; 2]; 2] =
-            super::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
+            .unwrap()[0], super::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
                 &[[1.0, 0.0], [999.0, 999.0]],
                 &[true, false],
             )
-            .unwrap();
-        assert_eq!(base[0], input_with_padding[0]);
+            .unwrap()[0]);
     }
 }

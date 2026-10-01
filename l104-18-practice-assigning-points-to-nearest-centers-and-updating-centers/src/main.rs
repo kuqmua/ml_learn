@@ -122,10 +122,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_training_points_for_grouping_by_nearest_center(dataset: [[f64; 2]; 4]) {
-    let grouped_observation_points: Vec<(f64, f64)> = dataset
-        .iter()
-        .map(|data_point| (data_point[0], data_point[1]))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -135,7 +131,10 @@ fn plot_training_points_for_grouping_by_nearest_center(dataset: [[f64; 2]; 4]) {
         &[lesson_visualization::Series {
             name: "данные",
 
-            points: &grouped_observation_points,
+            points: &dataset
+                .iter()
+                .map(|data_point| (data_point[0], data_point[1]))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

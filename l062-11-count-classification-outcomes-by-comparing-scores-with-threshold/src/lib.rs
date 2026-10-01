@@ -15,6 +15,12 @@ pub fn count_binary_classification_outcomes_from_targets_and_scores_at_threshold
     if truth.len() != scores.len() {
         return Err("число оценок должно совпадать с числом ответов");
     }
-    let predicted: Vec<bool> = scores.iter().map(|&score| score >= threshold).collect();
-    count_binary_classification_outcomes_from_targets_and_predictions(truth, &predicted)
+
+    count_binary_classification_outcomes_from_targets_and_predictions(
+        truth,
+        &scores
+            .iter()
+            .map(|&score| score >= threshold)
+            .collect::<Vec<_>>(),
+    )
 }

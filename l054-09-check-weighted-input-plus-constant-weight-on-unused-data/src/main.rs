@@ -30,12 +30,11 @@ fn main() {
     );
     let weight: f64 = (training[1].1 - training[0].1) / (training[1].0 - training[0].0);
     let constant_input_weight: f64 = training[0].1 - weight * training[0].0;
-    let targets: [f64; 2] = test.map(|(_, target)| target);
-    let predictions: [f64; 2] = test.map(|(feature, _)| weight * feature + constant_input_weight);
+
     let _mean_squared_error_value: f64 =
         calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
-            &targets,
-            &predictions,
+            &test.map(|(_, target)| target),
+            &test.map(|(feature, _)| weight * feature + constant_input_weight),
         )
         .unwrap();
 
@@ -54,23 +53,6 @@ fn plot_training_and_test_points_with_prediction_line(
     weight: f64,
     constant_input_weight: f64,
 ) {
-    let training_points: Vec<(f64, f64)> = training
-        .iter()
-        .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
-        .collect();
-    let test_points: Vec<(f64, f64)> = test
-        .iter()
-        .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
-        .collect();
-    let model_points: Vec<(f64, f64)> = (0..=50)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (
-                horizontal_value,
-                weight * horizontal_value + constant_input_weight,
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -81,17 +63,31 @@ fn plot_training_and_test_points_with_prediction_line(
             lesson_visualization::Series {
                 name: "обучение",
 
-                points: &training_points,
+                points: &training
+                    .iter()
+                    .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "тест",
 
-                points: &test_points,
+                points: &test
+                    .iter()
+                    .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "модель",
 
-                points: &model_points,
+                points: &(0..=50)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (
+                            horizontal_value,
+                            weight * horizontal_value + constant_input_weight,
+                        )
+                    })
+                    .collect::<Vec<_>>(),
             },
         ],
     )

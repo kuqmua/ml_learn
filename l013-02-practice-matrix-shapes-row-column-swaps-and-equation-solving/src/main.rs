@@ -68,12 +68,14 @@ fn main() {
     for row_index in 0..left_matrix.rows {
         let row_start: usize = row_index * left_matrix.column_count;
         let row_end: usize = row_start + left_matrix.column_count;
-        let row_result: f64 = multiply_matching_coordinates_then_add_results(
-            &left_matrix.data[row_start..row_end],
-            &input_vector,
-        )
-        .expect("число элементов строки должно совпадать с числом координат вектора");
-        output_vector.push(row_result);
+
+        output_vector.push(
+            multiply_matching_coordinates_then_add_results(
+                &left_matrix.data[row_start..row_end],
+                &input_vector,
+            )
+            .expect("число элементов строки должно совпадать с числом координат вектора"),
+        );
     }
     let mut transposed_elements: Vec<f64> = Vec::with_capacity(left_matrix.data.len());
     for column_index in 0..left_matrix.column_count {
@@ -98,15 +100,18 @@ fn main() {
         for column_index in 0..left_matrix.column_count {
             let row_start: usize = row_index * transposed_matrix.column_count;
             let row_end: usize = row_start + transposed_matrix.column_count;
-            let column_values: Vec<f64> = (0..left_matrix.rows)
-                .map(|shared_index| left_matrix.value_at_row_and_column(shared_index, column_index))
-                .collect();
-            let cell_value: f64 = multiply_matching_coordinates_then_add_results(
-                &transposed_matrix.data[row_start..row_end],
-                &column_values,
-            )
-            .expect("внутренние размеры матриц должны совпадать");
-            result_elements.push(cell_value);
+
+            result_elements.push(
+                multiply_matching_coordinates_then_add_results(
+                    &transposed_matrix.data[row_start..row_end],
+                    &(0..left_matrix.rows)
+                        .map(|shared_index| {
+                            left_matrix.value_at_row_and_column(shared_index, column_index)
+                        })
+                        .collect::<Vec<_>>(),
+                )
+                .expect("внутренние размеры матриц должны совпадать"),
+            );
         }
     }
     let result_matrix: Matrix = Matrix::create_matrix_from_elements_listed_row_by_row(

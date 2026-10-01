@@ -29,11 +29,13 @@ fn main() {
 
             false_negatives,
         };
-        let recall: Option<f64> =
+
+        assert_eq!(
             calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(
                 counts,
-            );
-        assert_eq!(recall, expected);
+            ),
+            expected
+        );
     }
 
     plot_detected_share_of_actual_positive_examples();
@@ -41,14 +43,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_detected_share_of_actual_positive_examples() {
-    let recall_points: Vec<(f64, f64)> = (0..=10)
-        .map(|false_negative_count| {
-            (
-                false_negative_count as f64,
-                2.0 / (2.0 + false_negative_count as f64),
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -58,7 +52,14 @@ fn plot_detected_share_of_actual_positive_examples() {
         &[lesson_visualization::Series {
             name: "recall",
 
-            points: &recall_points,
+            points: &(0..=10)
+                .map(|false_negative_count| {
+                    (
+                        false_negative_count as f64,
+                        2.0 / (2.0 + false_negative_count as f64),
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

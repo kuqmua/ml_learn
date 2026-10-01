@@ -79,16 +79,6 @@ fn plot_simulated_and_calculated_disease_rates_after_positive_test(
     positive_test_count: i32,
     true_positive_count: i32,
 ) {
-    let theoretical_probability_points: Vec<(f64, f64)> = [
-        (0.0, 0.01 * 0.9 / (0.01 * 0.9 + 0.99 * 0.05)),
-        (100000.0, 0.01 * 0.9 / (0.01 * 0.9 + 0.99 * 0.05)),
-    ]
-    .to_vec();
-    let simulated_probability_points: Vec<(f64, f64)> = [(
-        100000.0,
-        true_positive_count as f64 / positive_test_count as f64,
-    )]
-    .to_vec();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -99,12 +89,20 @@ fn plot_simulated_and_calculated_disease_rates_after_positive_test(
             lesson_visualization::Series {
                 name: "теория",
 
-                points: &theoretical_probability_points,
+                points: &[
+                    (0.0, 0.01 * 0.9 / (0.01 * 0.9 + 0.99 * 0.05)),
+                    (100000.0, 0.01 * 0.9 / (0.01 * 0.9 + 0.99 * 0.05)),
+                ]
+                .to_vec(),
             },
             lesson_visualization::Series {
                 name: "симуляция",
 
-                points: &simulated_probability_points,
+                points: &[(
+                    100000.0,
+                    true_positive_count as f64 / positive_test_count as f64,
+                )]
+                .to_vec(),
             },
         ],
     )

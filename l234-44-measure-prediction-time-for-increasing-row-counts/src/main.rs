@@ -15,23 +15,21 @@
 fn main() {
     let features: Vec<f64> = vec![1.0; 1000];
     let start: std::time::Instant = std::time::Instant::now();
-    let predictions: Vec<f64> = features
-        .iter()
-        .map(|&feature| 2.0 * feature + 1.0)
-        .collect();
-    let _ = (&(predictions.len()), &(start.elapsed()));
+
+    let _ = (
+        &(features
+            .iter()
+            .map(|&feature| 2.0 * feature + 1.0)
+            .collect::<Vec<_>>()
+            .len()),
+        &(start.elapsed()),
+    );
 
     plot_operation_count_for_growing_number_of_input_rows();
 }
 
 // Строим график по результатам урока.
 fn plot_operation_count_for_growing_number_of_input_rows() {
-    let performance_points: Vec<(f64, f64)> = (0..=100)
-        .map(|plot_step_index| {
-            let sample_count: f64 = (plot_step_index * 10) as f64;
-            (sample_count, 2.0 * sample_count)
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -41,7 +39,12 @@ fn plot_operation_count_for_growing_number_of_input_rows() {
         &[lesson_visualization::Series {
             name: "линейный проход",
 
-            points: &performance_points,
+            points: &(0..=100)
+                .map(|plot_step_index| {
+                    let sample_count: f64 = (plot_step_index * 10) as f64;
+                    (sample_count, 2.0 * sample_count)
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

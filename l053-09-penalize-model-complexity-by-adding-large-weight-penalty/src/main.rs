@@ -26,15 +26,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_error_with_and_without_squared_weight_penalty() {
-    let unregularized_model_points: Vec<(f64, f64)> = (-30..=30)
-        .map(|plot_step_index| (plot_step_index as f64 / 10.0, 1.0))
-        .collect();
-    let penalty_constrained_model_points: Vec<(f64, f64)> = (-30..=30)
-        .map(|plot_step_index| {
-            let weight_value: f64 = plot_step_index as f64 / 10.0;
-            (weight_value, 1.0 + weight_value * weight_value)
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -45,12 +36,19 @@ fn plot_error_with_and_without_squared_weight_penalty() {
             lesson_visualization::Series {
                 name: "без регуляризации",
 
-                points: &unregularized_model_points,
+                points: &(-30..=30)
+                    .map(|plot_step_index| (plot_step_index as f64 / 10.0, 1.0))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "со штрафом",
 
-                points: &penalty_constrained_model_points,
+                points: &(-30..=30)
+                    .map(|plot_step_index| {
+                        let weight_value: f64 = plot_step_index as f64 / 10.0;
+                        (weight_value, 1.0 + weight_value * weight_value)
+                    })
+                    .collect::<Vec<_>>(),
             },
         ],
     )

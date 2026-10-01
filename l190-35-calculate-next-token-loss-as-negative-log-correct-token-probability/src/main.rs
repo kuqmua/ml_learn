@@ -35,23 +35,17 @@ fn main() {
         )
     });
     let average: f64 = losses.iter().sum::<f64>() / losses.len() as f64;
-    let wrong: f64 =
-        calculate_next_token_loss_as_negative_log_of_target_probability_from_exponentiated_scores(
+
+    assert!(average < calculate_next_token_loss_as_negative_log_of_target_probability_from_exponentiated_scores(
             &[2.0, 0.2, 0.1, 0.0],
             text_unit_identifiers[1],
-        );
-    assert!(average < wrong);
+        ));
 
     plot_next_token_loss_as_negative_log_correct_text_unit_probability_by_position(&losses);
 }
 fn plot_next_token_loss_as_negative_log_correct_text_unit_probability_by_position(
     losses: &[f64; 3],
 ) {
-    let points: Vec<(f64, f64)> = losses
-        .iter()
-        .enumerate()
-        .map(|(item_index, &loss)| (item_index as f64, loss))
-        .collect();
     let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "next-token-loss",
@@ -60,7 +54,11 @@ fn plot_next_token_loss_as_negative_log_correct_text_unit_probability_by_positio
         "cross entropy",
         &[lesson_visualization::Series {
             name: "loss",
-            points: &points,
+            points: &losses
+                .iter()
+                .enumerate()
+                .map(|(item_index, &loss)| (item_index as f64, loss))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

@@ -10,13 +10,11 @@ fn main() {
         true_negatives: 4,
         false_negatives: 2,
     };
-    let f1 =
-        calculate_f1_score_from_counts_by_multiplying_precision_and_recall_by_two_then_dividing_by_sum(
+
+    assert!((calculate_f1_score_from_counts_by_multiplying_precision_and_recall_by_two_then_dividing_by_sum(
             counts,
         )
-        .unwrap();
-
-    assert!((f1 - 2.0 / 3.0).abs() < 1e-12);
+        .unwrap() - 2.0 / 3.0).abs() < 1e-12);
     let no_positive_predictions = BinaryClassificationCounts {
         true_positives: 0,
         false_positives: 0,

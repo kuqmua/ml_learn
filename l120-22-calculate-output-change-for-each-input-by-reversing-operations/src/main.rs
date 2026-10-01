@@ -23,15 +23,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_multiply_inputs_then_add_first_with_second_fixed(vertical_value: f64) {
-    let chart_points: Vec<(f64, f64)> = (0..=50)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (
-                horizontal_value,
-                horizontal_value * vertical_value + horizontal_value,
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -41,7 +32,15 @@ fn plot_multiply_inputs_then_add_first_with_second_fixed(vertical_value: f64) {
         &[lesson_visualization::Series {
             name: "прямой проход",
 
-            points: &chart_points,
+            points: &(0..=50)
+                .map(|plot_step_index| {
+                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                    (
+                        horizontal_value,
+                        horizontal_value * vertical_value + horizontal_value,
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

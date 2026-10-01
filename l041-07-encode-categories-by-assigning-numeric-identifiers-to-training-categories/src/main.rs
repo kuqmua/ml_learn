@@ -31,13 +31,13 @@ fn encode_categories_by_replacing_with_known_identifiers_or_zero<const N: usize>
     std::array::from_fn(|index| known_text_units.get(values[index]).copied().unwrap_or(0))
 }
 fn main() {
-    let known_text_units: std::collections::BTreeMap<String, usize> =
-        build_category_dictionary_by_assigning_identifiers_to_unique_training_categories(&[
-            "red", "blue", "red",
-        ]);
-    let validation: [usize; 2] = encode_categories_by_replacing_with_known_identifiers_or_zero(
-        &known_text_units,
-        &["blue", "green"],
+    assert_eq!(
+        encode_categories_by_replacing_with_known_identifiers_or_zero(
+            &build_category_dictionary_by_assigning_identifiers_to_unique_training_categories(&[
+                "red", "blue", "red",
+            ]),
+            &["blue", "green"],
+        )[1],
+        0
     );
-    assert_eq!(validation[1], 0);
 }

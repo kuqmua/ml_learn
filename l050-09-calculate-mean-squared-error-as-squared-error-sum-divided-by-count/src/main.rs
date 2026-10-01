@@ -17,13 +17,16 @@ fn main() {
         ("ошибка на 2", &[2.0, 6.0, 6.0], 4.0 / 3.0),
     ];
     for (_description, predictions, expected) in cases {
-        let mean_squared_error_value: f64 =
-            calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+        assert!(
+            (calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
                 &targets,
                 predictions,
             )
-            .expect("нужен непустой набор прогнозов и правильных ответов одинаковой длины");
-        assert!((mean_squared_error_value - expected).abs() < 1e-10);
+            .expect("нужен непустой набор прогнозов и правильных ответов одинаковой длины")
+                - expected)
+                .abs()
+                < 1e-10
+        );
     }
     let _error: &str =
         calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
@@ -37,10 +40,19 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_average_squared_prediction_error_for_changing_offset() {
-    let mean_squared_error_points: Vec<(f64, f64)> = (-30..=30)
-        .map(|plot_step_index| {
-            let prediction_difference: f64 = plot_step_index as f64 / 10.0;
-            (
+    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Среднеквадратичная ошибка",
+        "смещение прогноза",
+        "MSE",
+        &[lesson_visualization::Series {
+            name: "цели [2,4,6]",
+
+            points: &(-30..=30)
+                .map(|plot_step_index| {
+                    let prediction_difference: f64 = plot_step_index as f64 / 10.0;
+                    (
                 prediction_difference,
                 calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
                     &[2.0, 4.0, 6.0],
@@ -52,18 +64,8 @@ fn plot_average_squared_prediction_error_for_changing_offset() {
                 )
                 .unwrap(),
             )
-        })
-        .collect();
-    let _chart: std::path::PathBuf = lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Среднеквадратичная ошибка",
-        "смещение прогноза",
-        "MSE",
-        &[lesson_visualization::Series {
-            name: "цели [2,4,6]",
-
-            points: &mean_squared_error_points,
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

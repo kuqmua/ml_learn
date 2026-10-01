@@ -37,20 +37,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_means_of_samples_drawn_with_replacement(values: [f64; 3], resamples: [[usize; 3]; 4]) {
-    let resampled_mean_points: Vec<(f64, f64)> = resamples
-        .iter()
-        .enumerate()
-        .map(|(item_index, indices)| {
-            (
-                (item_index + 1) as f64,
-                indices
-                    .iter()
-                    .map(|&sample_index| values[sample_index])
-                    .sum::<f64>()
-                    / indices.len() as f64,
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -60,7 +46,20 @@ fn plot_means_of_samples_drawn_with_replacement(values: [f64; 3], resamples: [[u
         &[lesson_visualization::Series {
             name: "среднее",
 
-            points: &resampled_mean_points,
+            points: &resamples
+                .iter()
+                .enumerate()
+                .map(|(item_index, indices)| {
+                    (
+                        (item_index + 1) as f64,
+                        indices
+                            .iter()
+                            .map(|&sample_index| values[sample_index])
+                            .sum::<f64>()
+                            / indices.len() as f64,
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

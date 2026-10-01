@@ -45,18 +45,7 @@ fn main() {
 fn plot_classification_loss_as_negative_log_probability_for_each_correct_class(losses: [f64; 4]) {
     assert!(losses[0] < losses[1] && losses[1] < losses[2]);
     assert!((losses[0] - losses[3]).abs() < 1e-10);
-    let positive_target_loss_points: Vec<(f64, f64)> = (1..100)
-        .map(|plot_step_index| {
-            let probability: f64 = plot_step_index as f64 / 100.0;
-            (probability, -probability.ln())
-        })
-        .collect();
-    let negative_target_loss_points: Vec<(f64, f64)> = (1..100)
-        .map(|plot_step_index| {
-            let probability: f64 = plot_step_index as f64 / 100.0;
-            (probability, -(1.0 - probability).ln())
-        })
-        .collect();
+
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -67,12 +56,22 @@ fn plot_classification_loss_as_negative_log_probability_for_each_correct_class(l
             lesson_visualization::Series {
                 name: "y=1",
 
-                points: &positive_target_loss_points,
+                points: &(1..100)
+                    .map(|plot_step_index| {
+                        let probability: f64 = plot_step_index as f64 / 100.0;
+                        (probability, -probability.ln())
+                    })
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "y=0",
 
-                points: &negative_target_loss_points,
+                points: &(1..100)
+                    .map(|plot_step_index| {
+                        let probability: f64 = plot_step_index as f64 / 100.0;
+                        (probability, -(1.0 - probability).ln())
+                    })
+                    .collect::<Vec<_>>(),
             },
         ],
     )

@@ -60,13 +60,13 @@ fn main() {
                 left_neighbor.0.total_cmp(&right_neighbor.0)
             });
 
-            let votes: usize = nearest_neighbor_vote_uses_selected_count
+            nearest_neighbor_vote_uses_selected_count
                 .iter()
                 .take(neighbor_count)
                 .filter(|(_, target)| *target)
-                .count();
-
-            votes * 2 > neighbor_count
+                .count()
+                * 2
+                > neighbor_count
         })());
     }
 
@@ -75,16 +75,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_training_points_by_class_and_query_point(training_examples: [([f64; 2], bool); 4]) {
-    let class_zero: Vec<(f64, f64)> = training_examples
-        .iter()
-        .filter(|(_, target)| !*target)
-        .map(|(point, _)| (point[0], point[1]))
-        .collect();
-    let class_one: Vec<(f64, f64)> = training_examples
-        .iter()
-        .filter(|(_, target)| *target)
-        .map(|(point, _)| (point[0], point[1]))
-        .collect();
     let query_point: [(f64, f64); 1] = [(1.8, 2.1)];
     let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
@@ -96,12 +86,20 @@ fn plot_training_points_by_class_and_query_point(training_examples: [([f64; 2], 
             lesson_visualization::Series {
                 name: "класс 0",
 
-                points: &class_zero,
+                points: &training_examples
+                    .iter()
+                    .filter(|(_, target)| !*target)
+                    .map(|(point, _)| (point[0], point[1]))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "класс 1",
 
-                points: &class_one,
+                points: &training_examples
+                    .iter()
+                    .filter(|(_, target)| *target)
+                    .map(|(point, _)| (point[0], point[1]))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "запрос",

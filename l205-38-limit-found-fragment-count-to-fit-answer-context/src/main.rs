@@ -26,9 +26,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_included_document_count_for_different_context_limits() {
-    let context_length_points: Vec<(f64, f64)> = (0..=6)
-        .map(|limit| (limit as f64, limit.min(3) as f64))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -38,7 +35,9 @@ fn plot_included_document_count_for_different_context_limits() {
         &[lesson_visualization::Series {
             name: "3 фрагмента",
 
-            points: &context_length_points,
+            points: &(0..=6)
+                .map(|limit| (limit as f64, limit.min(3) as f64))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

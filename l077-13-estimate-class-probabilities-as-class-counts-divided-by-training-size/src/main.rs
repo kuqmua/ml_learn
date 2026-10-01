@@ -19,8 +19,9 @@ fn main() {
         !targets.is_empty(),
         "для частоты класса нужна хотя бы одна метка"
     );
-    let code_count: usize = targets.iter().filter(|&&target| target == "code").count();
-    let code_prior: f64 = code_count as f64 / targets.len() as f64;
+
+    let code_prior: f64 =
+        targets.iter().filter(|&&target| target == "code").count() as f64 / targets.len() as f64;
     let machine_learning_prior: f64 = 1.0 - code_prior;
 
     plot_training_class_shares(code_prior, machine_learning_prior);

@@ -33,12 +33,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_rate_of_change_clamped_to_symmetric_interval() {
-    let bounded_value_points: Vec<(f64, f64)> = (-30..=30)
-        .map(|plot_step_index| {
-            let rate_of_change_value: f64 = plot_step_index as f64 / 10.0;
-            (rate_of_change_value, rate_of_change_value.clamp(-1.0, 1.0))
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -48,7 +42,12 @@ fn plot_rate_of_change_clamped_to_symmetric_interval() {
         &[lesson_visualization::Series {
             name: "порог ±1",
 
-            points: &bounded_value_points,
+            points: &(-30..=30)
+                .map(|plot_step_index| {
+                    let rate_of_change_value: f64 = plot_step_index as f64 / 10.0;
+                    (rate_of_change_value, rate_of_change_value.clamp(-1.0, 1.0))
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

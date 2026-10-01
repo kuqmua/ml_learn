@@ -115,7 +115,16 @@ fn main() {
     plot_coordinate_slope_estimation_error_for_shrinking_step();
 
     fn plot_coordinate_slope_estimation_error_for_shrinking_step() {
-        let points: Vec<(f64, f64)> = (1..=12)
+        let _chart: std::path::PathBuf = lesson_visualization::line_chart(
+            env!("CARGO_MANIFEST_DIR"),
+            "lesson-chart",
+            "Ошибка численного градиента",
+            "k для h=10⁻ᵏ",
+            "абсолютная ошибка",
+            &[lesson_visualization::Series {
+                name: "∂f/∂x",
+
+                points: &(1..=12)
 
             .map(|step_exponent| {
                 let step_size: f64 = 10f64.powi(-step_exponent);
@@ -127,17 +136,7 @@ fn main() {
                 (step_exponent as f64, (numeric - 2.0 * (0.3 - 2.0)).abs())
             })
 
-            .collect();
-        let _chart: std::path::PathBuf = lesson_visualization::line_chart(
-            env!("CARGO_MANIFEST_DIR"),
-            "lesson-chart",
-            "Ошибка численного градиента",
-            "k для h=10⁻ᵏ",
-            "абсолютная ошибка",
-            &[lesson_visualization::Series {
-                name: "∂f/∂x",
-
-                points: &points,
+            .collect::<Vec<_>>(),
             }],
         )
         .expect("не удалось сохранить график");

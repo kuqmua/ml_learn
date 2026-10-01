@@ -18,7 +18,6 @@ fn main() {
     assert_eq!(lines.next(), Some("feature"));
 
     for line in lines {
-        let feature: f64 = line.parse().unwrap();
-        let _ = &(feature * 2.0 + 1.0);
+        let _ = line.parse::<f64>().unwrap() * 2.0 + 1.0;
     }
 }

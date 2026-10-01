@@ -4,14 +4,13 @@ use l067_11_calculate_f1_from_counts_by_combining_precision_and_recall::calculat
 #[test]
 fn f1_combines_precision_and_recall_and_ignores_true_negatives() {
     for true_negatives in [0, 4, 1000] {
-        let value = calculate_f1_score_from_counts_by_multiplying_precision_and_recall_by_two_then_dividing_by_sum(BinaryClassificationCounts {
+        assert!((calculate_f1_score_from_counts_by_multiplying_precision_and_recall_by_two_then_dividing_by_sum(BinaryClassificationCounts {
             true_positives: 3,
             false_positives: 1,
             true_negatives,
             false_negatives: 2,
         })
-        .unwrap();
-        assert!((value - 2.0 / 3.0).abs() < 1e-12);
+        .unwrap() - 2.0 / 3.0).abs() < 1e-12);
     }
     assert_eq!(
         calculate_f1_score_from_counts_by_multiplying_precision_and_recall_by_two_then_dividing_by_sum(

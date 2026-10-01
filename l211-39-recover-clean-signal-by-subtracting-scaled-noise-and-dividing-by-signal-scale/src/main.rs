@@ -31,17 +31,23 @@ fn main() {
             original_signal_variance_share,
         )
         .unwrap();
-    let exact: f64 = recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
-        noisy,
-        noise,
-        original_signal_variance_share,
+
+    assert!(
+        (recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
+            noisy,
+            noise,
+            original_signal_variance_share,
+        ) - clean)
+            .abs()
+            < 1e-12
     );
-    let mistaken: f64 =
-        recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
+    assert!(
+        (recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
             noisy,
             noise + 0.2,
             original_signal_variance_share,
-        );
-    assert!((exact - clean).abs() < 1e-12);
-    assert!((mistaken - clean).abs() > 0.1);
+        ) - clean)
+            .abs()
+            > 0.1
+    );
 }

@@ -37,12 +37,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_class_probability_as_one_over_one_plus_e_to_negative_score() {
-    let sigmoid_points: Vec<(f64, f64)> = (-60..=60)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, 1.0 / (1.0 + (-horizontal_value).exp()))
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -52,7 +46,12 @@ fn plot_class_probability_as_one_over_one_plus_e_to_negative_score() {
         &[lesson_visualization::Series {
             name: "σ(x)",
 
-            points: &sigmoid_points,
+            points: &(-60..=60)
+                .map(|plot_step_index| {
+                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                    (horizontal_value, 1.0 / (1.0 + (-horizontal_value).exp()))
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

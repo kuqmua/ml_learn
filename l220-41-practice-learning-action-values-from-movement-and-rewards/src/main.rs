@@ -78,10 +78,10 @@ fn main() {
     })();
     let mut current_state: usize = 0;
     while current_state < 4 {
-        let action: usize =
-            usize::from(action_values[current_state][1] >= action_values[current_state][0]);
-        let (next_state, _): (usize, f64) =
-            move_agent_in_bounded_world_and_calculate_reward(current_state, action);
+        let (next_state, _): (usize, f64) = move_agent_in_bounded_world_and_calculate_reward(
+            current_state,
+            usize::from(action_values[current_state][1] >= action_values[current_state][0]),
+        );
 
         if next_state == current_state {
             break;
@@ -94,11 +94,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_best_estimated_action_reward_at_each_position(action_values: [[f64; 2]; 5]) {
-    let reinforcement_learning_points: Vec<(f64, f64)> = action_values
-        .iter()
-        .enumerate()
-        .map(|(item_index, row)| (item_index as f64, row[0].max(row[1])))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -108,7 +103,11 @@ fn plot_best_estimated_action_reward_at_each_position(action_values: [[f64; 2]; 
         &[lesson_visualization::Series {
             name: "Q-таблица",
 
-            points: &reinforcement_learning_points,
+            points: &action_values
+                .iter()
+                .enumerate()
+                .map(|(item_index, row)| (item_index as f64, row[0].max(row[1])))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

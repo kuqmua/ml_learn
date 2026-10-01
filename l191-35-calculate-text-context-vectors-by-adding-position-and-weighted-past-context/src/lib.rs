@@ -23,14 +23,13 @@ pub fn calculate_text_context_vectors_by_adding_position_and_weighted_past_conte
     if states.is_empty() {
         return Vec::new();
     }
-    let context: Vec<[f64; 2]> =
-        calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
-            &states, &states, &states,
-        )
-        .unwrap();
+
     states
         .iter()
-        .zip(&context)
+        .zip(&calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
+            &states, &states, &states,
+        )
+        .unwrap())
         .map(|(&state, &attended)| [state[0] + attended[0], state[1] + attended[1]])
         .collect()
 }

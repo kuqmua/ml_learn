@@ -22,18 +22,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_squared_input_and_tangent_line() {
-    let function_points: Vec<(f64, f64)> = (0..=60)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, horizontal_value * horizontal_value)
-        })
-        .collect();
-    let tangent_points: Vec<(f64, f64)> = (0..=60)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, 9.0 + 6.0 * (horizontal_value - 3.0))
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -44,12 +32,22 @@ fn plot_squared_input_and_tangent_line() {
             lesson_visualization::Series {
                 name: "x²",
 
-                points: &function_points,
+                points: &(0..=60)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (horizontal_value, horizontal_value * horizontal_value)
+                    })
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "касательная",
 
-                points: &tangent_points,
+                points: &(0..=60)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (horizontal_value, 9.0 + 6.0 * (horizontal_value - 3.0))
+                    })
+                    .collect::<Vec<_>>(),
             },
         ],
     )

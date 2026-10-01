@@ -10,9 +10,11 @@ fn main() {
         true_negatives: 9,
         false_negatives: 1,
     };
-    let accuracy =
-        calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(counts);
-    assert_eq!(accuracy, Some(0.9));
+
+    assert_eq!(
+        calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(counts),
+        Some(0.9)
+    );
 
     let empty = BinaryClassificationCounts {
         true_positives: 0,

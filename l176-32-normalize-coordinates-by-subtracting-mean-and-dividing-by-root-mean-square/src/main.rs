@@ -31,11 +31,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_normalized_coordinates_after_subtracting_mean_and_dividing_by_spread(normalized: [f64; 2]) {
-    let scaled_coordinate_points: Vec<(f64, f64)> = normalized
-        .iter()
-        .enumerate()
-        .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -45,7 +40,11 @@ fn plot_normalized_coordinates_after_subtracting_mean_and_dividing_by_spread(nor
         &[lesson_visualization::Series {
             name: "нормализованный токен",
 
-            points: &scaled_coordinate_points,
+            points: &normalized
+                .iter()
+                .enumerate()
+                .map(|(item_index, &element_value)| (item_index as f64, element_value))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

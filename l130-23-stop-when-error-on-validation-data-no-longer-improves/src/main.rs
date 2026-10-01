@@ -48,12 +48,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_validation_error_used_to_choose_stopping_step(cases: [(&str, &[f64], Option<usize>); 3]) {
-    let chart_points: Vec<(f64, f64)> = cases[0]
-        .1
-        .iter()
-        .enumerate()
-        .map(|(epoch, &loss)| (epoch as f64, loss))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -63,7 +57,12 @@ fn plot_validation_error_used_to_choose_stopping_step(cases: [(&str, &[f64], Opt
         &[lesson_visualization::Series {
             name: "loss",
 
-            points: &chart_points,
+            points: &cases[0]
+                .1
+                .iter()
+                .enumerate()
+                .map(|(epoch, &loss)| (epoch as f64, loss))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

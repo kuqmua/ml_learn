@@ -26,12 +26,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_perplexity_as_e_to_average_negative_log_probability() {
-    let effective_choice_count_points: Vec<(f64, f64)> = (0..=40)
-        .map(|plot_step_index| {
-            let loss_value: f64 = plot_step_index as f64 / 10.0;
-            (loss_value, loss_value.exp())
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -41,7 +35,12 @@ fn plot_perplexity_as_e_to_average_negative_log_probability() {
         &[lesson_visualization::Series {
             name: "exp(loss)",
 
-            points: &effective_choice_count_points,
+            points: &(0..=40)
+                .map(|plot_step_index| {
+                    let loss_value: f64 = plot_step_index as f64 / 10.0;
+                    (loss_value, loss_value.exp())
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

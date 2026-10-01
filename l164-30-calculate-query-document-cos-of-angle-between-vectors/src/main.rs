@@ -25,17 +25,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_query_document_cos_of_angle(query: [f64; 2]) {
-    let points: Vec<(f64, f64)> = (0..=180)
-        .step_by(5)
-        .map(|degrees| {
-            let angle: f64 = (degrees as f64).to_radians();
-            let rotated_document: [f64; 2] = [angle.cos(), angle.sin()];
-            (
-                degrees as f64,
-                calculate_cos_of_angle_between_vectors(&query, &rotated_document).unwrap(),
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -45,7 +34,17 @@ fn plot_query_document_cos_of_angle(query: [f64; 2]) {
         &[lesson_visualization::Series {
             name: "сходство",
 
-            points: &points,
+            points: &(0..=180)
+                .step_by(5)
+                .map(|degrees| {
+                    let angle: f64 = (degrees as f64).to_radians();
+                    let rotated_document: [f64; 2] = [angle.cos(), angle.sin()];
+                    (
+                        degrees as f64,
+                        calculate_cos_of_angle_between_vectors(&query, &rotated_document).unwrap(),
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

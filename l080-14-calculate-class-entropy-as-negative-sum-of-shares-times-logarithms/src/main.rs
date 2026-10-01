@@ -44,16 +44,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_class_entropy_as_negative_sum_of_class_shares_times_their_logarithms() {
-    let uncertainty_measure_points: Vec<(f64, f64)> = (1..100)
-        .map(|plot_step_index| {
-            let probability: f64 = plot_step_index as f64 / 100.0;
-            (
-                probability,
-                -probability * probability.log2()
-                    - (1.0 - probability) * (1.0 - probability).log2(),
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -63,7 +53,16 @@ fn plot_class_entropy_as_negative_sum_of_class_shares_times_their_logarithms() {
         &[lesson_visualization::Series {
             name: "H(p)",
 
-            points: &uncertainty_measure_points,
+            points: &(1..100)
+                .map(|plot_step_index| {
+                    let probability: f64 = plot_step_index as f64 / 100.0;
+                    (
+                        probability,
+                        -probability * probability.log2()
+                            - (1.0 - probability) * (1.0 - probability).log2(),
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

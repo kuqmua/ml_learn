@@ -32,8 +32,7 @@ fn main() {
                 .flat_map(|sentence| sentence.split_whitespace())
             {
                 if !known_text_units.contains_key(word) {
-                    let text_unit_identifier: usize = known_text_units.len();
-                    known_text_units.insert(word.into(), text_unit_identifier);
+                    known_text_units.insert(word.into(), known_text_units.len());
                 }
             }
             known_text_units

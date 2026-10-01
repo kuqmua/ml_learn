@@ -21,23 +21,23 @@ fn main() {
         scale.iter().all(|&value| value > 0.0),
         "масштабы должны быть положительными"
     );
-    let raw_squared: f64 =
+
+    let scaled_first_example: [f64; 2] = [first_example[0] / scale[0], first_example[1] / scale[1]];
+    let scaled_second_example: [f64; 2] =
+        [second_example[0] / scale[0], second_example[1] / scale[1]];
+
+    plot_squared_distances_before_and_after_feature_scaling(
         calculate_squared_point_distance_by_summing_squared_coordinate_differences(
             &first_example,
             &second_example,
         )
-        .unwrap();
-    let scaled_first_example: [f64; 2] = [first_example[0] / scale[0], first_example[1] / scale[1]];
-    let scaled_second_example: [f64; 2] =
-        [second_example[0] / scale[0], second_example[1] / scale[1]];
-    let scaled_squared: f64 =
+        .unwrap(),
         calculate_squared_point_distance_by_summing_squared_coordinate_differences(
             &scaled_first_example,
             &scaled_second_example,
         )
-        .unwrap();
-
-    plot_squared_distances_before_and_after_feature_scaling(raw_squared, scaled_squared);
+        .unwrap(),
+    );
 }
 
 // Строим график по результатам урока.

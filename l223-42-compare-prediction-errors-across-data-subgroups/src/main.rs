@@ -27,11 +27,12 @@ fn main() {
             !matching.is_empty(),
             "для оценки группы нужен хотя бы один пример"
         );
-        let correct: usize = matching
+
+        let _ = &(matching
             .iter()
             .filter(|sample| sample.1 == sample.2)
-            .count();
-        let _ = &(correct as f64 / matching.len() as f64);
+            .count() as f64
+            / matching.len() as f64);
     }
 
     plot_correct_prediction_share_in_each_subgroup(groups);

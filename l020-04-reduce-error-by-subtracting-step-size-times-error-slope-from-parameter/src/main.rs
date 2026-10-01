@@ -30,13 +30,7 @@ fn plot_squared_error_after_one_update_for_different_step_sizes(
     rate_of_change: f64,
 ) {
     let learning_rates: [f64; 3] = [0.1, 1.0, 2.0];
-    let errors: Vec<(f64, f64)> = learning_rates
-        .into_iter()
-        .map(|rate| {
-            let updated: f64 = parameter - rate * rate_of_change;
-            (rate, (updated - 3.0) * (updated - 3.0))
-        })
-        .collect();
+
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "learning-rate",
@@ -46,7 +40,13 @@ fn plot_squared_error_after_one_update_for_different_step_sizes(
         &[lesson_visualization::Series {
             name: "Ошибка",
 
-            points: &errors,
+            points: &learning_rates
+                .into_iter()
+                .map(|rate| {
+                    let updated: f64 = parameter - rate * rate_of_change;
+                    (rate, (updated - 3.0) * (updated - 3.0))
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

@@ -29,9 +29,8 @@ fn main() {
 
             false_negatives: 0,
         };
-        let precision: Option<f64> =
-            calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions(counts);
-        assert_eq!(precision, expected);
+
+        assert_eq!(calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions(counts), expected);
     }
 
     plot_true_positive_share_among_positive_predictions();
@@ -39,14 +38,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_true_positive_share_among_positive_predictions() {
-    let precision_points: Vec<(f64, f64)> = (0..=10)
-        .map(|false_positive_count| {
-            (
-                false_positive_count as f64,
-                2.0 / (2.0 + false_positive_count as f64),
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -56,7 +47,14 @@ fn plot_true_positive_share_among_positive_predictions() {
         &[lesson_visualization::Series {
             name: "precision",
 
-            points: &precision_points,
+            points: &(0..=10)
+                .map(|false_positive_count| {
+                    (
+                        false_positive_count as f64,
+                        2.0 / (2.0 + false_positive_count as f64),
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

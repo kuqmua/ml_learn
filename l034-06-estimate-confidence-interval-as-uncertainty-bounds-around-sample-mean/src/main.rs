@@ -18,12 +18,13 @@ use l032_06_calculate_sample_variance_from_squared_differences_from_mean::calcul
 fn main() {
     let values: [f64; 4] = [2.0, 4.0, 6.0, 8.0];
     let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(&values).unwrap();
-    let sample_variance: f64 =
+
+    let standard_error_squared: f64 =
         calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one(
             &values,
         )
-        .unwrap();
-    let standard_error_squared: f64 = sample_variance / values.len() as f64;
+        .unwrap()
+            / values.len() as f64;
     let mut standard_error: f64 = standard_error_squared;
     for _ in 0..80 {
         standard_error = (standard_error + standard_error_squared / standard_error) / 2.0;
@@ -36,11 +37,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_observations_mean_and_uncertainty_bounds(values: [f64; 4], mean: f64, margin: f64) {
-    let observations: Vec<(f64, f64)> = values
-        .iter()
-        .enumerate()
-        .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
-        .collect();
     let mean_line: [(f64, f64); 2] = [(1.0, mean), (values.len() as f64, mean)];
     let lower: [(f64, f64); 2] = [(1.0, mean - margin), (values.len() as f64, mean - margin)];
     let upper: [(f64, f64); 2] = [(1.0, mean + margin), (values.len() as f64, mean + margin)];
@@ -54,7 +50,11 @@ fn plot_observations_mean_and_uncertainty_bounds(values: [f64; 4], mean: f64, ma
             lesson_visualization::Series {
                 name: "выборка",
 
-                points: &observations,
+                points: &values
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "среднее",

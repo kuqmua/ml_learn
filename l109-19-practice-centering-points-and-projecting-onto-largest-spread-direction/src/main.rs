@@ -106,19 +106,14 @@ fn main() {
             let variance: f64 = largest_eigenvalue / (first_variance_sum + second_variance_sum);
             (mean, axis, variance)
         })();
-    let projections: [f64; 4] =
-        data.map(|point| (point[0] - mean[0]) * axis[0] + (point[1] - mean[1]) * axis[1]);
 
-    plot_points_projected_onto_direction_of_largest_spread(projections);
+    plot_points_projected_onto_direction_of_largest_spread(
+        data.map(|point| (point[0] - mean[0]) * axis[0] + (point[1] - mean[1]) * axis[1]),
+    );
 }
 
 // Строим график по результатам урока.
 fn plot_points_projected_onto_direction_of_largest_spread(projections: [f64; 4]) {
-    let principal_component_analysis_points: Vec<(f64, f64)> = projections
-        .iter()
-        .enumerate()
-        .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -128,7 +123,11 @@ fn plot_points_projected_onto_direction_of_largest_spread(projections: [f64; 4])
         &[lesson_visualization::Series {
             name: "проекции",
 
-            points: &principal_component_analysis_points,
+            points: &projections
+                .iter()
+                .enumerate()
+                .map(|(item_index, &element_value)| (item_index as f64, element_value))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

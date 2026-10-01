@@ -22,18 +22,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_intermediate_values_of_squared_input_computation() {
-    let squared_function_points: Vec<(f64, f64)> = (-30..=30)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, horizontal_value * horizontal_value)
-        })
-        .collect();
-    let doubled_squared_function_points: Vec<(f64, f64)> = (-30..=30)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, 2.0 * horizontal_value * horizontal_value)
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -44,12 +32,22 @@ fn plot_intermediate_values_of_squared_input_computation() {
             lesson_visualization::Series {
                 name: "x²",
 
-                points: &squared_function_points,
+                points: &(-30..=30)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (horizontal_value, horizontal_value * horizontal_value)
+                    })
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "2x²",
 
-                points: &doubled_squared_function_points,
+                points: &(-30..=30)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (horizontal_value, 2.0 * horizontal_value * horizontal_value)
+                    })
+                    .collect::<Vec<_>>(),
             },
         ],
     )

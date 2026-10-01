@@ -21,9 +21,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_remaining_steps_to_target_for_each_position() {
-    let state_points: Vec<(f64, f64)> = (0..=5)
-        .map(|plot_step_index| (plot_step_index as f64, (5 - plot_step_index) as f64))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -33,7 +30,9 @@ fn plot_remaining_steps_to_target_for_each_position() {
         &[lesson_visualization::Series {
             name: "линейная среда",
 
-            points: &state_points,
+            points: &(0..=5)
+                .map(|plot_step_index| (plot_step_index as f64, (5 - plot_step_index) as f64))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

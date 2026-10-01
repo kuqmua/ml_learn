@@ -19,11 +19,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_error_after_each_training_pass(losses: [f64; 3]) {
-    let metric_log_points: Vec<(f64, f64)> = losses
-        .into_iter()
-        .enumerate()
-        .map(|(item_index, element_value)| (item_index as f64, element_value))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -33,7 +28,11 @@ fn plot_error_after_each_training_pass(losses: [f64; 3]) {
         &[lesson_visualization::Series {
             name: "loss",
 
-            points: &metric_log_points,
+            points: &losses
+                .into_iter()
+                .enumerate()
+                .map(|(item_index, element_value)| (item_index as f64, element_value))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

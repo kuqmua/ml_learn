@@ -21,11 +21,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_numeric_coordinates_representing_one_text_unit(dense_numeric_representation: [f64; 2]) {
-    let dense_representations_points: Vec<(f64, f64)> = dense_numeric_representation
-        .iter()
-        .enumerate()
-        .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -35,7 +30,11 @@ fn plot_numeric_coordinates_representing_one_text_unit(dense_numeric_representat
         &[lesson_visualization::Series {
             name: "эмбеддинг",
 
-            points: &dense_representations_points,
+            points: &dense_numeric_representation
+                .iter()
+                .enumerate()
+                .map(|(item_index, &element_value)| (item_index as f64, element_value))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

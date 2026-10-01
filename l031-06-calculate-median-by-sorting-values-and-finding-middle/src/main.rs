@@ -33,8 +33,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_values_and_median_as_middle_of_sorted_values() {
-    let observation_points: Vec<(f64, f64)> = [(1.0, 1.0), (2.0, 3.0), (3.0, 7.0)].to_vec();
-    let median_points: Vec<(f64, f64)> = [(1.0, 3.0), (3.0, 3.0)].to_vec();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -45,12 +43,12 @@ fn plot_values_and_median_as_middle_of_sorted_values() {
             lesson_visualization::Series {
                 name: "наблюдения",
 
-                points: &observation_points,
+                points: &[(1.0, 1.0), (2.0, 3.0), (3.0, 7.0)].to_vec(),
             },
             lesson_visualization::Series {
                 name: "медиана",
 
-                points: &median_points,
+                points: &[(1.0, 3.0), (3.0, 3.0)].to_vec(),
             },
         ],
     )

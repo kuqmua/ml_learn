@@ -12,36 +12,33 @@ use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match
 
 fn main() {
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
-    let full: Vec<[f64; 2]> =
-        calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
-            &states, &states, &states,
-        )
-        .unwrap();
     let mut cached_keys: Vec<[f64; 2]> = Vec::new();
     let mut cached_values: Vec<[f64; 2]> = Vec::new();
     let mut cached_outputs: Vec<[f64; 2]> = Vec::new();
     for &new_state in &states {
         cached_keys.push(new_state);
         cached_values.push(new_state);
-        let raw_model_scores: Vec<f64> = cached_keys
+
+        cached_outputs.push(calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+                &cached_keys
             .iter()
             .map(|key| (new_state[0] * key[0] + new_state[1] * key[1]) / 2.0_f64.sqrt())
-            .collect();
-        let weights: Vec<f64> =
-            calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
-                &raw_model_scores,
-            );
-        let output: [f64; 2] = weights.iter().zip(&cached_values).fold(
+            .collect::<Vec<_>>(),
+            ).iter().zip(&cached_values).fold(
             [0.0; 2],
             |mut output_state, (&weight_value, cached_value)| {
                 output_state[0] += weight_value * cached_value[0];
                 output_state[1] += weight_value * cached_value[1];
                 output_state
             },
-        );
-        cached_outputs.push(output);
+        ));
     }
-    for (cached, recomputed) in cached_outputs.iter().zip(full) {
+    for (cached, recomputed) in cached_outputs.iter().zip(
+        calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
+            &states, &states, &states,
+        )
+        .unwrap(),
+    ) {
         assert!((cached[0] - recomputed[0]).abs() < 1e-12);
         assert!((cached[1] - recomputed[1]).abs() < 1e-12);
     }

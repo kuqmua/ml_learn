@@ -23,9 +23,10 @@ fn main() {
         calculate_mean_by_summing_values_and_dividing_by_count(&reference).unwrap();
     for (_description, current, expected_difference) in cases {
         assert!(!current.is_empty());
-        let current_mean: f64 =
-            calculate_mean_by_summing_values_and_dividing_by_count(&current).unwrap();
-        let difference: f64 = current_mean - reference_mean;
+
+        let difference: f64 = calculate_mean_by_summing_values_and_dividing_by_count(&current)
+            .unwrap()
+            - reference_mean;
         assert_eq!(difference, expected_difference);
     }
 
@@ -37,23 +38,6 @@ fn plot_reference_shifted_and_more_spread_out_feature_values(
     reference: [f64; 3],
     cases: [(&str, [f64; 3], f64); 3],
 ) {
-    let reference_distribution_points: Vec<(f64, f64)> = reference
-        .iter()
-        .enumerate()
-        .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        .collect();
-    let shifted_distribution_points: Vec<(f64, f64)> = cases[1]
-        .1
-        .iter()
-        .enumerate()
-        .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        .collect();
-    let spread_distribution_points: Vec<(f64, f64)> = cases[2]
-        .1
-        .iter()
-        .enumerate()
-        .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -64,17 +48,31 @@ fn plot_reference_shifted_and_more_spread_out_feature_values(
             lesson_visualization::Series {
                 name: "эталон",
 
-                points: &reference_distribution_points,
+                points: &reference
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &element_value)| (item_index as f64, element_value))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "сдвиг",
 
-                points: &shifted_distribution_points,
+                points: &cases[1]
+                    .1
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &element_value)| (item_index as f64, element_value))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "изменение разброса",
 
-                points: &spread_distribution_points,
+                points: &cases[2]
+                    .1
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &element_value)| (item_index as f64, element_value))
+                    .collect::<Vec<_>>(),
             },
         ],
     )

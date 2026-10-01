@@ -118,13 +118,13 @@ fn main() {
                         }
                         2.0 * logarithm_series_sum
                     }
-                    let logarithm_of_two: f64 =
-                        approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
-                            2.0,
-                        );
+
                     approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
                         scaled,
-                    ) + power_of_two as f64 * logarithm_of_two
+                    ) + power_of_two as f64
+                        * approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
+                            2.0,
+                        )
                 })();
         }
         loss_sum / data.len() as f64
@@ -205,19 +205,6 @@ fn main() {
         weight: f64,
         constant_input_weight: f64,
     ) {
-        let model_points: Vec<(f64, f64)> = (-10..=60)
-            .map(|plot_step_index| {
-                let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                (
-                    horizontal_value,
-                    1.0 / (1.0 + (-(weight * horizontal_value + constant_input_weight)).exp()),
-                )
-            })
-            .collect();
-        let training_target_points: Vec<(f64, f64)> = TRAINING_EXAMPLES
-            .iter()
-            .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
-            .collect();
         let _chart: std::path::PathBuf = lesson_visualization::line_chart(
             env!("CARGO_MANIFEST_DIR"),
             "lesson-chart",
@@ -228,12 +215,26 @@ fn main() {
                 lesson_visualization::Series {
                     name: "модель",
 
-                    points: &model_points,
+                    points: &(-10..=60)
+                        .map(|plot_step_index| {
+                            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                            (
+                                horizontal_value,
+                                1.0 / (1.0
+                                    + (-(weight * horizontal_value + constant_input_weight)).exp()),
+                            )
+                        })
+                        .collect::<Vec<_>>(),
                 },
                 lesson_visualization::Series {
                     name: "метки обучения",
 
-                    points: &training_target_points,
+                    points: &TRAINING_EXAMPLES
+                        .iter()
+                        .map(|&(horizontal_value, vertical_value)| {
+                            (horizontal_value, vertical_value)
+                        })
+                        .collect::<Vec<_>>(),
                 },
             ],
         )

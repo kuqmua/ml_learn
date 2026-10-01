@@ -7,14 +7,18 @@ fn predict_result_before_running() {
     // Вычисли accuracy для TP=3, FP=2, TN=4, FN=1.
     let expected: Option<f64> = None;
     let expected = expected.expect("впиши ответ перед запуском");
-    let actual = calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(
-        BinaryClassificationCounts {
-            true_positives: 3,
-            false_positives: 2,
-            true_negatives: 4,
-            false_negatives: 1,
-        },
-    )
-    .unwrap();
-    assert!((actual - expected).abs() < 1e-12);
+    assert!(
+        (calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(
+            BinaryClassificationCounts {
+                true_positives: 3,
+                false_positives: 2,
+                true_negatives: 4,
+                false_negatives: 1,
+            },
+        )
+        .unwrap()
+            - expected)
+            .abs()
+            < 1e-12
+    );
 }

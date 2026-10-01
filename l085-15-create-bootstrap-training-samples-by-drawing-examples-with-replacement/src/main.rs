@@ -16,9 +16,10 @@
 fn main() {
     let data: [&str; 4] = ["A", "B", "C", "D"];
     let sampled_indices: [usize; 4] = [0, 2, 2, 3];
-    let sample: [&str; 4] = sampled_indices.map(|index| data[index]);
 
-    plot_repeated_appearances_in_sample_drawn_with_replacement(sample);
+    plot_repeated_appearances_in_sample_drawn_with_replacement(
+        sampled_indices.map(|index| data[index]),
+    );
 }
 
 // Строим график по результатам урока.

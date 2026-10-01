@@ -62,17 +62,22 @@ fn main() {
     });
     for feature_value in [0.5, 2.5, 4.5] {
         let _first_model: bool = (feature_value >= models[0].0) ^ models[0].1;
-        let votes: usize = models
-            .iter()
-            .filter(|&&model| {
-                (|| -> bool {
-                    let model: (f64, bool) = model;
-                    let feature_value: f64 = feature_value;
-                    (feature_value >= model.0) ^ model.1
-                })()
-            })
-            .count();
-        let _ = (&(models.len()), &(votes * 2 > models.len()));
+
+        let _ = (
+            &(models.len()),
+            &(models
+                .iter()
+                .filter(|&&model| {
+                    (|| -> bool {
+                        let model: (f64, bool) = model;
+                        let feature_value: f64 = feature_value;
+                        (feature_value >= model.0) ^ model.1
+                    })()
+                })
+                .count()
+                * 2
+                > models.len()),
+        );
     }
 
     plot_thresholds_learned_by_resampled_models(models);
@@ -80,11 +85,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_thresholds_learned_by_resampled_models(models: [(f64, bool); 9]) {
-    let ensembles_points: Vec<(f64, f64)> = models
-        .iter()
-        .enumerate()
-        .map(|(item_index, (threshold, _))| (item_index as f64, *threshold))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -94,7 +94,11 @@ fn plot_thresholds_learned_by_resampled_models(models: [(f64, bool); 9]) {
         &[lesson_visualization::Series {
             name: "пороги",
 
-            points: &ensembles_points,
+            points: &models
+                .iter()
+                .enumerate()
+                .map(|(item_index, (threshold, _))| (item_index as f64, *threshold))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

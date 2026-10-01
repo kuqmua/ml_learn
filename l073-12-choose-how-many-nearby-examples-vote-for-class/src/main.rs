@@ -14,11 +14,12 @@
 fn main() {
     let neighbor_targets: [bool; 5] = [true, false, false, true, true];
     for neighbor_count in [1, 3, 5] {
-        let positive: usize = neighbor_targets[..neighbor_count]
+        let _prediction: bool = neighbor_targets[..neighbor_count]
             .iter()
             .filter(|&&target| target)
-            .count();
-        let _prediction: bool = positive * 2 > neighbor_count;
+            .count()
+            * 2
+            > neighbor_count;
     }
 
     plot_positive_class_share_among_nearest_examples(neighbor_targets);
@@ -26,20 +27,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_positive_class_share_among_nearest_examples(neighbor_targets: [bool; 5]) {
-    let positive_neighbor_count_points: Vec<(f64, f64)> = [1usize, 3, 5]
-        .iter()
-        .map(|&neighbor_count| {
-            (
-                neighbor_count as f64,
-                neighbor_targets[..neighbor_count]
-                    .iter()
-                    .filter(|&&element_value| element_value)
-                    .count() as f64
-                    / neighbor_count as f64,
-            )
-        })
-        .collect();
-    let decision_boundary_points: Vec<(f64, f64)> = [(1.0, 0.5), (5.0, 0.5)].to_vec();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -50,12 +37,24 @@ fn plot_positive_class_share_among_nearest_examples(neighbor_targets: [bool; 5])
             lesson_visualization::Series {
                 name: "положительные среди k",
 
-                points: &positive_neighbor_count_points,
+                points: &[1usize, 3, 5]
+                    .iter()
+                    .map(|&neighbor_count| {
+                        (
+                            neighbor_count as f64,
+                            neighbor_targets[..neighbor_count]
+                                .iter()
+                                .filter(|&&element_value| element_value)
+                                .count() as f64
+                                / neighbor_count as f64,
+                        )
+                    })
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "граница решения",
 
-                points: &decision_boundary_points,
+                points: &[(1.0, 0.5), (5.0, 0.5)].to_vec(),
             },
         ],
     )

@@ -55,50 +55,42 @@ fn main() {
 
         let right_matrix: &[Vec<f64>] = &right_matrix;
 
-        let matrix_multiplication_output: Vec<Vec<f64>> =
-            (|| -> Result<Vec<Vec<f64>>, &'static str> {
-                let left_matrix: &[Vec<f64>] = left_matrix;
+        (|| -> Result<Vec<Vec<f64>>, &'static str> {
+            let left_matrix: &[Vec<f64>] = left_matrix;
 
-                let right_matrix: &[Vec<f64>] = right_matrix;
+            let right_matrix: &[Vec<f64>] = right_matrix;
 
-                if left_matrix.is_empty()
-                    || right_matrix.is_empty()
-                    || left_matrix
-                        .iter()
-                        .any(|row| row.len() != right_matrix.len())
-                    || right_matrix
-                        .iter()
-                        .any(|row| row.len() != right_matrix[0].len())
-                {
-                    return Err("несовместимые формы");
-                }
+            if left_matrix.is_empty()
+                || right_matrix.is_empty()
+                || left_matrix
+                    .iter()
+                    .any(|row| row.len() != right_matrix.len())
+                || right_matrix
+                    .iter()
+                    .any(|row| row.len() != right_matrix[0].len())
+            {
+                return Err("несовместимые формы");
+            }
 
-                let mut matrix_multiplication_output: Vec<Vec<f64>> =
-                    vec![vec![0.0; right_matrix[0].len()]; left_matrix.len()];
+            let mut matrix_multiplication_output: Vec<Vec<f64>> =
+                vec![vec![0.0; right_matrix[0].len()]; left_matrix.len()];
 
-                for row_index in 0..left_matrix.len() {
-                    for column_index in 0..right_matrix[0].len() {
-                        for shared_index in 0..right_matrix.len() {
-                            matrix_multiplication_output[row_index][column_index] += left_matrix
-                                [row_index][shared_index]
-                                * right_matrix[shared_index][column_index];
-                        }
+            for row_index in 0..left_matrix.len() {
+                for column_index in 0..right_matrix[0].len() {
+                    for shared_index in 0..right_matrix.len() {
+                        matrix_multiplication_output[row_index][column_index] += left_matrix
+                            [row_index][shared_index]
+                            * right_matrix[shared_index][column_index];
                     }
                 }
-
-                Ok(matrix_multiplication_output)
-            })()
-            .unwrap();
-
-        let mut output_sum: f64 = 0.0;
-
-        for row in &matrix_multiplication_output {
-            for &value in row {
-                output_sum += value;
             }
-        }
 
-        output_sum
+            Ok(matrix_multiplication_output)
+        })()
+        .unwrap()
+        .into_iter()
+        .flatten()
+        .sum::<f64>()
     })());
 
     plot_output_rates_of_change_for_left_and_right_matrix_entries(

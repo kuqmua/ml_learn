@@ -22,18 +22,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_positive_and_negative_class_probabilities() {
-    let positive_class_probability_points: Vec<(f64, f64)> = (0..=100)
-        .map(|plot_step_index| {
-            let probability: f64 = plot_step_index as f64 / 100.0;
-            (probability, probability)
-        })
-        .collect();
-    let negative_class_probability_points: Vec<(f64, f64)> = (0..=100)
-        .map(|plot_step_index| {
-            let probability: f64 = plot_step_index as f64 / 100.0;
-            (probability, 1.0 - probability)
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -44,12 +32,22 @@ fn plot_positive_and_negative_class_probabilities() {
             lesson_visualization::Series {
                 name: "положительный",
 
-                points: &positive_class_probability_points,
+                points: &(0..=100)
+                    .map(|plot_step_index| {
+                        let probability: f64 = plot_step_index as f64 / 100.0;
+                        (probability, probability)
+                    })
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "отрицательный",
 
-                points: &negative_class_probability_points,
+                points: &(0..=100)
+                    .map(|plot_step_index| {
+                        let probability: f64 = plot_step_index as f64 / 100.0;
+                        (probability, 1.0 - probability)
+                    })
+                    .collect::<Vec<_>>(),
             },
         ],
     )

@@ -23,13 +23,10 @@ pub fn calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_
 mod tests {
     #[test]
     fn future_does_not_change_past() {
-        let short: Vec<f64> =
-            super::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(&[1.0, 2.0], 0.4, 0.6);
-        let long: Vec<f64> = super::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
+        assert_eq!(super::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(&[1.0, 2.0], 0.4, 0.6), super::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
             &[1.0, 2.0, 999.0],
             0.4,
             0.6,
-        );
-        assert_eq!(short, long[..2]);
+        )[..2]);
     }
 }

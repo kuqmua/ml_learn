@@ -127,12 +127,14 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_weights_assigned_to_current_and_past_positions(attention_weights: [[f64; 3]; 3]) {
-    let chart_rows: Vec<Vec<f64>> = attention_weights.iter().map(|row| row.to_vec()).collect();
     let _chart: std::path::PathBuf = lesson_visualization::heatmap(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Причинные веса внимания",
-        &chart_rows,
+        &attention_weights
+            .iter()
+            .map(|row| row.to_vec())
+            .collect::<Vec<_>>(),
     )
     .expect("не удалось сохранить тепловую карту");
 }

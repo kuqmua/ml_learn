@@ -32,7 +32,7 @@ fn main() {
             .collect()
     }
 
-    let highest_ranked_items: Vec<(&str, f64)> = (|| -> Vec<(&'static str, f64)> {
+    plot_document_scores_from_word_frequency_and_rarity((|| -> Vec<(&'static str, f64)> {
         let query: &str = "модель данные";
         let query_text_units: Vec<String> = split_text_into_lowercase_words(query);
         let mut ranked_results: Vec<(&str, f64)> = vec![];
@@ -48,14 +48,15 @@ fn main() {
                 .iter()
                 .collect::<std::collections::BTreeSet<_>>()
             {
-                let document_frequency: usize = DOCUMENTS
-                    .iter()
-                    .filter(|(_, document)| {
-                        split_text_into_lowercase_words(document).contains(word)
-                    })
-                    .count();
                 let inverse_document_frequency: f64 = (|| -> f64 {
-                    let value: f64 = (DOCUMENTS.len() + 1) as f64 / (document_frequency + 1) as f64;
+                    let value: f64 = (DOCUMENTS.len() + 1) as f64
+                        / (DOCUMENTS
+                            .iter()
+                            .filter(|(_, document)| {
+                                split_text_into_lowercase_words(document).contains(word)
+                            })
+                            .count()
+                            + 1) as f64;
                     assert!(
                         value > 0.0,
                         "логарифм определён только для положительных чисел"
@@ -87,13 +88,13 @@ fn main() {
                         }
                         2.0 * logarithm_series_sum
                     }
-                    let logarithm_of_two: f64 =
-                        approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
-                            2.0,
-                        );
+
                     approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
                         scaled,
-                    ) + power_of_two as f64 * logarithm_of_two
+                    ) + power_of_two as f64
+                        * approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
+                            2.0,
+                        )
                 })() + 1.;
                 relevance_score += *text_unit_counts.get(word).unwrap_or(&0) as f64
                     / document_text_units.len() as f64
@@ -109,25 +110,22 @@ fn main() {
     })()
     .into_iter()
     .take(2)
-    .collect::<Vec<_>>();
-
-    plot_document_scores_from_word_frequency_and_rarity(highest_ranked_items);
+    .collect::<Vec<_>>());
 }
 
 // Строим график по результатам урока.
 fn plot_document_scores_from_word_frequency_and_rarity(
     highest_ranked_items: std::vec::Vec<(&str, f64)>,
 ) {
-    let chart_values: Vec<(&str, f64)> = highest_ranked_items
-        .iter()
-        .map(|(document_identifier, score)| (*document_identifier, *score))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Оценки найденных документов",
         "TF-IDF",
-        &chart_values,
+        &highest_ranked_items
+            .iter()
+            .map(|(document_identifier, score)| (*document_identifier, *score))
+            .collect::<Vec<_>>(),
     )
     .expect("не удалось сохранить график");
 }

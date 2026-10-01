@@ -19,15 +19,14 @@ fn main() {
         if line.trim().is_empty() {
             continue;
         }
-        let value: f64 = line
-            .parse()
-            .unwrap_or_else(|_| panic!("строка {}: не число", line_index + 1));
-        values.push(value);
+        values.push(
+            line.parse::<f64>()
+                .unwrap_or_else(|_| panic!("строка {}: не число", line_index + 1)),
+        );
     }
     assert!(!values.is_empty(), "для статистики нужны числовые значения");
     values.sort_by(f64::total_cmp);
 
-    let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(&values).unwrap();
     let _sample_variance: f64 =
         calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one(
             &values,
@@ -41,22 +40,15 @@ fn main() {
     };
     let _ = &(values.len());
 
-    plot_csv_values_mean_and_middle_of_sorted_values(values, mean, median);
+    plot_csv_values_mean_and_middle_of_sorted_values(
+        &values,
+        calculate_mean_by_summing_values_and_dividing_by_count(&values).unwrap(),
+        median,
+    );
 }
 
 // Строим график по результатам урока.
-fn plot_csv_values_mean_and_middle_of_sorted_values(
-    values: std::vec::Vec<f64>,
-    mean: f64,
-    median: f64,
-) {
-    let comma_separated_value_observation_points: Vec<(f64, f64)> = values
-        .iter()
-        .enumerate()
-        .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
-        .collect();
-    let mean_points: Vec<(f64, f64)> = [(1.0, mean), (values.len() as f64, mean)].to_vec();
-    let median_points: Vec<(f64, f64)> = [(1.0, median), (values.len() as f64, median)].to_vec();
+fn plot_csv_values_mean_and_middle_of_sorted_values(values: &[f64], mean: f64, median: f64) {
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -67,17 +59,21 @@ fn plot_csv_values_mean_and_middle_of_sorted_values(
             lesson_visualization::Series {
                 name: "CSV",
 
-                points: &comma_separated_value_observation_points,
+                points: &values
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "среднее",
 
-                points: &mean_points,
+                points: &[(1.0, mean), (values.len() as f64, mean)].to_vec(),
             },
             lesson_visualization::Series {
                 name: "медиана",
 
-                points: &median_points,
+                points: &[(1.0, median), (values.len() as f64, median)].to_vec(),
             },
         ],
     )

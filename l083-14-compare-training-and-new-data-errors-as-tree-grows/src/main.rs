@@ -27,16 +27,6 @@ fn plot_training_and_validation_errors_for_growing_tree_depth(
     training_error: [f64; 3],
     validation_error: [f64; 3],
 ) {
-    let training_error_points: Vec<(f64, f64)> = training_error
-        .iter()
-        .enumerate()
-        .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
-        .collect();
-    let validation_error_points: Vec<(f64, f64)> = validation_error
-        .iter()
-        .enumerate()
-        .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -47,12 +37,20 @@ fn plot_training_and_validation_errors_for_growing_tree_depth(
             lesson_visualization::Series {
                 name: "train",
 
-                points: &training_error_points,
+                points: &training_error
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "validation",
 
-                points: &validation_error_points,
+                points: &validation_error
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
+                    .collect::<Vec<_>>(),
             },
         ],
     )

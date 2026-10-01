@@ -24,11 +24,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_scores_of_highest_ranked_documents(highest_ranked_items: &[(&str, f64)]) {
-    let highest_ranked_item_points: Vec<(f64, f64)> = highest_ranked_items
-        .iter()
-        .enumerate()
-        .map(|(item_index, (_, score))| ((item_index + 1) as f64, *score))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -38,7 +33,11 @@ fn plot_scores_of_highest_ranked_documents(highest_ranked_items: &[(&str, f64)])
         &[lesson_visualization::Series {
             name: "выбранные документы",
 
-            points: &highest_ranked_item_points,
+            points: &highest_ranked_items
+                .iter()
+                .enumerate()
+                .map(|(item_index, (_, score))| ((item_index + 1) as f64, *score))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

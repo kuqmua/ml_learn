@@ -30,18 +30,6 @@ fn plot_slope_estimation_error_for_shrinking_step(
     horizontal_value: f64,
     analytical_derivative: f64,
 ) {
-    let points: Vec<(f64, f64)> = (1..=12)
-        .map(|step_exponent| {
-            let step_size: f64 = 10f64.powi(-step_exponent);
-            let numeric: f64 = ((horizontal_value + step_size) * (horizontal_value + step_size)
-                - (horizontal_value - step_size) * (horizontal_value - step_size))
-                / (2.0 * step_size);
-            (
-                step_exponent as f64,
-                (numeric - analytical_derivative).abs(),
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -51,7 +39,19 @@ fn plot_slope_estimation_error_for_shrinking_step(
         &[lesson_visualization::Series {
             name: "x² в x=3",
 
-            points: &points,
+            points: &(1..=12)
+                .map(|step_exponent| {
+                    let step_size: f64 = 10f64.powi(-step_exponent);
+                    let numeric: f64 = ((horizontal_value + step_size)
+                        * (horizontal_value + step_size)
+                        - (horizontal_value - step_size) * (horizontal_value - step_size))
+                        / (2.0 * step_size);
+                    (
+                        step_exponent as f64,
+                        (numeric - analytical_derivative).abs(),
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

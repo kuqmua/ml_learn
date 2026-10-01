@@ -25,22 +25,22 @@ fn main() {
             let (mut weight, mut velocity): (f64, f64) = (8., 0.);
             let (mut best, mut best_epoch): (f64, usize) = (f64::INFINITY, 0);
             for epoch in 0..100 {
-                let rate_of_change: f64 = (|| -> f64 {
-                    let value: f64 = (|| -> f64 {
-                        let weight: f64 = weight;
-                        2.0 * (weight - 3.0)
+                velocity = momentum * velocity
+                    + (|| -> f64 {
+                        let value: f64 = (|| -> f64 {
+                            let weight: f64 = weight;
+                            2.0 * (weight - 3.0)
+                        })();
+                        let minimum: f64 = -1.;
+                        let choose_larger_number: f64 = 1.;
+                        if value < minimum {
+                            minimum
+                        } else if value > choose_larger_number {
+                            choose_larger_number
+                        } else {
+                            value
+                        }
                     })();
-                    let minimum: f64 = -1.;
-                    let choose_larger_number: f64 = 1.;
-                    if value < minimum {
-                        minimum
-                    } else if value > choose_larger_number {
-                        choose_larger_number
-                    } else {
-                        value
-                    }
-                })();
-                velocity = momentum * velocity + rate_of_change;
                 weight -= 0.1 * velocity;
                 let validation: f64 = (|| -> f64 {
                     let value: f64 = weight - 3.;

@@ -24,12 +24,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_linear_prediction_as_weighted_input_plus_constant_input_weight() {
-    let coefficients_points: Vec<(f64, f64)> = (0..=50)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, 2.0 * horizontal_value + 1.0)
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -39,7 +33,12 @@ fn plot_linear_prediction_as_weighted_input_plus_constant_input_weight() {
         &[lesson_visualization::Series {
             name: "y=2x+1",
 
-            points: &coefficients_points,
+            points: &(0..=50)
+                .map(|plot_step_index| {
+                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                    (horizontal_value, 2.0 * horizontal_value + 1.0)
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

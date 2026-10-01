@@ -23,18 +23,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_function_values_while_changing_one_coordinate() {
-    let fixed_vertical_coordinate_slice_points: Vec<(f64, f64)> = (-40..=40)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, horizontal_value * horizontal_value + 4.0)
-        })
-        .collect();
-    let fixed_horizontal_coordinate_slice_points: Vec<(f64, f64)> = (-40..=40)
-        .map(|plot_step_index| {
-            let vertical_value: f64 = plot_step_index as f64 / 10.0;
-            (vertical_value, 4.0 + vertical_value * vertical_value)
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -45,12 +33,22 @@ fn plot_function_values_while_changing_one_coordinate() {
             lesson_visualization::Series {
                 name: "y=-1",
 
-                points: &fixed_vertical_coordinate_slice_points,
+                points: &(-40..=40)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (horizontal_value, horizontal_value * horizontal_value + 4.0)
+                    })
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "x=2",
 
-                points: &fixed_horizontal_coordinate_slice_points,
+                points: &(-40..=40)
+                    .map(|plot_step_index| {
+                        let vertical_value: f64 = plot_step_index as f64 / 10.0;
+                        (vertical_value, 4.0 + vertical_value * vertical_value)
+                    })
+                    .collect::<Vec<_>>(),
             },
         ],
     )

@@ -18,12 +18,13 @@ fn main() {
         ("одна равна нулю", 0.0, 0.5, Some(0.0)),
         ("обе равны нулю", 0.0, 0.0, None),
     ] {
-        let harmonic_mean_score: Option<f64> =
+        assert_eq!(
             calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum(
                 Some(precision),
                 Some(recall),
-            );
-        assert_eq!(harmonic_mean_score, expected);
+            ),
+            expected
+        );
     }
 
     plot_f1_score_as_twice_precision_times_recall_over_their_sum();
@@ -31,19 +32,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_f1_score_as_twice_precision_times_recall_over_their_sum() {
-    let harmonic_mean_score_points: Vec<(f64, f64)> = (0..=100)
-        .map(|plot_step_index| {
-            let recall_value: f64 = plot_step_index as f64 / 100.0;
-            (
-                recall_value,
-                if recall_value == 0.0 {
-                    0.0
-                } else {
-                    2.0 * 0.8 * recall_value / (0.8 + recall_value)
-                },
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -53,7 +41,19 @@ fn plot_f1_score_as_twice_precision_times_recall_over_their_sum() {
         &[lesson_visualization::Series {
             name: "F1",
 
-            points: &harmonic_mean_score_points,
+            points: &(0..=100)
+                .map(|plot_step_index| {
+                    let recall_value: f64 = plot_step_index as f64 / 100.0;
+                    (
+                        recall_value,
+                        if recall_value == 0.0 {
+                            0.0
+                        } else {
+                            2.0 * 0.8 * recall_value / (0.8 + recall_value)
+                        },
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

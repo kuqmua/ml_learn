@@ -20,23 +20,12 @@ fn main() {
         "для центрирования нужно хотя бы одно значение"
     );
     let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(&values).unwrap();
-    let centered: [f64; 3] = values.map(|value| value - mean);
 
-    plot_feature_values_after_subtracting_mean(values, centered);
+    plot_feature_values_after_subtracting_mean(values, values.map(|value| value - mean));
 }
 
 // Строим график по результатам урока.
 fn plot_feature_values_after_subtracting_mean(values: [f64; 3], centered: [f64; 3]) {
-    let original_points: Vec<(f64, f64)> = values
-        .iter()
-        .enumerate()
-        .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        .collect();
-    let centered_points: Vec<(f64, f64)> = centered
-        .iter()
-        .enumerate()
-        .map(|(item_index, &element_value)| (item_index as f64, element_value))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -47,12 +36,20 @@ fn plot_feature_values_after_subtracting_mean(values: [f64; 3], centered: [f64; 
             lesson_visualization::Series {
                 name: "исходные",
 
-                points: &original_points,
+                points: &values
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &element_value)| (item_index as f64, element_value))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "центрированные",
 
-                points: &centered_points,
+                points: &centered
+                    .iter()
+                    .enumerate()
+                    .map(|(item_index, &element_value)| (item_index as f64, element_value))
+                    .collect::<Vec<_>>(),
             },
         ],
     )

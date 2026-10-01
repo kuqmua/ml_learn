@@ -31,7 +31,11 @@ fn main() {
         .unwrap()
         .try_into()
         .expect("ожидался один выход на каждую из трёх позиций");
-    let combined: [[f64; 2]; 3] =
-        std::array::from_fn(|index| [first_output[index][0], second_output[index][1]]);
-    assert_eq!(combined[0], input[0]);
+    assert_eq!(
+        std::array::from_fn::<[f64; 2], 3, _>(|index| [
+            first_output[index][0],
+            second_output[index][1],
+        ])[0],
+        input[0]
+    );
 }

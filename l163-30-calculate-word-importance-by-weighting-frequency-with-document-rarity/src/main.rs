@@ -31,12 +31,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_word_frequency_weighted_by_rarity_across_documents(inverse_document_frequency: f64) {
-    let term_frequency_inverse_document_frequency_points: Vec<(f64, f64)> = (0..=10)
-        .map(|plot_step_index| {
-            let term_frequency: f64 = plot_step_index as f64 / 10.0;
-            (term_frequency, term_frequency * inverse_document_frequency)
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -46,7 +40,12 @@ fn plot_word_frequency_weighted_by_rarity_across_documents(inverse_document_freq
         &[lesson_visualization::Series {
             name: "idf из примера",
 
-            points: &term_frequency_inverse_document_frequency_points,
+            points: &(0..=10)
+                .map(|plot_step_index| {
+                    let term_frequency: f64 = plot_step_index as f64 / 10.0;
+                    (term_frequency, term_frequency * inverse_document_frequency)
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

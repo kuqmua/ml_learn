@@ -5,14 +5,15 @@ use l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_diffe
 fn main() {
     let first_point = [1.0, 2.0];
     let second_point = [4.0, 6.0];
-    let squared_distance =
+
+    assert_eq!(
         calculate_squared_point_distance_by_summing_squared_coordinate_differences(
             &first_point,
             &second_point,
         )
-        .unwrap();
-
-    assert_eq!(squared_distance, 25.0);
+        .unwrap(),
+        25.0
+    );
     assert_eq!(
         calculate_squared_point_distance_by_summing_squared_coordinate_differences(
             &second_point,

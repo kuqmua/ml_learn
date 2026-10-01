@@ -22,19 +22,19 @@ fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f6
         .iter()
         .map(|&sample| f64::from(sample) * 2.0 - 1.0)
         .collect();
-    let filter_one: Vec<f64> =
+
+    let layer_one: Vec<f64> =
         calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &input, 0.8, 0.4, 1,
         )
-        .unwrap();
-    let gate_one: Vec<f64> =
-        calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
-            &input, 0.2, -0.3, 1,
-        )
-        .unwrap();
-    let layer_one: Vec<f64> = filter_one
+        .unwrap()
         .iter()
-        .zip(&gate_one)
+        .zip(
+            &calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+                &input, 0.2, -0.3, 1,
+            )
+            .unwrap(),
+        )
         .map(|(&filter_value, &rate_of_change_value)| {
             filter_value.tanh()
                 * calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
@@ -42,29 +42,28 @@ fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f6
                 )
         })
         .collect();
-    let filter_two: Vec<f64> =
+
+    let last: usize = history.len() - 1;
+    let output: f64 =
         calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &layer_one, 1.0, 0.5, 2,
         )
-        .unwrap();
-    let gate_two: Vec<f64> =
-        calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
-            &layer_one, 0.1, 0.6, 2,
-        )
-        .unwrap();
-    let last: usize = history.len() - 1;
-    let output: f64 = filter_two[last].tanh()
-        * calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
-            gate_two[last],
-        );
+        .unwrap()[last]
+            .tanh()
+            * calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
+                calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+                    &layer_one, 0.1, 0.6, 2,
+                )
+                .unwrap()[last],
+            );
     calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(2.0 * output)
 }
 fn main() {
     let mut samples: Vec<u8> = vec![1, 0, 1, 1];
     for _ in 0..4 {
-        let probability: f64 = calculate_probability_of_next_sound_sample_from_history(&samples);
-        let next: u8 = u8::from(probability >= 0.5);
-        samples.push(next);
+        samples.push(u8::from(
+            calculate_probability_of_next_sound_sample_from_history(&samples) >= 0.5,
+        ));
     }
     assert_eq!(samples.len(), 8);
 
@@ -72,11 +71,6 @@ fn main() {
 }
 
 fn plot_generated_discrete_sound_values(samples: &[u8]) {
-    let points: Vec<(f64, f64)> = samples
-        .iter()
-        .enumerate()
-        .map(|(item_index, &horizontal_value)| (item_index as f64, f64::from(horizontal_value)))
-        .collect();
     let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "samples",
@@ -85,7 +79,13 @@ fn plot_generated_discrete_sound_values(samples: &[u8]) {
         "значение",
         &[lesson_visualization::Series {
             name: "отсчёт",
-            points: &points,
+            points: &samples
+                .iter()
+                .enumerate()
+                .map(|(item_index, &horizontal_value)| {
+                    (item_index as f64, f64::from(horizontal_value))
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

@@ -22,11 +22,6 @@ fn main() {
 }
 
 fn plot_stored_state_over_repeated_weighted_updates(states: &[f64; 4]) {
-    let points: Vec<(f64, f64)> = states
-        .iter()
-        .enumerate()
-        .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
-        .collect();
     let _path: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "state-space",
@@ -35,7 +30,11 @@ fn plot_stored_state_over_repeated_weighted_updates(states: &[f64; 4]) {
         "h_t",
         &[lesson_visualization::Series {
             name: "состояние",
-            points: &points,
+            points: &states
+                .iter()
+                .enumerate()
+                .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

@@ -24,12 +24,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_word_probabilities_before_and_after_adding_one_to_counts() {
-    let unsmoothed_probability_points: Vec<(f64, f64)> = (0..=8)
-        .map(|sample_count| (sample_count as f64, sample_count as f64 / 10.0))
-        .collect();
-    let smoothed_probability_points: Vec<(f64, f64)> = (0..=8)
-        .map(|sample_count| (sample_count as f64, (sample_count as f64 + 1.0) / 12.0))
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -40,12 +34,16 @@ fn plot_word_probabilities_before_and_after_adding_one_to_counts() {
             lesson_visualization::Series {
                 name: "без сглаживания",
 
-                points: &unsmoothed_probability_points,
+                points: &(0..=8)
+                    .map(|sample_count| (sample_count as f64, sample_count as f64 / 10.0))
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "со сглаживанием",
 
-                points: &smoothed_probability_points,
+                points: &(0..=8)
+                    .map(|sample_count| (sample_count as f64, (sample_count as f64 + 1.0) / 12.0))
+                    .collect::<Vec<_>>(),
             },
         ],
     )

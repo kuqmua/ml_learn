@@ -23,22 +23,31 @@ fn calculate_gated_signal_as_tanh_of_filter_times_one_over_one_plus_e_to_negativ
 }
 fn main() {
     let filter: f64 = 1.5;
-    let open: f64 =
-        calculate_gated_signal_as_tanh_of_filter_times_one_over_one_plus_e_to_negative_gate(
-            filter, 5.0,
-        );
+
     let closed: f64 =
         calculate_gated_signal_as_tanh_of_filter_times_one_over_one_plus_e_to_negative_gate(
             filter, -5.0,
         );
-    assert!(open > closed);
+    assert!(
+        calculate_gated_signal_as_tanh_of_filter_times_one_over_one_plus_e_to_negative_gate(
+            filter, 5.0,
+        ) > closed
+    );
     assert!(closed >= 0.0);
 
     plot_filter_output_multiplied_by_fraction_controlled_by_gate(filter);
 }
 
 fn plot_filter_output_multiplied_by_fraction_controlled_by_gate(filter: f64) {
-    let points: Vec<(f64, f64)> = (-50..=50)
+    let _path: std::path::PathBuf = lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "gate",
+        "Управляемая активация",
+        "gate",
+        "выход",
+        &[lesson_visualization::Series {
+            name: "tanh(filter)*calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(gate)",
+            points: &(-50..=50)
         .map(|plot_step_index| {
             let gate: f64 = plot_step_index as f64 / 10.0;
             (
@@ -48,16 +57,7 @@ fn plot_filter_output_multiplied_by_fraction_controlled_by_gate(filter: f64) {
                 ),
             )
         })
-        .collect();
-    let _path: std::path::PathBuf = lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "gate",
-        "Управляемая активация",
-        "gate",
-        "выход",
-        &[lesson_visualization::Series {
-            name: "tanh(filter)*calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(gate)",
-            points: &points,
+        .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

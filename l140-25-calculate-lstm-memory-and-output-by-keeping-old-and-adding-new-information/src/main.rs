@@ -21,13 +21,11 @@ fn calculate_lstm_memory_and_output_by_mixing_old_memory_with_candidate_then_gat
     previous_cell: f64,
     forget_constant_input_weight: f64,
 ) -> (f64, f64) {
-    let forget: f64 = calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
+    let cell: f64 = calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
         forget_constant_input_weight,
-    );
-    let insert: f64 =
-        calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(input);
-    let candidate: f64 = input.tanh();
-    let cell: f64 = forget * previous_cell + insert * candidate;
+    ) * previous_cell
+        + calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(input)
+            * input.tanh();
     let hidden: f64 =
         calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(input)
             * cell.tanh();

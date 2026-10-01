@@ -39,13 +39,6 @@ fn plot_paired_feature_values_to_show_joint_variation(
     horizontal_value: [f64; 3],
     vertical_value: [f64; 3],
 ) {
-    let joint_variation_points: Vec<(f64, f64)> = horizontal_value
-        .iter()
-        .zip(vertical_value.iter())
-        .map(|(&first_feature_value, &second_feature_value)| {
-            (first_feature_value, second_feature_value)
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -55,7 +48,13 @@ fn plot_paired_feature_values_to_show_joint_variation(
         &[lesson_visualization::Series {
             name: "наблюдения",
 
-            points: &joint_variation_points,
+            points: &horizontal_value
+                .iter()
+                .zip(vertical_value.iter())
+                .map(|(&first_feature_value, &second_feature_value)| {
+                    (first_feature_value, second_feature_value)
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

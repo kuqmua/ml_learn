@@ -24,18 +24,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_number_of_positive_predictions_for_changing_threshold() {
-    let threshold_points: Vec<(f64, f64)> = (0..=100)
-        .map(|plot_step_index| {
-            let threshold_value: f64 = plot_step_index as f64 / 100.0;
-            (
-                threshold_value,
-                [0.2, 0.55, 0.8]
-                    .iter()
-                    .filter(|&&probability| probability >= threshold_value)
-                    .count() as f64,
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -45,7 +33,18 @@ fn plot_number_of_positive_predictions_for_changing_threshold() {
         &[lesson_visualization::Series {
             name: "оценки 0.2, 0.55, 0.8",
 
-            points: &threshold_points,
+            points: &(0..=100)
+                .map(|plot_step_index| {
+                    let threshold_value: f64 = plot_step_index as f64 / 100.0;
+                    (
+                        threshold_value,
+                        [0.2, 0.55, 0.8]
+                            .iter()
+                            .filter(|&&probability| probability >= threshold_value)
+                            .count() as f64,
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

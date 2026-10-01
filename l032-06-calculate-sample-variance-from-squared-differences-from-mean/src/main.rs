@@ -18,10 +18,8 @@ fn main() {
         ("значения раздвинули", &[0.0, 4.0, 8.0], 16.0),
     ];
     for (_description, values, expected) in cases {
-        let variance: f64 =
-            calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one(values)
-                .expect("для выборочной дисперсии нужны хотя бы два значения");
-        assert_eq!(variance, expected);
+        assert_eq!(calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one(values)
+                .expect("для выборочной дисперсии нужны хотя бы два значения"), expected);
     }
     let _error: &str =
         calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one(&[
@@ -34,15 +32,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_squared_differences_from_mean() {
-    let variance_points: Vec<(f64, f64)> = (0..=80)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (
-                horizontal_value,
-                (horizontal_value - 4.0) * (horizontal_value - 4.0),
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -52,7 +41,15 @@ fn plot_squared_differences_from_mean() {
         &[lesson_visualization::Series {
             name: "среднее=4",
 
-            points: &variance_points,
+            points: &(0..=80)
+                .map(|plot_step_index| {
+                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                    (
+                        horizontal_value,
+                        (horizontal_value - 4.0) * (horizontal_value - 4.0),
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

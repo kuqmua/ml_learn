@@ -10,18 +10,19 @@ use l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_
 
 fn main() {
     let real: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
-    let base: [[f64; 2]; 2] =
+
+    let input_with_padding_rows: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [100.0, 100.0]];
+
+    assert_eq!(
         calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
             &real,
             &[true, true],
         )
-        .unwrap();
-    let input_with_padding_rows: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [100.0, 100.0]];
-    let output_ignoring_padding: [[f64; 2]; 3] =
+        .unwrap(),
         calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
             &input_with_padding_rows,
             &[true, true, false],
         )
-        .unwrap();
-    assert_eq!(base, output_ignoring_padding[..2]);
+        .unwrap()[..2]
+    );
 }

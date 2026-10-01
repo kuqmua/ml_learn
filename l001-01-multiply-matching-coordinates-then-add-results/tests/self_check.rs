@@ -14,21 +14,24 @@ fn predict_signs_after_multiplying_matching_coordinates_then_adding() {
     let vector_with_positive_result: [f64; 2] =
         vector_with_positive_result.expect("заполни ответ перед запуском теста");
 
-    let negative_result: f64 =
+    assert!(
         multiply_matching_coordinates_then_add_results(&fixed_vector, &vector_with_negative_result)
-            .unwrap();
-    let zero_result: f64 =
+            .unwrap()
+            < 0.0
+    );
+    assert_eq!(
         multiply_matching_coordinates_then_add_results(&fixed_vector, &vector_with_zero_result)
-            .unwrap();
-    let positive_result: f64 =
-        multiply_matching_coordinates_then_add_results(&fixed_vector, &vector_with_positive_result)
-            .unwrap();
-    assert!(negative_result < 0.0);
-    assert_eq!(zero_result, 0.0);
+            .unwrap(),
+        0.0
+    );
     assert!(
         vector_with_zero_result
             .iter()
             .any(|&coordinate| coordinate != 0.0)
     );
-    assert!(positive_result > 0.0);
+    assert!(
+        multiply_matching_coordinates_then_add_results(&fixed_vector, &vector_with_positive_result)
+            .unwrap()
+            > 0.0
+    );
 }

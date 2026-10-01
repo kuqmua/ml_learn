@@ -64,18 +64,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_two_lines_and_their_intersection() {
-    let first_equation_points: Vec<(f64, f64)> = (0..=50)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, 5.0 - 2.0 * horizontal_value)
-        })
-        .collect();
-    let second_equation_points: Vec<(f64, f64)> = (0..=50)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, horizontal_value - 1.0)
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -86,12 +74,22 @@ fn plot_two_lines_and_their_intersection() {
             lesson_visualization::Series {
                 name: "2x+y=5",
 
-                points: &first_equation_points,
+                points: &(0..=50)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (horizontal_value, 5.0 - 2.0 * horizontal_value)
+                    })
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "x−y=1",
 
-                points: &second_equation_points,
+                points: &(0..=50)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (horizontal_value, horizontal_value - 1.0)
+                    })
+                    .collect::<Vec<_>>(),
             },
         ],
     )

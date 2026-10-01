@@ -20,10 +20,11 @@ pub fn calculate_causal_filter_output_by_summing_weighted_current_and_spaced_pas
         .iter()
         .enumerate()
         .map(|(index, &current)| {
-            let previous: f64 = index
-                .checked_sub(filter_spacing)
-                .map_or(0.0, |past| input_signal[past]);
-            weight_current * current + weight_previous * previous
+            weight_current * current
+                + weight_previous
+                    * index
+                        .checked_sub(filter_spacing)
+                        .map_or(0.0, |past| input_signal[past])
         })
         .collect())
 }
@@ -35,14 +36,14 @@ mod tests {
         let short: Vec<f64> =
             super::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(&[1.0, 2.0], 1.0, 2.0, 1)
                 .unwrap();
-        let long: Vec<f64> = super::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+
+        assert_eq!(short, super::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &[1.0, 2.0, 999.0],
             1.0,
             2.0,
             1,
         )
-        .unwrap();
-        assert_eq!(short, long[..2]);
+        .unwrap()[..2]);
         assert_eq!(short, [1.0, 4.0]);
     }
 }

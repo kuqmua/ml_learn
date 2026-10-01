@@ -25,24 +25,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_fourth_power_and_its_rate_of_change() {
-    let composed_function_points: Vec<(f64, f64)> = (-20..=20)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (
-                horizontal_value,
-                horizontal_value * horizontal_value * horizontal_value * horizontal_value,
-            )
-        })
-        .collect();
-    let derivative_points: Vec<(f64, f64)> = (-20..=20)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (
-                horizontal_value,
-                4.0 * horizontal_value * horizontal_value * horizontal_value,
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -53,12 +35,31 @@ fn plot_fourth_power_and_its_rate_of_change() {
             lesson_visualization::Series {
                 name: "(2x+1)²",
 
-                points: &composed_function_points,
+                points: &(-20..=20)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (
+                            horizontal_value,
+                            horizontal_value
+                                * horizontal_value
+                                * horizontal_value
+                                * horizontal_value,
+                        )
+                    })
+                    .collect::<Vec<_>>(),
             },
             lesson_visualization::Series {
                 name: "производная",
 
-                points: &derivative_points,
+                points: &(-20..=20)
+                    .map(|plot_step_index| {
+                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                        (
+                            horizontal_value,
+                            4.0 * horizontal_value * horizontal_value * horizontal_value,
+                        )
+                    })
+                    .collect::<Vec<_>>(),
             },
         ],
     )

@@ -15,9 +15,13 @@
 fn main() {
     let comma_separated_values_text: &str = "feature,target\n1.5,0\n2.5,1\n";
     let mut lines: std::str::Lines<'_> = comma_separated_values_text.lines();
-    let header: &str = lines
-        .next()
-        .expect("CSV пустой: ожидается строка заголовка");
-    assert_eq!(header, "feature,target", "неверная схема CSV");
+
+    assert_eq!(
+        lines
+            .next()
+            .expect("CSV пустой: ожидается строка заголовка"),
+        "feature,target",
+        "неверная схема CSV"
+    );
     let _row_count: usize = lines.count();
 }

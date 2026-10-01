@@ -35,8 +35,6 @@ fn main() {
         calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(counts);
     let _harmonic_mean_score: Option<f64> =
         calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum(precision, recall);
-    let accuracy: Option<f64> =
-        calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(counts);
 
     let all_negative_scores: [f64; 10] = [0.0; 10];
     let useless: BinaryClassificationCounts =
@@ -46,14 +44,22 @@ fn main() {
             0.5,
         )
         .unwrap();
-    let useless_accuracy: Option<f64> =
-        calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(useless);
-    let useless_recall: Option<f64> =
-        calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(useless);
-    assert!(useless_accuracy.unwrap() > 0.8);
-    assert_eq!(useless_recall, Some(0.0));
 
-    plot_prediction_quality_shares_for_imbalanced_classes(precision, recall, accuracy);
+    assert!(
+        calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(useless)
+            .unwrap()
+            > 0.8
+    );
+    assert_eq!(
+        calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(useless),
+        Some(0.0)
+    );
+
+    plot_prediction_quality_shares_for_imbalanced_classes(
+        precision,
+        recall,
+        calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(counts),
+    );
 }
 
 // Строим график по результатам урока.

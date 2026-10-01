@@ -20,23 +20,28 @@ fn calculate_gru_state_by_mixing_previous_state_with_candidate_using_update_frac
     previous: f64,
     update_gate_raw_score: f64,
 ) -> f64 {
-    let reset: f64 =
-        calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(input);
-    let candidate: f64 = (input + reset * previous).tanh();
     let update: f64 = calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
         update_gate_raw_score,
     );
-    (1.0 - update) * previous + update * candidate
+    (1.0 - update) * previous
+        + update
+            * (input
+                + calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
+                    input,
+                ) * previous)
+                .tanh()
 }
 fn main() {
     let previous: f64 = 0.8;
-    let keep: f64 =
-        calculate_gru_state_by_mixing_previous_state_with_candidate_using_update_fraction(
+
+    assert!(
+        (calculate_gru_state_by_mixing_previous_state_with_candidate_using_update_fraction(
             -0.2, previous, -5.0,
-        );
-    let replace: f64 =
-        calculate_gru_state_by_mixing_previous_state_with_candidate_using_update_fraction(
-            -0.2, previous, 5.0,
-        );
-    assert!((keep - previous).abs() < (replace - previous).abs());
+        ) - previous)
+            .abs()
+            < (calculate_gru_state_by_mixing_previous_state_with_candidate_using_update_fraction(
+                -0.2, previous, 5.0,
+            ) - previous)
+                .abs()
+    );
 }

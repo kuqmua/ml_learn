@@ -10,9 +10,11 @@ fn main() {
         );
 
     assert!((probabilities.iter().sum::<f64>() - 1.0).abs() < 1e-12);
-    let shifted =
+
+    assert_eq!(
+        probabilities,
         calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
             &[0.0, 1.0, 2.0],
-        );
-    assert_eq!(probabilities, shifted);
+        )
+    );
 }

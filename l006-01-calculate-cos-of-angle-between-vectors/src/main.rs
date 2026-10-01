@@ -24,9 +24,13 @@ fn main() {
     ];
 
     for (_description, second_vector, expected) in cases {
-        let cos: f64 = calculate_cos_of_angle_between_vectors(&first_vector, second_vector)
-            .expect("для вычисления cos нужны два ненулевых вектора с одинаковым числом координат");
-        assert!((cos - expected).abs() < 1e-10);
+        assert!(
+            (calculate_cos_of_angle_between_vectors(&first_vector, second_vector).expect(
+                "для вычисления cos нужны два ненулевых вектора с одинаковым числом координат"
+            ) - expected)
+                .abs()
+                < 1e-10
+        );
     }
 
     for (_description, second_vector) in [
@@ -42,17 +46,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_cos_of_angle_between_vectors() {
-    let cos_of_angle_between_two_vectors_points: Vec<(f64, f64)> = (0..=180)
-        .step_by(5)
-        .map(|plot_step_index| {
-            let angle: f64 = (plot_step_index as f64).to_radians();
-            (
-                plot_step_index as f64,
-                calculate_cos_of_angle_between_vectors(&[1.0, 0.0], &[angle.cos(), angle.sin()])
-                    .unwrap(),
-            )
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -62,7 +55,20 @@ fn plot_cos_of_angle_between_vectors() {
         &[lesson_visualization::Series {
             name: "вектор [1, 0]",
 
-            points: &cos_of_angle_between_two_vectors_points,
+            points: &(0..=180)
+                .step_by(5)
+                .map(|plot_step_index| {
+                    let angle: f64 = (plot_step_index as f64).to_radians();
+                    (
+                        plot_step_index as f64,
+                        calculate_cos_of_angle_between_vectors(
+                            &[1.0, 0.0],
+                            &[angle.cos(), angle.sin()],
+                        )
+                        .unwrap(),
+                    )
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

@@ -26,12 +26,6 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_rectified_activation_as_input_with_negative_values_replaced_by_zero() {
-    let activation_points: Vec<(f64, f64)> = (-50..=50)
-        .map(|plot_step_index| {
-            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-            (horizontal_value, horizontal_value.max(0.0))
-        })
-        .collect();
     let _chart: std::path::PathBuf = lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -41,7 +35,12 @@ fn plot_rectified_activation_as_input_with_negative_values_replaced_by_zero() {
         &[lesson_visualization::Series {
             name: "max(0,x)",
 
-            points: &activation_points,
+            points: &(-50..=50)
+                .map(|plot_step_index| {
+                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                    (horizontal_value, horizontal_value.max(0.0))
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

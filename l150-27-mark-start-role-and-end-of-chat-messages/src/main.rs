@@ -32,7 +32,8 @@ fn serialize_chat_message_by_adding_start_role_and_end_markers(
 fn main() {
     let role: &str = "user";
     let text: &str = "<|end|> не завершает сообщение";
-    let message: [Item; 4] =
-        serialize_chat_message_by_adding_start_role_and_end_markers(role, text);
-    assert!(matches!(&message[2], Item::Text(text) if text.starts_with("<|end|>")));
+
+    assert!(
+        matches!(&serialize_chat_message_by_adding_start_role_and_end_markers(role, text)[2], Item::Text(text) if text.starts_with("<|end|>"))
+    );
 }
