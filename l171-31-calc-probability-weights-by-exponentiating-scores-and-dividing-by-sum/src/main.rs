@@ -32,47 +32,41 @@ fn main() {
             sum_of_exponentials > 0.0,
             "сумма экспонент должна быть положительной"
         );
-        let attention_shares_summing_to_1_where_larger_score_gets_larger_share: [f64; 2] = [
+        let attention_shares_summing_to_1: [f64; 2] = [
             exponentials[0] / sum_of_exponentials,
             exponentials[1] / sum_of_exponentials,
         ];
         assert!(check_f64_eq_1e_minus_10(
-            attention_shares_summing_to_1_where_larger_score_gets_larger_share[0]
-                + attention_shares_summing_to_1_where_larger_score_gets_larger_share[1],
+            attention_shares_summing_to_1[0] + attention_shares_summing_to_1[1],
             1.0
         ));
         assert!(
-            attention_shares_summing_to_1_where_larger_score_gets_larger_share
+            attention_shares_summing_to_1
                 .iter()
                 .all(|&weight| (0.0..=1.0).contains(&weight))
         );
         match description {
             "равные оценки" => assert!(check_f64_eq_1e_minus_10(
-                attention_shares_summing_to_1_where_larger_score_gets_larger_share[0],
-                attention_shares_summing_to_1_where_larger_score_gets_larger_share[1]
+                attention_shares_summing_to_1[0],
+                attention_shares_summing_to_1[1]
             )),
 
             "вторая оценка выше" => {
-                assert!(
-                    attention_shares_summing_to_1_where_larger_score_gets_larger_share[1]
-                        > attention_shares_summing_to_1_where_larger_score_gets_larger_share[0]
-                );
-                reference_weights =
-                    attention_shares_summing_to_1_where_larger_score_gets_larger_share;
+                assert!(attention_shares_summing_to_1[1] > attention_shares_summing_to_1[0]);
+                reference_weights = attention_shares_summing_to_1;
             }
 
-            "первая оценка выше" => assert!(
-                attention_shares_summing_to_1_where_larger_score_gets_larger_share[0]
-                    > attention_shares_summing_to_1_where_larger_score_gets_larger_share[1]
-            ),
+            "первая оценка выше" => {
+                assert!(attention_shares_summing_to_1[0] > attention_shares_summing_to_1[1])
+            }
 
             "к обеим прибавили 1" => {
                 assert!(check_f64_eq_1e_minus_10(
-                    attention_shares_summing_to_1_where_larger_score_gets_larger_share[0],
+                    attention_shares_summing_to_1[0],
                     reference_weights[0]
                 ));
                 assert!(check_f64_eq_1e_minus_10(
-                    attention_shares_summing_to_1_where_larger_score_gets_larger_share[1],
+                    attention_shares_summing_to_1[1],
                     reference_weights[1]
                 ));
             }

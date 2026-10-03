@@ -8,7 +8,7 @@
 
 /// Softmax: вычитаем максимальную оценку, вычисляем экспоненты и делим каждую на их сумму.
 
-fn calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
+fn calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum(
     values: &[f64; 3],
 ) -> [f64; 3] {
     let maximum_value: f64 = values.iter().copied().fold(f64::NEG_INFINITY, f64::max);
@@ -20,7 +20,7 @@ fn calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividi
 fn main() {
     let image_input_representations: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
     let weights: [f64; 3] =
-        calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
+        calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum(
             &std::array::from_fn::<f64, 3, _>(|index| {
                 let image_input_representation = image_input_representations[index];
                 image_input_representations[0][0] * image_input_representation[0]

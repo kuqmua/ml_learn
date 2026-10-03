@@ -1,0 +1,11 @@
+[package]
+name = "l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }
+l001_01_multiply_matching_coords_then_add_results = { package = "l001-01-multiply-matching-coords-then-add-results", path = "../l001-01-multiply-matching-coords-then-add-results" }
+l003_01_calc_vec_len_as_square_root_of_sum_of_squared_coords = { package = "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords", path = "../l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords" }
+
+lesson-visualization = { path = "../lesson-visualization" }

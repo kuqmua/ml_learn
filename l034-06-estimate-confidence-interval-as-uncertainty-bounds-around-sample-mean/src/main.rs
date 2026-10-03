@@ -12,17 +12,15 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 use l030_06_calc_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
-use l032_06_calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread::calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread;
+use l032_06_calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one::calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one;
 
 fn main() {
     let values: [f64; 4] = [2.0, 4.0, 6.0, 8.0];
     let mean: f64 = calc_mean_by_summing_values_and_dividing_by_count(&values).unwrap();
 
     let estimated_variance_of_sample_mean: f64 =
-        calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread(
-            &values,
-        )
-        .unwrap()
+        calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one(&values)
+            .unwrap()
             / values.len() as f64;
     let mut estimated_standard_deviation_of_sample_mean: f64 = estimated_variance_of_sample_mean;
     for _ in 0..80 {

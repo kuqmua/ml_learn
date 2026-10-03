@@ -10,13 +10,11 @@
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
 use l191_35_calc_text_context_vecs_by_adding_position_and_weighted_past_context::calc_text_context_vecs_by_adding_position_and_weighted_past_context;
 
-fn calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
-    input_value: f64,
-) -> f64 {
+fn calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score(input_value: f64) -> f64 {
     1.0 / (1.0 + (-input_value).exp())
 }
 /// Бинарная перекрёстная энтропия: из последнего контекстного вектора получаем вероятность p и считаем −y·ln(p)−(1−y)·ln(1−p).
-fn calc_binary_prediction_loss_as_neg_log_target_probability_from_final_context_where_closer_to_0_means_more_probability_on_correct_answer(
+fn calc_binary_prediction_loss_as_neg_log_target_probability_from_final_context(
     weight: &[f64; 2],
     sample: (&[usize], f64),
 ) -> f64 {
@@ -26,10 +24,7 @@ fn calc_binary_prediction_loss_as_neg_log_target_probability_from_final_context_
             .unwrap();
     let raw_model_score: f64 =
         weight[0] * final_hidden_state[0] + weight[1] * final_hidden_state[1];
-    let probability: f64 =
-        calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
-            raw_model_score,
-        )
+    let probability: f64 = calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score(raw_model_score)
         .clamp(1e-12, 1.0 - 1e-12);
     -sample.1 * probability.ln() - (1.0 - sample.1) * (1.0 - probability).ln()
 }
@@ -39,7 +34,7 @@ fn main() {
     let baseline: f64 = validation
         .iter()
         .map(|&sample| {
-            calc_binary_prediction_loss_as_neg_log_target_probability_from_final_context_where_closer_to_0_means_more_probability_on_correct_answer(
+            calc_binary_prediction_loss_as_neg_log_target_probability_from_final_context(
                 &weight, sample,
             )
         })
@@ -55,10 +50,9 @@ fn main() {
                 )
                 .last()
                 .unwrap();
-            let error: f64 =
-                calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
-                    weight[0] * final_hidden_state[0] + weight[1] * final_hidden_state[1],
-                ) - target;
+            let error: f64 = calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score(
+                weight[0] * final_hidden_state[0] + weight[1] * final_hidden_state[1],
+            ) - target;
             rate_of_change[0] += error * final_hidden_state[0];
             rate_of_change[1] += error * final_hidden_state[1];
         }
@@ -69,7 +63,7 @@ fn main() {
     let held_out: f64 = validation
         .iter()
         .map(|&sample| {
-            calc_binary_prediction_loss_as_neg_log_target_probability_from_final_context_where_closer_to_0_means_more_probability_on_correct_answer(
+            calc_binary_prediction_loss_as_neg_log_target_probability_from_final_context(
                 &weight, sample,
             )
         })

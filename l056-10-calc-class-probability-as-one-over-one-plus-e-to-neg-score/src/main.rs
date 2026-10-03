@@ -19,16 +19,11 @@ fn main() {
             term *= -raw_model_score / index as f64;
             exponential += term;
         }
-        let pos_class_probability_where_0_means_neg_1_means_pos_and_half_means_equal_chances: f64 =
-            1.0 / (1.0 + exponential);
-        assert!(
-            pos_class_probability_where_0_means_neg_1_means_pos_and_half_means_equal_chances > 0.0
-                && pos_class_probability_where_0_means_neg_1_means_pos_and_half_means_equal_chances
-                    < 1.0
-        );
-        let side: i32 = if pos_class_probability_where_0_means_neg_1_means_pos_and_half_means_equal_chances < 0.5 {
+        let pos_class_probability: f64 = 1.0 / (1.0 + exponential);
+        assert!(pos_class_probability > 0.0 && pos_class_probability < 1.0);
+        let side: i32 = if pos_class_probability < 0.5 {
             -1
-        } else if pos_class_probability_where_0_means_neg_1_means_pos_and_half_means_equal_chances > 0.5 {
+        } else if pos_class_probability > 0.5 {
             1
         } else {
             0

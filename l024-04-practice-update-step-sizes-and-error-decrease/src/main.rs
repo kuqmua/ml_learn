@@ -21,9 +21,7 @@
 use lesson_float_comparison::check_f64_eq_1e_minus_8;
 
 fn main() {
-    fn calc_squared_dist_of_parameter_from_three_as_loss_where_0_means_parameter_equals_3_and_larger_means_farther(
-        parameter: f64,
-    ) -> f64 {
+    fn calc_squared_dist_of_parameter_from_three_as_loss(parameter: f64) -> f64 {
         (|| -> f64 {
             let value: f64 = parameter - 3.0;
             value * value
@@ -34,23 +32,19 @@ fn main() {
         let history: Vec<f64> = (|| -> Vec<f64> {
             let learning_rate: f64 = learning_rate;
             let mut parameter: f64 = 0.0;
-            let mut history: Vec<f64> = vec![calc_squared_dist_of_parameter_from_three_as_loss_where_0_means_parameter_equals_3_and_larger_means_farther(
-                parameter,
-            )];
+            let mut history: Vec<f64> =
+                vec![calc_squared_dist_of_parameter_from_three_as_loss(parameter)];
             let steps: usize = 30;
             for _ in 0..steps {
-                let loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it: f64 = (|| -> f64 {
+                let loss_slope: f64 = (|| -> f64 {
                     let parameter: f64 = parameter;
                     2.0 * (parameter - 3.0)
                 })();
-                if check_f64_eq_1e_minus_8(loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it, 0.0)
-                {
+                if check_f64_eq_1e_minus_8(loss_slope, 0.0) {
                     break;
                 }
-                parameter -= learning_rate * loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it;
-                history.push(calc_squared_dist_of_parameter_from_three_as_loss_where_0_means_parameter_equals_3_and_larger_means_farther(
-                    parameter,
-                ));
+                parameter -= learning_rate * loss_slope;
+                history.push(calc_squared_dist_of_parameter_from_three_as_loss(parameter));
                 if !parameter.is_finite() {
                     break;
                 }
@@ -73,14 +67,14 @@ fn main() {
             let mut parameter: f64 = 0.0;
             let mut points: Vec<(f64, f64)> = vec![(
                 0.0,
-                (calc_squared_dist_of_parameter_from_three_as_loss_where_0_means_parameter_equals_3_and_larger_means_farther(parameter) + 1e-12).log10(),
+                (calc_squared_dist_of_parameter_from_three_as_loss(parameter) + 1e-12).log10(),
             )];
             for step in 1..=30 {
-                let loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it: f64 = 2.0 * (parameter - 3.0);
-                parameter -= rate * loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it;
+                let loss_slope: f64 = 2.0 * (parameter - 3.0);
+                parameter -= rate * loss_slope;
                 points.push((
                     step as f64,
-                    (calc_squared_dist_of_parameter_from_three_as_loss_where_0_means_parameter_equals_3_and_larger_means_farther(parameter) + 1e-12).log10(),
+                    (calc_squared_dist_of_parameter_from_three_as_loss(parameter) + 1e-12).log10(),
                 ));
             }
             points

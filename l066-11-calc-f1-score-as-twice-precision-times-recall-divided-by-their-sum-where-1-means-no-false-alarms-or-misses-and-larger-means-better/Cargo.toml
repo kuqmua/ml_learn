@@ -1,8 +1,0 @@
-[package]
-name = "l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum-where-1-means-no-false-alarms-or-misses-and-larger-means-better"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

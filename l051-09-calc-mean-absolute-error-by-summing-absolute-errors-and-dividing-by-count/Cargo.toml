@@ -1,0 +1,9 @@
+[package]
+name = "l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }
+
+lesson-visualization = { path = "../lesson-visualization" }

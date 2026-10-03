@@ -1,6 +1,0 @@
-[package]
-name = "l198-36-calc-gated-layer-output-as-silu-gate-times-up-value-where-0-gate-blocks-and-gate-multiplier-can-be-neg-or-greater-than-1"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

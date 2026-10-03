@@ -19,7 +19,7 @@ fn main() {
         ("неверный уверенный прогноз", 1.0, 0.1),
         ("отрицательный класс предсказан верно", 0.0, 0.1),
     ];
-    let mut neg_log_correct_class_probabilities_where_closer_to_0_means_better: [f64; 4] = [0.0; 4];
+    let mut neg_log_correct_class_probabilities: [f64; 4] = [0.0; 4];
     for (index, (_description, target, probability)) in cases.into_iter().enumerate() {
         assert!(target == 0.0 || target == 1.0);
         assert!(probability > 0.0 && probability < 1.0);
@@ -36,29 +36,26 @@ fn main() {
             logarithm += term / odd_divisor as f64;
             term *= ratio * ratio;
         }
-        neg_log_correct_class_probabilities_where_closer_to_0_means_better[index] =
-            -2.0 * logarithm;
-        let _ = &(neg_log_correct_class_probabilities_where_closer_to_0_means_better[index]);
+        neg_log_correct_class_probabilities[index] = -2.0 * logarithm;
+        let _ = &(neg_log_correct_class_probabilities[index]);
     }
 
     plot_classification_loss_as_neg_log_probability_for_each_correct_class(
-        neg_log_correct_class_probabilities_where_closer_to_0_means_better,
+        neg_log_correct_class_probabilities,
     );
 }
 
 // Строим график по результатам урока.
 fn plot_classification_loss_as_neg_log_probability_for_each_correct_class(
-    neg_log_correct_class_probabilities_where_closer_to_0_means_better: [f64; 4],
+    neg_log_correct_class_probabilities: [f64; 4],
 ) {
     assert!(
-        neg_log_correct_class_probabilities_where_closer_to_0_means_better[0]
-            < neg_log_correct_class_probabilities_where_closer_to_0_means_better[1]
-            && neg_log_correct_class_probabilities_where_closer_to_0_means_better[1]
-                < neg_log_correct_class_probabilities_where_closer_to_0_means_better[2]
+        neg_log_correct_class_probabilities[0] < neg_log_correct_class_probabilities[1]
+            && neg_log_correct_class_probabilities[1] < neg_log_correct_class_probabilities[2]
     );
     assert!(check_f64_eq_1e_minus_10(
-        neg_log_correct_class_probabilities_where_closer_to_0_means_better[0],
-        neg_log_correct_class_probabilities_where_closer_to_0_means_better[3]
+        neg_log_correct_class_probabilities[0],
+        neg_log_correct_class_probabilities[3]
     ));
 
     lesson_visualization::line_chart(

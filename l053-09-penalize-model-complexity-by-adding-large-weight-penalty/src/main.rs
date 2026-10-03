@@ -16,13 +16,9 @@ fn main() {
     let weight: f64 = 3.0;
     let squared_weight: f64 = weight * weight;
     let prediction_error: f64 = 1.0;
-    let squared_weight_penalty_strength_where_0_disables_and_larger_penalizes_large_weights_more: f64 = 0.2;
-    let _: f64 = prediction_error
-        + squared_weight_penalty_strength_where_0_disables_and_larger_penalizes_large_weights_more
-            * squared_weight;
-    let _ =
-        &(squared_weight_penalty_strength_where_0_disables_and_larger_penalizes_large_weights_more
-            * squared_weight);
+    let squared_weight_penalty_strength: f64 = 0.2;
+    let _: f64 = prediction_error + squared_weight_penalty_strength * squared_weight;
+    let _ = &(squared_weight_penalty_strength * squared_weight);
 
     plot_error_with_and_without_squared_weight_penalty();
 }

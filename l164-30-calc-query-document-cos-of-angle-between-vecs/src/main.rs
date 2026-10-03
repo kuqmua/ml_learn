@@ -11,13 +11,16 @@
 // длину документов.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l006_01_multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens_where_1_means_same_direction_0_means_perpendicular_and_minus_1_means_opposite::multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens_where_1_means_same_direction_0_means_perpendicular_and_minus_1_means_opposite;
+use l006_01_multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens::multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens;
 
 fn main() {
     let query: [f64; 2] = [1.0, 0.0];
     let document: [f64; 2] = [2.0, 0.0];
-    let _: f64 = multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens_where_1_means_same_direction_0_means_perpendicular_and_minus_1_means_opposite(&query, &document)
-        .expect("для вычисления cos нужны ненулевые векторы слов с одинаковым числом координат");
+    let _: f64 =
+        multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens(&query, &document)
+            .expect(
+                "для вычисления cos нужны ненулевые векторы слов с одинаковым числом координат",
+            );
 
     plot_query_document_cos_of_angle(query);
 }
@@ -39,10 +42,17 @@ fn plot_query_document_cos_of_angle(query: [f64; 2]) {
                     let angle: f64 = (degrees as f64).to_radians();
                     let cos_as_horizontal_coord_of_unit_direction: f64 = angle.cos();
                     let sin_as_vertical_coord_of_unit_direction: f64 = angle.sin();
-                    let rotated_document: [f64; 2] = [cos_as_horizontal_coord_of_unit_direction, sin_as_vertical_coord_of_unit_direction];
+                    let rotated_document: [f64; 2] = [
+                        cos_as_horizontal_coord_of_unit_direction,
+                        sin_as_vertical_coord_of_unit_direction,
+                    ];
                     (
                         degrees as f64,
-                        multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens_where_1_means_same_direction_0_means_perpendicular_and_minus_1_means_opposite(&query, &rotated_document).unwrap(),
+                        multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens(
+                            &query,
+                            &rotated_document,
+                        )
+                        .unwrap(),
                     )
                 })
                 .collect::<Vec<_>>(),

@@ -5,7 +5,7 @@
 // Важно не использовать правильные ответы итоговой проверки при подборе весов.
 
 use l030_06_calc_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
-use l051_09_calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse::calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
+use l051_09_calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count::calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count;
 
 fn main() {
     const EXAMPLE_DATA: [(f64, f64); 10] = [
@@ -26,14 +26,14 @@ fn main() {
         "для разделения нужны train, validation и test"
     );
     /// Средняя абсолютная ошибка линейной модели: для каждого x считаем weight·x+constant_input_weight, сравниваем с ответом и усредняем модули ошибок.
-    fn calc_linear_model_error_as_average_absolute_diff_between_predictions_and_targets_where_0_means_exact_predictions_and_larger_means_worse(
+    fn calc_linear_model_error_as_average_absolute_diff_between_predictions_and_targets(
         data: &[(f64, f64)],
 
         weight: f64,
 
         constant_input_weight: f64,
     ) -> f64 {
-        calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
+        calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(
             &data.iter().map(|&(_, target)| target).collect::<Vec<_>>(),
             &data
                 .iter()
@@ -68,31 +68,28 @@ fn main() {
         (weight, mean_target - weight * mean_feature)
     })();
     let validation: &[(f64, f64)] = &EXAMPLE_DATA[6..8];
-    let _ =
-        calc_linear_model_error_as_average_absolute_diff_between_predictions_and_targets_where_0_means_exact_predictions_and_larger_means_worse(
-            validation,
-            0.,
-            calc_mean_by_summing_values_and_dividing_by_count(
-                &training_examples
-                    .iter()
-                    .map(|&(_, target)| target)
-                    .collect::<Vec<_>>(),
-            )
-            .unwrap(),
-        );
-    let _ =
-        calc_linear_model_error_as_average_absolute_diff_between_predictions_and_targets_where_0_means_exact_predictions_and_larger_means_worse(
-            validation,
-            weight,
-            constant_input_weight,
-        );
+    let _ = calc_linear_model_error_as_average_absolute_diff_between_predictions_and_targets(
+        validation,
+        0.,
+        calc_mean_by_summing_values_and_dividing_by_count(
+            &training_examples
+                .iter()
+                .map(|&(_, target)| target)
+                .collect::<Vec<_>>(),
+        )
+        .unwrap(),
+    );
+    let _ = calc_linear_model_error_as_average_absolute_diff_between_predictions_and_targets(
+        validation,
+        weight,
+        constant_input_weight,
+    );
     let test: &[(f64, f64)] = &EXAMPLE_DATA[8..];
-    let _ =
-        calc_linear_model_error_as_average_absolute_diff_between_predictions_and_targets_where_0_means_exact_predictions_and_larger_means_worse(
-            test,
-            weight,
-            constant_input_weight,
-        );
+    let _ = calc_linear_model_error_as_average_absolute_diff_between_predictions_and_targets(
+        test,
+        weight,
+        constant_input_weight,
+    );
     let _ = weight * 10. + constant_input_weight;
 
     plot_training_points_and_fitted_prediction_line(

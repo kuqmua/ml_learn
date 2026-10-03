@@ -1,0 +1,7 @@
+[package]
+name = "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }

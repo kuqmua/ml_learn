@@ -11,14 +11,12 @@ use l209_39_calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_v
 fn main() {
     let noise: f64 = -1.0;
     let clean: f64 = 2.0;
-    for original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal in
-        [1.0, 0.75, 0.25, 0.0]
-    {
+    for original_signal_variance_share in [1.0, 0.75, 0.25, 0.0] {
         let _: f64 =
             calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
                 clean,
                 noise,
-                original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal,
+                original_signal_variance_share,
             )
             .unwrap();
     }
@@ -49,19 +47,19 @@ fn plot_signal_and_noise_mixture_for_changing_signal_share(clean: f64, noise: f6
         &[lesson_visualization::Series {
             name: "x_t",
             points: &(0..=100)
-        .map(|plot_step_index| {
-            let original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal: f64 = plot_step_index as f64 / 100.0;
-            (
-                original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal,
+                .map(|plot_step_index| {
+                    let original_signal_variance_share: f64 = plot_step_index as f64 / 100.0;
+                    (
+                original_signal_variance_share,
                 calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
                     clean,
                     noise,
-                    original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal,
+                    original_signal_variance_share,
                 )
                 .unwrap(),
             )
-        })
-        .collect::<Vec<_>>(),
+                })
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

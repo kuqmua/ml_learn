@@ -23,17 +23,17 @@ fn main() {
     for _ in 0..80 {
         scale = (scale + squared_scale / scale) / 2.0;
     }
-    let coords_in_standard_deviation_units_where_0_means_mean_and_sign_shows_side_of_mean: [f64;
-        2] = [(text_unit[0] - mean) / scale, (text_unit[1] - mean) / scale];
+    let coords_in_standard_deviation_units: [f64; 2] =
+        [(text_unit[0] - mean) / scale, (text_unit[1] - mean) / scale];
 
     plot_normalized_coords_after_subtracting_mean_and_dividing_by_spread(
-        coords_in_standard_deviation_units_where_0_means_mean_and_sign_shows_side_of_mean,
+        coords_in_standard_deviation_units,
     );
 }
 
 // Строим график по результатам урока.
 fn plot_normalized_coords_after_subtracting_mean_and_dividing_by_spread(
-    coords_in_standard_deviation_units_where_0_means_mean_and_sign_shows_side_of_mean: [f64; 2],
+    coords_in_standard_deviation_units: [f64; 2],
 ) {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
@@ -44,12 +44,11 @@ fn plot_normalized_coords_after_subtracting_mean_and_dividing_by_spread(
         &[lesson_visualization::Series {
             name: "нормализованный токен",
 
-            points:
-                &coords_in_standard_deviation_units_where_0_means_mean_and_sign_shows_side_of_mean
-                    .iter()
-                    .enumerate()
-                    .map(|(item_index, &element_value)| (item_index as f64, element_value))
-                    .collect::<Vec<_>>(),
+            points: &coords_in_standard_deviation_units
+                .iter()
+                .enumerate()
+                .map(|(item_index, &element_value)| (item_index as f64, element_value))
+                .collect::<Vec<_>>(),
         }],
     )
     .expect("не удалось сохранить график");

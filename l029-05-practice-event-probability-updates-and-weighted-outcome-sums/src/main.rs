@@ -56,17 +56,16 @@ fn main() {
         &((|| -> f64 {
             let disease_probability_before_observing_test_result: f64 = 0.01;
 
-            let pos_test_probability_given_disease_where_1_means_no_missed_cases: f64 = 0.9;
+            let pos_test_probability_given_disease: f64 = 0.9;
 
             let true_pos_probability: f64 = disease_probability_before_observing_test_result
-                * pos_test_probability_given_disease_where_1_means_no_missed_cases;
+                * pos_test_probability_given_disease;
 
-            let neg_test_probability_given_no_disease_where_1_means_no_false_alarms: f64 = 0.95;
+            let neg_test_probability_given_no_disease: f64 = 0.95;
             true_pos_probability
                 / (true_pos_probability
                     + (1.0 - disease_probability_before_observing_test_result)
-                        * (1.0
-                            - neg_test_probability_given_no_disease_where_1_means_no_false_alarms))
+                        * (1.0 - neg_test_probability_given_no_disease))
         })()),
     );
 

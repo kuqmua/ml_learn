@@ -10,23 +10,19 @@
 fn main() {
     let limit: f64 = 1.0;
     assert!(limit > 0.0);
-    for (
-        _description,
-        loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it,
-        expected,
-    ) in [
+    for (_description, loss_slope, expected) in [
         ("слишком большой положительный", 12.0, 1.0),
         ("положительный внутри интервала", 0.5, 0.5),
         ("нулевой", 0.0, 0.0),
         ("отрицательный внутри интервала", -0.5, -0.5),
         ("слишком большой отрицательный", -12.0, -1.0),
     ] {
-        let gradient_with_magnitude_limited_and_sign_preserved: f64 = if loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it > limit {
+        let gradient_with_magnitude_limited_and_sign_preserved: f64 = if loss_slope > limit {
             limit
-        } else if loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it < -limit {
+        } else if loss_slope < -limit {
             -limit
         } else {
-            loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it
+            loss_slope
         };
         assert_eq!(gradient_with_magnitude_limited_and_sign_preserved, expected);
     }

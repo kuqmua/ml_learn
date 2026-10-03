@@ -1,0 +1,10 @@
+[package]
+name = "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }
+l001_01_multiply_matching_coords_then_add_results = { package = "l001-01-multiply-matching-coords-then-add-results", path = "../l001-01-multiply-matching-coords-then-add-results" }
+
+lesson-visualization = { path = "../lesson-visualization" }

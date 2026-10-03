@@ -10,7 +10,7 @@
 // координаты перед сравнением соседей.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther::calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther;
+use l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs::calc_squared_point_dist_by_summing_squared_coord_diffs;
 
 fn main() {
     let scale: [f64; 2] = [1.0, 1000.0];
@@ -26,12 +26,9 @@ fn main() {
         [second_example[0] / scale[0], second_example[1] / scale[1]];
 
     plot_squared_dists_before_and_after_feature_scaling(
-        calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
-            &first_example,
-            &second_example,
-        )
-        .unwrap(),
-        calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
+        calc_squared_point_dist_by_summing_squared_coord_diffs(&first_example, &second_example)
+            .unwrap(),
+        calc_squared_point_dist_by_summing_squared_coord_diffs(
             &scaled_first_example,
             &scaled_second_example,
         )

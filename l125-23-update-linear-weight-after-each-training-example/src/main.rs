@@ -16,9 +16,8 @@ fn main() {
     let mut weight_history: [(f64, f64); 3] = [(0.0, weight); 3];
     let examples: [(f64, f64); 2] = [(1.0, 2.0), (2.0, 4.0)];
     for (step, (feature, target)) in examples.into_iter().enumerate() {
-        let loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it: f64 = 2.0 * (weight * feature - target) * feature;
-        weight -= 0.1
-            * loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it;
+        let loss_slope: f64 = 2.0 * (weight * feature - target) * feature;
+        weight -= 0.1 * loss_slope;
 
         weight_history[step + 1] = ((step + 1) as f64, weight);
     }

@@ -47,20 +47,20 @@ fn main() {
         bin_counts
     }
     /// Индекс стабильности популяции (PSI): суммируем (current−reference)·ln(current/reference) по долям трёх интервалов, ограничивая доли снизу.
-    fn calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(
+    fn calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios(
         reference: &[f64],
         current: &[f64],
     ) -> f64 {
         let reference_group_shares: [f64; 3] =
             calc_shares_of_feature_values_in_three_bins(reference);
         let current_group_shares: [f64; 3] = calc_shares_of_feature_values_in_three_bins(current);
-        let mut distribution_shift_score_where_0_means_matching_bin_shares_and_larger_means_more_change: f64 = 0.0;
+        let mut distribution_shift_score: f64 = 0.0;
         for bin_index in 0..reference_group_shares.len() {
             let reference_group_share: f64 =
                 choose_larger_number(reference_group_shares[bin_index], 1e-6);
             let current_group_share: f64 =
                 choose_larger_number(current_group_shares[bin_index], 1e-6);
-            distribution_shift_score_where_0_means_matching_bin_shares_and_larger_means_more_change += (current_group_share - reference_group_share)
+            distribution_shift_score += (current_group_share - reference_group_share)
                 * (|| -> f64 {
                     let value: f64 = current_group_share / reference_group_share;
                     assert!(
@@ -103,17 +103,22 @@ fn main() {
                         )
                 })();
         }
-        distribution_shift_score_where_0_means_matching_bin_shares_and_larger_means_more_change
+        distribution_shift_score
     }
 
     let reference: [f64; 6] = [-1., -0.5, 0.1, 0.2, 1.2, 1.5];
     let stable: [f64; 6] = reference;
     let shifted: [f64; 6] = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6];
-    let _ = (&(reference.len()), &(shifted.len()), &(calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(
-            &reference, &stable
-        )), &(calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(
-            &reference, &shifted
-        )));
+    let _ = (
+        &(reference.len()),
+        &(shifted.len()),
+        &(calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios(
+            &reference, &stable,
+        )),
+        &(calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios(
+            &reference, &shifted,
+        )),
+    );
 
     plot_distribution_shift_score_as_sum_of_interval_share_changes_times_log_share_ratios(
         reference, stable, shifted,
@@ -125,31 +130,25 @@ fn main() {
         shifted: [f64; 6],
     ) {
         lesson_visualization::bar_chart(
-
             env!("CARGO_MANIFEST_DIR"),
-
             "lesson-chart",
-
             "Сдвиг признака",
-
             "PSI",
-
             &[
                 (
-
                     "стабильно",
-
-                    calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(&reference, &stable),
+                    calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios(
+                        &reference, &stable,
+                    ),
                 ),
                 (
-
                     "сдвиг",
-
-                    calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(&reference, &shifted),
+                    calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios(
+                        &reference, &shifted,
+                    ),
                 ),
             ],
         )
-
         .expect("не удалось сохранить график");
     }
 }

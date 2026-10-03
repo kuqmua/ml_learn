@@ -6,7 +6,7 @@
 //   продолжение.
 // Для позиции i softmax вычисляется только по позициям 0..=i.
 
-use l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares::calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares;
+use l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum::calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum;
 use l187_35_calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches::calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
 fn main() {
@@ -30,7 +30,7 @@ fn plot_weights_assigned_only_to_current_and_past_positions(states: &[[f64; 2]; 
         "Веса причинного внимания",
         &std::array::from_fn::<[f64; 3], 3, _>(|item_index| {
             let query_vec = states[item_index];
-            let weights: Vec<f64> = calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
+            let weights: Vec<f64> = calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum(
                 &(0..=item_index)
                     .map(|past_index| {
                         (query_vec[0] * states[past_index][0]

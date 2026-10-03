@@ -38,7 +38,7 @@ fn main() {
             .map(|value| (value - maximum_value).exp())
             .sum::<f64>()
             .ln();
-    let neg_log_hidden_token_probability_where_closer_to_0_means_better: f64 =
+    let neg_log_hidden_token_probability: f64 =
         logarithm_of_sum_of_exponentials - raw_model_scores[hidden_text_unit_identifier];
-    assert!(neg_log_hidden_token_probability_where_closer_to_0_means_better.is_finite());
+    assert!(neg_log_hidden_token_probability.is_finite());
 }

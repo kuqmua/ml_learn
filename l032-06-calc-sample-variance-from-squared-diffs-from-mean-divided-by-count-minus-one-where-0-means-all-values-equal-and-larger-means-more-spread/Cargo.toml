@@ -1,9 +1,0 @@
-[package]
-name = "l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one-where-0-means-all-values-equal-and-larger-means-more-spread"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-l030_06_calc_mean_by_summing_values_and_dividing_by_count = { package = "l030-06-calc-mean-by-summing-values-and-dividing-by-count", path = "../l030-06-calc-mean-by-summing-values-and-dividing-by-count" }
-
-lesson-visualization = { path = "../lesson-visualization" }

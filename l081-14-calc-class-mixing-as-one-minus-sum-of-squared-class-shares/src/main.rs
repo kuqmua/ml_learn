@@ -7,7 +7,7 @@
 fn main() {
     for pos_class_share in [0.0, 0.5, 1.0] {
         let neg_class_share: f64 = 1.0 - pos_class_share;
-        let _binary_gini_mixing_where_0_means_one_class_and_half_means_equal_class_shares: f64 =
+        let _binary_gini_mixing: f64 =
             1.0 - pos_class_share * pos_class_share - neg_class_share * neg_class_share;
     }
 

@@ -16,14 +16,14 @@ fn main() {
     let pos_class_probability_before_observing_words: f64 = 0.5;
     let word_one_given_pos: f64 = 0.8;
     let word_two_given_pos: f64 = 0.6;
-    let unnormalized_class_and_word_probability_where_larger_means_more_support_for_class: f64 =
+    let unnormalized_class_and_word_probability: f64 =
         pos_class_probability_before_observing_words * word_one_given_pos * word_two_given_pos;
 
     plot_result_after_multiplying_feature_probabilities_within_class(
         pos_class_probability_before_observing_words,
         word_one_given_pos,
         word_two_given_pos,
-        unnormalized_class_and_word_probability_where_larger_means_more_support_for_class,
+        unnormalized_class_and_word_probability,
     );
 }
 
@@ -32,7 +32,7 @@ fn plot_result_after_multiplying_feature_probabilities_within_class(
     pos_class_probability_before_observing_words: f64,
     word_one_given_pos: f64,
     word_two_given_pos: f64,
-    unnormalized_class_and_word_probability_where_larger_means_more_support_for_class: f64,
+    unnormalized_class_and_word_probability: f64,
 ) {
     lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
@@ -43,10 +43,7 @@ fn plot_result_after_multiplying_feature_probabilities_within_class(
             ("prior", pos_class_probability_before_observing_words),
             ("слово 1", word_one_given_pos),
             ("слово 2", word_two_given_pos),
-            (
-                "совместно",
-                unnormalized_class_and_word_probability_where_larger_means_more_support_for_class,
-            ),
+            ("совместно", unnormalized_class_and_word_probability),
         ],
     )
     .expect("не удалось сохранить график");

@@ -39,7 +39,7 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_correct_prediction_share_in_each_subgroup(groups: [(&str, bool, bool); 4]) {
-    let group_correct_prediction_share_where_1_means_all_correct_and_0_means_all_wrong: &dyn Fn(&str) -> f64 = &|name: &str| {
+    let group_correct_prediction_share: &dyn Fn(&str) -> f64 = &|name: &str| {
         let examples: Vec<&(&str, bool, bool)> = groups
             .iter()
             .filter(|(group, _, _)| *group == name)
@@ -56,14 +56,8 @@ fn plot_correct_prediction_share_in_each_subgroup(groups: [(&str, bool, bool); 4
         "Точность по подгруппам",
         "accuracy",
         &[
-            (
-                "A",
-                group_correct_prediction_share_where_1_means_all_correct_and_0_means_all_wrong("A"),
-            ),
-            (
-                "B",
-                group_correct_prediction_share_where_1_means_all_correct_and_0_means_all_wrong("B"),
-            ),
+            ("A", group_correct_prediction_share("A")),
+            ("B", group_correct_prediction_share("B")),
         ],
     )
     .expect("не удалось сохранить график");

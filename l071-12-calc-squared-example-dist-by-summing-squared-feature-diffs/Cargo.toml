@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther = { package = "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther", path = "../l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther" }
+l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs = { package = "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs", path = "../l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs" }
 
 lesson-visualization = { path = "../lesson-visualization" }

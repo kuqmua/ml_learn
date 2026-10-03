@@ -1,0 +1,8 @@
+[package]
+name = "l190-35-calc-next-token-loss-as-neg-log-of-target-probability-from-exponentiated-scores"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum = { package = "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum", path = "../l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum" }
+lesson-visualization = { path = "../lesson-visualization" }

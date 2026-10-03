@@ -11,16 +11,14 @@
 // требуется только порядок соседей.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther::calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther;
+use l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs::calc_squared_point_dist_by_summing_squared_coord_diffs;
 
 fn main() {
     let query: [f64; 2] = [1.0, 2.0];
     let candidates: [[f64; 2]; 2] = [[2.0, 2.0], [4.0, 6.0]];
     for candidate in candidates {
-        let _: f64 = calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
-            &query, &candidate,
-        )
-        .expect("координаты должны быть конечными, а квадрат расстояния — помещаться в f64");
+        let _: f64 = calc_squared_point_dist_by_summing_squared_coord_diffs(&query, &candidate)
+            .expect("координаты должны быть конечными, а квадрат расстояния — помещаться в f64");
     }
 
     plot_dist_from_query_for_changing_coord();

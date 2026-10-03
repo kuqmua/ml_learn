@@ -9,7 +9,7 @@
 // Зачем это нужно: Key описывает, на какой запрос позиция отвечает; сравнение Q·K даёт оценку внимания.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec::multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec;
+use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_then_add_results;
 
 fn main() {
     let query: [f64; 2] = [1.0, 0.5];
@@ -18,7 +18,7 @@ fn main() {
     plot_results_after_multiplying_matching_query_and_key_coords(
         query,
         key,
-        multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec(&query, &key)
+        multiply_matching_coords_then_add_results(&query, &key)
             .expect("запрос и ключ должны иметь одинаковое число координат"),
     );
 }

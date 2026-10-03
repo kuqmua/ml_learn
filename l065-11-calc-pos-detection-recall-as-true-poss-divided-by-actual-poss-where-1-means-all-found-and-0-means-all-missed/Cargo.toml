@@ -1,9 +1,0 @@
-[package]
-name = "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss-where-1-means-all-found-and-0-means-all-missed"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-l061_11_count_binary_classification_outcomes_from_targets_and_predictions = { package = "l061-11-count-binary-classification-outcomes-from-targets-and-predictions", path = "../l061-11-count-binary-classification-outcomes-from-targets-and-predictions" }
-
-lesson-visualization = { path = "../lesson-visualization" }

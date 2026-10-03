@@ -24,12 +24,12 @@ fn main() {
         );
         let total_variance: f64 =
             variances_along_principal_axes[0] + variances_along_principal_axes[1];
-        let variance_share_explained_by_first_axis_where_0_means_none_and_1_means_all_spread_preserved: Option<f64> = if total_variance == 0.0 {
+        let variance_share_explained_by_first_axis: Option<f64> = if total_variance == 0.0 {
             None
         } else {
             Some(variances_along_principal_axes[0] / total_variance)
         };
-        assert_eq!(variance_share_explained_by_first_axis_where_0_means_none_and_1_means_all_spread_preserved, expected);
+        assert_eq!(variance_share_explained_by_first_axis, expected);
     }
 
     plot_first_direction_share_for_changing_variance();

@@ -8,7 +8,7 @@ fn choose_correct_check_for_lesson() {
     let _choices: [&str; 3] = [
         "Проверь, что идеальное ранжирование даёт ROC-AUC 1, а обратное — 0.",
         "Получается примерно 0.667; объясни, почему это не обычное среднее 0.75.",
-        "Укажи, в каких шагах добавление ложноположительного объекта уменьшает correct_pos_prediction_share_where_1_means_no_false_alarms.",
+        "Укажи, в каких шагах добавление ложноположительного объекта уменьшает correct_pos_prediction_share.",
     ];
 
     let selected_choice: Option<usize> = None;

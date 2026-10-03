@@ -9,8 +9,7 @@
 // На границе random=epsilon выбираем использование.
 
 fn main() {
-    let random_action_probability_where_0_always_uses_best_known_action_and_1_always_explores: f64 =
-        0.1;
+    let random_action_probability: f64 = 0.1;
     let best_known_action: &str = "вправо";
     for (_description, random_number_between_zero_and_one, expected_action) in [
         ("исследование", 0.05, "влево"),
@@ -18,9 +17,7 @@ fn main() {
         ("использование", 0.8, "вправо"),
     ] {
         assert!((0.0..1.0).contains(&random_number_between_zero_and_one));
-        let action: &str = if random_number_between_zero_and_one
-            < random_action_probability_where_0_always_uses_best_known_action_and_1_always_explores
-        {
+        let action: &str = if random_number_between_zero_and_one < random_action_probability {
             "влево"
         } else {
             best_known_action

@@ -16,14 +16,12 @@ fn main() {
     let ranked_targets: [bool; 4] = [true, false, true, false];
     let pos_count: f64 = ranked_targets.iter().filter(|&&target| target).count() as f64;
     let mut found_pos: f64 = 0.0;
-    let mut _average_precision_where_1_means_all_poss_ranked_before_negs_and_larger_means_better: f64 = 0.0;
+    let mut _average_precision: f64 = 0.0;
     for (rank, target) in ranked_targets.into_iter().enumerate() {
         if target {
             found_pos += 1.0;
-            let correct_pos_prediction_share_where_1_means_no_false_alarms: f64 =
-                found_pos / (rank + 1) as f64;
-            _average_precision_where_1_means_all_poss_ranked_before_negs_and_larger_means_better +=
-                correct_pos_prediction_share_where_1_means_no_false_alarms / pos_count;
+            let correct_pos_prediction_share: f64 = found_pos / (rank + 1) as f64;
+            _average_precision += correct_pos_prediction_share / pos_count;
         }
     }
 

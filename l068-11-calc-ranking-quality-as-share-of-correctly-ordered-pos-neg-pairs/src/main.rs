@@ -29,8 +29,8 @@ fn main() {
             }
         }
         let pair_count: f64 = (pos_scores.len() * neg_scores.len()) as f64;
-        let roc_auc_where_1_means_correct_order_0_means_reversed_order_and_half_means_no_pairwise_ranking_advantage: f64 = ordered_pairs / pair_count;
-        assert_eq!(roc_auc_where_1_means_correct_order_0_means_reversed_order_and_half_means_no_pairwise_ranking_advantage, expected);
+        let roc_auc: f64 = ordered_pairs / pair_count;
+        assert_eq!(roc_auc, expected);
     }
 
     plot_detected_pos_share_against_false_pos_share();

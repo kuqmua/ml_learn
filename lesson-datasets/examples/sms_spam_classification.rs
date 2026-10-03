@@ -1,6 +1,6 @@
 use l061_11_count_binary_classification_outcomes_from_targets_and_predictions::count_binary_classification_outcomes_from_targets_and_predictions;
-use l063_11_calc_prediction_accuracy_as_correct_predictions_divided_by_all_predictions_where_1_means_all_correct_and_0_means_all_wrong::calc_prediction_accuracy_as_correct_predictions_divided_by_all_predictions_where_1_means_all_correct_and_0_means_all_wrong;
-use l065_11_calc_pos_detection_recall_as_true_poss_divided_by_actual_poss_where_1_means_all_found_and_0_means_all_missed::calc_pos_detection_recall_as_true_poss_divided_by_actual_poss_where_1_means_all_found_and_0_means_all_missed;
+use l063_11_calc_prediction_accuracy_as_correct_predictions_divided_by_all_predictions::calc_prediction_accuracy_as_correct_predictions_divided_by_all_predictions;
+use l065_11_calc_pos_detection_recall_as_true_poss_divided_by_actual_poss::calc_pos_detection_recall_as_true_poss_divided_by_actual_poss;
 
 fn report_majority_baseline(
     records: &[lesson_datasets::SmsSpamRecord],
@@ -15,12 +15,9 @@ fn report_majority_baseline(
     let counts =
         count_binary_classification_outcomes_from_targets_and_predictions(&truth, &predictions)?;
     let _ = (
-        &(calc_prediction_accuracy_as_correct_predictions_divided_by_all_predictions_where_1_means_all_correct_and_0_means_all_wrong(counts)
+        &(calc_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(counts)
             .unwrap()),
-        &(calc_pos_detection_recall_as_true_poss_divided_by_actual_poss_where_1_means_all_found_and_0_means_all_missed(
-            counts,
-        )
-        .unwrap()),
+        &(calc_pos_detection_recall_as_true_poss_divided_by_actual_poss(counts).unwrap()),
         &(counts.false_negs_as_missed_pos_cases),
     );
     Ok(())

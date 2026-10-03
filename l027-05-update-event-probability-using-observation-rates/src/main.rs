@@ -13,14 +13,13 @@
 
 fn main() {
     let disease_probability_before_observing_test_result: f64 = 0.01;
-    let pos_test_probability_given_disease_where_1_means_no_missed_cases: f64 = 0.90;
+    let pos_test_probability_given_disease: f64 = 0.90;
     let joint_probability_of_disease_and_pos_test: f64 =
-        disease_probability_before_observing_test_result
-            * pos_test_probability_given_disease_where_1_means_no_missed_cases;
-    let neg_test_probability_given_no_disease_where_1_means_no_false_alarms: f64 = 0.95;
+        disease_probability_before_observing_test_result * pos_test_probability_given_disease;
+    let neg_test_probability_given_no_disease: f64 = 0.95;
     let joint_probability_of_no_disease_and_pos_test: f64 = (1.0
         - disease_probability_before_observing_test_result)
-        * (1.0 - neg_test_probability_given_no_disease_where_1_means_no_false_alarms);
+        * (1.0 - neg_test_probability_given_no_disease);
     let disease_probability_after_pos_test: f64 = joint_probability_of_disease_and_pos_test
         / (joint_probability_of_disease_and_pos_test
             + joint_probability_of_no_disease_and_pos_test);

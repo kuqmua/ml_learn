@@ -20,16 +20,12 @@ fn main() {
             sick_and_pos <= pos_tests,
             "совместных случаев не может быть больше всех случаев B"
         );
-        let disease_probability_given_pos_test_where_0_means_none_and_1_means_all: Option<f64> =
-            if pos_tests == 0.0 {
-                None
-            } else {
-                Some(sick_and_pos / pos_tests)
-            };
-        assert_eq!(
-            disease_probability_given_pos_test_where_0_means_none_and_1_means_all,
-            expected
-        );
+        let disease_probability_given_pos_test: Option<f64> = if pos_tests == 0.0 {
+            None
+        } else {
+            Some(sick_and_pos / pos_tests)
+        };
+        assert_eq!(disease_probability_given_pos_test, expected);
     }
 
     plot_disease_probability_among_pos_tests();

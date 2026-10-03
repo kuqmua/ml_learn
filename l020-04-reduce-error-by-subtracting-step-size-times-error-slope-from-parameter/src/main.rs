@@ -14,24 +14,17 @@
 
 fn main() {
     let parameter: f64 = 0.0;
-    let loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it: f64 =
-        2.0 * (parameter - 3.0);
+    let loss_slope: f64 = 2.0 * (parameter - 3.0);
     for rate in [0.1, 1.0, 2.0] {
-        let updated: f64 = parameter - rate * loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it;
+        let updated: f64 = parameter - rate * loss_slope;
         let _: f64 = (updated - 3.0) * (updated - 3.0);
     }
 
-    plot_squared_error_after_one_update_for_different_step_sizes(
-        parameter,
-        loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it,
-    );
+    plot_squared_error_after_one_update_for_different_step_sizes(parameter, loss_slope);
 }
 
 // Строим график по результатам урока.
-fn plot_squared_error_after_one_update_for_different_step_sizes(
-    parameter: f64,
-    loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it: f64,
-) {
+fn plot_squared_error_after_one_update_for_different_step_sizes(parameter: f64, loss_slope: f64) {
     let learning_rates: [f64; 3] = [0.1, 1.0, 2.0];
 
     lesson_visualization::line_chart(
@@ -46,7 +39,7 @@ fn plot_squared_error_after_one_update_for_different_step_sizes(
             points: &learning_rates
                 .into_iter()
                 .map(|rate| {
-                    let updated: f64 = parameter - rate * loss_slope_where_pos_calls_for_decreasing_parameter_and_neg_calls_for_increasing_it;
+                    let updated: f64 = parameter - rate * loss_slope;
                     (rate, (updated - 3.0) * (updated - 3.0))
                 })
                 .collect::<Vec<_>>(),

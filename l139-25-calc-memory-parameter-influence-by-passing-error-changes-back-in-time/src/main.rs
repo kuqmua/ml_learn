@@ -8,7 +8,7 @@
 
 use lesson_float_comparison::check_f64_eq_1e_minus_8;
 
-use l138_25_calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1::calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1;
+use l138_25_calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state::calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state;
 
 fn half_squared_error_of_last_recurrent_state_against_target(
     input: &[f64],
@@ -17,7 +17,7 @@ fn half_squared_error_of_last_recurrent_state_against_target(
     target: f64,
 ) -> f64 {
     let last: f64 =
-        *calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1(
+        *calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
             input,
             input_weight,
             recurrent_weight,
@@ -31,7 +31,7 @@ fn main() {
     let input_weight: f64 = 0.3;
     let recurrent_weight: f64 = 0.4;
     let history: [f64; 3] =
-        calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1(
+        calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
             &input,
             input_weight,
             recurrent_weight,

@@ -10,7 +10,7 @@
 /// Нормализация слоя (LayerNorm): из координат вычитаем среднее и делим на sqrt(среднее квадратов отклонений + epsilon).
 use l187_35_calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches::calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
-fn normalize_coords_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average(
+fn normalize_coords_by_subtracting_mean_and_dividing_by_root_mean_square(
     input_value: [f64; 2],
 ) -> [f64; 2] {
     let mean: f64 = (input_value[0] + input_value[1]) / 2.0;
@@ -25,7 +25,7 @@ fn calc_decoder_block_output_by_adding_past_context_and_transformed_normalized_v
     input: &[[f64; 2]; 3],
 ) -> [[f64; 2]; 3] {
     let normalized: [[f64; 2]; 3] =
-        input.map(normalize_coords_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average);
+        input.map(normalize_coords_by_subtracting_mean_and_dividing_by_root_mean_square);
     let attention: [[f64; 2]; 3] =
         calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
             &normalized,
@@ -41,7 +41,7 @@ fn calc_decoder_block_output_by_adding_past_context_and_transformed_normalized_v
         let input_plus_transformed_value: [f64; 2] =
             [original[0] + context[0], original[1] + context[1]];
         let scaled_values: [f64; 2] =
-            normalize_coords_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average(
+            normalize_coords_by_subtracting_mean_and_dividing_by_root_mean_square(
                 input_plus_transformed_value,
             );
         [

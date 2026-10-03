@@ -3,7 +3,7 @@
 // После обучения считаем ошибки на примерах, которые не использовали для подбора весов.
 // Сравниваем с простым способом: всегда выдавать средний ответ обучающих примеров.
 
-use l050_09_calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse::calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
+use l050_09_calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count::calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count;
 
 fn main() {
     const TRAINING_EXAMPLES: [(f64, f64); 5] = [(0., 1.), (1., 3.), (2., 5.), (3., 7.), (4., 9.)];
@@ -47,13 +47,13 @@ fn main() {
     let test: [(f64, f64); 2] = [(5., 11.), (6., 13.)];
 
     let targets: [f64; 2] = test.map(|(_, target)| target);
-    let _: f64 = calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
+    let _: f64 = calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
         &targets,
         &test.map(|(feature, _)| weight * feature + constant_input_weight),
     )
     .unwrap();
     let baseline_predictions: [f64; 2] = [5.0; 2];
-    let _: f64 = calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
+    let _: f64 = calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
         &targets,
         &baseline_predictions,
     )

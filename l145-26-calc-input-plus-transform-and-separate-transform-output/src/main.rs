@@ -14,10 +14,7 @@ fn calc_input_plus_transform_and_separate_transform_output(
     input: f64,
     transform: f64,
 ) -> (f64, f64) {
-    let tanh_bounded_transform_between_minus_1_and_1: f64 =
-        calc_tanh_as_signed_signal_where_0_means_no_signal_and_large_inputs_approach_1_or_minus_1(
-            input * transform,
-        );
+    let tanh_bounded_transform_between_minus_1_and_1: f64 = calc_tanh(input * transform);
     let input_plus_transformed_value: f64 = input + tanh_bounded_transform_between_minus_1_and_1;
     let transformed_signal_passed_to_output_without_adding_input: f64 =
         tanh_bounded_transform_between_minus_1_and_1;
@@ -43,8 +40,6 @@ fn main() {
 }
 
 /// tanh сохраняет знак, равен 0 при нулевом входе и насыщается к −1 или 1.
-fn calc_tanh_as_signed_signal_where_0_means_no_signal_and_large_inputs_approach_1_or_minus_1(
-    input: f64,
-) -> f64 {
+fn calc_tanh(input: f64) -> f64 {
     input.tanh()
 }

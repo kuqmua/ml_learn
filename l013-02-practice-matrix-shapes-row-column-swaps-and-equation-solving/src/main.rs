@@ -3,7 +3,7 @@
 // Перед каждым действием проверяем, подходят ли размеры входных таблиц.
 // Так ошибка в размере обнаружится до попытки прочитать несуществующую ячейку.
 
-use l001_01_multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec::multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec;
+use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_then_add_results;
 
 fn main() {
     #[derive(Debug, PartialEq)]
@@ -55,7 +55,7 @@ fn main() {
         let row_end: usize = row_start + left_matrix.column_count;
 
         output_vec.push(
-            multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec(
+            multiply_matching_coords_then_add_results(
                 &left_matrix.data[row_start..row_end],
                 &input_vec,
             )
@@ -87,7 +87,7 @@ fn main() {
             let row_end: usize = row_start + transposed_matrix.column_count;
 
             result_elements.push(
-                multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec(
+                multiply_matching_coords_then_add_results(
                     &transposed_matrix.data[row_start..row_end],
                     &(0..left_matrix.rows)
                         .map(|shared_index| {

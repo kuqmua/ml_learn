@@ -6,22 +6,17 @@
 
 use lesson_float_comparison::check_f64_eq_1e_minus_10;
 
-use l001_01_multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec::multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec;
-use l002_01_calc_sum_of_absolute_vec_coords_as_total_axis_aligned_len_where_0_means_zero_vec::calc_sum_of_absolute_vec_coords_as_total_axis_aligned_len_where_0_means_zero_vec;
-use l003_01_calc_vec_len_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer::calc_vec_len_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer;
-use l005_01_calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther::calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther;
-use l006_01_multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens_where_1_means_same_direction_0_means_perpendicular_and_minus_1_means_opposite::multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens_where_1_means_same_direction_0_means_perpendicular_and_minus_1_means_opposite;
+use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_then_add_results;
+use l002_01_calc_sum_of_absolute_vec_coords::calc_sum_of_absolute_vec_coords;
+use l003_01_calc_vec_len_as_square_root_of_sum_of_squared_coords::calc_vec_len_as_square_root_of_sum_of_squared_coords;
+use l005_01_calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs::calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs;
+use l006_01_multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens::multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens;
 
 fn main() {
     let first_vec: [f64; 2] = [3.0, 4.0];
+    assert_eq!(calc_sum_of_absolute_vec_coords(&first_vec), 7.0);
     assert_eq!(
-        calc_sum_of_absolute_vec_coords_as_total_axis_aligned_len_where_0_means_zero_vec(
-            &first_vec
-        ),
-        7.0
-    );
-    assert_eq!(
-        calc_vec_len_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer(&first_vec),
+        calc_vec_len_as_square_root_of_sum_of_squared_coords(&first_vec),
         5.0
     );
 
@@ -31,40 +26,34 @@ fn main() {
         ("противоположный", &[-3.0, -4.0], -25.0, Some(-1.0)),
         ("нулевой без направления", &[0.0, 0.0], 0.0, None),
     ];
-    for (
-        _description,
-        second_vec,
-        expected_sum,
-        expected_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite,
-    ) in cases
-    {
-        let direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite: Option<f64> =
-            multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens_where_1_means_same_direction_0_means_perpendicular_and_minus_1_means_opposite(&first_vec, second_vec).ok();
+    for (_description, second_vec, expected_sum, expected_direction_similarity) in cases {
+        let direction_similarity: Option<f64> =
+            multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens(
+                &first_vec, second_vec,
+            )
+            .ok();
         assert_eq!(
-            multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec(&first_vec, second_vec)
+            multiply_matching_coords_then_add_results(&first_vec, second_vec)
                 .expect("ожидались векторы с одинаковым числом координат"),
             expected_sum
         );
-        if let (Some(actual), Some(expected)) = (direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite, expected_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite) {
+        if let (Some(actual), Some(expected)) =
+            (direction_similarity, expected_direction_similarity)
+        {
             assert!(check_f64_eq_1e_minus_10(actual, expected));
         } else {
-            assert_eq!(direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite, expected_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite);
+            assert_eq!(direction_similarity, expected_direction_similarity);
         }
-        assert!(
-            check_f64_eq_1e_minus_10(calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
-                &first_vec,
-                second_vec,
-            )
-            .unwrap(), calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
-                    second_vec,
-                    &first_vec,
-                )
-                .unwrap())
-        );
+        assert!(check_f64_eq_1e_minus_10(
+            calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs(&first_vec, second_vec,)
+                .unwrap(),
+            calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs(second_vec, &first_vec,)
+                .unwrap()
+        ));
     }
 
     let too_short: [f64; 1] = [1.0];
-    let _: &str = multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec(&first_vec, &too_short)
+    let _: &str = multiply_matching_coords_then_add_results(&first_vec, &too_short)
         .expect_err("векторы разной длины нужно отклонить");
 
     plot_l1_and_euclidean_lens_as_absolute_sum_and_square_root_of_squared_sum();

@@ -19,15 +19,12 @@ fn main() {
         let mut values: Vec<f64> = source.to_vec();
         values.sort_by(f64::total_cmp);
         let middle: usize = values.len() / 2;
-        let median_where_at_least_half_of_values_are_at_or_below_and_at_least_half_at_or_above: f64 = if values.len() % 2 == 0 {
+        let median: f64 = if values.len() % 2 == 0 {
             (values[middle - 1] + values[middle]) / 2.0
         } else {
             values[middle]
         };
-        assert_eq!(
-            median_where_at_least_half_of_values_are_at_or_below_and_at_least_half_at_or_above,
-            expected
-        );
+        assert_eq!(median, expected);
     }
 
     plot_values_and_median_as_middle_of_sorted_values();

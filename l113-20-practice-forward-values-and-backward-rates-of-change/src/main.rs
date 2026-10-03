@@ -53,11 +53,9 @@ fn main() {
     /// tanh(x) = (e^(2x)-1)/(e^(2x)+1), отдельная формула для отрицательных x.
     /// Учебный аналог `f64::tanh`; явная формула может работать медленнее и давать другое округление.
     /// Гиперболический тангенс tanh(x) = (e^(2x)−1) / (e^(2x)+1); используем симметрию и насыщение для устойчивости.
-    fn calc_tanh_as_signed_signal_where_0_means_no_signal_and_large_pos_or_neg_inputs_approach_1_or_minus_1(
-        value: f64,
-    ) -> f64 {
+    fn calc_tanh(value: f64) -> f64 {
         if value < 0.0 {
-            return -calc_tanh_as_signed_signal_where_0_means_no_signal_and_large_pos_or_neg_inputs_approach_1_or_minus_1(-value);
+            return -calc_tanh(-value);
         }
         if value > 20.0 {
             return 1.0;
@@ -113,11 +111,9 @@ fn main() {
     let doubled_square_index: usize =
         graph.append_input_value_node_to_computation_graph(graph.0[squared_index].value * 2.0);
     graph.0[doubled_square_index].operation = Operation::Add(squared_index, squared_index);
-    let output_index: usize = graph.append_input_value_node_to_computation_graph(
-        calc_tanh_as_signed_signal_where_0_means_no_signal_and_large_pos_or_neg_inputs_approach_1_or_minus_1(
-            graph.0[doubled_square_index].value,
-        ),
-    );
+    let output_index: usize = graph.append_input_value_node_to_computation_graph(calc_tanh(
+        graph.0[doubled_square_index].value,
+    ));
     graph.0[output_index].operation =
         Operation::TanhAsSignedSignalBoundedBetweenMinus1And1(doubled_square_index);
     graph.0[output_index].output_rate_of_change_with_respect_to_node_value = 1.;

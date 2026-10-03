@@ -1,9 +1,0 @@
-[package]
-name = "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-[dev-dependencies]
-lesson-float-comparison = { path = "../lesson-float-comparison" }

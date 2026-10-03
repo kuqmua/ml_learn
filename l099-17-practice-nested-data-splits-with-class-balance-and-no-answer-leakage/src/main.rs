@@ -106,42 +106,33 @@ fn main() {
         .max_by(|left_result, right_result| left_result.1.total_cmp(&right_result.1))
         .unwrap();
     let test: [(f64, bool); 2] = [(2.5, false), (5.5, true)];
-    let correct_prediction_share_where_1_means_all_correct_and_0_means_all_wrong: f64 =
-        test.iter()
-            .filter(|&&(feature_value, target)| {
-                choose_majority_class_among_nearest_training_values(
-                    &training_examples,
-                    feature_value,
-                    best.0,
-                ) == target
-            })
-            .count() as f64
-            / test.len() as f64;
+    let correct_prediction_share: f64 = test
+        .iter()
+        .filter(|&&(feature_value, target)| {
+            choose_majority_class_among_nearest_training_values(
+                &training_examples,
+                feature_value,
+                best.0,
+            ) == target
+        })
+        .count() as f64
+        / test.len() as f64;
     let _ = (&(best.0), &(best.1));
 
-    plot_correct_prediction_shares_on_validation_and_test_data(
-        best,
-        correct_prediction_share_where_1_means_all_correct_and_0_means_all_wrong,
-    );
+    plot_correct_prediction_shares_on_validation_and_test_data(best, correct_prediction_share);
 }
 
 // Строим график по результатам урока.
 fn plot_correct_prediction_shares_on_validation_and_test_data(
     best: (usize, f64),
-    correct_prediction_share_where_1_means_all_correct_and_0_means_all_wrong: f64,
+    correct_prediction_share: f64,
 ) {
     lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Кросс-валидация и тест",
         "accuracy",
-        &[
-            ("CV", best.1),
-            (
-                "test",
-                correct_prediction_share_where_1_means_all_correct_and_0_means_all_wrong,
-            ),
-        ],
+        &[("CV", best.1), ("test", correct_prediction_share)],
     )
     .expect("не удалось сохранить график");
 }

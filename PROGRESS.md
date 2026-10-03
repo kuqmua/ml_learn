@@ -4,19 +4,19 @@
 
 ## 01. Векторы и геометрия
 
-- [x] [001 · Умножение соответствующих координат двух векторов и сложение результатов](l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec/)
-- [x] [002 · Длина пути вдоль осей: сложение модулей координат вектора](l002-01-calc-sum-of-absolute-vec-coords-as-total-axis-aligned-len-where-0-means-zero-vec/)
-- [x] [003 · Длина вектора: квадратный корень из суммы квадратов координат](l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords-where-0-means-zero-vec-and-larger-means-longer/)
-- [x] [004 · Квадрат расстояния: сложение квадратов разностей координат](l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther/)
-- [x] [005 · Расстояние между точками: квадратный корень из суммы квадратов разностей координат](l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther/)
-- [x] [006 · `cos` угла между векторами: умножение соответствующих координат, сложение и деление на длины](l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens-where-1-means-same-direction-0-means-perpendicular-and-minus-1-means-opposite/)
+- [x] [001 · Умножение соответствующих координат двух векторов и сложение результатов](l001-01-multiply-matching-coords-then-add-results/)
+- [x] [002 · Длина пути вдоль осей: сложение модулей координат вектора](l002-01-calc-sum-of-absolute-vec-coords/)
+- [x] [003 · Длина вектора: квадратный корень из суммы квадратов координат](l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords/)
+- [x] [004 · Квадрат расстояния: сложение квадратов разностей координат](l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs/)
+- [x] [005 · Расстояние между точками: квадратный корень из суммы квадратов разностей координат](l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs/)
+- [x] [006 · `cos` угла между векторами: умножение соответствующих координат, сложение и деление на длины](l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens/)
 - [x] [007 · Практика: умножение координат, длины векторов и расстояния между точками](l007-01-practice-multiplying-coords-vec-lens-and-point-dists/)
 
 ## 02. Матрицы и линейные преобразования
 
 - [x] [008 · Проверка числа элементов матрицы и границ строки и столбца](l008-02-validate-matrix-element-count-and-row-column-indices/)
 - [x] [009 · Транспонирование матрицы: перестановка строк в столбцы](l009-02-transpose-matrix-by-turning-rows-into-columns/)
-- [ ] [010 · Умножение матрицы на вектор: умножение соответствующих координат строки и вектора с последующим сложением](l010-02-multiply-matrix-and-vec-by-adding-multiplied-row-coords/)
+- [x] [010 · Умножение матрицы на вектор: умножение соответствующих координат строки и вектора с последующим сложением](l010-02-multiply-matrix-and-vec-by-adding-multiplied-row-coords/)
 - [ ] [011 · Умножение двух матриц: умножение соответствующих элементов строк и столбцов с последующим сложением](l011-02-multiply-matrices-by-adding-multiplied-row-and-column-values/)
 - [ ] [012 · Поиск двух неизвестных, удовлетворяющих двум линейным уравнениям](l012-02-solve-system-of-two-linear-equations/)
 - [ ] [013 · Практика: размеры матриц, перестановка строк в столбцы, умножение и решение уравнений](l013-02-practice-matrix-shapes-row-column-swaps-and-equation-solving/)
@@ -50,7 +50,7 @@
 
 - [ ] [030 · Среднее арифметическое: сложение значений и деление суммы на их количество](l030-06-calc-mean-by-summing-values-and-dividing-by-count/)
 - [ ] [031 · Медиана: поиск среднего по положению значения после сортировки](l031-06-calc-median-by-sorting-values-and-finding-middle/)
-- [ ] [032 · Разброс значений (выборочная дисперсия): сумма квадратов отклонений от среднего, делённая на число значений минус один](l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one-where-0-means-all-values-equal-and-larger-means-more-spread/)
+- [ ] [032 · Разброс значений (выборочная дисперсия): сумма квадратов отклонений от среднего, делённая на число значений минус один](l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one/)
 - [ ] [033 · Квантиль: значение на заданной доле упорядоченной выборки](l033-06-calc-quantile-by-selecting-sorted-value-at-given-sample-fraction/)
 - [ ] [034 · Доверительный интервал среднего: оценка границ неопределённости по выборке](l034-06-estimate-confidence-interval-as-uncertainty-bounds-around-sample-mean/)
 - [ ] [035 · Изменчивость оценки: повторный набор выборок с возвращением наблюдений](l035-06-estimate-statistic-variability-by-resampling-observations-with-replacement/)
@@ -77,8 +77,8 @@
 
 ## 09. Линейная регрессия
 
-- [ ] [050 · Средняя квадратичная ошибка прогноза: сумма квадратов ошибок, делённая на число примеров](l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count-where-0-means-exact-predictions-and-larger-means-worse/)
-- [ ] [051 · Средняя абсолютная ошибка прогноза: сумма модулей ошибок, делённая на число примеров](l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count-where-0-means-exact-predictions-and-larger-means-worse/)
+- [ ] [050 · Средняя квадратичная ошибка прогноза: сумма квадратов ошибок, делённая на число примеров](l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count/)
+- [ ] [051 · Средняя абсолютная ошибка прогноза: сумма модулей ошибок, делённая на число примеров](l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count/)
 - [ ] [052 · Линейный прогноз: умножение входного значения на вес и прибавление смещения](l052-09-calc-linear-prediction-by-multiplying-input-and-adding-constant-weight/)
 - [ ] [053 · Ограничение сложности модели: добавление штрафа за большой вес](l053-09-penalize-model-complexity-by-adding-large-weight-penalty/)
 - [ ] [054 · Проверка прогноза по прямой на данных, не использованных для обучения](l054-09-check-weighted-input-plus-constant-weight-on-unused-data/)
@@ -96,11 +96,11 @@
 
 - [ ] [061 · Подсчёт верных и ошибочных положительных и отрицательных прогнозов](l061-11-count-binary-classification-outcomes-from-targets-and-predictions/)
 - [ ] [062 · Исходы классификации: сравнение оценок с порогом и подсчёт меток](l062-11-count-binary-classification-outcomes-from-targets-and-scores-at-threshold/)
-- [ ] [063 · Доля верных прогнозов: число правильных ответов, делённое на общее число](l063-11-calc-prediction-accuracy-as-correct-predictions-divided-by-all-predictions-where-1-means-all-correct-and-0-means-all-wrong/)
-- [ ] [064 · Точность положительных прогнозов: доля верных среди всех положительных прогнозов](l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predictions-where-1-means-no-false-alarms-and-0-means-all-false-alarms/)
-- [ ] [065 · Полнота обнаружения: доля найденных среди всех действительно положительных примеров](l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss-where-1-means-all-found-and-0-means-all-missed/)
-- [ ] [066 · Оценка F1: удвоенное произведение точности и полноты, делённое на их сумму](l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum-where-1-means-no-false-alarms-or-misses-and-larger-means-better/)
-- [ ] [067 · F1 из счётчиков: вычисление точности и полноты и их гармонического среднего](l067-11-calc-f1-score-from-counts-by-multiplying-precision-and-recall-by-two-then-dividing-by-sum-where-1-means-no-false-alarms-or-misses-and-larger-means-better/)
+- [ ] [063 · Доля верных прогнозов: число правильных ответов, делённое на общее число](l063-11-calc-prediction-accuracy-as-correct-predictions-divided-by-all-predictions/)
+- [ ] [064 · Точность положительных прогнозов: доля верных среди всех положительных прогнозов](l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predictions/)
+- [ ] [065 · Полнота обнаружения: доля найденных среди всех действительно положительных примеров](l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss/)
+- [ ] [066 · Оценка F1: удвоенное произведение точности и полноты, делённое на их сумму](l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum/)
+- [ ] [067 · F1 из счётчиков: вычисление точности и полноты и их гармонического среднего](l067-11-calc-f1-score-from-counts-by-multiplying-precision-and-recall-by-two-then-dividing-by-sum/)
 - [ ] [068 · Качество ранжирования (ROC-AUC): доля правильно упорядоченных положительных и отрицательных пар](l068-11-calc-ranking-quality-as-share-of-correctly-ordered-pos-neg-pairs/)
 - [ ] [069 · Качество поиска положительных примеров: сумма точности, умноженной на прирост полноты](l069-11-calc-average-precision-by-summing-precision-times-recall-increases/)
 - [ ] [070 · Практика: оценка прогнозов, когда один класс встречается редко](l070-11-practice-checking-predictions-when-one-class-is-rare/)
@@ -213,7 +213,7 @@
 
 ## 25. Рекуррентные сети и память
 
-- [ ] [138 · Обновление памяти по взвешенному входу и предыдущему состоянию](l138-25-calc-memory-states-by-applying-tanh-to-weighted-input-plus-weighted-previous-state-to-bound-each-state-between-minus-1-and-1/)
+- [ ] [138 · Обновление памяти по взвешенному входу и предыдущему состоянию](l138-25-calc-memory-states-by-applying-tanh-to-weighted-input-plus-weighted-previous-state/)
 - [ ] [139 · Влияние параметров памяти на ошибку: обратный проход по предыдущим состояниям](l139-25-calc-memory-parameter-influence-by-passing-error-changes-back-in-time/)
 - [ ] [140 · Память и выход ячейки LSTM: сохранение старой информации, добавление новой и управление выходом](l140-25-calc-lstm-memory-and-output-by-mixing-old-memory-with-candidate-then-gating-output/)
 - [ ] [141 · Состояние ячейки GRU: смешивание предыдущего состояния и нового кандидата с управляемыми долями](l141-25-calc-gru-state-by-mixing-previous-state-with-candidate-using-update-fraction/)
@@ -222,7 +222,7 @@
 
 - [ ] [142 · Отклик фильтра без будущих данных: сложение взвешенных текущего и прошлого значений сигнала](l142-26-calc-causal-filter-output-by-summing-weighted-current-and-spaced-past-values/)
 - [ ] [143 · Расширение охвата истории: увеличение промежутков между значениями сигнала для фильтра](l143-26-expand-filter-history-by-increasing-gaps-between-used-past-values/)
-- [ ] [144 · Управляемый выход сигнала: умножение ограниченного сигнала на долю, задаваемую второй ветвью](l144-26-calc-gated-signal-as-tanh-bounded-between-minus-1-and-1-times-sigmoid-share-where-0-blocks-and-1-passes-signal/)
+- [ ] [144 · Управляемый выход сигнала: умножение ограниченного сигнала на долю, задаваемую второй ветвью](l144-26-calc-gated-signal-as-tanh-times-sigmoid-share/)
 - [ ] [145 · Остаточный и отдельный выходы блока: прибавление преобразования ко входу и передача его отдельно](l145-26-calc-input-plus-transform-and-separate-transform-output/)
 - [ ] [146 · Прогноз следующего значения звука только по предыдущим значениям](l146-26-calc-probability-of-next-sound-sample-from-history/)
 
@@ -291,22 +291,22 @@
 ## 35. GPT: decoder-only языковая модель
 
 - [ ] [185 · Векторы текста с учётом позиции: сложение векторов частей текста и позиций](l185-35-create-position-aware-text-vecs-by-adding-text-and-position-vecs/)
-- [ ] [186 · Вероятностные веса: экспоненты с вычитанием максимума и делением на сумму](l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum-where-weights-sum-to-1-and-larger-scores-get-larger-shares/)
+- [ ] [186 · Вероятностные веса: экспоненты с вычитанием максимума и делением на сумму](l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum/)
 - [ ] [187 · Контекст без будущих данных: сложение текущих и прошлых значений с весами совпадений запроса и ключей](l187-35-calc-past-context-by-summing-current-and-past-values-weighted-by-query-key-matches/)
 - [ ] [188 · Объединение контекстов от нескольких способов сравнения запросов и ключей](l188-35-combine-contexts-from-several-query-key-comparisons/)
 - [ ] [189 · Выход блока декодера: нормализация перед сбором контекста и преобразованием координат](l189-35-calc-decoder-block-output-by-adding-past-context-and-transformed-normalized-values/)
-- [ ] [190 · Ошибка прогноза следующей части текста: отрицательный логарифм правильной вероятности](l190-35-calc-next-token-loss-as-neg-log-of-target-probability-from-exponentiated-scores-where-closer-to-0-means-more-probability-on-correct-token/)
+- [ ] [190 · Ошибка прогноза следующей части текста: отрицательный логарифм правильной вероятности](l190-35-calc-next-token-loss-as-neg-log-of-target-probability-from-exponentiated-scores/)
 - [ ] [191 · Контекстные векторы текста: сложение вектора токена, позиции и прошлого контекста](l191-35-calc-text-context-vecs-by-adding-position-and-weighted-past-context/)
 - [ ] [192 · Преобразование номеров частей текста в контекст и оценки следующей части](l192-35-convert-text-identifiers-to-context-then-to-next-token-scores/)
 - [ ] [193 · Обучение выходных весов при неизменной модели построения контекста](l193-35-train-output-weights-while-keeping-context-model-fixed/)
 
 ## 36. Компоненты семейства Qwen3
 
-- [ ] [194 · Нормализация масштаба вектора: деление координат на корень из среднего квадрата и умножение на веса](l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights-to-control-scale-without-centering/)
-- [ ] [195 · Учёт позиции в тексте: поворот пар координат запроса и ключа](l195-36-rotate-vec-coord-pair-by-token-position-to-encode-relative-position-in-query-key-matches-while-preserving-vec-len/)
+- [ ] [194 · Нормализация масштаба вектора: деление координат на корень из среднего квадрата и умножение на веса](l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights/)
+- [ ] [195 · Учёт позиции в тексте: поворот пар координат запроса и ключа](l195-36-rotate-vec-coord-pair-by-token-position/)
 - [ ] [196 · Общее представление контекста: использование одних ключей и значений для нескольких групп запросов](l196-36-reduce-context-computation-by-sharing-keys-and-values-across-query-groups/)
 - [ ] [197 · Масштабирование запросов и ключей по корню из среднего квадрата координат](l197-36-scale-query-and-key-vecs-by-their-root-mean-square/)
-- [ ] [198 · Выход управляемого слоя: умножение двух ветвей с плавным управлением вкладом](l198-36-calc-gated-layer-output-as-silu-gate-times-up-value-where-0-gate-blocks-and-gate-multiplier-can-be-neg-or-greater-than-1/)
+- [ ] [198 · Выход управляемого слоя: умножение двух ветвей с плавным управлением вкладом](l198-36-calc-gated-layer-output-as-silu-gate-times-up-value/)
 - [ ] [199 · Повторное использование контекста: сохранение прошлых ключей и значений при генерации](l199-36-avoid-recomputing-past-context-by-reusing-saved-keys-and-values/)
 - [ ] [200 · Выход выбранных ветвей: выбор двух обработчиков и объединение результатов](l200-36-calc-selected-branch-output-by-combining-two-chosen-branches/)
 - [ ] [201 · Выход блока последовательности: масштабирование, повороты, общий контекст и управляемые ветви](l201-36-calc-sequence-block-output-by-normalizing-rotating-and-mixing-past-values-and-gated-features/)

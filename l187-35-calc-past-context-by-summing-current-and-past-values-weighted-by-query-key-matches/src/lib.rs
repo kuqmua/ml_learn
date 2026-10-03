@@ -3,7 +3,7 @@
 /// Один причинный head. Строка i видит только j <= i.
 /// Причинное внимание: совпадения запроса и ключей делим на sqrt(2), превращаем в веса через softmax и суммируем значения только текущей и прошлых позиций.
 /// Длина текста задаётся во время выполнения; совпадение длин Q/K/V проверяется здесь.
-use l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares::calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares;
+use l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum::calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum;
 
 pub fn calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
     query_vec: &[[f64; 2]],
@@ -17,17 +17,18 @@ pub fn calc_past_context_by_summing_current_and_past_values_weighted_by_query_ke
     let mut output: Vec<[f64; 2]> = Vec::with_capacity(query_vec.len());
     for index in 0..query_vec.len() {
         let mut state: [f64; 2] = [0.0; 2];
-        for (past, weight) in calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
-            &(0..=index)
-                .map(|past| {
-                    (query_vec[index][0] * key_vec[past][0]
-                        + query_vec[index][1] * key_vec[past][1])
-                        / 2.0_f64.sqrt()
-                })
-                .collect::<Vec<_>>(),
-        )
-        .into_iter()
-        .enumerate()
+        for (past, weight) in
+            calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum(
+                &(0..=index)
+                    .map(|past| {
+                        (query_vec[index][0] * key_vec[past][0]
+                            + query_vec[index][1] * key_vec[past][1])
+                            / 2.0_f64.sqrt()
+                    })
+                    .collect::<Vec<_>>(),
+            )
+            .into_iter()
+            .enumerate()
         {
             for feature in 0..2 {
                 state[feature] += weight * value_vecs[past][feature];

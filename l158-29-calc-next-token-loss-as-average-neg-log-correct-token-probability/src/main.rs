@@ -32,15 +32,12 @@ fn main() {
             }
             neg_log_sum -= 2.0 * logarithm;
         }
-        let average_neg_log_correct_token_probability_where_closer_to_0_means_better: f64 =
+        let average_neg_log_correct_token_probability: f64 =
             neg_log_sum / probabilities.len() as f64;
         if index > 0 {
-            assert!(
-                average_neg_log_correct_token_probability_where_closer_to_0_means_better
-                    > previous_error
-            );
+            assert!(average_neg_log_correct_token_probability > previous_error);
         }
-        previous_error = average_neg_log_correct_token_probability_where_closer_to_0_means_better;
+        previous_error = average_neg_log_correct_token_probability;
     }
     let invalid: [f64; 2] = [0.0, 0.5];
     if invalid.iter().any(|&probability| probability <= 0.0) {}

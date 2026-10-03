@@ -7,10 +7,10 @@
 fn main() {
     let average_neg_log_correct_token_probability: f64 = 0.7;
     let mut term: f64 = 1.0;
-    let mut _perplexity_as_effective_choice_count_where_1_means_certainty_on_correct_token_and_larger_means_worse: f64 = 1.0;
+    let mut _perplexity: f64 = 1.0;
     for order in 1..=30 {
         term *= average_neg_log_correct_token_probability / order as f64;
-        _perplexity_as_effective_choice_count_where_1_means_certainty_on_correct_token_and_larger_means_worse += term;
+        _perplexity += term;
     }
 
     plot_perplexity_as_e_to_average_neg_log_probability();

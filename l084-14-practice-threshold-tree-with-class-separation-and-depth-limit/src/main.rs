@@ -30,9 +30,7 @@ fn main() {
     }
 
     /// Нечистота Джини для двух классов: 2·p·(1−p), где p — доля положительных меток.
-    fn calc_binary_class_mixing_as_twice_pos_share_times_neg_share_where_0_means_one_class_and_half_means_equal_class_shares(
-        data: &[(f64, bool)],
-    ) -> f64 {
+    fn calc_binary_class_mixing_as_twice_pos_share_times_neg_share(data: &[(f64, bool)]) -> f64 {
         if data.is_empty() {
             return 0.;
         }
@@ -67,17 +65,19 @@ fn main() {
                 .copied()
                 .filter(|sample| sample.0 >= candidate_threshold)
                 .collect();
-            let weighted_binary_class_mixing_where_0_means_pure_groups_and_smaller_means_better_split: f64 = (samples_below_threshold.len() as f64
-                * calc_binary_class_mixing_as_twice_pos_share_times_neg_share_where_0_means_one_class_and_half_means_equal_class_shares(
+            let weighted_binary_class_mixing: f64 = (samples_below_threshold.len() as f64
+                * calc_binary_class_mixing_as_twice_pos_share_times_neg_share(
                     &samples_below_threshold,
                 )
                 + samples_at_or_above_threshold.len() as f64
-                    * calc_binary_class_mixing_as_twice_pos_share_times_neg_share_where_0_means_one_class_and_half_means_equal_class_shares(
+                    * calc_binary_class_mixing_as_twice_pos_share_times_neg_share(
                         &samples_at_or_above_threshold,
                     ))
                 / data.len() as f64;
-            if best_split.is_none_or(|(previous_score, _)| weighted_binary_class_mixing_where_0_means_pure_groups_and_smaller_means_better_split < previous_score) {
-                best_split = Some((weighted_binary_class_mixing_where_0_means_pure_groups_and_smaller_means_better_split, candidate_threshold));
+            if best_split
+                .is_none_or(|(previous_score, _)| weighted_binary_class_mixing < previous_score)
+            {
+                best_split = Some((weighted_binary_class_mixing, candidate_threshold));
             }
         }
         if let Some((_, threshold)) = best_split {

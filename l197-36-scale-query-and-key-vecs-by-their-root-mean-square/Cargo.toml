@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-l194_36_normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights_to_control_scale_without_centering = { package = "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights-to-control-scale-without-centering", path = "../l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights-to-control-scale-without-centering" }
-l195_36_rotate_vec_coord_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vec_len = { package = "l195-36-rotate-vec-coord-pair-by-token-position-to-encode-relative-position-in-query-key-matches-while-preserving-vec-len", path = "../l195-36-rotate-vec-coord-pair-by-token-position-to-encode-relative-position-in-query-key-matches-while-preserving-vec-len" }
+l194_36_normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights = { package = "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights", path = "../l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights" }
+l195_36_rotate_vec_coord_pair_by_token_position = { package = "l195-36-rotate-vec-coord-pair-by-token-position", path = "../l195-36-rotate-vec-coord-pair-by-token-position" }

@@ -1,0 +1,52 @@
+// Урок 032. Измеряем разброс значений относительно их среднего.
+// Из каждого значения вычитаем среднее, каждую разницу умножаем саму на себя и складываем.
+// Делим сумму на количество значений минус один: так оцениваем разброс по выборке.
+// Если все значения одинаковые, результат равен нулю. Чем больше результат, тем сильнее разброс.
+// Для расчёта нужны как минимум два значения.
+
+use l032_06_calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one::calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one;
+
+fn main() {
+    let cases: [(&str, &[f64], f64); 3] = [
+        ("все значения одинаковы", &[4.0, 4.0, 4.0], 0.0),
+        ("умеренный разброс", &[2.0, 4.0, 6.0], 4.0),
+        ("значения раздвинули", &[0.0, 4.0, 8.0], 16.0),
+    ];
+    for (_description, values, expected) in cases {
+        assert_eq!(
+            calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one(values)
+                .expect("для выборочной дисперсии нужны хотя бы два значения"),
+            expected
+        );
+    }
+    let _: &str =
+        calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one(&[4.0])
+            .expect_err("одного значения недостаточно");
+
+    plot_squared_diffs_from_mean();
+}
+
+// Строим график по результатам урока.
+fn plot_squared_diffs_from_mean() {
+    lesson_visualization::line_chart(
+        env!("CARGO_MANIFEST_DIR"),
+        "lesson-chart",
+        "Разброс относительно среднего",
+        "значение",
+        "квадрат отклонения",
+        &[lesson_visualization::Series {
+            name: "среднее=4",
+
+            points: &(0..=80)
+                .map(|plot_step_index| {
+                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
+                    (
+                        horizontal_value,
+                        (horizontal_value - 4.0) * (horizontal_value - 4.0),
+                    )
+                })
+                .collect::<Vec<_>>(),
+        }],
+    )
+    .expect("не удалось сохранить график");
+}

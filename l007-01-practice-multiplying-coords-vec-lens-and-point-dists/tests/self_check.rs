@@ -1,10 +1,10 @@
 use lesson_float_comparison::check_f64_eq_1e_minus_10;
 
-use l001_01_multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec::multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec;
-use l002_01_calc_sum_of_absolute_vec_coords_as_total_axis_aligned_len_where_0_means_zero_vec::calc_sum_of_absolute_vec_coords_as_total_axis_aligned_len_where_0_means_zero_vec;
-use l003_01_calc_vec_len_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer::calc_vec_len_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer;
-use l005_01_calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther::calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther;
-use l006_01_multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens_where_1_means_same_direction_0_means_perpendicular_and_minus_1_means_opposite::multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens_where_1_means_same_direction_0_means_perpendicular_and_minus_1_means_opposite;
+use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_then_add_results;
+use l002_01_calc_sum_of_absolute_vec_coords::calc_sum_of_absolute_vec_coords;
+use l003_01_calc_vec_len_as_square_root_of_sum_of_squared_coords::calc_vec_len_as_square_root_of_sum_of_squared_coords;
+use l005_01_calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs::calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs;
+use l006_01_multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens::multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens;
 
 #[test]
 #[ignore = "подбери второй вектор и запусти тест с --ignored"]
@@ -17,29 +17,28 @@ fn combine_vec_properties() {
     let expected_dist: f64 = expected_dist.expect("заполни ответ перед запуском теста");
 
     assert_eq!(
-        multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec(&first_vec, &perpendicular_vec),
+        multiply_matching_coords_then_add_results(&first_vec, &perpendicular_vec),
         Ok(0.0)
     );
     assert!(perpendicular_vec.iter().any(|&coord| coord != 0.0));
+    assert_eq!(calc_sum_of_absolute_vec_coords(&first_vec), 7.0);
     assert_eq!(
-        calc_sum_of_absolute_vec_coords_as_total_axis_aligned_len_where_0_means_zero_vec(
-            &first_vec
-        ),
-        7.0
-    );
-    assert_eq!(
-        calc_vec_len_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer(&first_vec),
+        calc_vec_len_as_square_root_of_sum_of_squared_coords(&first_vec),
         5.0
     );
-    assert!(
-        check_f64_eq_1e_minus_10(calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
+    assert!(check_f64_eq_1e_minus_10(
+        calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs(
             &first_vec,
             &perpendicular_vec
         )
-        .unwrap(), expected_dist)
-    );
+        .unwrap(),
+        expected_dist
+    ));
     assert_eq!(
-        multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens_where_1_means_same_direction_0_means_perpendicular_and_minus_1_means_opposite(&first_vec, &perpendicular_vec),
+        multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens(
+            &first_vec,
+            &perpendicular_vec
+        ),
         Ok(0.0)
     );
 }

@@ -12,12 +12,9 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let pos_class_probability_where_0_means_neg_and_1_means_pos: f64 = 0.7;
-    let _: f64 = 1.0 - pos_class_probability_where_0_means_neg_and_1_means_pos;
-    assert!(
-        pos_class_probability_where_0_means_neg_and_1_means_pos >= 0.0
-            && pos_class_probability_where_0_means_neg_and_1_means_pos <= 1.0
-    );
+    let pos_class_probability: f64 = 0.7;
+    let _: f64 = 1.0 - pos_class_probability;
+    assert!(pos_class_probability >= 0.0 && pos_class_probability <= 1.0);
 
     plot_pos_and_neg_class_probabilities();
 }

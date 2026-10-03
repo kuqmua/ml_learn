@@ -1,4 +1,4 @@
-use l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther::calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther;
+use l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs::calc_squared_point_dist_by_summing_squared_coord_diffs;
 
 fn predict_species_from_nearest_training_record(
     example: &lesson_datasets::IrisRecord,
@@ -8,18 +8,16 @@ fn predict_species_from_nearest_training_record(
     training_indices
         .iter()
         .min_by(|&&left, &&right| {
-            let left_dist =
-                calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
-                    &example.features,
-                    &records[left].features,
-                )
-                .unwrap();
-            let right_dist =
-                calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
-                    &example.features,
-                    &records[right].features,
-                )
-                .unwrap();
+            let left_dist = calc_squared_point_dist_by_summing_squared_coord_diffs(
+                &example.features,
+                &records[left].features,
+            )
+            .unwrap();
+            let right_dist = calc_squared_point_dist_by_summing_squared_coord_diffs(
+                &example.features,
+                &records[right].features,
+            )
+            .unwrap();
             left_dist.total_cmp(&right_dist)
         })
         .map(|&index| records[index].species.class_identifier())

@@ -6,7 +6,7 @@
 // Представь: Из четырёх экспертов считаем только два выбранных, затем смешиваем их ответы.
 // Два выбранных эксперта обрабатывают токен; пример относится к MoE-вариантам Qwen3.
 
-use l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares::calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares;
+use l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum::calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum;
 
 fn main() {
     let input: [f64; 2] = [0.8, 0.2];
@@ -21,7 +21,7 @@ fn main() {
         .iter()
         .zip(
             std::convert::TryInto::<[f64; 2]>::try_into(
-                calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
+                calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum(
                     &[scores[selected[0]], scores[selected[1]]],
                 ),
             )

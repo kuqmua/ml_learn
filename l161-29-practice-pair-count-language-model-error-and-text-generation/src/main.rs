@@ -94,7 +94,7 @@ fn main() {
     }
 
     /// Перплексия: e в степени среднего отрицательного логарифма вероятности следующего слова, включая конец строки.
-    fn calc_perplexity_as_e_to_average_neg_log_next_word_probability_as_effective_choice_count_where_1_means_certainty_on_correct_words_and_larger_means_worse(
+    fn calc_perplexity_as_e_to_average_neg_log_next_word_probability(
         sentences: &[&str],
 
         counts: &std::collections::BTreeMap<(String, String), usize>,
@@ -166,12 +166,12 @@ fn main() {
     }
 
     let _ = (
-        &(calc_perplexity_as_e_to_average_neg_log_next_word_probability_as_effective_choice_count_where_1_means_certainty_on_correct_words_and_larger_means_worse(
+        &(calc_perplexity_as_e_to_average_neg_log_next_word_probability(
             &training_sentences,
             &bigram_counts,
             &known_text_units,
         )),
-        &(calc_perplexity_as_e_to_average_neg_log_next_word_probability_as_effective_choice_count_where_1_means_certainty_on_correct_words_and_larger_means_worse(
+        &(calc_perplexity_as_e_to_average_neg_log_next_word_probability(
             &["пёс ест"],
             &bigram_counts,
             &known_text_units,

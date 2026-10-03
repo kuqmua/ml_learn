@@ -8,7 +8,7 @@
 
 use lesson_float_comparison::check_f64_eq_1e_minus_12;
 
-use l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares::calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares;
+use l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum::calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum;
 use l187_35_calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches::calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
 fn main() {
@@ -20,19 +20,24 @@ fn main() {
         cached_keys.push(new_state);
         cached_values.push(new_state);
 
-        cached_outputs.push(calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
+        cached_outputs.push(
+            calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum(
                 &cached_keys
+                    .iter()
+                    .map(|key| (new_state[0] * key[0] + new_state[1] * key[1]) / 2.0_f64.sqrt())
+                    .collect::<Vec<_>>(),
+            )
             .iter()
-            .map(|key| (new_state[0] * key[0] + new_state[1] * key[1]) / 2.0_f64.sqrt())
-            .collect::<Vec<_>>(),
-            ).iter().zip(&cached_values).fold(
-            [0.0; 2],
-            |mut output_state, (&weight_value, cached_value)| {
-                output_state[0] += weight_value * cached_value[0];
-                output_state[1] += weight_value * cached_value[1];
-                output_state
-            },
-        ));
+            .zip(&cached_values)
+            .fold(
+                [0.0; 2],
+                |mut output_state, (&weight_value, cached_value)| {
+                    output_state[0] += weight_value * cached_value[0];
+                    output_state[1] += weight_value * cached_value[1];
+                    output_state
+                },
+            ),
+        );
     }
     for (cached, recomputed) in cached_outputs.iter().zip(
         calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(

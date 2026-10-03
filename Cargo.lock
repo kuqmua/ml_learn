@@ -56,50 +56,50 @@ dependencies = [
 ]
 
 [[package]]
-name = "l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec"
+name = "l001-01-multiply-matching-coords-then-add-results"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "l002-01-calc-sum-of-absolute-vec-coords-as-total-axis-aligned-len-where-0-means-zero-vec"
+name = "l002-01-calc-sum-of-absolute-vec-coords"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords-where-0-means-zero-vec-and-larger-means-longer"
+name = "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords"
 version = "0.1.0"
 dependencies = [
- "l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec",
+ "l001-01-multiply-matching-coords-then-add-results",
  "lesson-float-comparison",
  "lesson-visualization",
 ]
 
 [[package]]
-name = "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther"
+name = "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
 ]
 
 [[package]]
-name = "l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther"
+name = "l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs"
 version = "0.1.0"
 dependencies = [
- "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther",
+ "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs",
  "lesson-float-comparison",
  "lesson-visualization",
 ]
 
 [[package]]
-name = "l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens-where-1-means-same-direction-0-means-perpendicular-and-minus-1-means-opposite"
+name = "l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens"
 version = "0.1.0"
 dependencies = [
- "l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec",
- "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords-where-0-means-zero-vec-and-larger-means-longer",
+ "l001-01-multiply-matching-coords-then-add-results",
+ "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords",
  "lesson-float-comparison",
  "lesson-visualization",
 ]
@@ -108,11 +108,11 @@ dependencies = [
 name = "l007-01-practice-multiplying-coords-vec-lens-and-point-dists"
 version = "0.1.0"
 dependencies = [
- "l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec",
- "l002-01-calc-sum-of-absolute-vec-coords-as-total-axis-aligned-len-where-0-means-zero-vec",
- "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords-where-0-means-zero-vec-and-larger-means-longer",
- "l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther",
- "l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens-where-1-means-same-direction-0-means-perpendicular-and-minus-1-means-opposite",
+ "l001-01-multiply-matching-coords-then-add-results",
+ "l002-01-calc-sum-of-absolute-vec-coords",
+ "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords",
+ "l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs",
+ "l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens",
  "lesson-float-comparison",
  "lesson-visualization",
 ]
@@ -135,7 +135,7 @@ dependencies = [
 name = "l010-02-multiply-matrix-and-vec-by-adding-multiplied-row-coords"
 version = "0.1.0"
 dependencies = [
- "l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec",
+ "l001-01-multiply-matching-coords-then-add-results",
  "lesson-visualization",
 ]
 
@@ -143,7 +143,7 @@ dependencies = [
 name = "l011-02-multiply-matrices-by-adding-multiplied-row-and-column-values"
 version = "0.1.0"
 dependencies = [
- "l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec",
+ "l001-01-multiply-matching-coords-then-add-results",
  "lesson-visualization",
 ]
 
@@ -158,7 +158,7 @@ dependencies = [
 name = "l013-02-practice-matrix-shapes-row-column-swaps-and-equation-solving"
 version = "0.1.0"
 dependencies = [
- "l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec",
+ "l001-01-multiply-matching-coords-then-add-results",
  "lesson-visualization",
 ]
 
@@ -294,7 +294,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one-where-0-means-all-values-equal-and-larger-means-more-spread"
+name = "l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one"
 version = "0.1.0"
 dependencies = [
  "l030-06-calc-mean-by-summing-values-and-dividing-by-count",
@@ -313,7 +313,7 @@ name = "l034-06-estimate-confidence-interval-as-uncertainty-bounds-around-sample
 version = "0.1.0"
 dependencies = [
  "l030-06-calc-mean-by-summing-values-and-dividing-by-count",
- "l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one-where-0-means-all-values-equal-and-larger-means-more-spread",
+ "l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one",
  "lesson-visualization",
 ]
 
@@ -329,7 +329,7 @@ name = "l036-06-practice-mean-middle-and-squared-diffs-from-mean-from-csv"
 version = "0.1.0"
 dependencies = [
  "l030-06-calc-mean-by-summing-values-and-dividing-by-count",
- "l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one-where-0-means-all-values-equal-and-larger-means-more-spread",
+ "l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one",
  "lesson-visualization",
 ]
 
@@ -401,7 +401,7 @@ name = "l049-08-practice-repeatable-training-with-simple-comparison-and-data-ver
 version = "0.1.0"
 
 [[package]]
-name = "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count-where-0-means-exact-predictions-and-larger-means-worse"
+name = "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
@@ -409,7 +409,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count-where-0-means-exact-predictions-and-larger-means-worse"
+name = "l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
@@ -434,7 +434,7 @@ dependencies = [
 name = "l054-09-check-weighted-input-plus-constant-weight-on-unused-data"
 version = "0.1.0"
 dependencies = [
- "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count-where-0-means-exact-predictions-and-larger-means-worse",
+ "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count",
  "lesson-visualization",
 ]
 
@@ -442,7 +442,7 @@ dependencies = [
 name = "l055-09-practice-fitting-a-line-and-checking-prediction-errors"
 version = "0.1.0"
 dependencies = [
- "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count-where-0-means-exact-predictions-and-larger-means-worse",
+ "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count",
  "lesson-visualization",
 ]
 
@@ -498,7 +498,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l063-11-calc-prediction-accuracy-as-correct-predictions-divided-by-all-predictions-where-1-means-all-correct-and-0-means-all-wrong"
+name = "l063-11-calc-prediction-accuracy-as-correct-predictions-divided-by-all-predictions"
 version = "0.1.0"
 dependencies = [
  "l061-11-count-binary-classification-outcomes-from-targets-and-predictions",
@@ -506,7 +506,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predictions-where-1-means-no-false-alarms-and-0-means-all-false-alarms"
+name = "l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predictions"
 version = "0.1.0"
 dependencies = [
  "l061-11-count-binary-classification-outcomes-from-targets-and-predictions",
@@ -514,7 +514,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss-where-1-means-all-found-and-0-means-all-missed"
+name = "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss"
 version = "0.1.0"
 dependencies = [
  "l061-11-count-binary-classification-outcomes-from-targets-and-predictions",
@@ -522,20 +522,20 @@ dependencies = [
 ]
 
 [[package]]
-name = "l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum-where-1-means-no-false-alarms-or-misses-and-larger-means-better"
+name = "l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
 ]
 
 [[package]]
-name = "l067-11-calc-f1-score-from-counts-by-multiplying-precision-and-recall-by-two-then-dividing-by-sum-where-1-means-no-false-alarms-or-misses-and-larger-means-better"
+name = "l067-11-calc-f1-score-from-counts-by-multiplying-precision-and-recall-by-two-then-dividing-by-sum"
 version = "0.1.0"
 dependencies = [
  "l061-11-count-binary-classification-outcomes-from-targets-and-predictions",
- "l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predictions-where-1-means-no-false-alarms-and-0-means-all-false-alarms",
- "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss-where-1-means-all-found-and-0-means-all-missed",
- "l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum-where-1-means-no-false-alarms-or-misses-and-larger-means-better",
+ "l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predictions",
+ "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss",
+ "l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum",
  "lesson-float-comparison",
 ]
 
@@ -559,10 +559,10 @@ version = "0.1.0"
 dependencies = [
  "l061-11-count-binary-classification-outcomes-from-targets-and-predictions",
  "l062-11-count-binary-classification-outcomes-from-targets-and-scores-at-threshold",
- "l063-11-calc-prediction-accuracy-as-correct-predictions-divided-by-all-predictions-where-1-means-all-correct-and-0-means-all-wrong",
- "l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predictions-where-1-means-no-false-alarms-and-0-means-all-false-alarms",
- "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss-where-1-means-all-found-and-0-means-all-missed",
- "l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum-where-1-means-no-false-alarms-or-misses-and-larger-means-better",
+ "l063-11-calc-prediction-accuracy-as-correct-predictions-divided-by-all-predictions",
+ "l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predictions",
+ "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss",
+ "l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum",
  "lesson-visualization",
 ]
 
@@ -570,7 +570,7 @@ dependencies = [
 name = "l071-12-calc-squared-example-dist-by-summing-squared-feature-diffs"
 version = "0.1.0"
 dependencies = [
- "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther",
+ "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs",
  "lesson-visualization",
 ]
 
@@ -578,7 +578,7 @@ dependencies = [
 name = "l072-12-put-features-on-comparable-scales-before-measuring-dist"
 version = "0.1.0"
 dependencies = [
- "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther",
+ "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs",
  "lesson-visualization",
 ]
 
@@ -822,7 +822,7 @@ dependencies = [
 name = "l107-19-find-principal-direction-by-maximizing-projected-point-spread"
 version = "0.1.0"
 dependencies = [
- "l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec",
+ "l001-01-multiply-matching-coords-then-add-results",
  "lesson-visualization",
 ]
 
@@ -1039,7 +1039,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l138-25-calc-memory-states-by-applying-tanh-to-weighted-input-plus-weighted-previous-state-to-bound-each-state-between-minus-1-and-1"
+name = "l138-25-calc-memory-states-by-applying-tanh-to-weighted-input-plus-weighted-previous-state"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -1049,7 +1049,7 @@ dependencies = [
 name = "l139-25-calc-memory-parameter-influence-by-passing-error-changes-back-in-time"
 version = "0.1.0"
 dependencies = [
- "l138-25-calc-memory-states-by-applying-tanh-to-weighted-input-plus-weighted-previous-state-to-bound-each-state-between-minus-1-and-1",
+ "l138-25-calc-memory-states-by-applying-tanh-to-weighted-input-plus-weighted-previous-state",
  "lesson-float-comparison",
 ]
 
@@ -1077,7 +1077,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "l144-26-calc-gated-signal-as-tanh-bounded-between-minus-1-and-1-times-sigmoid-share-where-0-blocks-and-1-passes-signal"
+name = "l144-26-calc-gated-signal-as-tanh-times-sigmoid-share"
 version = "0.1.0"
 dependencies = [
  "lesson-visualization",
@@ -1144,7 +1144,7 @@ dependencies = [
 name = "l155-28-calc-word-vec-similarity-by-multiplying-matching-coords-then-adding"
 version = "0.1.0"
 dependencies = [
- "l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec",
+ "l001-01-multiply-matching-coords-then-add-results",
  "lesson-visualization",
 ]
 
@@ -1209,7 +1209,7 @@ dependencies = [
 name = "l164-30-calc-query-document-cos-of-angle-between-vecs"
 version = "0.1.0"
 dependencies = [
- "l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens-where-1-means-same-direction-0-means-perpendicular-and-minus-1-means-opposite",
+ "l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens",
  "lesson-visualization",
 ]
 
@@ -1238,7 +1238,7 @@ dependencies = [
 name = "l168-31-compare-query-with-position-key-by-multiplying-coords"
 version = "0.1.0"
 dependencies = [
- "l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec",
+ "l001-01-multiply-matching-coords-then-add-results",
  "lesson-visualization",
 ]
 
@@ -1253,7 +1253,7 @@ dependencies = [
 name = "l170-31-calc-scaled-match-score-by-multiplying-query-and-key-then-dividing-sum"
 version = "0.1.0"
 dependencies = [
- "l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec",
+ "l001-01-multiply-matching-coords-then-add-results",
  "lesson-visualization",
 ]
 
@@ -1277,7 +1277,7 @@ dependencies = [
 name = "l173-31-practice-query-key-matching-and-weighted-sums-of-values"
 version = "0.1.0"
 dependencies = [
- "l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec",
+ "l001-01-multiply-matching-coords-then-add-results",
  "lesson-visualization",
 ]
 
@@ -1313,7 +1313,7 @@ dependencies = [
 name = "l178-32-practice-context-mixing-input-addition-and-coord-transformation"
 version = "0.1.0"
 dependencies = [
- "l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec",
+ "l001-01-multiply-matching-coords-then-add-results",
  "lesson-visualization",
 ]
 
@@ -1362,7 +1362,7 @@ name = "l185-35-create-position-aware-text-vecs-by-adding-text-and-position-vecs
 version = "0.1.0"
 
 [[package]]
-name = "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum-where-weights-sum-to-1-and-larger-scores-get-larger-shares"
+name = "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
@@ -1372,7 +1372,7 @@ dependencies = [
 name = "l187-35-calc-past-context-by-summing-current-and-past-values-weighted-by-query-key-matches"
 version = "0.1.0"
 dependencies = [
- "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum-where-weights-sum-to-1-and-larger-scores-get-larger-shares",
+ "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum",
  "lesson-visualization",
 ]
 
@@ -1391,10 +1391,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "l190-35-calc-next-token-loss-as-neg-log-of-target-probability-from-exponentiated-scores-where-closer-to-0-means-more-probability-on-correct-token"
+name = "l190-35-calc-next-token-loss-as-neg-log-of-target-probability-from-exponentiated-scores"
 version = "0.1.0"
 dependencies = [
- "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum-where-weights-sum-to-1-and-larger-scores-get-larger-shares",
+ "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum",
  "lesson-visualization",
 ]
 
@@ -1421,14 +1421,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights-to-control-scale-without-centering"
+name = "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
 ]
 
 [[package]]
-name = "l195-36-rotate-vec-coord-pair-by-token-position-to-encode-relative-position-in-query-key-matches-while-preserving-vec-len"
+name = "l195-36-rotate-vec-coord-pair-by-token-position"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
@@ -1439,26 +1439,26 @@ dependencies = [
 name = "l196-36-reduce-context-computation-by-sharing-keys-and-values-across-query-groups"
 version = "0.1.0"
 dependencies = [
- "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum-where-weights-sum-to-1-and-larger-scores-get-larger-shares",
+ "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum",
 ]
 
 [[package]]
 name = "l197-36-scale-query-and-key-vecs-by-their-root-mean-square"
 version = "0.1.0"
 dependencies = [
- "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights-to-control-scale-without-centering",
- "l195-36-rotate-vec-coord-pair-by-token-position-to-encode-relative-position-in-query-key-matches-while-preserving-vec-len",
+ "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights",
+ "l195-36-rotate-vec-coord-pair-by-token-position",
 ]
 
 [[package]]
-name = "l198-36-calc-gated-layer-output-as-silu-gate-times-up-value-where-0-gate-blocks-and-gate-multiplier-can-be-neg-or-greater-than-1"
+name = "l198-36-calc-gated-layer-output-as-silu-gate-times-up-value"
 version = "0.1.0"
 
 [[package]]
 name = "l199-36-avoid-recomputing-past-context-by-reusing-saved-keys-and-values"
 version = "0.1.0"
 dependencies = [
- "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum-where-weights-sum-to-1-and-larger-scores-get-larger-shares",
+ "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum",
  "l187-35-calc-past-context-by-summing-current-and-past-values-weighted-by-query-key-matches",
  "lesson-float-comparison",
 ]
@@ -1467,7 +1467,7 @@ dependencies = [
 name = "l200-36-calc-selected-branch-output-by-combining-two-chosen-branches"
 version = "0.1.0"
 dependencies = [
- "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum-where-weights-sum-to-1-and-larger-scores-get-larger-shares",
+ "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum",
  "lesson-visualization",
 ]
 
@@ -1475,10 +1475,10 @@ dependencies = [
 name = "l201-36-calc-sequence-block-output-by-normalizing-rotating-and-mixing-past-values-and-gated-features"
 version = "0.1.0"
 dependencies = [
- "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum-where-weights-sum-to-1-and-larger-scores-get-larger-shares",
- "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights-to-control-scale-without-centering",
- "l195-36-rotate-vec-coord-pair-by-token-position-to-encode-relative-position-in-query-key-matches-while-preserving-vec-len",
- "l198-36-calc-gated-layer-output-as-silu-gate-times-up-value-where-0-gate-blocks-and-gate-multiplier-can-be-neg-or-greater-than-1",
+ "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum",
+ "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights",
+ "l195-36-rotate-vec-coord-pair-by-token-position",
+ "l198-36-calc-gated-layer-output-as-silu-gate-times-up-value",
 ]
 
 [[package]]
@@ -1715,7 +1715,7 @@ name = "l241-46-project-compare-train-and-run-prediction-model"
 version = "0.1.0"
 dependencies = [
  "l030-06-calc-mean-by-summing-values-and-dividing-by-count",
- "l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count-where-0-means-exact-predictions-and-larger-means-worse",
+ "l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count",
  "lesson-visualization",
 ]
 
@@ -1730,13 +1730,13 @@ dependencies = [
 name = "lesson-datasets"
 version = "0.1.0"
 dependencies = [
- "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther",
+ "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs",
  "l030-06-calc-mean-by-summing-values-and-dividing-by-count",
- "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count-where-0-means-exact-predictions-and-larger-means-worse",
- "l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count-where-0-means-exact-predictions-and-larger-means-worse",
+ "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count",
+ "l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count",
  "l061-11-count-binary-classification-outcomes-from-targets-and-predictions",
- "l063-11-calc-prediction-accuracy-as-correct-predictions-divided-by-all-predictions-where-1-means-all-correct-and-0-means-all-wrong",
- "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss-where-1-means-all-found-and-0-means-all-missed",
+ "l063-11-calc-prediction-accuracy-as-correct-predictions-divided-by-all-predictions",
+ "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss",
 ]
 
 [[package]]

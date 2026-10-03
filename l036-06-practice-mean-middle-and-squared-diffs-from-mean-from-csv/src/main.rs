@@ -9,7 +9,7 @@
 // Медиану находим после сортировки. Пустые строки пропускаем, неверное число сообщаем явно.
 
 use l030_06_calc_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
-use l032_06_calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread::calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread;
+use l032_06_calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one::calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one;
 
 fn main() {
     const SAMPLE_COMMA_SEPARATED_VALUES: &str = "value\n2\n4\n\n6\n8\n";
@@ -27,32 +27,25 @@ fn main() {
     values.sort_by(f64::total_cmp);
 
     let _: f64 =
-        calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread(
-            &values,
-        )
-        .unwrap();
+        calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one(&values)
+            .unwrap();
     let middle: usize = values.len() / 2;
-    let median_where_at_least_half_of_values_are_at_or_below_and_at_least_half_at_or_above: f64 =
-        if values.len() % 2 == 0 {
-            (values[middle - 1] + values[middle]) / 2.0
-        } else {
-            values[middle]
-        };
+    let median: f64 = if values.len() % 2 == 0 {
+        (values[middle - 1] + values[middle]) / 2.0
+    } else {
+        values[middle]
+    };
     let _ = &(values.len());
 
     plot_csv_values_mean_and_middle_of_sorted_values(
         &values,
         calc_mean_by_summing_values_and_dividing_by_count(&values).unwrap(),
-        median_where_at_least_half_of_values_are_at_or_below_and_at_least_half_at_or_above,
+        median,
     );
 }
 
 // Строим график по результатам урока.
-fn plot_csv_values_mean_and_middle_of_sorted_values(
-    values: &[f64],
-    mean: f64,
-    median_where_at_least_half_of_values_are_at_or_below_and_at_least_half_at_or_above: f64,
-) {
+fn plot_csv_values_mean_and_middle_of_sorted_values(values: &[f64], mean: f64, median: f64) {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -77,7 +70,7 @@ fn plot_csv_values_mean_and_middle_of_sorted_values(
             lesson_visualization::Series {
                 name: "медиана",
 
-                points: &[(1.0, median_where_at_least_half_of_values_are_at_or_below_and_at_least_half_at_or_above), (values.len() as f64, median_where_at_least_half_of_values_are_at_or_below_and_at_least_half_at_or_above)].to_vec(),
+                points: &[(1.0, median), (values.len() as f64, median)].to_vec(),
             },
         ],
     )

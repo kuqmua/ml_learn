@@ -1,7 +1,0 @@
-[package]
-name = "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights-to-control-scale-without-centering"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-float-comparison = { path = "../lesson-float-comparison" }

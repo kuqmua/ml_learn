@@ -10,7 +10,7 @@
 // softmax слишком резким.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec::multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec;
+use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_then_add_results;
 
 fn main() {
     let dimension: f64 = 2.0;
@@ -23,7 +23,7 @@ fn main() {
     }
     let query: [f64; 2] = [1.0, 1.0];
     let key: [f64; 2] = [2.0, 2.0];
-    let _ = &(multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec(&query, &key)
+    let _ = &(multiply_matching_coords_then_add_results(&query, &key)
         .expect("запрос и ключ должны иметь одинаковое число координат")
         / square_root_of_coord_count_to_limit_growth_of_match_scores);
 

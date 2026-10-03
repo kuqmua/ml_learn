@@ -1,0 +1,8 @@
+[package]
+name = "l001-01-multiply-matching-coords-then-add-results"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

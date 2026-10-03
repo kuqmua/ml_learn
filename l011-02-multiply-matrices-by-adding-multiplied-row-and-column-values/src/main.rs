@@ -4,7 +4,7 @@
 // Поэтому число столбцов первой таблицы должно совпадать с числом строк второй.
 // Например, таблицы 2×3 и 3×4 дают результат 2×4.
 
-use l001_01_multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec::multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec;
+use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_then_add_results;
 
 fn main() {
     let first_matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
@@ -36,11 +36,9 @@ fn main() {
             for column in 0..matrix_on_right[0].len() {
                 let column_values: [f64; 2] =
                     [matrix_on_right[0][column], matrix_on_right[1][column]];
-                multiplied_matrix[row][column] = multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec(
-                    &matrix_on_left[row],
-                    &column_values,
-                )
-                .expect("внутренние размеры матриц должны совпадать");
+                multiplied_matrix[row][column] =
+                    multiply_matching_coords_then_add_results(&matrix_on_left[row], &column_values)
+                        .expect("внутренние размеры матриц должны совпадать");
             }
         }
         assert_eq!(multiplied_matrix, expected);

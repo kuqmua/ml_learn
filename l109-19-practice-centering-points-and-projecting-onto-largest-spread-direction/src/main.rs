@@ -42,11 +42,11 @@ fn main() {
     }
 
     let data: [[f64; 2]; 4] = [[1., 1.], [2., 2.], [3., 3.], [4., 4.]];
-    let (
-        mean,
-        unit_direction_of_largest_spread,
-        _variance_share_explained_by_first_axis_where_0_means_none_and_1_means_all_spread_preserved,
-    ): ([f64; 2], [f64; 2], f64) = (|| -> ([f64; 2], [f64; 2], f64) {
+    let (mean, unit_direction_of_largest_spread, _variance_share_explained_by_first_axis): (
+        [f64; 2],
+        [f64; 2],
+        f64,
+    ) = (|| -> ([f64; 2], [f64; 2], f64) {
         let data: &[[f64; 2]] = &data;
         let sample_count: f64 = data.len() as f64;
         let mut coord_sums: [f64; 2] = [0.0, 0.0];
