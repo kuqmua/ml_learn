@@ -9,6 +9,8 @@
 // Если модель сообщает 0.8 многим объектам, событие должно происходить примерно в 80% случаев.
 // Сравниваем совпадение прогноза с наблюдаемой частотой и чрезмерную уверенность.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 fn main() {
     let observed_targets: [bool; 5] = [true, true, true, false, true];
     assert!(
@@ -24,7 +26,10 @@ fn main() {
     ] {
         assert!((0.0..=1.0).contains(&predicted_probability));
 
-        assert!(((predicted_probability - observed_frequency).abs() - expected_gap).abs() < 1e-10);
+        assert!(check_f64_eq_1e_minus_10(
+            (predicted_probability - observed_frequency).abs(),
+            expected_gap
+        ));
     }
 
     plot_predicted_probabilities_and_observed_event_frequencies(observed_frequency);

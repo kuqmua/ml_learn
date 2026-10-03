@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }
 l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences = { package = "l004-01-calculate-squared-point-distance-by-summing-squared-coordinate-differences", path = "../l004-01-calculate-squared-point-distance-by-summing-squared-coordinate-differences" }
 
 lesson-visualization = { path = "../lesson-visualization" }

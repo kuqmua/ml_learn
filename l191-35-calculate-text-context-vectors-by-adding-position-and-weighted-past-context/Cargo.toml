@@ -5,3 +5,6 @@ edition = "2024"
 
 [dependencies]
 l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights = { package = "l187-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights", path = "../l187-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights" }
+
+[dev-dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }

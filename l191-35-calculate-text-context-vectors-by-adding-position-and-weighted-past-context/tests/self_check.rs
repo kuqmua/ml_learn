@@ -1,3 +1,5 @@
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 use l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calculate_text_context_vectors_by_adding_position_and_weighted_past_context;
 
 #[test]
@@ -8,5 +10,5 @@ fn predict_result_before_running() {
     let expected = expected.expect("впиши ответ перед запуском");
     let actual =
         calculate_text_context_vectors_by_adding_position_and_weighted_past_context(&[0])[0][0];
-    assert!((actual - expected).abs() < 1e-12);
+    assert!(check_f64_eq_1e_minus_12(actual, expected));
 }

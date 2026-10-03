@@ -13,12 +13,14 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_6;
+
 fn main() {
     let mut parameter: f64 = 0.0;
     let rate: f64 = 0.2;
     for _epoch in 0..100 {
         let loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it: f64 = 2.0 * (parameter - 3.0);
-        if loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it > -0.000001 && loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it < 0.000001 {
+        if check_f64_eq_1e_minus_6(loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it, 0.0) {
             break;
         }
         parameter -= rate * loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it;

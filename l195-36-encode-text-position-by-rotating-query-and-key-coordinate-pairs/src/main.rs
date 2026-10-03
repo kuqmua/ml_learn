@@ -7,6 +7,8 @@
 //   мест.
 // Позиция вращает пары координат Q и K, сохраняя их длину.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 /// Скалярное произведение: умножаем соответствующие координаты двух векторов и складываем произведения.
 use l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vector_length;
 
@@ -24,7 +26,10 @@ fn main() {
         rotate_vector_coordinate_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vector_length(key_vector, 3, 0.2),
     );
 
-    assert!((query_key_match_after_equal_position_rotation - 1.0).abs() < 1e-12);
+    assert!(check_f64_eq_1e_minus_12(
+        query_key_match_after_equal_position_rotation,
+        1.0
+    ));
     assert!(
         multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(
             rotate_vector_coordinate_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vector_length(query_vector, 3, 0.2),

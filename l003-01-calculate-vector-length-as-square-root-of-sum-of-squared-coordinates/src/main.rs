@@ -9,6 +9,8 @@
 // Что изучаем: длина вектора — корень из суммы квадратов координат.
 // Смена знаков длину не меняет; длина нулевого вектора равна нулю.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer;
 
 fn main() {
@@ -20,10 +22,7 @@ fn main() {
     ];
     for (_description, vector, expected) in cases {
         assert!(
-            (calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer(&vector)
-                - expected)
-                .abs()
-                < 1e-10
+            check_f64_eq_1e_minus_10(calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer(&vector), expected)
         );
     }
 

@@ -4,4 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }
 l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights = { package = "l209-39-calculate-noisy-signal-by-mixing-signal-and-noise-with-root-variance-share-weights", path = "../l209-39-calculate-noisy-signal-by-mixing-signal-and-noise-with-root-variance-share-weights" }

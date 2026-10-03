@@ -16,6 +16,8 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 fn main() {
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
@@ -80,30 +82,27 @@ fn main() {
             + second_variance_sum
             + approximate_square_root_by_repeated_averaging(discriminant))
             / 2.0;
-        let unit_direction_of_largest_spread: [f64; 2] = if (|| -> f64 {
-            let value: f64 = sum_after_multiplying_differences_from_mean;
-            if value < 0.0 { -value } else { value }
-        })() < 1e-12
-        {
-            if first_variance_sum >= second_variance_sum {
-                [1.0, 0.0]
+        let unit_direction_of_largest_spread: [f64; 2] =
+            if check_f64_eq_1e_minus_12(sum_after_multiplying_differences_from_mean, 0.0) {
+                if first_variance_sum >= second_variance_sum {
+                    [1.0, 0.0]
+                } else {
+                    [0.0, 1.0]
+                }
             } else {
-                [0.0, 1.0]
-            }
-        } else {
-            let unnormalized_axis: [f64; 2] = [
-                sum_after_multiplying_differences_from_mean,
-                largest_eigenvalue_as_squared_spread_along_principal_axis - first_variance_sum,
-            ];
-            let axis_length: f64 = approximate_square_root_by_repeated_averaging(
-                calculate_square_by_multiplying_number_by_itself(unnormalized_axis[0])
-                    + calculate_square_by_multiplying_number_by_itself(unnormalized_axis[1]),
-            );
-            [
-                unnormalized_axis[0] / axis_length,
-                unnormalized_axis[1] / axis_length,
-            ]
-        };
+                let unnormalized_axis: [f64; 2] = [
+                    sum_after_multiplying_differences_from_mean,
+                    largest_eigenvalue_as_squared_spread_along_principal_axis - first_variance_sum,
+                ];
+                let axis_length: f64 = approximate_square_root_by_repeated_averaging(
+                    calculate_square_by_multiplying_number_by_itself(unnormalized_axis[0])
+                        + calculate_square_by_multiplying_number_by_itself(unnormalized_axis[1]),
+                );
+                [
+                    unnormalized_axis[0] / axis_length,
+                    unnormalized_axis[1] / axis_length,
+                ]
+            };
         let fraction_of_total_squared_spread_preserved_by_projection: f64 =
             largest_eigenvalue_as_squared_spread_along_principal_axis
                 / (first_variance_sum + second_variance_sum);

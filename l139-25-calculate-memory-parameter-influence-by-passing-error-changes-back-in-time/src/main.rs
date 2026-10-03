@@ -7,6 +7,8 @@
 // Представь: Ранний вход влияет на позднюю ошибку через несколько обновлений состояния.
 // Градиент рекуррентного веса учитывает все предыдущие шаги.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_8;
+
 use l138_25_update_memory_from_weighted_input_and_previous_memory::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1;
 
 fn half_squared_error_of_last_recurrent_state_against_target(
@@ -65,7 +67,8 @@ fn main() {
             recurrent_weight - epsilon,
             target,
         )) / (2.0 * epsilon);
-    assert!(
-        (recurrent_weight_loss_rate_of_change - numerically_estimated_rate_of_change).abs() < 1e-8
-    );
+    assert!(check_f64_eq_1e_minus_8(
+        recurrent_weight_loss_rate_of_change,
+        numerically_estimated_rate_of_change
+    ));
 }

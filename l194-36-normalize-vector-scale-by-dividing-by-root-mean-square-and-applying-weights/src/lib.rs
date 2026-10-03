@@ -30,6 +30,8 @@ pub fn normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_a
 }
 #[cfg(test)]
 mod tests {
+    use lesson_float_comparison::check_f64_eq_1e_minus_7;
+
     #[test]
     /// Проверяем epsilon и приведение среднего квадрата координат к единице с численным допуском.
     fn rejects_nonpositive_epsilon_and_scales_mean_square_to_one() {
@@ -39,7 +41,10 @@ mod tests {
             1e-8,
         )
         .unwrap();
-        assert!(((output[0] * output[0] + output[1] * output[1]) / 2.0 - 1.0).abs() < 1e-7);
+        assert!(check_f64_eq_1e_minus_7(
+            (output[0] * output[0] + output[1] * output[1]) / 2.0,
+            1.0
+        ));
         assert!(super::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights_to_control_scale_without_centering(&[3.0, 4.0], &[1.0, 1.0], 0.0).is_err());
     }
 }

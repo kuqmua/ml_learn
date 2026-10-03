@@ -1,3 +1,5 @@
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts;
 use l063_11_calculate_accuracy_as_correct_predictions_divided_by_all_predictions::calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions_where_1_means_all_correct_and_0_means_all_wrong;
 
@@ -8,7 +10,7 @@ fn predict_result_before_running() {
     let expected: Option<f64> = None;
     let expected = expected.expect("впиши ответ перед запуском");
     assert!(
-        (calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions_where_1_means_all_correct_and_0_means_all_wrong(
+        check_f64_eq_1e_minus_12(calculate_prediction_accuracy_as_correct_predictions_divided_by_all_predictions_where_1_means_all_correct_and_0_means_all_wrong(
             BinaryClassificationCounts {
                 true_positives_as_correctly_detected_positive_cases: 3,
                 false_positives_as_false_alarms_on_negative_cases: 2,
@@ -16,9 +18,6 @@ fn predict_result_before_running() {
                 false_negatives_as_missed_positive_cases: 1,
             },
         )
-        .unwrap()
-            - expected)
-            .abs()
-            < 1e-12
+        .unwrap(), expected)
     );
 }

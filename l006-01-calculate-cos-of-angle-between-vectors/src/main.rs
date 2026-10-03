@@ -11,6 +11,8 @@
 // 1 означает одинаковое направление, 0 — перпендикулярность, −1 — противоположное.
 // Промежуточные значения показывают острый или тупой угол. Для нулевого вектора направления нет.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 use l006_01_calculate_cos_of_angle_between_vectors::calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite;
 
 fn main() {
@@ -25,11 +27,9 @@ fn main() {
 
     for (_description, second_vector, expected) in cases {
         assert!(
-            (calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&first_vector, second_vector).expect(
+            check_f64_eq_1e_minus_10(calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&first_vector, second_vector).expect(
                 "для вычисления cos нужны два ненулевых вектора с одинаковым числом координат"
-            ) - expected)
-                .abs()
-                < 1e-10
+            ), expected)
         );
     }
 

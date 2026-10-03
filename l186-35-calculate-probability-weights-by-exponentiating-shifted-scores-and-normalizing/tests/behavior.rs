@@ -1,3 +1,5 @@
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares;
 
 #[test]
@@ -9,10 +11,10 @@ fn known_probabilities_are_positive_and_sum_to_one() {
     let expected = [0.09003057317038046, 0.24472847105479764, 0.6652409557748218];
     assert_eq!(weights.len(), expected.len());
     for (actual, expected) in weights.iter().zip(expected) {
-        assert!((actual - expected).abs() < 1e-12);
+        assert!(check_f64_eq_1e_minus_12(*actual, expected));
         assert!(*actual > 0.0);
     }
-    assert!((weights.iter().sum::<f64>() - 1.0).abs() < 1e-12);
+    assert!(check_f64_eq_1e_minus_12(weights.iter().sum::<f64>(), 1.0));
 }
 
 #[test]

@@ -1,3 +1,5 @@
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther;
 
 #[test]
@@ -24,14 +26,11 @@ fn distance_extracts_root_of_squared_differences() {
         Ok(0.0)
     );
     assert!(
-        (calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
+        check_f64_eq_1e_minus_12(calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
             &[0.0, 0.0],
             &[1.0, 1.0]
         )
-        .unwrap()
-            - 2.0_f64.sqrt())
-        .abs()
-            < 1e-12
+        .unwrap(), 2.0_f64.sqrt())
     );
     assert!(
         calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(

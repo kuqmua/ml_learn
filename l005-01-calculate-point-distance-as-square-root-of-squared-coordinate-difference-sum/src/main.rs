@@ -9,6 +9,8 @@
 // Что изучаем: разности по каждой координате возводим в квадрат, складываем и извлекаем корень.
 // Для совпадающих точек ответ 0. Порядок точек не влияет на расстояние.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther;
 
 fn main() {
@@ -18,11 +20,11 @@ fn main() {
         ("точки совпадают", &[3.0, 4.0], &[3.0, 4.0], 0.0),
     ];
     for (_description, first_point, second_point, expected) in cases {
-        assert!((calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
+        assert!(check_f64_eq_1e_minus_10(calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
                 first_point,
                 second_point,
             )
-            .expect("не удалось вычислить расстояние: координаты должны быть конечными, а квадрат расстояния — помещаться в f64") - expected).abs() < 1e-10);
+            .expect("не удалось вычислить расстояние: координаты должны быть конечными, а квадрат расстояния — помещаться в f64"), expected));
     }
     plot_distance_from_origin_for_changing_first_coordinate();
 }

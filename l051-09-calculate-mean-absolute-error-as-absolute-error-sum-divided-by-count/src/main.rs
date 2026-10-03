@@ -10,6 +10,8 @@
 // Ошибки разных знаков не сокращаются; удвоение промаха удваивает вклад в MAE.
 // Общая библиотека проверяет, что у каждого прогноза есть правильный ответ.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 use l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
 
 fn main() {
@@ -22,14 +24,11 @@ fn main() {
     ];
     for (_description, predictions, expected) in cases {
         assert!(
-            (calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
+            check_f64_eq_1e_minus_10(calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
                 &targets,
                 predictions,
             )
-            .expect("нужен непустой набор прогнозов и правильных ответов одинаковой длины")
-                - expected)
-                .abs()
-                < 1e-10
+            .expect("нужен непустой набор прогнозов и правильных ответов одинаковой длины"), expected)
         );
     }
 

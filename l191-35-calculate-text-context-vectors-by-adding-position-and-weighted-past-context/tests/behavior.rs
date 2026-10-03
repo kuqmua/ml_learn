@@ -1,3 +1,5 @@
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 use l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calculate_text_context_vectors_by_adding_position_and_weighted_past_context;
 
 #[test]
@@ -29,7 +31,10 @@ fn two_tokens_use_position_and_softmax_weighted_past() {
     let first_weight = 1.0 / (1.0 + ((1.01_f64 - 0.1) / 2.0_f64.sqrt()).exp());
     let expected = [0.2 + 0.9 * first_weight, 2.0 - first_weight];
     for coordinate in 0..2 {
-        assert!((states[1][coordinate] - expected[coordinate]).abs() < 1e-12);
+        assert!(check_f64_eq_1e_minus_12(
+            states[1][coordinate],
+            expected[coordinate]
+        ));
     }
 }
 

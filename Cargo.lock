@@ -74,18 +74,23 @@ name = "l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordin
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coordinates-then-add-results",
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
 [[package]]
 name = "l004-01-calculate-squared-point-distance-by-summing-squared-coordinate-differences"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum"
 version = "0.1.0"
 dependencies = [
  "l004-01-calculate-squared-point-distance-by-summing-squared-coordinate-differences",
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -95,6 +100,7 @@ version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coordinates-then-add-results",
  "l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates",
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -107,6 +113,7 @@ dependencies = [
  "l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates",
  "l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum",
  "l006-01-calculate-cos-of-angle-between-vectors",
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -201,6 +208,7 @@ dependencies = [
 name = "l020-04-reduce-error-by-subtracting-step-size-times-error-slope-from-parameter"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -208,6 +216,7 @@ dependencies = [
 name = "l021-04-repeat-parameter-updates-and-check-error-decrease"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -229,6 +238,7 @@ dependencies = [
 name = "l024-04-practice-update-step-sizes-and-error-decrease"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -236,6 +246,7 @@ dependencies = [
 name = "l025-05-calculate-conditional-probability-by-dividing-joint-by-known-event-probability"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -243,6 +254,7 @@ dependencies = [
 name = "l026-05-check-event-independence-by-comparing-joint-probability-with-multiplied-probabilities"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -392,6 +404,7 @@ version = "0.1.0"
 name = "l050-09-calculate-mean-squared-error-as-squared-error-sum-divided-by-count"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -399,6 +412,7 @@ dependencies = [
 name = "l051-09-calculate-mean-absolute-error-as-absolute-error-sum-divided-by-count"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -443,6 +457,7 @@ dependencies = [
 name = "l057-10-calculate-classification-loss-as-negative-log-correct-class-probability"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -479,6 +494,7 @@ name = "l062-11-count-classification-outcomes-by-comparing-scores-with-threshold
 version = "0.1.0"
 dependencies = [
  "l061-11-count-correct-and-incorrect-positive-and-negative-predictions",
+ "lesson-float-comparison",
 ]
 
 [[package]]
@@ -486,6 +502,7 @@ name = "l063-11-calculate-accuracy-as-correct-predictions-divided-by-all-predict
 version = "0.1.0"
 dependencies = [
  "l061-11-count-correct-and-incorrect-positive-and-negative-predictions",
+ "lesson-float-comparison",
 ]
 
 [[package]]
@@ -519,6 +536,7 @@ dependencies = [
  "l064-11-calculate-positive-prediction-precision-as-true-positives-over-positive-predictions",
  "l065-11-calculate-positive-detection-recall-as-found-positives-over-actual-positives",
  "l066-11-calculate-f1-score-as-twice-precision-times-recall-over-their-sum",
+ "lesson-float-comparison",
 ]
 
 [[package]]
@@ -617,6 +635,7 @@ dependencies = [
 name = "l080-14-calculate-class-entropy-as-negative-sum-of-shares-times-logarithms"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -818,6 +837,7 @@ dependencies = [
 name = "l109-19-practice-centering-points-and-projecting-onto-largest-spread-direction"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -1030,6 +1050,7 @@ name = "l139-25-calculate-memory-parameter-influence-by-passing-error-changes-ba
 version = "0.1.0"
 dependencies = [
  "l138-25-update-memory-from-weighted-input-and-previous-memory",
+ "lesson-float-comparison",
 ]
 
 [[package]]
@@ -1065,6 +1086,9 @@ dependencies = [
 [[package]]
 name = "l145-26-add-transformed-value-to-input-and-pass-transform-separately"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l146-26-predict-next-sound-value-using-only-past-values"
@@ -1156,6 +1180,7 @@ dependencies = [
 name = "l160-29-randomly-choose-next-text-piece-according-to-probabilities"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -1236,6 +1261,7 @@ dependencies = [
 name = "l171-31-calculate-probability-weights-by-exponentiating-scores-and-dividing-by-sum"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -1243,6 +1269,7 @@ dependencies = [
 name = "l172-31-forbid-using-future-text-positions-in-context"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -1337,6 +1364,9 @@ version = "0.1.0"
 [[package]]
 name = "l186-35-calculate-probability-weights-by-exponentiating-shifted-scores-and-normalizing"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l187-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights"
@@ -1373,6 +1403,7 @@ name = "l191-35-calculate-text-context-vectors-by-adding-position-and-weighted-p
 version = "0.1.0"
 dependencies = [
  "l187-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights",
+ "lesson-float-comparison",
 ]
 
 [[package]]
@@ -1392,11 +1423,15 @@ dependencies = [
 [[package]]
 name = "l194-36-normalize-vector-scale-by-dividing-by-root-mean-square-and-applying-weights"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l195-36-encode-text-position-by-rotating-query-and-key-coordinate-pairs"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -1425,6 +1460,7 @@ version = "0.1.0"
 dependencies = [
  "l186-35-calculate-probability-weights-by-exponentiating-shifted-scores-and-normalizing",
  "l187-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights",
+ "lesson-float-comparison",
 ]
 
 [[package]]
@@ -1498,6 +1534,7 @@ name = "l211-39-recover-clean-signal-by-subtracting-scaled-noise-and-dividing-by
 version = "0.1.0"
 dependencies = [
  "l209-39-calculate-noisy-signal-by-mixing-signal-and-noise-with-root-variance-share-weights",
+ "lesson-float-comparison",
 ]
 
 [[package]]
@@ -1573,6 +1610,7 @@ dependencies = [
 name = "l222-42-check-probability-calibration-by-comparing-predictions-with-event-frequencies"
 version = "0.1.0"
 dependencies = [
+ "lesson-float-comparison",
  "lesson-visualization",
 ]
 
@@ -1700,6 +1738,10 @@ dependencies = [
  "l063-11-calculate-accuracy-as-correct-predictions-divided-by-all-predictions",
  "l065-11-calculate-positive-detection-recall-as-found-positives-over-actual-positives",
 ]
+
+[[package]]
+name = "lesson-float-comparison"
+version = "0.1.0"
 
 [[package]]
 name = "lesson-structure"

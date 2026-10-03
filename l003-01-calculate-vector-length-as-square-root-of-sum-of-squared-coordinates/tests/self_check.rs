@@ -1,3 +1,5 @@
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer;
 
 #[test]
@@ -8,16 +10,13 @@ fn predict_vector_length_after_doubling_coordinates() {
     let expected_scaled: Option<f64> = None; // Заполни: длина вектора [6, 8]
     let expected_scaled: f64 = expected_scaled.expect("заполни ответ перед запуском теста");
     assert!(
-        (calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer(&[3.0, 4.0])
-            - expected_original)
-            .abs()
-            < 1e-10
+        check_f64_eq_1e_minus_10(calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer(&[3.0, 4.0]), expected_original)
     );
     assert!(
-        (calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer(&[6.0, 8.0])
-            - expected_scaled)
-            .abs()
-            < 1e-10
+        check_f64_eq_1e_minus_10(calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer(&[6.0, 8.0]), expected_scaled)
     );
-    assert!((expected_scaled - 2.0 * expected_original).abs() < 1e-10);
+    assert!(check_f64_eq_1e_minus_10(
+        expected_scaled,
+        2.0 * expected_original
+    ));
 }

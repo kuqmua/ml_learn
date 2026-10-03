@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "lesson-float-comparison",
     "lesson-structure",
     "lesson-datasets",
     "lesson-visualization",

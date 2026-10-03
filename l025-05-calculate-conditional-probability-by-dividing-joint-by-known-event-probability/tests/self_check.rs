@@ -1,4 +1,6 @@
 // Из 100 человек 20 больны. У 8 больных и 32 здоровых тест положительный.
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 #[test]
 #[ignore = "заполни ответы и запусти тест с --ignored"]
 fn compare_event_shares_within_two_different_groups() {
@@ -8,6 +10,6 @@ fn compare_event_shares_within_two_different_groups() {
         probability_of_illness_given_positive.expect("впиши 8 / число положительных тестов");
     let positive_given_illness: f64 =
         probability_of_positive_given_illness.expect("впиши 8 / число больных");
-    assert!((illness_given_positive - 0.2).abs() < 1e-12);
-    assert!((positive_given_illness - 0.4).abs() < 1e-12);
+    assert!(check_f64_eq_1e_minus_12(illness_given_positive, 0.2));
+    assert!(check_f64_eq_1e_minus_12(positive_given_illness, 0.4));
 }

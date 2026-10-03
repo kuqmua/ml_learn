@@ -7,6 +7,8 @@
 //   префикса.
 // Сохраняем K/V прошлых токенов и сверяем последний выход с полным причинным пересчётом.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares;
 use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
@@ -39,7 +41,7 @@ fn main() {
         )
         .unwrap(),
     ) {
-        assert!((cached[0] - recomputed[0]).abs() < 1e-12);
-        assert!((cached[1] - recomputed[1]).abs() < 1e-12);
+        assert!(check_f64_eq_1e_minus_12(cached[0], recomputed[0]));
+        assert!(check_f64_eq_1e_minus_12(cached[1], recomputed[1]));
     }
 }

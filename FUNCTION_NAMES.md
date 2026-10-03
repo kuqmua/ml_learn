@@ -100,3 +100,19 @@
 | `calculate_distribution_shift_score_as_sum_of_bin_share_differences_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change` | [240](l240-45-practice-monitoring-data-changes-errors-response-time-and-alerts/src/main.rs) | Индекс стабильности популяции (PSI): суммируем (current−reference)·ln(current/reference) по долям трёх интервалов, ограничивая доли снизу. |
 | `calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets_where_0_means_exact_predictions_and_larger_means_worse` | [241](l241-46-project-compare-train-and-run-prediction-model/src/main.rs) | Средняя абсолютная ошибка линейной модели: для каждого x считаем weight·x+constant_input_weight, сравниваем с ответом и усредняем модули ошибок. |
 | `count_binary_classification_outcomes_from_targets_and_scores_at_threshold` | [062](l062-11-count-classification-outcomes-by-comparing-scores-with-threshold/src/lib.rs) | Сравниваем оценки с порогом (равенство относится к положительному классу), затем считаем TP, FP, TN и FN. |
+
+## Приблизительное равенство дробных чисел
+
+В уроках используются обёртки из [lesson-float-comparison](lesson-float-comparison/src/lib.rs): допуск указан в имени, поэтому передаются только два сравниваемых числа.
+
+```rust
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
+assert!(check_f64_eq_1e_minus_10(actual, expected));
+```
+
+Доступны функции `check_f64_eq_1e_minus_2`, `check_f64_eq_1e_minus_6`, `check_f64_eq_1e_minus_7`, `check_f64_eq_1e_minus_8`, `check_f64_eq_1e_minus_9`, `check_f64_eq_1e_minus_10` и `check_f64_eq_1e_minus_12`. Например, `1e-2` — это `0.01`, `1e-6` — `0.000001`, `1e-12` — `0.000000000001`. Чем меньше допуск, тем строже сравнение. Все обёртки вызывают общую функцию `compare_2_floats_for_approximate_equality(first, second, absolute_tolerance)`, которую можно использовать для другого допуска.
+
+Разница должна быть строго меньше допуска: на границе проверка возвращает `false`. `NaN` и бесконечности также не считаются приблизительно равными. Это абсолютный допуск, не зависящий от величины чисел. Проверка близости к нулю использует вторым аргументом `0.0`. Прежние допуски уроков сохранены.
+
+Сравнение двух величин ошибки («эта ошибка меньше другой»), проверка диапазона и проверка допустимой ошибки квантования сохраняют свой математический смысл и не заменяются приблизительным равенством.

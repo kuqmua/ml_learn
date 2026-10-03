@@ -9,6 +9,8 @@
 // На позиции 0 виден только первый токен, на позиции 1 — первые два,
 // на последней позиции — все. Вес будущих позиций всегда равен нулю.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 fn main() {
     let raw_weights: [f64; 3] = [0.2, 0.3, 0.5];
     for current_position in 0..raw_weights.len() {
@@ -21,7 +23,10 @@ fn main() {
         for index in 0..=current_position {
             future_position_filtered_weights[index] = raw_weights[index] / sum_of_allowed_weights;
         }
-        assert!((future_position_filtered_weights.iter().sum::<f64>() - 1.0).abs() < 1e-10);
+        assert!(check_f64_eq_1e_minus_10(
+            future_position_filtered_weights.iter().sum::<f64>(),
+            1.0
+        ));
         assert!(
             future_position_filtered_weights[current_position + 1..]
                 .iter()

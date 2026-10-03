@@ -9,6 +9,8 @@
 // При известном точном шуме можно алгебраически восстановить x_0.
 
 // Долю (fraction) дисперсии исходного сигнала обозначают alpha_bar; её сохранение называют retention.
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 /// Восстановление сигнала: (noisy − sqrt(1−a)·predicted_noise) / sqrt(a).
 use l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares;
 
@@ -36,15 +38,14 @@ fn main() {
         )
         .unwrap();
 
-    assert!(
-        (recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
+    assert!(check_f64_eq_1e_minus_12(
+        recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
             noisy,
             noise,
             original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal,
-        ) - clean)
-            .abs()
-            < 1e-12
-    );
+        ),
+        clean
+    ));
     assert!(
         (recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
             noisy,

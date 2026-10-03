@@ -11,6 +11,8 @@
 // Вероятности 0 и 1 дают бесконечную ошибку для неверного класса, поэтому пример
 // считает только строго внутренние вероятности.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 fn main() {
     let cases: [(&str, f64, f64); 4] = [
         ("верный уверенный прогноз", 1.0, 0.9),
@@ -56,12 +58,10 @@ fn plot_classification_loss_as_negative_log_probability_for_each_correct_class(
             && negative_log_correct_class_probabilities_where_closer_to_0_means_better[1]
                 < negative_log_correct_class_probabilities_where_closer_to_0_means_better[2]
     );
-    assert!(
-        (negative_log_correct_class_probabilities_where_closer_to_0_means_better[0]
-            - negative_log_correct_class_probabilities_where_closer_to_0_means_better[3])
-            .abs()
-            < 1e-10
-    );
+    assert!(check_f64_eq_1e_minus_10(
+        negative_log_correct_class_probabilities_where_closer_to_0_means_better[0],
+        negative_log_correct_class_probabilities_where_closer_to_0_means_better[3]
+    ));
 
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),

@@ -19,6 +19,8 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_8;
+
 fn main() {
     fn calculate_squared_distance_of_parameter_from_three_as_loss_where_0_means_parameter_equals_3_and_larger_means_farther(
         parameter: f64,
@@ -42,10 +44,7 @@ fn main() {
                     let parameter: f64 = parameter;
                     2.0 * (parameter - 3.0)
                 })();
-                if (|| -> f64 {
-                    let value: f64 = loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it;
-                    if value < 0.0 { -value } else { value }
-                })() < 1e-8
+                if check_f64_eq_1e_minus_8(loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it, 0.0)
                 {
                     break;
                 }

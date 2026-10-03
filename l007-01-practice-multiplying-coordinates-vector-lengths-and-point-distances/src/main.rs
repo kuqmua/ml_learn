@@ -10,6 +10,8 @@
 // Здесь соединяем вычисления из уроков 01.1–01.5. Их реализации находятся в общей
 // библиотеках предыдущих уроков: позже те же функции применяются в матрицах, kNN и поиске.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
 use l002_01_calculate_sum_of_absolute_vector_coordinates::calculate_sum_of_absolute_vector_coordinates_as_total_axis_aligned_length_where_0_means_zero_vector;
 use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer;
@@ -48,22 +50,20 @@ fn main() {
             expected_sum
         );
         if let (Some(actual), Some(expected)) = (direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite, expected_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite) {
-            assert!((actual - expected).abs() < 1e-10);
+            assert!(check_f64_eq_1e_minus_10(actual, expected));
         } else {
             assert_eq!(direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite, expected_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite);
         }
         assert!(
-            (calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
+            check_f64_eq_1e_minus_10(calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
                 &first_vector,
                 second_vector,
             )
-            .unwrap()
-                - calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
+            .unwrap(), calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
                     second_vector,
                     &first_vector,
                 )
                 .unwrap())
-            .abs() < 1e-10
         );
     }
 

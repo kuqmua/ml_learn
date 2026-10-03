@@ -21,18 +21,18 @@ pub fn rotate_vector_coordinate_pair_by_token_position_to_encode_relative_positi
 }
 #[cfg(test)]
 mod tests {
+    use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
     #[test]
     /// Поворот сохраняет сумму квадратов координат, а значит и длину вектора.
     fn rotation_preserves_sum_of_squared_coordinates() {
         let input_value: [f64; 2] = [3.0, 4.0];
         let second_input_value: [f64; 2] =
             super::rotate_vector_coordinate_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vector_length(input_value, 7, 0.1);
-        assert!(
-            (second_input_value[0] * second_input_value[0]
-                + second_input_value[1] * second_input_value[1]
-                - 25.0)
-                .abs()
-                < 1e-10
-        );
+        assert!(check_f64_eq_1e_minus_10(
+            second_input_value[0] * second_input_value[0]
+                + second_input_value[1] * second_input_value[1],
+            25.0
+        ));
     }
 }

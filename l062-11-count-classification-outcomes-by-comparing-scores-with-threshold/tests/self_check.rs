@@ -1,3 +1,5 @@
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 use l062_11_count_classification_outcomes_by_comparing_scores_with_threshold::count_binary_classification_outcomes_from_targets_and_scores_at_threshold;
 
 #[test]
@@ -13,5 +15,5 @@ fn predict_result_before_running() {
     )
     .unwrap()
     .true_positives_as_correctly_detected_positive_cases as f64;
-    assert!((actual - expected).abs() < 1e-12);
+    assert!(check_f64_eq_1e_minus_12(actual, expected));
 }

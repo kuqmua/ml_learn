@@ -1,3 +1,5 @@
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts;
 use l067_11_calculate_f1_from_counts_by_combining_precision_and_recall::calculate_f1_score_from_counts_by_multiplying_precision_and_recall_by_two_then_dividing_by_sum_where_1_means_no_false_alarms_or_misses_and_larger_means_better;
 
@@ -17,5 +19,5 @@ fn predict_result_before_running() {
             },
         )
         .unwrap();
-    assert!((actual - expected).abs() < 1e-12);
+    assert!(check_f64_eq_1e_minus_12(actual, expected));
 }

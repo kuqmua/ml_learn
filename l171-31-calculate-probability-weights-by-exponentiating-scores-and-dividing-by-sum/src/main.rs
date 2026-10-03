@@ -7,6 +7,8 @@
 // Большая оценка получает больший вес. Равные оценки дают равные веса.
 // Прибавление одной константы к обеим оценкам не меняет веса, а сумма весов равна 1.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 fn main() {
     let cases: [(&str, [f64; 2]); 4] = [
         ("равные оценки", [0.0, 0.0]),
@@ -35,25 +37,21 @@ fn main() {
             exponentials[0] / sum_of_exponentials,
             exponentials[1] / sum_of_exponentials,
         ];
-        assert!(
-            (attention_shares_summing_to_1_where_larger_score_gets_larger_share[0]
-                + attention_shares_summing_to_1_where_larger_score_gets_larger_share[1]
-                - 1.0)
-                .abs()
-                < 1e-10
-        );
+        assert!(check_f64_eq_1e_minus_10(
+            attention_shares_summing_to_1_where_larger_score_gets_larger_share[0]
+                + attention_shares_summing_to_1_where_larger_score_gets_larger_share[1],
+            1.0
+        ));
         assert!(
             attention_shares_summing_to_1_where_larger_score_gets_larger_share
                 .iter()
                 .all(|&weight| (0.0..=1.0).contains(&weight))
         );
         match description {
-            "равные оценки" => assert!(
-                (attention_shares_summing_to_1_where_larger_score_gets_larger_share[0]
-                    - attention_shares_summing_to_1_where_larger_score_gets_larger_share[1])
-                    .abs()
-                    < 1e-10
-            ),
+            "равные оценки" => assert!(check_f64_eq_1e_minus_10(
+                attention_shares_summing_to_1_where_larger_score_gets_larger_share[0],
+                attention_shares_summing_to_1_where_larger_score_gets_larger_share[1]
+            )),
 
             "вторая оценка выше" => {
                 assert!(
@@ -70,18 +68,14 @@ fn main() {
             ),
 
             "к обеим прибавили 1" => {
-                assert!(
-                    (attention_shares_summing_to_1_where_larger_score_gets_larger_share[0]
-                        - reference_weights[0])
-                        .abs()
-                        < 1e-10
-                );
-                assert!(
-                    (attention_shares_summing_to_1_where_larger_score_gets_larger_share[1]
-                        - reference_weights[1])
-                        .abs()
-                        < 1e-10
-                );
+                assert!(check_f64_eq_1e_minus_10(
+                    attention_shares_summing_to_1_where_larger_score_gets_larger_share[0],
+                    reference_weights[0]
+                ));
+                assert!(check_f64_eq_1e_minus_10(
+                    attention_shares_summing_to_1_where_larger_score_gets_larger_share[1],
+                    reference_weights[1]
+                ));
             }
 
             _ => unreachable!(),

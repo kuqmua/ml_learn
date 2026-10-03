@@ -8,6 +8,8 @@
 // У чистого узла энтропия равна нулю, при долях 50/50 она максимальна.
 // Нулевую долю пропускаем: предел p·log(p) при p→0 равен нулю.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 fn main() {
     for (_description, positive_class_share) in [
         ("только отрицательный класс", 0.0),
@@ -32,18 +34,16 @@ fn main() {
         }
         assert!(binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares >= -1e-10 && binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares <= 1.0 + 1e-10);
         if positive_class_share == 0.0 || positive_class_share == 1.0 {
-            assert!(
-                binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares
-                    .abs()
-                    < 1e-10
-            );
+            assert!(check_f64_eq_1e_minus_10(
+                binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares,
+                0.0
+            ));
         }
         if positive_class_share == 0.5 {
-            assert!(
-                (binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares
-                    - 1.0)
-                    .abs() < 1e-10
-            );
+            assert!(check_f64_eq_1e_minus_10(
+                binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares,
+                1.0
+            ));
         }
     }
 

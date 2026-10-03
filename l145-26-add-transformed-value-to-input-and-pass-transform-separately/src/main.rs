@@ -7,6 +7,8 @@
 //   общему выходу.
 // Прибавление входа переносит состояние через слои, skip собирает вклады для выхода.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 /// Остаточная и пропускная связи: возвращаем (input + tanh(input·transform), tanh(input·transform)).
 
 fn calculate_input_plus_transform_and_separate_transform_output(
@@ -32,7 +34,10 @@ fn main() {
         sum_of_transformed_signals_from_all_layers +=
             transformed_signal_passed_to_output_without_adding_input;
     }
-    assert!((state - (0.5 + sum_of_transformed_signals_from_all_layers)).abs() < 1e-12);
+    assert!(check_f64_eq_1e_minus_12(
+        state,
+        0.5 + sum_of_transformed_signals_from_all_layers
+    ));
 }
 
 /// tanh сохраняет знак, равен 0 при нулевом входе и насыщается к −1 или 1.

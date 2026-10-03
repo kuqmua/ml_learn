@@ -10,6 +10,8 @@
 // События независимы, когда вероятность их совместного появления равна результату
 // умножения отдельных вероятностей. Одинаковые отдельные вероятности этого не гарантируют.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 fn main() {
     let cases: [(&str, f64, f64, f64, bool); 3] = [
         ("две независимые монеты", 0.5, 0.5, 0.25, true),
@@ -29,8 +31,10 @@ fn main() {
                 && (0.0..=1.0).contains(&second_event_probability)
         );
         assert!((0.0..=1.0).contains(&joint_probability));
-        let independent: bool =
-            (joint_probability - first_event_probability * second_event_probability).abs() < 1e-10;
+        let independent: bool = check_f64_eq_1e_minus_10(
+            joint_probability,
+            first_event_probability * second_event_probability,
+        );
         assert_eq!(independent, expected);
     }
 

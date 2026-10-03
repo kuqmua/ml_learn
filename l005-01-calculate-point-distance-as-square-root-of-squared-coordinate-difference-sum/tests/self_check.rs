@@ -1,3 +1,5 @@
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther;
 
 #[test]
@@ -8,14 +10,11 @@ fn predict_distance_and_check_symmetry() {
     let first_point: [f64; 2] = [1.0, 2.0];
     let second_point: [f64; 2] = [4.0, 6.0];
     assert!(
-        (calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
+        check_f64_eq_1e_minus_10(calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
             &first_point,
             &second_point
         )
-        .unwrap()
-            - expected_distance)
-            .abs()
-            < 1e-10
+        .unwrap(), expected_distance)
     );
     assert_eq!(
         calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(

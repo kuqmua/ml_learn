@@ -12,6 +12,8 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_9;
+
 fn main() {
     let words: [&str; 3] = ["кот", "пёс", "мир"];
     let probabilities: [f64; 3] = [0.5, 0.3, 0.2];
@@ -28,7 +30,7 @@ fn main() {
         "вероятности должны быть конечными и неотрицательными"
     );
     assert!(
-        (probabilities.iter().sum::<f64>() - 1.0).abs() < 1e-9,
+        check_f64_eq_1e_minus_9(probabilities.iter().sum::<f64>(), 1.0),
         "сумма вероятностей должна быть равна 1"
     );
     let random_number_between_zero_and_one: f64 = 0.65;
