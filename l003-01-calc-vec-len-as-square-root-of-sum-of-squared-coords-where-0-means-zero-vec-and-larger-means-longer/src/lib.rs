@@ -1,10 +1,8 @@
-//! Урок 003. Длина вектора: квадратный корень из суммы квадратов координат.
+//! Урок 003. Считаем длину стрелки от начала координат до заданной точки.
+//! Каждое число умножаем само на себя, складываем результаты и берём квадратный корень.
+//! Для [3, 4]: 3×3 + 4×4 = 25, корень из 25 равен 5, потому что 5×5 = 25.
+//! Смена знака координаты меняет направление, но не длину.
 
-/// Приближаем квадратный корень, многократно усредняя оценку и число, делённое на оценку.
-/// Это метод Ньютона для небольших учебных входов.
-/// Учебный аналог `f64::sqrt`: показывает шаги метода Ньютона и может работать медленнее.
-/// Для отрицательного входа здесь panic, тогда как `sqrt` возвращает NaN.
-/// Метод Ньютона для корня: повторяем estimate = (estimate + value / estimate) / 2.
 use l001_01_multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec::multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec;
 
 fn approximate_square_root_by_repeated_averaging(value: f64) -> f64 {

@@ -1,7 +1,10 @@
-//! Урок 006. cos угла между векторами: умножение соответствующих координат, сложение и деление на длины.
+//! Урок 006. Сравниваем направления двух стрелок независимо от их длин.
+//! Сначала умножаем соответствующие числа и складываем результаты, как в уроке 001.
+//! Затем делим сумму на длину первой стрелки и на длину второй.
+//! Результат 1 означает одно направление, 0 — угол 90°, −1 — противоположные направления.
+//! Например, [1, 0] и [10, 0] дают 1: длины разные, но направления совпадают.
+//! Для нулевой стрелки направления нет, поэтому функция возвращает ошибку.
 
-/// Сходство направлений использует вычисление 01.1 и длину 01.3.
-/// Косинусное сходство: сумму произведений соответствующих координат делим на произведение длин векторов.
 use l001_01_multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec::multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec;
 use l003_01_calc_vec_len_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer::calc_vec_len_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer;
 

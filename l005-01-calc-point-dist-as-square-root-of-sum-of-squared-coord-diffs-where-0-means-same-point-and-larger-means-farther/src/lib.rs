@@ -1,7 +1,9 @@
-//! Расстояние между точками: корень из квадрата расстояния предыдущей части.
+//! Урок 005. Считаем расстояние между двумя точками по прямой.
+//! Берём сумму квадратов разниц из предыдущего урока и извлекаем квадратный корень.
+//! Например, для разниц 3 и 4 получаем корень из 25, то есть расстояние 5.
+//! Число координат у обеих точек должно совпадать; это проверяет тип массива.
+//! Бесконечные и неопределённые координаты, а также переполнение дают ошибку.
 
-/// Евклидово расстояние: складываем квадраты разностей координат и извлекаем корень.
-/// У каждой точки ровно две координаты; это задано типом массива.
 use l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther::calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther;
 
 pub fn calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(

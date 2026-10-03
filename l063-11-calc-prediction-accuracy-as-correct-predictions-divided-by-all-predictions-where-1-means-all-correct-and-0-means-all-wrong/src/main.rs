@@ -1,4 +1,7 @@
-// Доля верных прогнозов: число правильных ответов, делённое на общее число.
+// Урок 063. Считаем долю правильных ответов среди всех прогнозов.
+// Если из 10 прогнозов верны 8, получаем 8/10 = 0.8, то есть 80%.
+// Значение 1 означает, что верно всё; 0 — что всё неверно.
+// Если прогнозов нет, долю посчитать нельзя: функция возвращает None.
 
 use l061_11_count_binary_classification_outcomes_from_targets_and_predictions::BinaryClassificationCounts;
 use l063_11_calc_prediction_accuracy_as_correct_predictions_divided_by_all_predictions_where_1_means_all_correct_and_0_means_all_wrong::calc_prediction_accuracy_as_correct_predictions_divided_by_all_predictions_where_1_means_all_correct_and_0_means_all_wrong;

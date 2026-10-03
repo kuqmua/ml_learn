@@ -10,12 +10,12 @@
 - [x] [004 · Квадрат расстояния: сложение квадратов разностей координат](l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther/)
 - [x] [005 · Расстояние между точками: квадратный корень из суммы квадратов разностей координат](l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther/)
 - [x] [006 · `cos` угла между векторами: умножение соответствующих координат, сложение и деление на длины](l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens-where-1-means-same-direction-0-means-perpendicular-and-minus-1-means-opposite/)
-- [ ] [007 · Практика: умножение координат, длины векторов и расстояния между точками](l007-01-practice-multiplying-coords-vec-lens-and-point-dists/)
+- [x] [007 · Практика: умножение координат, длины векторов и расстояния между точками](l007-01-practice-multiplying-coords-vec-lens-and-point-dists/)
 
 ## 02. Матрицы и линейные преобразования
 
-- [ ] [008 · Проверка числа элементов матрицы и границ строки и столбца](l008-02-validate-matrix-element-count-and-row-column-indices/)
-- [ ] [009 · Транспонирование матрицы: перестановка строк в столбцы](l009-02-transpose-matrix-by-turning-rows-into-columns/)
+- [x] [008 · Проверка числа элементов матрицы и границ строки и столбца](l008-02-validate-matrix-element-count-and-row-column-indices/)
+- [x] [009 · Транспонирование матрицы: перестановка строк в столбцы](l009-02-transpose-matrix-by-turning-rows-into-columns/)
 - [ ] [010 · Умножение матрицы на вектор: умножение соответствующих координат строки и вектора с последующим сложением](l010-02-multiply-matrix-and-vec-by-adding-multiplied-row-coords/)
 - [ ] [011 · Умножение двух матриц: умножение соответствующих элементов строк и столбцов с последующим сложением](l011-02-multiply-matrices-by-adding-multiplied-row-and-column-values/)
 - [ ] [012 · Поиск двух неизвестных, удовлетворяющих двум линейным уравнениям](l012-02-solve-system-of-two-linear-equations/)
