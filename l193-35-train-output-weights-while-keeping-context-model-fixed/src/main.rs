@@ -9,7 +9,7 @@
 // Фиксируем decoder и подгоняем только выходные веса на train; качество проверяем отдельно.
 
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
-use l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calc_text_context_vecs_by_adding_position_and_weighted_past_context;
+use l191_35_calc_text_context_vecs_by_adding_position_and_weighted_past_context::calc_text_context_vecs_by_adding_position_and_weighted_past_context;
 
 fn calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
     input_value: f64,

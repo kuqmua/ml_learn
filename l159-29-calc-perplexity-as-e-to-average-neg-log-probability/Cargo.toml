@@ -1,0 +1,8 @@
+[package]
+name = "l159-29-calc-perplexity-as-e-to-average-neg-log-probability"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

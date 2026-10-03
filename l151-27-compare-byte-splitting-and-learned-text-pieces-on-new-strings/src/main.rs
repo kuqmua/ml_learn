@@ -6,7 +6,7 @@
 //   закодировать байтами.
 // Сравниваем длину byte-level и BPE кодирования на train и новых строках.
 
-use l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs::BytePairEncoding;
+use l148_27_train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair::BytePairEncoding;
 
 fn main() {
     let training_data: [&str; 3] = ["кот спит", "кот ест", "пёс спит"];

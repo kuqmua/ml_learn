@@ -59,21 +59,21 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Умножение соответствующих координат двух векторов и сложение результатов | `l001-01-multiply-matching-coordinates-then-add-results` |
-| 2 | Длина пути вдоль осей: сложение модулей координат вектора | `l002-01-calculate-sum-of-absolute-vector-coordinates` |
-| 3 | Длина вектора: квадратный корень из суммы квадратов координат | `l003-01-calculate-vector-length-as-square-root-of-sum-of-squared-coordinates` |
-| 4 | Квадрат расстояния: сложение квадратов разностей координат | `l004-01-calculate-squared-point-distance-by-summing-squared-coordinate-differences` |
-| 5 | Расстояние между точками: квадратный корень из суммы квадратов разностей координат | `l005-01-calculate-point-distance-as-square-root-of-squared-coordinate-difference-sum` |
-| 6 | `cos` угла между векторами: умножение соответствующих координат, сложение и деление на длины | `l006-01-calculate-cos-of-angle-between-vectors` |
+| 1 | Умножение соответствующих координат двух векторов и сложение результатов | `l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec` |
+| 2 | Длина пути вдоль осей: сложение модулей координат вектора | `l002-01-calc-sum-of-absolute-vec-coords-as-total-axis-aligned-len-where-0-means-zero-vec` |
+| 3 | Длина вектора: квадратный корень из суммы квадратов координат | `l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords-where-0-means-zero-vec-and-larger-means-longer` |
+| 4 | Квадрат расстояния: сложение квадратов разностей координат | `l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther` |
+| 5 | Расстояние между точками: квадратный корень из суммы квадратов разностей координат | `l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther` |
+| 6 | `cos` угла между векторами: умножение соответствующих координат, сложение и деление на длины | `l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens-where-1-means-same-direction-0-means-perpendicular-and-minus-1-means-opposite` |
 
 ![Скалярное произведение и угол](docs/illustrations/01-multiply-matching-coordinates.svg)
 
 *Проверь себя: почему результат 0 для вектора [-2, 1] не означает, что сам вектор нулевой?*
 
-##### Практика: умножение координат, длины векторов и расстояния между точками — `l007-01-practice-multiplying-coordinates-vector-lengths-and-point-distances`
+##### Практика: умножение координат, длины векторов и расстояния между точками — `l007-01-practice-multiplying-coords-vec-lens-and-point-dists`
 
 - **Повторить вместе:** умножение координат попарно и сложение результатов, нормы L1/L2, расстояние, косинусное сходство.
-- **Практика:** Реализуй Vec<f64>: multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec, vector_length, dist, cos; опиши ошибки длины и нулевого вектора.
+- **Практика:** Реализуй Vec<f64>: multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec, vector_len, dist, cos; опиши ошибки длины и нулевого вектора.
 - **Готово, когда:** Сравни ортогональные, одинаковые и противоположные векторы; проверь симметрию расстояния.
 - **Артефакт:** код пакета, короткий README с входными данными, командой запуска, результатом и тем, что осталось непонятным.
 
@@ -86,7 +86,7 @@
 |---:|---|---|
 | 1 | Проверка числа элементов матрицы и границ строки и столбца | `l008-02-validate-matrix-element-count-and-row-column-indices` |
 | 2 | Транспонирование матрицы: перестановка строк в столбцы | `l009-02-transpose-matrix-by-turning-rows-into-columns` |
-| 3 | Умножение матрицы на вектор: умножение соответствующих координат строки и вектора с последующим сложением | `l010-02-multiply-matrix-and-vector-by-adding-multiplied-row-coordinates` |
+| 3 | Умножение матрицы на вектор: умножение соответствующих координат строки и вектора с последующим сложением | `l010-02-multiply-matrix-and-vec-by-adding-multiplied-row-coords` |
 | 4 | Умножение двух матриц: умножение соответствующих элементов строк и столбцов с последующим сложением | `l011-02-multiply-matrices-by-adding-multiplied-row-and-column-values` |
 | 5 | Поиск двух неизвестных, удовлетворяющих двум линейным уравнениям | `l012-02-solve-system-of-two-linear-equations` |
 
@@ -104,10 +104,10 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Производная функции: скорость изменения результата при изменении входа | `l014-03-calculate-derivative-as-function-output-change-per-input-change` |
-| 2 | Частная производная: скорость изменения функции при изменении одного из двух входов | `l015-03-calculate-partial-derivative-by-varying-one-of-two-inputs` |
-| 3 | Производная вложенных функций: умножение скоростей изменения по правилу цепочки | `l016-03-calculate-composed-function-derivative-by-multiplying-rates-of-change` |
-| 4 | Градиент: сбор скоростей изменения функции по двум входам в один вектор | `l017-03-calculate-gradient-by-collecting-rates-of-change-for-both-inputs` |
+| 1 | Производная функции: скорость изменения результата при изменении входа | `l014-03-calc-derivative-as-function-output-change-per-input-change` |
+| 2 | Частная производная: скорость изменения функции при изменении одного из двух входов | `l015-03-calc-partial-derivative-by-varying-one-of-two-inputs` |
+| 3 | Производная вложенных функций: умножение скоростей изменения по правилу цепочки | `l016-03-calc-composed-function-derivative-by-multiplying-rates-of-change` |
+| 4 | Градиент: сбор скоростей изменения функции по двум входам в один вектор | `l017-03-calc-gradient-by-collecting-rates-of-change-for-both-inputs` |
 | 5 | Приближённая производная: оценка скорости изменения по значениям слева и справа от точки | `l018-03-estimate-derivative-from-two-nearby-function-values` |
 
 ##### Практика: скорости изменения функции и их проверка по соседним значениям — `l019-03-practice-rates-of-change-and-checks-with-nearby-values`
@@ -143,10 +143,10 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Вероятность события при известном условии: деление совместной вероятности на вероятность условия | `l025-05-calculate-conditional-probability-by-dividing-joint-by-known-event-probability` |
+| 1 | Вероятность события при известном условии: деление совместной вероятности на вероятность условия | `l025-05-calc-conditional-probability-by-dividing-joint-by-known-event-probability` |
 | 2 | Проверка независимости событий: сравнение совместной вероятности с результатом умножения вероятностей | `l026-05-check-event-independence-by-comparing-joint-probability-with-multiplied-probabilities` |
 | 3 | Пересчёт вероятности события с учётом частоты полученного наблюдения | `l027-05-update-event-probability-using-observation-rates` |
-| 4 | Средний ожидаемый результат: сумма значений исходов, умноженных на их вероятности | `l028-05-calculate-expected-value-by-summing-outcomes-times-probabilities` |
+| 4 | Средний ожидаемый результат: сумма значений исходов, умноженных на их вероятности | `l028-05-calc-expected-value-by-summing-outcomes-times-probabilities` |
 
 ![Fraction — доля целого](docs/illustrations/05-fraction.svg)
 
@@ -166,14 +166,14 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Среднее арифметическое: сложение значений и деление суммы на их количество | `l030-06-calculate-mean-by-summing-values-and-dividing-by-count` |
-| 2 | Медиана: поиск среднего по положению значения после сортировки | `l031-06-calculate-median-by-sorting-values-and-finding-middle` |
-| 3 | Разброс значений (выборочная дисперсия): сумма квадратов отклонений от среднего, делённая на число значений минус один | `l032-06-calculate-sample-variance-from-squared-differences-from-mean` |
-| 4 | Квантиль: значение на заданной доле упорядоченной выборки | `l033-06-calculate-quantile-by-selecting-sorted-value-at-given-sample-fraction` |
+| 1 | Среднее арифметическое: сложение значений и деление суммы на их количество | `l030-06-calc-mean-by-summing-values-and-dividing-by-count` |
+| 2 | Медиана: поиск среднего по положению значения после сортировки | `l031-06-calc-median-by-sorting-values-and-finding-middle` |
+| 3 | Разброс значений (выборочная дисперсия): сумма квадратов отклонений от среднего, делённая на число значений минус один | `l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one-where-0-means-all-values-equal-and-larger-means-more-spread` |
+| 4 | Квантиль: значение на заданной доле упорядоченной выборки | `l033-06-calc-quantile-by-selecting-sorted-value-at-given-sample-fraction` |
 | 5 | Доверительный интервал среднего: оценка границ неопределённости по выборке | `l034-06-estimate-confidence-interval-as-uncertainty-bounds-around-sample-mean` |
 | 6 | Изменчивость оценки: повторный набор выборок с возвращением наблюдений | `l035-06-estimate-statistic-variability-by-resampling-observations-with-replacement` |
 
-##### Практика: среднее, середина и квадраты отклонений для данных из CSV — `l036-06-practice-mean-middle-and-squared-differences-from-mean-from-csv`
+##### Практика: среднее, середина и квадраты отклонений для данных из CSV — `l036-06-practice-mean-middle-and-squared-diffs-from-mean-from-csv`
 
 - **Повторить вместе:** среднее, медиана, дисперсия, квантили, доверительный интервал, bootstrap.
 - **Практика:** Напиши статистический отчёт по CSV-столбцу; отдельно обработай пропуски и нечисловые значения.
@@ -189,7 +189,7 @@
 | 1 | Проверка названий столбцов CSV по ожидаемой схеме | `l037-07-validate-csv-header-against-data-schema` |
 | 2 | Чтение числа и категории из строки CSV | `l038-07-parse-number-and-category-from-csv-row` |
 | 3 | Разделение данных для обучения, выбора модели и итоговой проверки | `l039-07-split-data-for-training-model-selection-and-final-check` |
-| 4 | Заполнение пропусков серединой отсортированных обучающих значений | `l040-07-fill-missing-values-with-middle-of-sorted-training-values` |
+| 4 | Заполнение пропусков серединой отсортированных обучающих значений | `l040-07-choose-missing-value-replacement-by-sorting-training-values-and-taking-upper-middle` |
 | 5 | Числовое кодирование категорий: назначение номеров категориям из обучающих данных | `l041-07-encode-categories-by-assigning-numeric-identifiers-to-training-categories` |
 | 6 | Проверка влияния тестовых данных на статистики, используемые при обучении | `l042-07-show-how-test-data-can-contaminate-training-statistics` |
 
@@ -214,7 +214,7 @@
 | 2 | Простая модель для сравнения: прогноз самого частого обучающего класса | `l045-08-build-baseline-classifier-by-predicting-most-common-training-class` |
 | 3 | Чтение настроек эксперимента из командной строки | `l046-08-read-experiment-settings-from-command-line` |
 | 4 | Запись ошибки после каждого прохода по обучающим данным | `l047-08-record-error-after-each-training-pass` |
-| 5 | Вычисление отпечатка содержимого для обнаружения изменений данных | `l048-08-calculate-content-fingerprint-to-detect-dataset-changes` |
+| 5 | Вычисление отпечатка содержимого для обнаружения изменений данных | `l048-08-calc-content-fingerprint-to-detect-dataset-changes` |
 
 ##### Практика: повторяемое обучение, простая модель для сравнения и версия данных — `l049-08-practice-repeatable-training-with-simple-comparison-and-data-version`
 
@@ -233,9 +233,9 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Средняя квадратичная ошибка прогноза: сумма квадратов ошибок, делённая на число примеров | `l050-09-calculate-mean-squared-error-as-squared-error-sum-divided-by-count` |
-| 2 | Средняя абсолютная ошибка прогноза: сумма модулей ошибок, делённая на число примеров | `l051-09-calculate-mean-absolute-error-as-absolute-error-sum-divided-by-count` |
-| 3 | Линейный прогноз: умножение входного значения на вес и прибавление смещения | `l052-09-calculate-linear-prediction-by-multiplying-input-and-adding-constant-weight` |
+| 1 | Средняя квадратичная ошибка прогноза: сумма квадратов ошибок, делённая на число примеров | `l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count-where-0-means-exact-predictions-and-larger-means-worse` |
+| 2 | Средняя абсолютная ошибка прогноза: сумма модулей ошибок, делённая на число примеров | `l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count-where-0-means-exact-predictions-and-larger-means-worse` |
+| 3 | Линейный прогноз: умножение входного значения на вес и прибавление смещения | `l052-09-calc-linear-prediction-by-multiplying-input-and-adding-constant-weight` |
 | 4 | Ограничение сложности модели: добавление штрафа за большой вес | `l053-09-penalize-model-complexity-by-adding-large-weight-penalty` |
 | 5 | Проверка прогноза по прямой на данных, не использованных для обучения | `l054-09-check-weighted-input-plus-constant-weight-on-unused-data` |
 
@@ -252,9 +252,9 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Вероятность класса через сигмоиду: единица, делённая на сумму единицы и e в степени, противоположной оценке модели | `l056-10-calculate-class-probability-as-one-over-one-plus-e-to-negative-score` |
-| 2 | Ошибка классификации: отрицательный логарифм вероятности правильного класса | `l057-10-calculate-classification-loss-as-negative-log-correct-class-probability` |
-| 3 | Преобразование взвешенного входа со смещением в вероятность положительного класса | `l058-10-convert-weighted-input-plus-constant-weight-to-positive-class-probability` |
+| 1 | Вероятность класса через сигмоиду: единица, делённая на сумму единицы и e в степени, противоположной оценке модели | `l056-10-calc-class-probability-as-one-over-one-plus-e-to-neg-score` |
+| 2 | Ошибка классификации: отрицательный логарифм вероятности правильного класса | `l057-10-calc-classification-loss-as-neg-log-correct-class-probability` |
+| 3 | Преобразование взвешенного входа со смещением в вероятность положительного класса | `l058-10-convert-weighted-input-plus-constant-weight-to-pos-class-probability` |
 | 4 | Выбор класса сравнением вероятности с порогом | `l059-10-choose-class-by-comparing-probability-with-threshold` |
 
 ##### Практика: обучение прогнозу вероятности класса и выбор порога — `l060-10-practice-learning-class-probabilities-and-choosing-threshold`
@@ -270,15 +270,15 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Подсчёт верных и ошибочных положительных и отрицательных прогнозов | `l061-11-count-correct-and-incorrect-positive-and-negative-predictions` |
-| 2 | Исходы классификации: сравнение оценок с порогом и подсчёт меток | `l062-11-count-classification-outcomes-by-comparing-scores-with-threshold` |
-| 3 | Доля верных прогнозов: число правильных ответов, делённое на общее число | `l063-11-calculate-accuracy-as-correct-predictions-divided-by-all-predictions` |
-| 4 | Точность положительных прогнозов: доля верных среди всех положительных прогнозов | `l064-11-calculate-positive-prediction-precision-as-true-positives-over-positive-predictions` |
-| 5 | Полнота обнаружения: доля найденных среди всех действительно положительных примеров | `l065-11-calculate-positive-detection-recall-as-found-positives-over-actual-positives` |
-| 6 | Оценка F1: удвоенное произведение точности и полноты, делённое на их сумму | `l066-11-calculate-f1-score-as-twice-precision-times-recall-over-their-sum` |
-| 7 | F1 из счётчиков: вычисление точности и полноты и их гармонического среднего | `l067-11-calculate-f1-from-counts-by-combining-precision-and-recall` |
-| 8 | Качество ранжирования (ROC-AUC): доля правильно упорядоченных положительных и отрицательных пар | `l068-11-calculate-ranking-quality-as-share-of-correctly-ordered-positive-negative-pairs` |
-| 9 | Качество поиска положительных примеров: сумма точности, умноженной на прирост полноты | `l069-11-calculate-average-precision-by-summing-precision-times-recall-increases` |
+| 1 | Подсчёт верных и ошибочных положительных и отрицательных прогнозов | `l061-11-count-binary-classification-outcomes-from-targets-and-predictions` |
+| 2 | Исходы классификации: сравнение оценок с порогом и подсчёт меток | `l062-11-count-binary-classification-outcomes-from-targets-and-scores-at-threshold` |
+| 3 | Доля верных прогнозов: число правильных ответов, делённое на общее число | `l063-11-calc-prediction-accuracy-as-correct-predictions-divided-by-all-predictions-where-1-means-all-correct-and-0-means-all-wrong` |
+| 4 | Точность положительных прогнозов: доля верных среди всех положительных прогнозов | `l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predictions-where-1-means-no-false-alarms-and-0-means-all-false-alarms` |
+| 5 | Полнота обнаружения: доля найденных среди всех действительно положительных примеров | `l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss-where-1-means-all-found-and-0-means-all-missed` |
+| 6 | Оценка F1: удвоенное произведение точности и полноты, делённое на их сумму | `l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum-where-1-means-no-false-alarms-or-misses-and-larger-means-better` |
+| 7 | F1 из счётчиков: вычисление точности и полноты и их гармонического среднего | `l067-11-calc-f1-score-from-counts-by-multiplying-precision-and-recall-by-two-then-dividing-by-sum-where-1-means-no-false-alarms-or-misses-and-larger-means-better` |
+| 8 | Качество ранжирования (ROC-AUC): доля правильно упорядоченных положительных и отрицательных пар | `l068-11-calc-ranking-quality-as-share-of-correctly-ordered-pos-neg-pairs` |
+| 9 | Качество поиска положительных примеров: сумма точности, умноженной на прирост полноты | `l069-11-calc-average-precision-by-summing-precision-times-recall-increases` |
 
 ![Матрица ошибок классификации](docs/illustrations/11-confusion-matrix.svg)
 
@@ -299,10 +299,10 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Квадрат расстояния между примерами: сложение квадратов разностей признаков | `l071-12-calculate-squared-example-distance-by-summing-squared-feature-differences` |
-| 2 | Приведение признаков к сопоставимым масштабам перед измерением расстояния | `l072-12-put-features-on-comparable-scales-before-measuring-distance` |
+| 1 | Квадрат расстояния между примерами: сложение квадратов разностей признаков | `l071-12-calc-squared-example-dist-by-summing-squared-feature-diffs` |
+| 2 | Приведение признаков к сопоставимым масштабам перед измерением расстояния | `l072-12-put-features-on-comparable-scales-before-measuring-dist` |
 | 3 | Выбор числа ближайших примеров, голосующих за класс | `l073-12-choose-how-many-nearby-examples-vote-for-class` |
-| 4 | Подсчёт сравнений координат при поиске среди всех обучающих точек | `l074-12-count-coordinate-comparisons-when-searching-all-training-points` |
+| 4 | Подсчёт сравнений координат при поиске среди всех обучающих точек | `l074-12-count-coord-comparisons-when-searching-all-training-points` |
 
 ##### Практика: выбор класса по ближайшим примерам после изменения масштаба признаков — `l075-12-practice-class-voting-by-nearby-examples-after-feature-scaling`
 
@@ -319,7 +319,7 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Оценка совместного появления признаков и класса: произведение вероятностей | `l076-13-calculate-joint-class-and-feature-score-by-multiplying-probabilities` |
+| 1 | Оценка совместного появления признаков и класса: произведение вероятностей | `l076-13-calc-joint-class-and-feature-score-by-multiplying-probabilities` |
 | 2 | Начальные вероятности классов: доли их примеров в обучающем наборе | `l077-13-estimate-class-probabilities-as-class-counts-divided-by-training-size` |
 | 3 | Защита от нулевых вероятностей слов: добавление единицы к частотам | `l078-13-avoid-zero-word-probabilities-by-adding-one-to-counts` |
 
@@ -336,8 +336,8 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Неопределённость класса (энтропия): отрицательная сумма долей, умноженных на их логарифмы | `l080-14-calculate-class-entropy-as-negative-sum-of-shares-times-logarithms` |
-| 2 | Смешанность классов (мера Джини): единица минус сумма квадратов долей классов | `l081-14-calculate-class-mixing-as-one-minus-sum-of-squared-class-shares` |
+| 1 | Неопределённость класса (энтропия): отрицательная сумма долей, умноженных на их логарифмы | `l080-14-calc-class-entropy-as-neg-sum-of-shares-times-logarithms` |
+| 2 | Смешанность классов (мера Джини): единица минус сумма квадратов долей классов | `l081-14-calc-class-mixing-as-one-minus-sum-of-squared-class-shares` |
 | 3 | Выбор порога, который лучше всего разделяет классы | `l082-14-choose-threshold-that-best-separates-classes` |
 | 4 | Сравнение ошибок на обучающих и новых данных при увеличении глубины дерева | `l083-14-compare-training-and-new-data-errors-as-tree-grows` |
 
@@ -371,8 +371,8 @@
 | Шаг | Тема | Пакет |
 |---:|---|---|
 | 1 | Обучение следующего дерева на ошибках текущих прогнозов | `l090-16-fit-next-tree-to-errors-of-current-predictions` |
-| 2 | Симметричное дерево решений: общая пороговая проверка для всех узлов одного уровня | `l091-16-build-symmetric-tree-using-shared-threshold-test-at-each-level` |
-| 3 | Кодирование категории: среднее предыдущих ответов без ответа текущей строки | `l092-16-encode-category-by-averaging-earlier-targets-without-current-answer` |
+| 2 | Симметричное дерево решений: общая пороговая проверка для всех узлов одного уровня | `l091-16-predict-tree-output-by-choosing-leaf-with-shared-threshold-tests` |
+| 3 | Кодирование категории: среднее предыдущих ответов без ответа текущей строки | `l092-16-encode-categories-as-average-previous-targets-with-prior-weight` |
 | 4 | Исправление ошибок моделями, обученными только на предыдущих строках | `l093-16-correct-errors-using-models-trained-only-on-earlier-rows` |
 | 5 | Объединение средних по предыдущим строкам категории с деревьями общих пороговых проверок | `l094-16-combine-earlier-category-averages-with-shared-level-threshold-trees` |
 
@@ -407,10 +407,10 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Центр группы точек: усреднение каждой координаты | `l100-18-calculate-group-center-by-averaging-point-coordinates` |
+| 1 | Центр группы точек: усреднение каждой координаты | `l100-18-calc-group-center-by-averaging-point-coords` |
 | 2 | Выбор начальных центров для объединения близких точек в группы | `l101-18-choose-starting-centers-for-grouping-nearby-points` |
-| 3 | Разброс внутри групп: сумма квадратов расстояний от точек до центров их групп | `l102-18-calculate-within-group-spread-as-sum-of-squared-distances-to-centers` |
-| 4 | Выбор числа групп: сравнение сумм квадратов расстояний до центров | `l103-18-choose-group-count-by-comparing-squared-distance-sums` |
+| 3 | Разброс внутри групп: сумма квадратов расстояний от точек до центров их групп | `l102-18-calc-within-group-spread-as-sum-of-squared-dists-to-centers` |
+| 4 | Выбор числа групп: сравнение сумм квадратов расстояний до центров | `l103-18-choose-group-count-by-comparing-squared-dist-sums` |
 
 ##### Практика: распределение точек по ближайшим центрам и пересчёт центров — `l104-18-practice-assigning-points-to-nearest-centers-and-updating-centers`
 
@@ -426,9 +426,9 @@
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
 | 1 | Центрирование признака: вычитание среднего по обучающим данным | `l105-19-center-feature-values-by-subtracting-training-mean` |
-| 2 | Совместное изменение признаков (ковариация): умножение парных отклонений, сложение и деление на число наблюдений минус один | `l106-19-calculate-covariance-by-multiplying-paired-differences-from-mean-then-dividing-sum` |
+| 2 | Совместное изменение признаков (ковариация): умножение парных отклонений, сложение и деление на число наблюдений минус один | `l106-19-calc-covariance-by-multiplying-paired-diffs-from-mean-then-dividing-sum` |
 | 3 | Главное направление данных: поиск наибольшего разброса проекций точек | `l107-19-find-principal-direction-by-maximizing-projected-point-spread` |
-| 4 | Сохранённая доля разброса: деление разброса вдоль выбранного направления на общий | `l108-19-calculate-explained-spread-share-by-dividing-direction-spread-by-total` |
+| 4 | Сохранённая доля разброса: деление разброса вдоль выбранного направления на общий | `l108-19-calc-explained-spread-share-by-dividing-direction-spread-by-total` |
 
 ##### Практика: вычитание средних и проекция точек на направление наибольшего разброса — `l109-19-practice-centering-points-and-projecting-onto-largest-spread-direction`
 
@@ -445,9 +445,9 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Прямой расчёт результата: вычисление промежуточных операций по порядку | `l110-20-calculate-forward-result-by-evaluating-intermediate-operations-in-order` |
-| 2 | Влияние входа на результат: передача скоростей изменения назад по операциям | `l111-20-calculate-input-influence-by-passing-output-slopes-back-through-operations` |
-| 3 | Полное влияние входа: сложение вкладов всех путей к результату | `l112-20-calculate-total-input-influence-by-adding-all-path-contributions` |
+| 1 | Прямой расчёт результата: вычисление промежуточных операций по порядку | `l110-20-calc-forward-result-by-evaluating-intermediate-operations-in-order` |
+| 2 | Влияние входа на результат: передача скоростей изменения назад по операциям | `l111-20-calc-input-influence-by-passing-output-slopes-back-through-operations` |
+| 3 | Полное влияние входа: сложение вкладов всех путей к результату | `l112-20-calc-total-input-influence-by-adding-all-path-contributions` |
 
 ##### Практика: прямой расчёт значений и обратный расчёт скоростей изменения — `l113-20-practice-forward-values-and-backward-rates-of-change`
 
@@ -462,9 +462,9 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Выход слоя нейросети: сложение взвешенных входов и прибавление смещений | `l114-21-calculate-layer-output-by-summing-weighted-inputs-and-adding-constant-weights` |
+| 1 | Выход слоя нейросети: сложение взвешенных входов и прибавление смещений | `l114-21-calc-layer-output-by-summing-weighted-inputs-and-adding-constant-weights` |
 | 2 | Выделение весов и смещений сети, которые меняются при обучении | `l115-21-identify-adjustable-input-and-constant-weights-in-network` |
-| 3 | Активация ReLU: замена отрицательных выходов слоя нулями | `l116-21-calculate-rectified-activation-by-replacing-negative-outputs-with-zero` |
+| 3 | Активация ReLU: замена отрицательных выходов слоя нулями | `l116-21-calc-rectified-activation-by-replacing-neg-outputs-with-zero` |
 | 4 | Различие нейронов при обучении: назначение разных начальных весов | `l117-21-break-neuron-symmetry-by-choosing-different-starting-weights` |
 | 5 | Обновление сети по средним скоростям изменения ошибки для небольшой группы примеров | `l118-21-update-network-using-average-error-slopes-from-small-example-group` |
 
@@ -481,9 +481,9 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Вычисление влияния каждого входа на результат обратным проходом по операциям | `l120-22-calculate-output-change-for-each-input-by-reversing-operations` |
+| 1 | Вычисление влияния каждого входа на результат обратным проходом по операциям | `l120-22-calc-output-change-for-each-input-by-reversing-operations` |
 | 2 | Проверка размеров матриц до и после умножения | `l121-22-check-matrix-dimensions-before-and-after-multiplication` |
-| 3 | Смещение строк матрицы: прибавление одного вектора ко всем строкам | `l122-22-shift-matrix-rows-by-adding-same-constant-weight-vector-to-each-row` |
+| 3 | Смещение строк матрицы: прибавление одного вектора ко всем строкам | `l122-22-shift-matrix-rows-by-adding-same-constant-weight-vec-to-each-row` |
 | 4 | Сравнение скоростей изменения по формуле с оценками по соседним значениям | `l123-22-compare-formula-rates-of-change-with-nearby-value-estimates` |
 
 ##### Практика: обратный проход по операциям и проверка влияния входов на результат — `l124-22-practice-reversing-operations-and-checking-input-rates-of-change`
@@ -500,8 +500,8 @@
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
 | 1 | Обновление веса линейной модели после каждого обучающего примера | `l125-23-update-linear-weight-after-each-training-example` |
-| 2 | Обновление с накоплением направления: объединение текущего и прошлых изменений | `l126-23-calculate-momentum-update-by-combining-current-slope-and-past-direction` |
-| 3 | Адаптивный шаг обучения: масштабирование по накопленным средним скоростей изменения ошибки и их квадратов | `l127-23-calculate-adaptive-update-from-running-means-of-slopes-and-squared-slopes` |
+| 2 | Обновление с накоплением направления: объединение текущего и прошлых изменений | `l126-23-calc-momentum-update-by-combining-current-slope-and-past-direction` |
+| 3 | Адаптивный шаг обучения: масштабирование по накопленным средним скоростей изменения ошибки и их квадратов | `l127-23-calc-adaptive-update-from-running-means-of-slopes-and-squared-slopes` |
 | 4 | Центрирование входа для обучения: вычитание среднего обучающего признака | `l128-23-center-training-feature-by-subtracting-its-mean-before-model-update` |
 | 5 | Защита от слишком больших обновлений: ограничение скоростей изменения ошибки заданным интервалом | `l129-23-prevent-large-updates-by-clamping-error-slopes-to-symmetric-interval` |
 | 6 | Остановка обучения, когда ошибка на проверочных данных перестаёт улучшаться | `l130-23-stop-when-error-on-validation-data-no-longer-improves` |
@@ -519,7 +519,7 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Отклик фильтра изображения: сложение пикселей участка, умноженных на веса | `l132-24-calculate-image-filter-response-by-summing-weighted-local-pixels` |
+| 1 | Отклик фильтра изображения: сложение пикселей участка, умноженных на веса | `l132-24-calc-image-filter-response-by-summing-weighted-local-pixels` |
 | 2 | Перемещение фильтра по изображению с заданным шагом | `l133-24-move-pixel-filter-by-fixed-step-across-image` |
 | 3 | Обработка краёв изображения: добавление нулевой рамки перед фильтрацией | `l134-24-preserve-image-border-context-by-surrounding-image-with-zeros` |
 | 4 | Уменьшение изображения: выбор максимума в каждом локальном окне | `l135-24-reduce-image-size-by-taking-local-window-maxima` |
@@ -536,10 +536,10 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Обновление памяти по взвешенному входу и предыдущему состоянию | `l138-25-update-memory-from-weighted-input-and-previous-memory` |
-| 2 | Влияние параметров памяти на ошибку: обратный проход по предыдущим состояниям | `l139-25-calculate-memory-parameter-influence-by-passing-error-changes-back-in-time` |
-| 3 | Память и выход ячейки LSTM: сохранение старой информации, добавление новой и управление выходом | `l140-25-calculate-lstm-memory-and-output-by-keeping-old-and-adding-new-information` |
-| 4 | Состояние ячейки GRU: смешивание предыдущего состояния и нового кандидата с управляемыми долями | `l141-25-calculate-gru-state-by-mixing-previous-state-and-candidate-with-controlled-shares` |
+| 1 | Обновление памяти по взвешенному входу и предыдущему состоянию | `l138-25-calc-memory-states-by-applying-tanh-to-weighted-input-plus-weighted-previous-state-to-bound-each-state-between-minus-1-and-1` |
+| 2 | Влияние параметров памяти на ошибку: обратный проход по предыдущим состояниям | `l139-25-calc-memory-parameter-influence-by-passing-error-changes-back-in-time` |
+| 3 | Память и выход ячейки LSTM: сохранение старой информации, добавление новой и управление выходом | `l140-25-calc-lstm-memory-and-output-by-mixing-old-memory-with-candidate-then-gating-output` |
+| 4 | Состояние ячейки GRU: смешивание предыдущего состояния и нового кандидата с управляемыми долями | `l141-25-calc-gru-state-by-mixing-previous-state-with-candidate-using-update-fraction` |
 
 Проверь причинность состояния и сравни аналитический градиент BPTT с численным. Затем сравни способы хранения и сброса памяти.
 Источник: [LSTM](https://www.bioinf.jku.at/publications/older/2604.pdf), [GRU](https://arxiv.org/abs/1406.1078).
@@ -548,11 +548,11 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Отклик фильтра без будущих данных: сложение взвешенных текущего и прошлого значений сигнала | `l142-26-calculate-causal-filter-output-by-summing-weighted-current-and-past-values` |
+| 1 | Отклик фильтра без будущих данных: сложение взвешенных текущего и прошлого значений сигнала | `l142-26-calc-causal-filter-output-by-summing-weighted-current-and-spaced-past-values` |
 | 2 | Расширение охвата истории: увеличение промежутков между значениями сигнала для фильтра | `l143-26-expand-filter-history-by-increasing-gaps-between-used-past-values` |
-| 3 | Управляемый выход сигнала: умножение ограниченного сигнала на долю, задаваемую второй ветвью | `l144-26-calculate-gated-signal-by-multiplying-bounded-signal-by-controlled-fraction` |
-| 4 | Остаточный и отдельный выходы блока: прибавление преобразования ко входу и передача его отдельно | `l145-26-add-transformed-value-to-input-and-pass-transform-separately` |
-| 5 | Прогноз следующего значения звука только по предыдущим значениям | `l146-26-predict-next-sound-value-using-only-past-values` |
+| 3 | Управляемый выход сигнала: умножение ограниченного сигнала на долю, задаваемую второй ветвью | `l144-26-calc-gated-signal-as-tanh-bounded-between-minus-1-and-1-times-sigmoid-share-where-0-blocks-and-1-passes-signal` |
+| 4 | Остаточный и отдельный выходы блока: прибавление преобразования ко входу и передача его отдельно | `l145-26-calc-input-plus-transform-and-separate-transform-output` |
+| 5 | Прогноз следующего значения звука только по предыдущим значениям | `l146-26-calc-probability-of-next-sound-sample-from-history` |
 
 ![Причинная свёртка](docs/illustrations/26-causal-convolution.svg)
 
@@ -568,9 +568,9 @@
 | Шаг | Тема | Пакет |
 |---:|---|---|
 | 1 | Представление символов текста байтами UTF-8 | `l147-27-encode-unicode-characters-as-utf8-bytes` |
-| 2 | Выделение частей текста объединением самых частых соседних пар, начиная с байтов | `l148-27-learn-text-units-by-merging-most-frequent-adjacent-byte-pairs` |
+| 2 | Выделение частей текста объединением самых частых соседних пар, начиная с байтов | `l148-27-train-text-tokenizer-by-repeatedly-merging-most-frequent-adjacent-pair` |
 | 3 | Кодирование и восстановление текста с помощью выученных объединений пар | `l149-27-encode-and-decode-text-using-learned-pair-merges` |
-| 4 | Обозначение начала, роли и конца сообщений чата | `l150-27-mark-start-role-and-end-of-chat-messages` |
+| 4 | Обозначение начала, роли и конца сообщений чата | `l150-27-serialize-chat-message-by-adding-start-role-and-end-markers` |
 | 5 | Сравнение разбиения на байты и выученные части текста на новых строках | `l151-27-compare-byte-splitting-and-learned-text-pieces-on-new-strings` |
 
 Сначала сравни символы и байты, затем обучи BPE только на train, проверь
@@ -587,10 +587,10 @@
 |---:|---|---|
 | 1 | Кодирование частей текста: назначение номеров из словаря | `l152-28-encode-text-pieces-by-assigning-vocabulary-identifiers` |
 | 2 | Выделение номеров для неизвестных слов и границ последовательности | `l153-28-reserve-identifiers-for-unknown-words-and-sequence-boundaries` |
-| 3 | Векторное представление слова: список числовых координат | `l154-28-create-word-vector-representations-as-numeric-coordinate-lists` |
-| 4 | Сходство векторов слов: умножение соответствующих координат и сложение результатов | `l155-28-calculate-word-vector-similarity-by-multiplying-matching-coordinates-then-adding` |
+| 3 | Векторное представление слова: список числовых координат | `l154-28-create-word-vec-representations-as-numeric-coord-lists` |
+| 4 | Сходство векторов слов: умножение соответствующих координат и сложение результатов | `l155-28-calc-word-vec-similarity-by-multiplying-matching-coords-then-adding` |
 
-##### Практика: номера частей текста и векторы координат слов — `l156-28-practice-text-piece-identifiers-and-word-coordinate-vectors`
+##### Практика: номера частей текста и векторы координат слов — `l156-28-practice-text-piece-identifiers-and-word-coord-vecs`
 
 - **Повторить вместе:** словарь, специальные токены, плотные представления, сходство.
 - **Практика:** Построй токенизатор по словам и обучаемую таблицу эмбеддингов для малого корпуса.
@@ -604,8 +604,8 @@
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
 | 1 | Прогноз следующей части текста по частотам соседних пар | `l157-29-predict-next-text-piece-from-adjacent-pair-counts` |
-| 2 | Ошибка прогноза следующей части текста: среднее отрицательных логарифмов правильных вероятностей | `l158-29-calculate-next-token-loss-as-average-negative-log-correct-token-probability` |
-| 3 | Неопределённость языковой модели (перплексия): e в степени среднего отрицательного логарифма вероятности | `l159-29-calculate-perplexity-as-e-to-average-negative-log-probability` |
+| 2 | Ошибка прогноза следующей части текста: среднее отрицательных логарифмов правильных вероятностей | `l158-29-calc-next-token-loss-as-average-neg-log-correct-token-probability` |
+| 3 | Неопределённость языковой модели (перплексия): e в степени среднего отрицательного логарифма вероятности | `l159-29-calc-perplexity-as-e-to-average-neg-log-probability` |
 | 4 | Случайный выбор следующей части текста согласно вероятностям | `l160-29-randomly-choose-next-text-piece-according-to-probabilities` |
 
 ##### Практика: модель текста по частотам пар, оценка ошибки и генерация продолжения — `l161-29-practice-pair-count-language-model-error-and-text-generation`
@@ -622,11 +622,11 @@
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
 | 1 | Поиск документов, содержащих слова запроса | `l162-30-find-documents-containing-query-words` |
-| 2 | Значимость слова для поиска: умножение частоты на меру редкости среди документов | `l163-30-calculate-word-importance-by-weighting-frequency-with-document-rarity` |
-| 3 | `cos` угла между векторами запроса и документа: умножение координат, сложение и деление на длины | `l164-30-calculate-query-document-cos-of-angle-between-vectors` |
+| 2 | Значимость слова для поиска: умножение частоты на меру редкости среди документов | `l163-30-calc-word-importance-by-weighting-frequency-with-document-rarity` |
+| 3 | `cos` угла между векторами запроса и документа: умножение координат, сложение и деление на длины | `l164-30-calc-query-document-cos-of-angle-between-vecs` |
 | 4 | Выбор документов с наибольшими оценками | `l165-30-select-documents-with-highest-scores` |
 
-##### Практика: поиск документов по совпадениям слов, их редкости и направлениям векторов — `l166-30-practice-document-search-by-word-matches-rarity-and-vector-direction`
+##### Практика: поиск документов по совпадениям слов, их редкости и направлениям векторов — `l166-30-practice-document-search-by-word-matches-rarity-and-vec-direction`
 
 - **Повторить вместе:** лексический поиск, TF-IDF, косинусное сходство, top-k.
 - **Практика:** Индексируй локальный набор документов и возвращай top-k с оценками и источниками.
@@ -639,11 +639,11 @@
 
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
-| 1 | Преобразование координат позиции в вектор запроса для поиска подходящего контекста | `l167-31-transform-position-coordinates-into-search-query-vector` |
-| 2 | Сравнение запроса с ключом позиции через умножение соответствующих координат | `l168-31-compare-query-with-position-key-by-multiplying-coordinates` |
-| 3 | Контекст позиции: объединение векторов значений с заданными весами | `l169-31-calculate-context-by-combining-value-vectors-with-weights` |
-| 4 | Масштабированная оценка совпадения: умножение координат запроса и ключа, сложение и деление на корень из числа координат | `l170-31-calculate-scaled-match-score-by-multiplying-query-and-key-then-dividing-sum` |
-| 5 | Веса вероятностей (softmax): вычисление экспонент оценок и деление каждой на их сумму | `l171-31-calculate-probability-weights-by-exponentiating-scores-and-dividing-by-sum` |
+| 1 | Преобразование координат позиции в вектор запроса для поиска подходящего контекста | `l167-31-transform-position-coords-into-search-query-vec` |
+| 2 | Сравнение запроса с ключом позиции через умножение соответствующих координат | `l168-31-compare-query-with-position-key-by-multiplying-coords` |
+| 3 | Контекст позиции: объединение векторов значений с заданными весами | `l169-31-calc-context-by-combining-value-vecs-with-weights` |
+| 4 | Масштабированная оценка совпадения: умножение координат запроса и ключа, сложение и деление на корень из числа координат | `l170-31-calc-scaled-match-score-by-multiplying-query-and-key-then-dividing-sum` |
+| 5 | Веса вероятностей (softmax): вычисление экспонент оценок и деление каждой на их сумму | `l171-31-calc-probability-weights-by-exponentiating-scores-and-dividing-by-sum` |
 | 6 | Запрет использования будущих позиций текста при сборе контекста | `l172-31-forbid-using-future-text-positions-in-context` |
 
 ![Как работает причинное внимание](docs/illustrations/31-attention.svg)
@@ -664,11 +664,11 @@
 | Шаг | Отдельная тема | Пакет |
 |---:|---|---|
 | 1 | Построение контекста каждой позиции по позициям той же последовательности | `l174-32-build-each-position-context-from-other-positions-in-sequence` |
-| 2 | Выход с остаточной связью: прибавление исходного входа к преобразованию | `l175-32-calculate-output-by-adding-original-input-to-transformed-output` |
-| 3 | Нормализация координат: вычитание среднего и деление на корень из среднего квадрата отклонений | `l176-32-normalize-coordinates-by-subtracting-mean-and-dividing-by-root-mean-square` |
-| 4 | Выход слоя для каждой позиции: взвешенное преобразование координат | `l177-32-calculate-position-layer-output-by-weighted-coordinate-transformation` |
+| 2 | Выход с остаточной связью: прибавление исходного входа к преобразованию | `l175-32-calc-output-by-adding-original-input-to-transformed-output` |
+| 3 | Нормализация координат: вычитание среднего и деление на корень из среднего квадрата отклонений | `l176-32-normalize-coords-by-subtracting-mean-and-dividing-by-root-mean-square` |
+| 4 | Выход слоя для каждой позиции: взвешенное преобразование координат | `l177-32-calc-position-layer-output-by-weighted-coord-transformation` |
 
-##### Практика: сбор контекста, прибавление входа и преобразование координат — `l178-32-practice-context-mixing-input-addition-and-coordinate-transformation`
+##### Практика: сбор контекста, прибавление входа и преобразование координат — `l178-32-practice-context-mixing-input-addition-and-coord-transformation`
 
 - **Повторить вместе:** self-attention, прибавление входа, нормализацию слоя, feed-forward.
 - **Практика:** Собери один блок на малых тензорах и опиши порядок операций.
@@ -681,9 +681,9 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Последовательность участков изображения: разбиение на неперекрывающиеся квадраты | `l179-33-create-image-block-sequence-by-splitting-image-into-nonoverlapping-squares` |
+| 1 | Последовательность участков изображения: разбиение на неперекрывающиеся квадраты | `l179-33-extract-nonoverlapping-square-patches-from-square-image` |
 | 2 | Обмен информацией между всеми участками изображения через взвешенное сложение | `l180-33-mix-information-between-all-image-blocks-using-weights` |
-| 3 | Объединение информации об участках изображения в один итоговый вектор | `l181-33-combine-image-block-information-into-one-summary-vector` |
+| 3 | Объединение информации об участках изображения в один итоговый вектор | `l181-33-combine-image-block-information-into-one-summary-vec` |
 
 Проследи форму патчей и убедись, что первый патч может читать последний. CLS-токен собирает признаки для классификации.
 Источник: [ViT](https://arxiv.org/abs/2010.11929).
@@ -692,7 +692,7 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Построение контекста текста по предыдущим и следующим позициям | `l182-34-build-text-context-from-both-earlier-and-later-positions` |
+| 1 | Построение контекста текста по предыдущим и следующим позициям | `l182-34-calc-visible-context-by-summing-states-weighted-by-exponentiated-coord-scores` |
 | 2 | Исключение добавленных пустых позиций из взвешенного контекста | `l183-34-exclude-padding-positions-from-weighted-context` |
 | 3 | Прогноз скрытой части текста по окружающему контексту | `l184-34-predict-hidden-text-piece-from-surrounding-context` |
 
@@ -703,14 +703,14 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Векторы текста с учётом позиции: сложение векторов частей текста и позиций | `l185-35-create-position-aware-text-vectors-by-adding-text-and-position-vectors` |
-| 2 | Вероятностные веса: экспоненты с вычитанием максимума и делением на сумму | `l186-35-calculate-probability-weights-by-exponentiating-shifted-scores-and-normalizing` |
-| 3 | Контекст без будущих данных: сложение текущих и прошлых значений с весами совпадений запроса и ключей | `l187-35-calculate-past-context-by-summing-current-and-past-values-with-match-weights` |
+| 1 | Векторы текста с учётом позиции: сложение векторов частей текста и позиций | `l185-35-create-position-aware-text-vecs-by-adding-text-and-position-vecs` |
+| 2 | Вероятностные веса: экспоненты с вычитанием максимума и делением на сумму | `l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum-where-weights-sum-to-1-and-larger-scores-get-larger-shares` |
+| 3 | Контекст без будущих данных: сложение текущих и прошлых значений с весами совпадений запроса и ключей | `l187-35-calc-past-context-by-summing-current-and-past-values-weighted-by-query-key-matches` |
 | 4 | Объединение контекстов от нескольких способов сравнения запросов и ключей | `l188-35-combine-contexts-from-several-query-key-comparisons` |
-| 5 | Выход блока декодера: нормализация перед сбором контекста и преобразованием координат | `l189-35-calculate-decoder-block-output-with-normalization-before-context-and-layer-transforms` |
-| 6 | Ошибка прогноза следующей части текста: отрицательный логарифм правильной вероятности | `l190-35-calculate-next-token-loss-as-negative-log-correct-token-probability` |
-| 7 | Контекстные векторы текста: сложение вектора токена, позиции и прошлого контекста | `l191-35-calculate-text-context-vectors-by-adding-position-and-weighted-past-context` |
-| 8 | Преобразование номеров частей текста в контекст и оценки следующей части | `l192-35-convert-text-identifiers-to-context-and-next-piece-scores` |
+| 5 | Выход блока декодера: нормализация перед сбором контекста и преобразованием координат | `l189-35-calc-decoder-block-output-by-adding-past-context-and-transformed-normalized-values` |
+| 6 | Ошибка прогноза следующей части текста: отрицательный логарифм правильной вероятности | `l190-35-calc-next-token-loss-as-neg-log-of-target-probability-from-exponentiated-scores-where-closer-to-0-means-more-probability-on-correct-token` |
+| 7 | Контекстные векторы текста: сложение вектора токена, позиции и прошлого контекста | `l191-35-calc-text-context-vecs-by-adding-position-and-weighted-past-context` |
+| 8 | Преобразование номеров частей текста в контекст и оценки следующей части | `l192-35-convert-text-identifiers-to-context-then-to-next-token-scores` |
 | 9 | Обучение выходных весов при неизменной модели построения контекста | `l193-35-train-output-weights-while-keeping-context-model-fixed` |
 
 Отдельно проследи формы входа, маску причинности и сдвиг цели на один токен.
@@ -723,14 +723,14 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Нормализация масштаба вектора: деление координат на корень из среднего квадрата и умножение на веса | `l194-36-normalize-vector-scale-by-dividing-by-root-mean-square-and-applying-weights` |
-| 2 | Учёт позиции в тексте: поворот пар координат запроса и ключа | `l195-36-encode-text-position-by-rotating-query-and-key-coordinate-pairs` |
+| 1 | Нормализация масштаба вектора: деление координат на корень из среднего квадрата и умножение на веса | `l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights-to-control-scale-without-centering` |
+| 2 | Учёт позиции в тексте: поворот пар координат запроса и ключа | `l195-36-rotate-vec-coord-pair-by-token-position-to-encode-relative-position-in-query-key-matches-while-preserving-vec-len` |
 | 3 | Общее представление контекста: использование одних ключей и значений для нескольких групп запросов | `l196-36-reduce-context-computation-by-sharing-keys-and-values-across-query-groups` |
-| 4 | Масштабирование запросов и ключей по корню из среднего квадрата координат | `l197-36-scale-query-and-key-vectors-by-their-root-mean-square` |
-| 5 | Выход управляемого слоя: умножение двух ветвей с плавным управлением вкладом | `l198-36-calculate-gated-layer-output-by-multiplying-branches-with-smooth-gate` |
+| 4 | Масштабирование запросов и ключей по корню из среднего квадрата координат | `l197-36-scale-query-and-key-vecs-by-their-root-mean-square` |
+| 5 | Выход управляемого слоя: умножение двух ветвей с плавным управлением вкладом | `l198-36-calc-gated-layer-output-as-silu-gate-times-up-value-where-0-gate-blocks-and-gate-multiplier-can-be-neg-or-greater-than-1` |
 | 6 | Повторное использование контекста: сохранение прошлых ключей и значений при генерации | `l199-36-avoid-recomputing-past-context-by-reusing-saved-keys-and-values` |
-| 7 | Выход выбранных ветвей: выбор двух обработчиков и объединение результатов | `l200-36-calculate-selected-branch-output-by-combining-two-chosen-branches` |
-| 8 | Выход блока последовательности: масштабирование, повороты, общий контекст и управляемые ветви | `l201-36-calculate-sequence-block-output-with-scaling-rotation-shared-context-and-gated-branches` |
+| 7 | Выход выбранных ветвей: выбор двух обработчиков и объединение результатов | `l200-36-calc-selected-branch-output-by-combining-two-chosen-branches` |
+| 8 | Выход блока последовательности: масштабирование, повороты, общий контекст и управляемые ветви | `l201-36-calc-sequence-block-output-by-normalizing-rotating-and-mixing-past-values-and-gated-features` |
 
 Сначала проверь свойства каждого компонента: RMSNorm задаёт масштаб, RoPE
 сохраняет норму пары, GQA разделяет K/V между Q-головами, KV-cache даёт тот же
@@ -771,9 +771,9 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Зашумлённый сигнал: смешивание сигнала и шума с весами из корней долей их разброса | `l209-39-calculate-noisy-signal-by-mixing-signal-and-noise-with-root-variance-share-weights` |
+| 1 | Зашумлённый сигнал: смешивание сигнала и шума с весами из корней долей их разброса | `l209-39-calc-noisy-signal-by-mixing-signal-and-noise-using-square-roots-of-variance-shares` |
 | 2 | Обучение модели взвешенного входа прогнозу добавленного шума | `l210-39-train-weighted-input-model-to-predict-added-noise` |
-| 3 | Восстановленный сигнал: вычитание взвешенного шума и деление на масштаб исходного сигнала | `l211-39-recover-clean-signal-by-subtracting-scaled-noise-and-dividing-by-signal-scale` |
+| 3 | Восстановленный сигнал: вычитание взвешенного шума и деление на масштаб исходного сигнала | `l211-39-recover-clean-signal-by-subtracting-scaled-noise-then-dividing-by-signal-scale` |
 
 ![От сигнала к шуму](docs/illustrations/39-diffusion.svg)
 
@@ -786,9 +786,9 @@
 
 | Шаг | Тема | Пакет |
 |---:|---|---|
-| 1 | Последовательность состояний памяти: прибавление взвешенного входа к сохранённой доле прошлого состояния | `l212-40-calculate-memory-states-by-adding-weighted-input-to-retained-previous-state` |
-| 2 | Управляемое забывание памяти: выбор сохраняемой доли прошлого состояния по текущему входу | `l213-40-control-memory-forgetting-by-choosing-retained-state-share-from-input` |
-| 3 | Сравнение постоянной и управляемой входом доли сохраняемой памяти | `l214-40-compare-fixed-and-input-controlled-memory-retention` |
+| 1 | Последовательность состояний памяти: прибавление взвешенного входа к сохранённой доле прошлого состояния | `l212-40-calc-memory-states-by-repeatedly-adding-weighted-input-to-retained-previous-state` |
+| 2 | Управляемое забывание памяти: выбор сохраняемой доли прошлого состояния по текущему входу | `l213-40-calc-memory-states-by-adding-input-to-retained-state-or-resetting-to-input` |
+| 3 | Сравнение постоянной и управляемой входом доли сохраняемой памяти | `l214-40-calc-memory-states-by-adding-input-to-retained-state-or-resetting-to-input` |
 
 Покажи, как вход может управлять забыванием. Примеры иллюстрируют идею selective SSM и не реализуют полный Mamba.
 Источник: [Mamba](https://arxiv.org/abs/2312.00752).

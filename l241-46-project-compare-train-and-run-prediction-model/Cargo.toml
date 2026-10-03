@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-l030_06_calculate_mean_by_summing_values_and_dividing_by_count = { package = "l030-06-calculate-mean-by-summing-values-and-dividing-by-count", path = "../l030-06-calculate-mean-by-summing-values-and-dividing-by-count" }
-l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count = { package = "l051-09-calculate-mean-absolute-error-as-absolute-error-sum-divided-by-count", path = "../l051-09-calculate-mean-absolute-error-as-absolute-error-sum-divided-by-count" }
+l030_06_calc_mean_by_summing_values_and_dividing_by_count = { package = "l030-06-calc-mean-by-summing-values-and-dividing-by-count", path = "../l030-06-calc-mean-by-summing-values-and-dividing-by-count" }
+l051_09_calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse = { package = "l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count-where-0-means-exact-predictions-and-larger-means-worse", path = "../l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count-where-0-means-exact-predictions-and-larger-means-worse" }
 
 lesson-visualization = { path = "../lesson-visualization" }

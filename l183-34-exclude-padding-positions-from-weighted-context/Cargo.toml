@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-l182_34_build_text_context_from_both_earlier_and_later_positions = { package = "l182-34-build-text-context-from-both-earlier-and-later-positions", path = "../l182-34-build-text-context-from-both-earlier-and-later-positions" }
+l182_34_calc_visible_context_by_summing_states_weighted_by_exponentiated_coord_scores = { package = "l182-34-calc-visible-context-by-summing-states-weighted-by-exponentiated-coord-scores", path = "../l182-34-calc-visible-context-by-summing-states-weighted-by-exponentiated-coord-scores" }

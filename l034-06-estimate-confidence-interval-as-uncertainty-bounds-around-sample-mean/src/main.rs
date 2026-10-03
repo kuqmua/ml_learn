@@ -12,8 +12,8 @@
 // 1.96·SE для небольшого учебного набора.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
-use l032_06_calculate_sample_variance_from_squared_differences_from_mean::calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread;
+use l030_06_calc_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
+use l032_06_calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread::calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread;
 
 fn main() {
     let values: [f64; 4] = [2.0, 4.0, 6.0, 8.0];

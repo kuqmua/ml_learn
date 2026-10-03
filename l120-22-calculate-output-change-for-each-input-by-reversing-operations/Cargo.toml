@@ -1,8 +1,0 @@
-[package]
-name = "l120-22-calculate-output-change-for-each-input-by-reversing-operations"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

@@ -1,9 +1,0 @@
-[package]
-name = "l170-31-calculate-scaled-match-score-by-multiplying-query-and-key-then-dividing-sum"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-l001_01_multiply_matching_coordinates_then_add_results = { package = "l001-01-multiply-matching-coordinates-then-add-results", path = "../l001-01-multiply-matching-coordinates-then-add-results" }
-
-lesson-visualization = { path = "../lesson-visualization" }

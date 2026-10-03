@@ -1,0 +1,10 @@
+[package]
+name = "l201-36-calc-sequence-block-output-by-normalizing-rotating-and-mixing-past-values-and-gated-features"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares = { package = "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum-where-weights-sum-to-1-and-larger-scores-get-larger-shares", path = "../l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum-where-weights-sum-to-1-and-larger-scores-get-larger-shares" }
+l194_36_normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights_to_control_scale_without_centering = { package = "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights-to-control-scale-without-centering", path = "../l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights-to-control-scale-without-centering" }
+l195_36_rotate_vec_coord_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vec_len = { package = "l195-36-rotate-vec-coord-pair-by-token-position-to-encode-relative-position-in-query-key-matches-while-preserving-vec-len", path = "../l195-36-rotate-vec-coord-pair-by-token-position-to-encode-relative-position-in-query-key-matches-while-preserving-vec-len" }
+l198_36_calc_gated_layer_output_as_silu_gate_times_up_value_where_0_gate_blocks_and_gate_multiplier_can_be_neg_or_greater_than_1 = { package = "l198-36-calc-gated-layer-output-as-silu-gate-times-up-value-where-0-gate-blocks-and-gate-multiplier-can-be-neg-or-greater-than-1", path = "../l198-36-calc-gated-layer-output-as-silu-gate-times-up-value-where-0-gate-blocks-and-gate-multiplier-can-be-neg-or-greater-than-1" }

@@ -1,6 +1,0 @@
-[package]
-name = "l185-35-create-position-aware-text-vectors-by-adding-text-and-position-vectors"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]

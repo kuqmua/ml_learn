@@ -8,7 +8,7 @@
 //   пропуск.
 // Цель содержит только скрытые позиции, а encoder видит левый и правый контекст.
 
-use l182_34_build_text_context_from_both_earlier_and_later_positions::calc_visible_context_by_summing_states_weighted_by_exponentiated_coord_scores;
+use l182_34_calc_visible_context_by_summing_states_weighted_by_exponentiated_coord_scores::calc_visible_context_by_summing_states_weighted_by_exponentiated_coord_scores;
 
 fn main() {
     let original: [usize; 3] = [0, 1, 2];

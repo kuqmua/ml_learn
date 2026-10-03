@@ -1,9 +1,0 @@
-[package]
-name = "l004-01-calculate-squared-point-distance-by-summing-squared-coordinate-differences"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-[dev-dependencies]
-lesson-float-comparison = { path = "../lesson-float-comparison" }

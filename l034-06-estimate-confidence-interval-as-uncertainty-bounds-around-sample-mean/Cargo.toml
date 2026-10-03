@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-l030_06_calculate_mean_by_summing_values_and_dividing_by_count = { package = "l030-06-calculate-mean-by-summing-values-and-dividing-by-count", path = "../l030-06-calculate-mean-by-summing-values-and-dividing-by-count" }
-l032_06_calculate_sample_variance_from_squared_differences_from_mean = { package = "l032-06-calculate-sample-variance-from-squared-differences-from-mean", path = "../l032-06-calculate-sample-variance-from-squared-differences-from-mean" }
+l030_06_calc_mean_by_summing_values_and_dividing_by_count = { package = "l030-06-calc-mean-by-summing-values-and-dividing-by-count", path = "../l030-06-calc-mean-by-summing-values-and-dividing-by-count" }
+l032_06_calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread = { package = "l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one-where-0-means-all-values-equal-and-larger-means-more-spread", path = "../l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one-where-0-means-all-values-equal-and-larger-means-more-spread" }
 
 lesson-visualization = { path = "../lesson-visualization" }

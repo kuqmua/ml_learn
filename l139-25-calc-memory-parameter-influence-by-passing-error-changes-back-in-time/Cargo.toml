@@ -1,0 +1,8 @@
+[package]
+name = "l139-25-calc-memory-parameter-influence-by-passing-error-changes-back-in-time"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }
+l138_25_calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1 = { package = "l138-25-calc-memory-states-by-applying-tanh-to-weighted-input-plus-weighted-previous-state-to-bound-each-state-between-minus-1-and-1", path = "../l138-25-calc-memory-states-by-applying-tanh-to-weighted-input-plus-weighted-previous-state-to-bound-each-state-between-minus-1-and-1" }

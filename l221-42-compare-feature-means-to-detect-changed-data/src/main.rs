@@ -9,7 +9,7 @@
 // Сравнение средних — первый сигнал: при похожих данных разница мала, при сдвиге растёт.
 // Совпадение средних само по себе не доказывает совпадения распределений.
 
-use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
+use l030_06_calc_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
 
 fn main() {
     let reference: [f64; 3] = [1.0, 2.0, 3.0];

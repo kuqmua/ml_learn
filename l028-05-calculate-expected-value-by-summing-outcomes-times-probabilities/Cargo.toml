@@ -1,8 +1,0 @@
-[package]
-name = "l028-05-calculate-expected-value-by-summing-outcomes-times-probabilities"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

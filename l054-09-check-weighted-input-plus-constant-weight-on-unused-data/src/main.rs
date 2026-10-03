@@ -11,7 +11,7 @@
 // участвовавших в обучении.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
+use l050_09_calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse::calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
 
 fn main() {
     let training: [(f64, f64); 2] = [(1.0, 3.0), (2.0, 5.0)];

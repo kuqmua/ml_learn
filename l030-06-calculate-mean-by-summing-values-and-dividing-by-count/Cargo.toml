@@ -1,8 +1,0 @@
-[package]
-name = "l030-06-calculate-mean-by-summing-values-and-dividing-by-count"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

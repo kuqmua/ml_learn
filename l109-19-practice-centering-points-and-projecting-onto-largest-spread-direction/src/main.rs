@@ -90,13 +90,13 @@ fn main() {
                     sum_after_multiplying_diffs_from_mean,
                     largest_eigenvalue_as_squared_spread_along_principal_axis - first_variance_sum,
                 ];
-                let axis_length: f64 = approximate_square_root_by_repeated_averaging(
+                let axis_len: f64 = approximate_square_root_by_repeated_averaging(
                     calc_square_by_multiplying_number_by_itself(unnormalized_axis[0])
                         + calc_square_by_multiplying_number_by_itself(unnormalized_axis[1]),
                 );
                 [
-                    unnormalized_axis[0] / axis_length,
-                    unnormalized_axis[1] / axis_length,
+                    unnormalized_axis[0] / axis_len,
+                    unnormalized_axis[1] / axis_len,
                 ]
             };
         let fraction_of_total_squared_spread_preserved_by_projection: f64 =

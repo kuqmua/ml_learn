@@ -1,8 +1,0 @@
-[package]
-name = "l066-11-calculate-f1-score-as-twice-precision-times-recall-over-their-sum"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

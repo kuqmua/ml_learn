@@ -1,7 +1,0 @@
-[package]
-name = "l186-35-calculate-probability-weights-by-exponentiating-shifted-scores-and-normalizing"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-float-comparison = { path = "../lesson-float-comparison" }

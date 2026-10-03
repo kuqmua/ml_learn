@@ -1,0 +1,10 @@
+[package]
+name = "l191-35-calc-text-context-vecs-by-adding-position-and-weighted-past-context"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l187_35_calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches = { package = "l187-35-calc-past-context-by-summing-current-and-past-values-weighted-by-query-key-matches", path = "../l187-35-calc-past-context-by-summing-current-and-past-values-weighted-by-query-key-matches" }
+
+[dev-dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }

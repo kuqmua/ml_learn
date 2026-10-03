@@ -1,0 +1,8 @@
+[package]
+name = "l002-01-calc-sum-of-absolute-vec-coords-as-total-axis-aligned-len-where-0-means-zero-vec"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

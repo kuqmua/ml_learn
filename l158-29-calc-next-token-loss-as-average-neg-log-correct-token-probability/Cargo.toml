@@ -1,0 +1,8 @@
+[package]
+name = "l158-29-calc-next-token-loss-as-average-neg-log-correct-token-probability"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

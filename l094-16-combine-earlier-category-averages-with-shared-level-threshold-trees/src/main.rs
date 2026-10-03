@@ -8,8 +8,8 @@
 //   прогноза.
 // Соединяем упорядоченную статистику и симметричное дерево; это учебная схема, не полная реализация CatBoost.
 
-use l091_16_build_symmetric_tree_using_shared_threshold_test_at_each_level::ObliviousTree;
-use l092_16_encode_category_by_averaging_earlier_targets_without_current_answer::encode_categories_as_average_previous_targets_with_prior_weight;
+use l091_16_predict_tree_output_by_choosing_leaf_with_shared_threshold_tests::ObliviousTree;
+use l092_16_encode_categories_as_average_previous_targets_with_prior_weight::encode_categories_as_average_previous_targets_with_prior_weight;
 
 fn main() {
     let tree: ObliviousTree = ObliviousTree {

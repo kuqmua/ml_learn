@@ -1,8 +1,0 @@
-[package]
-name = "l177-32-calculate-position-layer-output-by-weighted-coordinate-transformation"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

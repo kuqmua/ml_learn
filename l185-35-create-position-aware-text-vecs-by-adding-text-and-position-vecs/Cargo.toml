@@ -1,0 +1,6 @@
+[package]
+name = "l185-35-create-position-aware-text-vecs-by-adding-text-and-position-vecs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

@@ -18,8 +18,8 @@
 //   воспроизводимый pipeline из предыдущих пакетов.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
-use l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
+use l030_06_calc_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
+use l051_09_calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse::calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
 
 fn main() {
     const EXAMPLE_DATA: [(f64, f64); 10] = [

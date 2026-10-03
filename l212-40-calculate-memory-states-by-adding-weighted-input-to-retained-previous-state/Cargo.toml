@@ -1,7 +1,0 @@
-[package]
-name = "l212-40-calculate-memory-states-by-adding-weighted-input-to-retained-previous-state"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-visualization = { path = "../lesson-visualization" }

@@ -1,8 +1,0 @@
-[package]
-name = "l106-19-calculate-covariance-by-multiplying-paired-differences-from-mean-then-dividing-sum"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

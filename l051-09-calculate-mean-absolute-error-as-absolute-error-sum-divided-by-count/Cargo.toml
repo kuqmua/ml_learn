@@ -1,9 +1,0 @@
-[package]
-name = "l051-09-calculate-mean-absolute-error-as-absolute-error-sum-divided-by-count"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-float-comparison = { path = "../lesson-float-comparison" }
-
-lesson-visualization = { path = "../lesson-visualization" }

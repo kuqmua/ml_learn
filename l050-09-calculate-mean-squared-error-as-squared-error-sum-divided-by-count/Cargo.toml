@@ -1,9 +1,0 @@
-[package]
-name = "l050-09-calculate-mean-squared-error-as-squared-error-sum-divided-by-count"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-lesson-float-comparison = { path = "../lesson-float-comparison" }
-
-lesson-visualization = { path = "../lesson-visualization" }

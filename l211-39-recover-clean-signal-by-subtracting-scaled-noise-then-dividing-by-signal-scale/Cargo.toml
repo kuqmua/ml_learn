@@ -1,0 +1,8 @@
+[package]
+name = "l211-39-recover-clean-signal-by-subtracting-scaled-noise-then-dividing-by-signal-scale"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }
+l209_39_calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares = { package = "l209-39-calc-noisy-signal-by-mixing-signal-and-noise-using-square-roots-of-variance-shares", path = "../l209-39-calc-noisy-signal-by-mixing-signal-and-noise-using-square-roots-of-variance-shares" }

@@ -6,7 +6,7 @@
 // Представь: На учебных парах модель видит зашумлённый вход и правильный добавленный шум.
 // На синтетической паре учим линейный предсказатель epsilon по x_t и исходному условию.
 
-use l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares;
+use l209_39_calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares::calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares;
 
 fn main() {
     let original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal: f64 =

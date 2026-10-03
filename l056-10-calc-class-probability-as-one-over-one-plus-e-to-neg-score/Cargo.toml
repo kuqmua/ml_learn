@@ -1,0 +1,8 @@
+[package]
+name = "l056-10-calc-class-probability-as-one-over-one-plus-e-to-neg-score"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

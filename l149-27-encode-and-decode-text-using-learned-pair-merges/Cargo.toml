@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-l148_27_learn_text_units_by_merging_most_frequent_adjacent_byte_pairs = { package = "l148-27-learn-text-units-by-merging-most-frequent-adjacent-byte-pairs", path = "../l148-27-learn-text-units-by-merging-most-frequent-adjacent-byte-pairs" }
+l148_27_train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair = { package = "l148-27-train-text-tokenizer-by-repeatedly-merging-most-frequent-adjacent-pair", path = "../l148-27-train-text-tokenizer-by-repeatedly-merging-most-frequent-adjacent-pair" }

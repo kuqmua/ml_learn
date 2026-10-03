@@ -1,8 +1,0 @@
-[package]
-name = "l167-31-transform-position-coordinates-into-search-query-vector"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

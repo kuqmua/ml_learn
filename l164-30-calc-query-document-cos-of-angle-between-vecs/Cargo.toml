@@ -1,0 +1,8 @@
+[package]
+name = "l164-30-calc-query-document-cos-of-angle-between-vecs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l006_01_multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens_where_1_means_same_direction_0_means_perpendicular_and_minus_1_means_opposite = { package = "l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens-where-1-means-same-direction-0-means-perpendicular-and-minus-1-means-opposite", path = "../l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens-where-1-means-same-direction-0-means-perpendicular-and-minus-1-means-opposite" }
+lesson-visualization = { path = "../lesson-visualization" }

@@ -1,8 +1,0 @@
-[package]
-name = "l052-09-calculate-linear-prediction-by-multiplying-input-and-adding-constant-weight"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

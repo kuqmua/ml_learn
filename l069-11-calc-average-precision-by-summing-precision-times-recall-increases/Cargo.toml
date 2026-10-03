@@ -1,0 +1,8 @@
+[package]
+name = "l069-11-calc-average-precision-by-summing-precision-times-recall-increases"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

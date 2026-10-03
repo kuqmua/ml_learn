@@ -1,8 +1,0 @@
-[package]
-name = "l214-40-compare-fixed-and-input-controlled-memory-retention"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-l212_40_calculate_memory_states_by_adding_weighted_input_to_retained_previous_state = { package = "l212-40-calculate-memory-states-by-adding-weighted-input-to-retained-previous-state", path = "../l212-40-calculate-memory-states-by-adding-weighted-input-to-retained-previous-state" }
-lesson-visualization = { path = "../lesson-visualization" }

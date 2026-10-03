@@ -1,0 +1,8 @@
+[package]
+name = "l195-36-rotate-vec-coord-pair-by-token-position-to-encode-relative-position-in-query-key-matches-while-preserving-vec-len"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }
+lesson-visualization = { path = "../lesson-visualization" }

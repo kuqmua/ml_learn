@@ -1,0 +1,14 @@
+[package]
+name = "l007-01-practice-multiplying-coords-vec-lens-and-point-dists"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }
+l001_01_multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec = { package = "l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec", path = "../l001-01-multiply-matching-coords-then-add-results-where-pos-means-angle-below-90-neg-means-angle-above-90-and-0-means-perpendicular-or-zero-vec" }
+l002_01_calc_sum_of_absolute_vec_coords_as_total_axis_aligned_len_where_0_means_zero_vec = { package = "l002-01-calc-sum-of-absolute-vec-coords-as-total-axis-aligned-len-where-0-means-zero-vec", path = "../l002-01-calc-sum-of-absolute-vec-coords-as-total-axis-aligned-len-where-0-means-zero-vec" }
+l003_01_calc_vec_len_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer = { package = "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords-where-0-means-zero-vec-and-larger-means-longer", path = "../l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords-where-0-means-zero-vec-and-larger-means-longer" }
+l005_01_calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther = { package = "l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther", path = "../l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs-where-0-means-same-point-and-larger-means-farther" }
+l006_01_multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens_where_1_means_same_direction_0_means_perpendicular_and_minus_1_means_opposite = { package = "l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens-where-1-means-same-direction-0-means-perpendicular-and-minus-1-means-opposite", path = "../l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens-where-1-means-same-direction-0-means-perpendicular-and-minus-1-means-opposite" }
+
+lesson-visualization = { path = "../lesson-visualization" }

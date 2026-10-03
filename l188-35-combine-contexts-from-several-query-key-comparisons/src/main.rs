@@ -7,7 +7,7 @@
 //   результаты объединяются.
 // Разные головы получают собственные проекции и соединяются перед выходной проекцией.
 
-use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
+use l187_35_calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches::calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
 fn main() {
     let input: [[f64; 2]; 3] = [[1.0, 2.0], [3.0, 1.0], [2.0, 4.0]];

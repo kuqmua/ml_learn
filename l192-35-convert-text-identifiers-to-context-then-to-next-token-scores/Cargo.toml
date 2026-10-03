@@ -1,0 +1,7 @@
+[package]
+name = "l192-35-convert-text-identifiers-to-context-then-to-next-token-scores"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+l191_35_calc_text_context_vecs_by_adding_position_and_weighted_past_context = { package = "l191-35-calc-text-context-vecs-by-adding-position-and-weighted-past-context", path = "../l191-35-calc-text-context-vecs-by-adding-position-and-weighted-past-context" }

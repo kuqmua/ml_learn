@@ -1,0 +1,8 @@
+[package]
+name = "l176-32-normalize-coords-by-subtracting-mean-and-dividing-by-root-mean-square"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

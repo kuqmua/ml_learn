@@ -1,0 +1,6 @@
+[package]
+name = "l182-34-calc-visible-context-by-summing-states-weighted-by-exponentiated-coord-scores"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

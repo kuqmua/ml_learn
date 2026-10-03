@@ -1,0 +1,8 @@
+[package]
+name = "l061-11-count-binary-classification-outcomes-from-targets-and-predictions"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+lesson-visualization = { path = "../lesson-visualization" }

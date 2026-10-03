@@ -17,7 +17,7 @@
 // Дополнительная практика: Реализуй single-head attention для короткой последовательности без готового слоя.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec;
+use l001_01_multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec::multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec;
 
 fn main() {
     /// e^x по ряду Тейлора. Деление аргумента пополам ускоряет сходимость.
@@ -70,7 +70,7 @@ fn main() {
                             if past_only_attention && key_index > query_index {
                                 f64::NEG_INFINITY
                             } else {
-                                multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(query, key).unwrap()
+                                multiply_matching_coords_then_add_results_where_pos_means_angle_below_90_neg_means_angle_above_90_and_0_means_perpendicular_or_zero_vec(query, key).unwrap()
                                     / (|| -> f64 {
                                         let value: f64 = 2.0;
                                         assert!(value >= 0.0, "корень из отрицательного числа");

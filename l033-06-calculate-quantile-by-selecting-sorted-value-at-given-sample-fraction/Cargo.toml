@@ -1,8 +1,0 @@
-[package]
-name = "l033-06-calculate-quantile-by-selecting-sorted-value-at-given-sample-fraction"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }
