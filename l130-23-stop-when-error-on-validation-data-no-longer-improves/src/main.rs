@@ -23,19 +23,21 @@ fn main() {
         ),
         ("каждая эпоха лучше", &[0.8, 0.7, 0.6, 0.5], None),
     ];
-    let patience: i32 = 2;
+    let allowed_non_improving_epochs_before_stopping: i32 = 2;
     for (_description, validation_losses, expected_stop) in cases {
         let mut best: f64 = f64::INFINITY;
-        let mut bad_epochs: i32 = 0;
+        let mut consecutive_epochs_without_lower_validation_error: i32 = 0;
         let mut stopped_at: Option<usize> = None;
         for (epoch, &loss) in validation_losses.iter().enumerate() {
             if loss < best {
                 best = loss;
-                bad_epochs = 0;
+                consecutive_epochs_without_lower_validation_error = 0;
             } else {
-                bad_epochs += 1;
+                consecutive_epochs_without_lower_validation_error += 1;
             }
-            if bad_epochs >= patience {
+            if consecutive_epochs_without_lower_validation_error
+                >= allowed_non_improving_epochs_before_stopping
+            {
                 stopped_at = Some(epoch);
                 break;
             }

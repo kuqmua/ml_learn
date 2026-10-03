@@ -21,12 +21,17 @@ fn main() {
             sick_and_positive <= positive_tests,
             "совместных случаев не может быть больше всех случаев B"
         );
-        let probability: Option<f64> = if positive_tests == 0.0 {
+        let disease_probability_given_positive_test_where_0_means_none_and_1_means_all: Option<
+            f64,
+        > = if positive_tests == 0.0 {
             None
         } else {
             Some(sick_and_positive / positive_tests)
         };
-        assert_eq!(probability, expected);
+        assert_eq!(
+            disease_probability_given_positive_test_where_0_means_none_and_1_means_all,
+            expected
+        );
     }
 
     plot_disease_probability_among_positive_tests();

@@ -19,9 +19,10 @@ fn main() {
         "для среднего нужен хотя бы один исход"
     );
     let probability: f64 = 1.0 / outcomes.len() as f64;
-    let mut _expectation: f64 = 0.0;
+    let mut _expected_outcome_as_probability_weighted_average_over_repeated_trials: f64 = 0.0;
     for outcome in outcomes {
-        _expectation += outcome * probability;
+        _expected_outcome_as_probability_weighted_average_over_repeated_trials +=
+            outcome * probability;
     }
 
     plot_probabilities_of_die_outcomes();

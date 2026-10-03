@@ -7,7 +7,7 @@
 //   продолжение.
 // Для позиции i softmax вычисляется только по позициям 0..=i.
 
-use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
+use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares;
 use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
 fn main() {
@@ -31,7 +31,7 @@ fn plot_weights_assigned_only_to_current_and_past_positions(states: &[[f64; 2]; 
         "Веса причинного внимания",
         &std::array::from_fn::<[f64; 3], 3, _>(|item_index| {
             let query_vector = states[item_index];
-            let weights: Vec<f64> = calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+            let weights: Vec<f64> = calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
                 &(0..=item_index)
                     .map(|past_index| {
                         (query_vector[0] * states[past_index][0]

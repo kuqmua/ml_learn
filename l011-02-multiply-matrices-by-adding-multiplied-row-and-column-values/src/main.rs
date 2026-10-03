@@ -9,7 +9,7 @@
 // Каждая ячейка ответа получается попарным умножением строки и столбца со сложением.
 // Единичная матрица не меняет значения; порядок множителей обычно влияет на ответ.
 
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
 
 fn main() {
     let first_matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
@@ -41,7 +41,7 @@ fn main() {
             for column in 0..matrix_on_right[0].len() {
                 let column_values: [f64; 2] =
                     [matrix_on_right[0][column], matrix_on_right[1][column]];
-                multiplied_matrix[row][column] = multiply_matching_coordinates_then_add_results(
+                multiplied_matrix[row][column] = multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(
                     &matrix_on_left[row],
                     &column_values,
                 )

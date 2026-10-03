@@ -54,11 +54,11 @@ fn main() {
     /// tanh(x) = (e^(2x)-1)/(e^(2x)+1), отдельная формула для отрицательных x.
     /// Учебный аналог `f64::tanh`; явная формула может работать медленнее и давать другое округление.
     /// Гиперболический тангенс tanh(x) = (e^(2x)−1) / (e^(2x)+1); используем симметрию и насыщение для устойчивости.
-    fn calculate_tanh_as_e_to_twice_value_minus_one_divided_by_e_to_twice_value_plus_one(
+    fn calculate_tanh_as_signed_signal_where_0_means_no_signal_and_large_positive_or_negative_inputs_approach_1_or_minus_1(
         value: f64,
     ) -> f64 {
         if value < 0.0 {
-            return -calculate_tanh_as_e_to_twice_value_minus_one_divided_by_e_to_twice_value_plus_one(-value);
+            return -calculate_tanh_as_signed_signal_where_0_means_no_signal_and_large_positive_or_negative_inputs_approach_1_or_minus_1(-value);
         }
         if value > 20.0 {
             return 1.0;
@@ -76,14 +76,14 @@ fn main() {
 
         Mul(usize, usize),
 
-        Tanh(usize),
+        TanhAsSignedSignalBoundedBetweenMinus1And1(usize),
     }
 
     #[derive(Debug)]
     struct Node {
         value: f64,
 
-        gradient: f64,
+        output_rate_of_change_with_respect_to_node_value: f64,
 
         operation: Operation,
     }
@@ -97,7 +97,7 @@ fn main() {
             self.0.push(Node {
                 value,
 
-                gradient: 0.,
+                output_rate_of_change_with_respect_to_node_value: 0.,
 
                 operation: Operation::Input,
             });
@@ -115,39 +115,43 @@ fn main() {
         graph.append_input_value_node_to_computation_graph(graph.0[squared_index].value * 2.0);
     graph.0[doubled_square_index].operation = Operation::Add(squared_index, squared_index);
     let output_index: usize = graph.append_input_value_node_to_computation_graph(
-        calculate_tanh_as_e_to_twice_value_minus_one_divided_by_e_to_twice_value_plus_one(
+        calculate_tanh_as_signed_signal_where_0_means_no_signal_and_large_positive_or_negative_inputs_approach_1_or_minus_1(
             graph.0[doubled_square_index].value,
         ),
     );
-    graph.0[output_index].operation = Operation::Tanh(doubled_square_index);
-    graph.0[output_index].gradient = 1.;
+    graph.0[output_index].operation =
+        Operation::TanhAsSignedSignalBoundedBetweenMinus1And1(doubled_square_index);
+    graph.0[output_index].output_rate_of_change_with_respect_to_node_value = 1.;
     for node_index in (0..=output_index).rev() {
-        let incoming_loss_rate_of_change: f64 = graph.0[node_index].gradient;
+        let incoming_loss_rate_of_change: f64 =
+            graph.0[node_index].output_rate_of_change_with_respect_to_node_value;
         match graph.0[node_index].operation {
             Operation::Input => {}
 
             Operation::Add(left_index, right_index) => {
-                graph.0[left_index].gradient += incoming_loss_rate_of_change;
-                graph.0[right_index].gradient += incoming_loss_rate_of_change;
+                graph.0[left_index].output_rate_of_change_with_respect_to_node_value +=
+                    incoming_loss_rate_of_change;
+                graph.0[right_index].output_rate_of_change_with_respect_to_node_value +=
+                    incoming_loss_rate_of_change;
             }
 
             Operation::Mul(left_index, right_index) => {
-                graph.0[left_index].gradient +=
+                graph.0[left_index].output_rate_of_change_with_respect_to_node_value +=
                     incoming_loss_rate_of_change * graph.0[right_index].value;
-                graph.0[right_index].gradient +=
+                graph.0[right_index].output_rate_of_change_with_respect_to_node_value +=
                     incoming_loss_rate_of_change * graph.0[left_index].value;
             }
 
-            Operation::Tanh(left_index) => {
+            Operation::TanhAsSignedSignalBoundedBetweenMinus1And1(left_index) => {
                 let output_value: f64 = graph.0[node_index].value;
-                graph.0[left_index].gradient +=
+                graph.0[left_index].output_rate_of_change_with_respect_to_node_value +=
                     incoming_loss_rate_of_change * (1.0 - output_value * output_value);
             }
         }
     }
     let _ = (
         &(graph.0[output_index].value),
-        &(graph.0[input_index].gradient),
+        &(graph.0[input_index].output_rate_of_change_with_respect_to_node_value),
     );
 
     plot_output_rate_of_change_for_each_computation_node(graph);
@@ -166,7 +170,12 @@ fn main() {
                     .0
                     .iter()
                     .enumerate()
-                    .map(|(item_index, node)| (item_index as f64, node.gradient))
+                    .map(|(item_index, node)| {
+                        (
+                            item_index as f64,
+                            node.output_rate_of_change_with_respect_to_node_value,
+                        )
+                    })
                     .collect::<Vec<_>>(),
             }],
         )

@@ -1,30 +1,30 @@
-use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences;
+use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther;
 
 #[test]
 fn distance_extracts_root_of_squared_differences() {
     assert_eq!(
-        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
             &[1.0, 2.0],
             &[4.0, 6.0]
         ),
         Ok(5.0)
     );
     assert_eq!(
-        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
             &[4.0, 6.0],
             &[1.0, 2.0]
         ),
         Ok(5.0)
     );
     assert_eq!(
-        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
             &[1.0, 2.0],
             &[1.0, 2.0]
         ),
         Ok(0.0)
     );
     assert!(
-        (calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+        (calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
             &[0.0, 0.0],
             &[1.0, 1.0]
         )
@@ -34,7 +34,7 @@ fn distance_extracts_root_of_squared_differences() {
             < 1e-12
     );
     assert!(
-        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+        calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
             &[f64::NAN, 0.0],
             &[0.0, 0.0]
         )

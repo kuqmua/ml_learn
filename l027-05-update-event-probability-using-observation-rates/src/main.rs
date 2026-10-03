@@ -13,24 +13,38 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let prevalence: f64 = 0.01;
-    let sensitivity: f64 = 0.90;
-    let true_positive: f64 = prevalence * sensitivity;
-    let specificity: f64 = 0.95;
-    let false_positive: f64 = (1.0 - prevalence) * (1.0 - specificity);
-    let posterior: f64 = true_positive / (true_positive + false_positive);
+    let disease_probability_before_observing_test_result: f64 = 0.01;
+    let positive_test_probability_given_disease_where_1_means_no_missed_cases: f64 = 0.90;
+    let joint_probability_of_disease_and_positive_test: f64 =
+        disease_probability_before_observing_test_result
+            * positive_test_probability_given_disease_where_1_means_no_missed_cases;
+    let negative_test_probability_given_no_disease_where_1_means_no_false_alarms: f64 = 0.95;
+    let joint_probability_of_no_disease_and_positive_test: f64 = (1.0
+        - disease_probability_before_observing_test_result)
+        * (1.0 - negative_test_probability_given_no_disease_where_1_means_no_false_alarms);
+    let disease_probability_after_positive_test: f64 =
+        joint_probability_of_disease_and_positive_test
+            / (joint_probability_of_disease_and_positive_test
+                + joint_probability_of_no_disease_and_positive_test);
 
-    plot_disease_probability_before_and_after_positive_test(posterior);
+    plot_disease_probability_before_and_after_positive_test(
+        disease_probability_after_positive_test,
+    );
 }
 
 // Строим график по результатам урока.
-fn plot_disease_probability_before_and_after_positive_test(posterior: f64) {
+fn plot_disease_probability_before_and_after_positive_test(
+    disease_probability_after_positive_test: f64,
+) {
     lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
         "Байес: до и после теста",
         "вероятность",
-        &[("до теста", 0.01), ("после теста", posterior)],
+        &[
+            ("до теста", 0.01),
+            ("после теста", disease_probability_after_positive_test),
+        ],
     )
     .expect("не удалось сохранить график");
 }

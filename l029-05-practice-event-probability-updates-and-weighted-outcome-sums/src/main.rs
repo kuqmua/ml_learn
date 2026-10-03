@@ -55,15 +55,17 @@ fn main() {
     let _ = (
         &(true_positive_count as f64 / positive_test_count as f64),
         &((|| -> f64 {
-            let prevalence: f64 = 0.01;
+            let disease_probability_before_observing_test_result: f64 = 0.01;
 
-            let sensitivity: f64 = 0.9;
+            let positive_test_probability_given_disease_where_1_means_no_missed_cases: f64 = 0.9;
 
-            let true_positive_probability: f64 = prevalence * sensitivity;
+            let true_positive_probability: f64 = disease_probability_before_observing_test_result
+                * positive_test_probability_given_disease_where_1_means_no_missed_cases;
 
-            let specificity: f64 = 0.95;
+            let negative_test_probability_given_no_disease_where_1_means_no_false_alarms: f64 =
+                0.95;
             true_positive_probability
-                / (true_positive_probability + (1.0 - prevalence) * (1.0 - specificity))
+                / (true_positive_probability + (1.0 - disease_probability_before_observing_test_result) * (1.0 - negative_test_probability_given_no_disease_where_1_means_no_false_alarms))
         })()),
     );
 

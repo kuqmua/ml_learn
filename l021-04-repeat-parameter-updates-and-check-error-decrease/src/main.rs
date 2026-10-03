@@ -17,11 +17,11 @@ fn main() {
     let mut parameter: f64 = 0.0;
     let rate: f64 = 0.2;
     for _epoch in 0..100 {
-        let rate_of_change: f64 = 2.0 * (parameter - 3.0);
-        if rate_of_change > -0.000001 && rate_of_change < 0.000001 {
+        let loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it: f64 = 2.0 * (parameter - 3.0);
+        if loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it > -0.000001 && loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it < 0.000001 {
             break;
         }
-        parameter -= rate * rate_of_change;
+        parameter -= rate * loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it;
     }
 
     plot_squared_error_after_each_parameter_update();

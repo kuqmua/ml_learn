@@ -3,7 +3,7 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let _question: &str = "Посчитай F1 для precision=1 и recall=0.5.";
+    let _question: &str = "Посчитай F1 для correct_positive_prediction_share_where_1_means_no_false_alarms=1 и actual_positive_detection_share_where_1_means_none_missed=0.5.";
     let _choices: [&str; 3] = [
         "Объясни, почему полнота снизилась даже при неизменном числе положительных прогнозов.",
         "Проверь, что идеальное ранжирование даёт ROC-AUC 1, а обратное — 0.",

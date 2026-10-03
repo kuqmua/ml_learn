@@ -7,7 +7,7 @@
 // Представь: Ранний вход влияет на позднюю ошибку через несколько обновлений состояния.
 // Градиент рекуррентного веса учитывает все предыдущие шаги.
 
-use l138_25_update_memory_from_weighted_input_and_previous_memory::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state;
+use l138_25_update_memory_from_weighted_input_and_previous_memory::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1;
 
 fn half_squared_error_of_last_recurrent_state_against_target(
     input: &[f64],
@@ -16,7 +16,7 @@ fn half_squared_error_of_last_recurrent_state_against_target(
     target: f64,
 ) -> f64 {
     let last: f64 =
-        *calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
+        *calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1(
             input,
             input_weight,
             recurrent_weight,
@@ -30,7 +30,7 @@ fn main() {
     let input_weight: f64 = 0.3;
     let recurrent_weight: f64 = 0.4;
     let history: [f64; 3] =
-        calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
+        calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1(
             &input,
             input_weight,
             recurrent_weight,

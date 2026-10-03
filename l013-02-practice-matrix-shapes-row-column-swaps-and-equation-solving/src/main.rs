@@ -18,7 +18,7 @@
 //   библиотек.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
 
 fn main() {
     #[derive(Debug, PartialEq)]
@@ -70,7 +70,7 @@ fn main() {
         let row_end: usize = row_start + left_matrix.column_count;
 
         output_vector.push(
-            multiply_matching_coordinates_then_add_results(
+            multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(
                 &left_matrix.data[row_start..row_end],
                 &input_vector,
             )
@@ -102,7 +102,7 @@ fn main() {
             let row_end: usize = row_start + transposed_matrix.column_count;
 
             result_elements.push(
-                multiply_matching_coordinates_then_add_results(
+                multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(
                     &transposed_matrix.data[row_start..row_end],
                     &(0..left_matrix.rows)
                         .map(|shared_index| {

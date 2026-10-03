@@ -10,7 +10,7 @@
 // Что изучаем: складываем модули всех координат. Отрицательное число даёт положительный вклад,
 // поэтому смена знаков не меняет ответ. У нулевого вектора результат равен нулю.
 
-use l002_01_calculate_sum_of_absolute_vector_coordinates::calculate_sum_of_absolute_vector_coordinates;
+use l002_01_calculate_sum_of_absolute_vector_coordinates::calculate_sum_of_absolute_vector_coordinates_as_total_axis_aligned_length_where_0_means_zero_vector;
 
 fn main() {
     let cases: [(&str, [f64; 2], f64); 4] = [
@@ -21,7 +21,7 @@ fn main() {
     ];
     for (_description, vector, expected) in cases {
         assert_eq!(
-            calculate_sum_of_absolute_vector_coordinates(&vector),
+            calculate_sum_of_absolute_vector_coordinates_as_total_axis_aligned_length_where_0_means_zero_vector(&vector),
             expected
         );
     }
@@ -45,7 +45,7 @@ fn plot_sum_of_absolute_coordinates_for_changing_first_coordinate() {
                     let horizontal_value: f64 = plot_step_index as f64 / 10.0;
                     (
                         horizontal_value,
-                        calculate_sum_of_absolute_vector_coordinates(&[horizontal_value, 4.0]),
+                        calculate_sum_of_absolute_vector_coordinates_as_total_axis_aligned_length_where_0_means_zero_vector(&[horizontal_value, 4.0]),
                     )
                 })
                 .collect::<Vec<_>>(),

@@ -15,20 +15,24 @@ use l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance
 fn recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
     noisy: f64,
     predicted_noise: f64,
-    original_signal_variance_share: f64,
+    original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal: f64,
 ) -> f64 {
-    (noisy - (1.0 - original_signal_variance_share).sqrt() * predicted_noise)
-        / original_signal_variance_share.sqrt()
+    (noisy
+        - (1.0 - original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal)
+            .sqrt()
+            * predicted_noise)
+        / original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal.sqrt()
 }
 fn main() {
     let noise: f64 = -0.7;
-    let original_signal_variance_share: f64 = 0.36;
+    let original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal: f64 =
+        0.36;
     let clean: f64 = 2.0;
     let noisy: f64 =
         calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
             clean,
             noise,
-            original_signal_variance_share,
+            original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal,
         )
         .unwrap();
 
@@ -36,7 +40,7 @@ fn main() {
         (recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
             noisy,
             noise,
-            original_signal_variance_share,
+            original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal,
         ) - clean)
             .abs()
             < 1e-12
@@ -45,7 +49,7 @@ fn main() {
         (recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
             noisy,
             noise + 0.2,
-            original_signal_variance_share,
+            original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal,
         ) - clean)
             .abs()
             > 0.1

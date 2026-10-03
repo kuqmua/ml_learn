@@ -12,6 +12,6 @@ fn predict_result_before_running() {
         0.5,
     )
     .unwrap()
-    .true_positives as f64;
+    .true_positives_as_correctly_detected_positive_cases as f64;
     assert!((actual - expected).abs() < 1e-12);
 }

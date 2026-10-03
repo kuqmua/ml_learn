@@ -18,8 +18,9 @@ fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_inp
     let mut state: f64 = 0.0;
     std::array::from_fn(|index| {
         let (value, reset) = input[index];
-        let previous_state_share_kept: f64 = if reset { 0.0 } else { 0.9 };
-        state = previous_state_share_kept * state + value;
+        let previous_state_share_kept_where_0_forgets_and_1_retains_all: f64 =
+            if reset { 0.0 } else { 0.9 };
+        state = previous_state_share_kept_where_0_forgets_and_1_retains_all * state + value;
         state
     })
 }

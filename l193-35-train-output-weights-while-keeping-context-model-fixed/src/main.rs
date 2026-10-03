@@ -11,13 +11,13 @@
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
 use l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calculate_text_context_vectors_by_adding_position_and_weighted_past_context;
 
-fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
+fn calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
     input_value: f64,
 ) -> f64 {
     1.0 / (1.0 + (-input_value).exp())
 }
 /// Бинарная перекрёстная энтропия: из последнего контекстного вектора получаем вероятность p и считаем −y·ln(p)−(1−y)·ln(1−p).
-fn calculate_binary_prediction_loss_as_negative_log_target_probability_from_final_context(
+fn calculate_binary_prediction_loss_as_negative_log_target_probability_from_final_context_where_closer_to_0_means_more_probability_on_correct_answer(
     weight: &[f64; 2],
     sample: (&[usize], f64),
 ) -> f64 {
@@ -28,7 +28,7 @@ fn calculate_binary_prediction_loss_as_negative_log_target_probability_from_fina
     let raw_model_score: f64 =
         weight[0] * final_hidden_state[0] + weight[1] * final_hidden_state[1];
     let probability: f64 =
-        calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
+        calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
             raw_model_score,
         )
         .clamp(1e-12, 1.0 - 1e-12);
@@ -40,7 +40,7 @@ fn main() {
     let baseline: f64 = validation
         .iter()
         .map(|&sample| {
-            calculate_binary_prediction_loss_as_negative_log_target_probability_from_final_context(
+            calculate_binary_prediction_loss_as_negative_log_target_probability_from_final_context_where_closer_to_0_means_more_probability_on_correct_answer(
                 &weight, sample,
             )
         })
@@ -57,7 +57,7 @@ fn main() {
                 .last()
                 .unwrap();
             let error: f64 =
-                calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
+                calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
                     weight[0] * final_hidden_state[0] + weight[1] * final_hidden_state[1],
                 ) - target;
             rate_of_change[0] += error * final_hidden_state[0];
@@ -70,7 +70,7 @@ fn main() {
     let held_out: f64 = validation
         .iter()
         .map(|&sample| {
-            calculate_binary_prediction_loss_as_negative_log_target_probability_from_final_context(
+            calculate_binary_prediction_loss_as_negative_log_target_probability_from_final_context_where_closer_to_0_means_more_probability_on_correct_answer(
                 &weight, sample,
             )
         })

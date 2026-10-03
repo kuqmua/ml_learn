@@ -7,12 +7,12 @@
 //   вектора.
 // Нормируем средний квадрат координат и применяем обучаемый масштаб.
 
-use l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights;
+use l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights_to_control_scale_without_centering;
 
 fn main() {
     let input_component: [f64; 2] = [3.0, 4.0];
     let _: [f64; 2] =
-        normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights(
+        normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights_to_control_scale_without_centering(
             &input_component,
             &[1.0, 1.0],
             1e-8,

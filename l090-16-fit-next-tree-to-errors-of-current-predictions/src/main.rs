@@ -28,13 +28,14 @@ fn main() {
                     average_error_for_second_group
                 };
         }
-        let mean_squared_error_value: f64 = targets
+        let mean_squared_error_where_0_means_exact_predictions_and_larger_means_worse: f64 = targets
             .iter()
             .zip(predictions)
             .map(|(target, prediction)| (target - prediction).powi(2))
             .sum::<f64>()
             / 4.0;
-        history[round + 1] = mean_squared_error_value;
+        history[round + 1] =
+            mean_squared_error_where_0_means_exact_predictions_and_larger_means_worse;
     }
     assert_eq!(predictions, [0.25, 0.25, 1.75, 1.75]);
     plot_average_squared_error_after_each_added_tree(&history);

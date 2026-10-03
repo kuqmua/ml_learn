@@ -9,7 +9,7 @@
 // Что изучаем: длина вектора — корень из суммы квадратов координат.
 // Смена знаков длину не меняет; длина нулевого вектора равна нулю.
 
-use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates;
+use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer;
 
 fn main() {
     let cases: [(&str, [f64; 2], f64); 4] = [
@@ -20,7 +20,7 @@ fn main() {
     ];
     for (_description, vector, expected) in cases {
         assert!(
-            (calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&vector)
+            (calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer(&vector)
                 - expected)
                 .abs()
                 < 1e-10
@@ -46,7 +46,7 @@ fn plot_vector_length_for_changing_first_coordinate() {
                     let horizontal_value: f64 = plot_step_index as f64 / 10.0;
                     (
                         horizontal_value,
-                        calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&[
+                        calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer(&[
                             horizontal_value,
                             4.0,
                         ]),

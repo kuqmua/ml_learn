@@ -17,9 +17,9 @@ fn main() {
     for start in [-0.5, 0.5] {
         let mut input_value: f64 = start;
         for _ in 0..100 {
-            let rate_of_change: f64 =
+            let loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it: f64 =
                 4.0 * input_value * input_value * input_value - 4.0 * input_value;
-            input_value -= 0.1 * rate_of_change;
+            input_value -= 0.1 * loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it;
         }
         let _: f64 =
             input_value * input_value * input_value * input_value - 2.0 * input_value * input_value;

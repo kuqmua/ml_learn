@@ -14,11 +14,12 @@
 
 fn main() {
     for raw_model_score in [-2.0, 0.0, 2.0] {
-        let _: f64 = if raw_model_score > 0.0 {
-            raw_model_score
-        } else {
-            0.0
-        };
+        let _relu_output_where_negative_inputs_become_0_and_positive_inputs_pass_unchanged: f64 =
+            if raw_model_score > 0.0 {
+                raw_model_score
+            } else {
+                0.0
+            };
     }
 
     plot_rectified_activation_as_input_with_negative_values_replaced_by_zero();

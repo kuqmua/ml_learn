@@ -13,7 +13,7 @@
 fn main() {
     for positive_class_share in [0.0, 0.5, 1.0] {
         let negative_class_share: f64 = 1.0 - positive_class_share;
-        let _: f64 = 1.0
+        let _binary_gini_mixing_where_0_means_one_class_and_half_means_equal_class_shares: f64 = 1.0
             - positive_class_share * positive_class_share
             - negative_class_share * negative_class_share;
     }

@@ -14,23 +14,27 @@
 fn main() {
     let document_count: f64 = 10.0;
     let documents_with_term: f64 = 2.0;
-    let rarity_ratio: f64 = (document_count + 1.0) / (documents_with_term + 1.0);
-    let normalized: f64 = (rarity_ratio - 1.0) / (rarity_ratio + 1.0);
+    let document_count_divided_by_documents_containing_word: f64 =
+        (document_count + 1.0) / (documents_with_term + 1.0);
+    let normalized: f64 = (document_count_divided_by_documents_containing_word - 1.0)
+        / (document_count_divided_by_documents_containing_word + 1.0);
     let mut term: f64 = normalized;
     let mut logarithm: f64 = 0.0;
     for odd_divisor in (1..=99).step_by(2) {
         logarithm += term / odd_divisor as f64;
         term *= normalized * normalized;
     }
-    let inverse_document_frequency: f64 = 2.0 * logarithm;
-    let term_frequency: f64 = 3.0;
-    let _: f64 = term_frequency * inverse_document_frequency;
+    let inverse_document_frequency_as_word_rarity_weight_where_larger_means_fewer_documents_contain_word: f64 = 2.0 * logarithm;
+    let word_count_in_document: f64 = 3.0;
+    let _: f64 = word_count_in_document * inverse_document_frequency_as_word_rarity_weight_where_larger_means_fewer_documents_contain_word;
 
-    plot_word_frequency_weighted_by_rarity_across_documents(inverse_document_frequency);
+    plot_word_frequency_weighted_by_rarity_across_documents(inverse_document_frequency_as_word_rarity_weight_where_larger_means_fewer_documents_contain_word);
 }
 
 // Строим график по результатам урока.
-fn plot_word_frequency_weighted_by_rarity_across_documents(inverse_document_frequency: f64) {
+fn plot_word_frequency_weighted_by_rarity_across_documents(
+    inverse_document_frequency_as_word_rarity_weight_where_larger_means_fewer_documents_contain_word: f64,
+) {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -42,8 +46,8 @@ fn plot_word_frequency_weighted_by_rarity_across_documents(inverse_document_freq
 
             points: &(0..=10)
                 .map(|plot_step_index| {
-                    let term_frequency: f64 = plot_step_index as f64 / 10.0;
-                    (term_frequency, term_frequency * inverse_document_frequency)
+                    let word_count_in_document: f64 = plot_step_index as f64 / 10.0;
+                    (word_count_in_document, word_count_in_document * inverse_document_frequency_as_word_rarity_weight_where_larger_means_fewer_documents_contain_word)
                 })
                 .collect::<Vec<_>>(),
         }],

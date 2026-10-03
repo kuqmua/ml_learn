@@ -11,19 +11,22 @@
 // softmax слишком резким.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
 
 fn main() {
     let dimension: f64 = 2.0;
-    let mut scale: f64 = dimension;
+    let mut square_root_of_coordinate_count_to_limit_growth_of_match_scores: f64 = dimension;
     for _ in 0..80 {
-        scale = (scale + dimension / scale) / 2.0;
+        square_root_of_coordinate_count_to_limit_growth_of_match_scores =
+            (square_root_of_coordinate_count_to_limit_growth_of_match_scores
+                + dimension / square_root_of_coordinate_count_to_limit_growth_of_match_scores)
+                / 2.0;
     }
     let query: [f64; 2] = [1.0, 1.0];
     let key: [f64; 2] = [2.0, 2.0];
-    let _ = &(multiply_matching_coordinates_then_add_results(&query, &key)
+    let _ = &(multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&query, &key)
         .expect("запрос и ключ должны иметь одинаковое число координат")
-        / scale);
+        / square_root_of_coordinate_count_to_limit_growth_of_match_scores);
 
     plot_attention_scale_as_one_divided_by_square_root_of_coordinate_count();
 }

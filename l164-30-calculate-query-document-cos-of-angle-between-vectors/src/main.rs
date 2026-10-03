@@ -12,12 +12,12 @@
 // длину документов.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l006_01_calculate_cos_of_angle_between_vectors::calculate_cos_of_angle_between_vectors;
+use l006_01_calculate_cos_of_angle_between_vectors::calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite;
 
 fn main() {
     let query: [f64; 2] = [1.0, 0.0];
     let document: [f64; 2] = [2.0, 0.0];
-    let _: f64 = calculate_cos_of_angle_between_vectors(&query, &document)
+    let _: f64 = calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&query, &document)
         .expect("для вычисления cos нужны ненулевые векторы слов с одинаковым числом координат");
 
     plot_query_document_cos_of_angle(query);
@@ -38,10 +38,12 @@ fn plot_query_document_cos_of_angle(query: [f64; 2]) {
                 .step_by(5)
                 .map(|degrees| {
                     let angle: f64 = (degrees as f64).to_radians();
-                    let rotated_document: [f64; 2] = [angle.cos(), angle.sin()];
+                    let cos_as_horizontal_coordinate_of_unit_direction: f64 = angle.cos();
+                    let sin_as_vertical_coordinate_of_unit_direction: f64 = angle.sin();
+                    let rotated_document: [f64; 2] = [cos_as_horizontal_coordinate_of_unit_direction, sin_as_vertical_coordinate_of_unit_direction];
                     (
                         degrees as f64,
-                        calculate_cos_of_angle_between_vectors(&query, &rotated_document).unwrap(),
+                        calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&query, &rotated_document).unwrap(),
                     )
                 })
                 .collect::<Vec<_>>(),

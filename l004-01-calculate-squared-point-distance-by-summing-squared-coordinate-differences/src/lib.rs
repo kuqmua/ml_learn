@@ -5,7 +5,7 @@
 /// Оба массива имеют одинаковую длину `N`; число координат проверяет компилятор.
 /// Пустые точки и неконечные координаты отклоняются во время выполнения.
 
-pub fn calculate_squared_point_distance_by_summing_squared_coordinate_differences<
+pub fn calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther<
     const N: usize,
 >(
     first_point: &[f64; N],

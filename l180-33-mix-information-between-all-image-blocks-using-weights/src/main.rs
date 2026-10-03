@@ -13,7 +13,7 @@
 /// Softmax: вычитаем максимальную оценку, вычисляем экспоненты и делим каждую на их сумму.
 use l179_33_create_image_block_sequence_by_splitting_image_into_nonoverlapping_squares::extract_nonoverlapping_square_patches_from_square_image;
 
-fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+fn calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
     raw_model_scores: &[f64; 4],
 ) -> [f64; 4] {
     let maximum: f64 = raw_model_scores
@@ -38,7 +38,7 @@ fn main() {
             .expect("ожидалось четыре патча 1×1 из изображения 2×2");
     let first_patch_representation: [f64; 2] = image_patch_representations[0];
     let weights: [f64; 4] =
-        calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+        calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
             &std::array::from_fn::<f64, 4, _>(|index| {
                 let key = image_patch_representations[index];
                 first_patch_representation[0] * key[0] + first_patch_representation[1] * key[1]

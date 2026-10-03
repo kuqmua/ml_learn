@@ -5,7 +5,7 @@
 /// Softmax: вычитаем максимальную оценку, вычисляем экспоненты и делим каждую на их сумму.
 /// Число весов совпадает с числом входных оценок, которое определяется во время выполнения.
 
-pub fn calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+pub fn calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
     raw_model_scores: &[f64],
 ) -> Vec<f64> {
     let maximum: f64 = raw_model_scores

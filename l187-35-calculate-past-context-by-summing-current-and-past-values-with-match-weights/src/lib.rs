@@ -4,7 +4,7 @@
 /// Один причинный head. Строка i видит только j <= i.
 /// Причинное внимание: совпадения запроса и ключей делим на sqrt(2), превращаем в веса через softmax и суммируем значения только текущей и прошлых позиций.
 /// Длина текста задаётся во время выполнения; совпадение длин Q/K/V проверяется здесь.
-use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
+use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares;
 
 pub fn calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
     query_vector: &[[f64; 2]],
@@ -20,7 +20,7 @@ pub fn calculate_past_context_by_summing_current_and_past_values_weighted_by_que
     let mut output: Vec<[f64; 2]> = Vec::with_capacity(query_vector.len());
     for index in 0..query_vector.len() {
         let mut state: [f64; 2] = [0.0; 2];
-        for (past, weight) in calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+        for (past, weight) in calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
             &(0..=index)
                 .map(|past| {
                     (query_vector[index][0] * key_vector[past][0]

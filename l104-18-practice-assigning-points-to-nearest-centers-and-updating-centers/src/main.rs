@@ -26,7 +26,7 @@ fn main() {
     }
 
     /// Квадрат расстояния: складываем квадраты разностей соответствующих координат двух точек.
-    fn calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+    fn calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
         first_point: [f64; 2],
 
         second_point: [f64; 2],
@@ -51,7 +51,7 @@ fn main() {
 
                         .min_by(|&first_center_index, &second_center_index| {
 
-                            calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+                            calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
 
                                 point,
 
@@ -60,7 +60,7 @@ fn main() {
 
                             .total_cmp(
 
-                                &calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+                                &calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
 
                                     point,
 
@@ -94,14 +94,14 @@ fn main() {
             }
         }
 
-        let mut inertia: f64 = 0.0;
+        let mut sum_of_squared_distances_to_cluster_centers_where_0_means_points_equal_centers_and_smaller_means_tighter_clusters: f64 = 0.0;
 
         for &point in data {
             let mut nearest_squared_distance: f64 = f64::INFINITY;
 
             for &center in &centers {
                 let candidate_distance: f64 =
-                    calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+                    calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
                         point, center,
                     );
 
@@ -110,10 +110,10 @@ fn main() {
                 }
             }
 
-            inertia += nearest_squared_distance;
+            sum_of_squared_distances_to_cluster_centers_where_0_means_points_equal_centers_and_smaller_means_tighter_clusters += nearest_squared_distance;
         }
 
-        (centers, inertia)
+        (centers, sum_of_squared_distances_to_cluster_centers_where_0_means_points_equal_centers_and_smaller_means_tighter_clusters)
     })());
 
     plot_training_points_for_grouping_by_nearest_center(dataset);

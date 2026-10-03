@@ -20,11 +20,11 @@ fn main() {
             term *= -raw_model_score / index as f64;
             exponential += term;
         }
-        let probability: f64 = 1.0 / (1.0 + exponential);
-        assert!(probability > 0.0 && probability < 1.0);
-        let side: i32 = if probability < 0.5 {
+        let positive_class_probability_where_0_means_negative_1_means_positive_and_half_means_equal_chances: f64 = 1.0 / (1.0 + exponential);
+        assert!(positive_class_probability_where_0_means_negative_1_means_positive_and_half_means_equal_chances > 0.0 && positive_class_probability_where_0_means_negative_1_means_positive_and_half_means_equal_chances < 1.0);
+        let side: i32 = if positive_class_probability_where_0_means_negative_1_means_positive_and_half_means_equal_chances < 0.5 {
             -1
-        } else if probability > 0.5 {
+        } else if positive_class_probability_where_0_means_negative_1_means_positive_and_half_means_equal_chances > 0.5 {
             1
         } else {
             0

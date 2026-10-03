@@ -17,7 +17,7 @@
 // Дополнительная практика: Собери один блок на малых тензорах и опиши порядок операций.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
 
 fn main() {
     /// Возводим число в квадрат обычным умножением.
@@ -86,7 +86,7 @@ fn main() {
     }
 
     /// Нормализация слоя (LayerNorm): из координат вычитаем среднее и делим на sqrt(среднее квадратов отклонений + epsilon).
-    fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square(
+    fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average(
         input_values: [f64; 2],
     ) -> [f64; 2] {
         let mean: f64 = (input_values[0] + input_values[1]) / 2.;
@@ -110,7 +110,7 @@ fn main() {
                     .iter()
                     .take(text_unit_index + 1)
                     .map(|key| {
-                        multiply_matching_coordinates_then_add_results(&query, key).unwrap()
+                        multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&query, key).unwrap()
                             / approximate_square_root_by_repeated_averaging(2.0)
                     })
                     .collect();
@@ -144,7 +144,7 @@ fn main() {
                 attended[1] += attention_weights[key_index] * input_values[key_index][1];
             }
             let normalized_values: [f64; 2] =
-                normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square([
+                normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average([
                     query[0] + attended[0],
                     query[1] + attended[1],
                 ]);
@@ -152,7 +152,7 @@ fn main() {
                 choose_larger_number(normalized_values[0], 0.),
                 choose_larger_number(normalized_values[1], 0.),
             ];
-            normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square([
+            normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average([
                 normalized_values[0] + feed_forward_values[0],
                 normalized_values[1] + feed_forward_values[1],
             ])

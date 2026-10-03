@@ -132,7 +132,7 @@ fn main() {
     plot_correct_prediction_share_in_each_evaluation_subgroup();
 
     fn plot_correct_prediction_share_in_each_evaluation_subgroup() {
-        let group_accuracy: &dyn Fn(&str) -> f64 = &|group: &str| {
+        let group_correct_prediction_share_where_1_means_all_correct_and_0_means_all_wrong: &dyn Fn(&str) -> f64 = &|group: &str| {
             let cases: Vec<&EvaluationCase> = EVALUATION_CASES
                 .iter()
                 .filter(|case| case.group == group)
@@ -148,7 +148,20 @@ fn main() {
             "lesson-chart",
             "Accuracy по подгруппам",
             "accuracy",
-            &[("A", group_accuracy("A")), ("B", group_accuracy("B"))],
+            &[
+                (
+                    "A",
+                    group_correct_prediction_share_where_1_means_all_correct_and_0_means_all_wrong(
+                        "A",
+                    ),
+                ),
+                (
+                    "B",
+                    group_correct_prediction_share_where_1_means_all_correct_and_0_means_all_wrong(
+                        "B",
+                    ),
+                ),
+            ],
         )
         .expect("не удалось сохранить график");
     }

@@ -10,18 +10,25 @@
 fn main() {
     let weights: [f64; 5] = [-1.0, -0.5, 0.0, 0.25, 1.0];
 
-    let scale: f64 = weights.iter().copied().map(f64::abs).fold(0.0, f64::max) / 127.0;
+    let weight_value_per_integer_step_setting_rounding_error_bound: f64 =
+        weights.iter().copied().map(f64::abs).fold(0.0, f64::max) / 127.0;
 
     assert!(
         weights
             .iter()
             .zip(
                 &weights
-                    .map(|weight_value| (weight_value / scale).round().clamp(-127.0, 127.0) as i8)
-                    .map(|reduced_precision_weight| f64::from(reduced_precision_weight) * scale)
+                    .map(|weight_value| (weight_value
+                        / weight_value_per_integer_step_setting_rounding_error_bound)
+                        .round()
+                        .clamp(-127.0, 127.0) as i8)
+                    .map(
+                        |reduced_precision_weight| f64::from(reduced_precision_weight)
+                            * weight_value_per_integer_step_setting_rounding_error_bound
+                    )
             )
             .map(|(first_value, second_value)| (first_value - second_value).abs())
             .fold(0.0, f64::max)
-            <= scale / 2.0 + 1e-12
+            <= weight_value_per_integer_step_setting_rounding_error_bound / 2.0 + 1e-12
     );
 }

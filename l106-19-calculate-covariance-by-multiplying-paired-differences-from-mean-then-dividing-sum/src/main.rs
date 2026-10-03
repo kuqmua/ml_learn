@@ -28,8 +28,8 @@ fn main() {
             - mean_horizontal_coordinate)
             * (second_feature_values[index] - mean_vertical_coordinate);
     }
-    let _ = &(sum_after_multiplying_paired_differences_from_mean
-        / (first_feature_values.len() - 1) as f64);
+    let _covariance_where_positive_means_same_direction_negative_means_opposite_and_0_means_no_linear_covariation: f64 = sum_after_multiplying_paired_differences_from_mean
+        / (first_feature_values.len() - 1) as f64;
 
     plot_paired_feature_values_to_show_joint_variation(first_feature_values, second_feature_values);
 }

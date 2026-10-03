@@ -12,13 +12,13 @@
 // требуется только порядок соседей.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences;
+use l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther;
 
 fn main() {
     let query: [f64; 2] = [1.0, 2.0];
     let candidates: [[f64; 2]; 2] = [[2.0, 2.0], [4.0, 6.0]];
     for candidate in candidates {
-        let _: f64 = calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+        let _: f64 = calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
             &query, &candidate,
         )
         .expect("координаты должны быть конечными, а квадрат расстояния — помещаться в f64");

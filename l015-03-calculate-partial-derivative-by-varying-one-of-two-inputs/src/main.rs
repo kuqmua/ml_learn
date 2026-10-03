@@ -15,8 +15,10 @@
 
 fn main() {
     let (input_value, second_input_value): (f64, f64) = (2.0, -1.0);
-    let _: f64 = 2.0 * input_value;
-    let _: f64 = 6.0 * second_input_value;
+    let _partial_derivative_as_output_change_per_first_input_change_with_second_input_fixed: f64 =
+        2.0 * input_value;
+    let _partial_derivative_as_output_change_per_second_input_change_with_first_input_fixed: f64 =
+        6.0 * second_input_value;
 
     plot_function_values_while_changing_one_coordinate();
 }

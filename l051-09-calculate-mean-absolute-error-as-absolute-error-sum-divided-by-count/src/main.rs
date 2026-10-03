@@ -10,7 +10,7 @@
 // Ошибки разных знаков не сокращаются; удвоение промаха удваивает вклад в MAE.
 // Общая библиотека проверяет, что у каждого прогноза есть правильный ответ.
 
-use l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count;
+use l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
 
 fn main() {
     let targets: [f64; 3] = [2.0, 4.0, 6.0];
@@ -22,7 +22,7 @@ fn main() {
     ];
     for (_description, predictions, expected) in cases {
         assert!(
-            (calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(
+            (calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
                 &targets,
                 predictions,
             )
@@ -52,7 +52,7 @@ fn plot_average_absolute_prediction_error_for_changing_offset() {
                     let prediction_difference: f64 = plot_step_index as f64 / 10.0;
                     (
                 prediction_difference,
-                calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(
+                calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
                     &[2.0, 4.0, 6.0],
                     &[
                         2.0 + prediction_difference,

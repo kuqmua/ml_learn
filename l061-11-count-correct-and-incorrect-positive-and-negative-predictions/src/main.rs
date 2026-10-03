@@ -33,10 +33,10 @@ fn main() {
     }
     assert_eq!(
         (
-            counts.true_positives,
-            counts.false_positives,
-            counts.false_negatives,
-            counts.true_negatives
+            counts.true_positives_as_correctly_detected_positive_cases,
+            counts.false_positives_as_false_alarms_on_negative_cases,
+            counts.false_negatives_as_missed_positive_cases,
+            counts.true_negatives_as_correctly_rejected_negative_cases
         ),
         (1, 1, 1, 1)
     );
@@ -52,10 +52,19 @@ fn plot_counts_of_correct_and_incorrect_class_predictions(counts: BinaryClassifi
         "Матрица ошибок: исходы",
         "количество",
         &[
-            ("TP", counts.true_positives as f64),
-            ("FP", counts.false_positives as f64),
-            ("TN", counts.true_negatives as f64),
-            ("FN", counts.false_negatives as f64),
+            (
+                "TP",
+                counts.true_positives_as_correctly_detected_positive_cases as f64,
+            ),
+            (
+                "FP",
+                counts.false_positives_as_false_alarms_on_negative_cases as f64,
+            ),
+            (
+                "TN",
+                counts.true_negatives_as_correctly_rejected_negative_cases as f64,
+            ),
+            ("FN", counts.false_negatives_as_missed_positive_cases as f64),
         ],
     )
     .expect("не удалось сохранить график");

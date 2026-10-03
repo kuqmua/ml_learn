@@ -15,7 +15,7 @@ fn validate_equal_lengths_of_targets_and_predictions(
 
 /// Средний квадрат ошибки с проверкой числа пар.
 /// Средняя квадратичная ошибка (MSE): суммируем квадраты разностей прогноза и ответа, делим на число пар.
-pub fn calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+pub fn calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
     targets: &[f64],
     predictions: &[f64],
 ) -> Result<f64, &'static str> {

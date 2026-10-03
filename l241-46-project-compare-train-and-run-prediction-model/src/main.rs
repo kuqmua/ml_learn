@@ -19,7 +19,7 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
-use l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count;
+use l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
 
 fn main() {
     const EXAMPLE_DATA: [(f64, f64); 10] = [
@@ -40,14 +40,14 @@ fn main() {
         "для разделения нужны train, validation и test"
     );
     /// Средняя абсолютная ошибка линейной модели: для каждого x считаем weight·x+constant_input_weight, сравниваем с ответом и усредняем модули ошибок.
-    fn calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
+    fn calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets_where_0_means_exact_predictions_and_larger_means_worse(
         data: &[(f64, f64)],
 
         weight: f64,
 
         constant_input_weight: f64,
     ) -> f64 {
-        calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count(
+        calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
             &data.iter().map(|&(_, target)| target).collect::<Vec<_>>(),
             &data
                 .iter()
@@ -83,7 +83,7 @@ fn main() {
     })();
     let validation: &[(f64, f64)] = &EXAMPLE_DATA[6..8];
     let _ =
-        calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
+        calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets_where_0_means_exact_predictions_and_larger_means_worse(
             validation,
             0.,
             calculate_mean_by_summing_values_and_dividing_by_count(
@@ -95,14 +95,14 @@ fn main() {
             .unwrap(),
         );
     let _ =
-        calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
+        calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets_where_0_means_exact_predictions_and_larger_means_worse(
             validation,
             weight,
             constant_input_weight,
         );
     let test: &[(f64, f64)] = &EXAMPLE_DATA[8..];
     let _ =
-        calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets(
+        calculate_linear_model_error_as_average_absolute_difference_between_predictions_and_targets_where_0_means_exact_predictions_and_larger_means_worse(
             test,
             weight,
             constant_input_weight,

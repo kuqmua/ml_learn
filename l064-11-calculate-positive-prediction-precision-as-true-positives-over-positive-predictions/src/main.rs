@@ -11,26 +11,31 @@
 // значение здесь считаем неопределённым.
 
 use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts;
-use l064_11_calculate_positive_prediction_precision_as_true_positives_over_positive_predictions::calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions;
+use l064_11_calculate_positive_prediction_precision_as_true_positives_over_positive_predictions::calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions_where_1_means_no_false_alarms_and_0_means_all_false_alarms;
 
 fn main() {
-    for (_description, true_positives, false_positives, expected) in [
+    for (
+        _description,
+        true_positives_as_correctly_detected_positive_cases,
+        false_positives_as_false_alarms_on_negative_cases,
+        expected,
+    ) in [
         ("все положительные прогнозы верны", 8, 0, Some(1.0)),
         ("часть прогнозов ошибочна", 8, 2, Some(0.8)),
         ("все положительные прогнозы ошибочны", 0, 2, Some(0.0)),
         ("положительных прогнозов нет", 0, 0, None),
     ] {
         let counts: BinaryClassificationCounts = BinaryClassificationCounts {
-            true_positives,
+            true_positives_as_correctly_detected_positive_cases,
 
-            false_positives,
+            false_positives_as_false_alarms_on_negative_cases,
 
-            true_negatives: 0,
+            true_negatives_as_correctly_rejected_negative_cases: 0,
 
-            false_negatives: 0,
+            false_negatives_as_missed_positive_cases: 0,
         };
 
-        assert_eq!(calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions(counts), expected);
+        assert_eq!(calculate_positive_prediction_precision_as_true_positives_divided_by_positive_predictions_where_1_means_no_false_alarms_and_0_means_all_false_alarms(counts), expected);
     }
 
     plot_true_positive_share_among_positive_predictions();

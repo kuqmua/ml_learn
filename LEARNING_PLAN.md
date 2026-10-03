@@ -73,7 +73,7 @@
 ##### Практика: умножение координат, длины векторов и расстояния между точками — `l007-01-practice-multiplying-coordinates-vector-lengths-and-point-distances`
 
 - **Повторить вместе:** умножение координат попарно и сложение результатов, нормы L1/L2, расстояние, косинусное сходство.
-- **Практика:** Реализуй Vec<f64>: multiply_matching_coordinates_then_add_results, vector_length, distance, cos; опиши ошибки длины и нулевого вектора.
+- **Практика:** Реализуй Vec<f64>: multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector, vector_length, distance, cos; опиши ошибки длины и нулевого вектора.
 - **Готово, когда:** Сравни ортогональные, одинаковые и противоположные векторы; проверь симметрию расстояния.
 - **Артефакт:** код пакета, короткий README с входными данными, командой запуска, результатом и тем, что осталось непонятным.
 

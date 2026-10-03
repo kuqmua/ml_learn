@@ -11,7 +11,7 @@
 // участвовавших в обучении.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count;
+use l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
 
 fn main() {
     let training: [(f64, f64); 2] = [(1.0, 3.0), (2.0, 5.0)];
@@ -31,7 +31,7 @@ fn main() {
     let weight: f64 = (training[1].1 - training[0].1) / (training[1].0 - training[0].0);
     let constant_input_weight: f64 = training[0].1 - weight * training[0].0;
 
-    let _: f64 = calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+    let _: f64 = calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
         &test.map(|(_, target)| target),
         &test.map(|(feature, _)| weight * feature + constant_input_weight),
     )

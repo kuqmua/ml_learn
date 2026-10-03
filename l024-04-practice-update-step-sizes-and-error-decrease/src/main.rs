@@ -20,7 +20,9 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    fn calculate_squared_distance_of_parameter_from_three(parameter: f64) -> f64 {
+    fn calculate_squared_distance_of_parameter_from_three_as_loss_where_0_means_parameter_equals_3_and_larger_means_farther(
+        parameter: f64,
+    ) -> f64 {
         (|| -> f64 {
             let value: f64 = parameter - 3.0;
             value * value
@@ -31,24 +33,24 @@ fn main() {
         let history: Vec<f64> = (|| -> Vec<f64> {
             let learning_rate: f64 = learning_rate;
             let mut parameter: f64 = 0.0;
-            let mut history: Vec<f64> = vec![calculate_squared_distance_of_parameter_from_three(
+            let mut history: Vec<f64> = vec![calculate_squared_distance_of_parameter_from_three_as_loss_where_0_means_parameter_equals_3_and_larger_means_farther(
                 parameter,
             )];
             let steps: usize = 30;
             for _ in 0..steps {
-                let rate_of_change: f64 = (|| -> f64 {
+                let loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it: f64 = (|| -> f64 {
                     let parameter: f64 = parameter;
                     2.0 * (parameter - 3.0)
                 })();
                 if (|| -> f64 {
-                    let value: f64 = rate_of_change;
+                    let value: f64 = loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it;
                     if value < 0.0 { -value } else { value }
                 })() < 1e-8
                 {
                     break;
                 }
-                parameter -= learning_rate * rate_of_change;
-                history.push(calculate_squared_distance_of_parameter_from_three(
+                parameter -= learning_rate * loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it;
+                history.push(calculate_squared_distance_of_parameter_from_three_as_loss_where_0_means_parameter_equals_3_and_larger_means_farther(
                     parameter,
                 ));
                 if !parameter.is_finite() {
@@ -73,14 +75,14 @@ fn main() {
             let mut parameter: f64 = 0.0;
             let mut points: Vec<(f64, f64)> = vec![(
                 0.0,
-                (calculate_squared_distance_of_parameter_from_three(parameter) + 1e-12).log10(),
+                (calculate_squared_distance_of_parameter_from_three_as_loss_where_0_means_parameter_equals_3_and_larger_means_farther(parameter) + 1e-12).log10(),
             )];
             for step in 1..=30 {
-                let rate_of_change: f64 = 2.0 * (parameter - 3.0);
-                parameter -= rate * rate_of_change;
+                let loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it: f64 = 2.0 * (parameter - 3.0);
+                parameter -= rate * loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it;
                 points.push((
                     step as f64,
-                    (calculate_squared_distance_of_parameter_from_three(parameter) + 1e-12).log10(),
+                    (calculate_squared_distance_of_parameter_from_three_as_loss_where_0_means_parameter_equals_3_and_larger_means_farther(parameter) + 1e-12).log10(),
                 ));
             }
             points

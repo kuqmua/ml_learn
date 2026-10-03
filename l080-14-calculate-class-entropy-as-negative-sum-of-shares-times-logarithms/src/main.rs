@@ -17,7 +17,7 @@ fn main() {
     ] {
         assert!((0.0..=1.0).contains(&positive_class_share));
         let negative_class_share: f64 = 1.0 - positive_class_share;
-        let mut uncertainty_measure: f64 = 0.0;
+        let mut binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares: f64 = 0.0;
         for probability in [positive_class_share, negative_class_share] {
             if probability > 0.0 {
                 let ratio: f64 = (probability - 1.0) / (probability + 1.0);
@@ -27,15 +27,23 @@ fn main() {
                     logarithm += term / odd_divisor as f64;
                     term *= ratio * ratio;
                 }
-                uncertainty_measure -= probability * (2.0 * logarithm) / std::f64::consts::LN_2;
+                binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares -= probability * (2.0 * logarithm) / std::f64::consts::LN_2;
             }
         }
-        assert!(uncertainty_measure >= -1e-10 && uncertainty_measure <= 1.0 + 1e-10);
+        assert!(binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares >= -1e-10 && binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares <= 1.0 + 1e-10);
         if positive_class_share == 0.0 || positive_class_share == 1.0 {
-            assert!(uncertainty_measure.abs() < 1e-10);
+            assert!(
+                binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares
+                    .abs()
+                    < 1e-10
+            );
         }
         if positive_class_share == 0.5 {
-            assert!((uncertainty_measure - 1.0).abs() < 1e-10);
+            assert!(
+                (binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares
+                    - 1.0)
+                    .abs() < 1e-10
+            );
         }
     }
 

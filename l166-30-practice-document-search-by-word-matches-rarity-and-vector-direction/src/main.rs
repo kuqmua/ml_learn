@@ -48,7 +48,7 @@ fn main() {
                 .iter()
                 .collect::<std::collections::BTreeSet<_>>()
             {
-                let inverse_document_frequency: f64 = (|| -> f64 {
+                let inverse_document_frequency_as_word_rarity_weight_where_larger_means_fewer_documents_contain_word: f64 = (|| -> f64 {
                     let value: f64 = (DOCUMENTS.len() + 1) as f64
                         / (DOCUMENTS
                             .iter()
@@ -98,7 +98,7 @@ fn main() {
                 })() + 1.;
                 relevance_score += *text_unit_counts.get(word).unwrap_or(&0) as f64
                     / document_text_units.len() as f64
-                    * inverse_document_frequency;
+                    * inverse_document_frequency_as_word_rarity_weight_where_larger_means_fewer_documents_contain_word;
             }
             if relevance_score > 0. {
                 ranked_results.push((document_identifier, relevance_score));

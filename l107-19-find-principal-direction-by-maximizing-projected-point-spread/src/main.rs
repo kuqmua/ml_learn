@@ -11,14 +11,14 @@
 // x эта ось совпадает с x.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
 
 fn main() {
     let centered_points: [[f64; 2]; 4] = [[-2.0, 0.0], [-1.0, 0.0], [1.0, 0.0], [2.0, 0.0]];
-    let principal_axis: [f64; 2] = [1.0, 0.0];
+    let unit_direction_preserving_largest_spread: [f64; 2] = [1.0, 0.0];
     for point in centered_points {
-        let _: f64 =
-            multiply_matching_coordinates_then_add_results(&point, &principal_axis).unwrap();
+        let _projection_coordinate_where_0_means_no_component_along_axis_and_sign_shows_axis_direction: f64 =
+            multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&point, &unit_direction_preserving_largest_spread).unwrap();
     }
 
     plot_centered_points_to_show_direction_of_greatest_spread(centered_points);

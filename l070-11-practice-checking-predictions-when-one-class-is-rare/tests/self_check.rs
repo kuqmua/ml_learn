@@ -3,10 +3,9 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let _question: &str =
-        "Вычисли precision, recall и F1 для набора с редким положительным классом.";
+    let _question: &str = "Вычисли correct_positive_prediction_share_where_1_means_no_false_alarms, actual_positive_detection_share_where_1_means_none_missed и F1 для набора с редким положительным классом.";
     let _choices: [&str; 3] = [
-        "Укажи, в каких шагах добавление ложноположительного объекта уменьшает precision.",
+        "Укажи, в каких шагах добавление ложноположительного объекта уменьшает correct_positive_prediction_share_where_1_means_no_false_alarms.",
         "Проверь, что идеальное ранжирование даёт ROC-AUC 1, а обратное — 0.",
         "Сравни их с accuracy модели, всегда выдающей отрицательный класс.",
     ];

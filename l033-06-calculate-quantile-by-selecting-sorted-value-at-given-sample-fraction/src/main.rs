@@ -14,19 +14,24 @@ fn main() {
     let mut values: [i32; 5] = [9, 1, 7, 3, 5];
     assert!(!values.is_empty(), "для квантиля нужна непустая выборка");
     values.sort();
-    for (_description, target_share_below_cutoff, expected) in [
+    for (_description, quantile_fraction_where_0_selects_minimum_and_1_selects_maximum, expected) in [
         ("минимум", 0.0, 1),
         ("середина", 0.5, 5),
         ("три четверти", 0.75, 7),
         ("максимум", 1.0, 9),
     ] {
         assert!(
-            (0.0..=1.0).contains(&target_share_below_cutoff),
+            (0.0..=1.0).contains(&quantile_fraction_where_0_selects_minimum_and_1_selects_maximum),
             "доля должна быть от 0 до 1"
         );
-        let index: usize = ((values.len() - 1) as f64 * target_share_below_cutoff) as usize;
-        let distribution_cutoff_value: i32 = values[index];
-        assert_eq!(distribution_cutoff_value, expected);
+        let index: usize = ((values.len() - 1) as f64
+            * quantile_fraction_where_0_selects_minimum_and_1_selects_maximum)
+            as usize;
+        let quantile_value_at_floored_fraction_of_last_sorted_index: i32 = values[index];
+        assert_eq!(
+            quantile_value_at_floored_fraction_of_last_sorted_index,
+            expected
+        );
     }
 
     plot_quantiles_as_sorted_values_at_each_fraction_of_sample();

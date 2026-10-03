@@ -13,9 +13,12 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let probability_positive: f64 = 0.7;
-    let _: f64 = 1.0 - probability_positive;
-    assert!(probability_positive >= 0.0 && probability_positive <= 1.0);
+    let positive_class_probability_where_0_means_negative_and_1_means_positive: f64 = 0.7;
+    let _: f64 = 1.0 - positive_class_probability_where_0_means_negative_and_1_means_positive;
+    assert!(
+        positive_class_probability_where_0_means_negative_and_1_means_positive >= 0.0
+            && positive_class_probability_where_0_means_negative_and_1_means_positive <= 1.0
+    );
 
     plot_positive_and_negative_class_probabilities();
 }

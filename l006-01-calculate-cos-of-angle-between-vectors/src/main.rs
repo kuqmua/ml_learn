@@ -11,7 +11,7 @@
 // 1 означает одинаковое направление, 0 — перпендикулярность, −1 — противоположное.
 // Промежуточные значения показывают острый или тупой угол. Для нулевого вектора направления нет.
 
-use l006_01_calculate_cos_of_angle_between_vectors::calculate_cos_of_angle_between_vectors;
+use l006_01_calculate_cos_of_angle_between_vectors::calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite;
 
 fn main() {
     let first_vector: [f64; 2] = [1.0, 0.0];
@@ -25,7 +25,7 @@ fn main() {
 
     for (_description, second_vector, expected) in cases {
         assert!(
-            (calculate_cos_of_angle_between_vectors(&first_vector, second_vector).expect(
+            (calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&first_vector, second_vector).expect(
                 "для вычисления cos нужны два ненулевых вектора с одинаковым числом координат"
             ) - expected)
                 .abs()
@@ -37,7 +37,7 @@ fn main() {
         ("нулевой вектор", &[0.0, 0.0][..]),
         ("разное число координат", &[1.0][..]),
     ] {
-        let _: &str = calculate_cos_of_angle_between_vectors(&first_vector, second_vector)
+        let _: &str = calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&first_vector, second_vector)
             .expect_err("ожидалась ошибка для нулевого вектора или разного числа координат");
     }
 
@@ -59,11 +59,13 @@ fn plot_cos_of_angle_between_vectors() {
                 .step_by(5)
                 .map(|plot_step_index| {
                     let angle: f64 = (plot_step_index as f64).to_radians();
+                    let cos_as_horizontal_coordinate_of_unit_direction: f64 = angle.cos();
+                    let sin_as_vertical_coordinate_of_unit_direction: f64 = angle.sin();
                     (
                         plot_step_index as f64,
-                        calculate_cos_of_angle_between_vectors(
+                        calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(
                             &[1.0, 0.0],
-                            &[angle.cos(), angle.sin()],
+                            &[cos_as_horizontal_coordinate_of_unit_direction, sin_as_vertical_coordinate_of_unit_direction],
                         )
                         .unwrap(),
                     )

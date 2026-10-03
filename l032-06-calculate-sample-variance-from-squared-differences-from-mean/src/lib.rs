@@ -4,7 +4,7 @@
 /// Выборочная дисперсия: сумму квадратов отклонений от среднего делим на (число значений − 1).
 use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
 
-pub fn calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one(
+pub fn calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread(
     values: &[f64],
 ) -> Result<f64, &'static str> {
     if values.len() < 2 {

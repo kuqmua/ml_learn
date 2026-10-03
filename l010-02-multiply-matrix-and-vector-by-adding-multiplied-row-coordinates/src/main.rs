@@ -9,7 +9,7 @@
 // Для каждой строки умножаем её значения на координаты вектора и складываем.
 // Нулевой вектор даёт нулевой ответ; число столбцов должно совпадать с длиной вектора.
 
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
 
 fn main() {
     let matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
@@ -20,13 +20,13 @@ fn main() {
         let mut matrix_vector_output: [f64; 2] = [0.0; 2];
         for row in 0..matrix.len() {
             matrix_vector_output[row] =
-                multiply_matching_coordinates_then_add_results(&matrix[row], &vector)
+                multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&matrix[row], &vector)
                     .expect("число столбцов матрицы должно совпадать с числом координат вектора");
         }
         assert_eq!(matrix_vector_output, expected);
     }
     let too_short: [f64; 1] = [5.0];
-    let _: &str = multiply_matching_coordinates_then_add_results(&matrix[0], &too_short)
+    let _: &str = multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&matrix[0], &too_short)
         .expect_err("разные длины нужно отклонить");
 
     plot_matrix_coefficients_used_in_weighted_row_sums(matrix);

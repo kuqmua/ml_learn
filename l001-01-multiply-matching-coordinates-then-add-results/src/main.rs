@@ -13,7 +13,7 @@
 // Нулевой вектор тоже даёт ноль, хотя направления у него нет.
 // Что делает пример: показывает все варианты знака, включая граничные случаи и разную длину.
 
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
 
 fn main() {
     let first_vector: [f64; 2] = [1.0, 2.0];
@@ -28,14 +28,14 @@ fn main() {
 
     for (_description, second_vector, expected) in cases {
         assert_eq!(
-            multiply_matching_coordinates_then_add_results(&first_vector, second_vector)
+            multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&first_vector, second_vector)
                 .expect("ожидались векторы с одинаковым числом координат"),
             expected
         );
     }
 
     let too_short: [f64; 1] = [3.0];
-    let _: &str = multiply_matching_coordinates_then_add_results(&first_vector, &too_short)
+    let _: &str = multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&first_vector, &too_short)
         .expect_err("разная длина должна быть отклонена");
     let _ = &(first_vector);
     plot_sum_after_multiplying_coordinates_for_changing_second_coordinate(&first_vector);
@@ -58,7 +58,7 @@ fn plot_sum_after_multiplying_coordinates_for_changing_second_coordinate(first_v
 
                     (
                         horizontal_value,
-                        multiply_matching_coordinates_then_add_results(
+                        multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(
                             first_vector,
                             &[1.0, horizontal_value],
                         )

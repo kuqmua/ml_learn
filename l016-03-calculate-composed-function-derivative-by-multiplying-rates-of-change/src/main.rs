@@ -18,7 +18,8 @@ fn main() {
     let inner: f64 = 2.0 * input_value + 1.0;
     let outer_derivative: f64 = 2.0 * inner;
     let inner_derivative: f64 = 2.0;
-    let _: f64 = outer_derivative * inner_derivative;
+    let _composed_function_slope_as_output_change_per_original_input_change: f64 =
+        outer_derivative * inner_derivative;
 
     plot_fourth_power_and_its_rate_of_change();
 }

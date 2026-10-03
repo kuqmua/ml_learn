@@ -32,14 +32,15 @@ fn main() {
                     .expect("seed должен быть целым неотрицательным числом")
             })
             .unwrap_or(42);
-        let baseline_accuracy: f64 = SAMPLE_DATA
+        let baseline_correct_prediction_share_where_1_means_all_correct: f64 = SAMPLE_DATA
             .lines()
             .filter(|line| line.ends_with(",1"))
-            .count() as f64
+            .count()
+            as f64
             / SAMPLE_DATA.lines().count() as f64;
         (
             seed.wrapping_mul(6364136223846793005).wrapping_add(1),
-            baseline_accuracy,
+            baseline_correct_prediction_share_where_1_means_all_correct,
         )
     })();
 

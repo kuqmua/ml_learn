@@ -14,21 +14,30 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let rate_of_change: f64 = 2.0;
-    let first_moment: f64 = 0.9 * 0.0 + 0.1 * rate_of_change;
-    let second_moment: f64 = 0.999 * 0.0 + 0.001 * rate_of_change * rate_of_change;
-    let corrected_first: f64 = first_moment / (1.0 - 0.9);
-    let corrected_second: f64 = second_moment / (1.0 - 0.999);
-    let mut root: f64 = corrected_second;
+    let loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it: f64 = 2.0;
+    let moving_average_of_gradient_as_smoothed_update_direction: f64 = 0.9 * 0.0 + 0.1 * loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it;
+    let moving_average_of_squared_gradient_as_update_scale_estimate: f64 = 0.999 * 0.0 + 0.001 * loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it * loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it;
+    let average_gradient_corrected_for_initial_zero_estimate: f64 =
+        moving_average_of_gradient_as_smoothed_update_direction / (1.0 - 0.9);
+    let average_squared_gradient_corrected_for_initial_zero_estimate: f64 =
+        moving_average_of_squared_gradient_as_update_scale_estimate / (1.0 - 0.999);
+    let mut root_mean_squared_gradient_used_to_scale_update: f64 =
+        average_squared_gradient_corrected_for_initial_zero_estimate;
     for _ in 0..80 {
-        root = (root + corrected_second / root) / 2.0;
+        root_mean_squared_gradient_used_to_scale_update =
+            (root_mean_squared_gradient_used_to_scale_update
+                + average_squared_gradient_corrected_for_initial_zero_estimate
+                    / root_mean_squared_gradient_used_to_scale_update)
+                / 2.0;
     }
     let old_weight: f64 = 1.0;
-    let updated: f64 = old_weight - 0.01 * corrected_first / (root + 0.00000001);
+    let updated: f64 = old_weight
+        - 0.01 * average_gradient_corrected_for_initial_zero_estimate
+            / (root_mean_squared_gradient_used_to_scale_update + 0.00000001);
 
     plot_first_weight_update_using_running_gradient_averages(
-        rate_of_change,
-        corrected_first,
+        loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it,
+        average_gradient_corrected_for_initial_zero_estimate,
         old_weight,
         updated,
     );
@@ -36,8 +45,8 @@ fn main() {
 
 // Строим график по результатам урока.
 fn plot_first_weight_update_using_running_gradient_averages(
-    rate_of_change: f64,
-    corrected_first: f64,
+    loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it: f64,
+    average_gradient_corrected_for_initial_zero_estimate: f64,
     old_weight: f64,
     updated: f64,
 ) {
@@ -47,8 +56,8 @@ fn plot_first_weight_update_using_running_gradient_averages(
         "Adam: первый шаг",
         "значение",
         &[
-            ("градиент", rate_of_change),
-            ("первый момент", corrected_first),
+            ("градиент", loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it),
+            ("первый момент", average_gradient_corrected_for_initial_zero_estimate),
             ("вес до", old_weight),
             ("вес после", updated),
         ],

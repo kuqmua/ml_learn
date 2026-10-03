@@ -11,14 +11,15 @@
 
 fn main() {
     let alert_threshold: f64 = 0.2;
-    for (_description, drift_score, expected) in [
+    for (_description, distribution_change_score_where_larger_means_more_change, expected) in [
         ("ниже порога", 0.1, false),
         ("на пороге", 0.2, false),
         ("выше порога", 0.35, true),
     ] {
-        assert!(drift_score >= 0.0);
-        let alert: bool = drift_score > alert_threshold;
-        assert_eq!(alert, expected);
+        assert!(distribution_change_score_where_larger_means_more_change >= 0.0);
+        let distribution_change_exceeds_alert_threshold: bool =
+            distribution_change_score_where_larger_means_more_change > alert_threshold;
+        assert_eq!(distribution_change_exceeds_alert_threshold, expected);
     }
 
     plot_distribution_change_scores_and_alert_threshold(alert_threshold);

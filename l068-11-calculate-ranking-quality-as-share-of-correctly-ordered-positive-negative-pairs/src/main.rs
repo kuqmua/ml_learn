@@ -35,8 +35,8 @@ fn main() {
             }
         }
         let pair_count: f64 = (positive_scores.len() * negative_scores.len()) as f64;
-        let area_under_curve: f64 = ordered_pairs / pair_count;
-        assert_eq!(area_under_curve, expected);
+        let roc_auc_where_1_means_correct_order_0_means_reversed_order_and_half_means_no_pairwise_ranking_advantage: f64 = ordered_pairs / pair_count;
+        assert_eq!(roc_auc_where_1_means_correct_order_0_means_reversed_order_and_half_means_no_pairwise_ranking_advantage, expected);
     }
 
     plot_detected_positive_share_against_false_positive_share();

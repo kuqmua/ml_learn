@@ -10,13 +10,13 @@
 
 // Оценка модели до преобразования в вероятность — обычное число, которое затем переводят в диапазон от 0 до 1.
 /// Перекрёстная энтропия: получаем вероятности через softmax, выбираем правильный токен и берём −ln(p).
-use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
+use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares;
 
-fn calculate_next_token_loss_as_negative_log_of_target_probability_from_exponentiated_scores(
+fn calculate_next_token_loss_as_negative_log_of_target_probability_from_exponentiated_scores_where_closer_to_0_means_more_probability_on_correct_token(
     raw_model_scores: &[f64],
     target: usize,
 ) -> f64 {
-    -calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+    -calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
         raw_model_scores,
     )[target]
         .ln()
@@ -28,23 +28,30 @@ fn main() {
         [0.1, 0.2, 2.0, 0.0],
         [0.0, 0.1, 0.2, 2.0],
     ];
-    let losses: [f64; 3] = std::array::from_fn(|plot_step_index| {
-        calculate_next_token_loss_as_negative_log_of_target_probability_from_exponentiated_scores(
+    let negative_log_correct_token_probabilities_where_closer_to_0_means_better: [f64; 3] =
+        std::array::from_fn(|plot_step_index| {
+            calculate_next_token_loss_as_negative_log_of_target_probability_from_exponentiated_scores_where_closer_to_0_means_more_probability_on_correct_token(
             &raw_model_scores[plot_step_index],
             text_unit_identifiers[plot_step_index + 1],
         )
-    });
-    let average: f64 = losses.iter().sum::<f64>() / losses.len() as f64;
+        });
+    let mean_negative_log_correct_token_probability_where_closer_to_0_means_better: f64 =
+        negative_log_correct_token_probabilities_where_closer_to_0_means_better
+            .iter()
+            .sum::<f64>()
+            / negative_log_correct_token_probabilities_where_closer_to_0_means_better.len() as f64;
 
-    assert!(average < calculate_next_token_loss_as_negative_log_of_target_probability_from_exponentiated_scores(
+    assert!(mean_negative_log_correct_token_probability_where_closer_to_0_means_better < calculate_next_token_loss_as_negative_log_of_target_probability_from_exponentiated_scores_where_closer_to_0_means_more_probability_on_correct_token(
             &[2.0, 0.2, 0.1, 0.0],
             text_unit_identifiers[1],
         ));
 
-    plot_next_token_loss_as_negative_log_correct_text_unit_probability_by_position(&losses);
+    plot_next_token_loss_as_negative_log_correct_text_unit_probability_by_position(
+        &negative_log_correct_token_probabilities_where_closer_to_0_means_better,
+    );
 }
 fn plot_next_token_loss_as_negative_log_correct_text_unit_probability_by_position(
-    losses: &[f64; 3],
+    negative_log_correct_token_probabilities_where_closer_to_0_means_better: &[f64; 3],
 ) {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
@@ -54,7 +61,7 @@ fn plot_next_token_loss_as_negative_log_correct_text_unit_probability_by_positio
         "cross entropy",
         &[lesson_visualization::Series {
             name: "loss",
-            points: &losses
+            points: &negative_log_correct_token_probabilities_where_closer_to_0_means_better
                 .iter()
                 .enumerate()
                 .map(|(item_index, &loss)| (item_index as f64, loss))

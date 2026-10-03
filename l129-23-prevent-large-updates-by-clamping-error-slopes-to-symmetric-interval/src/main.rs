@@ -11,21 +11,25 @@
 fn main() {
     let limit: f64 = 1.0;
     assert!(limit > 0.0);
-    for (_description, rate_of_change, expected) in [
+    for (
+        _description,
+        loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it,
+        expected,
+    ) in [
         ("слишком большой положительный", 12.0, 1.0),
         ("положительный внутри интервала", 0.5, 0.5),
         ("нулевой", 0.0, 0.0),
         ("отрицательный внутри интервала", -0.5, -0.5),
         ("слишком большой отрицательный", -12.0, -1.0),
     ] {
-        let clipped: f64 = if rate_of_change > limit {
+        let gradient_with_magnitude_limited_and_sign_preserved: f64 = if loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it > limit {
             limit
-        } else if rate_of_change < -limit {
+        } else if loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it < -limit {
             -limit
         } else {
-            rate_of_change
+            loss_slope_where_positive_calls_for_decreasing_parameter_and_negative_calls_for_increasing_it
         };
-        assert_eq!(clipped, expected);
+        assert_eq!(gradient_with_magnitude_limited_and_sign_preserved, expected);
     }
 
     plot_rate_of_change_clamped_to_symmetric_interval();

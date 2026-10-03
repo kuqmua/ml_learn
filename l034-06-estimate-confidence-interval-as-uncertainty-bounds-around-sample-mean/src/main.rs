@@ -13,33 +13,65 @@
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
-use l032_06_calculate_sample_variance_from_squared_differences_from_mean::calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one;
+use l032_06_calculate_sample_variance_from_squared_differences_from_mean::calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread;
 
 fn main() {
     let values: [f64; 4] = [2.0, 4.0, 6.0, 8.0];
     let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(&values).unwrap();
 
-    let standard_error_squared: f64 =
-        calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one(
+    let estimated_variance_of_sample_mean: f64 =
+        calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread(
             &values,
         )
         .unwrap()
             / values.len() as f64;
-    let mut standard_error: f64 = standard_error_squared;
+    let mut estimated_standard_deviation_of_sample_mean: f64 = estimated_variance_of_sample_mean;
     for _ in 0..80 {
-        standard_error = (standard_error + standard_error_squared / standard_error) / 2.0;
+        estimated_standard_deviation_of_sample_mean = (estimated_standard_deviation_of_sample_mean
+            + estimated_variance_of_sample_mean / estimated_standard_deviation_of_sample_mean)
+            / 2.0;
     }
-    let margin: f64 = 1.96 * standard_error;
-    let _ = (&(mean - margin), &(mean + margin));
+    let approximate_95_percent_confidence_interval_half_width: f64 =
+        1.96 * estimated_standard_deviation_of_sample_mean;
+    let _ = (
+        &(mean - approximate_95_percent_confidence_interval_half_width),
+        &(mean + approximate_95_percent_confidence_interval_half_width),
+    );
 
-    plot_observations_mean_and_uncertainty_bounds(values, mean, margin);
+    plot_observations_mean_and_uncertainty_bounds(
+        values,
+        mean,
+        approximate_95_percent_confidence_interval_half_width,
+    );
 }
 
 // Строим график по результатам урока.
-fn plot_observations_mean_and_uncertainty_bounds(values: [f64; 4], mean: f64, margin: f64) {
+fn plot_observations_mean_and_uncertainty_bounds(
+    values: [f64; 4],
+    mean: f64,
+    approximate_95_percent_confidence_interval_half_width: f64,
+) {
     let mean_line: [(f64, f64); 2] = [(1.0, mean), (values.len() as f64, mean)];
-    let lower: [(f64, f64); 2] = [(1.0, mean - margin), (values.len() as f64, mean - margin)];
-    let upper: [(f64, f64); 2] = [(1.0, mean + margin), (values.len() as f64, mean + margin)];
+    let lower: [(f64, f64); 2] = [
+        (
+            1.0,
+            mean - approximate_95_percent_confidence_interval_half_width,
+        ),
+        (
+            values.len() as f64,
+            mean - approximate_95_percent_confidence_interval_half_width,
+        ),
+    ];
+    let upper: [(f64, f64); 2] = [
+        (
+            1.0,
+            mean + approximate_95_percent_confidence_interval_half_width,
+        ),
+        (
+            values.len() as f64,
+            mean + approximate_95_percent_confidence_interval_half_width,
+        ),
+    ];
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

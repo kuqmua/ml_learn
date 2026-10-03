@@ -6,7 +6,7 @@
 // Представь: Четыре головы Q могут обращаться к меньшему числу общих наборов K/V, экономя хранение.
 // Несколько Q-голов совместно используют меньшее число K/V-голов.
 
-use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
+use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares;
 
 fn main() {
     let queries: [[f64; 2]; 4] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [-1.0, 1.0]];
@@ -16,7 +16,7 @@ fn main() {
         let query = queries[head];
         let group: usize = head / 2;
         let weights: [f64; 2] =
-            calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+            calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
                 &std::array::from_fn::<f64, 2, _>(|index| {
                     let key_vector = keys[group][index];
                     query[0] * key_vector[0] + query[1] * key_vector[1]

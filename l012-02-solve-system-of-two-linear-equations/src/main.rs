@@ -29,15 +29,16 @@ fn main() {
         [first_right_hand_side, second_right_hand_side],
     ) in cases
     {
-        let determinant: f64 = first_row_first_coefficient * second_row_second_coefficient
-            - first_row_second_coefficient * second_row_first_coefficient;
-        if determinant != 0.0 {
+        let determinant_where_nonzero_means_unique_solution_and_0_means_no_unique_solution: f64 =
+            first_row_first_coefficient * second_row_second_coefficient
+                - first_row_second_coefficient * second_row_first_coefficient;
+        if determinant_where_nonzero_means_unique_solution_and_0_means_no_unique_solution != 0.0 {
             let _: f64 = (first_right_hand_side * second_row_second_coefficient
                 - first_row_second_coefficient * second_right_hand_side)
-                / determinant;
+                / determinant_where_nonzero_means_unique_solution_and_0_means_no_unique_solution;
             let _: f64 = (first_row_first_coefficient * second_right_hand_side
                 - first_right_hand_side * second_row_first_coefficient)
-                / determinant;
+                / determinant_where_nonzero_means_unique_solution_and_0_means_no_unique_solution;
         } else {
             let first_replaced: f64 = first_right_hand_side * second_row_second_coefficient
                 - first_row_second_coefficient * second_right_hand_side;

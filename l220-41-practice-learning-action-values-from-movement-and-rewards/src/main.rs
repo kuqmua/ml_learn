@@ -63,10 +63,10 @@ fn main() {
                             action_values[next_state][1]
                         };
                     let learning_rate: f64 = 0.2;
-                    let discount_factor: f64 = 0.95;
+                    let future_reward_weight_where_0_ignores_future_and_1_keeps_full_future_value: f64 = 0.95;
                     current_value
                         + learning_rate
-                            * (reward + discount_factor * best_future_value - current_value)
+                            * (reward + future_reward_weight_where_0_ignores_future_and_1_keeps_full_future_value * best_future_value - current_value)
                 })();
                 current_state = next_state;
                 if current_state == 4 {

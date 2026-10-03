@@ -1,8 +1,8 @@
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
-use l002_01_calculate_sum_of_absolute_vector_coordinates::calculate_sum_of_absolute_vector_coordinates;
-use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates;
-use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences;
-use l006_01_calculate_cos_of_angle_between_vectors::calculate_cos_of_angle_between_vectors;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
+use l002_01_calculate_sum_of_absolute_vector_coordinates::calculate_sum_of_absolute_vector_coordinates_as_total_axis_aligned_length_where_0_means_zero_vector;
+use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer;
+use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther;
+use l006_01_calculate_cos_of_angle_between_vectors::calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite;
 
 #[test]
 #[ignore = "подбери второй вектор и запусти тест с --ignored"]
@@ -15,7 +15,7 @@ fn combine_vector_properties() {
     let expected_distance: f64 = expected_distance.expect("заполни ответ перед запуском теста");
 
     assert_eq!(
-        multiply_matching_coordinates_then_add_results(&first_vector, &perpendicular_vector),
+        multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&first_vector, &perpendicular_vector),
         Ok(0.0)
     );
     assert!(
@@ -24,15 +24,15 @@ fn combine_vector_properties() {
             .any(|&coordinate| coordinate != 0.0)
     );
     assert_eq!(
-        calculate_sum_of_absolute_vector_coordinates(&first_vector),
+        calculate_sum_of_absolute_vector_coordinates_as_total_axis_aligned_length_where_0_means_zero_vector(&first_vector),
         7.0
     );
     assert_eq!(
-        calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&first_vector),
+        calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer(&first_vector),
         5.0
     );
     assert!(
-        (calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+        (calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
             &first_vector,
             &perpendicular_vector
         )
@@ -42,7 +42,7 @@ fn combine_vector_properties() {
             < 1e-10
     );
     assert_eq!(
-        calculate_cos_of_angle_between_vectors(&first_vector, &perpendicular_vector),
+        calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&first_vector, &perpendicular_vector),
         Ok(0.0)
     );
 }

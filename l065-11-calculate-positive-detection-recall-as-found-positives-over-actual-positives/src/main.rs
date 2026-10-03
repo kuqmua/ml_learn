@@ -11,27 +11,32 @@
 // значение здесь считаем неопределённым.
 
 use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts;
-use l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives;
+use l065_11_calculate_positive_detection_recall_as_found_positives_over_actual_positives::calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives_where_1_means_all_found_and_0_means_all_missed;
 
 fn main() {
-    for (_description, true_positives, false_negatives, expected) in [
+    for (
+        _description,
+        true_positives_as_correctly_detected_positive_cases,
+        false_negatives_as_missed_positive_cases,
+        expected,
+    ) in [
         ("найдены все", 8, 0, Some(1.0)),
         ("найдены не все", 8, 4, Some(2.0 / 3.0)),
         ("не найден ни один", 0, 4, Some(0.0)),
         ("положительных объектов нет", 0, 0, None),
     ] {
         let counts: BinaryClassificationCounts = BinaryClassificationCounts {
-            true_positives,
+            true_positives_as_correctly_detected_positive_cases,
 
-            false_positives: 0,
+            false_positives_as_false_alarms_on_negative_cases: 0,
 
-            true_negatives: 0,
+            true_negatives_as_correctly_rejected_negative_cases: 0,
 
-            false_negatives,
+            false_negatives_as_missed_positive_cases,
         };
 
         assert_eq!(
-            calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives(
+            calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives_where_1_means_all_found_and_0_means_all_missed(
                 counts,
             ),
             expected

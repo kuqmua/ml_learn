@@ -9,7 +9,7 @@
 // Общая функция использует среднее из урока 06.1. При одинаковых значениях разброс равен нулю;
 // для выборочной оценки нужны хотя бы два значения.
 
-use l032_06_calculate_sample_variance_from_squared_differences_from_mean::calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one;
+use l032_06_calculate_sample_variance_from_squared_differences_from_mean::calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread;
 
 fn main() {
     let cases: [(&str, &[f64], f64); 3] = [
@@ -18,11 +18,11 @@ fn main() {
         ("значения раздвинули", &[0.0, 4.0, 8.0], 16.0),
     ];
     for (_description, values, expected) in cases {
-        assert_eq!(calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one(values)
+        assert_eq!(calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread(values)
                 .expect("для выборочной дисперсии нужны хотя бы два значения"), expected);
     }
     let _: &str =
-        calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one(&[
+        calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread(&[
             4.0,
         ])
         .expect_err("одного значения недостаточно");

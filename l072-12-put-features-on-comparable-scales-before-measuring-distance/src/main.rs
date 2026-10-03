@@ -11,7 +11,7 @@
 // координаты перед сравнением соседей.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences;
+use l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther;
 
 fn main() {
     let scale: [f64; 2] = [1.0, 1000.0];
@@ -27,12 +27,12 @@ fn main() {
         [second_example[0] / scale[0], second_example[1] / scale[1]];
 
     plot_squared_distances_before_and_after_feature_scaling(
-        calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+        calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
             &first_example,
             &second_example,
         )
         .unwrap(),
-        calculate_squared_point_distance_by_summing_squared_coordinate_differences(
+        calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
             &scaled_first_example,
             &scaled_second_example,
         )

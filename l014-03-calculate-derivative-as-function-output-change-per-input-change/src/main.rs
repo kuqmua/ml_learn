@@ -15,7 +15,7 @@
 
 fn main() {
     let input_value: f64 = 3.0;
-    let _: f64 = 2.0 * input_value;
+    let _derivative_as_local_output_change_per_input_change_where_sign_shows_increase_or_decrease: f64 = 2.0 * input_value;
 
     plot_squared_input_and_tangent_line();
 }

@@ -18,33 +18,50 @@ fn main() {
         ("неверный уверенный прогноз", 1.0, 0.1),
         ("отрицательный класс предсказан верно", 0.0, 0.1),
     ];
-    let mut losses: [f64; 4] = [0.0; 4];
+    let mut negative_log_correct_class_probabilities_where_closer_to_0_means_better: [f64; 4] =
+        [0.0; 4];
     for (index, (_description, target, probability)) in cases.into_iter().enumerate() {
         assert!(target == 0.0 || target == 1.0);
         assert!(probability > 0.0 && probability < 1.0);
-        let chosen_probability: f64 = if target == 1.0 {
+        let probability_assigned_to_correct_class: f64 = if target == 1.0 {
             probability
         } else {
             1.0 - probability
         };
-        let ratio: f64 = (chosen_probability - 1.0) / (chosen_probability + 1.0);
+        let ratio: f64 = (probability_assigned_to_correct_class - 1.0)
+            / (probability_assigned_to_correct_class + 1.0);
         let mut term: f64 = ratio;
         let mut logarithm: f64 = 0.0;
         for odd_divisor in (1..=99).step_by(2) {
             logarithm += term / odd_divisor as f64;
             term *= ratio * ratio;
         }
-        losses[index] = -2.0 * logarithm;
-        let _ = &(losses[index]);
+        negative_log_correct_class_probabilities_where_closer_to_0_means_better[index] =
+            -2.0 * logarithm;
+        let _ = &(negative_log_correct_class_probabilities_where_closer_to_0_means_better[index]);
     }
 
-    plot_classification_loss_as_negative_log_probability_for_each_correct_class(losses);
+    plot_classification_loss_as_negative_log_probability_for_each_correct_class(
+        negative_log_correct_class_probabilities_where_closer_to_0_means_better,
+    );
 }
 
 // Строим график по результатам урока.
-fn plot_classification_loss_as_negative_log_probability_for_each_correct_class(losses: [f64; 4]) {
-    assert!(losses[0] < losses[1] && losses[1] < losses[2]);
-    assert!((losses[0] - losses[3]).abs() < 1e-10);
+fn plot_classification_loss_as_negative_log_probability_for_each_correct_class(
+    negative_log_correct_class_probabilities_where_closer_to_0_means_better: [f64; 4],
+) {
+    assert!(
+        negative_log_correct_class_probabilities_where_closer_to_0_means_better[0]
+            < negative_log_correct_class_probabilities_where_closer_to_0_means_better[1]
+            && negative_log_correct_class_probabilities_where_closer_to_0_means_better[1]
+                < negative_log_correct_class_probabilities_where_closer_to_0_means_better[2]
+    );
+    assert!(
+        (negative_log_correct_class_probabilities_where_closer_to_0_means_better[0]
+            - negative_log_correct_class_probabilities_where_closer_to_0_means_better[3])
+            .abs()
+            < 1e-10
+    );
 
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),

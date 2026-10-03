@@ -3,7 +3,7 @@
 /// Умножаем соответствующие координаты и складываем результаты.
 /// Скалярное произведение: умножаем соответствующие координаты двух векторов и складываем произведения.
 
-pub fn multiply_matching_coordinates_then_add_results(
+pub fn multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(
     first_vector: &[f64],
     second_vector: &[f64],
 ) -> Result<f64, &'static str> {
@@ -27,11 +27,11 @@ mod tests {
     // Определяем вычисление `handles_perpendicular_and_mismatched_vectors` для этого примера.
     fn handles_perpendicular_and_mismatched_vectors() {
         assert_eq!(
-            super::multiply_matching_coordinates_then_add_results(&[1.0, 2.0], &[-2.0, 1.0]),
+            super::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&[1.0, 2.0], &[-2.0, 1.0]),
             Ok(0.0)
         );
         assert!(
-            super::multiply_matching_coordinates_then_add_results(&[1.0], &[1.0, 2.0]).is_err()
+            super::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&[1.0], &[1.0, 2.0]).is_err()
         );
     }
 }

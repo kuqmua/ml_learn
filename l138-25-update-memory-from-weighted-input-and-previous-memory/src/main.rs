@@ -8,13 +8,13 @@
 //   сохраняется.
 // Состояние переносит информацию от предыдущих элементов последовательности.
 
-use l138_25_update_memory_from_weighted_input_and_previous_memory::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state;
+use l138_25_update_memory_from_weighted_input_and_previous_memory::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1;
 
 fn main() {
     let input: [f64; 4] = [1.0, 0.0, 0.0, 0.0];
     plot_state_after_each_weighted_input_and_memory_update(
         &std::convert::TryInto::<[f64; 4]>::try_into(
-            calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
+            calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1(
                 &input, 0.8, 0.7,
             ),
         )
@@ -33,7 +33,14 @@ fn plot_state_after_each_weighted_input_and_memory_update(states: &[f64; 4]) {
             points: &states
                 .iter()
                 .enumerate()
-                .map(|(item_index, &hidden_state)| (item_index as f64, hidden_state))
+                .map(
+                    |(item_index, &memory_state_bounded_between_minus_1_and_1)| {
+                        (
+                            item_index as f64,
+                            memory_state_bounded_between_minus_1_and_1,
+                        )
+                    },
+                )
                 .collect::<Vec<_>>(),
         }],
     )

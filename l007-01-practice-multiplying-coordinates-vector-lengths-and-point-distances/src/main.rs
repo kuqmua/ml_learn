@@ -10,20 +10,20 @@
 // Здесь соединяем вычисления из уроков 01.1–01.5. Их реализации находятся в общей
 // библиотеках предыдущих уроков: позже те же функции применяются в матрицах, kNN и поиске.
 
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results;
-use l002_01_calculate_sum_of_absolute_vector_coordinates::calculate_sum_of_absolute_vector_coordinates;
-use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates;
-use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences;
-use l006_01_calculate_cos_of_angle_between_vectors::calculate_cos_of_angle_between_vectors;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
+use l002_01_calculate_sum_of_absolute_vector_coordinates::calculate_sum_of_absolute_vector_coordinates_as_total_axis_aligned_length_where_0_means_zero_vector;
+use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer;
+use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther;
+use l006_01_calculate_cos_of_angle_between_vectors::calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite;
 
 fn main() {
     let first_vector: [f64; 2] = [3.0, 4.0];
     assert_eq!(
-        calculate_sum_of_absolute_vector_coordinates(&first_vector),
+        calculate_sum_of_absolute_vector_coordinates_as_total_axis_aligned_length_where_0_means_zero_vector(&first_vector),
         7.0
     );
     assert_eq!(
-        calculate_vector_length_as_square_root_of_sum_of_squared_coordinates(&first_vector),
+        calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer(&first_vector),
         5.0
     );
 
@@ -33,26 +33,32 @@ fn main() {
         ("противоположный", &[-3.0, -4.0], -25.0, Some(-1.0)),
         ("нулевой без направления", &[0.0, 0.0], 0.0, None),
     ];
-    for (_description, second_vector, expected_sum, expected_cos) in cases {
-        let cos: Option<f64> =
-            calculate_cos_of_angle_between_vectors(&first_vector, second_vector).ok();
+    for (
+        _description,
+        second_vector,
+        expected_sum,
+        expected_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite,
+    ) in cases
+    {
+        let direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite: Option<f64> =
+            calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&first_vector, second_vector).ok();
         assert_eq!(
-            multiply_matching_coordinates_then_add_results(&first_vector, second_vector)
+            multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&first_vector, second_vector)
                 .expect("ожидались векторы с одинаковым числом координат"),
             expected_sum
         );
-        if let (Some(actual), Some(expected)) = (cos, expected_cos) {
+        if let (Some(actual), Some(expected)) = (direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite, expected_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite) {
             assert!((actual - expected).abs() < 1e-10);
         } else {
-            assert_eq!(cos, expected_cos);
+            assert_eq!(direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite, expected_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite);
         }
         assert!(
-            (calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+            (calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
                 &first_vector,
                 second_vector,
             )
             .unwrap()
-                - calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+                - calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
                     second_vector,
                     &first_vector,
                 )
@@ -62,7 +68,7 @@ fn main() {
     }
 
     let too_short: [f64; 1] = [1.0];
-    let _: &str = multiply_matching_coordinates_then_add_results(&first_vector, &too_short)
+    let _: &str = multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&first_vector, &too_short)
         .expect_err("векторы разной длины нужно отклонить");
 
     plot_l1_and_euclidean_lengths_as_absolute_sum_and_square_root_of_squared_sum();

@@ -19,13 +19,13 @@
 
 fn main() {
     let mut results: Vec<(f64, f64)> = Vec::new();
-    for momentum in [0., 0.8] {
+    for past_update_share_kept_in_next_step in [0., 0.8] {
         let (loss, _epoch): (f64, usize) = (|| -> (f64, usize) {
-            let momentum: f64 = momentum;
+            let past_update_share_kept_in_next_step: f64 = past_update_share_kept_in_next_step;
             let (mut weight, mut velocity): (f64, f64) = (8., 0.);
             let (mut best, mut best_epoch): (f64, usize) = (f64::INFINITY, 0);
             for epoch in 0..100 {
-                velocity = momentum * velocity
+                velocity = past_update_share_kept_in_next_step * velocity
                     + (|| -> f64 {
                         let value: f64 = (|| -> f64 {
                             let weight: f64 = weight;
@@ -57,7 +57,7 @@ fn main() {
             (best, best_epoch)
         })();
 
-        results.push((momentum, loss));
+        results.push((past_update_share_kept_in_next_step, loss));
     }
 
     plot_best_validation_error_during_training(results);
@@ -70,7 +70,10 @@ fn plot_best_validation_error_during_training(results: std::vec::Vec<(f64, f64)>
         "lesson-chart",
         "Momentum и лучшая validation error",
         "ошибка",
-        &[("без momentum", results[0].1), ("с momentum", results[1].1)],
+        &[
+            ("без past_update_share_kept_in_next_step", results[0].1),
+            ("с past_update_share_kept_in_next_step", results[1].1),
+        ],
     )
     .expect("не удалось сохранить график");
 }

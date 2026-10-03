@@ -14,25 +14,28 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let prior_positive: f64 = 0.5;
+    let positive_class_probability_before_observing_words: f64 = 0.5;
     let word_one_given_positive: f64 = 0.8;
     let word_two_given_positive: f64 = 0.6;
-    let joint_score: f64 = prior_positive * word_one_given_positive * word_two_given_positive;
+    let unnormalized_class_and_word_probability_where_larger_means_more_support_for_class: f64 =
+        positive_class_probability_before_observing_words
+            * word_one_given_positive
+            * word_two_given_positive;
 
     plot_result_after_multiplying_feature_probabilities_within_class(
-        prior_positive,
+        positive_class_probability_before_observing_words,
         word_one_given_positive,
         word_two_given_positive,
-        joint_score,
+        unnormalized_class_and_word_probability_where_larger_means_more_support_for_class,
     );
 }
 
 // Строим график по результатам урока.
 fn plot_result_after_multiplying_feature_probabilities_within_class(
-    prior_positive: f64,
+    positive_class_probability_before_observing_words: f64,
     word_one_given_positive: f64,
     word_two_given_positive: f64,
-    joint_score: f64,
+    unnormalized_class_and_word_probability_where_larger_means_more_support_for_class: f64,
 ) {
     lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
@@ -40,10 +43,13 @@ fn plot_result_after_multiplying_feature_probabilities_within_class(
         "Условно независимые признаки",
         "вероятность",
         &[
-            ("prior", prior_positive),
+            ("prior", positive_class_probability_before_observing_words),
             ("слово 1", word_one_given_positive),
             ("слово 2", word_two_given_positive),
-            ("совместно", joint_score),
+            (
+                "совместно",
+                unnormalized_class_and_word_probability_where_larger_means_more_support_for_class,
+            ),
         ],
     )
     .expect("не удалось сохранить график");

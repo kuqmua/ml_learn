@@ -9,7 +9,7 @@
 // Что изучаем: разности по каждой координате возводим в квадрат, складываем и извлекаем корень.
 // Для совпадающих точек ответ 0. Порядок точек не влияет на расстояние.
 
-use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences;
+use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther;
 
 fn main() {
     let cases: [(&str, &[f64; 2], &[f64; 2], f64); 3] = [
@@ -18,7 +18,7 @@ fn main() {
         ("точки совпадают", &[3.0, 4.0], &[3.0, 4.0], 0.0),
     ];
     for (_description, first_point, second_point, expected) in cases {
-        assert!((calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+        assert!((calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
                 first_point,
                 second_point,
             )
@@ -43,7 +43,7 @@ fn plot_distance_from_origin_for_changing_first_coordinate() {
                     let horizontal_value: f64 = plot_step_index as f64 / 10.0;
                     (
                 horizontal_value,
-                calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences(
+                calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
                     &[0.0, 0.0],
                     &[horizontal_value, 4.0],
                 )

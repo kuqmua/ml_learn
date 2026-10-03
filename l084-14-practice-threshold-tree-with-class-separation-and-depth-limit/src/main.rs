@@ -31,7 +31,7 @@ fn main() {
     }
 
     /// Нечистота Джини для двух классов: 2·p·(1−p), где p — доля положительных меток.
-    fn calculate_class_mixing_as_twice_positive_share_times_negative_share(
+    fn calculate_binary_class_mixing_as_twice_positive_share_times_negative_share_where_0_means_one_class_and_half_means_equal_class_shares(
         data: &[(f64, bool)],
     ) -> f64 {
         if data.is_empty() {
@@ -68,17 +68,17 @@ fn main() {
                 .copied()
                 .filter(|sample| sample.0 >= candidate_threshold)
                 .collect();
-            let score: f64 = (samples_below_threshold.len() as f64
-                * calculate_class_mixing_as_twice_positive_share_times_negative_share(
+            let weighted_binary_class_mixing_where_0_means_pure_groups_and_smaller_means_better_split: f64 = (samples_below_threshold.len() as f64
+                * calculate_binary_class_mixing_as_twice_positive_share_times_negative_share_where_0_means_one_class_and_half_means_equal_class_shares(
                     &samples_below_threshold,
                 )
                 + samples_at_or_above_threshold.len() as f64
-                    * calculate_class_mixing_as_twice_positive_share_times_negative_share(
+                    * calculate_binary_class_mixing_as_twice_positive_share_times_negative_share_where_0_means_one_class_and_half_means_equal_class_shares(
                         &samples_at_or_above_threshold,
                     ))
                 / data.len() as f64;
-            if best_split.is_none_or(|(previous_score, _)| score < previous_score) {
-                best_split = Some((score, candidate_threshold));
+            if best_split.is_none_or(|(previous_score, _)| weighted_binary_class_mixing_where_0_means_pure_groups_and_smaller_means_better_split < previous_score) {
+                best_split = Some((weighted_binary_class_mixing_where_0_means_pure_groups_and_smaller_means_better_split, candidate_threshold));
             }
         }
         if let Some((_, threshold)) = best_split {

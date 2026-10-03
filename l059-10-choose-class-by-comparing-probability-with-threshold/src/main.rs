@@ -15,8 +15,9 @@
 
 fn main() {
     let probabilities: [f64; 3] = [0.2, 0.55, 0.8];
-    for threshold in [0.5, 0.7] {
-        let _: [bool; 3] = probabilities.map(|probability| probability >= threshold);
+    for minimum_probability_required_for_positive_prediction in [0.5, 0.7] {
+        let _: [bool; 3] = probabilities
+            .map(|probability| probability >= minimum_probability_required_for_positive_prediction);
     }
 
     plot_number_of_positive_predictions_for_changing_threshold();

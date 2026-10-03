@@ -16,18 +16,21 @@ fn main() {
         ("первая ось ничего не сохраняет", [0.0, 4.0], Some(0.0)),
         ("изменчивости нет", [0.0, 0.0], None),
     ];
-    for (_description, eigenvalues, expected) in cases {
+    for (_description, variances_along_principal_axes, expected) in cases {
         assert!(
-            eigenvalues.iter().all(|&value| value >= 0.0),
+            variances_along_principal_axes
+                .iter()
+                .all(|&value| value >= 0.0),
             "дисперсия не может быть отрицательной"
         );
-        let total_variance: f64 = eigenvalues[0] + eigenvalues[1];
-        let variance_share_explained_by_first_axis: Option<f64> = if total_variance == 0.0 {
+        let total_variance: f64 =
+            variances_along_principal_axes[0] + variances_along_principal_axes[1];
+        let variance_share_explained_by_first_axis_where_0_means_none_and_1_means_all_spread_preserved: Option<f64> = if total_variance == 0.0 {
             None
         } else {
-            Some(eigenvalues[0] / total_variance)
+            Some(variances_along_principal_axes[0] / total_variance)
         };
-        assert_eq!(variance_share_explained_by_first_axis, expected);
+        assert_eq!(variance_share_explained_by_first_axis_where_0_means_none_and_1_means_all_spread_preserved, expected);
     }
 
     plot_first_direction_share_for_changing_variance();
@@ -46,8 +49,12 @@ fn plot_first_direction_share_for_changing_variance() {
 
             points: &(0..=50)
                 .map(|plot_step_index| {
-                    let loss_value: f64 = plot_step_index as f64 / 10.0;
-                    (loss_value, loss_value / (loss_value + 1.0))
+                    let variance_along_first_principal_axis: f64 = plot_step_index as f64 / 10.0;
+                    (
+                        variance_along_first_principal_axis,
+                        variance_along_first_principal_axis
+                            / (variance_along_first_principal_axis + 1.0),
+                    )
                 })
                 .collect::<Vec<_>>(),
         }],

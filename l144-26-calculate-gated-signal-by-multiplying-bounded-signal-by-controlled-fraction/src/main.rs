@@ -8,32 +8,32 @@
 
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
 
-fn calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(
+fn calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
     value: f64,
 ) -> f64 {
     1.0 / (1.0 + (-value).exp())
 }
 /// Управляемая активация WaveNet: tanh(filter)·sigmoid(gate).
-fn calculate_gated_signal_as_tanh_of_filter_times_one_over_one_plus_e_to_negative_gate(
+fn calculate_gated_signal_as_tanh_bounded_between_minus_1_and_1_times_sigmoid_share_where_0_blocks_and_1_passes_signal(
     filter: f64,
-    gate: f64,
+    raw_gate_score_where_0_passes_half_and_larger_values_pass_more: f64,
 ) -> f64 {
-    filter.tanh()
-        * calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(gate)
+    calculate_tanh_as_signed_signal_where_0_means_no_signal_and_large_inputs_approach_1_or_minus_1(filter)
+        * calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(raw_gate_score_where_0_passes_half_and_larger_values_pass_more)
 }
 fn main() {
     let filter: f64 = 1.5;
 
-    let closed: f64 =
-        calculate_gated_signal_as_tanh_of_filter_times_one_over_one_plus_e_to_negative_gate(
+    let signal_with_gate_almost_closed: f64 =
+        calculate_gated_signal_as_tanh_bounded_between_minus_1_and_1_times_sigmoid_share_where_0_blocks_and_1_passes_signal(
             filter, -5.0,
         );
     assert!(
-        calculate_gated_signal_as_tanh_of_filter_times_one_over_one_plus_e_to_negative_gate(
+        calculate_gated_signal_as_tanh_bounded_between_minus_1_and_1_times_sigmoid_share_where_0_blocks_and_1_passes_signal(
             filter, 5.0,
-        ) > closed
+        ) > signal_with_gate_almost_closed
     );
-    assert!(closed >= 0.0);
+    assert!(signal_with_gate_almost_closed >= 0.0);
 
     plot_filter_output_multiplied_by_fraction_controlled_by_gate(filter);
 }
@@ -46,14 +46,14 @@ fn plot_filter_output_multiplied_by_fraction_controlled_by_gate(filter: f64) {
         "gate",
         "выход",
         &[lesson_visualization::Series {
-            name: "tanh(filter)*calculate_zero_to_one_fraction_as_one_divided_by_one_plus_e_to_negative_score(gate)",
+            name: "ограниченный сигнал × доля пропускания",
             points: &(-50..=50)
         .map(|plot_step_index| {
-            let gate: f64 = plot_step_index as f64 / 10.0;
+            let raw_gate_score_where_0_passes_half_and_larger_values_pass_more: f64 = plot_step_index as f64 / 10.0;
             (
-                gate,
-                calculate_gated_signal_as_tanh_of_filter_times_one_over_one_plus_e_to_negative_gate(
-                    filter, gate,
+                raw_gate_score_where_0_passes_half_and_larger_values_pass_more,
+                calculate_gated_signal_as_tanh_bounded_between_minus_1_and_1_times_sigmoid_share_where_0_blocks_and_1_passes_signal(
+                    filter, raw_gate_score_where_0_passes_half_and_larger_values_pass_more,
                 ),
             )
         })
@@ -61,4 +61,11 @@ fn plot_filter_output_multiplied_by_fraction_controlled_by_gate(filter: f64) {
         }],
     )
     .expect("не удалось сохранить график");
+}
+
+/// tanh сохраняет знак, равен 0 при нулевом входе и насыщается к −1 или 1.
+fn calculate_tanh_as_signed_signal_where_0_means_no_signal_and_large_inputs_approach_1_or_minus_1(
+    input: f64,
+) -> f64 {
+    input.tanh()
 }

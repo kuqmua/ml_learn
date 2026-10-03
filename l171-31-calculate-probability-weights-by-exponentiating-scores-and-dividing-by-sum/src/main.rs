@@ -31,25 +31,57 @@ fn main() {
             sum_of_exponentials > 0.0,
             "сумма экспонент должна быть положительной"
         );
-        let weights: [f64; 2] = [
+        let attention_shares_summing_to_1_where_larger_score_gets_larger_share: [f64; 2] = [
             exponentials[0] / sum_of_exponentials,
             exponentials[1] / sum_of_exponentials,
         ];
-        assert!((weights[0] + weights[1] - 1.0).abs() < 1e-10);
-        assert!(weights.iter().all(|&weight| (0.0..=1.0).contains(&weight)));
+        assert!(
+            (attention_shares_summing_to_1_where_larger_score_gets_larger_share[0]
+                + attention_shares_summing_to_1_where_larger_score_gets_larger_share[1]
+                - 1.0)
+                .abs()
+                < 1e-10
+        );
+        assert!(
+            attention_shares_summing_to_1_where_larger_score_gets_larger_share
+                .iter()
+                .all(|&weight| (0.0..=1.0).contains(&weight))
+        );
         match description {
-            "равные оценки" => assert!((weights[0] - weights[1]).abs() < 1e-10),
+            "равные оценки" => assert!(
+                (attention_shares_summing_to_1_where_larger_score_gets_larger_share[0]
+                    - attention_shares_summing_to_1_where_larger_score_gets_larger_share[1])
+                    .abs()
+                    < 1e-10
+            ),
 
             "вторая оценка выше" => {
-                assert!(weights[1] > weights[0]);
-                reference_weights = weights;
+                assert!(
+                    attention_shares_summing_to_1_where_larger_score_gets_larger_share[1]
+                        > attention_shares_summing_to_1_where_larger_score_gets_larger_share[0]
+                );
+                reference_weights =
+                    attention_shares_summing_to_1_where_larger_score_gets_larger_share;
             }
 
-            "первая оценка выше" => assert!(weights[0] > weights[1]),
+            "первая оценка выше" => assert!(
+                attention_shares_summing_to_1_where_larger_score_gets_larger_share[0]
+                    > attention_shares_summing_to_1_where_larger_score_gets_larger_share[1]
+            ),
 
             "к обеим прибавили 1" => {
-                assert!((weights[0] - reference_weights[0]).abs() < 1e-10);
-                assert!((weights[1] - reference_weights[1]).abs() < 1e-10);
+                assert!(
+                    (attention_shares_summing_to_1_where_larger_score_gets_larger_share[0]
+                        - reference_weights[0])
+                        .abs()
+                        < 1e-10
+                );
+                assert!(
+                    (attention_shares_summing_to_1_where_larger_score_gets_larger_share[1]
+                        - reference_weights[1])
+                        .abs()
+                        < 1e-10
+                );
             }
 
             _ => unreachable!(),
@@ -72,8 +104,11 @@ fn plot_second_probability_weight_as_its_exponential_divided_by_sum_of_two_expon
 
             points: &(-60..=60)
                 .map(|plot_step_index| {
-                    let distance_value: f64 = plot_step_index as f64 / 10.0;
-                    (distance_value, 1.0 / (1.0 + (-distance_value).exp()))
+                    let difference_between_raw_scores: f64 = plot_step_index as f64 / 10.0;
+                    (
+                        difference_between_raw_scores,
+                        1.0 / (1.0 + (-difference_between_raw_scores).exp()),
+                    )
                 })
                 .collect::<Vec<_>>(),
         }],

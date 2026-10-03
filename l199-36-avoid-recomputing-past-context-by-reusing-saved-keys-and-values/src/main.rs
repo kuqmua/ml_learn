@@ -7,7 +7,7 @@
 //   префикса.
 // Сохраняем K/V прошлых токенов и сверяем последний выход с полным причинным пересчётом.
 
-use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum;
+use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares;
 use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
 fn main() {
@@ -19,7 +19,7 @@ fn main() {
         cached_keys.push(new_state);
         cached_values.push(new_state);
 
-        cached_outputs.push(calculate_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_their_sum(
+        cached_outputs.push(calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
                 &cached_keys
             .iter()
             .map(|key| (new_state[0] * key[0] + new_state[1] * key[1]) / 2.0_f64.sqrt())

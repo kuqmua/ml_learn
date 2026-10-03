@@ -38,11 +38,13 @@ fn main() {
         let class_mixing_at_or_above_threshold: f64 = 2.0
             * positive_share_at_or_above_threshold
             * (1.0 - positive_share_at_or_above_threshold);
-        let score: f64 = (samples_below_threshold.len() as f64 * class_mixing_below_threshold
+        let weighted_binary_class_mixing_where_0_means_pure_groups_and_smaller_means_better_split: f64 = (samples_below_threshold.len() as f64 * class_mixing_below_threshold
             + samples_at_or_above_threshold.len() as f64 * class_mixing_at_or_above_threshold)
             / data.len() as f64;
-        if score < best.0 {
-            best = (score, threshold);
+        if weighted_binary_class_mixing_where_0_means_pure_groups_and_smaller_means_better_split
+            < best.0
+        {
+            best = (weighted_binary_class_mixing_where_0_means_pure_groups_and_smaller_means_better_split, threshold);
         }
     }
     let _ = (&(best.1), &(best.0));

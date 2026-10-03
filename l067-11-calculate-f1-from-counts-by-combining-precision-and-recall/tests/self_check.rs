@@ -1,5 +1,5 @@
 use l061_11_count_correct_and_incorrect_positive_and_negative_predictions::BinaryClassificationCounts;
-use l067_11_calculate_f1_from_counts_by_combining_precision_and_recall::calculate_f1_score_from_counts_by_multiplying_precision_and_recall_by_two_then_dividing_by_sum;
+use l067_11_calculate_f1_from_counts_by_combining_precision_and_recall::calculate_f1_score_from_counts_by_multiplying_precision_and_recall_by_two_then_dividing_by_sum_where_1_means_no_false_alarms_or_misses_and_larger_means_better;
 
 #[test]
 #[ignore = "сначала вычисли ответ вручную, затем запусти с --ignored"]
@@ -8,12 +8,12 @@ fn predict_result_before_running() {
     let expected: Option<f64> = None;
     let expected = expected.expect("впиши ответ перед запуском");
     let actual =
-        calculate_f1_score_from_counts_by_multiplying_precision_and_recall_by_two_then_dividing_by_sum(
+        calculate_f1_score_from_counts_by_multiplying_precision_and_recall_by_two_then_dividing_by_sum_where_1_means_no_false_alarms_or_misses_and_larger_means_better(
             BinaryClassificationCounts {
-                true_positives: 3,
-                false_positives: 1,
-                true_negatives: 4,
-                false_negatives: 2,
+                true_positives_as_correctly_detected_positive_cases: 3,
+                false_positives_as_false_alarms_on_negative_cases: 1,
+                true_negatives_as_correctly_rejected_negative_cases: 4,
+                false_negatives_as_missed_positive_cases: 2,
             },
         )
         .unwrap();

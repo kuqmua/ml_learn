@@ -9,14 +9,20 @@
 use l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares;
 
 fn main() {
-    let alpha: f64 = 0.64;
+    let original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal: f64 =
+        0.64;
     let training: [(f64, f64); 4] = [(1.0, -1.0), (1.0, 0.0), (1.0, 1.0), (1.0, 2.0)];
     let inputs: [(f64, f64); 4] = training.map(|(clean, noise)| {
         (
             calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
-                clean, noise, alpha,
+                clean,
+                noise,
+                original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal,
             )
-            .unwrap() - alpha.sqrt() * clean,
+            .unwrap()
+                - original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal
+                    .sqrt()
+                    * clean,
             noise,
         )
     });
@@ -39,19 +45,28 @@ fn main() {
     let held_out: [(f64, f64); 2] = validation.map(|(clean, noise)| {
         (
             calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
-                clean, noise, alpha,
+                clean,
+                noise,
+                original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal,
             )
-            .unwrap() - alpha.sqrt() * clean,
+            .unwrap()
+                - original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal
+                    .sqrt()
+                    * clean,
             noise,
         )
     });
-    let mean_squared_error_value: &dyn Fn(f64) -> f64 = &|candidate: f64| {
-        held_out
-            .iter()
-            .map(|&(input_value, target)| (candidate * input_value - target).powi(2))
-            .sum::<f64>()
-            / held_out.len() as f64
-    };
+    let mean_squared_noise_prediction_error_where_0_means_exact_predictions: &dyn Fn(f64) -> f64 =
+        &|candidate: f64| {
+            held_out
+                .iter()
+                .map(|&(input_value, target)| (candidate * input_value - target).powi(2))
+                .sum::<f64>()
+                / held_out.len() as f64
+        };
 
-    assert!(mean_squared_error_value(0.0) > mean_squared_error_value(weight));
+    assert!(
+        mean_squared_noise_prediction_error_where_0_means_exact_predictions(0.0)
+            > mean_squared_noise_prediction_error_where_0_means_exact_predictions(weight)
+    );
 }
