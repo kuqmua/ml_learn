@@ -18,11 +18,11 @@ fn main() {
         let _: i32 = training_size * feature_count;
     }
 
-    plot_coordinate_comparison_count_for_growing_training_set();
+    plot_coord_comparison_count_for_growing_training_set();
 }
 
 // Строим график по результатам урока.
-fn plot_coordinate_comparison_count_for_growing_training_set() {
+fn plot_coord_comparison_count_for_growing_training_set() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

@@ -33,10 +33,10 @@ fn main() {
     }
     assert_eq!(
         (
-            counts.true_positives_as_correctly_detected_positive_cases,
-            counts.false_positives_as_false_alarms_on_negative_cases,
-            counts.false_negatives_as_missed_positive_cases,
-            counts.true_negatives_as_correctly_rejected_negative_cases
+            counts.true_poss_as_correctly_detected_pos_cases,
+            counts.false_poss_as_false_alarms_on_neg_cases,
+            counts.false_negs_as_missed_pos_cases,
+            counts.true_negs_as_correctly_rejected_neg_cases
         ),
         (1, 1, 1, 1)
     );
@@ -54,17 +54,14 @@ fn plot_counts_of_correct_and_incorrect_class_predictions(counts: BinaryClassifi
         &[
             (
                 "TP",
-                counts.true_positives_as_correctly_detected_positive_cases as f64,
+                counts.true_poss_as_correctly_detected_pos_cases as f64,
             ),
-            (
-                "FP",
-                counts.false_positives_as_false_alarms_on_negative_cases as f64,
-            ),
+            ("FP", counts.false_poss_as_false_alarms_on_neg_cases as f64),
             (
                 "TN",
-                counts.true_negatives_as_correctly_rejected_negative_cases as f64,
+                counts.true_negs_as_correctly_rejected_neg_cases as f64,
             ),
-            ("FN", counts.false_negatives_as_missed_positive_cases as f64),
+            ("FN", counts.false_negs_as_missed_pos_cases as f64),
         ],
     )
     .expect("не удалось сохранить график");

@@ -5,7 +5,7 @@
 /// Оба массива имеют одинаковую длину `N`; число координат проверяет компилятор.
 /// Пустые точки и неконечные координаты отклоняются во время выполнения.
 
-pub fn calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther<
+pub fn calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther<
     const N: usize,
 >(
     first_point: &[f64; N],
@@ -21,8 +21,8 @@ pub fn calculate_squared_point_distance_by_summing_squared_coordinate_difference
     }
     let mut squared_sum: f64 = 0.0;
     for index in 0..first_point.len() {
-        let difference: f64 = first_point[index] - second_point[index];
-        squared_sum += difference * difference;
+        let diff: f64 = first_point[index] - second_point[index];
+        squared_sum += diff * diff;
     }
     if !squared_sum.is_finite() {
         return Err("квадрат расстояния выходит за пределы f64");

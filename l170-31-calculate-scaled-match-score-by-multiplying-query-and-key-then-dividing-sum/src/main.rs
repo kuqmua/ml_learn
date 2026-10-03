@@ -11,28 +11,28 @@
 // softmax слишком резким.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec;
 
 fn main() {
     let dimension: f64 = 2.0;
-    let mut square_root_of_coordinate_count_to_limit_growth_of_match_scores: f64 = dimension;
+    let mut square_root_of_coord_count_to_limit_growth_of_match_scores: f64 = dimension;
     for _ in 0..80 {
-        square_root_of_coordinate_count_to_limit_growth_of_match_scores =
-            (square_root_of_coordinate_count_to_limit_growth_of_match_scores
-                + dimension / square_root_of_coordinate_count_to_limit_growth_of_match_scores)
+        square_root_of_coord_count_to_limit_growth_of_match_scores =
+            (square_root_of_coord_count_to_limit_growth_of_match_scores
+                + dimension / square_root_of_coord_count_to_limit_growth_of_match_scores)
                 / 2.0;
     }
     let query: [f64; 2] = [1.0, 1.0];
     let key: [f64; 2] = [2.0, 2.0];
-    let _ = &(multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&query, &key)
+    let _ = &(multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(&query, &key)
         .expect("запрос и ключ должны иметь одинаковое число координат")
-        / square_root_of_coordinate_count_to_limit_growth_of_match_scores);
+        / square_root_of_coord_count_to_limit_growth_of_match_scores);
 
-    plot_attention_scale_as_one_divided_by_square_root_of_coordinate_count();
+    plot_attention_scale_as_one_divided_by_square_root_of_coord_count();
 }
 
 // Строим график по результатам урока.
-fn plot_attention_scale_as_one_divided_by_square_root_of_coordinate_count() {
+fn plot_attention_scale_as_one_divided_by_square_root_of_coord_count() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -43,12 +43,7 @@ fn plot_attention_scale_as_one_divided_by_square_root_of_coordinate_count() {
             name: "масштаб",
 
             points: &(1..=64)
-                .map(|vector_dimension| {
-                    (
-                        vector_dimension as f64,
-                        1.0 / (vector_dimension as f64).sqrt(),
-                    )
-                })
+                .map(|vec_dimension| (vec_dimension as f64, 1.0 / (vec_dimension as f64).sqrt()))
                 .collect::<Vec<_>>(),
         }],
     )

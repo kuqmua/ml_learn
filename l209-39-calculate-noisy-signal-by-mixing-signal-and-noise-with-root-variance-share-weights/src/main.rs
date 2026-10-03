@@ -7,7 +7,7 @@
 //   число.
 // При уменьшении доли исходного сигнала смесь становится ближе к шуму.
 
-use l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares;
+use l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares;
 
 fn main() {
     let noise: f64 = -1.0;
@@ -15,22 +15,23 @@ fn main() {
     for original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal in
         [1.0, 0.75, 0.25, 0.0]
     {
-        let _: f64 = calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
-            clean,
-            noise,
-            original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal,
-        )
-        .unwrap();
+        let _: f64 =
+            calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+                clean,
+                noise,
+                original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal,
+            )
+            .unwrap();
     }
     assert_eq!(
-        calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+        calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
             clean, noise, 1.0
         )
         .unwrap(),
         clean
     );
     assert_eq!(
-        calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+        calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
             clean, noise, 0.0
         )
         .unwrap(),
@@ -53,7 +54,7 @@ fn plot_signal_and_noise_mixture_for_changing_signal_share(clean: f64, noise: f6
             let original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal: f64 = plot_step_index as f64 / 100.0;
             (
                 original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal,
-                calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+                calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
                     clean,
                     noise,
                     original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal,

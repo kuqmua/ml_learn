@@ -11,16 +11,16 @@
 use lesson_float_comparison::check_f64_eq_1e_minus_10;
 
 fn main() {
-    for (_description, positive_class_share) in [
+    for (_description, pos_class_share) in [
         ("только отрицательный класс", 0.0),
         ("четверть положительных", 0.25),
         ("классы поровну", 0.5),
         ("только положительный класс", 1.0),
     ] {
-        assert!((0.0..=1.0).contains(&positive_class_share));
-        let negative_class_share: f64 = 1.0 - positive_class_share;
+        assert!((0.0..=1.0).contains(&pos_class_share));
+        let neg_class_share: f64 = 1.0 - pos_class_share;
         let mut binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares: f64 = 0.0;
-        for probability in [positive_class_share, negative_class_share] {
+        for probability in [pos_class_share, neg_class_share] {
             if probability > 0.0 {
                 let ratio: f64 = (probability - 1.0) / (probability + 1.0);
                 let mut term: f64 = ratio;
@@ -33,13 +33,13 @@ fn main() {
             }
         }
         assert!(binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares >= -1e-10 && binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares <= 1.0 + 1e-10);
-        if positive_class_share == 0.0 || positive_class_share == 1.0 {
+        if pos_class_share == 0.0 || pos_class_share == 1.0 {
             assert!(check_f64_eq_1e_minus_10(
                 binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares,
                 0.0
             ));
         }
-        if positive_class_share == 0.5 {
+        if pos_class_share == 0.5 {
             assert!(check_f64_eq_1e_minus_10(
                 binary_class_entropy_in_bits_where_0_means_one_class_and_1_means_equal_class_shares,
                 1.0
@@ -47,11 +47,11 @@ fn main() {
         }
     }
 
-    plot_class_entropy_as_negative_sum_of_class_shares_times_their_logarithms();
+    plot_class_entropy_as_neg_sum_of_class_shares_times_their_logarithms();
 }
 
 // Строим график по результатам урока.
-fn plot_class_entropy_as_negative_sum_of_class_shares_times_their_logarithms() {
+fn plot_class_entropy_as_neg_sum_of_class_shares_times_their_logarithms() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

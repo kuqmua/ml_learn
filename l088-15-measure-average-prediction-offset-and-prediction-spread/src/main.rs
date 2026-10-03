@@ -21,7 +21,7 @@ fn main() {
     );
     let mean: f64 = predictions.iter().sum::<f64>() / predictions.len() as f64;
     let target: f64 = 5.0;
-    let average_prediction_minus_target_where_0_means_no_bias_positive_means_overprediction_and_negative_means_underprediction: f64 = mean - target;
+    let average_prediction_minus_target_where_0_means_no_bias_pos_means_overprediction_and_neg_means_underprediction: f64 = mean - target;
     let prediction_variance_where_0_means_models_agree_and_larger_means_more_disagreement: f64 =
         predictions
             .iter()
@@ -29,12 +29,12 @@ fn main() {
             .sum::<f64>()
             / predictions.len() as f64;
 
-    plot_squared_average_error_and_prediction_spread(average_prediction_minus_target_where_0_means_no_bias_positive_means_overprediction_and_negative_means_underprediction, prediction_variance_where_0_means_models_agree_and_larger_means_more_disagreement);
+    plot_squared_average_error_and_prediction_spread(average_prediction_minus_target_where_0_means_no_bias_pos_means_overprediction_and_neg_means_underprediction, prediction_variance_where_0_means_models_agree_and_larger_means_more_disagreement);
 }
 
 // Строим график по результатам урока.
 fn plot_squared_average_error_and_prediction_spread(
-    average_prediction_minus_target_where_0_means_no_bias_positive_means_overprediction_and_negative_means_underprediction: f64,
+    average_prediction_minus_target_where_0_means_no_bias_pos_means_overprediction_and_neg_means_underprediction: f64,
     prediction_variance_where_0_means_models_agree_and_larger_means_more_disagreement: f64,
 ) {
     lesson_visualization::bar_chart(
@@ -45,7 +45,7 @@ fn plot_squared_average_error_and_prediction_spread(
         &[
             (
                 "смещение²",
-                average_prediction_minus_target_where_0_means_no_bias_positive_means_overprediction_and_negative_means_underprediction * average_prediction_minus_target_where_0_means_no_bias_positive_means_overprediction_and_negative_means_underprediction,
+                average_prediction_minus_target_where_0_means_no_bias_pos_means_overprediction_and_neg_means_underprediction * average_prediction_minus_target_where_0_means_no_bias_pos_means_overprediction_and_neg_means_underprediction,
             ),
             ("разброс", prediction_variance_where_0_means_models_agree_and_larger_means_more_disagreement),
         ],

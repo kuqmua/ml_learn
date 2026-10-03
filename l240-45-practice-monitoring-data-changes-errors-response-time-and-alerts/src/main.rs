@@ -30,7 +30,7 @@ fn main() {
         }
     }
 
-    fn calculate_shares_of_feature_values_in_three_bins(data: &[f64]) -> [f64; 3] {
+    fn calc_shares_of_feature_values_in_three_bins(data: &[f64]) -> [f64; 3] {
         let mut bin_counts: [f64; 3] = [0.; 3];
         for &feature_value in data {
             let histogram_bin: usize = if feature_value < 0. {
@@ -48,14 +48,13 @@ fn main() {
         bin_counts
     }
     /// Индекс стабильности популяции (PSI): суммируем (current−reference)·ln(current/reference) по долям трёх интервалов, ограничивая доли снизу.
-    fn calculate_distribution_shift_score_as_sum_of_bin_share_differences_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(
+    fn calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(
         reference: &[f64],
         current: &[f64],
     ) -> f64 {
         let reference_group_shares: [f64; 3] =
-            calculate_shares_of_feature_values_in_three_bins(reference);
-        let current_group_shares: [f64; 3] =
-            calculate_shares_of_feature_values_in_three_bins(current);
+            calc_shares_of_feature_values_in_three_bins(reference);
+        let current_group_shares: [f64; 3] = calc_shares_of_feature_values_in_three_bins(current);
         let mut distribution_shift_score_where_0_means_matching_bin_shares_and_larger_means_more_change: f64 = 0.0;
         for bin_index in 0..reference_group_shares.len() {
             let reference_group_share: f64 =
@@ -111,9 +110,9 @@ fn main() {
     let reference: [f64; 6] = [-1., -0.5, 0.1, 0.2, 1.2, 1.5];
     let stable: [f64; 6] = reference;
     let shifted: [f64; 6] = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6];
-    let _ = (&(reference.len()), &(shifted.len()), &(calculate_distribution_shift_score_as_sum_of_bin_share_differences_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(
+    let _ = (&(reference.len()), &(shifted.len()), &(calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(
             &reference, &stable
-        )), &(calculate_distribution_shift_score_as_sum_of_bin_share_differences_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(
+        )), &(calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(
             &reference, &shifted
         )));
 
@@ -141,13 +140,13 @@ fn main() {
 
                     "стабильно",
 
-                    calculate_distribution_shift_score_as_sum_of_bin_share_differences_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(&reference, &stable),
+                    calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(&reference, &stable),
                 ),
                 (
 
                     "сдвиг",
 
-                    calculate_distribution_shift_score_as_sum_of_bin_share_differences_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(&reference, &shifted),
+                    calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios_where_0_means_matching_bin_shares_and_larger_means_more_change(&reference, &shifted),
                 ),
             ],
         )

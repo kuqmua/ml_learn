@@ -10,10 +10,10 @@ fn threshold_includes_equal_score_and_separates_four_outcomes() {
             0.5
         ),
         Ok(BinaryClassificationCounts {
-            true_positives_as_correctly_detected_positive_cases: 1,
-            false_positives_as_false_alarms_on_negative_cases: 1,
-            true_negatives_as_correctly_rejected_negative_cases: 1,
-            false_negatives_as_missed_positive_cases: 1
+            true_poss_as_correctly_detected_pos_cases: 1,
+            false_poss_as_false_alarms_on_neg_cases: 1,
+            true_negs_as_correctly_rejected_neg_cases: 1,
+            false_negs_as_missed_pos_cases: 1
         })
     );
     assert_eq!(
@@ -23,10 +23,10 @@ fn threshold_includes_equal_score_and_separates_four_outcomes() {
             0.5
         ),
         Ok(BinaryClassificationCounts {
-            true_positives_as_correctly_detected_positive_cases: 1,
-            false_positives_as_false_alarms_on_negative_cases: 1,
-            true_negatives_as_correctly_rejected_negative_cases: 0,
-            false_negatives_as_missed_positive_cases: 0
+            true_poss_as_correctly_detected_pos_cases: 1,
+            false_poss_as_false_alarms_on_neg_cases: 1,
+            true_negs_as_correctly_rejected_neg_cases: 0,
+            false_negs_as_missed_pos_cases: 0
         })
     );
     assert_eq!(
@@ -36,10 +36,10 @@ fn threshold_includes_equal_score_and_separates_four_outcomes() {
             0.6
         ),
         Ok(BinaryClassificationCounts {
-            true_positives_as_correctly_detected_positive_cases: 0,
-            false_positives_as_false_alarms_on_negative_cases: 0,
-            true_negatives_as_correctly_rejected_negative_cases: 1,
-            false_negatives_as_missed_positive_cases: 1
+            true_poss_as_correctly_detected_pos_cases: 0,
+            false_poss_as_false_alarms_on_neg_cases: 0,
+            true_negs_as_correctly_rejected_neg_cases: 1,
+            false_negs_as_missed_pos_cases: 1
         })
     );
 }
@@ -49,10 +49,10 @@ fn empty_input_and_length_mismatch() {
     assert_eq!(
         count_binary_classification_outcomes_from_targets_and_scores_at_threshold(&[], &[], 0.5),
         Ok(BinaryClassificationCounts {
-            true_positives_as_correctly_detected_positive_cases: 0,
-            false_positives_as_false_alarms_on_negative_cases: 0,
-            true_negatives_as_correctly_rejected_negative_cases: 0,
-            false_negatives_as_missed_positive_cases: 0
+            true_poss_as_correctly_detected_pos_cases: 0,
+            false_poss_as_false_alarms_on_neg_cases: 0,
+            true_negs_as_correctly_rejected_neg_cases: 0,
+            false_negs_as_missed_pos_cases: 0
         })
     );
     assert!(

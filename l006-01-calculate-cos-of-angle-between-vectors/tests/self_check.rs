@@ -1,4 +1,4 @@
-use l006_01_calculate_cos_of_angle_between_vectors::calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite;
+use l006_01_calculate_cos_of_angle_between_vectors::calc_cos_of_angle_between_vecs_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite;
 
 #[test]
 #[ignore = "сначала вычисли сходство вручную, затем запусти тест с --ignored"]
@@ -15,16 +15,16 @@ fn predict_three_directions() {
         expected_direction_similarity_for_opposite_directions
             .expect("заполни ответ перед запуском теста");
     assert_eq!(
-        calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&[1.0, 0.0], &[2.0, 0.0]),
+        calc_cos_of_angle_between_vecs_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&[1.0, 0.0], &[2.0, 0.0]),
         Ok(expected_direction_similarity_for_same_direction)
     );
     assert_eq!(
-        calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&[1.0, 0.0], &[0.0, 1.0]),
+        calc_cos_of_angle_between_vecs_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&[1.0, 0.0], &[0.0, 1.0]),
         Ok(expected_right_angle)
     );
     assert_eq!(
-        calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&[1.0, 0.0], &[-1.0, 0.0]),
+        calc_cos_of_angle_between_vecs_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&[1.0, 0.0], &[-1.0, 0.0]),
         Ok(expected_direction_similarity_for_opposite_directions)
     );
-    assert!(calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&[1.0, 0.0], &[0.0, 0.0]).is_err());
+    assert!(calc_cos_of_angle_between_vecs_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&[1.0, 0.0], &[0.0, 0.0]).is_err());
 }

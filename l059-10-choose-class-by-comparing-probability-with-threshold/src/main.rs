@@ -15,16 +15,16 @@
 
 fn main() {
     let probabilities: [f64; 3] = [0.2, 0.55, 0.8];
-    for minimum_probability_required_for_positive_prediction in [0.5, 0.7] {
+    for minimum_probability_required_for_pos_prediction in [0.5, 0.7] {
         let _: [bool; 3] = probabilities
-            .map(|probability| probability >= minimum_probability_required_for_positive_prediction);
+            .map(|probability| probability >= minimum_probability_required_for_pos_prediction);
     }
 
-    plot_number_of_positive_predictions_for_changing_threshold();
+    plot_number_of_pos_predictions_for_changing_threshold();
 }
 
 // Строим график по результатам урока.
-fn plot_number_of_positive_predictions_for_changing_threshold() {
+fn plot_number_of_pos_predictions_for_changing_threshold() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

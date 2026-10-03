@@ -3,7 +3,7 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let _question: &str = "Добавь к прогнозам ложноположительный случай и пересчитай correct_positive_prediction_share_where_1_means_no_false_alarms.";
+    let _question: &str = "Добавь к прогнозам ложноположительный случай и пересчитай correct_pos_prediction_share_where_1_means_no_false_alarms.";
     let _choices: [&str; 3] = [
         "Объясни, почему знаменатель увеличился, а число истинноположительных не изменилось.",
         "Сумма четырёх чисел равна размеру набора; поменяй порог и проследи изменение ячеек.",

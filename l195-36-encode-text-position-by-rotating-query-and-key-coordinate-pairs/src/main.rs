@@ -10,20 +10,20 @@
 use lesson_float_comparison::check_f64_eq_1e_minus_12;
 
 /// Скалярное произведение: умножаем соответствующие координаты двух векторов и складываем произведения.
-use l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vector_length;
+use l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vec_coord_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vec_length;
 
-fn multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(
+fn multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(
     first_value: [f64; 2],
     second_value: [f64; 2],
 ) -> f64 {
     first_value[0] * second_value[0] + first_value[1] * second_value[1]
 }
 fn main() {
-    let query_vector: [f64; 2] = [1.0, 0.0];
-    let key_vector: [f64; 2] = [1.0, 0.0];
-    let query_key_match_after_equal_position_rotation: f64 = multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(
-        rotate_vector_coordinate_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vector_length(query_vector, 3, 0.2),
-        rotate_vector_coordinate_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vector_length(key_vector, 3, 0.2),
+    let query_vec: [f64; 2] = [1.0, 0.0];
+    let key_vec: [f64; 2] = [1.0, 0.0];
+    let query_key_match_after_equal_position_rotation: f64 = multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(
+        rotate_vec_coord_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vec_length(query_vec, 3, 0.2),
+        rotate_vec_coord_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vec_length(key_vec, 3, 0.2),
     );
 
     assert!(check_f64_eq_1e_minus_12(
@@ -31,19 +31,19 @@ fn main() {
         1.0
     ));
     assert!(
-        multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(
-            rotate_vector_coordinate_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vector_length(query_vector, 3, 0.2),
-            rotate_vector_coordinate_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vector_length(key_vector, 8, 0.2),
+        multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(
+            rotate_vec_coord_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vec_length(query_vec, 3, 0.2),
+            rotate_vec_coord_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vec_length(key_vec, 8, 0.2),
         ) < query_key_match_after_equal_position_rotation
     );
 
-    plot_sum_after_multiplying_rotated_coordinates_for_relative_positions();
+    plot_sum_after_multiplying_rotated_coords_for_relative_positions();
 }
 
-fn plot_sum_after_multiplying_rotated_coordinates_for_relative_positions() {
-    let query_vector: [f64; 2] = [1.0, 0.0];
-    let query_vector: [f64; 2] =
-        rotate_vector_coordinate_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vector_length(query_vector, 0, 0.2);
+fn plot_sum_after_multiplying_rotated_coords_for_relative_positions() {
+    let query_vec: [f64; 2] = [1.0, 0.0];
+    let query_vec: [f64; 2] =
+        rotate_vec_coord_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vec_length(query_vec, 0, 0.2);
 
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
@@ -57,9 +57,9 @@ fn plot_sum_after_multiplying_rotated_coordinates_for_relative_positions() {
                 .map(|position_index| {
                     (
                         position_index as f64,
-                        multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(
-                            query_vector,
-                            rotate_vector_coordinate_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vector_length(
+                        multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(
+                            query_vec,
+                            rotate_vec_coord_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vec_length(
                                 [1.0, 0.0],
                                 position_index,
                                 0.2,

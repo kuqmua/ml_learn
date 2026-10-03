@@ -82,7 +82,7 @@ mod tests {
     }
 
     #[test]
-    fn rejects_nonfinite_values_and_nonpositive_tolerances() {
+    fn rejects_nonfinite_values_and_nonpos_tolerances() {
         for value in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY] {
             assert!(!compare_2_floats_for_approximate_equality(
                 value, value, 1e-10

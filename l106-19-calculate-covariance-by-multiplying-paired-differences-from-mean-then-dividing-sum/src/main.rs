@@ -17,18 +17,18 @@ fn main() {
         first_feature_values.len() >= 2,
         "для выборочной ковариации нужны хотя бы две пары"
     );
-    let mean_horizontal_coordinate: f64 =
+    let mean_horizontal_coord: f64 =
         first_feature_values.iter().sum::<f64>() / first_feature_values.len() as f64;
     let second_feature_values: [f64; 3] = [2.0, 4.0, 6.0];
-    let mean_vertical_coordinate: f64 =
+    let mean_vertical_coord: f64 =
         second_feature_values.iter().sum::<f64>() / second_feature_values.len() as f64;
-    let mut sum_after_multiplying_paired_differences_from_mean: f64 = 0.0;
+    let mut sum_after_multiplying_paired_diffs_from_mean: f64 = 0.0;
     for index in 0..first_feature_values.len() {
-        sum_after_multiplying_paired_differences_from_mean += (first_feature_values[index]
-            - mean_horizontal_coordinate)
-            * (second_feature_values[index] - mean_vertical_coordinate);
+        sum_after_multiplying_paired_diffs_from_mean += (first_feature_values[index]
+            - mean_horizontal_coord)
+            * (second_feature_values[index] - mean_vertical_coord);
     }
-    let _covariance_where_positive_means_same_direction_negative_means_opposite_and_0_means_no_linear_covariation: f64 = sum_after_multiplying_paired_differences_from_mean
+    let _covariance_where_pos_means_same_direction_neg_means_opposite_and_0_means_no_linear_covariation: f64 = sum_after_multiplying_paired_diffs_from_mean
         / (first_feature_values.len() - 1) as f64;
 
     plot_paired_feature_values_to_show_joint_variation(first_feature_values, second_feature_values);

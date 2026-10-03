@@ -6,7 +6,7 @@
 /// Причинная свёртка: вес текущего отсчёта умножаем на него и прибавляем взвешенный прошлый отсчёт с заданным отступом.
 /// Возвращает по одному значению на каждый входной отсчёт; длина сигнала может меняться.
 
-pub fn calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+pub fn calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
     input_signal: &[f64],
     weight_current: f64,
     weight_previous: f64,
@@ -34,16 +34,24 @@ mod tests {
     #[test]
     fn future_does_not_change_past_outputs() {
         let short: Vec<f64> =
-            super::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(&[1.0, 2.0], 1.0, 2.0, 1)
-                .unwrap();
+            super::calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+                &[1.0, 2.0],
+                1.0,
+                2.0,
+                1,
+            )
+            .unwrap();
 
-        assert_eq!(short, super::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
-            &[1.0, 2.0, 999.0],
-            1.0,
-            2.0,
-            1,
-        )
-        .unwrap()[..2]);
+        assert_eq!(
+            short,
+            super::calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+                &[1.0, 2.0, 999.0],
+                1.0,
+                2.0,
+                1,
+            )
+            .unwrap()[..2]
+        );
         assert_eq!(short, [1.0, 4.0]);
     }
 }

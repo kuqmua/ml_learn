@@ -18,7 +18,7 @@
 //   библиотек.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec;
 
 fn main() {
     #[derive(Debug, PartialEq)]
@@ -58,21 +58,21 @@ fn main() {
 
     let left_matrix: Matrix =
         Matrix::create_matrix_from_elements_listed_row_by_row(2, 2, vec![1., 2., 3., 4.]).unwrap();
-    let input_vector: [f64; 2] = [1., 1.];
+    let input_vec: [f64; 2] = [1., 1.];
     assert_eq!(
         left_matrix.column_count,
-        input_vector.len(),
+        input_vec.len(),
         "несовместимые формы"
     );
-    let mut output_vector: Vec<f64> = Vec::with_capacity(left_matrix.rows);
+    let mut output_vec: Vec<f64> = Vec::with_capacity(left_matrix.rows);
     for row_index in 0..left_matrix.rows {
         let row_start: usize = row_index * left_matrix.column_count;
         let row_end: usize = row_start + left_matrix.column_count;
 
-        output_vector.push(
-            multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(
+        output_vec.push(
+            multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(
                 &left_matrix.data[row_start..row_end],
-                &input_vector,
+                &input_vec,
             )
             .expect("число элементов строки должно совпадать с числом координат вектора"),
         );
@@ -102,7 +102,7 @@ fn main() {
             let row_end: usize = row_start + transposed_matrix.column_count;
 
             result_elements.push(
-                multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(
+                multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(
                     &transposed_matrix.data[row_start..row_end],
                     &(0..left_matrix.rows)
                         .map(|shared_index| {
@@ -120,7 +120,7 @@ fn main() {
         result_elements,
     )
     .unwrap();
-    let _ = (&(output_vector), &(result_matrix));
+    let _ = (&(output_vec), &(result_matrix));
 
     plot_result_after_multiplying_transposed_and_original_matrices(result_matrix);
 

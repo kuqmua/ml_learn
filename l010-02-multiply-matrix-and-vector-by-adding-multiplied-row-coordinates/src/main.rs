@@ -9,24 +9,24 @@
 // Для каждой строки умножаем её значения на координаты вектора и складываем.
 // Нулевой вектор даёт нулевой ответ; число столбцов должно совпадать с длиной вектора.
 
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec;
 
 fn main() {
     let matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
-    for (_description, vector, expected) in [
+    for (_description, vec, expected) in [
         ("обычный вектор", [5.0, 6.0], [17.0, 39.0]),
         ("нулевой вектор", [0.0, 0.0], [0.0, 0.0]),
     ] {
-        let mut matrix_vector_output: [f64; 2] = [0.0; 2];
+        let mut matrix_vec_output: [f64; 2] = [0.0; 2];
         for row in 0..matrix.len() {
-            matrix_vector_output[row] =
-                multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&matrix[row], &vector)
+            matrix_vec_output[row] =
+                multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(&matrix[row], &vec)
                     .expect("число столбцов матрицы должно совпадать с числом координат вектора");
         }
-        assert_eq!(matrix_vector_output, expected);
+        assert_eq!(matrix_vec_output, expected);
     }
     let too_short: [f64; 1] = [5.0];
-    let _: &str = multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&matrix[0], &too_short)
+    let _: &str = multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(&matrix[0], &too_short)
         .expect_err("разные длины нужно отклонить");
 
     plot_matrix_coefficients_used_in_weighted_row_sums(matrix);

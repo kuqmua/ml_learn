@@ -18,7 +18,7 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    fn move_agent_in_bounded_world_and_calculate_reward(
+    fn move_agent_in_bounded_world_and_calc_reward(
         current_state: usize,
         action: usize,
     ) -> (usize, f64) {
@@ -52,7 +52,7 @@ fn main() {
                     0
                 };
                 let (next_state, reward): (usize, f64) =
-                    move_agent_in_bounded_world_and_calculate_reward(current_state, action);
+                    move_agent_in_bounded_world_and_calc_reward(current_state, action);
                 action_values[current_state][action] = (|| -> f64 {
                     let current_value: f64 = action_values[current_state][action];
                     let reward: f64 = reward;
@@ -78,7 +78,7 @@ fn main() {
     })();
     let mut current_state: usize = 0;
     while current_state < 4 {
-        let (next_state, _): (usize, f64) = move_agent_in_bounded_world_and_calculate_reward(
+        let (next_state, _): (usize, f64) = move_agent_in_bounded_world_and_calc_reward(
             current_state,
             usize::from(action_values[current_state][1] >= action_values[current_state][0]),
         );

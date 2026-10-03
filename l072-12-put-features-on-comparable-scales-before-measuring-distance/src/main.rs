@@ -11,7 +11,7 @@
 // координаты перед сравнением соседей.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther;
+use l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther;
 
 fn main() {
     let scale: [f64; 2] = [1.0, 1000.0];
@@ -26,13 +26,13 @@ fn main() {
     let scaled_second_example: [f64; 2] =
         [second_example[0] / scale[0], second_example[1] / scale[1]];
 
-    plot_squared_distances_before_and_after_feature_scaling(
-        calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
+    plot_squared_dists_before_and_after_feature_scaling(
+        calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
             &first_example,
             &second_example,
         )
         .unwrap(),
-        calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
+        calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
             &scaled_first_example,
             &scaled_second_example,
         )
@@ -41,7 +41,7 @@ fn main() {
 }
 
 // Строим график по результатам урока.
-fn plot_squared_distances_before_and_after_feature_scaling(raw_squared: f64, scaled_squared: f64) {
+fn plot_squared_dists_before_and_after_feature_scaling(raw_squared: f64, scaled_squared: f64) {
     lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

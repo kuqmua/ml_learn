@@ -12,7 +12,7 @@
 
 use lesson_float_comparison::check_f64_eq_1e_minus_10;
 
-use l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
+use l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
 
 fn main() {
     let targets: [f64; 3] = [2.0, 4.0, 6.0];
@@ -24,7 +24,7 @@ fn main() {
     ];
     for (_description, predictions, expected) in cases {
         assert!(
-            check_f64_eq_1e_minus_10(calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
+            check_f64_eq_1e_minus_10(calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
                 &targets,
                 predictions,
             )
@@ -48,15 +48,15 @@ fn plot_average_absolute_prediction_error_for_changing_offset() {
 
             points: &(-30..=30)
                 .map(|plot_step_index| {
-                    let prediction_difference: f64 = plot_step_index as f64 / 10.0;
+                    let prediction_diff: f64 = plot_step_index as f64 / 10.0;
                     (
-                prediction_difference,
-                calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
+                prediction_diff,
+                calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
                     &[2.0, 4.0, 6.0],
                     &[
-                        2.0 + prediction_difference,
-                        4.0 + prediction_difference,
-                        6.0 + prediction_difference,
+                        2.0 + prediction_diff,
+                        4.0 + prediction_diff,
+                        6.0 + prediction_diff,
                     ],
                 )
                 .unwrap(),

@@ -10,9 +10,7 @@
 
 /// Избирательное забывание: прибавляем вход к сохранённой доле состояния; по флагу сброса оставляем только текущий вход.
 
-fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input<
-    const N: usize,
->(
+fn calc_memory_states_by_adding_input_to_retained_state_or_resetting_to_input<const N: usize>(
     input: &[(f64, bool); N],
 ) -> [f64; N] {
     let mut state: f64 = 0.0;
@@ -27,7 +25,7 @@ fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_inp
 fn main() {
     let sequence: [(f64, bool); 4] = [(1.0, false), (0.0, false), (2.0, true), (0.0, false)];
     let states: [f64; 4] =
-        calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(&sequence);
+        calc_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(&sequence);
     assert_eq!(states[0], 1.0);
     assert_eq!(states[2], 2.0);
 

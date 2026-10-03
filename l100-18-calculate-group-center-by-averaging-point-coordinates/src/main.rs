@@ -22,11 +22,11 @@ fn main() {
     cluster_center[0] /= cluster.len() as f64;
     cluster_center[1] /= cluster.len() as f64;
 
-    plot_cluster_points_and_coordinate_averages(cluster, cluster_center);
+    plot_cluster_points_and_coord_averages(cluster, cluster_center);
 }
 
 // Строим график по результатам урока.
-fn plot_cluster_points_and_coordinate_averages(cluster: [[f64; 2]; 2], cluster_center: [f64; 2]) {
+fn plot_cluster_points_and_coord_averages(cluster: [[f64; 2]; 2], cluster_center: [f64; 2]) {
     let cluster_center_points: Vec<(f64, f64)> = vec![(cluster_center[0], cluster_center[1])];
     lesson_visualization::scatter_chart(
         env!("CARGO_MANIFEST_DIR"),

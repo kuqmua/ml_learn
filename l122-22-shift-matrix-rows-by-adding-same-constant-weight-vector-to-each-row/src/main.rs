@@ -21,13 +21,13 @@ fn main() {
         }
     }
 
-    plot_matrix_after_adding_same_constant_input_weight_vector_to_each_row(
+    plot_matrix_after_adding_same_constant_input_weight_vec_to_each_row(
         matrix_after_adding_constant_weight,
     );
 }
 
 // Строим график по результатам урока.
-fn plot_matrix_after_adding_same_constant_input_weight_vector_to_each_row(
+fn plot_matrix_after_adding_same_constant_input_weight_vec_to_each_row(
     matrix_after_adding_constant_weight: [[f64; 2]; 2],
 ) {
     lesson_visualization::heatmap(

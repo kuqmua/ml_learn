@@ -14,6 +14,6 @@ fn predict_result_before_running() {
         0.5,
     )
     .unwrap()
-    .true_positives_as_correctly_detected_positive_cases as f64;
+    .true_poss_as_correctly_detected_pos_cases as f64;
     assert!(check_f64_eq_1e_minus_12(actual, expected));
 }

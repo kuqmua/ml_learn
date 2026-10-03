@@ -22,21 +22,21 @@ fn main() {
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
     /// Само умножение не обязательно медленнее библиотечного метода.
-    fn calculate_square_by_multiplying_number_by_itself(value: f64) -> f64 {
+    fn calc_square_by_multiplying_number_by_itself(value: f64) -> f64 {
         value * value
     }
 
     /// Квадратичная функция: (x − 2)² + 3(y + 1)².
-    fn calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
+    fn calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
         first_parameter: f64,
         second_parameter: f64,
     ) -> f64 {
-        calculate_square_by_multiplying_number_by_itself(first_parameter - 2.0)
-            + 3.0 * calculate_square_by_multiplying_number_by_itself(second_parameter + 1.0)
+        calc_square_by_multiplying_number_by_itself(first_parameter - 2.0)
+            + 3.0 * calc_square_by_multiplying_number_by_itself(second_parameter + 1.0)
     }
 
     /// Первообразная по x: (x − 2)³ / 3 + 3(y + 1)²x; её производная по x равна исходной функции.
-    fn calculate_antiderivative_by_cubing_first_shift_dividing_by_three_and_adding_second_shift_term(
+    fn calc_antiderivative_by_cubing_first_shift_dividing_by_three_and_adding_second_shift_term(
         first_parameter: f64,
 
         second_parameter: f64,
@@ -44,7 +44,7 @@ fn main() {
         let shifted_first: f64 = first_parameter - 2.0;
         shifted_first * shifted_first * shifted_first / 3.0
             + 3.0
-                * calculate_square_by_multiplying_number_by_itself(second_parameter + 1.0)
+                * calc_square_by_multiplying_number_by_itself(second_parameter + 1.0)
                 * first_parameter
     }
 
@@ -67,13 +67,13 @@ fn main() {
                 let second_parameter: f64 = 2.0;
                 [
 
-                    (calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
+                    (calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
 
                         first_parameter + step_size,
 
                         second_parameter,
 
-                    ) - calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
+                    ) - calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
 
                         first_parameter - step_size,
 
@@ -81,13 +81,13 @@ fn main() {
 
                     )) / (2.0 * step_size),
 
-                    (calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
+                    (calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
 
                         first_parameter,
 
                         second_parameter + step_size,
 
-                    ) - calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
+                    ) - calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
 
                         first_parameter,
 
@@ -101,18 +101,18 @@ fn main() {
     let step_size: f64 = 1e-5;
     let _: f64 =
 
-        (calculate_antiderivative_by_cubing_first_shift_dividing_by_three_and_adding_second_shift_term(0.3 + step_size, 2.0)
+        (calc_antiderivative_by_cubing_first_shift_dividing_by_three_and_adding_second_shift_term(0.3 + step_size, 2.0)
 
-            - calculate_antiderivative_by_cubing_first_shift_dividing_by_three_and_adding_second_shift_term(0.3 - step_size, 2.0))
+            - calc_antiderivative_by_cubing_first_shift_dividing_by_three_and_adding_second_shift_term(0.3 - step_size, 2.0))
 
             / (2.0 * step_size);
-    let _ = &(calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
-            0.3, 2.0
-        ));
+    let _ = &(calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
+        0.3, 2.0,
+    ));
 
-    plot_coordinate_slope_estimation_error_for_shrinking_step();
+    plot_coord_slope_estimation_error_for_shrinking_step();
 
-    fn plot_coordinate_slope_estimation_error_for_shrinking_step() {
+    fn plot_coord_slope_estimation_error_for_shrinking_step() {
         lesson_visualization::line_chart(
             env!("CARGO_MANIFEST_DIR"),
             "lesson-chart",
@@ -126,9 +126,9 @@ fn main() {
 
             .map(|step_exponent| {
                 let step_size: f64 = 10f64.powi(-step_exponent);
-                let numeric: f64 = (calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(0.3 + step_size, 2.0)
+                let numeric: f64 = (calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(0.3 + step_size, 2.0)
 
-                    - calculate_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(0.3 - step_size, 2.0))
+                    - calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(0.3 - step_size, 2.0))
 
                     / (2.0 * step_size);
                 (step_exponent as f64, (numeric - 2.0 * (0.3 - 2.0)).abs())

@@ -12,23 +12,23 @@
 // требуется только порядок соседей.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther;
+use l004_01_calculate_squared_point_distance_by_summing_squared_coordinate_differences::calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther;
 
 fn main() {
     let query: [f64; 2] = [1.0, 2.0];
     let candidates: [[f64; 2]; 2] = [[2.0, 2.0], [4.0, 6.0]];
     for candidate in candidates {
-        let _: f64 = calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
+        let _: f64 = calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
             &query, &candidate,
         )
         .expect("координаты должны быть конечными, а квадрат расстояния — помещаться в f64");
     }
 
-    plot_distance_from_query_for_changing_coordinate();
+    plot_dist_from_query_for_changing_coord();
 }
 
 // Строим график по результатам урока.
-fn plot_distance_from_query_for_changing_coordinate() {
+fn plot_dist_from_query_for_changing_coord() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

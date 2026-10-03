@@ -7,12 +7,12 @@
 // Представь: Изменение сигнала завтра не должно менять прогноз, сделанный сегодня.
 // Выход в момент t зависит от текущего и прошлых элементов, но не от будущего.
 
-use l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values;
+use l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values;
 
 fn main() {
     let signal: [f64; 4] = [1.0, 2.0, 3.0, 4.0];
     let output: [f64; 4] =
-        calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+        calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &signal, 1.0, 2.0, 1,
         )
         .unwrap()

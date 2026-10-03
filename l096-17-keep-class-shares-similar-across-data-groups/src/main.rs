@@ -11,13 +11,13 @@
 // только положительный класс, в другой — только отрицательный. Стратификация смешивает классы.
 
 fn main() {
-    let positive: [i32; 4] = [1, 3, 5, 7];
-    let bad_first: [i32; 4] = positive;
-    let negative: [i32; 4] = [0, 2, 4, 6];
-    let bad_second: [i32; 4] = negative;
-    let first_fold: [i32; 4] = [positive[0], positive[1], negative[0], negative[1]];
-    let second_fold: [i32; 4] = [positive[2], positive[3], negative[2], negative[3]];
-    for (_description, first_fold, second_fold, expected_positive) in [
+    let pos: [i32; 4] = [1, 3, 5, 7];
+    let bad_first: [i32; 4] = pos;
+    let neg: [i32; 4] = [0, 2, 4, 6];
+    let bad_second: [i32; 4] = neg;
+    let first_fold: [i32; 4] = [pos[0], pos[1], neg[0], neg[1]];
+    let second_fold: [i32; 4] = [pos[2], pos[3], neg[2], neg[3]];
+    for (_description, first_fold, second_fold, expected_pos) in [
         ("разбиение подряд", bad_first, bad_second, [4, 0]),
         ("стратификация", first_fold, second_fold, [2, 2]),
     ] {
@@ -25,14 +25,14 @@ fn main() {
             first_fold.iter().filter(|&&value| value % 2 == 1).count(),
             second_fold.iter().filter(|&&value| value % 2 == 1).count(),
         ];
-        assert_eq!(counts, expected_positive);
+        assert_eq!(counts, expected_pos);
     }
 
-    plot_positive_example_count_in_each_validation_group();
+    plot_pos_example_count_in_each_validation_group();
 }
 
 // Строим график по результатам урока.
-fn plot_positive_example_count_in_each_validation_group() {
+fn plot_pos_example_count_in_each_validation_group() {
     lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

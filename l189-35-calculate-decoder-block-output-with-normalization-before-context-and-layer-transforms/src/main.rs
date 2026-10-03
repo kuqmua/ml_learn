@@ -9,9 +9,9 @@
 // Нормализация, причинное внимание, прибавление входа, FFN и второй прибавление входа образуют блок.
 
 /// Нормализация слоя (LayerNorm): из координат вычитаем среднее и делим на sqrt(среднее квадратов отклонений + epsilon).
-use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
+use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
-fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average(
+fn normalize_coords_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average(
     input_value: [f64; 2],
 ) -> [f64; 2] {
     let mean: f64 = (input_value[0] + input_value[1]) / 2.0;
@@ -22,13 +22,13 @@ fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square_so
     ]
 }
 /// Учебный блок декодера: нормализуем вход, прибавляем причинный контекст, снова нормализуем и прибавляем 0.2·max(0, x).
-fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normalized_values(
+fn calc_decoder_block_output_by_adding_past_context_and_transformed_normalized_values(
     input: &[[f64; 2]; 3],
 ) -> [[f64; 2]; 3] {
     let normalized: [[f64; 2]; 3] =
-        input.map(normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average);
+        input.map(normalize_coords_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average);
     let attention: [[f64; 2]; 3] =
-        calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
+        calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
             &normalized,
             &normalized,
             &normalized,
@@ -42,7 +42,7 @@ fn calculate_decoder_block_output_by_adding_past_context_and_transformed_normali
         let input_plus_transformed_value: [f64; 2] =
             [original[0] + context[0], original[1] + context[1]];
         let scaled_values: [f64; 2] =
-            normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average(
+            normalize_coords_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average(
                 input_plus_transformed_value,
             );
         [
@@ -55,7 +55,7 @@ fn main() {
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
 
     assert!(
-        calculate_decoder_block_output_by_adding_past_context_and_transformed_normalized_values(
+        calc_decoder_block_output_by_adding_past_context_and_transformed_normalized_values(
             &states,
         )
         .iter()

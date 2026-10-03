@@ -23,21 +23,20 @@ fn main() {
             !samples_below_threshold.is_empty() && !samples_at_or_above_threshold.is_empty(),
             "порог должен оставлять примеры с обеих сторон"
         );
-        let positive_share_below_threshold: f64 = samples_below_threshold
+        let pos_share_below_threshold: f64 = samples_below_threshold
             .iter()
             .filter(|sample| sample.1)
             .count() as f64
             / samples_below_threshold.len() as f64;
-        let positive_share_at_or_above_threshold: f64 = samples_at_or_above_threshold
+        let pos_share_at_or_above_threshold: f64 = samples_at_or_above_threshold
             .iter()
             .filter(|sample| sample.1)
             .count() as f64
             / samples_at_or_above_threshold.len() as f64;
         let class_mixing_below_threshold: f64 =
-            2.0 * positive_share_below_threshold * (1.0 - positive_share_below_threshold);
-        let class_mixing_at_or_above_threshold: f64 = 2.0
-            * positive_share_at_or_above_threshold
-            * (1.0 - positive_share_at_or_above_threshold);
+            2.0 * pos_share_below_threshold * (1.0 - pos_share_below_threshold);
+        let class_mixing_at_or_above_threshold: f64 =
+            2.0 * pos_share_at_or_above_threshold * (1.0 - pos_share_at_or_above_threshold);
         let weighted_binary_class_mixing_where_0_means_pure_groups_and_smaller_means_better_split: f64 = (samples_below_threshold.len() as f64 * class_mixing_below_threshold
             + samples_at_or_above_threshold.len() as f64 * class_mixing_at_or_above_threshold)
             / data.len() as f64;

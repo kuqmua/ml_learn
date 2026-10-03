@@ -21,7 +21,7 @@ fn main() {
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
     /// Само умножение не обязательно медленнее библиотечного метода.
-    fn calculate_square_by_multiplying_number_by_itself(value: f64) -> f64 {
+    fn calc_square_by_multiplying_number_by_itself(value: f64) -> f64 {
         value * value
     }
 
@@ -44,11 +44,10 @@ fn main() {
                 .iter()
                 .map(|&(features, target)| {
                     (
-                        (calculate_square_by_multiplying_number_by_itself(
-                            features[0] - query_point[0],
-                        ) + calculate_square_by_multiplying_number_by_itself(
-                            features[1] - query_point[1],
-                        )),
+                        (calc_square_by_multiplying_number_by_itself(features[0] - query_point[0])
+                            + calc_square_by_multiplying_number_by_itself(
+                                features[1] - query_point[1],
+                            )),
                         target,
                     )
                 })

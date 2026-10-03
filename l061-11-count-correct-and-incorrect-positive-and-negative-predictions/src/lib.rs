@@ -6,13 +6,13 @@
 // Объявляем тип с данными, необходимыми для этого вычисления.
 pub struct BinaryClassificationCounts {
     // Используем подготовленное значение в следующем шаге примера.
-    pub true_positives_as_correctly_detected_positive_cases: usize,
+    pub true_poss_as_correctly_detected_pos_cases: usize,
     // Используем подготовленное значение в следующем шаге примера.
-    pub false_positives_as_false_alarms_on_negative_cases: usize,
+    pub false_poss_as_false_alarms_on_neg_cases: usize,
     // Используем подготовленное значение в следующем шаге примера.
-    pub true_negatives_as_correctly_rejected_negative_cases: usize,
+    pub true_negs_as_correctly_rejected_neg_cases: usize,
     // Используем подготовленное значение в следующем шаге примера.
-    pub false_negatives_as_missed_positive_cases: usize,
+    pub false_negs_as_missed_pos_cases: usize,
 }
 
 /// Сопоставляем метку с прогнозом и считаем четыре исхода.
@@ -24,23 +24,23 @@ pub fn count_binary_classification_outcomes_from_targets_and_predictions(
         return Err("число прогнозов должно совпадать с числом ответов");
     }
     let mut counts: BinaryClassificationCounts = BinaryClassificationCounts {
-        true_positives_as_correctly_detected_positive_cases: 0,
+        true_poss_as_correctly_detected_pos_cases: 0,
 
-        false_positives_as_false_alarms_on_negative_cases: 0,
+        false_poss_as_false_alarms_on_neg_cases: 0,
 
-        true_negatives_as_correctly_rejected_negative_cases: 0,
+        true_negs_as_correctly_rejected_neg_cases: 0,
 
-        false_negatives_as_missed_positive_cases: 0,
+        false_negs_as_missed_pos_cases: 0,
     };
     for index in 0..truth.len() {
         match (truth[index], predicted[index]) {
-            (true, true) => counts.true_positives_as_correctly_detected_positive_cases += 1,
+            (true, true) => counts.true_poss_as_correctly_detected_pos_cases += 1,
 
-            (false, true) => counts.false_positives_as_false_alarms_on_negative_cases += 1,
+            (false, true) => counts.false_poss_as_false_alarms_on_neg_cases += 1,
 
-            (false, false) => counts.true_negatives_as_correctly_rejected_negative_cases += 1,
+            (false, false) => counts.true_negs_as_correctly_rejected_neg_cases += 1,
 
-            (true, false) => counts.false_negatives_as_missed_positive_cases += 1,
+            (true, false) => counts.false_negs_as_missed_pos_cases += 1,
         }
     }
     Ok(counts)
@@ -63,10 +63,10 @@ mod tests {
             .unwrap();
         assert_eq!(
             (
-                counts.true_positives_as_correctly_detected_positive_cases,
-                counts.false_positives_as_false_alarms_on_negative_cases,
-                counts.false_negatives_as_missed_positive_cases,
-                counts.true_negatives_as_correctly_rejected_negative_cases
+                counts.true_poss_as_correctly_detected_pos_cases,
+                counts.false_poss_as_false_alarms_on_neg_cases,
+                counts.false_negs_as_missed_pos_cases,
+                counts.true_negs_as_correctly_rejected_neg_cases
             ),
             (1, 1, 1, 1)
         );

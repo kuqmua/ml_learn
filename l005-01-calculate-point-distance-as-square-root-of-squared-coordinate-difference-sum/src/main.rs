@@ -11,7 +11,7 @@
 
 use lesson_float_comparison::check_f64_eq_1e_minus_10;
 
-use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther;
+use l005_01_calculate_point_distance_as_square_root_of_squared_coordinate_difference_sum::calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther;
 
 fn main() {
     let cases: [(&str, &[f64; 2], &[f64; 2], f64); 3] = [
@@ -20,17 +20,17 @@ fn main() {
         ("точки совпадают", &[3.0, 4.0], &[3.0, 4.0], 0.0),
     ];
     for (_description, first_point, second_point, expected) in cases {
-        assert!(check_f64_eq_1e_minus_10(calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
+        assert!(check_f64_eq_1e_minus_10(calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
                 first_point,
                 second_point,
             )
             .expect("не удалось вычислить расстояние: координаты должны быть конечными, а квадрат расстояния — помещаться в f64"), expected));
     }
-    plot_distance_from_origin_for_changing_first_coordinate();
+    plot_dist_from_origin_for_changing_first_coord();
 }
 
 // Строим график по результатам урока.
-fn plot_distance_from_origin_for_changing_first_coordinate() {
+fn plot_dist_from_origin_for_changing_first_coord() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -45,7 +45,7 @@ fn plot_distance_from_origin_for_changing_first_coordinate() {
                     let horizontal_value: f64 = plot_step_index as f64 / 10.0;
                     (
                 horizontal_value,
-                calculate_point_distance_as_square_root_of_sum_of_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
+                calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
                     &[0.0, 0.0],
                     &[horizontal_value, 4.0],
                 )

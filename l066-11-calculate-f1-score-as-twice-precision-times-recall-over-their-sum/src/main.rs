@@ -9,13 +9,13 @@
 // Объединяем precision и recall из двух предыдущих уроков.
 // Если обе равны нулю, формула даёт 0/0, поэтому возвращаем None.
 
-use l066_11_calculate_f1_score_as_twice_precision_times_recall_over_their_sum::calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum_where_1_means_no_false_alarms_or_misses_and_larger_means_better;
+use l066_11_calculate_f1_score_as_twice_precision_times_recall_over_their_sum::calc_f1_score_as_twice_precision_times_recall_divided_by_their_sum_where_1_means_no_false_alarms_or_misses_and_larger_means_better;
 
 fn main() {
     for (
         _description,
-        correct_positive_prediction_share_where_1_means_no_false_alarms,
-        actual_positive_detection_share_where_1_means_none_missed,
+        correct_pos_prediction_share_where_1_means_no_false_alarms,
+        actual_pos_detection_share_where_1_means_none_missed,
         expected,
     ) in [
         ("обе метрики высоки", 1.0, 1.0, Some(1.0)),
@@ -24,9 +24,9 @@ fn main() {
         ("обе равны нулю", 0.0, 0.0, None),
     ] {
         assert_eq!(
-            calculate_f1_score_as_twice_precision_times_recall_divided_by_their_sum_where_1_means_no_false_alarms_or_misses_and_larger_means_better(
-                Some(correct_positive_prediction_share_where_1_means_no_false_alarms),
-                Some(actual_positive_detection_share_where_1_means_none_missed),
+            calc_f1_score_as_twice_precision_times_recall_divided_by_their_sum_where_1_means_no_false_alarms_or_misses_and_larger_means_better(
+                Some(correct_pos_prediction_share_where_1_means_no_false_alarms),
+                Some(actual_pos_detection_share_where_1_means_none_missed),
             ),
             expected
         );
@@ -40,7 +40,7 @@ fn plot_f1_score_as_twice_precision_times_recall_over_their_sum() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
-        "F1 при correct_positive_prediction_share_where_1_means_no_false_alarms=0.8",
+        "F1 при correct_pos_prediction_share_where_1_means_no_false_alarms=0.8",
         "recall",
         "F1",
         &[lesson_visualization::Series {

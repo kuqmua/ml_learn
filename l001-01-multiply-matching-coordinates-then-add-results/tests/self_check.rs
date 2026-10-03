@@ -1,36 +1,32 @@
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec;
 
 #[test]
-#[ignore = "заполни три вектора и запусти cargo test -p l001-01-multiply-matching-coordinates-then-add-results --test self_check -- --ignored"]
-fn predict_signs_after_multiplying_matching_coordinates_then_adding() {
-    let fixed_vector: [f64; 2] = [1.0, 2.0];
-    let vector_with_negative_result: Option<[f64; 2]> = None; // Заполни: подбери вектор с отрицательным результатом
-    let vector_with_negative_result: [f64; 2] =
-        vector_with_negative_result.expect("заполни ответ перед запуском теста");
-    let vector_with_zero_result: Option<[f64; 2]> = None; // Заполни: подбери ненулевой перпендикулярный вектор
-    let vector_with_zero_result: [f64; 2] =
-        vector_with_zero_result.expect("заполни ответ перед запуском теста");
-    let vector_with_positive_result: Option<[f64; 2]> = None; // Заполни: подбери вектор с положительным результатом
-    let vector_with_positive_result: [f64; 2] =
-        vector_with_positive_result.expect("заполни ответ перед запуском теста");
+#[ignore = "заполни три вектора и запусти cargo test -p l001-01-multiply-matching-coords-then-add-results --test self_check -- --ignored"]
+fn predict_signs_after_multiplying_matching_coords_then_adding() {
+    let fixed_vec: [f64; 2] = [1.0, 2.0];
+    let vec_with_neg_result: Option<[f64; 2]> = None; // Заполни: подбери вектор с отрицательным результатом
+    let vec_with_neg_result: [f64; 2] =
+        vec_with_neg_result.expect("заполни ответ перед запуском теста");
+    let vec_with_zero_result: Option<[f64; 2]> = None; // Заполни: подбери ненулевой перпендикулярный вектор
+    let vec_with_zero_result: [f64; 2] =
+        vec_with_zero_result.expect("заполни ответ перед запуском теста");
+    let vec_with_pos_result: Option<[f64; 2]> = None; // Заполни: подбери вектор с положительным результатом
+    let vec_with_pos_result: [f64; 2] =
+        vec_with_pos_result.expect("заполни ответ перед запуском теста");
 
     assert!(
-        multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&fixed_vector, &vector_with_negative_result)
+        multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(&fixed_vec, &vec_with_neg_result)
             .unwrap()
             < 0.0
     );
     assert_eq!(
-        multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&fixed_vector, &vector_with_zero_result)
+        multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(&fixed_vec, &vec_with_zero_result)
             .unwrap(),
         0.0
     );
+    assert!(vec_with_zero_result.iter().any(|&coord| coord != 0.0));
     assert!(
-        vector_with_zero_result
-            .iter()
-            .any(|&coordinate| coordinate != 0.0)
-    );
-    assert!(
-        multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&fixed_vector, &vector_with_positive_result)
+        multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(&fixed_vec, &vec_with_pos_result)
             .unwrap()
             > 0.0
     );

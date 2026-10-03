@@ -14,7 +14,7 @@
 
 fn main() {
     for raw_model_score in [-2.0, 0.0, 2.0] {
-        let _relu_output_where_negative_inputs_become_0_and_positive_inputs_pass_unchanged: f64 =
+        let _relu_output_where_neg_inputs_become_0_and_pos_inputs_pass_unchanged: f64 =
             if raw_model_score > 0.0 {
                 raw_model_score
             } else {
@@ -22,11 +22,11 @@ fn main() {
             };
     }
 
-    plot_rectified_activation_as_input_with_negative_values_replaced_by_zero();
+    plot_rectified_activation_as_input_with_neg_values_replaced_by_zero();
 }
 
 // Строим график по результатам урока.
-fn plot_rectified_activation_as_input_with_negative_values_replaced_by_zero() {
+fn plot_rectified_activation_as_input_with_neg_values_replaced_by_zero() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

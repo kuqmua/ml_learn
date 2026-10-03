@@ -20,11 +20,11 @@ fn main() {
         query_weights[1][0] * text_unit[0] + query_weights[1][1] * text_unit[1],
     ];
 
-    plot_coordinates_after_multiplying_by_query_weights(query);
+    plot_coords_after_multiplying_by_query_weights(query);
 }
 
 // Строим график по результатам урока.
-fn plot_coordinates_after_multiplying_by_query_weights(query: [f64; 2]) {
+fn plot_coords_after_multiplying_by_query_weights(query: [f64; 2]) {
     lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

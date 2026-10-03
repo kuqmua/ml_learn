@@ -6,7 +6,7 @@
 // Представь: Добавленные PAD-позиции не должны менять смысл настоящих слов при внимании.
 // Добавленные PAD позиции не должны влиять на реальные выходные токены.
 
-use l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores;
+use l182_34_build_text_context_from_both_earlier_and_later_positions::calc_visible_context_by_summing_states_weighted_by_exponentiated_coord_scores;
 
 fn main() {
     let real: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
@@ -14,12 +14,12 @@ fn main() {
     let input_with_padding_rows: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [100.0, 100.0]];
 
     assert_eq!(
-        calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
+        calc_visible_context_by_summing_states_weighted_by_exponentiated_coord_scores(
             &real,
             &[true, true],
         )
         .unwrap(),
-        calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
+        calc_visible_context_by_summing_states_weighted_by_exponentiated_coord_scores(
             &input_with_padding_rows,
             &[true, true, false],
         )

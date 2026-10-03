@@ -19,11 +19,11 @@ fn main() {
         weights[0] * values[0][1] + weights[1] * values[1][1],
     ];
 
-    plot_value_coordinates_after_weighted_summing(output);
+    plot_value_coords_after_weighted_summing(output);
 }
 
 // Строим график по результатам урока.
-fn plot_value_coordinates_after_weighted_summing(output: [f64; 2]) {
+fn plot_value_coords_after_weighted_summing(output: [f64; 2]) {
     lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

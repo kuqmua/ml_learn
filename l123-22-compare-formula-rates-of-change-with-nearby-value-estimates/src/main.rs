@@ -20,11 +20,11 @@ fn main() {
     let value_after_subtracting_step: f64 = (input_value - step_size) * (input_value - step_size);
     let _: f64 = (value_after_adding_step - value_after_subtracting_step) / (2.0 * step_size);
 
-    plot_difference_between_formula_slope_and_two_point_estimate();
+    plot_diff_between_formula_slope_and_two_point_estimate();
 }
 
 // Строим график по результатам урока.
-fn plot_difference_between_formula_slope_and_two_point_estimate() {
+fn plot_diff_between_formula_slope_and_two_point_estimate() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

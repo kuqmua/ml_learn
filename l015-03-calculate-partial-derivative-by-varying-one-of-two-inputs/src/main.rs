@@ -20,11 +20,11 @@ fn main() {
     let _partial_derivative_as_output_change_per_second_input_change_with_first_input_fixed: f64 =
         6.0 * second_input_value;
 
-    plot_function_values_while_changing_one_coordinate();
+    plot_function_values_while_changing_one_coord();
 }
 
 // Строим график по результатам урока.
-fn plot_function_values_while_changing_one_coordinate() {
+fn plot_function_values_while_changing_one_coord() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

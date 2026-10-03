@@ -8,36 +8,36 @@
 // Сочетаем причинные дилатированные свёртки, gate и вероятность следующего дискретного отсчёта.
 
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
-use l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values;
+use l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values;
 
-fn calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
+fn calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
     input_value: f64,
 ) -> f64 {
     1.0 / (1.0 + (-input_value).exp())
 }
 
 // Текущий вход содержит только уже известные отсчёты.
-fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f64 {
+fn calc_probability_of_next_sound_sample_from_history(history: &[u8]) -> f64 {
     let input: Vec<f64> = history
         .iter()
         .map(|&sample| f64::from(sample) * 2.0 - 1.0)
         .collect();
 
     let first_layer_bounded_signals_after_gating: Vec<f64> =
-        calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+        calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &input, 0.8, 0.4, 1,
         )
         .unwrap()
         .iter()
         .zip(
-            &calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+            &calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
                 &input, 0.2, -0.3, 1,
             )
             .unwrap(),
         )
         .map(|(&filter_value, &gate_score_controlling_signal_share)| {
-            calculate_tanh_as_signed_signal_where_0_means_no_signal_and_large_inputs_approach_1_or_minus_1(filter_value)
-                * calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
+            calc_tanh_as_signed_signal_where_0_means_no_signal_and_large_inputs_approach_1_or_minus_1(filter_value)
+                * calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
                     gate_score_controlling_signal_share,
                 )
         })
@@ -45,23 +45,23 @@ fn calculate_probability_of_next_sound_sample_from_history(history: &[u8]) -> f6
 
     let last: usize = history.len() - 1;
     let second_layer_bounded_signal_after_gating: f64 =
-        calculate_tanh_as_signed_signal_where_0_means_no_signal_and_large_inputs_approach_1_or_minus_1(calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+        calc_tanh_as_signed_signal_where_0_means_no_signal_and_large_inputs_approach_1_or_minus_1(calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &first_layer_bounded_signals_after_gating, 1.0, 0.5, 2,
         )
         .unwrap()[last])
-            * calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
-                calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+            * calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
+                calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
                     &first_layer_bounded_signals_after_gating, 0.1, 0.6, 2,
                 )
                 .unwrap()[last],
             );
-    calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(2.0 * second_layer_bounded_signal_after_gating)
+    calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(2.0 * second_layer_bounded_signal_after_gating)
 }
 fn main() {
     let mut samples: Vec<u8> = vec![1, 0, 1, 1];
     for _ in 0..4 {
         samples.push(u8::from(
-            calculate_probability_of_next_sound_sample_from_history(&samples) >= 0.5,
+            calc_probability_of_next_sound_sample_from_history(&samples) >= 0.5,
         ));
     }
     assert_eq!(samples.len(), 8);
@@ -91,7 +91,7 @@ fn plot_generated_discrete_sound_values(samples: &[u8]) {
 }
 
 /// tanh сохраняет знак, равен 0 при нулевом входе и насыщается к −1 или 1.
-fn calculate_tanh_as_signed_signal_where_0_means_no_signal_and_large_inputs_approach_1_or_minus_1(
+fn calc_tanh_as_signed_signal_where_0_means_no_signal_and_large_inputs_approach_1_or_minus_1(
     input: f64,
 ) -> f64 {
     input.tanh()

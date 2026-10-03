@@ -9,11 +9,9 @@
 // Сравниваем фиксированное затухание с входозависимым забыванием.
 
 /// Избирательное забывание: прибавляем вход к сохранённой доле состояния; по флагу сброса оставляем только текущий вход.
-use l212_40_calculate_memory_states_by_adding_weighted_input_to_retained_previous_state::calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state;
+use l212_40_calculate_memory_states_by_adding_weighted_input_to_retained_previous_state::calc_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state;
 
-fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input<
-    const N: usize,
->(
+fn calc_memory_states_by_adding_input_to_retained_state_or_resetting_to_input<const N: usize>(
     values: &[f64; N],
     reset: &[bool; N],
 ) -> [f64; N] {
@@ -31,14 +29,12 @@ fn calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_inp
 fn main() {
     let values: [f64; 4] = [1.0, 0.0, 2.0, 0.0];
     let fixed: [f64; 4] =
-        calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
+        calc_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
             &values, 0.8, 1.0,
         );
     let reset: [bool; 4] = [false, false, true, false];
     let dynamic: [f64; 4] =
-        calculate_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(
-            &values, &reset,
-        );
+        calc_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(&values, &reset);
     assert!(fixed[2] > dynamic[2]);
 
     plot_stored_state_with_constant_retention_and_selective_resets(&fixed, &dynamic);

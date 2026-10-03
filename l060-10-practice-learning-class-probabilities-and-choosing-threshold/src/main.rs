@@ -60,7 +60,7 @@ fn main() {
     ];
 
     /// Бинарная перекрёстная энтропия: среднее −y·ln(p) − (1−y)·ln(1−p), вычисленное устойчиво из оценок линейной модели.
-    fn calculate_binary_classification_loss_as_average_negative_log_target_probability_where_closer_to_0_means_more_probability_on_correct_answers(
+    fn calc_binary_classification_loss_as_average_neg_log_target_probability_where_closer_to_0_means_more_probability_on_correct_answers(
         data: &[(f64, f64)],
 
         weight: f64,
@@ -130,13 +130,13 @@ fn main() {
         loss_sum / data.len() as f64
     }
 
-    let _: f64 = calculate_binary_classification_loss_as_average_negative_log_target_probability_where_closer_to_0_means_more_probability_on_correct_answers(
+    let _: f64 = calc_binary_classification_loss_as_average_neg_log_target_probability_where_closer_to_0_means_more_probability_on_correct_answers(
         &TRAINING_EXAMPLES,
         0.,
         0.,
     );
     /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
-    fn calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
+    fn calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
         raw_model_score: f64,
     ) -> f64 {
         if raw_model_score >= 0. {
@@ -164,7 +164,7 @@ fn main() {
                 for &(feature_value, target) in data {
                     let prediction_error: f64 =
 
-                        calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(weight * feature_value + constant_input_weight) - target;
+                        calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(weight * feature_value + constant_input_weight) - target;
                     weight_loss_rate_of_change += prediction_error * feature_value;
                     constant_input_weight_loss_rate_of_change += prediction_error;
                 }
@@ -177,7 +177,7 @@ fn main() {
             constant_input_weight -= 0.1 * constant_input_weight_loss_rate_of_change;
             if matches!(epoch, 0 | 1 | 9 | 99 | 299) {
                 let _: f64 =
-                    calculate_binary_classification_loss_as_average_negative_log_target_probability_where_closer_to_0_means_more_probability_on_correct_answers(
+                    calc_binary_classification_loss_as_average_neg_log_target_probability_where_closer_to_0_means_more_probability_on_correct_answers(
                         &TRAINING_EXAMPLES,
                         weight,
                         constant_input_weight,
@@ -188,19 +188,19 @@ fn main() {
         (weight, constant_input_weight)
     })();
     let _ = (
-        &(calculate_binary_classification_loss_as_average_negative_log_target_probability_where_closer_to_0_means_more_probability_on_correct_answers(
+        &(calc_binary_classification_loss_as_average_neg_log_target_probability_where_closer_to_0_means_more_probability_on_correct_answers(
             &TRAINING_EXAMPLES,
             weight,
             constant_input_weight,
         )),
-        &(calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
+        &(calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
             2. * weight + constant_input_weight,
         )),
     );
 
-    plot_predicted_positive_probability_and_training_targets(weight, constant_input_weight);
+    plot_predicted_pos_probability_and_training_targets(weight, constant_input_weight);
 
-    fn plot_predicted_positive_probability_and_training_targets(
+    fn plot_predicted_pos_probability_and_training_targets(
         weight: f64,
         constant_input_weight: f64,
     ) {

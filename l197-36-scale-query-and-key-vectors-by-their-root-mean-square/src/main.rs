@@ -7,29 +7,29 @@
 //   по смыслу направления.
 // Нормируем Q и K отдельно до сравнения, затем применяем позиционное вращение.
 
-use l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights_to_control_scale_without_centering;
-use l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vector_coordinate_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vector_length;
+use l194_36_normalize_vector_scale_by_dividing_by_root_mean_square_and_applying_weights::normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights_to_control_scale_without_centering;
+use l195_36_encode_text_position_by_rotating_query_and_key_coordinate_pairs::rotate_vec_coord_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vec_length;
 
 fn main() {
-    let query_vector: [f64; 2] =
-        normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights_to_control_scale_without_centering(
+    let query_vec: [f64; 2] =
+        normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights_to_control_scale_without_centering(
             &[2.0, 1.0],
             &[1.0, 1.0],
             1e-6,
         )
         .unwrap();
-    let key_vector: [f64; 2] =
-        normalize_vector_scale_by_dividing_coordinates_by_root_mean_square_then_applying_weights_to_control_scale_without_centering(
+    let key_vec: [f64; 2] =
+        normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights_to_control_scale_without_centering(
             &[1.0, 3.0],
             &[1.0, 1.0],
             1e-6,
         )
         .unwrap();
-    let query_vector: [f64; 2] =
-        rotate_vector_coordinate_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vector_length([query_vector[0], query_vector[1]], 2, 0.1);
-    let key_vector: [f64; 2] =
-        rotate_vector_coordinate_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vector_length([key_vector[0], key_vector[1]], 1, 0.1);
+    let query_vec: [f64; 2] =
+        rotate_vec_coord_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vec_length([query_vec[0], query_vec[1]], 2, 0.1);
+    let key_vec: [f64; 2] =
+        rotate_vec_coord_pair_by_token_position_to_encode_relative_position_in_query_key_matches_while_preserving_vec_length([key_vec[0], key_vec[1]], 1, 0.1);
     let scaled_query_key_match_where_larger_means_more_attention_before_softmax: f64 =
-        (query_vector[0] * key_vector[0] + query_vector[1] * key_vector[1]) / 2.0_f64.sqrt();
+        (query_vec[0] * key_vec[0] + query_vec[1] * key_vec[1]) / 2.0_f64.sqrt();
     assert!(scaled_query_key_match_where_larger_means_more_attention_before_softmax.is_finite());
 }

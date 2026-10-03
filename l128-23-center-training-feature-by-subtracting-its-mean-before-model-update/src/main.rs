@@ -10,7 +10,7 @@
 // разными координатами.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
 
 fn main() {
     let training_data: [f64; 3] = [10.0, 20.0, 30.0];
@@ -18,7 +18,7 @@ fn main() {
         !training_data.is_empty(),
         "обучающая выборка не должна быть пустой"
     );
-    let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(&training_data).unwrap();
+    let mean: f64 = calc_mean_by_summing_values_and_dividing_by_count(&training_data).unwrap();
 
     plot_feature_before_and_after_subtracting_mean(
         training_data,

@@ -15,23 +15,24 @@
 
 fn main() {
     let ranked_targets: [bool; 4] = [true, false, true, false];
-    let positive_count: f64 = ranked_targets.iter().filter(|&&target| target).count() as f64;
-    let mut found_positive: f64 = 0.0;
-    let mut _average_precision_where_1_means_all_positives_ranked_before_negatives_and_larger_means_better: f64 = 0.0;
+    let pos_count: f64 = ranked_targets.iter().filter(|&&target| target).count() as f64;
+    let mut found_pos: f64 = 0.0;
+    let mut _average_precision_where_1_means_all_poss_ranked_before_negs_and_larger_means_better: f64 = 0.0;
     for (rank, target) in ranked_targets.into_iter().enumerate() {
         if target {
-            found_positive += 1.0;
-            let correct_positive_prediction_share_where_1_means_no_false_alarms: f64 =
-                found_positive / (rank + 1) as f64;
-            _average_precision_where_1_means_all_positives_ranked_before_negatives_and_larger_means_better += correct_positive_prediction_share_where_1_means_no_false_alarms / positive_count;
+            found_pos += 1.0;
+            let correct_pos_prediction_share_where_1_means_no_false_alarms: f64 =
+                found_pos / (rank + 1) as f64;
+            _average_precision_where_1_means_all_poss_ranked_before_negs_and_larger_means_better +=
+                correct_pos_prediction_share_where_1_means_no_false_alarms / pos_count;
         }
     }
 
-    plot_correct_positive_prediction_share_against_detected_positive_share();
+    plot_correct_pos_prediction_share_against_detected_pos_share();
 }
 
 // Строим график по результатам урока.
-fn plot_correct_positive_prediction_share_against_detected_positive_share() {
+fn plot_correct_pos_prediction_share_against_detected_pos_share() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

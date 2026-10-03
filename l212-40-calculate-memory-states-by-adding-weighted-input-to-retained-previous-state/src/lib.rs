@@ -5,7 +5,7 @@
 // Долю (fraction) предыдущего состояния, сохраняемую на следующем шаге, называют retention.
 /// Линейная рекуррентная модель: h = доля_памяти·h_previous + вес_входа·x; начальное состояние нулевое.
 
-pub fn calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state<
+pub fn calc_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state<
     const N: usize,
 >(
     input_sequence: &[f64; N],

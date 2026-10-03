@@ -5,7 +5,7 @@
 // Представь: Если gate подавлен, даже большой сигнал ветки up почти не проходит в выход.
 // Одна проекция открывает gate, другая несёт значения; затем идёт выходная проекция.
 
-use l198_36_calculate_gated_layer_output_by_multiplying_branches_with_smooth_gate::calculate_gated_layer_output_as_silu_gate_times_up_value_where_0_gate_blocks_and_gate_multiplier_can_be_negative_or_greater_than_1;
+use l198_36_calculate_gated_layer_output_by_multiplying_branches_with_smooth_gate::calc_gated_layer_output_as_silu_gate_times_up_value_where_0_gate_blocks_and_gate_multiplier_can_be_neg_or_greater_than_1;
 
 fn main() {
     let input: [f64; 2] = [1.0, -2.0];
@@ -13,7 +13,7 @@ fn main() {
     let up_projection: f64 = input[0] + input[1];
 
     let down: f64 =
-        calculate_gated_layer_output_as_silu_gate_times_up_value_where_0_gate_blocks_and_gate_multiplier_can_be_negative_or_greater_than_1(
+        calc_gated_layer_output_as_silu_gate_times_up_value_where_0_gate_blocks_and_gate_multiplier_can_be_neg_or_greater_than_1(
             gate,
             up_projection,
         ) * 0.5;

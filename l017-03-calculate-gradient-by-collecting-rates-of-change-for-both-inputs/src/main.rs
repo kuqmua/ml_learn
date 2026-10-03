@@ -17,11 +17,11 @@ fn main() {
     let (input_value, second_input_value): (f64, f64) = (0.0, 0.0);
     let _gradient_pointing_toward_fastest_local_increase_with_0_components_meaning_no_first_order_change: [f64; 2] = [2.0 * (input_value - 2.0), 6.0 * (second_input_value + 1.0)];
 
-    plot_rate_of_change_along_first_coordinate();
+    plot_rate_of_change_along_first_coord();
 }
 
 // Строим график по результатам урока.
-fn plot_rate_of_change_along_first_coordinate() {
+fn plot_rate_of_change_along_first_coord() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

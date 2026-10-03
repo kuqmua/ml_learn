@@ -4,7 +4,7 @@
 /// Прямой шаг диффузии при заранее выбранном шуме epsilon.
 /// Прямой шаг диффузии: sqrt(a)·signal + sqrt(1−a)·noise; масштабируем и сигнал, и шум.
 
-pub fn calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+pub fn calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
     clean: f64,
     sampled_noise_value: f64,
 

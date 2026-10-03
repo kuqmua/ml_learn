@@ -9,25 +9,24 @@
 // Сравнение средних — первый сигнал: при похожих данных разница мала, при сдвиге растёт.
 // Совпадение средних само по себе не доказывает совпадения распределений.
 
-use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
 
 fn main() {
     let reference: [f64; 3] = [1.0, 2.0, 3.0];
     assert!(!reference.is_empty());
     let reference_mean: f64 =
-        calculate_mean_by_summing_values_and_dividing_by_count(&reference).unwrap();
+        calc_mean_by_summing_values_and_dividing_by_count(&reference).unwrap();
     let cases: [(&str, [f64; 3], f64); 3] = [
         ("без сдвига среднего", [3.0, 2.0, 1.0], 0.0),
         ("сдвиг к большим значениям", [5.0, 6.0, 7.0], 4.0),
         ("то же среднее, другой разброс", [0.0, 2.0, 4.0], 0.0),
     ];
-    for (_description, current, expected_difference) in cases {
+    for (_description, current, expected_diff) in cases {
         assert!(!current.is_empty());
 
-        let difference: f64 = calculate_mean_by_summing_values_and_dividing_by_count(&current)
-            .unwrap()
-            - reference_mean;
-        assert_eq!(difference, expected_difference);
+        let diff: f64 =
+            calc_mean_by_summing_values_and_dividing_by_count(&current).unwrap() - reference_mean;
+        assert_eq!(diff, expected_diff);
     }
 
     plot_reference_shifted_and_more_spread_out_feature_values(reference, cases);

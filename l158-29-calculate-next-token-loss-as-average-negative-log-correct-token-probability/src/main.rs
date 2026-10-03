@@ -22,7 +22,7 @@ fn main() {
             probabilities.iter().all(|&p| p > 0.0 && p <= 1.0),
             "вероятность должна быть больше 0 и не больше 1"
         );
-        let mut negative_log_sum: f64 = 0.0;
+        let mut neg_log_sum: f64 = 0.0;
         for &probability in probabilities {
             let ratio: f64 = (probability - 1.0) / (probability + 1.0);
             let mut term: f64 = ratio;
@@ -31,27 +31,26 @@ fn main() {
                 logarithm += term / odd_divisor as f64;
                 term *= ratio * ratio;
             }
-            negative_log_sum -= 2.0 * logarithm;
+            neg_log_sum -= 2.0 * logarithm;
         }
-        let average_negative_log_correct_token_probability_where_closer_to_0_means_better: f64 =
-            negative_log_sum / probabilities.len() as f64;
+        let average_neg_log_correct_token_probability_where_closer_to_0_means_better: f64 =
+            neg_log_sum / probabilities.len() as f64;
         if index > 0 {
             assert!(
-                average_negative_log_correct_token_probability_where_closer_to_0_means_better
+                average_neg_log_correct_token_probability_where_closer_to_0_means_better
                     > previous_error
             );
         }
-        previous_error =
-            average_negative_log_correct_token_probability_where_closer_to_0_means_better;
+        previous_error = average_neg_log_correct_token_probability_where_closer_to_0_means_better;
     }
     let invalid: [f64; 2] = [0.0, 0.5];
     if invalid.iter().any(|&probability| probability <= 0.0) {}
 
-    plot_next_token_loss_as_negative_log_of_correct_text_unit_probability();
+    plot_next_token_loss_as_neg_log_of_correct_text_unit_probability();
 }
 
 // Строим график по результатам урока.
-fn plot_next_token_loss_as_negative_log_of_correct_text_unit_probability() {
+fn plot_next_token_loss_as_neg_log_of_correct_text_unit_probability() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

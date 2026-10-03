@@ -72,7 +72,7 @@ fn main() {
     }
 
     /// Сглаженная вероятность следующего токена: (число пары + 1) / (число переходов из контекста + размер словаря).
-    fn calculate_next_token_probability_as_pair_count_plus_one_over_context_count_plus_vocabulary_size(
+    fn calc_next_token_probability_as_pair_count_plus_one_over_context_count_plus_vocabulary_size(
         counts: &std::collections::BTreeMap<(String, String), usize>,
 
         known_text_units: &std::collections::BTreeSet<String>,
@@ -95,20 +95,20 @@ fn main() {
     }
 
     /// Перплексия: e в степени среднего отрицательного логарифма вероятности следующего слова, включая конец строки.
-    fn calculate_perplexity_as_e_to_average_negative_log_next_word_probability_as_effective_choice_count_where_1_means_certainty_on_correct_words_and_larger_means_worse(
+    fn calc_perplexity_as_e_to_average_neg_log_next_word_probability_as_effective_choice_count_where_1_means_certainty_on_correct_words_and_larger_means_worse(
         sentences: &[&str],
 
         counts: &std::collections::BTreeMap<(String, String), usize>,
 
         known_text_units: &std::collections::BTreeSet<String>,
     ) -> f64 {
-        let (mut text_unit_count, mut negative_log_likelihood): (i32, f64) = (0, 0.);
+        let (mut text_unit_count, mut neg_log_likelihood): (i32, f64) = (0, 0.);
         for sentence in sentences {
             let mut previous_text_unit: &str = "<s>";
             for word in sentence.split_whitespace().chain(["</s>"]) {
-                negative_log_likelihood -= (|| -> f64 {
+                neg_log_likelihood -= (|| -> f64 {
                     let value: f64 =
-                        calculate_next_token_probability_as_pair_count_plus_one_over_context_count_plus_vocabulary_size(
+                        calc_next_token_probability_as_pair_count_plus_one_over_context_count_plus_vocabulary_size(
 
                             counts,
 
@@ -162,17 +162,17 @@ fn main() {
             }
         }
         approximate_e_to_power_by_summing_power_over_factorial_terms(
-            negative_log_likelihood / text_unit_count as f64,
+            neg_log_likelihood / text_unit_count as f64,
         )
     }
 
     let _ = (
-        &(calculate_perplexity_as_e_to_average_negative_log_next_word_probability_as_effective_choice_count_where_1_means_certainty_on_correct_words_and_larger_means_worse(
+        &(calc_perplexity_as_e_to_average_neg_log_next_word_probability_as_effective_choice_count_where_1_means_certainty_on_correct_words_and_larger_means_worse(
             &training_sentences,
             &bigram_counts,
             &known_text_units,
         )),
-        &(calculate_perplexity_as_e_to_average_negative_log_next_word_probability_as_effective_choice_count_where_1_means_certainty_on_correct_words_and_larger_means_worse(
+        &(calc_perplexity_as_e_to_average_neg_log_next_word_probability_as_effective_choice_count_where_1_means_certainty_on_correct_words_and_larger_means_worse(
             &["пёс ест"],
             &bigram_counts,
             &known_text_units,
@@ -186,7 +186,7 @@ fn main() {
             .iter()
 
             .max_by(|first_candidate, second_candidate| {
-                calculate_next_token_probability_as_pair_count_plus_one_over_context_count_plus_vocabulary_size(
+                calc_next_token_probability_as_pair_count_plus_one_over_context_count_plus_vocabulary_size(
 
                     &bigram_counts,
 
@@ -198,7 +198,7 @@ fn main() {
                 )
 
                 .total_cmp(
-                    &calculate_next_token_probability_as_pair_count_plus_one_over_context_count_plus_vocabulary_size(
+                    &calc_next_token_probability_as_pair_count_plus_one_over_context_count_plus_vocabulary_size(
 
                         &bigram_counts,
 

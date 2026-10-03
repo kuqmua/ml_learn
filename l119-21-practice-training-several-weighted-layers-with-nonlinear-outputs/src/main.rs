@@ -59,13 +59,13 @@ fn main() {
     ];
 
     /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
-    fn calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
+    fn calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
         raw_model_score: f64,
     ) -> f64 {
         1. / (1. + approximate_e_to_power_by_summing_power_over_factorial_terms(-raw_model_score))
     }
     /// Производная сигмоиды по её входу: output·(1−output), если output — уже вычисленная сигмоида.
-    fn calculate_sigmoid_slope_by_multiplying_output_by_one_minus_output_as_input_sensitivity_largest_at_half_and_approaching_0_near_output_limits(
+    fn calc_sigmoid_slope_by_multiplying_output_by_one_minus_output_as_input_sensitivity_largest_at_half_and_approaching_0_near_output_limits(
         sigmoid_output: f64,
     ) -> f64 {
         sigmoid_output * (1.0 - sigmoid_output)
@@ -87,19 +87,19 @@ fn main() {
         for epoch in 0..20_000 {
             for &(features, expected_output) in &XOR {
                 let hidden_outputs: [f64; 2] = [
-                    calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
+                    calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
                         network.hidden_weights[0][0] * features[0]
                             + network.hidden_weights[0][1] * features[1]
                             + network.hidden_weights[0][2],
                     ),
-                    calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
+                    calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
                         network.hidden_weights[1][0] * features[0]
                             + network.hidden_weights[1][1] * features[1]
                             + network.hidden_weights[1][2],
                     ),
                 ];
                 let output_probability: f64 =
-                    calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
+                    calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
                         network.output_weights[0] * hidden_outputs[0]
                             + network.output_weights[1] * hidden_outputs[1]
                             + network.output_weights[2],
@@ -109,18 +109,18 @@ fn main() {
                     let target: f64 = expected_output;
                     prediction - target
                 })()
-                    * calculate_sigmoid_slope_by_multiplying_output_by_one_minus_output_as_input_sensitivity_largest_at_half_and_approaching_0_near_output_limits(
+                    * calc_sigmoid_slope_by_multiplying_output_by_one_minus_output_as_input_sensitivity_largest_at_half_and_approaching_0_near_output_limits(
                         output_probability,
                     );
                 let hidden_layer_loss_rates_of_change: [f64; 2] = [
                     output_loss_rate_of_change
                         * network.output_weights[0]
-                        * calculate_sigmoid_slope_by_multiplying_output_by_one_minus_output_as_input_sensitivity_largest_at_half_and_approaching_0_near_output_limits(
+                        * calc_sigmoid_slope_by_multiplying_output_by_one_minus_output_as_input_sensitivity_largest_at_half_and_approaching_0_near_output_limits(
                             hidden_outputs[0],
                         ),
                     output_loss_rate_of_change
                         * network.output_weights[1]
-                        * calculate_sigmoid_slope_by_multiplying_output_by_one_minus_output_as_input_sensitivity_largest_at_half_and_approaching_0_near_output_limits(
+                        * calc_sigmoid_slope_by_multiplying_output_by_one_minus_output_as_input_sensitivity_largest_at_half_and_approaching_0_near_output_limits(
                             hidden_outputs[1],
                         ),
                 ];
@@ -148,18 +148,18 @@ fn main() {
     for (features, _expected_output) in XOR {
         let output_probability: f64 = {
             let hidden_outputs: [f64; 2] = [
-                calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
+                calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
                     network.hidden_weights[0][0] * features[0]
                         + network.hidden_weights[0][1] * features[1]
                         + network.hidden_weights[0][2],
                 ),
-                calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
+                calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
                     network.hidden_weights[1][0] * features[0]
                         + network.hidden_weights[1][1] * features[1]
                         + network.hidden_weights[1][2],
                 ),
             ];
-            calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
+            calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
                 network.output_weights[0] * hidden_outputs[0]
                     + network.output_weights[1] * hidden_outputs[1]
                     + network.output_weights[2],

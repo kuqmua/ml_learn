@@ -9,8 +9,8 @@
 
 use lesson_float_comparison::check_f64_eq_1e_minus_12;
 
-use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares;
-use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
+use l186_35_calculate_probability_weights_by_exponentiating_shifted_scores_and_normalizing::calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares;
+use l187_35_calculate_past_context_by_summing_current_and_past_values_with_match_weights::calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches;
 
 fn main() {
     let mut cached_keys: Vec<[f64; 2]> = Vec::new();
@@ -21,7 +21,7 @@ fn main() {
         cached_keys.push(new_state);
         cached_values.push(new_state);
 
-        cached_outputs.push(calculate_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
+        cached_outputs.push(calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum_where_weights_sum_to_1_and_larger_scores_get_larger_shares(
                 &cached_keys
             .iter()
             .map(|key| (new_state[0] * key[0] + new_state[1] * key[1]) / 2.0_f64.sqrt())
@@ -36,7 +36,7 @@ fn main() {
         ));
     }
     for (cached, recomputed) in cached_outputs.iter().zip(
-        calculate_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
+        calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches(
             &states, &states, &states,
         )
         .unwrap(),

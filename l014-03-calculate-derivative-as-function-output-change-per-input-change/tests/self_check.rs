@@ -1,7 +1,7 @@
 // Для f(x)=x² производная показывает наклон 2x в выбранной точке.
 #[test]
 #[ignore = "заполни ответы и запусти тест с --ignored"]
-fn calculate_slopes() {
+fn calc_slopes() {
     let slopes_at_minus_two_zero_and_three: Option<[i32; 3]> = None;
     let slopes: [i32; 3] =
         slopes_at_minus_two_zero_and_three.expect("впиши три наклона в Some([..., ..., ...])");

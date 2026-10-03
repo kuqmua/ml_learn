@@ -22,11 +22,11 @@ fn main() {
             > neighbor_count;
     }
 
-    plot_positive_class_share_among_nearest_examples(neighbor_targets);
+    plot_pos_class_share_among_nearest_examples(neighbor_targets);
 }
 
 // Строим график по результатам урока.
-fn plot_positive_class_share_among_nearest_examples(neighbor_targets: [bool; 5]) {
+fn plot_pos_class_share_among_nearest_examples(neighbor_targets: [bool; 5]) {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

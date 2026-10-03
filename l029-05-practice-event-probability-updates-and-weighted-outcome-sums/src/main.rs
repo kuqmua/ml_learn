@@ -31,55 +31,51 @@ fn main() {
     }
 
     let mut generator: PseudorandomGenerator = PseudorandomGenerator(42);
-    let mut positive_test_count: i32 = 0;
-    let mut true_positive_count: i32 = 0;
+    let mut pos_test_count: i32 = 0;
+    let mut true_pos_count: i32 = 0;
     let mut _heads_count: i32 = 0;
     for _ in 0..100_000 {
         if generator.generate_random_number_between_zero_and_one() < 0.5 {
             _heads_count += 1;
         }
         let has_disease: bool = generator.generate_random_number_between_zero_and_one() < 0.01;
-        let test_is_positive: bool = if has_disease {
+        let test_is_pos: bool = if has_disease {
             generator.generate_random_number_between_zero_and_one() < 0.9
         } else {
             generator.generate_random_number_between_zero_and_one() < 0.05
         };
-        if test_is_positive {
-            positive_test_count += 1;
+        if test_is_pos {
+            pos_test_count += 1;
             if has_disease {
-                true_positive_count += 1;
+                true_pos_count += 1;
             }
         }
     }
 
     let _ = (
-        &(true_positive_count as f64 / positive_test_count as f64),
+        &(true_pos_count as f64 / pos_test_count as f64),
         &((|| -> f64 {
             let disease_probability_before_observing_test_result: f64 = 0.01;
 
-            let positive_test_probability_given_disease_where_1_means_no_missed_cases: f64 = 0.9;
+            let pos_test_probability_given_disease_where_1_means_no_missed_cases: f64 = 0.9;
 
-            let true_positive_probability: f64 = disease_probability_before_observing_test_result
-                * positive_test_probability_given_disease_where_1_means_no_missed_cases;
+            let true_pos_probability: f64 = disease_probability_before_observing_test_result
+                * pos_test_probability_given_disease_where_1_means_no_missed_cases;
 
-            let negative_test_probability_given_no_disease_where_1_means_no_false_alarms: f64 =
-                0.95;
-            true_positive_probability
-                / (true_positive_probability + (1.0 - disease_probability_before_observing_test_result) * (1.0 - negative_test_probability_given_no_disease_where_1_means_no_false_alarms))
+            let neg_test_probability_given_no_disease_where_1_means_no_false_alarms: f64 = 0.95;
+            true_pos_probability
+                / (true_pos_probability
+                    + (1.0 - disease_probability_before_observing_test_result)
+                        * (1.0
+                            - neg_test_probability_given_no_disease_where_1_means_no_false_alarms))
         })()),
     );
 
-    plot_simulated_and_calculated_disease_rates_after_positive_test(
-        positive_test_count,
-        true_positive_count,
-    );
+    plot_simulated_and_calcd_disease_rates_after_pos_test(pos_test_count, true_pos_count);
 }
 
 // Строим график по результатам урока.
-fn plot_simulated_and_calculated_disease_rates_after_positive_test(
-    positive_test_count: i32,
-    true_positive_count: i32,
-) {
+fn plot_simulated_and_calcd_disease_rates_after_pos_test(pos_test_count: i32, true_pos_count: i32) {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -99,11 +95,7 @@ fn plot_simulated_and_calculated_disease_rates_after_positive_test(
             lesson_visualization::Series {
                 name: "симуляция",
 
-                points: &[(
-                    100000.0,
-                    true_positive_count as f64 / positive_test_count as f64,
-                )]
-                .to_vec(),
+                points: &[(100000.0, true_pos_count as f64 / pos_test_count as f64)].to_vec(),
             },
         ],
     )

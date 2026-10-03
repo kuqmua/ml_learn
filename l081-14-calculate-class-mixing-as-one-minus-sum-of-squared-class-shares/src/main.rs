@@ -11,18 +11,17 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    for positive_class_share in [0.0, 0.5, 1.0] {
-        let negative_class_share: f64 = 1.0 - positive_class_share;
-        let _binary_gini_mixing_where_0_means_one_class_and_half_means_equal_class_shares: f64 = 1.0
-            - positive_class_share * positive_class_share
-            - negative_class_share * negative_class_share;
+    for pos_class_share in [0.0, 0.5, 1.0] {
+        let neg_class_share: f64 = 1.0 - pos_class_share;
+        let _binary_gini_mixing_where_0_means_one_class_and_half_means_equal_class_shares: f64 =
+            1.0 - pos_class_share * pos_class_share - neg_class_share * neg_class_share;
     }
 
-    plot_class_mixing_as_twice_positive_share_times_negative_share();
+    plot_class_mixing_as_twice_pos_share_times_neg_share();
 }
 
 // Строим график по результатам урока.
-fn plot_class_mixing_as_twice_positive_share_times_negative_share() {
+fn plot_class_mixing_as_twice_pos_share_times_neg_share() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

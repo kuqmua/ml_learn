@@ -11,7 +11,7 @@
 
 use lesson_float_comparison::check_f64_eq_1e_minus_10;
 
-use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer;
+use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calc_vec_length_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer;
 
 fn main() {
     let cases: [(&str, [f64; 2], f64); 4] = [
@@ -20,17 +20,17 @@ fn main() {
         ("вдвое длиннее", [6.0, 8.0], 10.0),
         ("нулевой вектор", [0.0, 0.0], 0.0),
     ];
-    for (_description, vector, expected) in cases {
+    for (_description, vec, expected) in cases {
         assert!(
-            check_f64_eq_1e_minus_10(calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer(&vector), expected)
+            check_f64_eq_1e_minus_10(calc_vec_length_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer(&vec), expected)
         );
     }
 
-    plot_vector_length_for_changing_first_coordinate();
+    plot_vec_length_for_changing_first_coord();
 }
 
 // Строим график по результатам урока.
-fn plot_vector_length_for_changing_first_coordinate() {
+fn plot_vec_length_for_changing_first_coord() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -45,7 +45,7 @@ fn plot_vector_length_for_changing_first_coordinate() {
                     let horizontal_value: f64 = plot_step_index as f64 / 10.0;
                     (
                         horizontal_value,
-                        calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer(&[
+                        calc_vec_length_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer(&[
                             horizontal_value,
                             4.0,
                         ]),

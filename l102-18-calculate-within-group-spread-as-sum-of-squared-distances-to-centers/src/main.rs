@@ -25,17 +25,17 @@ fn main() {
         assignments.iter().all(|&index| index < centers.len()),
         "номер центра выходит за границы списка"
     );
-    let mut _total_squared_distance_to_cluster_centers: f64 = 0.0;
+    let mut _total_squared_dist_to_cluster_centers: f64 = 0.0;
     for index in 0..points.len() {
         let delta: f64 = points[index][0] - centers[assignments[index]][0];
-        _total_squared_distance_to_cluster_centers += delta * delta;
+        _total_squared_dist_to_cluster_centers += delta * delta;
     }
 
-    plot_squared_distance_to_nearest_fixed_center_for_changing_point();
+    plot_squared_dist_to_nearest_fixed_center_for_changing_point();
 }
 
 // Строим график по результатам урока.
-fn plot_squared_distance_to_nearest_fixed_center_for_changing_point() {
+fn plot_squared_dist_to_nearest_fixed_center_for_changing_point() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

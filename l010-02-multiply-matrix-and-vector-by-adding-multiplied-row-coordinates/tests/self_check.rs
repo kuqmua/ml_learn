@@ -1,7 +1,7 @@
 // Сначала умножь каждую строку матрицы на вектор вручную.
 #[test]
 #[ignore = "заполни ответы и запусти тест с --ignored"]
-fn multiply_matching_coordinates_then_add_for_each_matrix_row() {
+fn multiply_matching_coords_then_add_for_each_matrix_row() {
     let result: Option<[i32; 2]> = None; // [[1, 2], [3, 4]] · [5, 6]
     let result: [i32; 2] = result.expect("впиши оба числа в Some([..., ...])");
     assert_eq!(result, [17, 39]);

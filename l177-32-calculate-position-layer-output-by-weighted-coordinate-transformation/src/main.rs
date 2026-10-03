@@ -18,19 +18,19 @@ fn main() {
         0.5 * text_unit[0] - 0.2 * text_unit[1],
         0.3 * text_unit[0] + 0.4 * text_unit[1],
     ];
-    let relu_outputs_where_negative_inputs_become_0_and_positive_inputs_pass_unchanged: [f64; 2] = [
+    let relu_outputs_where_neg_inputs_become_0_and_pos_inputs_pass_unchanged: [f64; 2] = [
         if linear[0] > 0.0 { linear[0] } else { 0.0 },
         if linear[1] > 0.0 { linear[1] } else { 0.0 },
     ];
 
     plot_activations_after_transforming_each_position(
-        relu_outputs_where_negative_inputs_become_0_and_positive_inputs_pass_unchanged,
+        relu_outputs_where_neg_inputs_become_0_and_pos_inputs_pass_unchanged,
     );
 }
 
 // Строим график по результатам урока.
 fn plot_activations_after_transforming_each_position(
-    relu_outputs_where_negative_inputs_become_0_and_positive_inputs_pass_unchanged: [f64; 2],
+    relu_outputs_where_neg_inputs_become_0_and_pos_inputs_pass_unchanged: [f64; 2],
 ) {
     lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
@@ -40,11 +40,11 @@ fn plot_activations_after_transforming_each_position(
         &[
             (
                 "нейрон 0",
-                relu_outputs_where_negative_inputs_become_0_and_positive_inputs_pass_unchanged[0],
+                relu_outputs_where_neg_inputs_become_0_and_pos_inputs_pass_unchanged[0],
             ),
             (
                 "нейрон 1",
-                relu_outputs_where_negative_inputs_become_0_and_positive_inputs_pass_unchanged[1],
+                relu_outputs_where_neg_inputs_become_0_and_pos_inputs_pass_unchanged[1],
             ),
         ],
     )

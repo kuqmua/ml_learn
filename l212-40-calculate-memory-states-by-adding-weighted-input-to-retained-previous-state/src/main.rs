@@ -8,12 +8,12 @@
 //   прошлого.
 // Последовательность обрабатывается линейным сканированием с компактным состоянием.
 
-use l212_40_calculate_memory_states_by_adding_weighted_input_to_retained_previous_state::calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state;
+use l212_40_calculate_memory_states_by_adding_weighted_input_to_retained_previous_state::calc_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state;
 
 fn main() {
     let input: [f64; 4] = [1.0, 0.0, 0.0, 0.0];
     let states: [f64; 4] =
-        calculate_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
+        calc_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state(
             &input, 0.5, 1.0,
         );
     assert_eq!(states, [1.0, 0.5, 0.25, 0.125]);

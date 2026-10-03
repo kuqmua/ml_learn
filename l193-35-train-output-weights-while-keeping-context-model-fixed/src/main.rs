@@ -9,26 +9,26 @@
 // Фиксируем decoder и подгоняем только выходные веса на train; качество проверяем отдельно.
 
 /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
-use l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calculate_text_context_vectors_by_adding_position_and_weighted_past_context;
+use l191_35_calculate_text_context_vectors_by_adding_position_and_weighted_past_context::calc_text_context_vecs_by_adding_position_and_weighted_past_context;
 
-fn calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
+fn calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
     input_value: f64,
 ) -> f64 {
     1.0 / (1.0 + (-input_value).exp())
 }
 /// Бинарная перекрёстная энтропия: из последнего контекстного вектора получаем вероятность p и считаем −y·ln(p)−(1−y)·ln(1−p).
-fn calculate_binary_prediction_loss_as_negative_log_target_probability_from_final_context_where_closer_to_0_means_more_probability_on_correct_answer(
+fn calc_binary_prediction_loss_as_neg_log_target_probability_from_final_context_where_closer_to_0_means_more_probability_on_correct_answer(
     weight: &[f64; 2],
     sample: (&[usize], f64),
 ) -> f64 {
     let final_hidden_state: [f64; 2] =
-        *calculate_text_context_vectors_by_adding_position_and_weighted_past_context(sample.0)
+        *calc_text_context_vecs_by_adding_position_and_weighted_past_context(sample.0)
             .last()
             .unwrap();
     let raw_model_score: f64 =
         weight[0] * final_hidden_state[0] + weight[1] * final_hidden_state[1];
     let probability: f64 =
-        calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
+        calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
             raw_model_score,
         )
         .clamp(1e-12, 1.0 - 1e-12);
@@ -40,7 +40,7 @@ fn main() {
     let baseline: f64 = validation
         .iter()
         .map(|&sample| {
-            calculate_binary_prediction_loss_as_negative_log_target_probability_from_final_context_where_closer_to_0_means_more_probability_on_correct_answer(
+            calc_binary_prediction_loss_as_neg_log_target_probability_from_final_context_where_closer_to_0_means_more_probability_on_correct_answer(
                 &weight, sample,
             )
         })
@@ -51,13 +51,13 @@ fn main() {
         let mut rate_of_change: [f64; 2] = [0.0; 2];
         for &(text_unit_identifiers, target) in &training_data {
             let final_hidden_state: [f64; 2] =
-                *calculate_text_context_vectors_by_adding_position_and_weighted_past_context(
+                *calc_text_context_vecs_by_adding_position_and_weighted_past_context(
                     text_unit_identifiers,
                 )
                 .last()
                 .unwrap();
             let error: f64 =
-                calculate_sigmoid_as_one_divided_by_one_plus_e_to_negative_score_where_0_score_means_half_and_larger_scores_approach_1(
+                calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score_where_0_score_means_half_and_larger_scores_approach_1(
                     weight[0] * final_hidden_state[0] + weight[1] * final_hidden_state[1],
                 ) - target;
             rate_of_change[0] += error * final_hidden_state[0];
@@ -70,7 +70,7 @@ fn main() {
     let held_out: f64 = validation
         .iter()
         .map(|&sample| {
-            calculate_binary_prediction_loss_as_negative_log_target_probability_from_final_context_where_closer_to_0_means_more_probability_on_correct_answer(
+            calc_binary_prediction_loss_as_neg_log_target_probability_from_final_context_where_closer_to_0_means_more_probability_on_correct_answer(
                 &weight, sample,
             )
         })

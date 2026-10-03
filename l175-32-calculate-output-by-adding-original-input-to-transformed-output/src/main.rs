@@ -18,11 +18,11 @@ fn main() {
     let transformed: [f64; 2] = [0.2, -0.5];
     let output: [f64; 2] = [input[0] + transformed[0], input[1] + transformed[1]];
 
-    plot_first_coordinate_before_and_after_adding_block_input(input, output);
+    plot_first_coord_before_and_after_adding_block_input(input, output);
 }
 
 // Строим график по результатам урока.
-fn plot_first_coordinate_before_and_after_adding_block_input(input: [f64; 2], output: [f64; 2]) {
+fn plot_first_coord_before_and_after_adding_block_input(input: [f64; 2], output: [f64; 2]) {
     lesson_visualization::bar_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

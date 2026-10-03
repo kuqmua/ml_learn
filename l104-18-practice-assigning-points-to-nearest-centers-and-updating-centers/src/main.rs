@@ -21,18 +21,18 @@ fn main() {
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
     /// Само умножение не обязательно медленнее библиотечного метода.
-    fn calculate_square_by_multiplying_number_by_itself(value: f64) -> f64 {
+    fn calc_square_by_multiplying_number_by_itself(value: f64) -> f64 {
         value * value
     }
 
     /// Квадрат расстояния: складываем квадраты разностей соответствующих координат двух точек.
-    fn calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
+    fn calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
         first_point: [f64; 2],
 
         second_point: [f64; 2],
     ) -> f64 {
-        calculate_square_by_multiplying_number_by_itself(first_point[0] - second_point[0])
-            + calculate_square_by_multiplying_number_by_itself(first_point[1] - second_point[1])
+        calc_square_by_multiplying_number_by_itself(first_point[0] - second_point[0])
+            + calc_square_by_multiplying_number_by_itself(first_point[1] - second_point[1])
     }
 
     let dataset: [[f64; 2]; 4] = [[0., 0.], [0., 1.], [10., 10.], [10., 11.]];
@@ -42,7 +42,7 @@ fn main() {
         let mut centers: [[f64; 2]; 2] = [dataset[0], dataset[2]];
 
         for _ in 0..100 {
-            let mut coordinate_sums: [[f64; 2]; 2] = [[0., 0.]; 2];
+            let mut coord_sums: [[f64; 2]; 2] = [[0., 0.]; 2];
 
             let mut cluster_sizes: [usize; 2] = [0; 2];
 
@@ -51,7 +51,7 @@ fn main() {
 
                         .min_by(|&first_center_index, &second_center_index| {
 
-                            calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
+                            calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
 
                                 point,
 
@@ -60,7 +60,7 @@ fn main() {
 
                             .total_cmp(
 
-                                &calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
+                                &calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
 
                                     point,
 
@@ -71,9 +71,9 @@ fn main() {
 
                         .unwrap();
 
-                coordinate_sums[center_index][0] += point[0];
+                coord_sums[center_index][0] += point[0];
 
-                coordinate_sums[center_index][1] += point[1];
+                coord_sums[center_index][1] += point[1];
 
                 cluster_sizes[center_index] += 1;
             }
@@ -83,8 +83,8 @@ fn main() {
             for center_index in 0..centers.len() {
                 if cluster_sizes[center_index] > 0 {
                     centers[center_index] = [
-                        coordinate_sums[center_index][0] / cluster_sizes[center_index] as f64,
-                        coordinate_sums[center_index][1] / cluster_sizes[center_index] as f64,
+                        coord_sums[center_index][0] / cluster_sizes[center_index] as f64,
+                        coord_sums[center_index][1] / cluster_sizes[center_index] as f64,
                     ];
                 }
             }
@@ -94,26 +94,26 @@ fn main() {
             }
         }
 
-        let mut sum_of_squared_distances_to_cluster_centers_where_0_means_points_equal_centers_and_smaller_means_tighter_clusters: f64 = 0.0;
+        let mut sum_of_squared_dists_to_cluster_centers_where_0_means_points_equal_centers_and_smaller_means_tighter_clusters: f64 = 0.0;
 
         for &point in data {
-            let mut nearest_squared_distance: f64 = f64::INFINITY;
+            let mut nearest_squared_dist: f64 = f64::INFINITY;
 
             for &center in &centers {
-                let candidate_distance: f64 =
-                    calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther(
+                let candidate_dist: f64 =
+                    calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther(
                         point, center,
                     );
 
-                if candidate_distance < nearest_squared_distance {
-                    nearest_squared_distance = candidate_distance;
+                if candidate_dist < nearest_squared_dist {
+                    nearest_squared_dist = candidate_dist;
                 }
             }
 
-            sum_of_squared_distances_to_cluster_centers_where_0_means_points_equal_centers_and_smaller_means_tighter_clusters += nearest_squared_distance;
+            sum_of_squared_dists_to_cluster_centers_where_0_means_points_equal_centers_and_smaller_means_tighter_clusters += nearest_squared_dist;
         }
 
-        (centers, sum_of_squared_distances_to_cluster_centers_where_0_means_points_equal_centers_and_smaller_means_tighter_clusters)
+        (centers, sum_of_squared_dists_to_cluster_centers_where_0_means_points_equal_centers_and_smaller_means_tighter_clusters)
     })());
 
     plot_training_points_for_grouping_by_nearest_center(dataset);

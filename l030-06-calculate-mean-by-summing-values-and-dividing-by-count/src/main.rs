@@ -10,7 +10,7 @@
 // Складываем значения и делим на их количество. Для одного значения среднее равно ему,
 // отрицательные числа могут уменьшить среднее, а для пустого набора делить не на что.
 
-use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
 
 fn main() {
     let cases: [(&str, &[f64], f64); 3] = [
@@ -20,13 +20,13 @@ fn main() {
     ];
     for (_description, values, expected) in cases {
         assert_eq!(
-            calculate_mean_by_summing_values_and_dividing_by_count(values)
+            calc_mean_by_summing_values_and_dividing_by_count(values)
                 .expect("для среднего нужен непустой набор значений"),
             expected
         );
     }
     let empty: [f64; 0] = [];
-    let _: &str = calculate_mean_by_summing_values_and_dividing_by_count(&empty)
+    let _: &str = calc_mean_by_summing_values_and_dividing_by_count(&empty)
         .expect_err("среднее пустого набора должно быть отклонено");
 
     plot_values_and_mean_as_their_sum_divided_by_count();

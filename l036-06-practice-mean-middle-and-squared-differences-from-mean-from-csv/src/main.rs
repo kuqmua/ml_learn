@@ -9,8 +9,8 @@
 // Разбираем CSV и объединяем вычисления среднего и дисперсии из общей библиотеки.
 // Медиану находим после сортировки. Пустые строки пропускаем, неверное число сообщаем явно.
 
-use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
-use l032_06_calculate_sample_variance_from_squared_differences_from_mean::calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread;
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
+use l032_06_calculate_sample_variance_from_squared_differences_from_mean::calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread;
 
 fn main() {
     const SAMPLE_COMMA_SEPARATED_VALUES: &str = "value\n2\n4\n\n6\n8\n";
@@ -28,7 +28,7 @@ fn main() {
     values.sort_by(f64::total_cmp);
 
     let _: f64 =
-        calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread(
+        calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread(
             &values,
         )
         .unwrap();
@@ -43,7 +43,7 @@ fn main() {
 
     plot_csv_values_mean_and_middle_of_sorted_values(
         &values,
-        calculate_mean_by_summing_values_and_dividing_by_count(&values).unwrap(),
+        calc_mean_by_summing_values_and_dividing_by_count(&values).unwrap(),
         median_where_at_least_half_of_values_are_at_or_below_and_at_least_half_at_or_above,
     );
 }

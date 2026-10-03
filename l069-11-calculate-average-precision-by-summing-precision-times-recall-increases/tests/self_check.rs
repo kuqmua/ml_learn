@@ -3,10 +3,10 @@
 #[test]
 #[ignore = "заполни ответ в tests/self_check.rs и запусти тест с --ignored --nocapture"]
 fn choose_correct_check_for_lesson() {
-    let _question: &str = "Построй точки correct_positive_prediction_share_where_1_means_no_false_alarms-actual_positive_detection_share_where_1_means_none_missed для четырёх объектов при последовательном снижении порога.";
+    let _question: &str = "Построй точки correct_pos_prediction_share_where_1_means_no_false_alarms-actual_pos_detection_share_where_1_means_none_missed для четырёх объектов при последовательном снижении порога.";
     let _choices: [&str; 3] = [
         "Проверь, что идеальное ранжирование даёт ROC-AUC 1, а обратное — 0.",
-        "Укажи, в каких шагах добавление ложноположительного объекта уменьшает correct_positive_prediction_share_where_1_means_no_false_alarms.",
+        "Укажи, в каких шагах добавление ложноположительного объекта уменьшает correct_pos_prediction_share_where_1_means_no_false_alarms.",
         "Сравни их с accuracy модели, всегда выдающей отрицательный класс.",
     ];
 

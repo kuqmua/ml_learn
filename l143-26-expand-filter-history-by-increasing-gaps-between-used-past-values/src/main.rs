@@ -7,13 +7,13 @@
 // Представь: Фильтр с промежутками между весами видит более далёкое прошлое при том же числе весов.
 // Дилатации 1, 2, 4 расширяют область прошлого без длинных фильтров.
 
-use l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values;
+use l142_26_calculate_causal_filter_output_by_summing_weighted_current_and_past_values::calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values;
 
 fn main() {
     let mut signal: [f64; 9] = [0.0; 9];
     signal[0] = 1.0;
     for filter_spacing in [1, 2, 4] {
-        signal = calculate_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
+        signal = calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &signal,
             1.0,
             1.0,

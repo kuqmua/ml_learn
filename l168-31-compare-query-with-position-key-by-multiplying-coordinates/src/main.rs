@@ -10,22 +10,22 @@
 // Зачем это нужно: Key описывает, на какой запрос позиция отвечает; сравнение Q·K даёт оценку внимания.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec;
 
 fn main() {
     let query: [f64; 2] = [1.0, 0.5];
     let key: [f64; 2] = [0.8, 0.2];
 
-    plot_results_after_multiplying_matching_query_and_key_coordinates(
+    plot_results_after_multiplying_matching_query_and_key_coords(
         query,
         key,
-        multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&query, &key)
+        multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(&query, &key)
             .expect("запрос и ключ должны иметь одинаковое число координат"),
     );
 }
 
 // Строим график по результатам урока.
-fn plot_results_after_multiplying_matching_query_and_key_coordinates(
+fn plot_results_after_multiplying_matching_query_and_key_coords(
     query: [f64; 2],
     key: [f64; 2],
     score: f64,

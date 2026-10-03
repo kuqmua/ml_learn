@@ -98,10 +98,10 @@ fn plot_second_probability_weight_as_its_exponential_divided_by_sum_of_two_expon
 
             points: &(-60..=60)
                 .map(|plot_step_index| {
-                    let difference_between_raw_scores: f64 = plot_step_index as f64 / 10.0;
+                    let diff_between_raw_scores: f64 = plot_step_index as f64 / 10.0;
                     (
-                        difference_between_raw_scores,
-                        1.0 / (1.0 + (-difference_between_raw_scores).exp()),
+                        diff_between_raw_scores,
+                        1.0 / (1.0 + (-diff_between_raw_scores).exp()),
                     )
                 })
                 .collect::<Vec<_>>(),

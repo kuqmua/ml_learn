@@ -15,7 +15,7 @@ fn validate_equal_lengths_of_targets_and_predictions(
 
 /// Средний модуль ошибки с проверкой числа пар.
 /// Средняя абсолютная ошибка (MAE): суммируем модули разностей прогноза и ответа, делим на число пар.
-pub fn calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
+pub fn calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
     targets: &[f64],
     predictions: &[f64],
 ) -> Result<f64, &'static str> {

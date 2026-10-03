@@ -31,24 +31,24 @@ fn main() {
     }
 
     /// Нечистота Джини для двух классов: 2·p·(1−p), где p — доля положительных меток.
-    fn calculate_binary_class_mixing_as_twice_positive_share_times_negative_share_where_0_means_one_class_and_half_means_equal_class_shares(
+    fn calc_binary_class_mixing_as_twice_pos_share_times_neg_share_where_0_means_one_class_and_half_means_equal_class_shares(
         data: &[(f64, bool)],
     ) -> f64 {
         if data.is_empty() {
             return 0.;
         }
-        let positive_class_share: f64 =
+        let pos_class_share: f64 =
             data.iter().filter(|(_, target)| *target).count() as f64 / data.len() as f64;
-        2. * positive_class_share * (1. - positive_class_share)
+        2. * pos_class_share * (1. - pos_class_share)
     }
     /// Дерево решений: выбираем порог с наименьшей взвешенной нечистотой Джини и повторяем до ограничения глубины.
     fn build_threshold_tree_by_minimizing_weighted_class_mixing(
         data: &[(f64, bool)],
         remaining_depth: usize,
     ) -> Tree {
-        let positive_count: usize = data.iter().filter(|(_, target)| *target).count();
-        if remaining_depth == 0 || positive_count == 0 || positive_count == data.len() {
-            return Tree::Leaf(positive_count * 2 >= data.len());
+        let pos_count: usize = data.iter().filter(|(_, target)| *target).count();
+        if remaining_depth == 0 || pos_count == 0 || pos_count == data.len() {
+            return Tree::Leaf(pos_count * 2 >= data.len());
         }
         let mut sorted_feature_values: Vec<f64> = data.iter().map(|sample| sample.0).collect();
         sorted_feature_values.sort_by(f64::total_cmp);
@@ -69,11 +69,11 @@ fn main() {
                 .filter(|sample| sample.0 >= candidate_threshold)
                 .collect();
             let weighted_binary_class_mixing_where_0_means_pure_groups_and_smaller_means_better_split: f64 = (samples_below_threshold.len() as f64
-                * calculate_binary_class_mixing_as_twice_positive_share_times_negative_share_where_0_means_one_class_and_half_means_equal_class_shares(
+                * calc_binary_class_mixing_as_twice_pos_share_times_neg_share_where_0_means_one_class_and_half_means_equal_class_shares(
                     &samples_below_threshold,
                 )
                 + samples_at_or_above_threshold.len() as f64
-                    * calculate_binary_class_mixing_as_twice_positive_share_times_negative_share_where_0_means_one_class_and_half_means_equal_class_shares(
+                    * calc_binary_class_mixing_as_twice_pos_share_times_neg_share_where_0_means_one_class_and_half_means_equal_class_shares(
                         &samples_at_or_above_threshold,
                     ))
                 / data.len() as f64;
@@ -108,7 +108,7 @@ fn main() {
                 ),
             }
         } else {
-            Tree::Leaf(positive_count * 2 >= data.len())
+            Tree::Leaf(pos_count * 2 >= data.len())
         }
     }
 

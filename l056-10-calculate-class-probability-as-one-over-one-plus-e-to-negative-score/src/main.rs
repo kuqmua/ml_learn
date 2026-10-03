@@ -20,11 +20,16 @@ fn main() {
             term *= -raw_model_score / index as f64;
             exponential += term;
         }
-        let positive_class_probability_where_0_means_negative_1_means_positive_and_half_means_equal_chances: f64 = 1.0 / (1.0 + exponential);
-        assert!(positive_class_probability_where_0_means_negative_1_means_positive_and_half_means_equal_chances > 0.0 && positive_class_probability_where_0_means_negative_1_means_positive_and_half_means_equal_chances < 1.0);
-        let side: i32 = if positive_class_probability_where_0_means_negative_1_means_positive_and_half_means_equal_chances < 0.5 {
+        let pos_class_probability_where_0_means_neg_1_means_pos_and_half_means_equal_chances: f64 =
+            1.0 / (1.0 + exponential);
+        assert!(
+            pos_class_probability_where_0_means_neg_1_means_pos_and_half_means_equal_chances > 0.0
+                && pos_class_probability_where_0_means_neg_1_means_pos_and_half_means_equal_chances
+                    < 1.0
+        );
+        let side: i32 = if pos_class_probability_where_0_means_neg_1_means_pos_and_half_means_equal_chances < 0.5 {
             -1
-        } else if positive_class_probability_where_0_means_negative_1_means_positive_and_half_means_equal_chances > 0.5 {
+        } else if pos_class_probability_where_0_means_neg_1_means_pos_and_half_means_equal_chances > 0.5 {
             1
         } else {
             0
@@ -32,11 +37,11 @@ fn main() {
         assert_eq!(side, expected_side);
     }
 
-    plot_class_probability_as_one_over_one_plus_e_to_negative_score();
+    plot_class_probability_as_one_over_one_plus_e_to_neg_score();
 }
 
 // Строим график по результатам урока.
-fn plot_class_probability_as_one_over_one_plus_e_to_negative_score() {
+fn plot_class_probability_as_one_over_one_plus_e_to_neg_score() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",

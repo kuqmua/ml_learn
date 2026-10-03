@@ -10,7 +10,7 @@
 // Что изучаем: складываем модули всех координат. Отрицательное число даёт положительный вклад,
 // поэтому смена знаков не меняет ответ. У нулевого вектора результат равен нулю.
 
-use l002_01_calculate_sum_of_absolute_vector_coordinates::calculate_sum_of_absolute_vector_coordinates_as_total_axis_aligned_length_where_0_means_zero_vector;
+use l002_01_calculate_sum_of_absolute_vector_coordinates::calc_sum_of_absolute_vec_coords_as_total_axis_aligned_length_where_0_means_zero_vec;
 
 fn main() {
     let cases: [(&str, [f64; 2], f64); 4] = [
@@ -19,18 +19,20 @@ fn main() {
         ("сменили оба знака", [-3.0, 4.0], 7.0),
         ("нулевой вектор", [0.0, 0.0], 0.0),
     ];
-    for (_description, vector, expected) in cases {
+    for (_description, vec, expected) in cases {
         assert_eq!(
-            calculate_sum_of_absolute_vector_coordinates_as_total_axis_aligned_length_where_0_means_zero_vector(&vector),
+            calc_sum_of_absolute_vec_coords_as_total_axis_aligned_length_where_0_means_zero_vec(
+                &vec
+            ),
             expected
         );
     }
 
-    plot_sum_of_absolute_coordinates_for_changing_first_coordinate();
+    plot_sum_of_absolute_coords_for_changing_first_coord();
 }
 
 // Строим график по результатам урока.
-fn plot_sum_of_absolute_coordinates_for_changing_first_coordinate() {
+fn plot_sum_of_absolute_coords_for_changing_first_coord() {
     lesson_visualization::line_chart(
         env!("CARGO_MANIFEST_DIR"),
         "lesson-chart",
@@ -45,7 +47,7 @@ fn plot_sum_of_absolute_coordinates_for_changing_first_coordinate() {
                     let horizontal_value: f64 = plot_step_index as f64 / 10.0;
                     (
                         horizontal_value,
-                        calculate_sum_of_absolute_vector_coordinates_as_total_axis_aligned_length_where_0_means_zero_vector(&[horizontal_value, 4.0]),
+                        calc_sum_of_absolute_vec_coords_as_total_axis_aligned_length_where_0_means_zero_vec(&[horizontal_value, 4.0]),
                     )
                 })
                 .collect::<Vec<_>>(),

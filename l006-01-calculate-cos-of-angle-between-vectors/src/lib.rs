@@ -2,22 +2,22 @@
 
 /// Сходство направлений использует вычисление 01.1 и длину 01.3.
 /// Косинусное сходство: сумму произведений соответствующих координат делим на произведение длин векторов.
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
-use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec;
+use l003_01_calculate_vector_length_as_square_root_of_sum_of_squared_coordinates::calc_vec_length_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer;
 
-pub fn calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(
-    first_vector: &[f64],
-    second_vector: &[f64],
+pub fn calc_cos_of_angle_between_vecs_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(
+    first_vec: &[f64],
+    second_vec: &[f64],
 ) -> Result<f64, &'static str> {
-    let sum_after_multiplying_coordinates: f64 =
-        multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(first_vector, second_vector)?;
-    let multiplied_vector_lengths: f64 =
-        calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer(first_vector)
-            * calculate_vector_length_as_square_root_of_sum_of_squared_coordinates_where_0_means_zero_vector_and_larger_means_longer(second_vector);
-    if multiplied_vector_lengths == 0.0 {
+    let sum_after_multiplying_coords: f64 =
+        multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(first_vec, second_vec)?;
+    let multiplied_vec_lengths: f64 =
+        calc_vec_length_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer(first_vec)
+            * calc_vec_length_as_square_root_of_sum_of_squared_coords_where_0_means_zero_vec_and_larger_means_longer(second_vec);
+    if multiplied_vec_lengths == 0.0 {
         return Err("у нулевого вектора нет направления");
     }
-    Ok(sum_after_multiplying_coordinates / multiplied_vector_lengths)
+    Ok(sum_after_multiplying_coords / multiplied_vec_lengths)
 }
 
 // Добавляем свойство для следующего определения.
@@ -27,16 +27,16 @@ mod tests {
 
     // Добавляем свойство для следующего определения.
     #[test]
-    // Определяем вычисление `reuses_earlier_lessons_and_rejects_zero_vector` для этого примера.
-    fn reuses_earlier_lessons_and_rejects_zero_vector() {
+    // Определяем вычисление `reuses_earlier_lessons_and_rejects_zero_vec` для этого примера.
+    fn reuses_earlier_lessons_and_rejects_zero_vec() {
         assert_eq!(
-            super::calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&[1.0, 0.0], &[0.0, 1.0]),
+            super::calc_cos_of_angle_between_vecs_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&[1.0, 0.0], &[0.0, 1.0]),
             Ok(0.0)
         );
         assert_eq!(
-            super::calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&[1.0, 0.0], &[-1.0, 0.0]),
+            super::calc_cos_of_angle_between_vecs_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&[1.0, 0.0], &[-1.0, 0.0]),
             Ok(-1.0)
         );
-        assert!(super::calculate_cos_of_angle_between_vectors_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&[1.0, 0.0], &[0.0, 0.0]).is_err());
+        assert!(super::calc_cos_of_angle_between_vecs_as_direction_similarity_where_1_means_same_0_means_perpendicular_and_minus_1_means_opposite(&[1.0, 0.0], &[0.0, 0.0]).is_err());
     }
 }

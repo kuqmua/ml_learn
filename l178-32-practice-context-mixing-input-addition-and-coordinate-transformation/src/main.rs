@@ -17,13 +17,13 @@
 // Дополнительная практика: Собери один блок на малых тензорах и опиши порядок операций.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector;
+use l001_01_multiply_matching_coordinates_then_add_results::multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec;
 
 fn main() {
     /// Возводим число в квадрат обычным умножением.
     /// Вместо этой учебной обёртки можно написать `value * value` или `value.powi(2)`.
     /// Само умножение не обязательно медленнее библиотечного метода.
-    fn calculate_square_by_multiplying_number_by_itself(value: f64) -> f64 {
+    fn calc_square_by_multiplying_number_by_itself(value: f64) -> f64 {
         value * value
     }
 
@@ -86,14 +86,13 @@ fn main() {
     }
 
     /// Нормализация слоя (LayerNorm): из координат вычитаем среднее и делим на sqrt(среднее квадратов отклонений + epsilon).
-    fn normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average(
+    fn normalize_coords_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average(
         input_values: [f64; 2],
     ) -> [f64; 2] {
         let mean: f64 = (input_values[0] + input_values[1]) / 2.;
-        let variance: f64 =
-            (calculate_square_by_multiplying_number_by_itself(input_values[0] - mean)
-                + calculate_square_by_multiplying_number_by_itself(input_values[1] - mean))
-                / 2.;
+        let variance: f64 = (calc_square_by_multiplying_number_by_itself(input_values[0] - mean)
+            + calc_square_by_multiplying_number_by_itself(input_values[1] - mean))
+            / 2.;
         [
             (input_values[0] - mean)
                 / approximate_square_root_by_repeated_averaging(variance + 1e-5),
@@ -102,7 +101,7 @@ fn main() {
         ]
     }
 
-    fn calculate_transformer_output(input_values: &[[f64; 2]; 2]) -> [[f64; 2]; 2] {
+    fn calc_transformer_output(input_values: &[[f64; 2]; 2]) -> [[f64; 2]; 2] {
         std::array::from_fn(|text_unit_index| {
             let query = input_values[text_unit_index];
             let attention_weights: Vec<f64> = {
@@ -110,7 +109,7 @@ fn main() {
                     .iter()
                     .take(text_unit_index + 1)
                     .map(|key| {
-                        multiply_matching_coordinates_then_add_results_as_unnormalized_alignment_where_positive_means_acute_negative_means_obtuse_and_0_means_perpendicular_or_zero_vector(&query, key).unwrap()
+                        multiply_matching_coords_then_add_results_as_unnormalized_alignment_where_pos_means_angle_below_90_degrees_neg_means_angle_above_90_degrees_and_0_means_perpendicular_or_zero_vec(&query, key).unwrap()
                             / approximate_square_root_by_repeated_averaging(2.0)
                     })
                     .collect();
@@ -144,7 +143,7 @@ fn main() {
                 attended[1] += attention_weights[key_index] * input_values[key_index][1];
             }
             let normalized_values: [f64; 2] =
-                normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average([
+                normalize_coords_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average([
                     query[0] + attended[0],
                     query[1] + attended[1],
                 ]);
@@ -152,7 +151,7 @@ fn main() {
                 choose_larger_number(normalized_values[0], 0.),
                 choose_larger_number(normalized_values[1], 0.),
             ];
-            normalize_coordinates_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average([
+            normalize_coords_by_subtracting_mean_and_dividing_by_root_mean_square_so_0_means_average_and_sign_shows_side_of_average([
                 normalized_values[0] + feed_forward_values[0],
                 normalized_values[1] + feed_forward_values[1],
             ])
@@ -160,14 +159,14 @@ fn main() {
     }
 
     let input_values: [[f64; 2]; 2] = [[1., 0.], [0., 1.]];
-    plot_outputs_after_context_mixing_and_coordinate_transformation(
+    plot_outputs_after_context_mixing_and_coord_transformation(
         input_values,
-        calculate_transformer_output(&input_values),
+        calc_transformer_output(&input_values),
     );
 }
 
 // Строим график по результатам урока.
-fn plot_outputs_after_context_mixing_and_coordinate_transformation(
+fn plot_outputs_after_context_mixing_and_coord_transformation(
     input_values: [[f64; 2]; 2],
     transformer_output: [[f64; 2]; 2],
 ) {

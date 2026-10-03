@@ -1,6 +1,6 @@
-use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
-use l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
-use l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
+use l050_09_calculate_mean_squared_error_as_squared_error_sum_divided_by_count::calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
+use l051_09_calculate_mean_absolute_error_as_absolute_error_sum_divided_by_count::calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse;
 
 fn report_error(
     records: &[lesson_datasets::WineQualityRedRecord],
@@ -19,17 +19,17 @@ fn report_error(
         .map(|&index| slope * records[index].features[10] + intercept)
         .collect();
     let _ = (
-        &(calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
+        &(calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
             &targets, &baseline,
         )?),
-        &(calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
+        &(calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
             &targets, &baseline,
         )?),
-        &(calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
+        &(calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
             &targets,
             &predictions,
         )?),
-        &(calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
+        &(calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse(
             &targets,
             &predictions,
         )?),
@@ -50,8 +50,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .iter()
         .map(|&index| records[index].features[10])
         .collect();
-    let target_mean = calculate_mean_by_summing_values_and_dividing_by_count(&training_targets)?;
-    let alcohol_mean = calculate_mean_by_summing_values_and_dividing_by_count(&training_alcohol)?;
+    let target_mean = calc_mean_by_summing_values_and_dividing_by_count(&training_targets)?;
+    let alcohol_mean = calc_mean_by_summing_values_and_dividing_by_count(&training_alcohol)?;
     let covariance: f64 = training_alcohol
         .iter()
         .zip(&training_targets)

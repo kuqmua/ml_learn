@@ -212,7 +212,7 @@ fn every_public_lesson_operation_is_demonstrated_in_its_own_main() {
 fn recognizes_qualified_calls_imports_aliases_and_macro_arguments() {
     let calls = calls_in_main(
         r#"
-        use lesson::{calculate as operation, nested};
+        use lesson::{calc as operation, nested};
         use lesson as own;
         fn main() {
             operation();
@@ -225,7 +225,7 @@ fn recognizes_qualified_calls_imports_aliases_and_macro_arguments() {
     "#,
     );
     for path in [
-        "lesson::calculate",
+        "lesson::calc",
         "lesson::nested::run",
         "lesson::another",
         "lesson::inside_assert",
@@ -239,24 +239,23 @@ fn recognizes_qualified_calls_imports_aliases_and_macro_arguments() {
 fn comments_strings_unused_helpers_and_other_crates_do_not_demonstrate_a_function() {
     let calls = calls_in_main(
         r#"
-        fn helper() { lesson::calculate(); }
-        #[test] fn test_only() { lesson::calculate(); }
+        fn helper() { lesson::calc(); }
+        #[test] fn test_only() { lesson::calc(); }
         fn main() {
-            // lesson::calculate();
-            let _ = "lesson::calculate()";
-            fn unused() { lesson::calculate(); }
-            other_lesson::calculate();
+            // lesson::calc();
+            let _ = "lesson::calc()";
+            fn unused() { lesson::calc(); }
+            other_lesson::calc();
         }
     "#,
     );
-    assert!(!calls.contains(&vec!["lesson".into(), "calculate".into()]));
+    assert!(!calls.contains(&vec!["lesson".into(), "calc".into()]));
 }
 
 #[test]
 fn indirect_library_call_still_needs_its_own_demonstration() {
     let library =
-        syn::parse_file("pub fn distance() { squared(); } pub fn squared() {} fn helper() {}")
-            .unwrap();
+        syn::parse_file("pub fn dist() { squared(); } pub fn squared() {} fn helper() {}").unwrap();
     let mut functions = Vec::new();
     exported_functions(
         &library.items,
@@ -264,7 +263,7 @@ fn indirect_library_call_still_needs_its_own_demonstration() {
         &["lesson".into()],
         &mut functions,
     );
-    let calls = calls_in_main("fn main() { lesson::distance(); }");
+    let calls = calls_in_main("fn main() { lesson::dist(); }");
     let missing: Vec<_> = functions
         .into_iter()
         .filter(|function| !calls.contains(function))

@@ -3,7 +3,7 @@
 /// Среднее непустого набора.
 /// Среднее арифметическое: складываем значения и делим на их количество.
 
-pub fn calculate_mean_by_summing_values_and_dividing_by_count(
+pub fn calc_mean_by_summing_values_and_dividing_by_count(
     values: &[f64],
 ) -> Result<f64, &'static str> {
     if values.is_empty() {

@@ -13,8 +13,8 @@
 
 fn main() {
     let (input_value, second_input_value): (f64, f64) = (2.0, 3.0);
-    let multiplied_coordinates: f64 = input_value * second_input_value;
-    let _: f64 = multiplied_coordinates + input_value;
+    let multiplied_coords: f64 = input_value * second_input_value;
+    let _: f64 = multiplied_coords + input_value;
     let _: f64 = second_input_value + 1.0;
     let _: f64 = input_value;
 

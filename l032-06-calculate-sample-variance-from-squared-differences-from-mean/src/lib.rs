@@ -2,19 +2,19 @@
 
 /// Выборочная дисперсия использует среднее из урока 06.1.
 /// Выборочная дисперсия: сумму квадратов отклонений от среднего делим на (число значений − 1).
-use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
 
-pub fn calculate_sample_variance_from_squared_differences_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread(
+pub fn calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one_where_0_means_all_values_equal_and_larger_means_more_spread(
     values: &[f64],
 ) -> Result<f64, &'static str> {
     if values.len() < 2 {
         return Err("для выборочной дисперсии нужны хотя бы два значения");
     }
-    let average: f64 = calculate_mean_by_summing_values_and_dividing_by_count(values)?;
-    let mut sum_of_squared_differences_from_mean: f64 = 0.0;
+    let average: f64 = calc_mean_by_summing_values_and_dividing_by_count(values)?;
+    let mut sum_of_squared_diffs_from_mean: f64 = 0.0;
     for &value in values {
-        let difference_from_mean: f64 = value - average;
-        sum_of_squared_differences_from_mean += difference_from_mean * difference_from_mean;
+        let diff_from_mean: f64 = value - average;
+        sum_of_squared_diffs_from_mean += diff_from_mean * diff_from_mean;
     }
-    Ok(sum_of_squared_differences_from_mean / (values.len() - 1) as f64)
+    Ok(sum_of_squared_diffs_from_mean / (values.len() - 1) as f64)
 }

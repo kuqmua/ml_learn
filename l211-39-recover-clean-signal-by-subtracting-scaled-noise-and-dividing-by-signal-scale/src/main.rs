@@ -12,7 +12,7 @@
 use lesson_float_comparison::check_f64_eq_1e_minus_12;
 
 /// Восстановление сигнала: (noisy − sqrt(1−a)·predicted_noise) / sqrt(a).
-use l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares;
+use l209_39_calculate_noisy_signal_by_mixing_signal_and_noise_with_root_variance_share_weights::calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares;
 
 fn recover_clean_signal_by_subtracting_scaled_noise_then_dividing_by_signal_scale(
     noisy: f64,
@@ -31,7 +31,7 @@ fn main() {
         0.36;
     let clean: f64 = 2.0;
     let noisy: f64 =
-        calculate_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+        calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
             clean,
             noise,
             original_signal_variance_share_where_0_means_only_noise_and_1_means_clean_signal,

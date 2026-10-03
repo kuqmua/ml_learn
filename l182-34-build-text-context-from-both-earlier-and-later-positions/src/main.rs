@@ -7,12 +7,12 @@
 //   всю фразу.
 // В отличие от decoder, текущий токен читает контекст и слева, и справа.
 
-use l182_34_build_text_context_from_both_earlier_and_later_positions::calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores;
+use l182_34_build_text_context_from_both_earlier_and_later_positions::calc_visible_context_by_summing_states_weighted_by_exponentiated_coord_scores;
 
 fn main() {
     let states: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
     let output: [[f64; 2]; 3] =
-        calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
+        calc_visible_context_by_summing_states_weighted_by_exponentiated_coord_scores(
             &states, &[true; 3],
         )
         .unwrap();
@@ -20,7 +20,7 @@ fn main() {
 
     assert_ne!(
         output[0],
-        calculate_visible_context_by_summing_states_weighted_by_exponentiated_coordinate_scores(
+        calc_visible_context_by_summing_states_weighted_by_exponentiated_coord_scores(
             &changed, &[true; 3],
         )
         .unwrap()[0]

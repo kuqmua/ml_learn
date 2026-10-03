@@ -26,7 +26,7 @@ python3 scripts/prepare_open_datasets.py iris
 cargo run -p lesson-datasets --example iris_classification
 ```
 
-В [примере](lesson-datasets/examples/iris_classification.rs) четыре измерения цветка сразу передаются в функцию `calculate_squared_point_distance_by_summing_squared_coordinate_differences_where_0_means_same_point_and_larger_means_farther` из урока 01.4. Метка — один из трёх видов. Пример разделяет каждый класс на train/validation/test с фиксированным seed и классифицирует по ближайшему обучающему цветку. Исходный файл отсортирован по видам, поэтому нельзя брать первые 70% строк как train.
+В [примере](lesson-datasets/examples/iris_classification.rs) четыре измерения цветка сразу передаются в функцию `calc_squared_point_dist_by_summing_squared_coord_diffs_where_0_means_same_point_and_larger_means_farther` из урока 01.4. Метка — один из трёх видов. Пример разделяет каждый класс на train/validation/test с фиксированным seed и классифицирует по ближайшему обучающему цветку. Исходный файл отсортирован по видам, поэтому нельзя брать первые 70% строк как train.
 
 Источник: [Iris, UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/53/iris), Fisher (1936). Лицензия, указанная UCI: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). В архиве 150 строк с четырьмя признаками и классом.
 
@@ -37,7 +37,7 @@ python3 scripts/prepare_open_datasets.py wine_quality_red
 cargo run -p lesson-datasets --example wine_quality_regression
 ```
 
-В [примере](lesson-datasets/examples/wine_quality_regression.rs) одиннадцать числовых признаков преобразуются в `[f64; 11]`, а оценка качества — в `f64`. Обучающий набор задаёт средний прогноз и коэффициенты простой модели по содержанию алкоголя. `calculate_mean_by_summing_values_and_dividing_by_count`, `calculate_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse` и `calculate_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse` вызываются из уже пройденных пакетов; validation и test не участвуют в подгонке. Порядок признаков: fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulphates, alcohol.
+В [примере](lesson-datasets/examples/wine_quality_regression.rs) одиннадцать числовых признаков преобразуются в `[f64; 11]`, а оценка качества — в `f64`. Обучающий набор задаёт средний прогноз и коэффициенты простой модели по содержанию алкоголя. `calc_mean_by_summing_values_and_dividing_by_count`, `calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse` и `calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count_where_0_means_exact_predictions_and_larger_means_worse` вызываются из уже пройденных пакетов; validation и test не участвуют в подгонке. Порядок признаков: fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulphates, alcohol.
 
 Источник: [Wine Quality, UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/186/wine+quality), Cortez и соавт. (2009). Лицензия, указанная UCI: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Скрипт выбирает только красное вино: 1599 строк.
 
@@ -48,7 +48,7 @@ python3 scripts/prepare_open_datasets.py sms_spam
 cargo run -p lesson-datasets --example sms_spam_classification
 ```
 
-В [примере](lesson-datasets/examples/sms_spam_classification.rs) метка `spam` становится `true`, `ham` — `false`, сообщение остаётся строкой UTF-8. Разделение сохраняет долю каждого класса. Прогноз большинства, выученный на train, оценивается функциями уроков 11.1 и 11.3. Сравни `accuracy` и `calculate_positive_detection_recall_as_true_positives_divided_by_actual_positives_where_1_means_all_found_and_0_means_all_missed`: высокая доля верных ответов здесь возможна даже при пропуске всего спама. Следующий шаг — заменить прогноз большинства классификатором из блока 13 и использовать те же индексы разделения.
+В [примере](lesson-datasets/examples/sms_spam_classification.rs) метка `spam` становится `true`, `ham` — `false`, сообщение остаётся строкой UTF-8. Разделение сохраняет долю каждого класса. Прогноз большинства, выученный на train, оценивается функциями уроков 11.1 и 11.3. Сравни `accuracy` и `calc_pos_detection_recall_as_true_poss_divided_by_actual_poss_where_1_means_all_found_and_0_means_all_missed`: высокая доля верных ответов здесь возможна даже при пропуске всего спама. Следующий шаг — заменить прогноз большинства классификатором из блока 13 и использовать те же индексы разделения.
 
 Источник: [SMS Spam Collection, UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/228/sms+spam+collection), Almeida и Hidalgo (2011). Лицензия, указанная UCI: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Проверенный ZIP содержит 5572 сообщения; на странице каталога UCI указано 5574, поэтому скрипт проверяет содержимое конкретного архива.
 

@@ -5,7 +5,7 @@
 /// Состояния простой рекуррентной сети: h = tanh(input_weight·x + recurrent_weight·h_previous), начиная с h = 0.
 /// Возвращает по одному состоянию на каждый вход; длина последовательности задаётся вызывающим кодом.
 
-pub fn calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1(
+pub fn calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1(
     input_sequence: &[f64],
     input_weight: f64,
     recurrent_weight: f64,
@@ -25,7 +25,7 @@ pub fn calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_
 mod tests {
     #[test]
     fn future_does_not_change_past() {
-        assert_eq!(super::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1(&[1.0, 2.0], 0.4, 0.6), super::calculate_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1(
+        assert_eq!(super::calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1(&[1.0, 2.0], 0.4, 0.6), super::calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state_to_bound_each_state_between_minus_1_and_1(
             &[1.0, 2.0, 999.0],
             0.4,
             0.6,

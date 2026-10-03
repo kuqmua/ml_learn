@@ -11,7 +11,7 @@
 // относительно центра данных.
 
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
-use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calculate_mean_by_summing_values_and_dividing_by_count;
+use l030_06_calculate_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
 
 fn main() {
     let values: [f64; 3] = [1.0, 2.0, 3.0];
@@ -19,7 +19,7 @@ fn main() {
         !values.is_empty(),
         "для центрирования нужно хотя бы одно значение"
     );
-    let mean: f64 = calculate_mean_by_summing_values_and_dividing_by_count(&values).unwrap();
+    let mean: f64 = calc_mean_by_summing_values_and_dividing_by_count(&values).unwrap();
 
     plot_feature_values_after_subtracting_mean(values, values.map(|value| value - mean));
 }
