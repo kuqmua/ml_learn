@@ -15,33 +15,33 @@ fn main() {
     for (
         description,
         [
-            first_row_first_coefficient,
-            first_row_second_coefficient,
-            second_row_first_coefficient,
-            second_row_second_coefficient,
+            first_row_first_coef,
+            first_row_second_coef,
+            second_row_first_coef,
+            second_row_second_coef,
         ],
         [first_right_hand_side, second_right_hand_side],
     ) in cases
     {
-        let determinant: f64 = first_row_first_coefficient * second_row_second_coefficient
-            - first_row_second_coefficient * second_row_first_coefficient;
+        let determinant: f64 = first_row_first_coef * second_row_second_coef
+            - first_row_second_coef * second_row_first_coef;
         if determinant != 0.0 {
-            let _: f64 = (first_right_hand_side * second_row_second_coefficient
-                - first_row_second_coefficient * second_right_hand_side)
+            let _: f64 = (first_right_hand_side * second_row_second_coef
+                - first_row_second_coef * second_right_hand_side)
                 / determinant;
-            let _: f64 = (first_row_first_coefficient * second_right_hand_side
-                - first_right_hand_side * second_row_first_coefficient)
+            let _: f64 = (first_row_first_coef * second_right_hand_side
+                - first_right_hand_side * second_row_first_coef)
                 / determinant;
         } else {
-            let first_replaced: f64 = first_right_hand_side * second_row_second_coefficient
-                - first_row_second_coefficient * second_right_hand_side;
-            let second_replaced: f64 = first_row_first_coefficient * second_right_hand_side
-                - first_right_hand_side * second_row_first_coefficient;
-            let impossible_zero_row: bool = (first_row_first_coefficient == 0.0
-                && first_row_second_coefficient == 0.0
+            let first_replaced: f64 = first_right_hand_side * second_row_second_coef
+                - first_row_second_coef * second_right_hand_side;
+            let second_replaced: f64 = first_row_first_coef * second_right_hand_side
+                - first_right_hand_side * second_row_first_coef;
+            let impossible_zero_row: bool = (first_row_first_coef == 0.0
+                && first_row_second_coef == 0.0
                 && first_right_hand_side != 0.0)
-                || (second_row_first_coefficient == 0.0
-                    && second_row_second_coefficient == 0.0
+                || (second_row_first_coef == 0.0
+                    && second_row_second_coef == 0.0
                     && second_right_hand_side != 0.0);
             let actual: &str =
                 if first_replaced == 0.0 && second_replaced == 0.0 && !impossible_zero_row {
