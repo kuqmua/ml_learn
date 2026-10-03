@@ -2,7 +2,3 @@
 name = "l045-08-build-baseline-classifier-by-predicting-most-common-training-class"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

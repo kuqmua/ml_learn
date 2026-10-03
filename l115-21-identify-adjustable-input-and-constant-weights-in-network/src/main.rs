@@ -20,17 +20,6 @@ fn main() {
     constant_input_weight -= 0.1;
     let after: f64 = weight * input + constant_input_weight;
 
-    plot_parameter_before_and_after_training_update(before, after);
-}
-
-// Строим график по результатам урока.
-fn plot_parameter_before_and_after_training_update(before: f64, after: f64) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Обновление веса сети",
-        "значение",
-        &[("до", before), ("после", after)],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (before, after);
 }

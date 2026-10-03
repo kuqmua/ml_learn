@@ -89,26 +89,6 @@ fn main() {
         current_state = next_state;
     }
 
-    plot_best_estimated_action_reward_at_each_position(action_values);
-}
-
-// Строим график по результатам урока.
-fn plot_best_estimated_action_reward_at_each_position(action_values: [[f64; 2]; 5]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Ценность состояния после обучения",
-        "состояние",
-        "лучшее Q",
-        &[lesson_visualization::Series {
-            name: "Q-таблица",
-
-            points: &action_values
-                .iter()
-                .enumerate()
-                .map(|(item_index, row)| (item_index as f64, row[0].max(row[1])))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = action_values;
 }

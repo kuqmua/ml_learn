@@ -28,51 +28,6 @@ fn main() {
         assert_eq!(diff, expected_diff);
     }
 
-    plot_reference_shifted_and_more_spread_out_feature_values(reference, cases);
-}
-
-// Строим график по результатам урока.
-fn plot_reference_shifted_and_more_spread_out_feature_values(
-    reference: [f64; 3],
-    cases: [(&str, [f64; 3], f64); 3],
-) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Сдвиг среднего",
-        "номер наблюдения",
-        "значение",
-        &[
-            lesson_visualization::Series {
-                name: "эталон",
-
-                points: &reference
-                    .iter()
-                    .enumerate()
-                    .map(|(item_index, &element_value)| (item_index as f64, element_value))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "сдвиг",
-
-                points: &cases[1]
-                    .1
-                    .iter()
-                    .enumerate()
-                    .map(|(item_index, &element_value)| (item_index as f64, element_value))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "изменение разброса",
-
-                points: &cases[2]
-                    .1
-                    .iter()
-                    .enumerate()
-                    .map(|(item_index, &element_value)| (item_index as f64, element_value))
-                    .collect::<Vec<_>>(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (reference, cases);
 }

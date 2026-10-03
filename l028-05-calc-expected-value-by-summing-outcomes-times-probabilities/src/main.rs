@@ -23,25 +23,4 @@ fn main() {
         _expected_outcome_as_probability_weighted_average_over_repeated_trials +=
             outcome * probability;
     }
-
-    plot_probabilities_of_die_outcomes();
-}
-
-// Строим график по результатам урока.
-fn plot_probabilities_of_die_outcomes() {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Честный кубик",
-        "вероятность",
-        &[
-            ("1", 1.0 / 6.0),
-            ("2", 1.0 / 6.0),
-            ("3", 1.0 / 6.0),
-            ("4", 1.0 / 6.0),
-            ("5", 1.0 / 6.0),
-            ("6", 1.0 / 6.0),
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

@@ -25,23 +25,6 @@ fn main() {
         }
     }
 
-    plot_largest_values_in_local_image_windows(feature_map, maximum);
-}
-
-// Строим график по результатам урока.
-fn plot_largest_values_in_local_image_windows(feature_map: [[f64; 2]; 2], maximum: f64) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Max pooling",
-        "значение",
-        &[
-            ("1", feature_map[0][0]),
-            ("2", feature_map[0][1]),
-            ("3", feature_map[1][0]),
-            ("4", feature_map[1][1]),
-            ("максимум", maximum),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (feature_map, maximum);
 }

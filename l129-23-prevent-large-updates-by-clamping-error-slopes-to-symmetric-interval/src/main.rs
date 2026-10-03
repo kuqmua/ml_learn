@@ -26,28 +26,4 @@ fn main() {
         };
         assert_eq!(gradient_with_magnitude_limited_and_sign_preserved, expected);
     }
-
-    plot_rate_of_change_clamped_to_symmetric_interval();
-}
-
-// Строим график по результатам урока.
-fn plot_rate_of_change_clamped_to_symmetric_interval() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Ограничение градиента",
-        "градиент до",
-        "градиент после",
-        &[lesson_visualization::Series {
-            name: "порог ±1",
-
-            points: &(-30..=30)
-                .map(|plot_step_index| {
-                    let rate_of_change_value: f64 = plot_step_index as f64 / 10.0;
-                    (rate_of_change_value, rate_of_change_value.clamp(-1.0, 1.0))
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

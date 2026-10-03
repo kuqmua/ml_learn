@@ -104,25 +104,6 @@ fn main() {
         (centers, sum_of_squared_dists_to_cluster_centers)
     })());
 
-    plot_training_points_for_grouping_by_nearest_center(dataset);
-}
-
-// Строим график по результатам урока.
-fn plot_training_points_for_grouping_by_nearest_center(dataset: [[f64; 2]; 4]) {
-    lesson_visualization::scatter_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Две группы точек k-means",
-        "x",
-        "y",
-        &[lesson_visualization::Series {
-            name: "данные",
-
-            points: &dataset
-                .iter()
-                .map(|data_point| (data_point[0], data_point[1]))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = dataset;
 }

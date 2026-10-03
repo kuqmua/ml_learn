@@ -25,30 +25,8 @@ fn main() {
     );
     assert!(signal_with_gate_almost_closed >= 0.0);
 
-    plot_filter_output_multiplied_by_fraction_controlled_by_gate(filter);
-}
-
-fn plot_filter_output_multiplied_by_fraction_controlled_by_gate(filter: f64) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "gate",
-        "Управляемая активация",
-        "gate",
-        "выход",
-        &[lesson_visualization::Series {
-            name: "ограниченный сигнал × доля пропускания",
-            points: &(-50..=50)
-                .map(|plot_step_index| {
-                    let raw_gate_score: f64 = plot_step_index as f64 / 10.0;
-                    (
-                        raw_gate_score,
-                        calc_gated_signal_as_tanh_times_sigmoid_share(filter, raw_gate_score),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = filter;
 }
 
 /// tanh сохраняет знак, равен 0 при нулевом входе и насыщается к −1 или 1.

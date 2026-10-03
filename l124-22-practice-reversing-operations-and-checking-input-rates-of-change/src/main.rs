@@ -92,30 +92,6 @@ fn main() {
         .sum::<f64>()
     })());
 
-    plot_output_rates_of_change_for_left_and_right_matrix_entries(
-        left_input_rates_of_change,
-        right_input_rates_of_change,
-    );
-}
-
-// Строим график по результатам урока.
-fn plot_output_rates_of_change_for_left_and_right_matrix_entries(
-    left_input_rates_of_change: std::vec::Vec<std::vec::Vec<f64>>,
-    right_input_rates_of_change: std::vec::Vec<std::vec::Vec<f64>>,
-) {
-    for (name, title, values) in [
-        (
-            "left-gradient",
-            "Производная по левой матрице",
-            &left_input_rates_of_change,
-        ),
-        (
-            "right-gradient",
-            "Производная по правой матрице",
-            &right_input_rates_of_change,
-        ),
-    ] {
-        lesson_visualization::heatmap(env!("CARGO_MANIFEST_DIR"), name, title, values)
-            .expect("не удалось сохранить график градиента");
-    }
+    // Выполняем вычисления из примера.
+    let _ = (left_input_rates_of_change, right_input_rates_of_change);
 }

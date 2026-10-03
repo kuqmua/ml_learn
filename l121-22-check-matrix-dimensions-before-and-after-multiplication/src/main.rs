@@ -20,23 +20,4 @@ fn main() {
         };
         assert_eq!(result_shape, expected);
     }
-
-    plot_row_and_column_counts_of_input_and_output_matrices();
-}
-
-// Строим график по результатам урока.
-fn plot_row_and_column_counts_of_input_and_output_matrices() {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Размеры тензоров",
-        "измерение",
-        &[
-            ("строки A", 2.0),
-            ("столбцы A", 3.0),
-            ("строки B", 3.0),
-            ("столбцы B", 2.0),
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

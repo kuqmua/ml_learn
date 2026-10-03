@@ -26,25 +26,4 @@ fn main() {
     let _ = &(multiply_matching_coords_then_add_results(&query, &key)
         .expect("запрос и ключ должны иметь одинаковое число координат")
         / square_root_of_coord_count_to_limit_growth_of_match_scores);
-
-    plot_attention_scale_as_one_divided_by_square_root_of_coord_count();
-}
-
-// Строим график по результатам урока.
-fn plot_attention_scale_as_one_divided_by_square_root_of_coord_count() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Деление суммы произведений координат на корень из их количества",
-        "размерность d",
-        "множитель 1/√d",
-        &[lesson_visualization::Series {
-            name: "масштаб",
-
-            points: &(1..=64)
-                .map(|vec_dimension| (vec_dimension as f64, 1.0 / (vec_dimension as f64).sqrt()))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

@@ -19,17 +19,6 @@ fn main() {
         "влево"
     };
 
-    plot_estimated_rewards_for_available_actions(left_action_value, right_action_value);
-}
-
-// Строим график по результатам урока.
-fn plot_estimated_rewards_for_available_actions(left_action_value: f64, right_action_value: f64) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Оценки действий политики",
-        "Q-значение",
-        &[("влево", left_action_value), ("вправо", right_action_value)],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (left_action_value, right_action_value);
 }

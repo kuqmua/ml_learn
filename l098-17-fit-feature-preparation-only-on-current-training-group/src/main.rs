@@ -21,20 +21,6 @@ fn main() {
     let validation: [f64; 1] = [100.0];
     let validation_centered: f64 = validation[0] - training_mean;
 
-    plot_training_mean_and_centered_validation_value(training_mean, validation_centered);
-}
-
-// Строим график по результатам урока.
-fn plot_training_mean_and_centered_validation_value(training_mean: f64, validation_centered: f64) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Центрирование по train",
-        "значение",
-        &[
-            ("train mean", training_mean),
-            ("validation centered", validation_centered),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (training_mean, validation_centered);
 }

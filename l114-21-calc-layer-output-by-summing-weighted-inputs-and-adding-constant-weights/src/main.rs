@@ -22,16 +22,6 @@ fn main() {
         }
     }
 
-    plot_weights_used_to_sum_input_coords(weights);
-}
-
-// Строим график по результатам урока.
-fn plot_weights_used_to_sum_input_coords(weights: [[f64; 2]; 2]) {
-    lesson_visualization::heatmap(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Веса слоя",
-        &weights.iter().map(|row| row.to_vec()).collect::<Vec<_>>(),
-    )
-    .expect("не удалось сохранить тепловую карту");
+    // Выполняем вычисления из примера.
+    let _ = weights;
 }

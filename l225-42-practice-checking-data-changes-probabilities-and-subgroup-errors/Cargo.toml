@@ -2,7 +2,3 @@
 name = "l225-42-practice-checking-data-changes-probabilities-and-subgroup-errors"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

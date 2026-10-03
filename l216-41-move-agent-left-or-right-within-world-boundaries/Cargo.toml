@@ -2,7 +2,3 @@
 name = "l216-41-move-agent-left-or-right-within-world-boundaries"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

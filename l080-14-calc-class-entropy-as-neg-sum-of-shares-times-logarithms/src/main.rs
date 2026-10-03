@@ -39,32 +39,4 @@ fn main() {
             assert!(check_f64_eq_1e_minus_10(binary_class_entropy_in_bits, 1.0));
         }
     }
-
-    plot_class_entropy_as_neg_sum_of_class_shares_times_their_logarithms();
-}
-
-// Строим график по результатам урока.
-fn plot_class_entropy_as_neg_sum_of_class_shares_times_their_logarithms() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Энтропия бинарного класса",
-        "доля положительных",
-        "энтропия",
-        &[lesson_visualization::Series {
-            name: "H(p)",
-
-            points: &(1..100)
-                .map(|plot_step_index| {
-                    let probability: f64 = plot_step_index as f64 / 100.0;
-                    (
-                        probability,
-                        -probability * probability.log2()
-                            - (1.0 - probability) * (1.0 - probability).log2(),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

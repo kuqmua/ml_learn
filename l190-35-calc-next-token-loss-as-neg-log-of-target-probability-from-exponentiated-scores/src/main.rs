@@ -27,10 +27,10 @@ fn main() {
         [0.1, 0.2, 2.0, 0.0],
         [0.0, 0.1, 0.2, 2.0],
     ];
-    let neg_log_correct_token_probabilities: [f64; 3] = std::array::from_fn(|plot_step_index| {
+    let neg_log_correct_token_probabilities: [f64; 3] = std::array::from_fn(|token_index| {
         calc_next_token_loss_as_neg_log_of_target_probability_from_exponentiated_scores(
-            &raw_model_scores[plot_step_index],
-            text_unit_identifiers[plot_step_index + 1],
+            &raw_model_scores[token_index],
+            text_unit_identifiers[token_index + 1],
         )
     });
     let mean_neg_log_correct_token_probability: f64 =
@@ -45,27 +45,6 @@ fn main() {
             )
     );
 
-    plot_next_token_loss_as_neg_log_correct_text_unit_probability_by_position(
-        &neg_log_correct_token_probabilities,
-    );
-}
-fn plot_next_token_loss_as_neg_log_correct_text_unit_probability_by_position(
-    neg_log_correct_token_probabilities: &[f64; 3],
-) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "next-token-loss",
-        "Потери по позициям",
-        "позиция",
-        "cross entropy",
-        &[lesson_visualization::Series {
-            name: "loss",
-            points: &neg_log_correct_token_probabilities
-                .iter()
-                .enumerate()
-                .map(|(item_index, &loss)| (item_index as f64, loss))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (&neg_log_correct_token_probabilities,);
 }

@@ -31,7 +31,8 @@ fn main() {
             .collect()
     }
 
-    plot_document_scores_from_word_frequency_and_rarity((|| -> Vec<(&'static str, f64)> {
+    // Выполняем вычисления из примера.
+    let _ = (|| -> Vec<(&'static str, f64)> {
         let query: &str = "модель данные";
         let query_text_units: Vec<String> = split_text_into_lowercase_words(query);
         let mut ranked_results: Vec<(&str, f64)> = vec![];
@@ -109,22 +110,5 @@ fn main() {
     })()
     .into_iter()
     .take(2)
-    .collect::<Vec<_>>());
-}
-
-// Строим график по результатам урока.
-fn plot_document_scores_from_word_frequency_and_rarity(
-    highest_ranked_items: std::vec::Vec<(&str, f64)>,
-) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Оценки найденных документов",
-        "TF-IDF",
-        &highest_ranked_items
-            .iter()
-            .map(|(document_identifier, score)| (*document_identifier, *score))
-            .collect::<Vec<_>>(),
-    )
-    .expect("не удалось сохранить график");
+    .collect::<Vec<_>>();
 }

@@ -41,25 +41,6 @@ fn main() {
         .unwrap()
         .0;
 
-    plot_validation_score_for_different_neighbor_counts(inner_scores);
-}
-
-// Строим график по результатам урока.
-fn plot_validation_score_for_different_neighbor_counts(inner_scores: [(usize, f64); 3]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Выбор k внутри вложенной оценки",
-        "k",
-        "внутренняя оценка",
-        &[lesson_visualization::Series {
-            name: "validation",
-
-            points: &inner_scores
-                .iter()
-                .map(|&(neighbor_count, score)| (neighbor_count as f64, score))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = inner_scores;
 }

@@ -24,25 +24,4 @@ fn main() {
             .filter(|&row| row % folds != fold)
             .collect();
     }
-
-    plot_validation_group_assigned_to_each_row();
-}
-
-// Строим график по результатам урока.
-fn plot_validation_group_assigned_to_each_row() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "K-fold: номер fold для строки",
-        "номер строки",
-        "fold",
-        &[lesson_visualization::Series {
-            name: "3 части",
-
-            points: &(0..9)
-                .map(|plot_step_index| (plot_step_index as f64, (plot_step_index % 3) as f64))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

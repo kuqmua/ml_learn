@@ -32,15 +32,6 @@ fn main() {
         [1.0, 2.0, 5.0, 6.0]
     );
 
-    plot_square_image_before_splitting_into_blocks(&image);
-}
-
-fn plot_square_image_before_splitting_into_blocks(image: &[[f64; 4]; 4]) {
-    lesson_visualization::heatmap(
-        env!("CARGO_MANIFEST_DIR"),
-        "image-patches",
-        "Исходное изображение 4x4",
-        &image.iter().map(|row| row.to_vec()).collect::<Vec<_>>(),
-    )
-    .expect("не удалось сохранить тепловую карту");
+    // Выполняем вычисления из примера.
+    let _ = &image;
 }

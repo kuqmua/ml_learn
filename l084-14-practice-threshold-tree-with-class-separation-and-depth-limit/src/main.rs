@@ -140,32 +140,6 @@ fn main() {
     let tree: Tree = build_threshold_tree_by_minimizing_weighted_class_mixing(&data, 2);
     let _ = &(predict_class_by_following_threshold_branches_to_leaf(&tree, 3.5));
 
-    plot_predicted_leaf_class_for_changing_feature(tree);
-
-    fn plot_predicted_leaf_class_for_changing_feature(tree: Tree) {
-        lesson_visualization::line_chart(
-            env!("CARGO_MANIFEST_DIR"),
-            "lesson-chart",
-            "Решение дерева по признаку",
-            "признак",
-            "класс 1",
-            &[lesson_visualization::Series {
-                name: "прогноз",
-
-                points: &(0..=50)
-                    .map(|plot_step_index| {
-                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                        (
-                            horizontal_value,
-                            f64::from(predict_class_by_following_threshold_branches_to_leaf(
-                                &tree,
-                                horizontal_value,
-                            )),
-                        )
-                    })
-                    .collect::<Vec<_>>(),
-            }],
-        )
-        .expect("не удалось сохранить график");
-    }
+    // Выполняем вычисления из примера.
+    let _ = tree;
 }

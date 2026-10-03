@@ -69,33 +69,6 @@ fn main() {
         })()),
     );
 
-    plot_simulated_and_calcd_disease_rates_after_pos_test(pos_test_count, true_pos_count);
-}
-
-// Строим график по результатам урока.
-fn plot_simulated_and_calcd_disease_rates_after_pos_test(pos_test_count: i32, true_pos_count: i32) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Монте-Карло и формула Байеса",
-        "число испытаний",
-        "частота заболевания после положительного теста",
-        &[
-            lesson_visualization::Series {
-                name: "теория",
-
-                points: &[
-                    (0.0, 0.01 * 0.9 / (0.01 * 0.9 + 0.99 * 0.05)),
-                    (100000.0, 0.01 * 0.9 / (0.01 * 0.9 + 0.99 * 0.05)),
-                ]
-                .to_vec(),
-            },
-            lesson_visualization::Series {
-                name: "симуляция",
-
-                points: &[(100000.0, true_pos_count as f64 / pos_test_count as f64)].to_vec(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (pos_test_count, true_pos_count);
 }

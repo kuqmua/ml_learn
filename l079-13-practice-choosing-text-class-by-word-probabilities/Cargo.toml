@@ -2,7 +2,3 @@
 name = "l079-13-practice-choosing-text-class-by-word-probabilities"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

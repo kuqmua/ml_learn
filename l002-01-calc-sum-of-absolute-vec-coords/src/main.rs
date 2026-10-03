@@ -15,31 +15,4 @@ fn main() {
     for (_description, vec, expected) in cases {
         assert_eq!(calc_sum_of_absolute_vec_coords(&vec), expected);
     }
-
-    plot_sum_of_absolute_coords_for_changing_first_coord();
-}
-
-// Строим график по результатам урока.
-fn plot_sum_of_absolute_coords_for_changing_first_coord() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Сумма модулей координат одного вектора",
-        "первая координата",
-        "сумма модулей",
-        &[lesson_visualization::Series {
-            name: "вектор [x, 4]",
-
-            points: &(-50..=50)
-                .map(|plot_step_index| {
-                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                    (
-                        horizontal_value,
-                        calc_sum_of_absolute_vec_coords(&[horizontal_value, 4.0]),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

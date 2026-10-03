@@ -2,6 +2,3 @@
 name = "l218-41-choose-action-with-highest-estimated-reward"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-lesson-visualization = { path = "../lesson-visualization" }

@@ -46,17 +46,4 @@ fn main() {
     let incompatible_left_shape: (i32, i32) = (2, 3);
     let incompatible_right_shape: (i32, i32) = (2, 2);
     if incompatible_left_shape.1 != incompatible_right_shape.0 {}
-
-    plot_matrix_multiplication_as_sums_after_multiplying_matching_row_and_column_values();
-}
-
-// Строим график по результатам урока.
-fn plot_matrix_multiplication_as_sums_after_multiplying_matching_row_and_column_values() {
-    lesson_visualization::heatmap(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Произведение матриц A × B",
-        &[vec![19.0, 22.0], vec![43.0, 50.0]],
-    )
-    .expect("не удалось сохранить тепловую карту");
 }

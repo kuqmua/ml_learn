@@ -35,72 +35,10 @@ fn main() {
         &(mean + approximate_95_percent_confidence_interval_half_width),
     );
 
-    plot_observations_mean_and_uncertainty_bounds(
+    // Выполняем вычисления из примера.
+    let _ = (
         values,
         mean,
         approximate_95_percent_confidence_interval_half_width,
     );
-}
-
-// Строим график по результатам урока.
-fn plot_observations_mean_and_uncertainty_bounds(
-    values: [f64; 4],
-    mean: f64,
-    approximate_95_percent_confidence_interval_half_width: f64,
-) {
-    let mean_line: [(f64, f64); 2] = [(1.0, mean), (values.len() as f64, mean)];
-    let lower: [(f64, f64); 2] = [
-        (
-            1.0,
-            mean - approximate_95_percent_confidence_interval_half_width,
-        ),
-        (
-            values.len() as f64,
-            mean - approximate_95_percent_confidence_interval_half_width,
-        ),
-    ];
-    let upper: [(f64, f64); 2] = [
-        (
-            1.0,
-            mean + approximate_95_percent_confidence_interval_half_width,
-        ),
-        (
-            values.len() as f64,
-            mean + approximate_95_percent_confidence_interval_half_width,
-        ),
-    ];
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Приближённый доверительный интервал",
-        "номер наблюдения",
-        "значение",
-        &[
-            lesson_visualization::Series {
-                name: "выборка",
-
-                points: &values
-                    .iter()
-                    .enumerate()
-                    .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "среднее",
-
-                points: &mean_line,
-            },
-            lesson_visualization::Series {
-                name: "нижняя граница",
-
-                points: &lower,
-            },
-            lesson_visualization::Series {
-                name: "верхняя граница",
-
-                points: &upper,
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

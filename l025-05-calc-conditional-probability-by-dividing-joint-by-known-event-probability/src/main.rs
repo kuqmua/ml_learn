@@ -27,18 +27,4 @@ fn main() {
         };
         assert_eq!(disease_probability_given_pos_test, expected);
     }
-
-    plot_disease_probability_among_pos_tests();
-}
-
-// Строим график по результатам урока.
-fn plot_disease_probability_among_pos_tests() {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Условная вероятность",
-        "P(болен | положительный тест)",
-        &[("часть", 8.0 / 20.0), ("все", 1.0), ("никто", 0.0)],
-    )
-    .expect("не удалось сохранить график");
 }

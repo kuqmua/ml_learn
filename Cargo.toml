@@ -3,7 +3,6 @@ members = [
     "lesson-float-comparison",
     "lesson-structure",
     "lesson-datasets",
-    "lesson-visualization",
     "l001-01-multiply-matching-coords-then-add-results",
     "l002-01-calc-sum-of-absolute-vec-coords",
     "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords",

@@ -12,32 +12,4 @@ fn main() {
         term *= average_neg_log_correct_token_probability / order as f64;
         _perplexity += term;
     }
-
-    plot_perplexity_as_e_to_average_neg_log_probability();
-}
-
-// Строим график по результатам урока.
-fn plot_perplexity_as_e_to_average_neg_log_probability() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Perplexity",
-        "cross-entropy",
-        "perplexity",
-        &[lesson_visualization::Series {
-            name: "exp(loss)",
-
-            points: &(0..=40)
-                .map(|plot_step_index| {
-                    let average_neg_log_correct_token_probability: f64 =
-                        plot_step_index as f64 / 10.0;
-                    (
-                        average_neg_log_correct_token_probability,
-                        average_neg_log_correct_token_probability.exp(),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

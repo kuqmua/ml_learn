@@ -2,7 +2,3 @@
 name = "l015-03-calc-partial-derivative-by-varying-one-of-two-inputs"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

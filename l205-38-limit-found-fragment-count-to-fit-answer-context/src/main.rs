@@ -19,25 +19,4 @@ fn main() {
     ];
     let capacity: usize = 2;
     for (_text, _score) in passages.into_iter().take(capacity) {}
-
-    plot_included_document_count_for_different_context_limits();
-}
-
-// Строим график по результатам урока.
-fn plot_included_document_count_for_different_context_limits() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Лимит контекста",
-        "максимум фрагментов",
-        "число включённых",
-        &[lesson_visualization::Series {
-            name: "3 фрагмента",
-
-            points: &(0..=6)
-                .map(|limit| (limit as f64, limit.min(3) as f64))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

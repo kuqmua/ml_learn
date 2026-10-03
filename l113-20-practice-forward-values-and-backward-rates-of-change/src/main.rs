@@ -149,31 +149,6 @@ fn main() {
         &(graph.0[input_index].output_rate_of_change_with_respect_to_node_value),
     );
 
-    plot_output_rate_of_change_for_each_computation_node(graph);
-
-    fn plot_output_rate_of_change_for_each_computation_node(graph: Graph) {
-        lesson_visualization::line_chart(
-            env!("CARGO_MANIFEST_DIR"),
-            "lesson-chart",
-            "Градиенты вычислительного графа",
-            "номер узла",
-            "градиент",
-            &[lesson_visualization::Series {
-                name: "обратный проход",
-
-                points: &graph
-                    .0
-                    .iter()
-                    .enumerate()
-                    .map(|(item_index, node)| {
-                        (
-                            item_index as f64,
-                            node.output_rate_of_change_with_respect_to_node_value,
-                        )
-                    })
-                    .collect::<Vec<_>>(),
-            }],
-        )
-        .expect("не удалось сохранить график");
-    }
+    // Выполняем вычисления из примера.
+    let _ = graph;
 }

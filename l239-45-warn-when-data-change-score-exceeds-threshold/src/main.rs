@@ -21,17 +21,6 @@ fn main() {
         assert_eq!(distribution_change_exceeds_alert_threshold, expected);
     }
 
-    plot_distribution_change_scores_and_alert_threshold(alert_threshold);
-}
-
-// Строим график по результатам урока.
-fn plot_distribution_change_scores_and_alert_threshold(alert_threshold: f64) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Порог алерта и два случая",
-        "оценка дрейфа",
-        &[("ниже", 0.1), ("порог", alert_threshold), ("выше", 0.35)],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = alert_threshold;
 }

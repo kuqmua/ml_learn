@@ -34,33 +34,7 @@ fn main() {
         .unwrap(),
         noise
     );
-    plot_signal_and_noise_mixture_for_changing_signal_share(clean, noise);
-}
 
-fn plot_signal_and_noise_mixture_for_changing_signal_share(clean: f64, noise: f64) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "diffusion-forward",
-        "Смесь сигнала и шума",
-        "alpha_bar",
-        "x_t",
-        &[lesson_visualization::Series {
-            name: "x_t",
-            points: &(0..=100)
-                .map(|plot_step_index| {
-                    let original_signal_variance_share: f64 = plot_step_index as f64 / 100.0;
-                    (
-                original_signal_variance_share,
-                calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
-                    clean,
-                    noise,
-                    original_signal_variance_share,
-                )
-                .unwrap(),
-            )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (clean, noise);
 }

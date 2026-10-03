@@ -41,28 +41,4 @@ fn main() {
     }
     let invalid: [f64; 2] = [0.0, 0.5];
     if invalid.iter().any(|&probability| probability <= 0.0) {}
-
-    plot_next_token_loss_as_neg_log_of_correct_text_unit_probability();
-}
-
-// Строим график по результатам урока.
-fn plot_next_token_loss_as_neg_log_of_correct_text_unit_probability() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Cross-entropy правильного токена",
-        "вероятность",
-        "ошибка",
-        &[lesson_visualization::Series {
-            name: "-ln(p)",
-
-            points: &(1..=100)
-                .map(|plot_step_index| {
-                    let probability: f64 = plot_step_index as f64 / 100.0;
-                    (probability, -probability.ln())
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

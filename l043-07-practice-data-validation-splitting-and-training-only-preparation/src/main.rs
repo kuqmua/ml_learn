@@ -61,26 +61,6 @@ fn main() {
             .collect::<Vec<_>>()),
     );
 
-    plot_feature_means_for_training_data_and_whole_dataset(records, training_mean);
-}
-
-// Строим график по результатам урока.
-fn plot_feature_means_for_training_data_and_whole_dataset(
-    records: std::vec::Vec<(f64, u8)>,
-    training_mean: f64,
-) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Среднее признака",
-        "значение",
-        &[
-            ("train", training_mean),
-            (
-                "весь набор",
-                records.iter().map(|record| record.0).sum::<f64>() / records.len() as f64,
-            ),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (records, training_mean);
 }

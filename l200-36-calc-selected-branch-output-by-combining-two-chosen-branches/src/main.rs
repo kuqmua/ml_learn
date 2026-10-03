@@ -31,22 +31,6 @@ fn main() {
         .sum::<f64>();
     assert_eq!(selected, [0, 1]);
 
-    plot_scores_used_to_select_two_processing_branches(&scores);
-}
-
-fn plot_scores_used_to_select_two_processing_branches(scores: &[f64; 4]) {
-    let values: [(&str, f64); 4] = [
-        ("expert 0", scores[0]),
-        ("expert 1", scores[1]),
-        ("expert 2", scores[2]),
-        ("expert 3", scores[3]),
-    ];
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "router",
-        "Оценки маршрутизатора",
-        "score",
-        &values,
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = &scores;
 }

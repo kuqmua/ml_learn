@@ -20,30 +20,6 @@ fn main() {
         let _: f64 = (updated - 3.0) * (updated - 3.0);
     }
 
-    plot_squared_error_after_one_update_for_different_step_sizes(parameter, loss_slope);
-}
-
-// Строим график по результатам урока.
-fn plot_squared_error_after_one_update_for_different_step_sizes(parameter: f64, loss_slope: f64) {
-    let learning_rates: [f64; 3] = [0.1, 1.0, 2.0];
-
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "learning-rate",
-        "Ошибка после одного шага",
-        "Скорость обучения",
-        "Квадратичная ошибка",
-        &[lesson_visualization::Series {
-            name: "Ошибка",
-
-            points: &learning_rates
-                .into_iter()
-                .map(|rate| {
-                    let updated: f64 = parameter - rate * loss_slope;
-                    (rate, (updated - 3.0) * (updated - 3.0))
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (parameter, loss_slope);
 }

@@ -2,7 +2,3 @@
 name = "l098-17-fit-feature-preparation-only-on-current-training-group"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

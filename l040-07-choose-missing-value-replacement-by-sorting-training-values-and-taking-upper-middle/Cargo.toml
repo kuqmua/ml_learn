@@ -2,5 +2,3 @@
 name = "l040-07-choose-missing-value-replacement-by-sorting-training-values-and-taking-upper-middle"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]

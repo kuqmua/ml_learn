@@ -24,31 +24,4 @@ fn main() {
         }
         parameter -= rate * loss_slope;
     }
-
-    plot_squared_error_after_each_parameter_update();
-}
-
-// Строим график по результатам урока.
-fn plot_squared_error_after_each_parameter_update() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Сходимость градиентного спуска",
-        "шаг",
-        "ошибка",
-        &[lesson_visualization::Series {
-            name: "η=0.2",
-
-            points: &(0..=30)
-                .map(|plot_step_index| {
-                    let horizontal_value: f64 = 3.0 * (1.0 - 0.6_f64.powi(plot_step_index));
-                    (
-                        plot_step_index as f64,
-                        (horizontal_value - 3.0) * (horizontal_value - 3.0),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

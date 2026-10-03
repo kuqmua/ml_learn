@@ -31,35 +31,7 @@ fn main() {
     let _: &str = multiply_matching_coords_then_add_results(&first_vec, &too_short)
         .expect_err("разная длина должна быть отклонена");
     let _ = &(first_vec);
-    plot_sum_after_multiplying_coords_for_changing_second_coord(&first_vec);
-}
 
-// Визуализация вынесена из основного сценария урока.
-fn plot_sum_after_multiplying_coords_for_changing_second_coord(first_vec: &[f64; 2]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Умножение координат и сложение результатов: [1, 2] и [1, x]",
-        "вторая координата правого вектора, x",
-        "сумма после умножения координат",
-        &[lesson_visualization::Series {
-            name: "вектор [1, 2]",
-
-            points: &(-40..=40)
-                .map(|plot_step_index| {
-                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-
-                    (
-                        horizontal_value,
-                        multiply_matching_coords_then_add_results(
-                            first_vec,
-                            &[1.0, horizontal_value],
-                        )
-                        .expect("ожидалось по две координаты у каждого вектора"),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = &first_vec;
 }

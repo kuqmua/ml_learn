@@ -16,47 +16,6 @@ fn main() {
     let first_start: [[f64; 2]; 2] = [points[0], points[2]];
     let second_start: [[f64; 2]; 2] = [points[0], points[1]];
 
-    plot_initial_cluster_centers(points, first_start, second_start);
-}
-
-// Строим график по результатам урока.
-fn plot_initial_cluster_centers(
-    points: [[f64; 2]; 4],
-    first_start: [[f64; 2]; 2],
-    second_start: [[f64; 2]; 2],
-) {
-    lesson_visualization::scatter_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Инициализация k-means",
-        "x",
-        "y",
-        &[
-            lesson_visualization::Series {
-                name: "объекты",
-
-                points: &points
-                    .iter()
-                    .map(|data_point| (data_point[0], data_point[1]))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "разнесённые центры",
-
-                points: &first_start
-                    .iter()
-                    .map(|data_point| (data_point[0], data_point[1]))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "соседние центры",
-
-                points: &second_start
-                    .iter()
-                    .map(|data_point| (data_point[0], data_point[1]))
-                    .collect::<Vec<_>>(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (points, first_start, second_start);
 }

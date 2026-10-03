@@ -42,16 +42,7 @@ fn main() {
         after += (prediction - target).powi(2);
     }
     let _ = (&(before / 6.0), &(after / 6.0));
-    plot_average_squared_error_before_and_after_training(before / 6.0, after / 6.0);
-}
 
-fn plot_average_squared_error_before_and_after_training(before: f64, after: f64) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "mse",
-        "Ошибка учебной схемы",
-        "MSE",
-        &[("до", before), ("после", after)],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (before / 6.0, after / 6.0);
 }

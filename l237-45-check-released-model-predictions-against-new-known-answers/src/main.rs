@@ -29,23 +29,6 @@ fn main() {
         .count();
     let _ = &(correct as f64 / truth.len() as f64);
 
-    plot_counts_of_correct_and_incorrect_predictions_after_release(truth, correct);
-}
-
-// Строим график по результатам урока.
-fn plot_counts_of_correct_and_incorrect_predictions_after_release(
-    truth: [bool; 3],
-    correct: usize,
-) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Качество после релиза",
-        "число объектов",
-        &[
-            ("верно", correct as f64),
-            ("ошибка", (truth.len() - correct) as f64),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (truth, correct);
 }

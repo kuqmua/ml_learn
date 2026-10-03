@@ -2,7 +2,3 @@
 name = "l130-23-stop-when-error-on-validation-data-no-longer-improves"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

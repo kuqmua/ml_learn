@@ -33,28 +33,6 @@ fn main() {
         );
     }
 
-    plot_allowed_current_and_past_position_pairs(raw_weights);
-}
-
-// Строим график по результатам урока.
-fn plot_allowed_current_and_past_position_pairs(raw_weights: [f64; 3]) {
-    lesson_visualization::heatmap(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Причинная маска внимания",
-        &std::array::from_fn::<[f64; 3], 3, _>(|position| {
-            let sum_of_allowed_weights: f64 = raw_weights[..=position].iter().sum();
-            std::array::from_fn(|key| {
-                if key <= position {
-                    raw_weights[key] / sum_of_allowed_weights
-                } else {
-                    0.0
-                }
-            })
-        })
-        .iter()
-        .map(|row| row.to_vec())
-        .collect::<Vec<_>>(),
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = raw_weights;
 }

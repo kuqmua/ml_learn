@@ -27,32 +27,6 @@ fn main() {
         velocity_history[step + 1] = ((step + 1) as f64, accumulated_gradient_for_momentum_update);
     }
 
-    plot_weight_and_accumulated_update_direction(weight_history, velocity_history);
-}
-
-// Строим график по результатам урока.
-fn plot_weight_and_accumulated_update_direction(
-    weight_history: [(f64, f64); 4],
-    velocity_history: [(f64, f64); 4],
-) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Momentum: накопление скорости",
-        "шаг",
-        "значение",
-        &[
-            lesson_visualization::Series {
-                name: "вес",
-
-                points: &weight_history,
-            },
-            lesson_visualization::Series {
-                name: "скорость",
-
-                points: &velocity_history,
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (weight_history, velocity_history);
 }

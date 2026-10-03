@@ -26,23 +26,4 @@ fn main() {
         ];
         assert_eq!(counts, expected_pos);
     }
-
-    plot_pos_example_count_in_each_validation_group();
-}
-
-// Строим график по результатам урока.
-fn plot_pos_example_count_in_each_validation_group() {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Положительные в каждой части",
-        "число",
-        &[
-            ("подряд: fold 1", 4.0),
-            ("подряд: fold 2", 0.0),
-            ("страты: fold 1", 2.0),
-            ("страты: fold 2", 2.0),
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

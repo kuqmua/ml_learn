@@ -18,26 +18,6 @@ fn main() {
     });
     let highest_ranked_items: &[(&str, f64)] = &ranked[..2];
 
-    plot_scores_of_highest_ranked_documents(highest_ranked_items);
-}
-
-// Строим график по результатам урока.
-fn plot_scores_of_highest_ranked_documents(highest_ranked_items: &[(&str, f64)]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Оценки top-k",
-        "ранг",
-        "оценка",
-        &[lesson_visualization::Series {
-            name: "выбранные документы",
-
-            points: &highest_ranked_items
-                .iter()
-                .enumerate()
-                .map(|(item_index, (_, score))| ((item_index + 1) as f64, *score))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = highest_ranked_items;
 }

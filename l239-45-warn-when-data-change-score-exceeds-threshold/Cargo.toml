@@ -2,7 +2,3 @@
 name = "l239-45-warn-when-data-change-score-exceeds-threshold"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

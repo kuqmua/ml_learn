@@ -120,35 +120,6 @@ fn main() {
         )),
     );
 
-    plot_distribution_shift_score_as_sum_of_interval_share_changes_times_log_share_ratios(
-        reference, stable, shifted,
-    );
-
-    fn plot_distribution_shift_score_as_sum_of_interval_share_changes_times_log_share_ratios(
-        reference: [f64; 6],
-        stable: [f64; 6],
-        shifted: [f64; 6],
-    ) {
-        lesson_visualization::bar_chart(
-            env!("CARGO_MANIFEST_DIR"),
-            "lesson-chart",
-            "Сдвиг признака",
-            "PSI",
-            &[
-                (
-                    "стабильно",
-                    calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios(
-                        &reference, &stable,
-                    ),
-                ),
-                (
-                    "сдвиг",
-                    calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios(
-                        &reference, &shifted,
-                    ),
-                ),
-            ],
-        )
-        .expect("не удалось сохранить график");
-    }
+    // Выполняем вычисления из примера.
+    let _ = (reference, stable, shifted);
 }

@@ -2,5 +2,3 @@
 name = "l093-16-correct-errors-using-models-trained-only-on-earlier-rows"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]

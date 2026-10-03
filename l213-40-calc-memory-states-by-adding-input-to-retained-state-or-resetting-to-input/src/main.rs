@@ -27,24 +27,6 @@ fn main() {
     assert_eq!(states[0], 1.0);
     assert_eq!(states[2], 2.0);
 
-    plot_stored_state_with_reset_on_third_step(&states);
-}
-
-fn plot_stored_state_with_reset_on_third_step(states: &[f64; 4]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "selective-state",
-        "Сброс состояния на третьем шаге",
-        "шаг",
-        "h_t",
-        &[lesson_visualization::Series {
-            name: "состояние",
-            points: &states
-                .iter()
-                .enumerate()
-                .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = &states;
 }

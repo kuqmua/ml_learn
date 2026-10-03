@@ -20,23 +20,6 @@ fn main() {
         }
     }
 
-    plot_matrix_after_adding_same_constant_input_weight_vec_to_each_row(
-        matrix_after_adding_constant_weight,
-    );
-}
-
-// Строим график по результатам урока.
-fn plot_matrix_after_adding_same_constant_input_weight_vec_to_each_row(
-    matrix_after_adding_constant_weight: [[f64; 2]; 2],
-) {
-    lesson_visualization::heatmap(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Broadcasting: результат",
-        &matrix_after_adding_constant_weight
-            .iter()
-            .map(|row| row.to_vec())
-            .collect::<Vec<_>>(),
-    )
-    .expect("не удалось сохранить тепловую карту");
+    // Выполняем вычисления из примера.
+    let _ = (matrix_after_adding_constant_weight,);
 }

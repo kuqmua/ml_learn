@@ -16,48 +16,6 @@ fn main() {
     let data: [&str; 4] = ["A", "B", "C", "D"];
     let sampled_indices: [usize; 4] = [0, 2, 2, 3];
 
-    plot_repeated_appearances_in_sample_drawn_with_replacement(
-        sampled_indices.map(|index| data[index]),
-    );
-}
-
-// Строим график по результатам урока.
-fn plot_repeated_appearances_in_sample_drawn_with_replacement(sample: [&str; 4]) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Повторы в bootstrap-выборке",
-        "число появлений",
-        &[
-            (
-                "A",
-                sample
-                    .iter()
-                    .filter(|&&horizontal_value| horizontal_value == "A")
-                    .count() as f64,
-            ),
-            (
-                "B",
-                sample
-                    .iter()
-                    .filter(|&&horizontal_value| horizontal_value == "B")
-                    .count() as f64,
-            ),
-            (
-                "C",
-                sample
-                    .iter()
-                    .filter(|&&horizontal_value| horizontal_value == "C")
-                    .count() as f64,
-            ),
-            (
-                "D",
-                sample
-                    .iter()
-                    .filter(|&&horizontal_value| horizontal_value == "D")
-                    .count() as f64,
-            ),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (sampled_indices.map(|index| data[index]),);
 }

@@ -52,23 +52,6 @@ fn main() {
         .map(|&token_index| dense_numeric_representations[token_index])
         .collect::<Vec<_>>());
 
-    plot_number_of_known_text_units_and_sequence_len(known_text_units, text_unit_indices);
-}
-
-// Строим график по результатам урока.
-fn plot_number_of_known_text_units_and_sequence_len(
-    known_text_units: std::collections::BTreeMap<std::string::String, usize>,
-    text_unit_indices: std::vec::Vec<usize>,
-) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Размер словаря и последовательности",
-        "число элементов",
-        &[
-            ("словарь", known_text_units.len() as f64),
-            ("токены", text_unit_indices.len() as f64),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (known_text_units, text_unit_indices);
 }

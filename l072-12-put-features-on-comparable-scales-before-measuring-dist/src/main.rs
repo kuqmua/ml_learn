@@ -25,7 +25,8 @@ fn main() {
     let scaled_second_example: [f64; 2] =
         [second_example[0] / scale[0], second_example[1] / scale[1]];
 
-    plot_squared_dists_before_and_after_feature_scaling(
+    // Выполняем вычисления из примера.
+    let _ = (
         calc_squared_point_dist_by_summing_squared_coord_diffs(&first_example, &second_example)
             .unwrap(),
         calc_squared_point_dist_by_summing_squared_coord_diffs(
@@ -34,16 +35,4 @@ fn main() {
         )
         .unwrap(),
     );
-}
-
-// Строим график по результатам урока.
-fn plot_squared_dists_before_and_after_feature_scaling(raw_squared: f64, scaled_squared: f64) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Эффект масштабирования",
-        "квадрат расстояния",
-        &[("до", raw_squared), ("после", scaled_squared)],
-    )
-    .expect("не удалось сохранить график");
 }

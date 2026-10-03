@@ -18,25 +18,6 @@ fn main() {
     let validation: &[i32] = &rows[6..8];
     let test: &[i32] = &rows[8..];
 
-    plot_row_counts_in_training_validation_and_test_sets(training_data, validation, test);
-}
-
-// Строим график по результатам урока.
-fn plot_row_counts_in_training_validation_and_test_sets(
-    training_data: &[i32],
-    validation: &[i32],
-    test: &[i32],
-) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Разделение набора",
-        "число строк",
-        &[
-            ("train", training_data.len() as f64),
-            ("validation", validation.len() as f64),
-            ("test", test.len() as f64),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (training_data, validation, test);
 }

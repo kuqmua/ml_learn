@@ -36,58 +36,6 @@ fn main() {
     )
     .unwrap();
 
-    plot_training_and_test_points_with_prediction_line(
-        training,
-        test,
-        weight,
-        constant_input_weight,
-    );
-}
-
-// Строим график по результатам урока.
-fn plot_training_and_test_points_with_prediction_line(
-    training: [(f64, f64); 2],
-    test: [(f64, f64); 2],
-    weight: f64,
-    constant_input_weight: f64,
-) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Отложенные данные и прямая",
-        "признак",
-        "цель и прогноз",
-        &[
-            lesson_visualization::Series {
-                name: "обучение",
-
-                points: &training
-                    .iter()
-                    .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "тест",
-
-                points: &test
-                    .iter()
-                    .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "модель",
-
-                points: &(0..=50)
-                    .map(|plot_step_index| {
-                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                        (
-                            horizontal_value,
-                            weight * horizontal_value + constant_input_weight,
-                        )
-                    })
-                    .collect::<Vec<_>>(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (training, test, weight, constant_input_weight);
 }

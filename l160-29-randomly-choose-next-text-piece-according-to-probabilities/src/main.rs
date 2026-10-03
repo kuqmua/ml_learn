@@ -46,21 +46,6 @@ fn main() {
         }
     }
 
-    plot_probabilities_of_possible_next_text_units(probabilities);
-}
-
-// Строим график по результатам урока.
-fn plot_probabilities_of_possible_next_text_units(probabilities: [f64; 3]) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Распределение следующего токена",
-        "вероятность",
-        &[
-            ("токен 1", probabilities[0]),
-            ("токен 2", probabilities[1]),
-            ("токен 3", probabilities[2]),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = probabilities;
 }

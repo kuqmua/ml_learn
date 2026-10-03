@@ -45,23 +45,4 @@ fn main() {
         }
     }
     let _ = (&(best.1), &(best.0));
-
-    plot_weighted_class_mixing_for_different_thresholds();
-}
-
-// Строим график по результатам урока.
-fn plot_weighted_class_mixing_for_different_thresholds() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Чистота разбиения",
-        "порог",
-        "взвешенный Gini",
-        &[lesson_visualization::Series {
-            name: "данные −−++",
-
-            points: &[(1.5, 1.0 / 3.0), (2.5, 0.0), (3.5, 1.0 / 3.0)].to_vec(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

@@ -19,37 +19,4 @@ fn main() {
     let squared_weight_penalty_strength: f64 = 0.2;
     let _: f64 = prediction_error + squared_weight_penalty_strength * squared_weight;
     let _ = &(squared_weight_penalty_strength * squared_weight);
-
-    plot_error_with_and_without_squared_weight_penalty();
-}
-
-// Строим график по результатам урока.
-fn plot_error_with_and_without_squared_weight_penalty() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Штраф за большой вес",
-        "вес",
-        "целевая функция",
-        &[
-            lesson_visualization::Series {
-                name: "без регуляризации",
-
-                points: &(-30..=30)
-                    .map(|plot_step_index| (plot_step_index as f64 / 10.0, 1.0))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "со штрафом",
-
-                points: &(-30..=30)
-                    .map(|plot_step_index| {
-                        let weight_value: f64 = plot_step_index as f64 / 10.0;
-                        (weight_value, 1.0 + weight_value * weight_value)
-                    })
-                    .collect::<Vec<_>>(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

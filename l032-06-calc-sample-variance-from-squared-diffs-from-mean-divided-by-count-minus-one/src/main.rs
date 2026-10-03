@@ -22,31 +22,4 @@ fn main() {
     let _: &str =
         calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one(&[4.0])
             .expect_err("одного значения недостаточно");
-
-    plot_squared_diffs_from_mean();
-}
-
-// Строим график по результатам урока.
-fn plot_squared_diffs_from_mean() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Разброс относительно среднего",
-        "значение",
-        "квадрат отклонения",
-        &[lesson_visualization::Series {
-            name: "среднее=4",
-
-            points: &(0..=80)
-                .map(|plot_step_index| {
-                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                    (
-                        horizontal_value,
-                        (horizontal_value - 4.0) * (horizontal_value - 4.0),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

@@ -2,5 +2,3 @@
 name = "l238-45-measure-time-from-prediction-request-to-response"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]

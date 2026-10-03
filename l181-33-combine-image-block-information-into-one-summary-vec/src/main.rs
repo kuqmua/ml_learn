@@ -38,20 +38,6 @@ fn main() {
         );
     let _: u8 = u8::from(image_classification_summary[0] > image_classification_summary[1]);
 
-    plot_weights_used_to_combine_image_blocks_into_summary(&weights);
-}
-fn plot_weights_used_to_combine_image_blocks_into_summary(weights: &[f64; 3]) {
-    let values: [(&str, f64); 3] = [
-        ("CLS", weights[0]),
-        ("patch 1", weights[1]),
-        ("patch 2", weights[2]),
-    ];
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "cls-weights",
-        "Что читает CLS",
-        "вес",
-        &values,
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = &weights;
 }

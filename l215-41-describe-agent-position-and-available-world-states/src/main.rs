@@ -14,25 +14,4 @@ fn main() {
     let current_cell: i32 = 2;
     let goal_cell: i32 = 4;
     let _: i32 = goal_cell - current_cell;
-
-    plot_remaining_steps_to_target_for_each_position();
-}
-
-// Строим график по результатам урока.
-fn plot_remaining_steps_to_target_for_each_position() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Расстояние до цели",
-        "позиция",
-        "шагов осталось",
-        &[lesson_visualization::Series {
-            name: "линейная среда",
-
-            points: &(0..=5)
-                .map(|plot_step_index| (plot_step_index as f64, (5 - plot_step_index) as f64))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

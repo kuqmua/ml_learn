@@ -25,26 +25,9 @@ fn main() {
     let single_example_loss_rate_of_change: f64 =
         2.0 * (weight * first_feature - first_target) * first_feature;
 
-    plot_average_rate_of_change_and_single_example_rates(
+    // Выполняем вычисления из примера.
+    let _ = (
         batch_loss_rate_of_change,
         single_example_loss_rate_of_change,
     );
-}
-
-// Строим график по результатам урока.
-fn plot_average_rate_of_change_and_single_example_rates(
-    batch_loss_rate_of_change: f64,
-    single_example_loss_rate_of_change: f64,
-) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Batch и stochastic градиенты",
-        "градиент",
-        &[
-            ("batch", batch_loss_rate_of_change),
-            ("stochastic", single_example_loss_rate_of_change),
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

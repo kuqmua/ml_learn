@@ -31,35 +31,6 @@ fn main() {
         let _: f64 = sum_of_resampled_values / indices.len() as f64;
     }
 
-    plot_means_of_samples_drawn_with_replacement(values, resamples);
-}
-
-// Строим график по результатам урока.
-fn plot_means_of_samples_drawn_with_replacement(values: [f64; 3], resamples: [[usize; 3]; 4]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Bootstrap: средние повторных выборок",
-        "номер выборки",
-        "среднее",
-        &[lesson_visualization::Series {
-            name: "среднее",
-
-            points: &resamples
-                .iter()
-                .enumerate()
-                .map(|(item_index, indices)| {
-                    (
-                        (item_index + 1) as f64,
-                        indices
-                            .iter()
-                            .map(|&sample_index| values[sample_index])
-                            .sum::<f64>()
-                            / indices.len() as f64,
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (values, resamples);
 }

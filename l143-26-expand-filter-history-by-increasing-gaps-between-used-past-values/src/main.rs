@@ -24,24 +24,7 @@ fn main() {
     }
     assert_eq!(signal[..8], [1.0; 8]);
     assert_eq!(signal[8], 0.0);
-    plot_impulse_response_with_increasing_filter_spacing(&signal);
-}
 
-fn plot_impulse_response_with_increasing_filter_spacing(signal: &[f64; 9]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "receptive-field",
-        "Отклик на импульс",
-        "t",
-        "отклик",
-        &[lesson_visualization::Series {
-            name: "dilation 1,2,4",
-            points: &signal
-                .iter()
-                .enumerate()
-                .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = &signal;
 }

@@ -17,7 +17,7 @@
 - [x] [008 · Проверка числа элементов матрицы и границ строки и столбца](l008-02-validate-matrix-element-count-and-row-column-indices/)
 - [x] [009 · Транспонирование матрицы: перестановка строк в столбцы](l009-02-transpose-matrix-by-turning-rows-into-columns/)
 - [x] [010 · Умножение матрицы на вектор: умножение соответствующих координат строки и вектора с последующим сложением](l010-02-multiply-matrix-and-vec-by-adding-multiplied-row-coords/)
-- [ ] [011 · Умножение двух матриц: умножение соответствующих элементов строк и столбцов с последующим сложением](l011-02-multiply-matrices-by-adding-multiplied-row-and-column-values/)
+- [x] [011 · Умножение двух матриц: умножение соответствующих элементов строк и столбцов с последующим сложением](l011-02-multiply-matrices-by-adding-multiplied-row-and-column-values/)
 - [ ] [012 · Поиск двух неизвестных, удовлетворяющих двум линейным уравнениям](l012-02-solve-system-of-two-linear-equations/)
 - [ ] [013 · Практика: размеры матриц, перестановка строк в столбцы, умножение и решение уравнений](l013-02-practice-matrix-shapes-row-column-swaps-and-equation-solving/)
 

@@ -19,17 +19,6 @@ fn main() {
         weights[1][0] * text_units[0] + weights[1][1] * text_units[1],
     ];
 
-    plot_weighted_context_coords(context);
-}
-
-// Строим график по результатам урока.
-fn plot_weighted_context_coords(context: [f64; 2]) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Self-attention: контекст",
-        "компонента",
-        &[("позиция 0", context[0]), ("позиция 1", context[1])],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = context;
 }

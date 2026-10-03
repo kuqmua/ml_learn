@@ -21,27 +21,11 @@ fn main() {
     .unwrap();
     assert_eq!(values[0], 0.5);
     assert_eq!(values[1], 0.5);
-    plot_category_target_averages_using_only_previous_rows(&values);
+
     for (index, _value) in values.iter().enumerate() {
         let _ = &(categories[index]);
     }
-}
 
-fn plot_category_target_averages_using_only_previous_rows(values: &[f64; 5]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "ordered-stats",
-        "Префиксная статистика",
-        "строка",
-        "оценка",
-        &[lesson_visualization::Series {
-            name: "ordered mean",
-            points: &values
-                .iter()
-                .enumerate()
-                .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = &values;
 }

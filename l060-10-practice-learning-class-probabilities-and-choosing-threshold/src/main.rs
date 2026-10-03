@@ -195,45 +195,6 @@ fn main() {
         )),
     );
 
-    plot_predicted_pos_probability_and_training_targets(weight, constant_input_weight);
-
-    fn plot_predicted_pos_probability_and_training_targets(
-        weight: f64,
-        constant_input_weight: f64,
-    ) {
-        lesson_visualization::line_chart(
-            env!("CARGO_MANIFEST_DIR"),
-            "lesson-chart",
-            "Обученная логистическая модель",
-            "признак",
-            "P(y=1)",
-            &[
-                lesson_visualization::Series {
-                    name: "модель",
-
-                    points: &(-10..=60)
-                        .map(|plot_step_index| {
-                            let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                            (
-                                horizontal_value,
-                                1.0 / (1.0
-                                    + (-(weight * horizontal_value + constant_input_weight)).exp()),
-                            )
-                        })
-                        .collect::<Vec<_>>(),
-                },
-                lesson_visualization::Series {
-                    name: "метки обучения",
-
-                    points: &TRAINING_EXAMPLES
-                        .iter()
-                        .map(|&(horizontal_value, vertical_value)| {
-                            (horizontal_value, vertical_value)
-                        })
-                        .collect::<Vec<_>>(),
-                },
-            ],
-        )
-        .expect("не удалось сохранить график");
-    }
+    // Выполняем вычисления из примера.
+    let _ = (weight, constant_input_weight);
 }

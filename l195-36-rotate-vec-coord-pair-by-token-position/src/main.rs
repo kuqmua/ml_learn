@@ -32,38 +32,4 @@ fn main() {
             rotate_vec_coord_pair_by_token_position(key_vec, 8, 0.2),
         ) < query_key_match_after_equal_position_rotation
     );
-
-    plot_sum_after_multiplying_rotated_coords_for_relative_positions();
-}
-
-fn plot_sum_after_multiplying_rotated_coords_for_relative_positions() {
-    let query_vec: [f64; 2] = [1.0, 0.0];
-    let query_vec: [f64; 2] = rotate_vec_coord_pair_by_token_position(query_vec, 0, 0.2);
-
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "rope-relative",
-        "RoPE и расстояние между позициями",
-        "сдвиг позиции",
-        "сумма произведений координат",
-        &[lesson_visualization::Series {
-            name: "score",
-            points: &(0..=20)
-                .map(|position_index| {
-                    (
-                        position_index as f64,
-                        multiply_matching_coords_then_add_results(
-                            query_vec,
-                            rotate_vec_coord_pair_by_token_position(
-                                [1.0, 0.0],
-                                position_index,
-                                0.2,
-                            ),
-                        ),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

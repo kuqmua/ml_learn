@@ -108,29 +108,9 @@ fn main() {
         )
     })();
 
-    plot_points_projected_onto_direction_of_largest_spread(data.map(|point| {
+    // Выполняем вычисления из примера.
+    let _ = data.map(|point| {
         (point[0] - mean[0]) * unit_direction_of_largest_spread[0]
             + (point[1] - mean[1]) * unit_direction_of_largest_spread[1]
-    }));
-}
-
-// Строим график по результатам урока.
-fn plot_points_projected_onto_direction_of_largest_spread(projections: [f64; 4]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "PCA: координаты вдоль главной оси",
-        "номер точки",
-        "проекция",
-        &[lesson_visualization::Series {
-            name: "проекции",
-
-            points: &projections
-                .iter()
-                .enumerate()
-                .map(|(item_index, &element_value)| (item_index as f64, element_value))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    });
 }

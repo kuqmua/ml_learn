@@ -23,17 +23,6 @@ fn main() {
     let learning_rate: f64 = 0.1;
     let new_weight: f64 = old_weight - learning_rate * small_batch_loss_rate_of_change;
 
-    plot_weight_before_and_after_averaged_example_update(old_weight, new_weight);
-}
-
-// Строим график по результатам урока.
-fn plot_weight_before_and_after_averaged_example_update(old_weight: f64, new_weight: f64) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Mini-batch обновление",
-        "вес",
-        &[("до", old_weight), ("после", new_weight)],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (old_weight, new_weight);
 }

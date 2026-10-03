@@ -2,7 +2,3 @@
 name = "l086-15-train-several-models-on-different-resampled-data"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

@@ -2,7 +2,3 @@
 name = "l060-10-practice-learning-class-probabilities-and-choosing-threshold"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

@@ -18,40 +18,4 @@ fn main() {
     let derivative_square_by_input: f64 = 2.0 * input_value;
     let derivative_output_by_square: f64 = 2.0;
     let _: f64 = derivative_output_by_square * derivative_square_by_input;
-
-    plot_function_values_and_output_change_per_input_change();
-}
-
-// Строим график по результатам урока.
-fn plot_function_values_and_output_change_per_input_change() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Обратное распространение для 2x²",
-        "x",
-        "значение",
-        &[
-            lesson_visualization::Series {
-                name: "f(x)",
-
-                points: &(-30..=30)
-                    .map(|plot_step_index| {
-                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                        (horizontal_value, 2.0 * horizontal_value * horizontal_value)
-                    })
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "df/dx",
-
-                points: &(-30..=30)
-                    .map(|plot_step_index| {
-                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                        (horizontal_value, 4.0 * horizontal_value)
-                    })
-                    .collect::<Vec<_>>(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

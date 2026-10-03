@@ -10,5 +10,3 @@ l002_01_calc_sum_of_absolute_vec_coords = { package = "l002-01-calc-sum-of-absol
 l003_01_calc_vec_len_as_square_root_of_sum_of_squared_coords = { package = "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords", path = "../l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords" }
 l005_01_calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs = { package = "l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs", path = "../l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs" }
 l006_01_multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens = { package = "l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens", path = "../l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens" }
-
-lesson-visualization = { path = "../lesson-visualization" }

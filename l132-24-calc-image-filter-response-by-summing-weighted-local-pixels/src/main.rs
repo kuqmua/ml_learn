@@ -20,21 +20,6 @@ fn main() {
         }
     }
 
-    plot_local_pixel_values_and_weighted_sum(patch, response);
-}
-
-// Строим график по результатам урока.
-fn plot_local_pixel_values_and_weighted_sum(patch: [[f64; 2]; 2], response: f64) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Ядро свёртки и отклик",
-        "значение",
-        &[
-            ("патч 0,0", patch[0][0]),
-            ("патч 1,1", patch[1][1]),
-            ("отклик", response),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (patch, response);
 }

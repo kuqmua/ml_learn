@@ -2,7 +2,3 @@
 name = "l177-32-calc-position-layer-output-by-weighted-coord-transformation"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

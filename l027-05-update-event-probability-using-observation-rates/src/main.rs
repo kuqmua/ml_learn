@@ -24,20 +24,6 @@ fn main() {
         / (joint_probability_of_disease_and_pos_test
             + joint_probability_of_no_disease_and_pos_test);
 
-    plot_disease_probability_before_and_after_pos_test(disease_probability_after_pos_test);
-}
-
-// Строим график по результатам урока.
-fn plot_disease_probability_before_and_after_pos_test(disease_probability_after_pos_test: f64) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Байес: до и после теста",
-        "вероятность",
-        &[
-            ("до теста", 0.01),
-            ("после теста", disease_probability_after_pos_test),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = disease_probability_after_pos_test;
 }

@@ -6,5 +6,3 @@ edition = "2024"
 [dependencies]
 l030_06_calc_mean_by_summing_values_and_dividing_by_count = { package = "l030-06-calc-mean-by-summing-values-and-dividing-by-count", path = "../l030-06-calc-mean-by-summing-values-and-dividing-by-count" }
 l032_06_calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one = { package = "l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one", path = "../l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one" }
-
-lesson-visualization = { path = "../lesson-visualization" }

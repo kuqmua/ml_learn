@@ -23,25 +23,6 @@ fn main() {
         .unwrap();
     }
 
-    plot_centered_points_to_show_direction_of_greatest_spread(centered_points);
-}
-
-// Строим график по результатам урока.
-fn plot_centered_points_to_show_direction_of_greatest_spread(centered_points: [[f64; 2]; 4]) {
-    lesson_visualization::scatter_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Проекция на главное направление",
-        "первая координата",
-        "вторая координата",
-        &[lesson_visualization::Series {
-            name: "центрированные точки",
-
-            points: &centered_points
-                .iter()
-                .map(|data_point| (data_point[0], data_point[1]))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = centered_points;
 }

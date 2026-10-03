@@ -37,21 +37,6 @@ fn main() {
         assert_eq!(independent, expected);
     }
 
-    plot_joint_event_probabilities(cases);
-}
-
-// Строим график по результатам урока.
-fn plot_joint_event_probabilities(cases: [(&str, f64, f64, f64, bool); 3]) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Зависимость событий",
-        "P(A∩B)",
-        &[
-            ("независимые", cases[0].3),
-            ("зависимые", cases[1].3),
-            ("несовместимые", cases[2].3),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = cases;
 }

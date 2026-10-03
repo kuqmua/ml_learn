@@ -15,20 +15,6 @@ fn main() {
     let pos_votes: usize = model_predictions.iter().filter(|&&vote| vote).count();
     let _: bool = pos_votes * 2 > model_predictions.len();
 
-    plot_votes_of_models_trained_on_resampled_data(model_predictions, pos_votes);
-}
-
-// Строим график по результатам урока.
-fn plot_votes_of_models_trained_on_resampled_data(model_predictions: [bool; 5], pos_votes: usize) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Голосование bagging",
-        "голоса",
-        &[
-            ("класс 1", pos_votes as f64),
-            ("класс 0", (model_predictions.len() - pos_votes) as f64),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (model_predictions, pos_votes);
 }

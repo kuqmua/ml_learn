@@ -20,37 +20,6 @@ fn main() {
     );
     let mean: f64 = calc_mean_by_summing_values_and_dividing_by_count(&values).unwrap();
 
-    plot_feature_values_after_subtracting_mean(values, values.map(|value| value - mean));
-}
-
-// Строим график по результатам урока.
-fn plot_feature_values_after_subtracting_mean(values: [f64; 3], centered: [f64; 3]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Центрирование признака",
-        "номер наблюдения",
-        "значение",
-        &[
-            lesson_visualization::Series {
-                name: "исходные",
-
-                points: &values
-                    .iter()
-                    .enumerate()
-                    .map(|(item_index, &element_value)| (item_index as f64, element_value))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "центрированные",
-
-                points: &centered
-                    .iter()
-                    .enumerate()
-                    .map(|(item_index, &element_value)| (item_index as f64, element_value))
-                    .collect::<Vec<_>>(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (values, values.map(|value| value - mean));
 }

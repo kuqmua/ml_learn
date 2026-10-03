@@ -13,26 +13,6 @@ fn main() {
     let losses: [f64; 3] = [1.0, 0.6, 0.4];
     for (_epoch, _loss) in losses.into_iter().enumerate() {}
 
-    plot_error_after_each_training_pass(losses);
-}
-
-// Строим график по результатам урока.
-fn plot_error_after_each_training_pass(losses: [f64; 3]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Журнал обучения",
-        "эпоха",
-        "ошибка",
-        &[lesson_visualization::Series {
-            name: "loss",
-
-            points: &losses
-                .into_iter()
-                .enumerate()
-                .map(|(item_index, element_value)| (item_index as f64, element_value))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = losses;
 }

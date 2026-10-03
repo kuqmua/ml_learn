@@ -3,7 +3,5 @@ name = "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs"
 version = "0.1.0"
 edition = "2024"
 
-[dependencies]
-
 [dev-dependencies]
 lesson-float-comparison = { path = "../lesson-float-comparison" }

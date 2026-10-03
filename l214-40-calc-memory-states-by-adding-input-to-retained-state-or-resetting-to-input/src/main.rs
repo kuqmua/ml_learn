@@ -36,36 +36,6 @@ fn main() {
         calc_memory_states_by_adding_input_to_retained_state_or_resetting_to_input(&values, &reset);
     assert!(fixed[2] > dynamic[2]);
 
-    plot_stored_state_with_constant_retention_and_selective_resets(&fixed, &dynamic);
-}
-fn plot_stored_state_with_constant_retention_and_selective_resets(
-    fixed: &[f64; 4],
-    dynamic: &[f64; 4],
-) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "memory",
-        "Постоянное и выборочное забывание",
-        "шаг",
-        "состояние",
-        &[
-            lesson_visualization::Series {
-                name: "fixed",
-                points: &fixed
-                    .iter()
-                    .enumerate()
-                    .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "selective",
-                points: &dynamic
-                    .iter()
-                    .enumerate()
-                    .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
-                    .collect::<Vec<_>>(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (&fixed, &dynamic);
 }

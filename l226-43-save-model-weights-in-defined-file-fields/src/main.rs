@@ -16,23 +16,10 @@ fn main() {
     let constant_input_weight: f64 = 1.0;
     let saved_model_text: String = format!("{weight}\n{constant_input_weight}\n");
     let mut lines: std::str::Lines<'_> = saved_model_text.lines();
-    plot_weights_loaded_from_saved_model(
+
+    // Выполняем вычисления из примера.
+    let _ = (
         lines.next().unwrap().parse::<f64>().unwrap(),
         lines.next().unwrap().parse::<f64>().unwrap(),
     );
-}
-
-// Строим график по результатам урока.
-fn plot_weights_loaded_from_saved_model(loaded_weight: f64, loaded_constant_input_weight: f64) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Загруженные параметры",
-        "значение",
-        &[
-            ("вес", loaded_weight),
-            ("смещение", loaded_constant_input_weight),
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

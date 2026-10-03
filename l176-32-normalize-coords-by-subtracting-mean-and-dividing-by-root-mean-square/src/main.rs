@@ -26,30 +26,6 @@ fn main() {
     let coords_in_standard_deviation_units: [f64; 2] =
         [(text_unit[0] - mean) / scale, (text_unit[1] - mean) / scale];
 
-    plot_normalized_coords_after_subtracting_mean_and_dividing_by_spread(
-        coords_in_standard_deviation_units,
-    );
-}
-
-// Строим график по результатам урока.
-fn plot_normalized_coords_after_subtracting_mean_and_dividing_by_spread(
-    coords_in_standard_deviation_units: [f64; 2],
-) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Layer normalization",
-        "измерение",
-        "значение",
-        &[lesson_visualization::Series {
-            name: "нормализованный токен",
-
-            points: &coords_in_standard_deviation_units
-                .iter()
-                .enumerate()
-                .map(|(item_index, &element_value)| (item_index as f64, element_value))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (coords_in_standard_deviation_units,);
 }

@@ -2,5 +2,3 @@
 name = "l044-08-repeat-random-sequence-from-same-starting-number"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]

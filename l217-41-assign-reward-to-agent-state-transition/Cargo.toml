@@ -2,5 +2,3 @@
 name = "l217-41-assign-reward-to-agent-state-transition"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]

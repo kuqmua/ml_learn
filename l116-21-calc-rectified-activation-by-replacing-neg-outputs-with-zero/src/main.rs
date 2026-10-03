@@ -11,28 +11,4 @@ fn main() {
             0.0
         };
     }
-
-    plot_rectified_activation_as_input_with_neg_values_replaced_by_zero();
-}
-
-// Строим график по результатам урока.
-fn plot_rectified_activation_as_input_with_neg_values_replaced_by_zero() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "ReLU",
-        "вход",
-        "выход",
-        &[lesson_visualization::Series {
-            name: "max(0,x)",
-
-            points: &(-50..=50)
-                .map(|plot_step_index| {
-                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                    (horizontal_value, horizontal_value.max(0.0))
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

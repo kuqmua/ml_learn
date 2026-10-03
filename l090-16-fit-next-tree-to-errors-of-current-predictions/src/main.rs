@@ -36,24 +36,7 @@ fn main() {
         history[round + 1] = mean_squared_error;
     }
     assert_eq!(predictions, [0.25, 0.25, 1.75, 1.75]);
-    plot_average_squared_error_after_each_added_tree(&history);
-}
 
-fn plot_average_squared_error_after_each_added_tree(losses: &[f64; 3]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "boosting-error",
-        "Ошибка после каждого дерева",
-        "итерация",
-        "MSE",
-        &[lesson_visualization::Series {
-            name: "MSE",
-            points: &losses
-                .iter()
-                .enumerate()
-                .map(|(item_index, &loss)| (item_index as f64, loss))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = &history;
 }

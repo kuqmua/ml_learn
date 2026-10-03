@@ -27,29 +27,6 @@ fn main() {
         .sum::<f64>()
         / predictions.len() as f64;
 
-    plot_squared_average_error_and_prediction_spread(
-        average_prediction_minus_target,
-        prediction_variance,
-    );
-}
-
-// Строим график по результатам урока.
-fn plot_squared_average_error_and_prediction_spread(
-    average_prediction_minus_target: f64,
-    prediction_variance: f64,
-) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Смещение и разброс",
-        "вклад в MSE",
-        &[
-            (
-                "смещение²",
-                average_prediction_minus_target * average_prediction_minus_target,
-            ),
-            ("разброс", prediction_variance),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (average_prediction_minus_target, prediction_variance);
 }

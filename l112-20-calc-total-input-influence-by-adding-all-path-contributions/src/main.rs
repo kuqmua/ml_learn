@@ -15,29 +15,10 @@ fn main() {
     let right_path_rate_of_change: f64 = input_value;
     let combined_rate_of_change: f64 = left_path_rate_of_change + right_path_rate_of_change;
 
-    plot_contributions_to_input_rate_of_change_from_each_path(
+    // Выполняем вычисления из примера.
+    let _ = (
         left_path_rate_of_change,
         right_path_rate_of_change,
         combined_rate_of_change,
     );
-}
-
-// Строим график по результатам урока.
-fn plot_contributions_to_input_rate_of_change_from_each_path(
-    left_path_rate_of_change: f64,
-    right_path_rate_of_change: f64,
-    combined_rate_of_change: f64,
-) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Накопление градиентов",
-        "вклад",
-        &[
-            ("левый путь", left_path_rate_of_change),
-            ("правый путь", right_path_rate_of_change),
-            ("всего", combined_rate_of_change),
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

@@ -19,33 +19,6 @@ fn main() {
         .expect("ожидалось по одному выходу на каждый отсчёт сигнала");
     assert_eq!(output, [1.0, 4.0, 7.0, 10.0]);
 
-    plot_input_signal_and_weighted_current_and_past_sums(&signal, &output);
-}
-fn plot_input_signal_and_weighted_current_and_past_sums(input: &[f64; 4], output: &[f64; 4]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "causal-conv",
-        "Причинная свёртка",
-        "t",
-        "амплитуда",
-        &[
-            lesson_visualization::Series {
-                name: "вход",
-                points: &input
-                    .iter()
-                    .enumerate()
-                    .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "выход",
-                points: &output
-                    .iter()
-                    .enumerate()
-                    .map(|(item_index, &vertical_value)| (item_index as f64, vertical_value))
-                    .collect::<Vec<_>>(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (&signal, &output);
 }

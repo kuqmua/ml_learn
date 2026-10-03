@@ -2,6 +2,3 @@
 name = "l181-33-combine-image-block-information-into-one-summary-vec"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-lesson-visualization = { path = "../lesson-visualization" }

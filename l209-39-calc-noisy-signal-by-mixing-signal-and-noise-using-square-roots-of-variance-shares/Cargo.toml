@@ -2,6 +2,3 @@
 name = "l209-39-calc-noisy-signal-by-mixing-signal-and-noise-using-square-roots-of-variance-shares"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-lesson-visualization = { path = "../lesson-visualization" }

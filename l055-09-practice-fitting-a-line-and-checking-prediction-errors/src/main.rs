@@ -59,44 +59,6 @@ fn main() {
     )
     .unwrap();
 
-    plot_prediction_line_and_held_out_points(weight, constant_input_weight, test);
-}
-
-// Строим график по результатам урока.
-fn plot_prediction_line_and_held_out_points(
-    weight: f64,
-    constant_input_weight: f64,
-    test: [(f64, f64); 2],
-) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Линейная регрессия и тест",
-        "признак x",
-        "целевое значение",
-        &[
-            lesson_visualization::Series {
-                name: "модель",
-
-                points: &(0..=60)
-                    .map(|plot_step_index| {
-                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                        (
-                            horizontal_value,
-                            weight * horizontal_value + constant_input_weight,
-                        )
-                    })
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "тест",
-
-                points: &test
-                    .iter()
-                    .map(|&(horizontal_value, vertical_value)| (horizontal_value, vertical_value))
-                    .collect::<Vec<_>>(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (weight, constant_input_weight, test);
 }

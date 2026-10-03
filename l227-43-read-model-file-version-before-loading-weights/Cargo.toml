@@ -2,5 +2,3 @@
 name = "l227-43-read-model-file-version-before-loading-weights"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]

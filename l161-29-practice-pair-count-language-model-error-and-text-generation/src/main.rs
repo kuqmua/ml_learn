@@ -219,29 +219,6 @@ fn main() {
     }
     let _ = &(generated_text_units.join(" "));
 
-    plot_next_word_counts_after_start_of_sentence(bigram_counts);
-}
-
-// Строим график по результатам урока.
-fn plot_next_word_counts_after_start_of_sentence(
-    bigram_counts: std::collections::BTreeMap<(std::string::String, std::string::String), usize>,
-) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Частоты переходов после начала строки",
-        "номер следующего токена",
-        "частота",
-        &[lesson_visualization::Series {
-            name: "биграммы",
-
-            points: &bigram_counts
-                .iter()
-                .filter(|((previous, _), _)| previous == "<s>")
-                .enumerate()
-                .map(|(item_index, (_, count))| (item_index as f64, *count as f64))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = bigram_counts;
 }

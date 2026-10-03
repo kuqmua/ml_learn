@@ -44,27 +44,6 @@ fn main() {
         assert_eq!(stopped_at, expected_stop);
     }
 
-    plot_validation_error_used_to_choose_stopping_step(cases);
-}
-
-// Строим график по результатам урока.
-fn plot_validation_error_used_to_choose_stopping_step(cases: [(&str, &[f64], Option<usize>); 3]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Ранняя остановка: первая серия",
-        "эпоха",
-        "validation loss",
-        &[lesson_visualization::Series {
-            name: "loss",
-
-            points: &cases[0]
-                .1
-                .iter()
-                .enumerate()
-                .map(|(epoch, &loss)| (epoch as f64, loss))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = cases;
 }

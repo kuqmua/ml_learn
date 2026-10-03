@@ -158,36 +158,7 @@ fn main() {
     }
 
     let input_values: [[f64; 2]; 2] = [[1., 0.], [0., 1.]];
-    plot_outputs_after_context_mixing_and_coord_transformation(
-        input_values,
-        calc_transformer_output(&input_values),
-    );
-}
 
-// Строим график по результатам урока.
-fn plot_outputs_after_context_mixing_and_coord_transformation(
-    input_values: [[f64; 2]; 2],
-    transformer_output: [[f64; 2]; 2],
-) {
-    for (name, title, values) in [
-        (
-            "input",
-            "Вход блока Transformer",
-            input_values
-                .iter()
-                .map(|row| row.to_vec())
-                .collect::<Vec<_>>(),
-        ),
-        (
-            "output",
-            "Выход блока Transformer",
-            transformer_output
-                .iter()
-                .map(|row| row.to_vec())
-                .collect::<Vec<_>>(),
-        ),
-    ] {
-        lesson_visualization::heatmap(env!("CARGO_MANIFEST_DIR"), name, title, &values)
-            .expect("не удалось сохранить график");
-    }
+    // Выполняем вычисления из примера.
+    let _ = (input_values, calc_transformer_output(&input_values));
 }

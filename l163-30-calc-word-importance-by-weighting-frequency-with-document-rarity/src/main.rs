@@ -27,34 +27,6 @@ fn main() {
     let word_count_in_document: f64 = 3.0;
     let _: f64 = word_count_in_document * inverse_document_frequency_as_word_rarity_weight;
 
-    plot_word_frequency_weighted_by_rarity_across_documents(
-        inverse_document_frequency_as_word_rarity_weight,
-    );
-}
-
-// Строим график по результатам урока.
-fn plot_word_frequency_weighted_by_rarity_across_documents(
-    inverse_document_frequency_as_word_rarity_weight: f64,
-) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "TF-IDF",
-        "частота токена",
-        "оценка TF-IDF",
-        &[lesson_visualization::Series {
-            name: "idf из примера",
-
-            points: &(0..=10)
-                .map(|plot_step_index| {
-                    let word_count_in_document: f64 = plot_step_index as f64 / 10.0;
-                    (
-                        word_count_in_document,
-                        word_count_in_document * inverse_document_frequency_as_word_rarity_weight,
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (inverse_document_frequency_as_word_rarity_weight,);
 }

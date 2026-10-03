@@ -19,18 +19,4 @@ fn main() {
         let second_output: f64 = second_neuron[0] * input[0] + second_neuron[1] * input[1];
         assert_eq!(first_output == second_output, should_match);
     }
-
-    plot_different_starting_weights();
-}
-
-// Строим график по результатам урока.
-fn plot_different_starting_weights() {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Разные начальные веса",
-        "вес",
-        &[("нейрон 1", 0.5), ("нейрон 2", -0.5)],
-    )
-    .expect("не удалось сохранить график");
 }

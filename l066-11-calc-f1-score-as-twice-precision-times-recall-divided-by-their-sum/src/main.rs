@@ -25,35 +25,4 @@ fn main() {
             expected
         );
     }
-
-    plot_f1_score_as_twice_precision_times_recall_over_their_sum();
-}
-
-// Строим график по результатам урока.
-fn plot_f1_score_as_twice_precision_times_recall_over_their_sum() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "F1 при correct_pos_prediction_share=0.8",
-        "recall",
-        "F1",
-        &[lesson_visualization::Series {
-            name: "F1",
-
-            points: &(0..=100)
-                .map(|plot_step_index| {
-                    let recall_value: f64 = plot_step_index as f64 / 100.0;
-                    (
-                        recall_value,
-                        if recall_value == 0.0 {
-                            0.0
-                        } else {
-                            2.0 * 0.8 * recall_value / (0.8 + recall_value)
-                        },
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

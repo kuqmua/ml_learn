@@ -15,40 +15,4 @@ fn main() {
     let input_value: f64 = 2.0;
     let square: f64 = input_value * input_value;
     let _: f64 = square + square;
-
-    plot_intermediate_values_of_squared_input_computation();
-}
-
-// Строим график по результатам урока.
-fn plot_intermediate_values_of_squared_input_computation() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Прямой проход вычислительного графа",
-        "x",
-        "значение",
-        &[
-            lesson_visualization::Series {
-                name: "x²",
-
-                points: &(-30..=30)
-                    .map(|plot_step_index| {
-                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                        (horizontal_value, horizontal_value * horizontal_value)
-                    })
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "2x²",
-
-                points: &(-30..=30)
-                    .map(|plot_step_index| {
-                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                        (horizontal_value, 2.0 * horizontal_value * horizontal_value)
-                    })
-                    .collect::<Vec<_>>(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

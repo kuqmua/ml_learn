@@ -5,4 +5,3 @@ edition = "2024"
 
 [dependencies]
 l179_33_extract_nonoverlapping_square_patches_from_square_image = { package = "l179-33-extract-nonoverlapping-square-patches-from-square-image", path = "../l179-33-extract-nonoverlapping-square-patches-from-square-image" }
-lesson-visualization = { path = "../lesson-visualization" }

@@ -31,32 +31,4 @@ fn main() {
         };
         assert_eq!(variance_share_explained_by_first_axis, expected);
     }
-
-    plot_first_direction_share_for_changing_variance();
-}
-
-// Строим график по результатам урока.
-fn plot_first_direction_share_for_changing_variance() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Объяснённая дисперсия первой оси",
-        "λ₁",
-        "доля",
-        &[lesson_visualization::Series {
-            name: "λ₂=1",
-
-            points: &(0..=50)
-                .map(|plot_step_index| {
-                    let variance_along_first_principal_axis: f64 = plot_step_index as f64 / 10.0;
-                    (
-                        variance_along_first_principal_axis,
-                        variance_along_first_principal_axis
-                            / (variance_along_first_principal_axis + 1.0),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

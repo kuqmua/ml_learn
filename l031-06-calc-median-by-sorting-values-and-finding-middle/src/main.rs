@@ -26,30 +26,4 @@ fn main() {
         };
         assert_eq!(median, expected);
     }
-
-    plot_values_and_median_as_middle_of_sorted_values();
-}
-
-// Строим график по результатам урока.
-fn plot_values_and_median_as_middle_of_sorted_values() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Медиана и отдельные значения",
-        "индекс",
-        "значение",
-        &[
-            lesson_visualization::Series {
-                name: "наблюдения",
-
-                points: &[(1.0, 1.0), (2.0, 3.0), (3.0, 7.0)].to_vec(),
-            },
-            lesson_visualization::Series {
-                name: "медиана",
-
-                points: &[(1.0, 3.0), (3.0, 3.0)].to_vec(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

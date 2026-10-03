@@ -15,30 +15,11 @@ fn main() {
     let query: [f64; 2] = [1.0, 0.5];
     let key: [f64; 2] = [0.8, 0.2];
 
-    plot_results_after_multiplying_matching_query_and_key_coords(
+    // Выполняем вычисления из примера.
+    let _ = (
         query,
         key,
         multiply_matching_coords_then_add_results(&query, &key)
             .expect("запрос и ключ должны иметь одинаковое число координат"),
     );
-}
-
-// Строим график по результатам урока.
-fn plot_results_after_multiplying_matching_query_and_key_coords(
-    query: [f64; 2],
-    key: [f64; 2],
-    score: f64,
-) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Вклады координат в Q·K",
-        "вклад",
-        &[
-            ("координата 0", query[0] * key[0]),
-            ("координата 1", query[1] * key[1]),
-            ("сумма", score),
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

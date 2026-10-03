@@ -33,27 +33,4 @@ fn main() {
             expected
         );
     }
-
-    plot_true_pos_share_among_pos_predictions();
-}
-
-// Строим график по результатам урока.
-fn plot_true_pos_share_among_pos_predictions() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Precision при фиксированном TP=2",
-        "FP",
-        "precision",
-        &[lesson_visualization::Series {
-            name: "precision",
-
-            points: &(0..=10)
-                .map(|false_pos_count| {
-                    (false_pos_count as f64, 2.0 / (2.0 + false_pos_count as f64))
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

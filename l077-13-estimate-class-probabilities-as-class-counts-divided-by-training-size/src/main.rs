@@ -24,29 +24,9 @@ fn main() {
     let machine_learning_class_probability_before_observing_words: f64 =
         1.0 - code_class_probability_before_observing_words;
 
-    plot_training_class_shares(
+    // Выполняем вычисления из примера.
+    let _ = (
         code_class_probability_before_observing_words,
         machine_learning_class_probability_before_observing_words,
     );
-}
-
-// Строим график по результатам урока.
-fn plot_training_class_shares(
-    code_class_probability_before_observing_words: f64,
-    machine_learning_class_probability_before_observing_words: f64,
-) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Априорные вероятности",
-        "вероятность",
-        &[
-            ("code", code_class_probability_before_observing_words),
-            (
-                "ml",
-                machine_learning_class_probability_before_observing_words,
-            ),
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

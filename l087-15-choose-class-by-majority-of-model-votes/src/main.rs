@@ -21,18 +21,4 @@ fn main() {
             votes.iter().filter(|&&vote| vote).count() * 2 > votes.len();
         assert_eq!(predicted_majority_class, expected);
     }
-
-    plot_number_of_votes_for_each_class();
-}
-
-// Строим график по результатам урока.
-fn plot_number_of_votes_for_each_class() {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Большинство голосов",
-        "количество голосов",
-        &[("за", 3.0), ("против", 2.0)],
-    )
-    .expect("не удалось сохранить график");
 }

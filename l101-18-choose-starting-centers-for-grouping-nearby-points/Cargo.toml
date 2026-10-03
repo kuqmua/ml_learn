@@ -2,7 +2,3 @@
 name = "l101-18-choose-starting-centers-for-grouping-nearby-points"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

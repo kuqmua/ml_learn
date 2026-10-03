@@ -45,17 +45,6 @@ fn main() {
         );
     assert!(weights[3] > 0.0);
 
-    plot_weights_assigned_from_first_image_block_to_all_blocks(&weights);
-}
-
-fn plot_weights_assigned_from_first_image_block_to_all_blocks(weights: &[f64; 4]) {
-    let labels: [&str; 4] = ["patch 0", "patch 1", "patch 2", "patch 3"];
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "vit-attention",
-        "Внимание первого патча",
-        "вес",
-        &std::array::from_fn::<(&str, f64), 4, _>(|index| (labels[index], weights[index])),
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = &weights;
 }

@@ -10,8 +10,6 @@
 // Вероятности 0 и 1 дают бесконечную ошибку для неверного класса, поэтому пример
 // считает только строго внутренние вероятности.
 
-use lesson_float_comparison::check_f64_eq_1e_minus_10;
-
 fn main() {
     let cases: [(&str, f64, f64); 4] = [
         ("верный уверенный прогноз", 1.0, 0.9),
@@ -40,52 +38,6 @@ fn main() {
         let _ = &(neg_log_correct_class_probabilities[index]);
     }
 
-    plot_classification_loss_as_neg_log_probability_for_each_correct_class(
-        neg_log_correct_class_probabilities,
-    );
-}
-
-// Строим график по результатам урока.
-fn plot_classification_loss_as_neg_log_probability_for_each_correct_class(
-    neg_log_correct_class_probabilities: [f64; 4],
-) {
-    assert!(
-        neg_log_correct_class_probabilities[0] < neg_log_correct_class_probabilities[1]
-            && neg_log_correct_class_probabilities[1] < neg_log_correct_class_probabilities[2]
-    );
-    assert!(check_f64_eq_1e_minus_10(
-        neg_log_correct_class_probabilities[0],
-        neg_log_correct_class_probabilities[3]
-    ));
-
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Логарифмическая ошибка",
-        "вероятность положительного класса",
-        "ошибка",
-        &[
-            lesson_visualization::Series {
-                name: "y=1",
-
-                points: &(1..100)
-                    .map(|plot_step_index| {
-                        let probability: f64 = plot_step_index as f64 / 100.0;
-                        (probability, -probability.ln())
-                    })
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "y=0",
-
-                points: &(1..100)
-                    .map(|plot_step_index| {
-                        let probability: f64 = plot_step_index as f64 / 100.0;
-                        (probability, -(1.0 - probability).ln())
-                    })
-                    .collect::<Vec<_>>(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (neg_log_correct_class_probabilities,);
 }

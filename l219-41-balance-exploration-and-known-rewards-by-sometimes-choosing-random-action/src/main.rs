@@ -24,28 +24,4 @@ fn main() {
         };
         assert_eq!(action, expected_action);
     }
-
-    plot_random_action_choice_below_exploration_threshold();
-}
-
-// Строим график по результатам урока.
-fn plot_random_action_choice_below_exploration_threshold() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Исследование и использование",
-        "случайное число",
-        "выбор",
-        &[lesson_visualization::Series {
-            name: "порог ε=0.2: 1=исследование",
-
-            points: &(0..=100)
-                .map(|plot_step_index| {
-                    let random_value: f64 = plot_step_index as f64 / 100.0;
-                    (random_value, if random_value < 0.2 { 1.0 } else { 0.0 })
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

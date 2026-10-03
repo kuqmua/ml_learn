@@ -108,34 +108,4 @@ fn main() {
     let _ = &(calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
         0.3, 2.0,
     ));
-
-    plot_coord_slope_estimation_error_for_shrinking_step();
-
-    fn plot_coord_slope_estimation_error_for_shrinking_step() {
-        lesson_visualization::line_chart(
-            env!("CARGO_MANIFEST_DIR"),
-            "lesson-chart",
-            "Ошибка численного градиента",
-            "k для h=10⁻ᵏ",
-            "абсолютная ошибка",
-            &[lesson_visualization::Series {
-                name: "∂f/∂x",
-
-                points: &(1..=12)
-
-            .map(|step_exponent| {
-                let step_size: f64 = 10f64.powi(-step_exponent);
-                let numeric: f64 = (calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(0.3 + step_size, 2.0)
-
-                    - calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(0.3 - step_size, 2.0))
-
-                    / (2.0 * step_size);
-                (step_exponent as f64, (numeric - 2.0 * (0.3 - 2.0)).abs())
-            })
-
-            .collect::<Vec<_>>(),
-            }],
-        )
-        .expect("не удалось сохранить график");
-    }
 }

@@ -59,20 +59,6 @@ fn main() {
         results.push((past_update_share_kept_in_next_step, loss));
     }
 
-    plot_best_validation_error_during_training(results);
-}
-
-// Строим график по результатам урока.
-fn plot_best_validation_error_during_training(results: std::vec::Vec<(f64, f64)>) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Momentum и лучшая validation error",
-        "ошибка",
-        &[
-            ("без past_update_share_kept_in_next_step", results[0].1),
-            ("с past_update_share_kept_in_next_step", results[1].1),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = results;
 }

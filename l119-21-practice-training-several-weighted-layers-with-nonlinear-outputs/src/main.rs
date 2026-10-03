@@ -162,30 +162,4 @@ fn main() {
         };
         let _ = &(output_probability);
     }
-
-    plot_two_feature_training_points_by_class();
-}
-
-// Строим график по результатам урока.
-fn plot_two_feature_training_points_by_class() {
-    lesson_visualization::scatter_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "XOR: обучающие примеры",
-        "первый признак",
-        "второй признак",
-        &[
-            lesson_visualization::Series {
-                name: "класс 0",
-
-                points: &[(0.0, 0.0), (1.0, 1.0)].to_vec(),
-            },
-            lesson_visualization::Series {
-                name: "класс 1",
-
-                points: &[(0.0, 1.0), (1.0, 0.0)].to_vec(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

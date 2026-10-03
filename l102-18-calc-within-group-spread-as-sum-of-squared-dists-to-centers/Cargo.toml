@@ -2,7 +2,3 @@
 name = "l102-18-calc-within-group-spread-as-sum-of-squared-dists-to-centers"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

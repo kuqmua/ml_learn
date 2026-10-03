@@ -21,34 +21,4 @@ fn main() {
             )
             .expect("не удалось вычислить расстояние: координаты должны быть конечными, а квадрат расстояния — помещаться в f64"), expected));
     }
-    plot_dist_from_origin_for_changing_first_coord();
-}
-
-// Строим график по результатам урока.
-fn plot_dist_from_origin_for_changing_first_coord() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Расстояние до начала координат",
-        "x точки [x, 4]",
-        "расстояние",
-        &[lesson_visualization::Series {
-            name: "расстояние",
-
-            points: &(-50..=50)
-                .map(|plot_step_index| {
-                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                    (
-                        horizontal_value,
-                        calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs(
-                            &[0.0, 0.0],
-                            &[horizontal_value, 4.0],
-                        )
-                        .unwrap(),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

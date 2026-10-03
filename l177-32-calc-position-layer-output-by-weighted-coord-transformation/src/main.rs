@@ -22,17 +22,6 @@ fn main() {
         if linear[1] > 0.0 { linear[1] } else { 0.0 },
     ];
 
-    plot_activations_after_transforming_each_position(relu_outputs);
-}
-
-// Строим график по результатам урока.
-fn plot_activations_after_transforming_each_position(relu_outputs: [f64; 2]) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Feed-forward",
-        "активация",
-        &[("нейрон 0", relu_outputs[0]), ("нейрон 1", relu_outputs[1])],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = relu_outputs;
 }

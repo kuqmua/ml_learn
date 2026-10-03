@@ -22,23 +22,4 @@ fn main() {
         }
         assert_eq!(bins, expected);
     }
-
-    plot_observation_counts_in_feature_intervals();
-}
-
-// Строим график по результатам урока.
-fn plot_observation_counts_in_feature_intervals() {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Распределение признака",
-        "число наблюдений",
-        &[
-            ("до: <0.5", 2.0),
-            ("до: ≥0.5", 2.0),
-            ("после: <0.5", 0.0),
-            ("после: ≥0.5", 4.0),
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

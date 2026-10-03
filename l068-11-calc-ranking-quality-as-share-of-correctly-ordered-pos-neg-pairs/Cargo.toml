@@ -2,7 +2,3 @@
 name = "l068-11-calc-ranking-quality-as-share-of-correctly-ordered-pos-neg-pairs"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

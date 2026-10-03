@@ -22,22 +22,6 @@ fn main() {
         weight_history[step + 1] = ((step + 1) as f64, weight);
     }
 
-    plot_weight_after_each_single_example_update(weight_history);
-}
-
-// Строим график по результатам урока.
-fn plot_weight_after_each_single_example_update(weight_history: [(f64, f64); 3]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Шаги SGD",
-        "шаг",
-        "вес",
-        &[lesson_visualization::Series {
-            name: "вес",
-
-            points: &weight_history,
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = weight_history;
 }

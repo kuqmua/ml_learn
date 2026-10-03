@@ -18,24 +18,8 @@ fn main() {
     let output_width: i32 = (image_width - filter_width) / filter_step_size + 1;
     // Число позиций зависит от ширины изображения, ядра и шага фильтра.
 
-    plot_image_positions_visited_with_fixed_step_size(
-        (0..output_width)
-            .map(|index| index * filter_step_size)
-            .collect::<Vec<_>>(),
-    );
-}
-
-// Строим график по результатам урока.
-fn plot_image_positions_visited_with_fixed_step_size(positions: std::vec::Vec<i32>) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Stride и позиции ядра",
-        "позиция",
-        &[
-            ("первая", positions[0] as f64),
-            ("последняя", *positions.last().unwrap() as f64),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = ((0..output_width)
+        .map(|index| index * filter_step_size)
+        .collect::<Vec<_>>(),);
 }

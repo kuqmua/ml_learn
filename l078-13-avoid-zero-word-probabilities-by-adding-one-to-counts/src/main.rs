@@ -17,34 +17,4 @@ fn main() {
     let _: f64 = observed_count / total_words_in_class;
     let known_text_unit_count: f64 = 4.0;
     let _: f64 = (observed_count + 1.0) / (total_words_in_class + known_text_unit_count);
-
-    plot_word_probabilities_before_and_after_adding_one_to_counts();
-}
-
-// Строим график по результатам урока.
-fn plot_word_probabilities_before_and_after_adding_one_to_counts() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Сглаживание Лапласа",
-        "частота токена",
-        "оценка вероятности",
-        &[
-            lesson_visualization::Series {
-                name: "без сглаживания",
-
-                points: &(0..=8)
-                    .map(|sample_count| (sample_count as f64, sample_count as f64 / 10.0))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "со сглаживанием",
-
-                points: &(0..=8)
-                    .map(|sample_count| (sample_count as f64, (sample_count as f64 + 1.0) / 12.0))
-                    .collect::<Vec<_>>(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

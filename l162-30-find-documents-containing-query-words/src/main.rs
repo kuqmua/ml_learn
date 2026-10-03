@@ -18,35 +18,6 @@ fn main() {
         if text.split_whitespace().any(|word| word == query) {}
     }
 
-    plot_number_of_documents_with_and_without_query_matches(documents, query);
-}
-
-// Строим график по результатам урока.
-fn plot_number_of_documents_with_and_without_query_matches(
-    documents: [(&str, &str); 2],
-    query: &str,
-) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Лексический поиск",
-        "документов",
-        &[
-            (
-                "найдены",
-                documents
-                    .iter()
-                    .filter(|(text, _)| text.contains(query))
-                    .count() as f64,
-            ),
-            (
-                "не найдены",
-                documents
-                    .iter()
-                    .filter(|(text, _)| !text.contains(query))
-                    .count() as f64,
-            ),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (documents, query);
 }

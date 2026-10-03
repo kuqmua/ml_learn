@@ -41,20 +41,9 @@ fn main() {
             text
         );
     }
-    plot_number_of_text_units_after_learned_pair_merges(&rows);
+
+    // Выполняем вычисления из примера.
+    let _ = &rows;
 }
 
 // График строится отдельно от проверки кодирования.
-fn plot_number_of_text_units_after_learned_pair_merges(rows: &[(&str, usize, usize); 5]) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "token-count",
-        "Длина BPE-кодирования",
-        "число токенов",
-        &rows
-            .iter()
-            .map(|(text, _, count)| (*text, *count as f64))
-            .collect::<Vec<_>>(),
-    )
-    .expect("не удалось построить график");
-}

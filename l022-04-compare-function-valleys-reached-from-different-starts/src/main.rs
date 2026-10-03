@@ -22,32 +22,4 @@ fn main() {
         let _: f64 =
             input_value * input_value * input_value * input_value - 2.0 * input_value * input_value;
     }
-
-    plot_function_with_two_valleys();
-}
-
-// Строим график по результатам урока.
-fn plot_function_with_two_valleys() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Два локальных минимума",
-        "x",
-        "f(x)",
-        &[lesson_visualization::Series {
-            name: "x⁴−2x²",
-
-            points: &(-150..=150)
-                .map(|plot_step_index| {
-                    let horizontal_value: f64 = plot_step_index as f64 / 100.0;
-                    (
-                        horizontal_value,
-                        horizontal_value * horizontal_value * horizontal_value * horizontal_value
-                            - 2.0 * horizontal_value * horizontal_value,
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

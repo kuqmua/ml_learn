@@ -20,31 +20,4 @@ fn main() {
         let _: f64 = calc_squared_point_dist_by_summing_squared_coord_diffs(&query, &candidate)
             .expect("координаты должны быть конечными, а квадрат расстояния — помещаться в f64");
     }
-
-    plot_dist_from_query_for_changing_coord();
-}
-
-// Строим график по результатам урока.
-fn plot_dist_from_query_for_changing_coord() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Расстояние до запроса",
-        "первая координата",
-        "евклидово расстояние",
-        &[lesson_visualization::Series {
-            name: "запрос [0,0]",
-
-            points: &(-50..=50)
-                .map(|plot_step_index| {
-                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                    (
-                        horizontal_value,
-                        (horizontal_value * horizontal_value + 1.0).sqrt(),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

@@ -2,7 +2,3 @@
 name = "l042-07-show-how-test-data-can-contaminate-training-statistics"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

@@ -2,7 +2,3 @@
 name = "l084-14-practice-threshold-tree-with-class-separation-and-depth-limit"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

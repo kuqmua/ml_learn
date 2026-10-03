@@ -23,16 +23,6 @@ fn main() {
     let _: &str = multiply_matching_coords_then_add_results(&matrix[0], &too_short)
         .expect_err("разные длины нужно отклонить");
 
-    plot_matrix_coefficients_used_in_weighted_row_sums(matrix);
-}
-
-// Строим график по результатам урока.
-fn plot_matrix_coefficients_used_in_weighted_row_sums(matrix: [[f64; 2]; 2]) {
-    lesson_visualization::heatmap(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Коэффициенты матрицы",
-        &matrix.iter().map(|row| row.to_vec()).collect::<Vec<_>>(),
-    )
-    .expect("не удалось сохранить тепловую карту");
+    // Выполняем вычисления из примера.
+    let _ = matrix;
 }

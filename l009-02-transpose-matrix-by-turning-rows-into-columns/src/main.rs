@@ -22,23 +22,6 @@ fn main() {
     }
     assert_eq!(restored, matrix);
 
-    plot_matrix_after_turning_rows_into_columns(transposed);
-}
-
-// Строим график по результатам урока.
-fn plot_matrix_after_turning_rows_into_columns(transposed: [[i32; 2]; 3]) {
-    lesson_visualization::heatmap(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Строки исходной таблицы стали столбцами",
-        &transposed
-            .iter()
-            .map(|row| {
-                row.iter()
-                    .map(|&element_value| element_value as f64)
-                    .collect::<Vec<_>>()
-            })
-            .collect::<Vec<_>>(),
-    )
-    .expect("не удалось сохранить тепловую карту");
+    // Выполняем вычисления из примера.
+    let _ = transposed;
 }

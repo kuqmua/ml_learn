@@ -2,7 +2,3 @@
 name = "l162-30-find-documents-containing-query-words"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

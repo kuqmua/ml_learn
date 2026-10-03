@@ -2,5 +2,3 @@
 name = "l230-43-practice-saving-loading-and-validating-versioned-model-files"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]

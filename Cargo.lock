@@ -3,71 +3,12 @@
 version = 4
 
 [[package]]
-name = "autocfg"
-version = "1.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
-
-[[package]]
-name = "bumpalo"
-version = "3.20.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72f5acc6cb2ba439de613abc23857ec3d78374d8ed5ac84e9d11336e87da8649"
-
-[[package]]
-name = "cfg-if"
-version = "1.0.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e7648175b45a9a48536d676f68d918270699102aa8dab5496df06904c914600"
-
-[[package]]
-name = "futures-core"
-version = "0.3.34"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "92d699e522242e69e3003b94ecc1f960f3a5e015aa7c5d7486e65ad01dd94f5e"
-
-[[package]]
-name = "futures-task"
-version = "0.3.34"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cd417de3d1d015fc3bfd2b1ea46dfc7bab72ef86f1cc7cc9c78e728b34a6d1fd"
-
-[[package]]
-name = "futures-util"
-version = "0.3.34"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d50a92467f8ba5dd6e3ee5d4bd04d73ab2e4e1c44474a0674821dfce14b79bc"
-dependencies = [
- "futures-core",
- "futures-task",
- "pin-project-lite",
- "slab",
-]
-
-[[package]]
-name = "js-sys"
-version = "0.3.106"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7883d941dae510fb2d978fc3fe018c71c9e2892fd38854de3e8b92c2e5ad9cc5"
-dependencies = [
- "cfg-if",
- "futures-util",
- "wasm-bindgen",
-]
-
-[[package]]
 name = "l001-01-multiply-matching-coords-then-add-results"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l002-01-calc-sum-of-absolute-vec-coords"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords"
@@ -75,7 +16,6 @@ version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coords-then-add-results",
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -91,7 +31,6 @@ version = "0.1.0"
 dependencies = [
  "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs",
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -101,7 +40,6 @@ dependencies = [
  "l001-01-multiply-matching-coords-then-add-results",
  "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords",
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -114,29 +52,21 @@ dependencies = [
  "l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs",
  "l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens",
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l008-02-validate-matrix-element-count-and-row-column-indices"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l009-02-transpose-matrix-by-turning-rows-into-columns"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l010-02-multiply-matrix-and-vec-by-adding-multiplied-row-coords"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coords-then-add-results",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -144,72 +74,48 @@ name = "l011-02-multiply-matrices-by-adding-multiplied-row-and-column-values"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coords-then-add-results",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l012-02-solve-system-of-two-linear-equations"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l013-02-practice-matrix-shapes-row-column-swaps-and-equation-solving"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coords-then-add-results",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l014-03-calc-derivative-as-function-output-change-per-input-change"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l015-03-calc-partial-derivative-by-varying-one-of-two-inputs"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l016-03-calc-composed-function-derivative-by-multiplying-rates-of-change"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l017-03-calc-gradient-by-collecting-rates-of-change-for-both-inputs"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l018-03-estimate-derivative-from-two-nearby-function-values"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l019-03-practice-rates-of-change-and-checks-with-nearby-values"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l020-04-reduce-error-by-subtracting-step-size-times-error-slope-from-parameter"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -217,29 +123,21 @@ name = "l021-04-repeat-parameter-updates-and-check-error-decrease"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l022-04-compare-function-valleys-reached-from-different-starts"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l023-04-compare-updates-from-all-examples-and-one-example"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l024-04-practice-update-step-sizes-and-error-decrease"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -247,7 +145,6 @@ name = "l025-05-calc-conditional-probability-by-dividing-joint-by-known-event-pr
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -255,58 +152,38 @@ name = "l026-05-check-event-independence-by-comparing-joint-probability-with-mul
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l027-05-update-event-probability-using-observation-rates"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l028-05-calc-expected-value-by-summing-outcomes-times-probabilities"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l029-05-practice-event-probability-updates-and-weighted-outcome-sums"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l030-06-calc-mean-by-summing-values-and-dividing-by-count"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l031-06-calc-median-by-sorting-values-and-finding-middle"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one"
 version = "0.1.0"
 dependencies = [
  "l030-06-calc-mean-by-summing-values-and-dividing-by-count",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l033-06-calc-quantile-by-selecting-sorted-value-at-given-sample-fraction"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l034-06-estimate-confidence-interval-as-uncertainty-bounds-around-sample-mean"
@@ -314,15 +191,11 @@ version = "0.1.0"
 dependencies = [
  "l030-06-calc-mean-by-summing-values-and-dividing-by-count",
  "l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l035-06-estimate-statistic-variability-by-resampling-observations-with-replacement"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l036-06-practice-mean-middle-and-squared-diffs-from-mean-from-csv"
@@ -330,7 +203,6 @@ version = "0.1.0"
 dependencies = [
  "l030-06-calc-mean-by-summing-values-and-dividing-by-count",
  "l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -344,9 +216,6 @@ version = "0.1.0"
 [[package]]
 name = "l039-07-split-data-for-training-model-selection-and-final-check"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l040-07-choose-missing-value-replacement-by-sorting-training-values-and-taking-upper-middle"
@@ -359,16 +228,10 @@ version = "0.1.0"
 [[package]]
 name = "l042-07-show-how-test-data-can-contaminate-training-statistics"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l043-07-practice-data-validation-splitting-and-training-only-preparation"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l044-08-repeat-random-sequence-from-same-starting-number"
@@ -377,9 +240,6 @@ version = "0.1.0"
 [[package]]
 name = "l045-08-build-baseline-classifier-by-predicting-most-common-training-class"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l046-08-read-experiment-settings-from-command-line"
@@ -388,9 +248,6 @@ version = "0.1.0"
 [[package]]
 name = "l047-08-record-error-after-each-training-pass"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l048-08-calc-content-fingerprint-to-detect-dataset-changes"
@@ -405,7 +262,6 @@ name = "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-b
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -413,29 +269,21 @@ name = "l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l052-09-calc-linear-prediction-by-multiplying-input-and-adding-constant-weight"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l053-09-penalize-model-complexity-by-adding-large-weight-penalty"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l054-09-check-weighted-input-plus-constant-weight-on-unused-data"
 version = "0.1.0"
 dependencies = [
  "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -443,51 +291,34 @@ name = "l055-09-practice-fitting-a-line-and-checking-prediction-errors"
 version = "0.1.0"
 dependencies = [
  "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l056-10-calc-class-probability-as-one-over-one-plus-e-to-neg-score"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l057-10-calc-classification-loss-as-neg-log-correct-class-probability"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l058-10-convert-weighted-input-plus-constant-weight-to-pos-class-probability"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l059-10-choose-class-by-comparing-probability-with-threshold"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l060-10-practice-learning-class-probabilities-and-choosing-threshold"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l061-11-count-binary-classification-outcomes-from-targets-and-predictions"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l062-11-count-binary-classification-outcomes-from-targets-and-scores-at-threshold"
@@ -510,7 +341,6 @@ name = "l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predic
 version = "0.1.0"
 dependencies = [
  "l061-11-count-binary-classification-outcomes-from-targets-and-predictions",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -518,15 +348,11 @@ name = "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss"
 version = "0.1.0"
 dependencies = [
  "l061-11-count-binary-classification-outcomes-from-targets-and-predictions",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l067-11-calc-f1-score-from-counts-by-multiplying-precision-and-recall-by-two-then-dividing-by-sum"
@@ -542,16 +368,10 @@ dependencies = [
 [[package]]
 name = "l068-11-calc-ranking-quality-as-share-of-correctly-ordered-pos-neg-pairs"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l069-11-calc-average-precision-by-summing-precision-times-recall-increases"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l070-11-practice-checking-predictions-when-one-class-is-rare"
@@ -563,7 +383,6 @@ dependencies = [
  "l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predictions",
  "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss",
  "l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -571,7 +390,6 @@ name = "l071-12-calc-squared-example-dist-by-summing-squared-feature-diffs"
 version = "0.1.0"
 dependencies = [
  "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -579,135 +397,82 @@ name = "l072-12-put-features-on-comparable-scales-before-measuring-dist"
 version = "0.1.0"
 dependencies = [
  "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l073-12-choose-how-many-nearby-examples-vote-for-class"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l074-12-count-coord-comparisons-when-searching-all-training-points"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l075-12-practice-class-voting-by-nearby-examples-after-feature-scaling"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l076-13-calc-joint-class-and-feature-score-by-multiplying-probabilities"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l077-13-estimate-class-probabilities-as-class-counts-divided-by-training-size"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l078-13-avoid-zero-word-probabilities-by-adding-one-to-counts"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l079-13-practice-choosing-text-class-by-word-probabilities"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l080-14-calc-class-entropy-as-neg-sum-of-shares-times-logarithms"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l081-14-calc-class-mixing-as-one-minus-sum-of-squared-class-shares"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l082-14-choose-threshold-that-best-separates-classes"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l083-14-compare-training-and-new-data-errors-as-tree-grows"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l084-14-practice-threshold-tree-with-class-separation-and-depth-limit"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l085-15-create-bootstrap-training-samples-by-drawing-examples-with-replacement"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l086-15-train-several-models-on-different-resampled-data"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l087-15-choose-class-by-majority-of-model-votes"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l088-15-measure-average-prediction-offset-and-prediction-spread"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l089-15-practice-models-trained-on-resampled-data-and-majority-voting"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l090-16-fit-next-tree-to-errors-of-current-predictions"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l091-16-predict-tree-output-by-choosing-leaf-with-shared-threshold-tests"
@@ -716,9 +481,6 @@ version = "0.1.0"
 [[package]]
 name = "l092-16-encode-categories-as-average-previous-targets-with-prior-weight"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l093-16-correct-errors-using-models-trained-only-on-earlier-rows"
@@ -730,320 +492,195 @@ version = "0.1.0"
 dependencies = [
  "l091-16-predict-tree-output-by-choosing-leaf-with-shared-threshold-tests",
  "l092-16-encode-categories-as-average-previous-targets-with-prior-weight",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l095-17-take-turns-holding-out-each-data-group-for-validation"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l096-17-keep-class-shares-similar-across-data-groups"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l097-17-choose-settings-on-inner-data-groups-and-check-on-outer-groups"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l098-17-fit-feature-preparation-only-on-current-training-group"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l099-17-practice-nested-data-splits-with-class-balance-and-no-answer-leakage"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l100-18-calc-group-center-by-averaging-point-coords"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l101-18-choose-starting-centers-for-grouping-nearby-points"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l102-18-calc-within-group-spread-as-sum-of-squared-dists-to-centers"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l103-18-choose-group-count-by-comparing-squared-dist-sums"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l104-18-practice-assigning-points-to-nearest-centers-and-updating-centers"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l105-19-center-feature-values-by-subtracting-training-mean"
 version = "0.1.0"
 dependencies = [
  "l030-06-calc-mean-by-summing-values-and-dividing-by-count",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l106-19-calc-covariance-by-multiplying-paired-diffs-from-mean-then-dividing-sum"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l107-19-find-principal-direction-by-maximizing-projected-point-spread"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coords-then-add-results",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l108-19-calc-explained-spread-share-by-dividing-direction-spread-by-total"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l109-19-practice-centering-points-and-projecting-onto-largest-spread-direction"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l110-20-calc-forward-result-by-evaluating-intermediate-operations-in-order"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l111-20-calc-input-influence-by-passing-output-slopes-back-through-operations"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l112-20-calc-total-input-influence-by-adding-all-path-contributions"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l113-20-practice-forward-values-and-backward-rates-of-change"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l114-21-calc-layer-output-by-summing-weighted-inputs-and-adding-constant-weights"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l115-21-identify-adjustable-input-and-constant-weights-in-network"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l116-21-calc-rectified-activation-by-replacing-neg-outputs-with-zero"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l117-21-break-neuron-symmetry-by-choosing-different-starting-weights"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l118-21-update-network-using-average-error-slopes-from-small-example-group"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l119-21-practice-training-several-weighted-layers-with-nonlinear-outputs"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l120-22-calc-output-change-for-each-input-by-reversing-operations"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l121-22-check-matrix-dimensions-before-and-after-multiplication"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l122-22-shift-matrix-rows-by-adding-same-constant-weight-vec-to-each-row"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l123-22-compare-formula-rates-of-change-with-nearby-value-estimates"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l124-22-practice-reversing-operations-and-checking-input-rates-of-change"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l125-23-update-linear-weight-after-each-training-example"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l126-23-calc-momentum-update-by-combining-current-slope-and-past-direction"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l127-23-calc-adaptive-update-from-running-means-of-slopes-and-squared-slopes"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l128-23-center-training-feature-by-subtracting-its-mean-before-model-update"
 version = "0.1.0"
 dependencies = [
  "l030-06-calc-mean-by-summing-values-and-dividing-by-count",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l129-23-prevent-large-updates-by-clamping-error-slopes-to-symmetric-interval"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l130-23-stop-when-error-on-validation-data-no-longer-improves"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l131-23-practice-stable-weight-updates-and-stopping-on-validation-error"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l132-24-calc-image-filter-response-by-summing-weighted-local-pixels"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l133-24-move-pixel-filter-by-fixed-step-across-image"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l134-24-preserve-image-border-context-by-surrounding-image-with-zeros"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l135-24-reduce-image-size-by-taking-local-window-maxima"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l136-24-reuse-same-pixel-filter-to-find-local-image-patterns"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l137-24-practice-sliding-image-filter-zero-borders-and-local-maxima"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l138-25-calc-memory-states-by-applying-tanh-to-weighted-input-plus-weighted-previous-state"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l139-25-calc-memory-parameter-influence-by-passing-error-changes-back-in-time"
@@ -1064,24 +701,17 @@ version = "0.1.0"
 [[package]]
 name = "l142-26-calc-causal-filter-output-by-summing-weighted-current-and-spaced-past-values"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l143-26-expand-filter-history-by-increasing-gaps-between-used-past-values"
 version = "0.1.0"
 dependencies = [
  "l142-26-calc-causal-filter-output-by-summing-weighted-current-and-spaced-past-values",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l144-26-calc-gated-signal-as-tanh-times-sigmoid-share"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l145-26-calc-input-plus-transform-and-separate-transform-output"
@@ -1095,7 +725,6 @@ name = "l146-26-calc-probability-of-next-sound-sample-from-history"
 version = "0.1.0"
 dependencies = [
  "l142-26-calc-causal-filter-output-by-summing-weighted-current-and-spaced-past-values",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -1122,7 +751,6 @@ name = "l151-27-compare-byte-splitting-and-learned-text-pieces-on-new-strings"
 version = "0.1.0"
 dependencies = [
  "l148-27-train-text-tokenizer-by-repeatedly-merging-most-frequent-adjacent-pair",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -1136,125 +764,84 @@ version = "0.1.0"
 [[package]]
 name = "l154-28-create-word-vec-representations-as-numeric-coord-lists"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l155-28-calc-word-vec-similarity-by-multiplying-matching-coords-then-adding"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coords-then-add-results",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l156-28-practice-text-piece-identifiers-and-word-coord-vecs"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l157-29-predict-next-text-piece-from-adjacent-pair-counts"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l158-29-calc-next-token-loss-as-average-neg-log-correct-token-probability"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l159-29-calc-perplexity-as-e-to-average-neg-log-probability"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l160-29-randomly-choose-next-text-piece-according-to-probabilities"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l161-29-practice-pair-count-language-model-error-and-text-generation"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l162-30-find-documents-containing-query-words"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l163-30-calc-word-importance-by-weighting-frequency-with-document-rarity"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l164-30-calc-query-document-cos-of-angle-between-vecs"
 version = "0.1.0"
 dependencies = [
  "l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l165-30-select-documents-with-highest-scores"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l166-30-practice-document-search-by-word-matches-rarity-and-vec-direction"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l167-31-transform-position-coords-into-search-query-vec"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l168-31-compare-query-with-position-key-by-multiplying-coords"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coords-then-add-results",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l169-31-calc-context-by-combining-value-vecs-with-weights"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l170-31-calc-scaled-match-score-by-multiplying-query-and-key-then-dividing-sum"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coords-then-add-results",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -1262,7 +849,6 @@ name = "l171-31-calc-probability-weights-by-exponentiating-scores-and-dividing-b
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -1270,7 +856,6 @@ name = "l172-31-forbid-using-future-text-positions-in-context"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -1278,66 +863,45 @@ name = "l173-31-practice-query-key-matching-and-weighted-sums-of-values"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coords-then-add-results",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l174-32-build-each-position-context-from-other-positions-in-sequence"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l175-32-calc-output-by-adding-original-input-to-transformed-output"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l176-32-normalize-coords-by-subtracting-mean-and-dividing-by-root-mean-square"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l177-32-calc-position-layer-output-by-weighted-coord-transformation"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l178-32-practice-context-mixing-input-addition-and-coord-transformation"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coords-then-add-results",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l179-33-extract-nonoverlapping-square-patches-from-square-image"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l180-33-mix-information-between-all-image-blocks-using-weights"
 version = "0.1.0"
 dependencies = [
  "l179-33-extract-nonoverlapping-square-patches-from-square-image",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l181-33-combine-image-block-information-into-one-summary-vec"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l182-34-calc-visible-context-by-summing-states-weighted-by-exponentiated-coord-scores"
@@ -1373,7 +937,6 @@ name = "l187-35-calc-past-context-by-summing-current-and-past-values-weighted-by
 version = "0.1.0"
 dependencies = [
  "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -1395,7 +958,6 @@ name = "l190-35-calc-next-token-loss-as-neg-log-of-target-probability-from-expon
 version = "0.1.0"
 dependencies = [
  "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -1432,7 +994,6 @@ name = "l195-36-rotate-vec-coord-pair-by-token-position"
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -1468,7 +1029,6 @@ name = "l200-36-calc-selected-branch-output-by-combining-two-chosen-branches"
 version = "0.1.0"
 dependencies = [
  "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -1496,9 +1056,6 @@ version = "0.1.0"
 [[package]]
 name = "l205-38-limit-found-fragment-count-to-fit-answer-context"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l206-38-include-source-document-identifier-in-answer"
@@ -1507,9 +1064,6 @@ version = "0.1.0"
 [[package]]
 name = "l207-38-decline-answer-when-source-match-score-is-too-low"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l208-38-practice-answers-from-found-documents-with-source-checks"
@@ -1518,9 +1072,6 @@ version = "0.1.0"
 [[package]]
 name = "l209-39-calc-noisy-signal-by-mixing-signal-and-noise-using-square-roots-of-variance-shares"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l210-39-train-weighted-input-model-to-predict-added-noise"
@@ -1540,38 +1091,25 @@ dependencies = [
 [[package]]
 name = "l212-40-calc-memory-states-by-repeatedly-adding-weighted-input-to-retained-previous-state"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l213-40-calc-memory-states-by-adding-input-to-retained-state-or-resetting-to-input"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l214-40-calc-memory-states-by-adding-input-to-retained-state-or-resetting-to-input"
 version = "0.1.0"
 dependencies = [
  "l212-40-calc-memory-states-by-repeatedly-adding-weighted-input-to-retained-previous-state",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l215-41-describe-agent-position-and-available-world-states"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l216-41-move-agent-left-or-right-within-world-boundaries"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l217-41-assign-reward-to-agent-state-transition"
@@ -1580,30 +1118,20 @@ version = "0.1.0"
 [[package]]
 name = "l218-41-choose-action-with-highest-estimated-reward"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l219-41-balance-exploration-and-known-rewards-by-sometimes-choosing-random-action"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l220-41-practice-learning-action-values-from-movement-and-rewards"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l221-42-compare-feature-means-to-detect-changed-data"
 version = "0.1.0"
 dependencies = [
  "l030-06-calc-mean-by-summing-values-and-dividing-by-count",
- "lesson-visualization",
 ]
 
 [[package]]
@@ -1611,15 +1139,11 @@ name = "l222-42-check-probability-calibration-by-comparing-predictions-with-even
 version = "0.1.0"
 dependencies = [
  "lesson-float-comparison",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l223-42-compare-prediction-errors-across-data-subgroups"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l224-42-explain-what-small-test-samples-cannot-establish"
@@ -1628,16 +1152,10 @@ version = "0.1.0"
 [[package]]
 name = "l225-42-practice-checking-data-changes-probabilities-and-subgroup-errors"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l226-43-save-model-weights-in-defined-file-fields"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l227-43-read-model-file-version-before-loading-weights"
@@ -1670,9 +1188,6 @@ version = "0.1.0"
 [[package]]
 name = "l234-44-measure-prediction-time-for-increasing-row-counts"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l235-44-practice-reading-csv-and-producing-predictions-from-command-line"
@@ -1681,16 +1196,10 @@ version = "0.1.0"
 [[package]]
 name = "l236-45-detect-feature-distribution-changes-by-comparing-interval-counts"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l237-45-check-released-model-predictions-against-new-known-answers"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l238-45-measure-time-from-prediction-request-to-response"
@@ -1699,16 +1208,10 @@ version = "0.1.0"
 [[package]]
 name = "l239-45-warn-when-data-change-score-exceeds-threshold"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l240-45-practice-monitoring-data-changes-errors-response-time-and-alerts"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "l241-46-project-compare-train-and-run-prediction-model"
@@ -1716,15 +1219,11 @@ version = "0.1.0"
 dependencies = [
  "l030-06-calc-mean-by-summing-values-and-dividing-by-count",
  "l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count",
- "lesson-visualization",
 ]
 
 [[package]]
 name = "l242-47-project-compare-solution-methods-and-explain-errors"
 version = "0.1.0"
-dependencies = [
- "lesson-visualization",
-]
 
 [[package]]
 name = "lesson-datasets"
@@ -1747,63 +1246,7 @@ version = "0.1.0"
 name = "lesson-structure"
 version = "0.1.0"
 dependencies = [
- "syn 2.0.119",
-]
-
-[[package]]
-name = "lesson-visualization"
-version = "0.1.0"
-dependencies = [
- "plotters",
-]
-
-[[package]]
-name = "num-traits"
-version = "0.2.19"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "071dfc062690e90b734c0b2273ce72ad0ffa95f0c74596bc250dcfd960262841"
-dependencies = [
- "autocfg",
-]
-
-[[package]]
-name = "once_cell"
-version = "1.21.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f7c3e4beb33f85d45ae3e3a1792185706c8e16d043238c593331cc7cd313b50"
-
-[[package]]
-name = "pin-project-lite"
-version = "0.2.17"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a89322df9ebe1c1578d689c92318e070967d1042b512afbe49518723f4e6d5cd"
-
-[[package]]
-name = "plotters"
-version = "0.3.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5aeb6f403d7a4911efb1e33402027fc44f29b5bf6def3effcc22d7bb75f2b747"
-dependencies = [
- "num-traits",
- "plotters-backend",
- "plotters-svg",
- "wasm-bindgen",
- "web-sys",
-]
-
-[[package]]
-name = "plotters-backend"
-version = "0.3.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "df42e13c12958a16b3f7f4386b9ab1f3e7933914ecea48da7139435263a4172a"
-
-[[package]]
-name = "plotters-svg"
-version = "0.3.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "51bae2ac328883f7acdfea3d66a7c35751187f870bc81f94563733a154d7a670"
-dependencies = [
- "plotters-backend",
+ "syn",
 ]
 
 [[package]]
@@ -1825,18 +1268,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rustversion"
-version = "1.0.23"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cf54715a573b99ac80df0bc206da022bcd442c974952c7b9720069370852e21f"
-
-[[package]]
-name = "slab"
-version = "0.4.12"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0c790de23124f9ab44544d7ac05d60440adc586479ce501c1d6d7da3cd8c9cf5"
-
-[[package]]
 name = "syn"
 version = "2.0.119"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1848,73 +1279,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "syn"
-version = "3.0.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8593e8e72159ed2257d083c7a454a85cbf854f37a0966d8d483aff8c8a3ebcee"
-dependencies = [
- "proc-macro2",
- "quote",
- "unicode-ident",
-]
-
-[[package]]
 name = "unicode-ident"
 version = "1.0.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d245f478577f809a851594d02313b640fb437e0bb33866753cff937863096954"
-
-[[package]]
-name = "wasm-bindgen"
-version = "0.2.129"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9bb54f33acc68fd454578d9820b0bde1a1a3d17aa17bb7b6595806d02886d409"
-dependencies = [
- "cfg-if",
- "once_cell",
- "rustversion",
- "wasm-bindgen-macro",
- "wasm-bindgen-shared",
-]
-
-[[package]]
-name = "wasm-bindgen-macro"
-version = "0.2.129"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2e29d0c35b16e224a7eeb5cd2d25e3e1968fbd65604117b44d3b789d00ee8535"
-dependencies = [
- "quote",
- "wasm-bindgen-macro-support",
-]
-
-[[package]]
-name = "wasm-bindgen-macro-support"
-version = "0.2.129"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6f501a8bc3719dba86ef8ae4728879c08001bea749eb1333ac5b91e040e2a6b7"
-dependencies = [
- "bumpalo",
- "proc-macro2",
- "quote",
- "syn 3.0.6",
- "wasm-bindgen-shared",
-]
-
-[[package]]
-name = "wasm-bindgen-shared"
-version = "0.2.129"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23f0c9c52aa7cd7d77769a4cfe2a9adb1b331f489a41d912ce14513d5ab995c6"
-dependencies = [
- "unicode-ident",
-]
-
-[[package]]
-name = "web-sys"
-version = "0.3.106"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "88261b9deccee56594c11a3460c462c41f58d148598fe70ad77070126a68aba4"
-dependencies = [
- "js-sys",
- "wasm-bindgen",
-]

@@ -70,18 +70,6 @@ fn main() {
         local_maximum_values
     })());
 
-    plot_image_feature_map_as_local_weighted_pixel_sums(feature_map);
-}
-
-// Строим график по результатам урока.
-fn plot_image_feature_map_as_local_weighted_pixel_sums(
-    feature_map: std::vec::Vec<std::vec::Vec<f64>>,
-) {
-    lesson_visualization::heatmap(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Карта признаков после свёртки",
-        &feature_map,
-    )
-    .expect("не удалось сохранить тепловую карту");
+    // Выполняем вычисления из примера.
+    let _ = feature_map;
 }

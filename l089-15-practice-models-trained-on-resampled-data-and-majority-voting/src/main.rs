@@ -78,26 +78,6 @@ fn main() {
         );
     }
 
-    plot_thresholds_learned_by_resampled_models(models);
-}
-
-// Строим график по результатам урока.
-fn plot_thresholds_learned_by_resampled_models(models: [(f64, bool); 9]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Пороги моделей ансамбля",
-        "номер модели",
-        "порог",
-        &[lesson_visualization::Series {
-            name: "пороги",
-
-            points: &models
-                .iter()
-                .enumerate()
-                .map(|(item_index, (threshold, _))| (item_index as f64, *threshold))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = models;
 }

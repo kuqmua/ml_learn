@@ -128,31 +128,4 @@ fn main() {
             })()),
         );
     }
-
-    plot_correct_prediction_share_in_each_evaluation_subgroup();
-
-    fn plot_correct_prediction_share_in_each_evaluation_subgroup() {
-        let group_correct_prediction_share: &dyn Fn(&str) -> f64 = &|group: &str| {
-            let cases: Vec<&EvaluationCase> = EVALUATION_CASES
-                .iter()
-                .filter(|case| case.group == group)
-                .collect();
-            cases
-                .iter()
-                .filter(|case| (case.score >= 0.5) == case.truth)
-                .count() as f64
-                / cases.len() as f64
-        };
-        lesson_visualization::bar_chart(
-            env!("CARGO_MANIFEST_DIR"),
-            "lesson-chart",
-            "Accuracy по подгруппам",
-            "accuracy",
-            &[
-                ("A", group_correct_prediction_share("A")),
-                ("B", group_correct_prediction_share("B")),
-            ],
-        )
-        .expect("не удалось сохранить график");
-    }
 }

@@ -2,7 +2,3 @@
 name = "l236-45-detect-feature-distribution-changes-by-comparing-interval-counts"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

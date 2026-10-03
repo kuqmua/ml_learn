@@ -119,20 +119,6 @@ fn main() {
         / test.len() as f64;
     let _ = (&(best.0), &(best.1));
 
-    plot_correct_prediction_shares_on_validation_and_test_data(best, correct_prediction_share);
-}
-
-// Строим график по результатам урока.
-fn plot_correct_prediction_shares_on_validation_and_test_data(
-    best: (usize, f64),
-    correct_prediction_share: f64,
-) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Кросс-валидация и тест",
-        "accuracy",
-        &[("CV", best.1), ("test", correct_prediction_share)],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (best, correct_prediction_share);
 }

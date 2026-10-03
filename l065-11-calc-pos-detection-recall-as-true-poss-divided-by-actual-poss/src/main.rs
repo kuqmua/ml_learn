@@ -33,27 +33,4 @@ fn main() {
             expected
         );
     }
-
-    plot_detected_share_of_actual_pos_examples();
-}
-
-// Строим график по результатам урока.
-fn plot_detected_share_of_actual_pos_examples() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Recall при фиксированном TP=2",
-        "FN",
-        "recall",
-        &[lesson_visualization::Series {
-            name: "recall",
-
-            points: &(0..=10)
-                .map(|false_neg_count| {
-                    (false_neg_count as f64, 2.0 / (2.0 + false_neg_count as f64))
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

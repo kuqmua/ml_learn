@@ -113,29 +113,6 @@ fn main() {
     ));
     let _ = &(choose_class_by_summed_log_probabilities_of_words(&training_examples, "неизвестное"));
 
-    plot_number_of_training_documents_in_each_class(training_examples);
-}
-
-// Строим график по результатам урока.
-fn plot_number_of_training_documents_in_each_class(training_examples: [(&str, bool); 4]) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Классы обучающих документов",
-        "число текстов",
-        &[
-            (
-                "положительные",
-                training_examples.iter().filter(|(_, class)| *class).count() as f64,
-            ),
-            (
-                "отрицательные",
-                training_examples
-                    .iter()
-                    .filter(|(_, class)| !*class)
-                    .count() as f64,
-            ),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = training_examples;
 }

@@ -16,27 +16,6 @@ fn main() {
     let candidates: [(i32, f64); 4] = [(1, 52.0), (2, 4.0), (3, 3.5), (4, 3.0)];
     for (_cluster_count, _total_squared_dist_to_cluster_centers) in candidates {}
 
-    plot_within_cluster_squared_dist_sums_for_different_cluster_counts(candidates);
-}
-
-// Строим график по результатам урока.
-fn plot_within_cluster_squared_dist_sums_for_different_cluster_counts(candidates: [(i32, f64); 4]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Метод локтя",
-        "число кластеров k",
-        "инерция",
-        &[lesson_visualization::Series {
-            name: "варианты из урока",
-
-            points: &candidates
-                .iter()
-                .map(|&(cluster_count, total_squared_dist_to_cluster_centers)| {
-                    (cluster_count as f64, total_squared_dist_to_cluster_centers)
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = candidates;
 }

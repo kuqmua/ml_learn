@@ -2,7 +2,3 @@
 name = "l009-02-transpose-matrix-by-turning-rows-into-columns"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

@@ -74,19 +74,7 @@ fn main() {
         .filter(|(_, expected_topic)| *expected_topic == "code")
         .count() as f64
         / TRAINING_EXAMPLES.len() as f64;
-    plot_correct_prediction_shares_for_compared_text_classifiers(baseline, correct);
 
-    fn plot_correct_prediction_shares_for_compared_text_classifiers(baseline: f64, correct: usize) {
-        lesson_visualization::bar_chart(
-            env!("CARGO_MANIFEST_DIR"),
-            "lesson-chart",
-            "Итоговый AI-проект",
-            "accuracy",
-            &[
-                ("baseline", baseline),
-                ("test", correct as f64 / TEST_EXAMPLES.len() as f64),
-            ],
-        )
-        .expect("не удалось сохранить график");
-    }
+    // Выполняем вычисления из примера.
+    let _ = (baseline, correct);
 }

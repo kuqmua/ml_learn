@@ -13,37 +13,6 @@ fn main() {
         (value_after_adding_step - value_after_subtracting_step) / (2.0 * step);
     let analytical_derivative: f64 = 2.0 * input_value;
 
-    plot_slope_estimation_error_for_shrinking_step(input_value, analytical_derivative);
-}
-
-// Строим график по результатам урока.
-fn plot_slope_estimation_error_for_shrinking_step(
-    horizontal_value: f64,
-    analytical_derivative: f64,
-) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Ошибка центральной разности",
-        "k для h=10⁻ᵏ",
-        "абсолютная ошибка",
-        &[lesson_visualization::Series {
-            name: "x² в x=3",
-
-            points: &(1..=12)
-                .map(|step_exponent| {
-                    let step_size: f64 = 10f64.powi(-step_exponent);
-                    let numeric: f64 = ((horizontal_value + step_size)
-                        * (horizontal_value + step_size)
-                        - (horizontal_value - step_size) * (horizontal_value - step_size))
-                        / (2.0 * step_size);
-                    (
-                        step_exponent as f64,
-                        (numeric - analytical_derivative).abs(),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (input_value, analytical_derivative);
 }

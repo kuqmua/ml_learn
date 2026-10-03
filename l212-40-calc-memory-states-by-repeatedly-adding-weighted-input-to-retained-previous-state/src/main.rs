@@ -17,24 +17,6 @@ fn main() {
         );
     assert_eq!(states, [1.0, 0.5, 0.25, 0.125]);
 
-    plot_stored_state_over_repeated_weighted_updates(&states);
-}
-
-fn plot_stored_state_over_repeated_weighted_updates(states: &[f64; 4]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "state-space",
-        "Затухание состояния",
-        "шаг",
-        "h_t",
-        &[lesson_visualization::Series {
-            name: "состояние",
-            points: &states
-                .iter()
-                .enumerate()
-                .map(|(item_index, &horizontal_value)| (item_index as f64, horizontal_value))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = &states;
 }

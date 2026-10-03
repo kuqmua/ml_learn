@@ -72,28 +72,8 @@ fn main() {
     }
     assert_eq!(samples.len(), 8);
 
-    plot_generated_discrete_sound_values(&samples);
-}
-
-fn plot_generated_discrete_sound_values(samples: &[u8]) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "samples",
-        "Дискретные отсчёты",
-        "t",
-        "значение",
-        &[lesson_visualization::Series {
-            name: "отсчёт",
-            points: &samples
-                .iter()
-                .enumerate()
-                .map(|(item_index, &horizontal_value)| {
-                    (item_index as f64, f64::from(horizontal_value))
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = &samples;
 }
 
 /// tanh сохраняет знак, равен 0 при нулевом входе и насыщается к −1 или 1.

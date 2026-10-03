@@ -40,28 +40,6 @@ fn main() {
         (1, 1, 1, 1)
     );
 
-    plot_counts_of_correct_and_incorrect_class_predictions(counts);
-}
-
-// Строим график по результатам урока.
-fn plot_counts_of_correct_and_incorrect_class_predictions(counts: BinaryClassificationCounts) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Матрица ошибок: исходы",
-        "количество",
-        &[
-            (
-                "TP",
-                counts.true_poss_as_correctly_detected_pos_cases as f64,
-            ),
-            ("FP", counts.false_poss_as_false_alarms_on_neg_cases as f64),
-            (
-                "TN",
-                counts.true_negs_as_correctly_rejected_neg_cases as f64,
-            ),
-            ("FN", counts.false_negs_as_missed_pos_cases as f64),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = counts;
 }

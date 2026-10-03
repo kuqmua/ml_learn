@@ -18,40 +18,6 @@ fn main() {
         let _ = (&(training_error[depth - 1]), &(held_out_error[depth - 1]));
     }
 
-    plot_training_and_validation_errors_for_growing_tree_depth(training_error, held_out_error);
-}
-
-// Строим график по результатам урока.
-fn plot_training_and_validation_errors_for_growing_tree_depth(
-    training_error: [f64; 3],
-    held_out_error: [f64; 3],
-) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Переобучение дерева",
-        "глубина",
-        "ошибка",
-        &[
-            lesson_visualization::Series {
-                name: "train",
-
-                points: &training_error
-                    .iter()
-                    .enumerate()
-                    .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "validation",
-
-                points: &held_out_error
-                    .iter()
-                    .enumerate()
-                    .map(|(item_index, &element_value)| ((item_index + 1) as f64, element_value))
-                    .collect::<Vec<_>>(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (training_error, held_out_error);
 }

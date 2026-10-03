@@ -66,43 +66,6 @@ fn main() {
         })());
     }
 
-    plot_training_points_by_class_and_query_point(training_examples);
-}
-
-// Строим график по результатам урока.
-fn plot_training_points_by_class_and_query_point(training_examples: [([f64; 2], bool); 4]) {
-    let query_point: [(f64, f64); 1] = [(1.8, 2.1)];
-    lesson_visualization::scatter_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Ближайшие соседи и запрос",
-        "признак 1",
-        "признак 2",
-        &[
-            lesson_visualization::Series {
-                name: "класс 0",
-
-                points: &training_examples
-                    .iter()
-                    .filter(|(_, target)| !*target)
-                    .map(|(point, _)| (point[0], point[1]))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "класс 1",
-
-                points: &training_examples
-                    .iter()
-                    .filter(|(_, target)| *target)
-                    .map(|(point, _)| (point[0], point[1]))
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "запрос",
-
-                points: &query_point,
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = training_examples;
 }

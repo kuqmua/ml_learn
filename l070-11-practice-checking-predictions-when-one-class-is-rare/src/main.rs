@@ -54,29 +54,10 @@ fn main() {
         Some(0.0)
     );
 
-    plot_prediction_quality_shares_for_imbalanced_classes(
+    // Выполняем вычисления из примера.
+    let _ = (
         correct_pos_prediction_share,
         actual_pos_detection_share,
         calc_prediction_accuracy_as_correct_predictions_divided_by_all_predictions(counts),
     );
-}
-
-// Строим график по результатам урока.
-fn plot_prediction_quality_shares_for_imbalanced_classes(
-    correct_pos_prediction_share: core::option::Option<f64>,
-    actual_pos_detection_share: core::option::Option<f64>,
-    accuracy: core::option::Option<f64>,
-) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Метрики при дисбалансе классов",
-        "доля",
-        &[
-            ("precision", correct_pos_prediction_share.unwrap_or(0.0)),
-            ("recall", actual_pos_detection_share.unwrap_or(0.0)),
-            ("accuracy", accuracy.unwrap_or(0.0)),
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

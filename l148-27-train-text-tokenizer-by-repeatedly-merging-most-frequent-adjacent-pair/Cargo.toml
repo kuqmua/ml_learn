@@ -2,5 +2,3 @@
 name = "l148-27-train-text-tokenizer-by-repeatedly-merging-most-frequent-adjacent-pair"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]

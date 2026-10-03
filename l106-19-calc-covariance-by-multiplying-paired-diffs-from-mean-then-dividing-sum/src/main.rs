@@ -25,31 +25,6 @@ fn main() {
     let _covariance: f64 =
         sum_after_multiplying_paired_diffs_from_mean / (first_feature_values.len() - 1) as f64;
 
-    plot_paired_feature_values_to_show_joint_variation(first_feature_values, second_feature_values);
-}
-
-// Строим график по результатам урока.
-fn plot_paired_feature_values_to_show_joint_variation(
-    horizontal_value: [f64; 3],
-    vertical_value: [f64; 3],
-) {
-    lesson_visualization::scatter_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Ковариация: совместное изменение",
-        "x",
-        "y",
-        &[lesson_visualization::Series {
-            name: "наблюдения",
-
-            points: &horizontal_value
-                .iter()
-                .zip(vertical_value.iter())
-                .map(|(&first_feature_value, &second_feature_value)| {
-                    (first_feature_value, second_feature_value)
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (first_feature_values, second_feature_values);
 }

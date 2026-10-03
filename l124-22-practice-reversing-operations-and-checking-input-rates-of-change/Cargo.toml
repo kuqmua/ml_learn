@@ -2,7 +2,3 @@
 name = "l124-22-practice-reversing-operations-and-checking-input-rates-of-change"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

@@ -35,35 +35,11 @@ fn main() {
         - 0.01 * average_gradient_corrected_for_initial_zero_estimate
             / (root_mean_squared_gradient_used_to_scale_update + 0.00000001);
 
-    plot_first_weight_update_using_running_gradient_averages(
+    // Выполняем вычисления из примера.
+    let _ = (
         loss_slope,
         average_gradient_corrected_for_initial_zero_estimate,
         old_weight,
         updated,
     );
-}
-
-// Строим график по результатам урока.
-fn plot_first_weight_update_using_running_gradient_averages(
-    loss_slope: f64,
-    average_gradient_corrected_for_initial_zero_estimate: f64,
-    old_weight: f64,
-    updated: f64,
-) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Adam: первый шаг",
-        "значение",
-        &[
-            ("градиент", loss_slope),
-            (
-                "первый момент",
-                average_gradient_corrected_for_initial_zero_estimate,
-            ),
-            ("вес до", old_weight),
-            ("вес после", updated),
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

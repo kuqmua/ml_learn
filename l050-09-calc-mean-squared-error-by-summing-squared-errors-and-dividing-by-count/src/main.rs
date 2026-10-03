@@ -30,39 +30,4 @@ fn main() {
         &[2.0, 4.0],
     )
     .expect_err("ожидалась ошибка: число прогнозов и ответов различается");
-
-    plot_average_squared_prediction_error_for_changing_offset();
-}
-
-// Строим график по результатам урока.
-fn plot_average_squared_prediction_error_for_changing_offset() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Среднеквадратичная ошибка",
-        "смещение прогноза",
-        "MSE",
-        &[lesson_visualization::Series {
-            name: "цели [2,4,6]",
-
-            points: &(-30..=30)
-                .map(|plot_step_index| {
-                    let prediction_diff: f64 = plot_step_index as f64 / 10.0;
-                    (
-                        prediction_diff,
-                        calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
-                            &[2.0, 4.0, 6.0],
-                            &[
-                                2.0 + prediction_diff,
-                                4.0 + prediction_diff,
-                                6.0 + prediction_diff,
-                            ],
-                        )
-                        .unwrap(),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

@@ -17,23 +17,6 @@ fn main() {
         }
     }
 
-    plot_image_surrounded_by_zeros(image_with_zero_border);
-}
-
-// Строим график по результатам урока.
-fn plot_image_surrounded_by_zeros(image_with_zero_border: [[i32; 4]; 4]) {
-    lesson_visualization::heatmap(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Padding: дополненное изображение",
-        &image_with_zero_border
-            .iter()
-            .map(|row| {
-                row.iter()
-                    .map(|&element_value| element_value as f64)
-                    .collect::<Vec<_>>()
-            })
-            .collect::<Vec<_>>(),
-    )
-    .expect("не удалось сохранить тепловую карту");
+    // Выполняем вычисления из примера.
+    let _ = image_with_zero_border;
 }

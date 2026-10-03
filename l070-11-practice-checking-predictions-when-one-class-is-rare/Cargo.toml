@@ -10,5 +10,3 @@ l063_11_calc_prediction_accuracy_as_correct_predictions_divided_by_all_predictio
 l064_11_calc_pos_prediction_precision_as_true_poss_divided_by_pos_predictions = { package = "l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predictions", path = "../l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predictions" }
 l065_11_calc_pos_detection_recall_as_true_poss_divided_by_actual_poss = { package = "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss", path = "../l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss" }
 l066_11_calc_f1_score_as_twice_precision_times_recall_divided_by_their_sum = { package = "l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum", path = "../l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum" }
-
-lesson-visualization = { path = "../lesson-visualization" }

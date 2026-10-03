@@ -20,25 +20,4 @@ fn main() {
 
         assert_eq!((state + action).clamp(0, last_state), expected);
     }
-
-    plot_next_position_after_moving_right();
-}
-
-// Строим график по результатам урока.
-fn plot_next_position_after_moving_right() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Переход состояния",
-        "текущее состояние",
-        "следующее состояние",
-        &[lesson_visualization::Series {
-            name: "действие +1",
-
-            points: &(0..=5)
-                .map(|plot_step_index| (plot_step_index as f64, (plot_step_index + 1) as f64))
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

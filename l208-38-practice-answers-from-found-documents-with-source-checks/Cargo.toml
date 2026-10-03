@@ -2,5 +2,3 @@
 name = "l208-38-practice-answers-from-found-documents-with-source-checks"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]

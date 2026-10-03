@@ -20,34 +20,4 @@ fn main() {
             expected
         ));
     }
-
-    plot_vec_len_for_changing_first_coord();
-}
-
-// Строим график по результатам урока.
-fn plot_vec_len_for_changing_first_coord() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Длина вектора (норма L2)",
-        "первая координата",
-        "длина вектора",
-        &[lesson_visualization::Series {
-            name: "вектор [x, 4]",
-
-            points: &(-50..=50)
-                .map(|plot_step_index| {
-                    let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                    (
-                        horizontal_value,
-                        calc_vec_len_as_square_root_of_sum_of_squared_coords(&[
-                            horizontal_value,
-                            4.0,
-                        ]),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

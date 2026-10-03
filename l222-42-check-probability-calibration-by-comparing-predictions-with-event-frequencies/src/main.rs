@@ -31,34 +31,6 @@ fn main() {
         ));
     }
 
-    plot_predicted_probabilities_and_observed_event_frequencies(observed_frequency);
-}
-
-// Строим график по результатам урока.
-fn plot_predicted_probabilities_and_observed_event_frequencies(observed_frequency: f64) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Калибровка вероятностей",
-        "прогноз",
-        "наблюдаемая частота",
-        &[
-            lesson_visualization::Series {
-                name: "идеальная",
-
-                points: &(0..=10)
-                    .map(|plot_step_index| {
-                        let probability: f64 = plot_step_index as f64 / 10.0;
-                        (probability, probability)
-                    })
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "частота в примере",
-
-                points: &[(0.0, observed_frequency), (1.0, observed_frequency)].to_vec(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = observed_frequency;
 }

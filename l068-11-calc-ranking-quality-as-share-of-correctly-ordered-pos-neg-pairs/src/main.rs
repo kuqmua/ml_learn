@@ -32,30 +32,4 @@ fn main() {
         let roc_auc: f64 = ordered_pairs / pair_count;
         assert_eq!(roc_auc, expected);
     }
-
-    plot_detected_pos_share_against_false_pos_share();
-}
-
-// Строим график по результатам урока.
-fn plot_detected_pos_share_against_false_pos_share() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "ROC-кривая: идеальное ранжирование",
-        "доля ложных срабатываний",
-        "полнота",
-        &[
-            lesson_visualization::Series {
-                name: "идеал",
-
-                points: &[(0.0, 0.0), (0.0, 1.0), (1.0, 1.0)].to_vec(),
-            },
-            lesson_visualization::Series {
-                name: "случайный порядок",
-
-                points: &[(0.0, 0.0), (1.0, 1.0)].to_vec(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

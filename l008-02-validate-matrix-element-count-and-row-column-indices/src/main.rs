@@ -22,17 +22,4 @@ fn main() {
         }
         let _: i32 = elements[row * columns + column];
     }
-
-    plot_matrix_with_two_rows_and_three_columns();
-}
-
-// Строим график по результатам урока.
-fn plot_matrix_with_two_rows_and_three_columns() {
-    lesson_visualization::heatmap(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Форма 2 × 3",
-        &[vec![1.0, 2.0, 3.0], vec![4.0, 5.0, 6.0]],
-    )
-    .expect("не удалось сохранить тепловую карту");
 }

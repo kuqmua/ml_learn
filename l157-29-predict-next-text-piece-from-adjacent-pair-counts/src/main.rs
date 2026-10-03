@@ -21,18 +21,4 @@ fn main() {
         }
     }
     let _ = &(best.0);
-
-    plot_counts_of_next_text_units_after_current_one();
-}
-
-// Строим график по результатам урока.
-fn plot_counts_of_next_text_units_after_current_one() {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Переходы после текущего токена",
-        "частота",
-        &[("учу", 3.0), ("пишу", 1.0)],
-    )
-    .expect("не удалось сохранить график");
 }

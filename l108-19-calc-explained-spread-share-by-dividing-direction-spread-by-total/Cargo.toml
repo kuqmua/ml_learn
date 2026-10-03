@@ -2,7 +2,3 @@
 name = "l108-19-calc-explained-spread-share-by-dividing-direction-spread-by-total"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-lesson-visualization = { path = "../lesson-visualization" }

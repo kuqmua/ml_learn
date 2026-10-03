@@ -2,8 +2,3 @@
 name = "l126-23-calc-momentum-update-by-combining-current-slope-and-past-direction"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
-
-
-lesson-visualization = { path = "../lesson-visualization" }

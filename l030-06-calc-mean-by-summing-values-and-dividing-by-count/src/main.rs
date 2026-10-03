@@ -27,30 +27,4 @@ fn main() {
     let empty: [f64; 0] = [];
     let _: &str = calc_mean_by_summing_values_and_dividing_by_count(&empty)
         .expect_err("среднее пустого набора должно быть отклонено");
-
-    plot_values_and_mean_as_their_sum_divided_by_count();
-}
-
-// Строим график по результатам урока.
-fn plot_values_and_mean_as_their_sum_divided_by_count() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Среднее и отдельные значения",
-        "индекс",
-        "значение",
-        &[
-            lesson_visualization::Series {
-                name: "наблюдения",
-
-                points: &[(1.0, 2.0), (2.0, 4.0), (3.0, 6.0)].to_vec(),
-            },
-            lesson_visualization::Series {
-                name: "среднее",
-
-                points: &[(1.0, 4.0), (3.0, 4.0)].to_vec(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

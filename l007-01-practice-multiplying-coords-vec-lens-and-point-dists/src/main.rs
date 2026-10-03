@@ -55,43 +55,4 @@ fn main() {
     let too_short: [f64; 1] = [1.0];
     let _: &str = multiply_matching_coords_then_add_results(&first_vec, &too_short)
         .expect_err("векторы разной длины нужно отклонить");
-
-    plot_l1_and_euclidean_lens_as_absolute_sum_and_square_root_of_squared_sum();
-}
-
-// Строим график по результатам урока.
-fn plot_l1_and_euclidean_lens_as_absolute_sum_and_square_root_of_squared_sum() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Сравнение норм",
-        "первая координата",
-        "норма",
-        &[
-            lesson_visualization::Series {
-                name: "L1",
-
-                points: &(-50..=50)
-                    .map(|plot_step_index| {
-                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                        (horizontal_value, horizontal_value.abs() + 4.0)
-                    })
-                    .collect::<Vec<_>>(),
-            },
-            lesson_visualization::Series {
-                name: "L2",
-
-                points: &(-50..=50)
-                    .map(|plot_step_index| {
-                        let horizontal_value: f64 = plot_step_index as f64 / 10.0;
-                        (
-                            horizontal_value,
-                            (horizontal_value * horizontal_value + 16.0).sqrt(),
-                        )
-                    })
-                    .collect::<Vec<_>>(),
-            },
-        ],
-    )
-    .expect("не удалось сохранить график");
 }

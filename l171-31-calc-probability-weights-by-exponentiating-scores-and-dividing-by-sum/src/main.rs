@@ -74,31 +74,4 @@ fn main() {
             _ => unreachable!(),
         }
     }
-
-    plot_second_probability_weight_as_its_exponential_divided_by_sum_of_two_exponentials();
-}
-
-// Строим график по результатам урока.
-fn plot_second_probability_weight_as_its_exponential_divided_by_sum_of_two_exponentials() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Softmax двух логитов",
-        "разность второго и первого",
-        "вес второго",
-        &[lesson_visualization::Series {
-            name: "softmax",
-
-            points: &(-60..=60)
-                .map(|plot_step_index| {
-                    let diff_between_raw_scores: f64 = plot_step_index as f64 / 10.0;
-                    (
-                        diff_between_raw_scores,
-                        1.0 / (1.0 + (-diff_between_raw_scores).exp()),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

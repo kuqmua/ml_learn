@@ -5,5 +5,3 @@ edition = "2024"
 
 [dependencies]
 l030_06_calc_mean_by_summing_values_and_dividing_by_count = { package = "l030-06-calc-mean-by-summing-values-and-dividing-by-count", path = "../l030-06-calc-mean-by-summing-values-and-dividing-by-count" }
-
-lesson-visualization = { path = "../lesson-visualization" }

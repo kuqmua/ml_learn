@@ -30,31 +30,4 @@ fn main() {
             expected
         );
     }
-
-    plot_quantiles_as_sorted_values_at_each_fraction_of_sample();
-}
-
-// Строим график по результатам урока.
-fn plot_quantiles_as_sorted_values_at_each_fraction_of_sample() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Квантили выборки",
-        "доля",
-        "квантиль",
-        &[lesson_visualization::Series {
-            name: "значения 1, 2, 3, 4, 5",
-
-            points: &(0..=100)
-                .map(|plot_step_index| {
-                    let probability: f64 = plot_step_index as f64 / 100.0;
-                    (
-                        probability,
-                        [1.0, 2.0, 3.0, 4.0, 5.0][((probability * 4.0) as usize).min(4)],
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

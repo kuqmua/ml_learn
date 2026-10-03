@@ -27,33 +27,6 @@ fn main() {
         let _: f64 = image[start] * filter_weights[0] + image[start + 1] * filter_weights[1];
     }
 
-    plot_image_filter_response_as_local_weighted_pixel_sums_at_each_position(image, filter_weights);
-}
-
-// Строим график по результатам урока.
-fn plot_image_filter_response_as_local_weighted_pixel_sums_at_each_position(
-    image: [f64; 4],
-    filter_weights: [f64; 2],
-) {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Отклик ядра на локальные границы",
-        "позиция",
-        "отклик",
-        &[lesson_visualization::Series {
-            name: "свёртка",
-
-            points: &(0..=image.len() - filter_weights.len())
-                .map(|plot_step_index| {
-                    (
-                        plot_step_index as f64,
-                        image[plot_step_index] * filter_weights[0]
-                            + image[plot_step_index + 1] * filter_weights[1],
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = (image, filter_weights);
 }

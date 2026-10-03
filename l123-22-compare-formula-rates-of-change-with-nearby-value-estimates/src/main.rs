@@ -18,31 +18,4 @@ fn main() {
     let value_after_adding_step: f64 = (input_value + step_size) * (input_value + step_size);
     let value_after_subtracting_step: f64 = (input_value - step_size) * (input_value - step_size);
     let _: f64 = (value_after_adding_step - value_after_subtracting_step) / (2.0 * step_size);
-
-    plot_diff_between_formula_slope_and_two_point_estimate();
-}
-
-// Строим график по результатам урока.
-fn plot_diff_between_formula_slope_and_two_point_estimate() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Проверка градиента",
-        "шаг h",
-        "разность",
-        &[lesson_visualization::Series {
-            name: "x² в x=3",
-
-            points: &(1..=100)
-                .map(|plot_step_index| {
-                    let step_size: f64 = plot_step_index as f64 / 100.0;
-                    (
-                        step_size,
-                        (((3.0 + step_size) * (3.0 + step_size) - 9.0) / step_size - 6.0).abs(),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }

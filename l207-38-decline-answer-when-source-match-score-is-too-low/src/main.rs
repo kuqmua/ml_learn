@@ -23,21 +23,6 @@ fn main() {
         assert_eq!(answer, expected_answer);
     }
 
-    plot_source_score_compared_with_acceptance_threshold(minimum_reliable_score);
-}
-
-// Строим график по результатам урока.
-fn plot_source_score_compared_with_acceptance_threshold(minimum_reliable_score: f64) {
-    lesson_visualization::bar_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "Порог проверки источника",
-        "оценка",
-        &[
-            ("ниже", 0.3),
-            ("порог", minimum_reliable_score),
-            ("выше", 0.8),
-        ],
-    )
-    .expect("не удалось сохранить график");
+    // Выполняем вычисления из примера.
+    let _ = minimum_reliable_score;
 }

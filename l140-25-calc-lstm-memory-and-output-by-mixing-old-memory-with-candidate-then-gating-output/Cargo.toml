@@ -2,5 +2,3 @@
 name = "l140-25-calc-lstm-memory-and-output-by-mixing-old-memory-with-candidate-then-gating-output"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]

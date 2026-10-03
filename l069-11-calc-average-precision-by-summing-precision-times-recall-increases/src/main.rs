@@ -24,23 +24,4 @@ fn main() {
             _average_precision += correct_pos_prediction_share / pos_count;
         }
     }
-
-    plot_correct_pos_prediction_share_against_detected_pos_share();
-}
-
-// Строим график по результатам урока.
-fn plot_correct_pos_prediction_share_against_detected_pos_share() {
-    lesson_visualization::line_chart(
-        env!("CARGO_MANIFEST_DIR"),
-        "lesson-chart",
-        "PR-кривая по ранжированным меткам",
-        "полнота",
-        "precision",
-        &[lesson_visualization::Series {
-            name: "метки +−+−",
-
-            points: &[(0.0, 1.0), (0.5, 1.0), (1.0, 2.0 / 3.0)].to_vec(),
-        }],
-    )
-    .expect("не удалось сохранить график");
 }
