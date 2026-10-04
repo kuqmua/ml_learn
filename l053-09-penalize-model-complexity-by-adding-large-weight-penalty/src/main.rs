@@ -20,3 +20,8 @@ fn main() {
     let _: f64 = prediction_error + squared_weight_penalty_strength * squared_weight;
     let _ = &(squared_weight_penalty_strength * squared_weight);
 }
+
+// Чему учит этот урок:
+// Учимся добавлять к ошибке прогноза штраф, пропорциональный квадрату веса.
+// Так при выборе параметров учитывается не только точность, но и величина веса; силу штрафа задаём
+// отдельно.

@@ -14,3 +14,7 @@ fn main() {
     let down: f64 = calc_gated_layer_output_as_silu_gate_times_up_value(gate, up_projection) * 0.5;
     assert!(down.is_finite());
 }
+
+// Чему учит этот урок:
+// Учимся перемножать два преобразования входа, предварительно применив SiLU к управляющему.
+// Так одно преобразование меняет вклад другого перед получением выхода слоя.

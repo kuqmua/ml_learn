@@ -42,3 +42,7 @@ fn main() {
         logarithm_of_sum_of_exponentials - raw_model_scores[hidden_text_unit_identifier];
     assert!(neg_log_hidden_token_probability.is_finite());
 }
+
+// Чему учит этот урок:
+// Учимся скрывать токен, вычислять окружающий контекст и оценивать вероятность исходного токена.
+// Получаем ошибку восстановления скрытого элемента — основу задачи обучения по пропускам в тексте.

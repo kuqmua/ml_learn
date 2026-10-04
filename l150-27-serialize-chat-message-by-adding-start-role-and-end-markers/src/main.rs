@@ -36,3 +36,7 @@ fn main() {
         matches!(&serialize_chat_message_by_adding_start_role_and_end_markers(role, text)[2], Item::Text(text) if text.starts_with("<|end|>"))
     );
 }
+
+// Чему учит этот урок:
+// Учимся хранить границы сообщения, роль и содержимое как разные типы элементов.
+// Текст, похожий на служебный маркер, остаётся текстом и не меняет структуру сообщения.

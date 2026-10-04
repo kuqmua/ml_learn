@@ -19,3 +19,7 @@ fn main() {
     let value_after_subtracting_step: f64 = (input_value - step_size) * (input_value - step_size);
     let _: f64 = (value_after_adding_step - value_after_subtracting_step) / (2.0 * step_size);
 }
+
+// Чему учит этот урок:
+// Учимся вычислять производную по формуле и приближённо по двум соседним значениям.
+// Оба результата позволяют проверить ручной вывод; автоматического сравнения в текущем коде нет.
