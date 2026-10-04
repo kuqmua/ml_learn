@@ -2,6 +2,8 @@
 // вокруг среднего.
 // Это помогает различать общий промах моделей и их несогласие между собой.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 fn main() {
     let predictions: [f64; 3] = [2.0, 4.0, 6.0];
     assert!(
@@ -28,9 +30,10 @@ fn main() {
         .iter()
         .sum::<f64>()
         / predictions.len() as f64;
-    assert!(
-        (total_error - average_prediction_minus_target.powi(2) - prediction_variance).abs() < 1e-12
-    );
+    assert!(check_f64_eq_1e_minus_12(
+        total_error - average_prediction_minus_target.powi(2),
+        prediction_variance
+    ));
     println!("Средний квадрат ошибки={total_error} = квадрат смещения + разброс.");
 }
 

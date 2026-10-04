@@ -1,6 +1,8 @@
 // Урок 057. Оценивать прогноз класса через минус логарифм вероятности правильного ответа.
 // Уверенный неверный прогноз получает большую ошибку, чем неуверенный или верный.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 fn main() {
     let cases: [(&str, f64, f64); 4] = [
         ("верный уверенный прогноз", 1.0, 0.9),
@@ -37,10 +39,10 @@ fn main() {
     );
     assert!(neg_log_correct_class_probabilities[0] < neg_log_correct_class_probabilities[1]);
     assert!(neg_log_correct_class_probabilities[1] < neg_log_correct_class_probabilities[2]);
-    assert!(
-        (neg_log_correct_class_probabilities[0] - neg_log_correct_class_probabilities[3]).abs()
-            < 1e-10
-    );
+    assert!(check_f64_eq_1e_minus_10(
+        neg_log_correct_class_probabilities[0],
+        neg_log_correct_class_probabilities[3]
+    ));
 }
 
 // Чему учит этот урок:

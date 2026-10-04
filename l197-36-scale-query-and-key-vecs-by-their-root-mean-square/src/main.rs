@@ -2,6 +2,8 @@
 // Проверяем, что увеличение масштаба исходного запроса почти не меняет нормализованное
 // представление.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_6;
+
 use l194_36_normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights::normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights;
 use l195_36_rotate_vec_coord_pair_by_token_position::rotate_vec_coord_pair_by_token_position;
 
@@ -40,7 +42,7 @@ fn main() {
         .unwrap();
     let rotated = rotate_vec_coord_pair_by_token_position(scaled_input, 2, 0.1);
     for i in 0..2 {
-        assert!((rotated[i] - query_vec[i]).abs() < 1e-6);
+        assert!(check_f64_eq_1e_minus_6(rotated[i], query_vec[i]));
     }
     println!(
         "Увеличение масштаба входного запроса в 10 раз почти не изменило результат нормализации."

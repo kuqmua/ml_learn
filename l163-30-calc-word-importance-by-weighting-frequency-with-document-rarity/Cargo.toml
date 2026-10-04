@@ -2,3 +2,6 @@
 name = "l163-30-calc-word-importance-by-weighting-frequency-with-document-rarity"
 version = "0.1.0"
 edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }

@@ -2,6 +2,8 @@
 // Этот показатель позволяет сравнивать предсказания следующего токена на одинаковых данных и при
 // одинаковом разбиении текста.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 fn main() {
     for probability in [1.0_f64, 0.5, 0.25] {
         let loss = -probability.ln();
@@ -9,7 +11,7 @@ fn main() {
         println!(
             "Вероятность правильного токена={probability}: ошибка={loss:.4}, perplexity={perplexity:.4}"
         );
-        assert!((perplexity - 1.0 / probability).abs() < 1e-12);
+        assert!(check_f64_eq_1e_minus_12(perplexity, 1.0 / probability));
     }
     println!(
         "При равных шансах двух вариантов perplexity равна 2; меньшая оценка лучше на тех же данных."

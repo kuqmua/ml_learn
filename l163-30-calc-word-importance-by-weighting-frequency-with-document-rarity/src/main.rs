@@ -2,6 +2,8 @@
 // документов.
 // Так частота и редкость вместе дают оценку важности слова для поиска.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 fn main() {
     let document_count = 10.0_f64;
     let weight = |frequency: f64, documents_with_word: f64| {
@@ -15,7 +17,7 @@ fn main() {
     );
     println!("Редкое слово встретилось 6 раз: {twice:.4}");
     assert!(rare > common);
-    assert!((twice - 2.0 * rare).abs() < 1e-12);
+    assert!(check_f64_eq_1e_minus_12(twice, 2.0 * rare));
 }
 
 // Чему учит этот урок:

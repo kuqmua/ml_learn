@@ -2,3 +2,6 @@
 name = "l118-21-update-network-using-average-error-slopes-from-small-example-group"
 version = "0.1.0"
 edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }

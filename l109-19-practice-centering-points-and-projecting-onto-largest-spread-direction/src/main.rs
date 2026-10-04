@@ -2,6 +2,8 @@
 // на него.
 // Считаем долю сохранённого разброса, чтобы оценить результат сокращения числа координат.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 use lesson_float_comparison::check_f64_eq_1e_minus_12;
 
 fn main() {
@@ -108,14 +110,17 @@ fn main() {
     println!(
         "Среднее={mean:?}; направление={unit_direction_of_largest_spread:?}; новые координаты={projections:?}"
     );
-    assert!((_variance_share_explained_by_axis1 - 1.0).abs() < 1e-10);
+    assert!(check_f64_eq_1e_minus_10(
+        _variance_share_explained_by_axis1,
+        1.0
+    ));
     for (point, projection) in data.iter().zip(projections) {
         let restored = [
             mean[0] + projection * unit_direction_of_largest_spread[0],
             mean[1] + projection * unit_direction_of_largest_spread[1],
         ];
-        assert!((point[0] - restored[0]).abs() < 1e-10);
-        assert!((point[1] - restored[1]).abs() < 1e-10);
+        assert!(check_f64_eq_1e_minus_10(point[0], restored[0]));
+        assert!(check_f64_eq_1e_minus_10(point[1], restored[1]));
     }
     println!("Для этих точек одной координаты достаточно: восстановление почти точное.");
 }

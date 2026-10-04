@@ -2,3 +2,6 @@
 name = "l076-13-calc-joint-class-and-feature-score-by-multiplying-probabilities"
 version = "0.1.0"
 edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }

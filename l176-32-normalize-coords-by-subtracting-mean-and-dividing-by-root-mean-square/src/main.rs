@@ -1,6 +1,8 @@
 // Урок 176. Вычитать среднее координат и делить отклонения на общий масштаб.
 // Небольшая добавка под корнем позволяет избежать нулевого знаменателя при одинаковых координатах.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 fn main() {
     let text_unit: [f64; 2] = [1.0, 3.0];
     let mean: f64 = (text_unit[0] + text_unit[1]) / 2.0;
@@ -21,7 +23,10 @@ fn main() {
     println!(
         "До={text_unit:?}; среднее={mean}; масштаб={scale}; после={coords_in_standard_deviation_units:?}"
     );
-    assert!(coords_in_standard_deviation_units.iter().sum::<f64>().abs() < 1e-10);
+    assert!(check_f64_eq_1e_minus_10(
+        coords_in_standard_deviation_units.iter().sum::<f64>(),
+        0.0
+    ));
     assert!(
         coords_in_standard_deviation_units[0] < 0.0 && coords_in_standard_deviation_units[1] > 0.0
     );

@@ -2,3 +2,6 @@
 name = "l111-20-calc-input-influence-by-passing-output-slopes-back-through-operations"
 version = "0.1.0"
 edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }

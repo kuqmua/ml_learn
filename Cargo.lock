@@ -90,14 +90,23 @@ dependencies = [
 [[package]]
 name = "l014-03-calc-derivative-as-function-output-change-per-input-change"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l015-03-calc-partial-derivative-by-varying-one-of-two-inputs"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l016-03-calc-composed-function-derivative-by-multiplying-rates-of-change"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l017-03-calc-gradient-by-collecting-rates-of-change-for-both-inputs"
@@ -106,10 +115,16 @@ version = "0.1.0"
 [[package]]
 name = "l018-03-estimate-derivative-from-two-nearby-function-values"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l019-03-practice-rates-of-change-and-checks-with-nearby-values"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l020-04-reduce-error-by-subtracting-step-size-times-error-slope-from-parameter"
@@ -165,6 +180,9 @@ version = "0.1.0"
 [[package]]
 name = "l029-05-practice-event-probability-updates-and-weighted-outcome-sums"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l030-06-calc-mean-by-summing-values-and-dividing-by-count"
@@ -307,6 +325,9 @@ dependencies = [
 [[package]]
 name = "l058-10-convert-weighted-input-plus-constant-weight-to-pos-class-probability"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l059-10-choose-class-by-comparing-probability-with-threshold"
@@ -414,6 +435,9 @@ version = "0.1.0"
 [[package]]
 name = "l076-13-calc-joint-class-and-feature-score-by-multiplying-probabilities"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l077-13-estimate-class-probabilities-as-class-counts-divided-by-training-size"
@@ -422,6 +446,9 @@ version = "0.1.0"
 [[package]]
 name = "l078-13-avoid-zero-word-probabilities-by-adding-one-to-counts"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l079-13-practice-choosing-text-class-by-word-probabilities"
@@ -465,6 +492,9 @@ version = "0.1.0"
 [[package]]
 name = "l088-15-measure-average-prediction-offset-and-prediction-spread"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l089-15-practice-models-trained-on-resampled-data-and-majority-voting"
@@ -539,6 +569,7 @@ name = "l105-19-center-feature-values-by-subtracting-training-mean"
 version = "0.1.0"
 dependencies = [
  "l030-06-calc-mean-by-summing-values-and-dividing-by-count",
+ "lesson-float-comparison",
 ]
 
 [[package]]
@@ -570,22 +601,37 @@ version = "0.1.0"
 [[package]]
 name = "l111-20-calc-input-influence-by-passing-output-slopes-back-through-operations"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l112-20-calc-total-input-influence-by-adding-all-path-contributions"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l113-20-practice-forward-values-and-backward-rates-of-change"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l114-21-calc-layer-output-by-summing-weighted-inputs-and-adding-constant-weights"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l115-21-identify-adjustable-input-and-constant-weights-in-network"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l116-21-calc-rectified-activation-by-replacing-neg-outputs-with-zero"
@@ -598,6 +644,9 @@ version = "0.1.0"
 [[package]]
 name = "l118-21-update-network-using-average-error-slopes-from-small-example-group"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l119-21-practice-training-several-weighted-layers-with-nonlinear-outputs"
@@ -606,6 +655,9 @@ version = "0.1.0"
 [[package]]
 name = "l120-22-calc-output-change-for-each-input-by-reversing-operations"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l121-22-check-matrix-dimensions-before-and-after-multiplication"
@@ -618,10 +670,16 @@ version = "0.1.0"
 [[package]]
 name = "l123-22-compare-formula-rates-of-change-with-nearby-value-estimates"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l124-22-practice-reversing-operations-and-checking-input-rates-of-change"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l125-23-update-linear-weight-after-each-training-example"
@@ -634,6 +692,9 @@ version = "0.1.0"
 [[package]]
 name = "l127-23-calc-adaptive-update-from-running-means-of-slopes-and-squared-slopes"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l128-23-center-training-feature-by-subtracting-its-mean-before-model-update"
@@ -787,6 +848,9 @@ version = "0.1.0"
 [[package]]
 name = "l159-29-calc-perplexity-as-e-to-average-neg-log-probability"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l160-29-randomly-choose-next-text-piece-according-to-probabilities"
@@ -806,6 +870,9 @@ version = "0.1.0"
 [[package]]
 name = "l163-30-calc-word-importance-by-weighting-frequency-with-document-rarity"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l164-30-calc-query-document-cos-of-angle-between-vecs"
@@ -842,6 +909,7 @@ name = "l170-31-calc-scaled-match-score-by-multiplying-query-and-key-then-dividi
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coords-then-add-results",
+ "lesson-float-comparison",
 ]
 
 [[package]]
@@ -863,11 +931,15 @@ name = "l173-31-practice-query-key-matching-and-weighted-sums-of-values"
 version = "0.1.0"
 dependencies = [
  "l001-01-multiply-matching-coords-then-add-results",
+ "lesson-float-comparison",
 ]
 
 [[package]]
 name = "l174-32-build-each-position-context-from-other-positions-in-sequence"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l175-32-calc-output-by-adding-original-input-to-transformed-output"
@@ -876,6 +948,9 @@ version = "0.1.0"
 [[package]]
 name = "l176-32-normalize-coords-by-subtracting-mean-and-dividing-by-root-mean-square"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l177-32-calc-position-layer-output-by-weighted-coord-transformation"
@@ -897,6 +972,7 @@ name = "l180-33-mix-information-between-all-image-blocks-using-weights"
 version = "0.1.0"
 dependencies = [
  "l179-33-extract-nonoverlapping-square-patches-from-square-image",
+ "lesson-float-comparison",
 ]
 
 [[package]]
@@ -1009,11 +1085,15 @@ version = "0.1.0"
 dependencies = [
  "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights",
  "l195-36-rotate-vec-coord-pair-by-token-position",
+ "lesson-float-comparison",
 ]
 
 [[package]]
 name = "l198-36-calc-gated-layer-output-as-silu-gate-times-up-value"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l199-36-avoid-recomputing-past-context-by-reusing-saved-keys-and-values"
@@ -1148,6 +1228,9 @@ version = "0.1.0"
 [[package]]
 name = "l224-42-explain-what-small-test-samples-cannot-establish"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l225-42-practice-checking-data-changes-probabilities-and-subgroup-errors"
@@ -1212,6 +1295,9 @@ version = "0.1.0"
 [[package]]
 name = "l240-45-practice-monitoring-data-changes-errors-response-time-and-alerts"
 version = "0.1.0"
+dependencies = [
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l241-46-project-compare-train-and-run-prediction-model"

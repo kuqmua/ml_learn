@@ -1,6 +1,8 @@
 // Урок 120. Учитывать несколько путей влияния входа на результат x*y + x.
 // По x получаем y + 1, по y — x; это простой пример обратного расчёта производных.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_9;
+
 fn main() {
     let f = |x: f64, y: f64| x * y + x;
     let (x, y) = (2.0, 3.0);
@@ -14,8 +16,8 @@ fn main() {
         f(x, y)
     );
     println!("Численная проверка: {numeric_x}, {numeric_y}");
-    assert!((numeric_x - dx).abs() < 1e-9);
-    assert!((numeric_y - dy).abs() < 1e-9);
+    assert!(check_f64_eq_1e_minus_9(numeric_x, dx));
+    assert!(check_f64_eq_1e_minus_9(numeric_y, dy));
 }
 
 // Чему учит этот урок:

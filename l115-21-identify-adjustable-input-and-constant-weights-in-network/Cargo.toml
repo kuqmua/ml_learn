@@ -2,3 +2,6 @@
 name = "l115-21-identify-adjustable-input-and-constant-weights-in-network"
 version = "0.1.0"
 edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }

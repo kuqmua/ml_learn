@@ -4,6 +4,8 @@
 // Это местная оценка для маленького изменения, а не обещание для любого шага.
 // Такую скорость изменения называют производной. Она пригодится для уменьшения ошибки.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_9;
+
 fn main() {
     // Сначала смотрим на саму функцию, а не подставляем число в готовую производную.
     let x: f64 = 3.0;
@@ -24,8 +26,14 @@ fn main() {
             "Ожидали изменение около {predicted_change:.6}, отличие={:.6}",
             actual_change - predicted_change
         );
-        assert!((change_per_input_unit - (derivative + step)).abs() < 1e-9);
-        assert!((actual_change - predicted_change - step * step).abs() < 1e-9);
+        assert!(check_f64_eq_1e_minus_9(
+            change_per_input_unit,
+            derivative + step
+        ));
+        assert!(check_f64_eq_1e_minus_9(
+            actual_change - predicted_change,
+            step * step
+        ));
     }
     // Знак производной указывает сторону уменьшения функции.
     for x in [-3.0_f64, 3.0] {

@@ -4,6 +4,8 @@
 // Сравниваем оценку с известной скоростью 2*x для формулы x*x.
 // Слишком маленький step может ухудшить ответ из-за округления дробных чисел.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_8;
+
 fn main() {
     let x: f64 = 3.0;
     for step in [0.1_f64, 0.0001, 1e-20] {
@@ -12,7 +14,7 @@ fn main() {
         let estimate = (right_value - left_value) / (2.0 * step);
         println!("Шаг={step:e}: f(x+h)={right_value}, f(x-h)={left_value}, оценка={estimate}");
         if step >= 0.0001 {
-            assert!((estimate - 2.0 * x).abs() < 1e-8);
+            assert!(check_f64_eq_1e_minus_8(estimate, 2.0 * x));
         } else {
             // Такой шаг f64 уже не отличает от нуля при сложении с 3.
             assert_eq!(x + step, x);

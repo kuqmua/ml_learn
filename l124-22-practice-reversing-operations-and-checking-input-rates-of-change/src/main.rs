@@ -1,6 +1,8 @@
 // Урок 124. Считать производные суммы элементов произведения матриц по обеим входным матрицам.
 // Меняем каждый входной элемент на малую величину и проверяем все полученные производные численно.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_7;
+
 fn main() {
     fn sum_of_product(left: &[Vec<f64>], right: &[Vec<f64>]) -> f64 {
         assert!(!left.is_empty() && !right.is_empty());
@@ -34,7 +36,7 @@ fn main() {
             let numerical =
                 (sum_of_product(&plus, &right) - sum_of_product(&minus, &right)) / (2.0 * h);
             println!("Левый вход[{row}][{column}]: производная={derivative}, проверка={numerical}");
-            assert!((derivative - numerical).abs() < 1e-7);
+            assert!(check_f64_eq_1e_minus_7(derivative, numerical));
         }
     }
     for row in 0..right.len() {
@@ -49,7 +51,7 @@ fn main() {
             println!(
                 "Правый вход[{row}][{column}]: производная={derivative}, проверка={numerical}"
             );
-            assert!((derivative - numerical).abs() < 1e-7);
+            assert!(check_f64_eq_1e_minus_7(derivative, numerical));
         }
     }
 }

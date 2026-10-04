@@ -2,6 +2,8 @@
 // Получаем оценку для сравнения классов при допущении условной независимости слов, ещё без
 // нормализации по классам.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 fn main() {
     let prior = [0.5, 0.5];
     let word1 = [0.8, 0.2];
@@ -16,7 +18,10 @@ fn main() {
         "До слов: {prior:?}; произведения частот: {scores:?}; после нормализации: {probabilities:?}"
     );
     assert!(probabilities[0] > prior[0]);
-    assert!((probabilities.iter().sum::<f64>() - 1.0).abs() < 1e-12);
+    assert!(check_f64_eq_1e_minus_12(
+        probabilities.iter().sum::<f64>(),
+        1.0
+    ));
     println!("Произведение предполагает независимость слов при известном классе.");
 }
 

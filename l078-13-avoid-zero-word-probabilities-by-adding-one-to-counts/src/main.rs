@@ -1,6 +1,8 @@
 // Урок 078. Добавлять единицу к счётчикам слов и соответствующую поправку к общему числу слов.
 // Это сглаживание не даёт неизвестному для класса слову обнулить произведение вероятностей.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 fn main() {
     let counts = [0.0_f64, 2.0, 3.0, 3.0];
     let total = counts.iter().sum::<f64>();
@@ -9,7 +11,7 @@ fn main() {
     println!("Частоты={counts:?}; без сглаживания={raw:?}; с добавлением единицы={smoothed:?}");
     assert_eq!(raw[0], 0.0);
     assert!(smoothed.iter().all(|&p| p > 0.0));
-    assert!((smoothed.iter().sum::<f64>() - 1.0).abs() < 1e-12);
+    assert!(check_f64_eq_1e_minus_12(smoothed.iter().sum::<f64>(), 1.0));
 }
 
 // Чему учит этот урок:

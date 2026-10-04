@@ -2,3 +2,6 @@
 name = "l240-45-practice-monitoring-data-changes-errors-response-time-and-alerts"
 version = "0.1.0"
 edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }

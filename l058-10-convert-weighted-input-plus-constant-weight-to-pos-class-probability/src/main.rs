@@ -1,6 +1,8 @@
 // Урок 058. Последовательно превращать вход в оценку прямой, затем в вероятность через сигмоиду.
 // Проверяем взаимодополняемость вероятностей двух классов и значение 0.5 при нулевой оценке.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 fn main() {
     let (weight, bias) = (2.0, 1.0);
     for input in [-2.0_f64, -0.5, 1.0] {
@@ -10,7 +12,10 @@ fn main() {
         println!(
             "Вход={input} -> оценка={score} -> P(1)={pos_probability:.4}, P(0)={neg_probability:.4}"
         );
-        assert!((pos_probability + neg_probability - 1.0).abs() < 1e-12);
+        assert!(check_f64_eq_1e_minus_12(
+            pos_probability + neg_probability,
+            1.0
+        ));
         if score == 0.0 {
             assert_eq!(pos_probability, 0.5);
         }

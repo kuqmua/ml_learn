@@ -2,6 +2,8 @@
 // Получаем оценку из симуляции и значение по формуле, чтобы сопоставить частоту с расчётной
 // вероятностью.
 
+use lesson_float_comparison::compare_2_floats_for_approximate_equality;
+
 fn main() {
     #[derive(Debug)]
     struct PseudorandomGenerator(u64);
@@ -59,7 +61,9 @@ fn main() {
     let observed = true_pos_count as f64 / pos_test_count as f64;
     let calculated = 0.01 * 0.9 / (0.01 * 0.9 + 0.99 * 0.05);
     println!("Симуляция: {true_pos_count}/{pos_test_count}={observed:.4}; формула={calculated:.4}");
-    assert!((observed - calculated).abs() < 0.02);
+    assert!(compare_2_floats_for_approximate_equality(
+        observed, calculated, 0.02
+    ));
 }
 
 // Чему учит этот урок:

@@ -2,6 +2,8 @@
 // Проверяем средний квадрат нормализованных координат и почти одинаковый результат для исходного и
 // удвоенного входа.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_8;
+
 use l194_36_normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights::normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights;
 
 fn main() {
@@ -29,9 +31,12 @@ fn main() {
     .unwrap();
     println!("Вход={input_component:?}; после={normalized:?}; удвоенный вход после={doubled:?}");
     for i in 0..2 {
-        assert!((normalized[i] - doubled[i]).abs() < 1e-8);
+        assert!(check_f64_eq_1e_minus_8(normalized[i], doubled[i]));
     }
-    assert!((normalized.iter().map(|v| v * v).sum::<f64>() / 2.0 - 1.0).abs() < 1e-8);
+    assert!(check_f64_eq_1e_minus_8(
+        normalized.iter().map(|v| v * v).sum::<f64>() / 2.0,
+        1.0
+    ));
 }
 
 // Чему учит этот урок:

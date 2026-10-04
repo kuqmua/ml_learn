@@ -3,6 +3,8 @@
 // Проверяем, что одинаковые 100% на двух и двухстах примерах имеют разную устойчивость к новому
 // исходу.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 fn main() {
     for count in [2, 20, 200] {
         let all_correct = count as f64 / count as f64;
@@ -11,7 +13,10 @@ fn main() {
             "Наблюдений={count}: все верны={all_correct:.3}, одна ошибка={one_error:.3}, изменение={:.3}",
             all_correct - one_error
         );
-        assert!((all_correct - one_error - 1.0 / count as f64).abs() < 1e-12);
+        assert!(check_f64_eq_1e_minus_12(
+            all_correct - one_error,
+            1.0 / count as f64
+        ));
     }
     println!(
         "Доля 100% без размера выборки скрывает, насколько сильно её может изменить один новый исход."

@@ -2,6 +2,8 @@
 // участка.
 // Проверяем, что в общий вектор действительно входят значения разных участков.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 use l179_33_extract_nonoverlapping_square_patches_from_square_image::extract_nonoverlapping_square_patches_from_square_image;
 
 fn calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum(
@@ -49,7 +51,7 @@ fn main() {
         "Представления участков={image_patch_representations:?}; веса={weights:?}; контекст первого={context:?}"
     );
     assert!(context[0] > 0.0 && context[1] > 0.0);
-    assert!((context.iter().sum::<f64>() - 1.0).abs() < 1e-12);
+    assert!(check_f64_eq_1e_minus_12(context.iter().sum::<f64>(), 1.0));
 }
 
 // Чему учит этот урок:

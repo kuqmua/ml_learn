@@ -2,3 +2,6 @@
 name = "l120-22-calc-output-change-for-each-input-by-reversing-operations"
 version = "0.1.0"
 edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }

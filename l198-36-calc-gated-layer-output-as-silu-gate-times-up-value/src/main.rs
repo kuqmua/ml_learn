@@ -2,6 +2,8 @@
 // Сравниваем нулевое, положительное и сильно отрицательное управление, чтобы увидеть изменение
 // выходного сигнала.
 
+use lesson_float_comparison::compare_2_floats_for_approximate_equality;
+
 use l198_36_calc_gated_layer_output_as_silu_gate_times_up_value::calc_gated_layer_output_as_silu_gate_times_up_value;
 
 fn main() {
@@ -18,7 +20,9 @@ fn main() {
         "Исходный выход={down}; положительное управление={open}, сильно отрицательное={closed}"
     );
     assert!(open > 5.0);
-    assert!(closed.abs() < 0.001);
+    assert!(compare_2_floats_for_approximate_equality(
+        closed, 0.0, 0.001
+    ));
     assert_eq!(
         calc_gated_layer_output_as_silu_gate_times_up_value(0.0, 2.0),
         0.0

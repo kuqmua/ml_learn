@@ -1,6 +1,9 @@
 // Урок 127. Вычислять один адаптивный шаг по средним производных и их квадратов.
 // Исправляем начальное смещение средних и масштабируем обновление — основные части шага Adam.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_8;
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 fn main() {
     let loss_slope: f64 = 2.0;
     let moving_average_of_gradient_as_smoothed_update_direction: f64 = 0.9 * 0.0 + 0.1 * loss_slope;
@@ -35,8 +38,11 @@ fn main() {
     println!(
         "Производная={loss_slope}; исправленное среднее={average_gradient_corrected_for_initial_zero_estimate}; вес {old_weight} -> {updated}"
     );
-    assert!((average_gradient_corrected_for_initial_zero_estimate - loss_slope).abs() < 1e-12);
-    assert!((updated - 0.99).abs() < 1e-8);
+    assert!(check_f64_eq_1e_minus_12(
+        average_gradient_corrected_for_initial_zero_estimate,
+        loss_slope
+    ));
+    assert!(check_f64_eq_1e_minus_8(updated, 0.99));
     println!(
         "Без поправки начальное среднее было бы {moving_average_of_gradient_as_smoothed_update_direction}; нулевая история занижает оценку."
     );

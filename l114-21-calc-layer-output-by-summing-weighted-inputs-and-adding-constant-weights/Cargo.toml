@@ -2,3 +2,6 @@
 name = "l114-21-calc-layer-output-by-summing-weighted-inputs-and-adding-constant-weights"
 version = "0.1.0"
 edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }

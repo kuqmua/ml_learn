@@ -2,3 +2,6 @@
 name = "l088-15-measure-average-prediction-offset-and-prediction-spread"
 version = "0.1.0"
 edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }

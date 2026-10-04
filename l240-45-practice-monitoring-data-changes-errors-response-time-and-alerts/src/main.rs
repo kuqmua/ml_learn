@@ -3,6 +3,8 @@
 // Сравниваем неизменный и сдвинутый наборы и показываем размеры выборок вместе с полученными
 // показателями.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 fn main() {
     /// Выбираем большее из двух чисел для формул softmax, log-loss и Q-learning.
     /// Аналог `number1.max(number2)` для обычных чисел; при NaN результат может отличаться.
@@ -112,7 +114,7 @@ fn main() {
         calc_distribution_shift_score_as_sum_of_bin_share_diffs_times_log_share_ratios(
             &reference, &shifted,
         );
-    assert!(stable_score.abs() < 1e-12);
+    assert!(check_f64_eq_1e_minus_12(stable_score, 0.0));
     assert!(shifted_score > 0.2);
     let targets = [true, false, true, false];
     let features = [-1.0_f64, -2.0, 3.0, 4.0];

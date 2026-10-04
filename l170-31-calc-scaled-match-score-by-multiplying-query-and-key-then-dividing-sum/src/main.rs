@@ -2,6 +2,8 @@
 // Так масштабируем оценки перед превращением их в веса внимания; это не нормализация по длинам
 // векторов.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_then_add_results;
 
 fn main() {
@@ -25,7 +27,7 @@ fn main() {
         "Сумма произведений={raw}; число координат={dimension}; делитель={square_root_of_coord_count_to_limit_growth_of_match_scores}; оценка={scaled}"
     );
     assert!(scaled < raw);
-    assert!((scaled - 2.0_f64.sqrt() * 2.0).abs() < 1e-10);
+    assert!(check_f64_eq_1e_minus_10(scaled, 2.0_f64.sqrt() * 2.0));
 }
 
 // Чему учит этот урок:

@@ -4,6 +4,8 @@
 // Перемножаем эти скорости, чтобы узнать влияние маленького изменения исходного x.
 // При x=3 получаем 2*14 = 28.
 
+use lesson_float_comparison::compare_2_floats_for_approximate_equality;
+
 fn main() {
     let x: f64 = 3.0;
     let step: f64 = 0.001;
@@ -25,7 +27,11 @@ fn main() {
         "Изменение={actual_change:.6}; предсказание={:.6}",
         derivative * step
     );
-    assert!((actual_change - derivative * step).abs() < 5e-6);
+    assert!(compare_2_floats_for_approximate_equality(
+        actual_change,
+        derivative * step,
+        5e-6
+    ));
     // Если забыть внутренний множитель 2, оценка будет примерно вдвое меньше.
     assert!((actual_change - outer_derivative * step).abs() > 0.01);
 }

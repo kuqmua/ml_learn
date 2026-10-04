@@ -1,6 +1,8 @@
 // Урок 105. Вычитать среднее из каждого значения признака.
 // Так переносим центр данных в ноль, сохраняя разницы между значениями.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 use l030_06_calc_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
 
 fn main() {
@@ -16,7 +18,7 @@ fn main() {
 
     let centered = values.map(|v| v - mean);
     println!("До={values:?}; среднее={mean}; после={centered:?}");
-    assert!(centered.iter().sum::<f64>().abs() < 1e-12);
+    assert!(check_f64_eq_1e_minus_12(centered.iter().sum::<f64>(), 0.0));
     assert_eq!(values[2] - values[0], centered[2] - centered[0]);
 }
 

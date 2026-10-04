@@ -2,6 +2,8 @@
 // сумму значений.
 // Получаем контекст для каждой позиции — полный небольшой пример причинного внимания.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_10;
+
 use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_then_add_results;
 
 fn main() {
@@ -114,7 +116,10 @@ fn main() {
 
     println!("Веса внимания={attention_weights:?}; контексты={_attended_output:?}");
     for row in 0..3 {
-        assert!((attention_weights[row].iter().sum::<f64>() - 1.0).abs() < 1e-10);
+        assert!(check_f64_eq_1e_minus_10(
+            attention_weights[row].iter().sum::<f64>(),
+            1.0
+        ));
         assert!(attention_weights[row][row + 1..].iter().all(|&w| w == 0.0));
     }
     assert_eq!(_attended_output[0], [1.0, 0.0]);

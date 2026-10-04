@@ -2,3 +2,6 @@
 name = "l014-03-calc-derivative-as-function-output-change-per-input-change"
 version = "0.1.0"
 edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }

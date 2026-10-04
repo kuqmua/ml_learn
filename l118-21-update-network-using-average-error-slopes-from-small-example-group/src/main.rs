@@ -1,6 +1,8 @@
 // Урок 118. Усреднять производные ошибки по небольшой группе примеров перед обновлением веса.
 // Так получаем один шаг обучения, учитывающий сразу несколько наблюдений.
 
+use lesson_float_comparison::check_f64_eq_1e_minus_12;
+
 fn main() {
     let rates_of_change: [f64; 2] = [2.0, 4.0];
     assert!(
@@ -19,7 +21,7 @@ fn main() {
     println!(
         "Производные примеров={rates_of_change:?}; средняя={small_batch_loss_rate_of_change}; вес {old_weight} -> {new_weight}"
     );
-    assert!((new_weight - 0.7).abs() < 1e-12);
+    assert!(check_f64_eq_1e_minus_12(new_weight, 0.7));
     let summed_update = old_weight - learning_rate * rates_of_change.iter().sum::<f64>();
     println!(
         "Если забыть деление на размер группы, получится {summed_update}: шаг зависит от числа примеров."

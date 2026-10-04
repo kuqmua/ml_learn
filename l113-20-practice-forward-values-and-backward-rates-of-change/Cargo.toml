@@ -2,3 +2,6 @@
 name = "l113-20-practice-forward-values-and-backward-rates-of-change"
 version = "0.1.0"
 edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }

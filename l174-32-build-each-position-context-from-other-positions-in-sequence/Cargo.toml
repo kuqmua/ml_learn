@@ -2,3 +2,6 @@
 name = "l174-32-build-each-position-context-from-other-positions-in-sequence"
 version = "0.1.0"
 edition = "2024"
+
+[dependencies]
+lesson-float-comparison = { path = "../lesson-float-comparison" }
