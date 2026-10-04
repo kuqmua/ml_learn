@@ -2,3 +2,7 @@
 name = "l202-37-adapt-model-weights-by-multiplying-small-matrices-then-adding-result"
 version = "0.1.0"
 edition = "2024"
+
+[dependencies]
+l018-03-estimate-derivative-from-two-nearby-function-values = { path = "../l018-03-estimate-derivative-from-two-nearby-function-values" }
+lesson-float-comparison = { path = "../lesson-float-comparison" }

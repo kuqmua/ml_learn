@@ -1,68 +1,86 @@
-// Урок 049. Соединять начальное случайное состояние, простую оценку качества и отпечаток данных.
-// Эти сведения помогают описать условия повторяемого эксперимента; полноценного обучения в этом
-// примере нет.
+// Урок 049. Повторяем обучение с одинаковым seed и сравниваем результаты.
+// Seed задаёт начальный вес; данные и настройки вместе определяют эксперимент.
+// На отдельных точках сравниваем обученную модель с постоянным прогнозом.
 
 fn main() {
-    const SAMPLE_DATA: &str = "1,0\n2,0\n3,1\n4,1\n";
-
-    let (_random_state, _baseline_accuracy): (u64, f64) = (|| -> (u64, f64) {
-        let seed: u64 = std::env::args()
-            .nth(1)
-            .map(|seed_text| {
-                seed_text
-                    .parse::<u64>()
-                    .expect("seed должен быть целым неотрицательным числом")
-            })
-            .unwrap_or(42);
-        let baseline_correct_prediction_share: f64 = SAMPLE_DATA
-            .lines()
-            .filter(|line| line.ends_with(",1"))
-            .count() as f64
-            / SAMPLE_DATA.lines().count() as f64;
-        (
-            seed.wrapping_mul(6364136223846793005).wrapping_add(1),
-            baseline_correct_prediction_share,
-        )
-    })();
-
-    let _ = &((|| -> u64 {
-        let data: &str = SAMPLE_DATA;
-
-        let mut hasher: std::collections::hash_map::DefaultHasher =
-            std::collections::hash_map::DefaultHasher::new();
-
-        std::hash::Hash::hash(data, &mut hasher);
-
-        std::hash::Hasher::finish(&hasher)
-    })());
-
-    let seed = std::env::args()
-        .nth(1)
-        .map(|s| s.parse::<u64>().unwrap())
-        .unwrap_or(42);
-    let class1_count = SAMPLE_DATA
+    const DATA: &str = "1,2\n2,4\n3,6\n";
+    let training: Vec<(f64, f64)> = DATA
         .lines()
-        .filter(|line| line.ends_with(",1"))
-        .count();
-    let count = SAMPLE_DATA.lines().count();
-    let baseline = class1_count.max(count - class1_count) as f64 / count as f64;
+        .map(|row| {
+            let (x, y) = row.split_once(',').unwrap();
+            (x.parse().unwrap(), y.parse().unwrap())
+        })
+        .collect();
+    let seed: u64 = std::env::args()
+        .nth(1)
+        .map(|s| {
+            s.parse()
+                .expect("seed должен быть целым неотрицательным числом")
+        })
+        .unwrap_or(42);
+    let train = |seed: u64| {
+        let state = seed.wrapping_mul(6364136223846793005).wrapping_add(1);
+        let mut weight = (state >> 11) as f64 / ((1_u64 << 53) as f64);
+        let loss = |weight: f64| {
+            training
+                .iter()
+                .map(|&(x, y)| (weight * x - y).powi(2))
+                .sum::<f64>()
+                / training.len() as f64
+        };
+        let mut history = vec![loss(weight)];
+        for _ in 0..50 {
+            let derivative = training
+                .iter()
+                .map(|&(x, y)| 2.0 * (weight * x - y) * x)
+                .sum::<f64>()
+                / training.len() as f64;
+            weight -= 0.05 * derivative;
+            history.push(loss(weight));
+        }
+        (weight, history)
+    };
+    let run1 = train(seed);
+    let run2 = train(seed);
+    let other = train(seed.wrapping_add(1));
+    assert_eq!(run1, run2); // Повторяемость и параметра, и каждого значения ошибки.
+    assert_ne!(run1.1[0], other.1[0]);
+    assert!(run1.1.last().unwrap() < &run1.1[0]);
     println!(
-        "Начальное состояние={seed}; примеров={count}; точность постоянного класса={baseline}"
+        "Seed={seed}: вес={}, ошибка {} -> {}; повторный запуск совпал",
+        run1.0,
+        run1.1[0],
+        run1.1.last().unwrap()
     );
-    let fingerprint = |text: &str| {
+    println!("Другой seed меняет начальную ошибку: {}", other.1[0]);
+    let baseline = training.iter().map(|&(_, y)| y).sum::<f64>() / training.len() as f64;
+    let test = [(4.0, 8.0), (5.0, 10.0)];
+    let model_error = test
+        .iter()
+        .map(|&(x, y)| (run1.0 * x - y).powi(2))
+        .sum::<f64>()
+        / test.len() as f64;
+    let baseline_error = test
+        .iter()
+        .map(|&(_, y)| (baseline - y).powi(2))
+        .sum::<f64>()
+        / test.len() as f64;
+    assert!(model_error < baseline_error);
+    println!("Отдельный тест: ошибка модели={model_error}, постоянного ответа={baseline_error}");
+    let fingerprint = |data: &str| {
         let mut hasher = std::collections::hash_map::DefaultHasher::new();
-        std::hash::Hash::hash(text, &mut hasher);
+        std::hash::Hash::hash(data, &mut hasher);
         std::hash::Hasher::finish(&hasher)
     };
-    assert_eq!(fingerprint(SAMPLE_DATA), fingerprint(SAMPLE_DATA));
-    assert_ne!(
-        fingerprint(SAMPLE_DATA),
-        fingerprint("1,1\n2,0\n3,1\n4,1\n")
+    assert_ne!(fingerprint(DATA), fingerprint("1,3\n2,4\n3,6\n"));
+    println!(
+        "Отпечаток данных={}, скорость=0.05, шагов=50",
+        fingerprint(DATA)
     );
-    println!("Отпечаток данных={}", fingerprint(SAMPLE_DATA));
+    // DefaultHasher здесь лишь демонстрация отпечатка, не стабильный формат версии данных.
 }
 
 // Чему учит этот урок:
-// Учимся соединять начальное случайное состояние, простую оценку качества и отпечаток данных.
-// Эти сведения помогают описать условия повторяемого эксперимента; полноценного обучения в этом
-// примере нет.
+// Повторяем настоящее обучение с одинаковыми данными, настройками и seed.
+// Проверяем совпадение истории и веса, а затем сравниваем модель с baseline вне обучения.
+// Отпечаток помогает заметить изменение содержимого данных в этом запуске.

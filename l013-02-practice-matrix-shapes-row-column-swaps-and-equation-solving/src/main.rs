@@ -1,7 +1,7 @@
 // Урок 013. Хранить матрицу в структуре: размеры отдельно, числа строка за строкой в Vec.
 // Проверяем размеры, извлекаем строки, умножаем матрицу на вектор и переставляем строки в столбцы.
 // Соединяем операции, вычисляя произведение транспонированной матрицы на исходную.
-// Это практика работы с матрицами; прикладной задачи и решения уравнений в текущем примере нет.
+// Решаем систему Ax=b для этой матрицы и проверяем ответ обратным умножением.
 
 use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_then_add_results;
 
@@ -106,10 +106,6 @@ fn main() {
         result_elements,
     )
     .unwrap();
-    let _ = (&(output_vec), &(result_matrix));
-
-    // Выполняем вычисления из примера.
-    let _ = result_matrix;
 
     assert_eq!(output_vec, vec![3.0, 7.0]);
     assert_eq!(transposed_matrix.data, vec![1.0, 3.0, 2.0, 4.0]);
@@ -126,10 +122,38 @@ fn main() {
         "Суммы произведений пар столбцов, A^T*A: {:?}",
         result_matrix.data
     );
+    // Обратная задача: известны результаты [5, 11], найдём вход [x, y].
+    // Строки матрицы задают x + 2*y = 5 и 3*x + 4*y = 11.
+    let right_hand_side = [5.0, 11.0];
+    let row1_coef1 = left_matrix.value_at_row_and_column(0, 0);
+    let row1_coef2 = left_matrix.value_at_row_and_column(0, 1);
+    let row2_coef1 = left_matrix.value_at_row_and_column(1, 0);
+    let row2_coef2 = left_matrix.value_at_row_and_column(1, 1);
+    // Как в уроке 012: умножаем строки и вычитаем, чтобы исключить y.
+    let x_coef = row1_coef1 * row2_coef2 - row2_coef1 * row1_coef2;
+    let right_after_eliminating_y =
+        right_hand_side[0] * row2_coef2 - right_hand_side[1] * row1_coef2;
+    assert_ne!(x_coef, 0.0, "этот пример требует единственного решения");
+    let x = right_after_eliminating_y / x_coef;
+    let y = (right_hand_side[0] - row1_coef1 * x) / row1_coef2;
+    let solution = [x, y];
+    assert_eq!(solution, [1.0, 2.0]);
+    // Проверяем обе строки, а не только уравнение, из которого получили y.
+    for row in 0..left_matrix.rows {
+        let start = row * left_matrix.column_count;
+        let restored = multiply_matching_coords_then_add_results(
+            &left_matrix.data[start..start + left_matrix.column_count],
+            &solution,
+        )
+        .unwrap();
+        assert_eq!(restored, right_hand_side[row]);
+        println!("Строка {row}: найденный вход {solution:?} даёт {restored}");
+    }
+    assert!(Matrix::create_matrix_from_elements_listed_row_by_row(2, 3, vec![1.0; 4]).is_err());
 }
 
 // Чему учит этот урок:
 // Учимся хранить матрицу в структуре: размеры отдельно, числа строка за строкой в Vec.
 // Проверяем размеры, извлекаем строки, умножаем матрицу на вектор и переставляем строки в столбцы.
 // Соединяем операции, вычисляя произведение транспонированной матрицы на исходную.
-// Это практика работы с матрицами; прикладной задачи и решения уравнений в текущем примере нет.
+// Решаем систему Ax=b для этой матрицы и проверяем ответ обратным умножением.

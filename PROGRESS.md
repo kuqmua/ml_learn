@@ -23,11 +23,11 @@
 
 ## 03. Производные и градиент
 
-- [ ] [014 · Производная функции: скорость изменения результата при изменении входа](l014-03-calc-derivative-as-function-output-change-per-input-change/)
-- [ ] [015 · Частная производная: скорость изменения функции при изменении одного из двух входов](l015-03-calc-partial-derivative-by-varying-one-of-two-inputs/)
-- [ ] [016 · Производная вложенных функций: умножение скоростей изменения по правилу цепочки](l016-03-calc-composed-function-derivative-by-multiplying-rates-of-change/)
-- [ ] [017 · Градиент: сбор скоростей изменения функции по двум входам в один вектор](l017-03-calc-gradient-by-collecting-rates-of-change-for-both-inputs/)
-- [ ] [018 · Приближённая производная: оценка скорости изменения по значениям слева и справа от точки](l018-03-estimate-derivative-from-two-nearby-function-values/)
+- [x] [014 · Производная функции: скорость изменения результата при изменении входа](l014-03-calc-derivative-as-function-output-change-per-input-change/)
+- [x] [015 · Частная производная: скорость изменения функции при изменении одного из двух входов](l015-03-calc-partial-derivative-by-varying-one-of-two-inputs/)
+- [x] [016 · Производная вложенных функций: умножение скоростей изменения по правилу цепочки](l016-03-calc-composed-function-derivative-by-multiplying-rates-of-change/)
+- [x] [017 · Градиент: сбор скоростей изменения функции по двум входам в один вектор](l017-03-calc-gradient-by-collecting-rates-of-change-for-both-inputs/)
+- [x] [018 · Приближённая производная: оценка скорости изменения по значениям слева и справа от точки](l018-03-estimate-derivative-from-two-nearby-function-values/)
 - [ ] [019 · Практика: скорости изменения функции и их проверка по соседним значениям](l019-03-practice-rates-of-change-and-checks-with-nearby-values/)
 
 ## 04. Градиентный спуск

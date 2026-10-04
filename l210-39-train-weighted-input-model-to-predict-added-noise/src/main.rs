@@ -1,68 +1,57 @@
-// Урок 39.2. Обучение модели взвешенного входа прогнозу добавленного шума.
-// Зачем здесь эта тема: Чтобы убрать неизвестный шум, модель сначала должна научиться его
-//   предсказывать по зашумлённому входу.
-// Почему код устроен так: Обучаем простую линейную оценку шума на парах из прямого шага.
-// Представь: На учебных парах модель видит зашумлённый вход и правильный добавленный шум.
-// На синтетической паре учим линейный предсказатель epsilon по x_t и исходному условию.
-
+// Урок 210. Обучаем предсказатель шума по одному зашумлённому значению.
+// Чистый сигнал нужен для создания учебных пар, но не передаётся модели при прогнозе.
 use l209_39_calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares::calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares;
 
 fn main() {
-    let original_signal_variance_share: f64 = 0.64;
-    let training: [(f64, f64); 4] = [(1.0, -1.0), (1.0, 0.0), (1.0, 1.0), (1.0, 2.0)];
-    let inputs: [(f64, f64); 4] = training.map(|(clean, noise)| {
-        (
-            calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
-                clean,
-                noise,
-                original_signal_variance_share,
-            )
-            .unwrap()
-                - original_signal_variance_share.sqrt() * clean,
-            noise,
+    let mix = |clean, noise| {
+        calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
+            clean, noise, 0.64,
         )
-    });
-    let mut weight: f64 = 0.0;
-    for _ in 0..100 {
-        let rate_of_change: f64 = inputs
-            .iter()
-            .map(|&(input_value, target)| 2.0 * (weight * input_value - target) * input_value)
-            .sum::<f64>()
-            / inputs.len() as f64;
-        weight -= 0.2 * rate_of_change;
-    }
-    let loss: f64 = inputs
-        .iter()
-        .map(|&(input_value, target)| (weight * input_value - target).powi(2))
-        .sum::<f64>()
-        / inputs.len() as f64;
-    assert!(loss < 1e-6);
-    let validation: [(f64, f64); 2] = [(2.0, -0.5), (-1.0, 0.5)];
-    let held_out: [(f64, f64); 2] = validation.map(|(clean, noise)| {
-        (
-            calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares(
-                clean,
-                noise,
-                original_signal_variance_share,
-            )
-            .unwrap()
-                - original_signal_variance_share.sqrt() * clean,
-            noise,
-        )
-    });
-    let mean_squared_noise_prediction_error: &dyn Fn(f64) -> f64 = &|candidate: f64| {
-        held_out
-            .iter()
-            .map(|&(input_value, target)| (candidate * input_value - target).powi(2))
-            .sum::<f64>()
-            / held_out.len() as f64
+        .unwrap()
     };
-
-    assert!(mean_squared_noise_prediction_error(0.0) > mean_squared_noise_prediction_error(weight));
+    let mut training = Vec::new();
+    for clean in [-1.0, 0.0, 1.0] {
+        for noise in [-1.0, 0.0, 1.0] {
+            training.push((mix(clean, noise), noise));
+        }
+    }
+    let mut weight = 0.0;
+    for _ in 0..200 {
+        let derivative = training
+            .iter()
+            .map(|&(noisy, noise)| 2.0 * (weight * noisy - noise) * noisy)
+            .sum::<f64>()
+            / training.len() as f64;
+        weight -= 0.1 * derivative;
+    }
+    // Прогноз принимает только noisy: исходный clean и правильный noise недоступны.
+    let predict_noise = |noisy: f64| weight * noisy;
+    let mut model_error = 0.0;
+    let mut baseline_error = 0.0;
+    for clean in [-0.5, 0.5] {
+        for noise in [-0.5, 0.5] {
+            let noisy = mix(clean, noise);
+            let predicted = predict_noise(noisy);
+            model_error += (predicted - noise).powi(2) / 4.0;
+            baseline_error += noise.powi(2) / 4.0;
+            println!("Зашумлённый вход={noisy}: прогноз шума={predicted}, правильный шум={noise}");
+        }
+    }
+    assert!(model_error < baseline_error);
+    assert!(model_error > 0.0);
+    println!(
+        "Вес={weight}; ошибка на новых парах={model_error}, нулевого прогноза={baseline_error}"
+    );
+    // Один наблюдаемый вход может иметь разные объяснения: 0.8*clean + 0.6*noise.
+    // Для clean=0.75, noise=-1 и clean=-0.75, noise=1 получаем около нуля.
+    let input1 = mix(0.75, -1.0);
+    let input2 = mix(-0.75, 1.0);
+    println!(
+        "Разный шум -1 и 1 даёт почти одинаковые входы {input1:e} и {input2:e}; точно угадать его только по входу нельзя."
+    );
 }
 
 // Чему учит этот урок:
-// Учимся обучать один вес восстановлению добавленного шума и проверять ошибку на отдельных
-// примерах.
-// Чистый сигнал здесь известен и вычитается при подготовке входа: это упрощённая задача, не
-// полноценное удаление неизвестного шума.
+// Строим пары зашумлённого значения и шума и обучаем линейный прогноз без доступа к чистому сигналу.
+// Сравниваем с нулевым прогнозом на новых парах; улучшение не означает точного восстановления.
+// Это маленький предсказатель при фиксированной силе шума, а не полная диффузионная модель.

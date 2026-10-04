@@ -1,13 +1,14 @@
 // Урок 123. Проверять ручную формулу производной вычислениями в соседних точках.
 // Сравнение принимает правильную формулу и обнаруживает ошибку с пропущенным множителем.
 
+use l018_03_estimate_derivative_from_two_nearby_function_values::estimate_derivative_from_two_nearby_function_values;
 use lesson_float_comparison::check_f64_eq_1e_minus_8;
 
 fn main() {
     let f = |x: f64| x * x;
     let x = 3.0;
     let step = 0.0001;
-    let numerical = (f(x + step) - f(x - step)) / (2.0 * step);
+    let numerical = estimate_derivative_from_two_nearby_function_values(f, x, step);
     let correct = 2.0 * x;
     let wrong = x;
     println!(

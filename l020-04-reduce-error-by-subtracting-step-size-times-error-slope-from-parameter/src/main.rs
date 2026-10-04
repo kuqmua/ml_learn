@@ -3,15 +3,17 @@
 // ошибку.
 
 fn main() {
-    let parameter: f64 = 0.0;
+    let initial_parameter: f64 = 0.0;
     let loss = |value: f64| (value - 3.0).powi(2);
-    let slope = 2.0 * (parameter - 3.0);
+    let slope = 2.0 * (initial_parameter - 3.0);
     for rate in [0.1, 1.0, 2.0] {
-        let updated = parameter - rate * slope;
+        // Каждый опыт начинается заново с 0; это сравнение скоростей, не три шага подряд.
+        let mut parameter = initial_parameter;
         let before = loss(parameter);
-        let after = loss(updated);
+        parameter -= rate * slope;
+        let after = loss(parameter);
         println!(
-            "Размер шага={rate}: параметр {parameter} -> {updated}; ошибка {before} -> {after}"
+            "Размер шага={rate}: параметр {initial_parameter} -> {parameter}; ошибка {before} -> {after}"
         );
         if rate == 0.1 {
             assert!(after < before);

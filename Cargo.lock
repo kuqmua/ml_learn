@@ -123,6 +123,7 @@ dependencies = [
 name = "l019-03-practice-rates-of-change-and-checks-with-nearby-values"
 version = "0.1.0"
 dependencies = [
+ "l018-03-estimate-derivative-from-two-nearby-function-values",
  "lesson-float-comparison",
 ]
 
@@ -671,6 +672,7 @@ version = "0.1.0"
 name = "l123-22-compare-formula-rates-of-change-with-nearby-value-estimates"
 version = "0.1.0"
 dependencies = [
+ "l018-03-estimate-derivative-from-two-nearby-function-values",
  "lesson-float-comparison",
 ]
 
@@ -1124,6 +1126,10 @@ dependencies = [
 [[package]]
 name = "l202-37-adapt-model-weights-by-multiplying-small-matrices-then-adding-result"
 version = "0.1.0"
+dependencies = [
+ "l018-03-estimate-derivative-from-two-nearby-function-values",
+ "lesson-float-comparison",
+]
 
 [[package]]
 name = "l203-37-compress-model-weights-by-scaling-and-rounding-to-eight-bit-integers"

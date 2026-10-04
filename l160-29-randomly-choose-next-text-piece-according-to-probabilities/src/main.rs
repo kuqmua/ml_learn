@@ -1,56 +1,64 @@
-// Урок 29.4. Случайный выбор следующей части текста согласно вероятностям.
-// Зачем здесь эта тема: Вероятности ещё не создают текст; нужен способ выбрать конкретный следующий
-//   токен.
-// Почему код устроен так: Используем фиксированное число из [0, 1), чтобы вручную проследить
-//   накопленные вероятности и выбор токена.
-// Представь: При вероятностях [0,5; 0,3; 0,2] число 0,65 попадёт во второй накопленный интервал.
-//
-// Что изучаем: Выборка следующего токена.
-// Зачем это нужно: Сэмплирование использует распределение вероятностей, а не всегда берёт самый вероятный
-// токен.
-
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
-
-use lesson_float_comparison::check_f64_eq_1e_minus_9;
+// Урок 160. Выбираем слово по накопленным вероятностям и случайному числу.
+// Сначала проверяем интервалы вручную, затем делаем много выборок с фиксированным seed.
+use lesson_float_comparison::{check_f64_eq_1e_minus_9, compare_2_floats_for_approximate_equality};
 
 fn main() {
-    let words: [&str; 3] = ["кот", "пёс", "мир"];
-    let probabilities: [f64; 3] = [0.5, 0.3, 0.2];
-    assert_eq!(
-        words.len(),
-        probabilities.len(),
-        "каждому слову нужна вероятность"
-    );
-    assert!(!words.is_empty(), "для выбора нужно хотя бы одно слово");
-    assert!(
-        probabilities
-            .iter()
-            .all(|&value| value >= 0.0 && value.is_finite()),
-        "вероятности должны быть конечными и неотрицательными"
-    );
-    assert!(
-        check_f64_eq_1e_minus_9(probabilities.iter().sum::<f64>(), 1.0),
-        "сумма вероятностей должна быть равна 1"
-    );
-    let random_number_between_zero_and_one: f64 = 0.65;
-    assert!(
-        (0.0..1.0).contains(&random_number_between_zero_and_one),
-        "случайное число должно быть от 0 до 1, не включая 1"
-    );
-    let mut cumulative: f64 = 0.0;
-    for index in 0..words.len() {
-        cumulative += probabilities[index];
-        if random_number_between_zero_and_one < cumulative {
-            let _ = &(words[index]);
-            break;
+    let words = ["кот", "пёс", "мир"];
+    let probabilities = [0.5, 0.3, 0.2];
+    assert!(check_f64_eq_1e_minus_9(probabilities.iter().sum(), 1.0));
+    let choose = |draw: f64| {
+        assert!((0.0..1.0).contains(&draw));
+        let mut cumulative = 0.0;
+        for (index, probability) in probabilities.iter().enumerate() {
+            cumulative += probability;
+            if draw < cumulative {
+                return index;
+            }
         }
+        unreachable!("вероятности этого примера покрывают [0, 1)")
+    };
+    for (draw, expected) in [
+        (0.0, 0),
+        (0.49, 0),
+        (0.5, 1),
+        (0.65, 1),
+        (0.8, 2),
+        (0.99, 2),
+    ] {
+        let index = choose(draw);
+        assert_eq!(index, expected);
+        println!("Число {draw}: выбрано слово {}", words[index]);
     }
-
-    // Выполняем вычисления из примера.
-    let _ = probabilities;
+    let sample = |seed: u64| {
+        let mut state = seed;
+        let mut counts = [0_usize; 3];
+        for _ in 0..10_000 {
+            state = state.wrapping_mul(6364136223846793005).wrapping_add(1);
+            let draw = (state >> 11) as f64 / ((1_u64 << 53) as f64);
+            counts[choose(draw)] += 1;
+        }
+        counts
+    };
+    let counts = sample(42);
+    assert_eq!(counts, sample(42));
+    assert_ne!(counts, sample(43));
+    assert_eq!(counts.iter().sum::<usize>(), 10_000);
+    for index in 0..words.len() {
+        let frequency = counts[index] as f64 / 10_000.0;
+        println!(
+            "{}: ожидаемая доля={}, частота={frequency}",
+            words[index], probabilities[index]
+        );
+        assert!(compare_2_floats_for_approximate_equality(
+            frequency,
+            probabilities[index],
+            0.02
+        ));
+    }
+    // Это проверка фиксированного учебного запуска, а не гарантия для любой случайной выборки.
 }
 
 // Чему учит этот урок:
-// Учимся выбирать элемент по накопленным вероятностям и числу от 0 до 1.
-// Здесь число 0.65 задано заранее, чтобы показать попадание в интервал; случайный генератор не
-// вызывается.
+// Превращаем случайное число в выбор слова по заданному распределению.
+// Проверяем границы интервалов, воспроизводимость seed и частоты многих выборок.
+// В отличие от выбора максимума, сэмплирование иногда выдаёт менее вероятные слова.

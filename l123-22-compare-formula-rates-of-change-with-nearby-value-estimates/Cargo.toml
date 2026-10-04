@@ -5,3 +5,4 @@ edition = "2024"
 
 [dependencies]
 lesson-float-comparison = { path = "../lesson-float-comparison" }
+l018-03-estimate-derivative-from-two-nearby-function-values = { path = "../l018-03-estimate-derivative-from-two-nearby-function-values" }
