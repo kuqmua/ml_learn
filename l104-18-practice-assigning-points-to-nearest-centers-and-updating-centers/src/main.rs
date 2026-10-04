@@ -34,14 +34,14 @@ fn main() {
             + calc_square_by_multiplying_number_by_itself(point1[1] - point2[1])
     }
 
-    let dataset: [[f64; 2]; 4] = [[0., 0.], [0., 1.], [10., 10.], [10., 11.]];
+    let dataset: [[f64; 2]; 4] = [[0.0, 0.0], [0.0, 1.0], [10.0, 10.0], [10.0, 11.0]];
     let _ = &((|| -> ([[f64; 2]; 2], f64) {
         let data: &[[f64; 2]] = &dataset;
 
         let mut centers: [[f64; 2]; 2] = [dataset[0], dataset[2]];
 
         for _ in 0..100 {
-            let mut coord_sums: [[f64; 2]; 2] = [[0., 0.]; 2];
+            let mut coord_sums: [[f64; 2]; 2] = [[0.0, 0.0]; 2];
 
             let mut cluster_sizes: [usize; 2] = [0; 2];
 

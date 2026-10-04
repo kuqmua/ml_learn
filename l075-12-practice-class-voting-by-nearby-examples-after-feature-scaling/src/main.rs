@@ -25,10 +25,10 @@ fn main() {
     }
 
     let training_examples: [([f64; 2], bool); 4] = [
-        ([0., 0.], false),
-        ([0., 1.], false),
-        ([2., 2.], true),
-        ([2., 3.], true),
+        ([0.0, 0.0], false),
+        ([0.0, 1.0], false),
+        ([2.0, 2.0], true),
+        ([2.0, 3.0], true),
     ];
     for neighbor_count in [1, 3] {
         let _ = &((|| -> bool {

@@ -19,8 +19,8 @@
 fn main() {
     // Размер карты вычисляется из размера изображения, ядра и шага фильтра.
     let feature_map: Vec<Vec<f64>> = (|| -> Vec<Vec<f64>> {
-        let image: [[f64; 3]; 3] = [[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]];
-        let filter_weights: [[f64; 2]; 2] = [[1., 0.], [0., -1.]];
+        let image: [[f64; 3]; 3] = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]];
+        let filter_weights: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, -1.0]];
         let image: &[[f64; 3]; 3] = &image;
         let filter_weights: &[[f64; 2]; 2] = &filter_weights;
         let filter_step_size: usize = 1;

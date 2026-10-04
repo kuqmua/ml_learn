@@ -84,10 +84,10 @@ fn main() {
     fn normalize_coords_by_subtracting_mean_and_dividing_by_root_mean_square(
         input_values: [f64; 2],
     ) -> [f64; 2] {
-        let mean: f64 = (input_values[0] + input_values[1]) / 2.;
+        let mean: f64 = (input_values[0] + input_values[1]) / 2.0;
         let variance: f64 = (calc_square_by_multiplying_number_by_itself(input_values[0] - mean)
             + calc_square_by_multiplying_number_by_itself(input_values[1] - mean))
-            / 2.;
+            / 2.0;
         [
             (input_values[0] - mean)
                 / approximate_square_root_by_repeated_averaging(variance + 1e-5),
@@ -143,8 +143,8 @@ fn main() {
                     query[1] + attended[1],
                 ]);
             let feed_forward_values: [f64; 2] = [
-                choose_larger_number(normalized_values[0], 0.),
-                choose_larger_number(normalized_values[1], 0.),
+                choose_larger_number(normalized_values[0], 0.0),
+                choose_larger_number(normalized_values[1], 0.0),
             ];
             normalize_coords_by_subtracting_mean_and_dividing_by_root_mean_square([
                 normalized_values[0] + feed_forward_values[0],
@@ -153,7 +153,7 @@ fn main() {
         })
     }
 
-    let input_values: [[f64; 2]; 2] = [[1., 0.], [0., 1.]];
+    let input_values: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
 
     // Выполняем вычисления из примера.
     let _ = (input_values, calc_transformer_output(&input_values));

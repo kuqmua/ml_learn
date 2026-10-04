@@ -18,12 +18,12 @@
 
 fn main() {
     let data: [(f64, bool); 6] = [
-        (0., false),
-        (1., false),
-        (2., true),
-        (3., true),
-        (4., false),
-        (5., true),
+        (0.0, false),
+        (1.0, false),
+        (2.0, true),
+        (3.0, true),
+        (4.0, false),
+        (5.0, true),
     ];
 
     let models: [(f64, bool); 9] = std::array::from_fn(|index| {
@@ -41,7 +41,7 @@ fn main() {
                     })
                     .collect()
             })();
-            let mut best: (f64, f64, bool) = (f64::INFINITY, 0., false);
+            let mut best: (f64, f64, bool) = (f64::INFINITY, 0.0, false);
             for &(candidate_threshold, _) in data {
                 for reverse in [false, true] {
                     let errors: f64 = data

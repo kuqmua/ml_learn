@@ -26,9 +26,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let model: Model = Model {
-        weight: 2.,
+        weight: 2.0,
 
-        constant_input_weight: 1.,
+        constant_input_weight: 1.0,
     };
     std::fs::write(
         &model_path,
@@ -65,7 +65,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             })
         })()?
     };
-    let prediction: f64 = loaded_model.weight * 3. + loaded_model.constant_input_weight;
+    let prediction: f64 = loaded_model.weight * 3.0 + loaded_model.constant_input_weight;
     let _ = (&(model_path.display()), &(prediction));
     std::fs::remove_file(std::path::Path::new(&model_path))?;
     Ok(())

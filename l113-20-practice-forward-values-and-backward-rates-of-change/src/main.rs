@@ -94,7 +94,7 @@ fn main() {
             self.0.push(Node {
                 value,
 
-                output_rate_of_change_with_respect_to_node_value: 0.,
+                output_rate_of_change_with_respect_to_node_value: 0.0,
 
                 operation: Operation::Input,
             });
@@ -103,7 +103,7 @@ fn main() {
     }
 
     let mut graph: Graph = Graph(vec![]);
-    let input_index: usize = graph.append_input_value_node_to_computation_graph(2.);
+    let input_index: usize = graph.append_input_value_node_to_computation_graph(2.0);
     let squared_index: usize = graph.append_input_value_node_to_computation_graph(
         graph.0[input_index].value * graph.0[input_index].value,
     );
@@ -116,7 +116,7 @@ fn main() {
     ));
     graph.0[output_index].operation =
         Operation::TanhAsSignedSignalBoundedBetweenMinus1And1(doubled_square_index);
-    graph.0[output_index].output_rate_of_change_with_respect_to_node_value = 1.;
+    graph.0[output_index].output_rate_of_change_with_respect_to_node_value = 1.0;
     for node_index in (0..=output_index).rev() {
         let incoming_loss_rate_of_change: f64 =
             graph.0[node_index].output_rate_of_change_with_respect_to_node_value;

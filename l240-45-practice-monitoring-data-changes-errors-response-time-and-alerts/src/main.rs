@@ -26,16 +26,16 @@ fn main() {
     }
 
     fn calc_shares_of_feature_values_in_three_bins(data: &[f64]) -> [f64; 3] {
-        let mut bin_counts: [f64; 3] = [0.; 3];
+        let mut bin_counts: [f64; 3] = [0.0; 3];
         for &feature_value in data {
-            let histogram_bin: usize = if feature_value < 0. {
+            let histogram_bin: usize = if feature_value < 0.0 {
                 0
-            } else if feature_value < 1. {
+            } else if feature_value < 1.0 {
                 1
             } else {
                 2
             };
-            bin_counts[histogram_bin] += 1.;
+            bin_counts[histogram_bin] += 1.0;
         }
         for group_share in &mut bin_counts {
             *group_share /= data.len() as f64;
@@ -102,7 +102,7 @@ fn main() {
         distribution_shift_score
     }
 
-    let reference: [f64; 6] = [-1., -0.5, 0.1, 0.2, 1.2, 1.5];
+    let reference: [f64; 6] = [-1.0, -0.5, 0.1, 0.2, 1.2, 1.5];
     let stable: [f64; 6] = reference;
     let shifted: [f64; 6] = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6];
     let _ = (

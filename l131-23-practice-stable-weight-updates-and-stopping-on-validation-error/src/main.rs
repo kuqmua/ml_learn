@@ -18,10 +18,10 @@
 
 fn main() {
     let mut results: Vec<(f64, f64)> = Vec::new();
-    for past_update_share_kept_in_next_step in [0., 0.8] {
+    for past_update_share_kept_in_next_step in [0.0, 0.8] {
         let (loss, _epoch): (f64, usize) = (|| -> (f64, usize) {
             let past_update_share_kept_in_next_step: f64 = past_update_share_kept_in_next_step;
-            let (mut weight, mut velocity): (f64, f64) = (8., 0.);
+            let (mut weight, mut velocity): (f64, f64) = (8.0, 0.0);
             let (mut best, mut best_epoch): (f64, usize) = (f64::INFINITY, 0);
             for epoch in 0..100 {
                 velocity = past_update_share_kept_in_next_step * velocity
@@ -30,8 +30,8 @@ fn main() {
                             let weight: f64 = weight;
                             2.0 * (weight - 3.0)
                         })();
-                        let minimum: f64 = -1.;
-                        let choose_larger_number: f64 = 1.;
+                        let minimum: f64 = -1.0;
+                        let choose_larger_number: f64 = 1.0;
                         if value < minimum {
                             minimum
                         } else if value > choose_larger_number {
@@ -42,7 +42,7 @@ fn main() {
                     })();
                 weight -= 0.1 * velocity;
                 let validation: f64 = (|| -> f64 {
-                    let value: f64 = weight - 3.;
+                    let value: f64 = weight - 3.0;
                     value * value
                 })();
                 if validation < best {

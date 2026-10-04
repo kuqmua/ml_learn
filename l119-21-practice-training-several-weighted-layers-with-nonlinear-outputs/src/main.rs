@@ -51,15 +51,15 @@ fn main() {
     }
 
     const XOR: [([f64; 2], f64); 4] = [
-        ([0., 0.], 0.),
-        ([0., 1.], 1.),
-        ([1., 0.], 1.),
-        ([1., 1.], 0.),
+        ([0.0, 0.0], 0.0),
+        ([0.0, 1.0], 1.0),
+        ([1.0, 0.0], 1.0),
+        ([1.0, 1.0], 0.0),
     ];
 
     /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
     fn calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score(raw_model_score: f64) -> f64 {
-        1. / (1. + approximate_e_to_power_by_summing_power_over_factorial_terms(-raw_model_score))
+        1.0 / (1.0 + approximate_e_to_power_by_summing_power_over_factorial_terms(-raw_model_score))
     }
     /// Производная сигмоиды по её входу: output·(1−output), если output — уже вычисленная сигмоида.
     fn calc_sigmoid_slope_by_multiplying_output_by_one_minus_output(sigmoid_output: f64) -> f64 {

@@ -41,7 +41,7 @@ fn main() {
         estimate
     }
 
-    let data: [[f64; 2]; 4] = [[1., 1.], [2., 2.], [3., 3.], [4., 4.]];
+    let data: [[f64; 2]; 4] = [[1.0, 1.0], [2.0, 2.0], [3.0, 3.0], [4.0, 4.0]];
     let (mean, unit_direction_of_largest_spread, _variance_share_explained_by_axis1): (
         [f64; 2],
         [f64; 2],

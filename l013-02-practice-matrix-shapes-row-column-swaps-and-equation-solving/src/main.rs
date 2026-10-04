@@ -42,8 +42,9 @@ fn main() {
     }
 
     let left_matrix: Matrix =
-        Matrix::create_matrix_from_elements_listed_row_by_row(2, 2, vec![1., 2., 3., 4.]).unwrap();
-    let input_vec: [f64; 2] = [1., 1.];
+        Matrix::create_matrix_from_elements_listed_row_by_row(2, 2, vec![1.0, 2.0, 3.0, 4.0])
+            .unwrap();
+    let input_vec: [f64; 2] = [1.0, 1.0];
     assert_eq!(
         left_matrix.column_count,
         input_vec.len(),

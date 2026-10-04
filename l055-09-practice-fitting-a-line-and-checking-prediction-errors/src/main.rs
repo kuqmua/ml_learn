@@ -6,7 +6,8 @@
 use l050_09_calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count::calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count;
 
 fn main() {
-    const TRAINING_EXAMPLES: [(f64, f64); 5] = [(0., 1.), (1., 3.), (2., 5.), (3., 7.), (4., 9.)];
+    const TRAINING_EXAMPLES: [(f64, f64); 5] =
+        [(0.0, 1.0), (1.0, 3.0), (2.0, 5.0), (3.0, 7.0), (4.0, 9.0)];
     assert!(
         !TRAINING_EXAMPLES.is_empty(),
         "для обучения нужен хотя бы один пример"
@@ -14,7 +15,7 @@ fn main() {
 
     let (weight, constant_input_weight): (f64, f64) = (|| -> (f64, f64) {
         let data: &[(f64, f64)] = &TRAINING_EXAMPLES;
-        let (mut weight, mut constant_input_weight): (f64, f64) = (0., 0.);
+        let (mut weight, mut constant_input_weight): (f64, f64) = (0.0, 0.0);
         for _ in 0..3000 {
             let (weight_loss_rate_of_change, constant_input_weight_loss_rate_of_change): (
                 f64,
@@ -44,7 +45,7 @@ fn main() {
         }
         (weight, constant_input_weight)
     })();
-    let test: [(f64, f64); 2] = [(5., 11.), (6., 13.)];
+    let test: [(f64, f64); 2] = [(5.0, 11.0), (6.0, 13.0)];
 
     let targets: [f64; 2] = test.map(|(_, target)| target);
     let _: f64 = calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(

@@ -36,7 +36,7 @@ fn main() {
             known_text_units
         })();
 
-    let mut dense_numeric_representations: Vec<[f64; 2]> = vec![[0., 0.]; known_text_units.len()];
+    let mut dense_numeric_representations: Vec<[f64; 2]> = vec![[0.0, 0.0]; known_text_units.len()];
     for (text_unit_index, row) in dense_numeric_representations.iter_mut().enumerate() {
         *row = [text_unit_index as f64 * 0.1, text_unit_index as f64 * 0.2];
     }

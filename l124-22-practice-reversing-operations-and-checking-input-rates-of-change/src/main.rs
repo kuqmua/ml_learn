@@ -19,8 +19,8 @@
 
 fn main() {
     // Здесь матрицы остаются динамическими: ниже упражнение проверяет совместимость их форм.
-    let left_matrix: Vec<Vec<f64>> = vec![vec![1., 2.]];
-    let right_matrix: Vec<Vec<f64>> = vec![vec![3.], vec![4.]];
+    let left_matrix: Vec<Vec<f64>> = vec![vec![1.0, 2.0]];
+    let right_matrix: Vec<Vec<f64>> = vec![vec![3.0], vec![4.0]];
 
     let (left_input_rates_of_change, right_input_rates_of_change): (Vec<Vec<f64>>, Vec<Vec<f64>>) =
         (|| -> (Vec<Vec<f64>>, Vec<Vec<f64>>) {

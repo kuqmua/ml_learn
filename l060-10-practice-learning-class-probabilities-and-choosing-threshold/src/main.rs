@@ -50,12 +50,12 @@ fn main() {
     }
 
     const TRAINING_EXAMPLES: [(f64, f64); 6] = [
-        (-3., 0.),
-        (-2., 0.),
-        (-1., 0.),
-        (1., 1.),
-        (2., 1.),
-        (3., 1.),
+        (-3.0, 0.0),
+        (-2.0, 0.0),
+        (-1.0, 0.0),
+        (1.0, 1.0),
+        (2.0, 1.0),
+        (3.0, 1.0),
     ];
 
     /// Бинарная перекрёстная энтропия: среднее −y·ln(p) − (1−y)·ln(1−p), вычисленное устойчиво из оценок линейной модели.
@@ -71,7 +71,7 @@ fn main() {
             let raw_model_score: f64 = weight * feature_value + constant_input_weight;
             loss_sum += (|| -> f64 {
                 let raw_score_to_compare: f64 = raw_model_score;
-                let zero_to_compare: f64 = 0.;
+                let zero_to_compare: f64 = 0.0;
                 if raw_score_to_compare > zero_to_compare {
                     raw_score_to_compare
                 } else {
@@ -79,7 +79,7 @@ fn main() {
                 }
             })() - target * raw_model_score
                 + (|| -> f64 {
-                    let value: f64 = 1.
+                    let value: f64 = 1.0
                         + approximate_e_to_power_by_summing_power_over_factorial_terms(
                             -(|| -> f64 {
                                 let value: f64 = raw_model_score;
@@ -131,23 +131,23 @@ fn main() {
 
     let _: f64 = calc_binary_classification_loss_as_average_neg_log_target_probability(
         &TRAINING_EXAMPLES,
-        0.,
-        0.,
+        0.0,
+        0.0,
     );
     /// Сигмоида: 1 / (1 + e^(−score)); число от 0 до 1 — вероятность класса или доля пропускаемого сигнала.
     fn calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score(raw_model_score: f64) -> f64 {
-        if raw_model_score >= 0. {
-            1. / (1.
+        if raw_model_score >= 0.0 {
+            1.0 / (1.0
                 + approximate_e_to_power_by_summing_power_over_factorial_terms(-raw_model_score))
         } else {
             let prediction_error: f64 =
                 approximate_e_to_power_by_summing_power_over_factorial_terms(raw_model_score);
-            prediction_error / (1. + prediction_error)
+            prediction_error / (1.0 + prediction_error)
         }
     }
 
     let (weight, constant_input_weight): (f64, f64) = (|| -> (f64, f64) {
-        let (mut weight, mut constant_input_weight): (f64, f64) = (0., 0.);
+        let (mut weight, mut constant_input_weight): (f64, f64) = (0.0, 0.0);
         for epoch in 0..300 {
             let (weight_loss_rate_of_change, constant_input_weight_loss_rate_of_change): (
                 f64,
@@ -191,7 +191,7 @@ fn main() {
             constant_input_weight,
         )),
         &(calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score(
-            2. * weight + constant_input_weight,
+            2.0 * weight + constant_input_weight,
         )),
     );
 

@@ -32,11 +32,11 @@ fn main() {
     /// Нечистота Джини для двух классов: 2·p·(1−p), где p — доля положительных меток.
     fn calc_binary_class_mixing_as_twice_pos_share_times_neg_share(data: &[(f64, bool)]) -> f64 {
         if data.is_empty() {
-            return 0.;
+            return 0.0;
         }
         let pos_class_share: f64 =
             data.iter().filter(|(_, target)| *target).count() as f64 / data.len() as f64;
-        2. * pos_class_share * (1. - pos_class_share)
+        2.0 * pos_class_share * (1.0 - pos_class_share)
     }
     /// Дерево решений: выбираем порог с наименьшей взвешенной нечистотой Джини и повторяем до ограничения глубины.
     fn build_threshold_tree_by_minimizing_weighted_class_mixing(
@@ -54,7 +54,7 @@ fn main() {
             if pair[0] == pair[1] {
                 continue;
             }
-            let candidate_threshold: f64 = (pair[0] + pair[1]) / 2.;
+            let candidate_threshold: f64 = (pair[0] + pair[1]) / 2.0;
             let samples_below_threshold: Vec<(f64, bool)> = data
                 .iter()
                 .copied()
@@ -136,7 +136,7 @@ fn main() {
         }
     }
 
-    let data: [(f64, bool); 4] = [(1., false), (2., false), (3., true), (4., true)];
+    let data: [(f64, bool); 4] = [(1.0, false), (2.0, false), (3.0, true), (4.0, true)];
     let tree: Tree = build_threshold_tree_by_minimizing_weighted_class_mixing(&data, 2);
     let _ = &(predict_class_by_following_threshold_branches_to_leaf(&tree, 3.5));
 

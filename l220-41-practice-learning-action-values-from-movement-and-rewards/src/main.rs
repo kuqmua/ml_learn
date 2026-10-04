@@ -31,11 +31,11 @@ fn main() {
                 4
             }
         };
-        (next_state, if next_state == 4 { 1. } else { -0.01 })
+        (next_state, if next_state == 4 { 1.0 } else { -0.01 })
     }
 
     let action_values: [[f64; 2]; 5] = (|| -> [[f64; 2]; 5] {
-        let mut action_values: [[f64; 2]; 5] = [[0.; 2]; 5];
+        let mut action_values: [[f64; 2]; 5] = [[0.0; 2]; 5];
         let mut generator_state: u64 = 42u64;
         for episode in 0..2000 {
             let mut current_state: usize = 0;

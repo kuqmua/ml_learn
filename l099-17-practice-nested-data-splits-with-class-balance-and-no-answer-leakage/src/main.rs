@@ -54,15 +54,15 @@ fn main() {
     }
 
     let training_examples: [(f64, bool); 9] = [
-        (0., false),
-        (1., false),
-        (2., false),
-        (3., true),
-        (4., true),
-        (5., true),
-        (6., true),
-        (7., false),
-        (8., false),
+        (0.0, false),
+        (1.0, false),
+        (2.0, false),
+        (3.0, true),
+        (4.0, true),
+        (5.0, true),
+        (6.0, true),
+        (7.0, false),
+        (8.0, false),
     ];
     let best: (usize, f64) = [1, 3, 5]
         .into_iter()

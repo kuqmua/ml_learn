@@ -53,7 +53,7 @@ fn main() {
 
     let (_attended_output, attention_weights): ([[f64; 2]; 3], [[f64; 3]; 3]) =
         (|| -> ([[f64; 2]; 3], [[f64; 3]; 3]) {
-            let sequence: [[f64; 2]; 3] = [[1., 0.], [0., 1.], [1., 1.]];
+            let sequence: [[f64; 2]; 3] = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
             let queries: &[[f64; 2]; 3] = &sequence;
             let keys: &[[f64; 2]; 3] = &sequence;
             let values: &[[f64; 2]; 3] = &sequence;

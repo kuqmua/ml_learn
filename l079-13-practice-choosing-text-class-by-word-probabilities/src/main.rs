@@ -71,7 +71,7 @@ fn main() {
             .iter()
             .flat_map(|(document_text, _)| document_text.split_whitespace())
             .collect();
-        let mut scores: [f64; 2] = [0.; 2];
+        let mut scores: [f64; 2] = [0.0; 2];
         for (class, score) in scores.iter_mut().enumerate() {
             let class_documents: Vec<&(&str, bool)> = training_examples
                 .iter()
@@ -87,12 +87,12 @@ fn main() {
                 }
             }
             *score = approximate_natural_log_by_scaling_and_summing_odd_powers(
-                (class_documents.len() as f64 + 1.) / (training_examples.len() as f64 + 2.),
+                (class_documents.len() as f64 + 1.0) / (training_examples.len() as f64 + 2.0),
             );
             for text_unit in text.split_whitespace() {
                 if known_text_units.contains(text_unit) {
                     *score += approximate_natural_log_by_scaling_and_summing_odd_powers(
-                        (*text_unit_counts.get(text_unit).unwrap_or(&0) as f64 + 1.)
+                        (*text_unit_counts.get(text_unit).unwrap_or(&0) as f64 + 1.0)
                             / (total_text_units + known_text_units.len()) as f64,
                     );
                 }

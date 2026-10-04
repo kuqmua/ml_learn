@@ -23,7 +23,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if !feature_value.is_finite() {
                 return Err(format!("строка {}: не конечное число", row_index + 2));
             }
-            output_comma_separated_values.push_str(&format!("{}\n", 2. * feature_value + 1.));
+            output_comma_separated_values.push_str(&format!("{}\n", 2.0 * feature_value + 1.0));
         }
         Ok(output_comma_separated_values)
     })() {

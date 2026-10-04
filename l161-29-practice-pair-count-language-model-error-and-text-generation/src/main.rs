@@ -89,7 +89,7 @@ fn main() {
         (*counts
             .get(&(previous_text_unit.into(), next_text_unit.into()))
             .unwrap_or(&0) as f64
-            + 1.)
+            + 1.0)
             / (count_after_previous_text_unit + known_text_units.len()) as f64
     }
 
@@ -101,7 +101,7 @@ fn main() {
 
         known_text_units: &std::collections::BTreeSet<String>,
     ) -> f64 {
-        let (mut text_unit_count, mut neg_log_likelihood): (i32, f64) = (0, 0.);
+        let (mut text_unit_count, mut neg_log_likelihood): (i32, f64) = (0, 0.0);
         for sentence in sentences {
             let mut previous_text_unit: &str = "<s>";
             for word in sentence.split_whitespace().chain(["</s>"]) {

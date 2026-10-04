@@ -9,16 +9,16 @@ use l051_09_calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_
 
 fn main() {
     const EXAMPLE_DATA: [(f64, f64); 10] = [
-        (0., 1.),
-        (1., 3.),
-        (2., 5.),
-        (3., 7.),
-        (4., 9.),
-        (5., 11.),
-        (6., 13.),
-        (7., 15.),
-        (8., 17.),
-        (9., 19.),
+        (0.0, 1.0),
+        (1.0, 3.0),
+        (2.0, 5.0),
+        (3.0, 7.0),
+        (4.0, 9.0),
+        (5.0, 11.0),
+        (6.0, 13.0),
+        (7.0, 15.0),
+        (8.0, 17.0),
+        (9.0, 19.0),
     ];
 
     assert!(
@@ -70,7 +70,7 @@ fn main() {
     let validation: &[(f64, f64)] = &EXAMPLE_DATA[6..8];
     let _ = calc_linear_model_error_as_average_absolute_diff_between_predictions_and_targets(
         validation,
-        0.,
+        0.0,
         calc_mean_by_summing_values_and_dividing_by_count(
             &training_examples
                 .iter()
@@ -90,7 +90,7 @@ fn main() {
         weight,
         constant_input_weight,
     );
-    let _ = weight * 10. + constant_input_weight;
+    let _ = weight * 10.0 + constant_input_weight;
 
     // Выполняем вычисления из примера.
     let _ = (training_examples, weight, constant_input_weight);

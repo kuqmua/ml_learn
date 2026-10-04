@@ -43,7 +43,7 @@ fn main() {
             for text_unit in &document_text_units {
                 *text_unit_counts.entry(text_unit).or_insert(0usize) += 1;
             }
-            let mut relevance_score: f64 = 0.;
+            let mut relevance_score: f64 = 0.0;
             for word in query_text_units
                 .iter()
                 .collect::<std::collections::BTreeSet<_>>()
@@ -95,12 +95,12 @@ fn main() {
                         * approximate_natural_log_as_twice_sum_of_odd_ratio_powers_over_odd_numbers(
                             2.0,
                         )
-                })() + 1.;
+                })() + 1.0;
                 relevance_score += *text_unit_counts.get(word).unwrap_or(&0) as f64
                     / document_text_units.len() as f64
                     * inverse_document_frequency_as_word_rarity_weight;
             }
-            if relevance_score > 0. {
+            if relevance_score > 0.0 {
                 ranked_results.push((document_identifier, relevance_score));
             }
         }
