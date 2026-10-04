@@ -7,15 +7,15 @@
 //! Списки должны содержать одинаковое количество чисел.
 
 pub fn multiply_matching_coords_then_add_results(
-    first_vec: &[f64],
-    second_vec: &[f64],
+    vec1: &[f64],
+    vec2: &[f64],
 ) -> Result<f64, &'static str> {
-    if first_vec.len() != second_vec.len() {
+    if vec1.len() != vec2.len() {
         return Err("векторы должны иметь одинаковое число координат");
     }
     let mut sum_after_multiplying_matching_coords: f64 = 0.0;
-    for index in 0..first_vec.len() {
-        sum_after_multiplying_matching_coords += first_vec[index] * second_vec[index];
+    for index in 0..vec1.len() {
+        sum_after_multiplying_matching_coords += vec1[index] * vec2[index];
     }
     Ok(sum_after_multiplying_matching_coords)
 }

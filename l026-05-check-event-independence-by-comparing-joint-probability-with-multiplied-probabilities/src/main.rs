@@ -17,23 +17,14 @@ fn main() {
         ("зависимые события", 0.5, 0.5, 0.5, false),
         ("несовместимые события", 0.5, 0.5, 0.0, false),
     ];
-    for (
-        _description,
-        first_event_probability,
-        second_event_probability,
-        joint_probability,
-        expected,
-    ) in cases
+    for (_description, event1_probability, event2_probability, joint_probability, expected) in cases
     {
         assert!(
-            (0.0..=1.0).contains(&first_event_probability)
-                && (0.0..=1.0).contains(&second_event_probability)
+            (0.0..=1.0).contains(&event1_probability) && (0.0..=1.0).contains(&event2_probability)
         );
         assert!((0.0..=1.0).contains(&joint_probability));
-        let independent: bool = check_f64_eq_1e_minus_10(
-            joint_probability,
-            first_event_probability * second_event_probability,
-        );
+        let independent: bool =
+            check_f64_eq_1e_minus_10(joint_probability, event1_probability * event2_probability);
         assert_eq!(independent, expected);
     }
 

@@ -25,8 +25,8 @@ fn two_tokens_use_position_and_softmax_weighted_past() {
     assert_eq!(states.len(), 2);
     assert_eq!(states[0], [2.0, 0.0]);
     // Для второй позиции q=[0.1,1]: q·k0=0.1, q·k1=1.01; масштаб sqrt(2).
-    let first_weight = 1.0 / (1.0 + ((1.01_f64 - 0.1) / 2.0_f64.sqrt()).exp());
-    let expected = [0.2 + 0.9 * first_weight, 2.0 - first_weight];
+    let weight1 = 1.0 / (1.0 + ((1.01_f64 - 0.1) / 2.0_f64.sqrt()).exp());
+    let expected = [0.2 + 0.9 * weight1, 2.0 - weight1];
     for coord in 0..2 {
         assert!(check_f64_eq_1e_minus_12(states[1][coord], expected[coord]));
     }

@@ -20,7 +20,7 @@ fn calc_probability_of_next_sound_sample_from_history(history: &[u8]) -> f64 {
         .map(|&sample| f64::from(sample) * 2.0 - 1.0)
         .collect();
 
-    let first_layer_bounded_signals_after_gating: Vec<f64> =
+    let layer1_bounded_signals_after_gating: Vec<f64> =
         calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
             &input, 0.8, 0.4, 1,
         )
@@ -41,9 +41,9 @@ fn calc_probability_of_next_sound_sample_from_history(history: &[u8]) -> f64 {
         .collect();
 
     let last: usize = history.len() - 1;
-    let second_layer_bounded_signal_after_gating: f64 = calc_tanh(
+    let layer2_bounded_signal_after_gating: f64 = calc_tanh(
         calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
-            &first_layer_bounded_signals_after_gating,
+            &layer1_bounded_signals_after_gating,
             1.0,
             0.5,
             2,
@@ -52,16 +52,14 @@ fn calc_probability_of_next_sound_sample_from_history(history: &[u8]) -> f64 {
     )
         * calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score(
             calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values(
-                &first_layer_bounded_signals_after_gating,
+                &layer1_bounded_signals_after_gating,
                 0.1,
                 0.6,
                 2,
             )
             .unwrap()[last],
         );
-    calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score(
-        2.0 * second_layer_bounded_signal_after_gating,
-    )
+    calc_sigmoid_as_one_divided_by_one_plus_e_to_neg_score(2.0 * layer2_bounded_signal_after_gating)
 }
 fn main() {
     let mut samples: Vec<u8> = vec![1, 0, 1, 1];

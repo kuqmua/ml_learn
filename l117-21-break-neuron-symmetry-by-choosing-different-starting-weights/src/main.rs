@@ -14,9 +14,9 @@ fn main() {
         ("одинаковые веса", [0.2, -0.3], [0.2, -0.3], true),
         ("разные веса", [0.2, -0.3], [-0.1, 0.4], false),
     ];
-    for (_description, first_neuron, second_neuron, should_match) in cases {
-        let first_output: f64 = first_neuron[0] * input[0] + first_neuron[1] * input[1];
-        let second_output: f64 = second_neuron[0] * input[0] + second_neuron[1] * input[1];
-        assert_eq!(first_output == second_output, should_match);
+    for (_description, neuron1, neuron2, should_match) in cases {
+        let output1: f64 = neuron1[0] * input[0] + neuron1[1] * input[1];
+        let output2: f64 = neuron2[0] * input[0] + neuron2[1] * input[1];
+        assert_eq!(output1 == output2, should_match);
     }
 }

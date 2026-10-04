@@ -6,11 +6,11 @@
 use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_then_add_results;
 
 fn main() {
-    let first_word_vec: [f64; 2] = [0.8, 0.2];
-    let second_word_vec: [f64; 2] = [0.7, 0.3];
-    let _: f64 = multiply_matching_coords_then_add_results(&first_word_vec, &second_word_vec)
+    let word_vec1: [f64; 2] = [0.8, 0.2];
+    let word_vec2: [f64; 2] = [0.7, 0.3];
+    let _: f64 = multiply_matching_coords_then_add_results(&word_vec1, &word_vec2)
         .expect("представления должны иметь одинаковое число координат");
 
     // Выполняем вычисления из примера.
-    let _ = (first_word_vec, second_word_vec);
+    let _ = (word_vec1, word_vec2);
 }

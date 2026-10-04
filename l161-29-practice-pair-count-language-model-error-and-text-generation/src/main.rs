@@ -184,7 +184,7 @@ fn main() {
 
             .iter()
 
-            .max_by(|first_candidate, second_candidate| {
+            .max_by(|candidate1, candidate2| {
                 calc_next_token_probability_as_pair_count_plus_one_over_context_count_plus_vocabulary_size(
 
                     &bigram_counts,
@@ -193,7 +193,7 @@ fn main() {
 
                     previous_text_unit,
 
-                    first_candidate,
+                    candidate1,
                 )
 
                 .total_cmp(
@@ -205,7 +205,7 @@ fn main() {
 
                         previous_text_unit,
 
-                        second_candidate,
+                        candidate2,
                     ),
                 )
             })

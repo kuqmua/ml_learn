@@ -26,12 +26,12 @@ fn main() {
 
     /// Квадрат расстояния: складываем квадраты разностей соответствующих координат двух точек.
     fn calc_squared_point_dist_by_summing_squared_coord_diffs(
-        first_point: [f64; 2],
+        point1: [f64; 2],
 
-        second_point: [f64; 2],
+        point2: [f64; 2],
     ) -> f64 {
-        calc_square_by_multiplying_number_by_itself(first_point[0] - second_point[0])
-            + calc_square_by_multiplying_number_by_itself(first_point[1] - second_point[1])
+        calc_square_by_multiplying_number_by_itself(point1[0] - point2[0])
+            + calc_square_by_multiplying_number_by_itself(point1[1] - point2[1])
     }
 
     let dataset: [[f64; 2]; 4] = [[0., 0.], [0., 1.], [10., 10.], [10., 11.]];
@@ -47,15 +47,15 @@ fn main() {
 
             for &point in data {
                 let center_index: usize = (0..centers.len())
-                    .min_by(|&first_center_index, &second_center_index| {
+                    .min_by(|&center1_index, &center2_index| {
                         calc_squared_point_dist_by_summing_squared_coord_diffs(
                             point,
-                            centers[first_center_index],
+                            centers[center1_index],
                         )
                         .total_cmp(
                             &calc_squared_point_dist_by_summing_squared_coord_diffs(
                                 point,
-                                centers[second_center_index],
+                                centers[center2_index],
                             ),
                         )
                     })

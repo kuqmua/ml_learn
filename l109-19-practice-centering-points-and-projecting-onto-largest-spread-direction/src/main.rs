@@ -42,7 +42,7 @@ fn main() {
     }
 
     let data: [[f64; 2]; 4] = [[1., 1.], [2., 2.], [3., 3.], [4., 4.]];
-    let (mean, unit_direction_of_largest_spread, _variance_share_explained_by_first_axis): (
+    let (mean, unit_direction_of_largest_spread, _variance_share_explained_by_axis1): (
         [f64; 2],
         [f64; 2],
         f64,
@@ -55,31 +55,31 @@ fn main() {
             coord_sums[1] += point[1];
         }
         let mean: [f64; 2] = [coord_sums[0] / sample_count, coord_sums[1] / sample_count];
-        let (
-            mut first_variance_sum,
-            mut sum_after_multiplying_diffs_from_mean,
-            mut second_variance_sum,
-        ): (f64, f64, f64) = (0.0, 0.0, 0.0);
+        let (mut variance1_sum, mut sum_after_multiplying_diffs_from_mean, mut variance2_sum): (
+            f64,
+            f64,
+            f64,
+        ) = (0.0, 0.0, 0.0);
         for point in data {
-            let centered_first: f64 = point[0] - mean[0];
-            let centered_second: f64 = point[1] - mean[1];
-            first_variance_sum += calc_square_by_multiplying_number_by_itself(centered_first);
-            sum_after_multiplying_diffs_from_mean += centered_first * centered_second;
-            second_variance_sum += calc_square_by_multiplying_number_by_itself(centered_second);
+            let centered1: f64 = point[0] - mean[0];
+            let centered2: f64 = point[1] - mean[1];
+            variance1_sum += calc_square_by_multiplying_number_by_itself(centered1);
+            sum_after_multiplying_diffs_from_mean += centered1 * centered2;
+            variance2_sum += calc_square_by_multiplying_number_by_itself(centered2);
         }
         let discriminant: f64 =
-            calc_square_by_multiplying_number_by_itself(first_variance_sum - second_variance_sum)
+            calc_square_by_multiplying_number_by_itself(variance1_sum - variance2_sum)
                 + 4.0
                     * calc_square_by_multiplying_number_by_itself(
                         sum_after_multiplying_diffs_from_mean,
                     );
-        let largest_eigenvalue_as_squared_spread_along_principal_axis: f64 = (first_variance_sum
-            + second_variance_sum
+        let largest_eigenvalue_as_squared_spread_along_principal_axis: f64 = (variance1_sum
+            + variance2_sum
             + approximate_square_root_by_repeated_averaging(discriminant))
             / 2.0;
         let unit_direction_of_largest_spread: [f64; 2] =
             if check_f64_eq_1e_minus_12(sum_after_multiplying_diffs_from_mean, 0.0) {
-                if first_variance_sum >= second_variance_sum {
+                if variance1_sum >= variance2_sum {
                     [1.0, 0.0]
                 } else {
                     [0.0, 1.0]
@@ -87,7 +87,7 @@ fn main() {
             } else {
                 let unnormalized_axis: [f64; 2] = [
                     sum_after_multiplying_diffs_from_mean,
-                    largest_eigenvalue_as_squared_spread_along_principal_axis - first_variance_sum,
+                    largest_eigenvalue_as_squared_spread_along_principal_axis - variance1_sum,
                 ];
                 let axis_len: f64 = approximate_square_root_by_repeated_averaging(
                     calc_square_by_multiplying_number_by_itself(unnormalized_axis[0])
@@ -100,7 +100,7 @@ fn main() {
             };
         let fraction_of_total_squared_spread_preserved_by_projection: f64 =
             largest_eigenvalue_as_squared_spread_along_principal_axis
-                / (first_variance_sum + second_variance_sum);
+                / (variance1_sum + variance2_sum);
         (
             mean,
             unit_direction_of_largest_spread,

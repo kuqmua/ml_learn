@@ -7,20 +7,19 @@
 use l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs::calc_squared_point_dist_by_summing_squared_coord_diffs;
 
 fn main() {
-    let first_point = [1.0, 2.0];
-    let second_point = [4.0, 6.0];
+    let point1 = [1.0, 2.0];
+    let point2 = [4.0, 6.0];
 
     assert_eq!(
-        calc_squared_point_dist_by_summing_squared_coord_diffs(&first_point, &second_point,)
-            .unwrap(),
+        calc_squared_point_dist_by_summing_squared_coord_diffs(&point1, &point2,).unwrap(),
         25.0
     );
     assert_eq!(
-        calc_squared_point_dist_by_summing_squared_coord_diffs(&second_point, &first_point),
+        calc_squared_point_dist_by_summing_squared_coord_diffs(&point2, &point1),
         Ok(25.0)
     );
     assert_eq!(
-        calc_squared_point_dist_by_summing_squared_coord_diffs(&first_point, &first_point),
+        calc_squared_point_dist_by_summing_squared_coord_diffs(&point1, &point1),
         Ok(0.0)
     );
 }

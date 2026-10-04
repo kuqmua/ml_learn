@@ -13,9 +13,9 @@
 
 fn main() {
     let points: [[f64; 2]; 4] = [[0.0, 0.0], [0.1, 0.0], [5.0, 5.0], [5.1, 5.0]];
-    let first_start: [[f64; 2]; 2] = [points[0], points[2]];
-    let second_start: [[f64; 2]; 2] = [points[0], points[1]];
+    let start1: [[f64; 2]; 2] = [points[0], points[2]];
+    let start2: [[f64; 2]; 2] = [points[0], points[1]];
 
     // Выполняем вычисления из примера.
-    let _ = (points, first_start, second_start);
+    let _ = (points, start1, start2);
 }

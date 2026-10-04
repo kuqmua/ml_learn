@@ -7,19 +7,18 @@ use l005_01_calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs::calc_p
 fn predict_dist_and_check_symmetry() {
     let expected_dist: Option<f64> = None; // Заполни: расстояние между [1, 2] и [4, 6]
     let expected_dist: f64 = expected_dist.expect("заполни ответ перед запуском теста");
-    let first_point: [f64; 2] = [1.0, 2.0];
-    let second_point: [f64; 2] = [4.0, 6.0];
+    let point1: [f64; 2] = [1.0, 2.0];
+    let point2: [f64; 2] = [4.0, 6.0];
     assert!(check_f64_eq_1e_minus_10(
-        calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs(&first_point, &second_point)
-            .unwrap(),
+        calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs(&point1, &point2).unwrap(),
         expected_dist
     ));
     assert_eq!(
-        calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs(&first_point, &second_point),
-        calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs(&second_point, &first_point)
+        calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs(&point1, &point2),
+        calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs(&point2, &point1)
     );
     assert_eq!(
-        calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs(&first_point, &first_point),
+        calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs(&point1, &point1),
         Ok(0.0)
     );
 }

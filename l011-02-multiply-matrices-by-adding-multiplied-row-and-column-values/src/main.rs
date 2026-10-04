@@ -7,24 +7,24 @@
 use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_then_add_results;
 
 fn main() {
-    let first_matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
+    let matrix1: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
     let identity: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, 1.0]];
-    let second_matrix: [[f64; 2]; 2] = [[5.0, 6.0], [7.0, 8.0]];
+    let matrix2: [[f64; 2]; 2] = [[5.0, 6.0], [7.0, 8.0]];
     for (_description, matrix_on_left, matrix_on_right, expected) in [
         (
             "обычный порядок",
-            first_matrix,
-            second_matrix,
+            matrix1,
+            matrix2,
             [[19.0, 22.0], [43.0, 50.0]],
         ),
         (
             "обратный порядок",
-            second_matrix,
-            first_matrix,
+            matrix2,
+            matrix1,
             [[23.0, 34.0], [31.0, 46.0]],
         ),
-        ("единичная справа", first_matrix, identity, first_matrix),
-        ("единичная слева", identity, first_matrix, first_matrix),
+        ("единичная справа", matrix1, identity, matrix1),
+        ("единичная слева", identity, matrix1, matrix1),
     ] {
         assert_eq!(
             matrix_on_left[0].len(),

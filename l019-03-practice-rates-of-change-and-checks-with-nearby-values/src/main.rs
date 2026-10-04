@@ -27,70 +27,65 @@ fn main() {
 
     /// Квадратичная функция: (x − 2)² + 3(y + 1)².
     fn calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
-        first_parameter: f64,
-        second_parameter: f64,
+        parameter1: f64,
+        parameter2: f64,
     ) -> f64 {
-        calc_square_by_multiplying_number_by_itself(first_parameter - 2.0)
-            + 3.0 * calc_square_by_multiplying_number_by_itself(second_parameter + 1.0)
+        calc_square_by_multiplying_number_by_itself(parameter1 - 2.0)
+            + 3.0 * calc_square_by_multiplying_number_by_itself(parameter2 + 1.0)
     }
 
     /// Первообразная по x: (x − 2)³ / 3 + 3(y + 1)²x; её производная по x равна исходной функции.
     fn calc_antiderivative_by_cubing_first_shift_dividing_by_three_and_adding_second_shift_term(
-        first_parameter: f64,
+        parameter1: f64,
 
-        second_parameter: f64,
+        parameter2: f64,
     ) -> f64 {
-        let shifted_first: f64 = first_parameter - 2.0;
-        shifted_first * shifted_first * shifted_first / 3.0
-            + 3.0
-                * calc_square_by_multiplying_number_by_itself(second_parameter + 1.0)
-                * first_parameter
+        let shifted1: f64 = parameter1 - 2.0;
+        shifted1 * shifted1 * shifted1 / 3.0
+            + 3.0 * calc_square_by_multiplying_number_by_itself(parameter2 + 1.0) * parameter1
     }
 
     for step_size in [1e-2, 1e-4, 1e-8] {
         let _ = (
             &((|| -> [f64; 2] {
-                let first_parameter: f64 = 0.3;
+                let parameter1: f64 = 0.3;
 
-                let second_parameter: f64 = 2.0;
+                let parameter2: f64 = 2.0;
 
-                [
-                    2.0 * (first_parameter - 2.0),
-                    6.0 * (second_parameter + 1.0),
-                ]
+                [2.0 * (parameter1 - 2.0), 6.0 * (parameter2 + 1.0)]
             })()),
             &((|| -> [f64; 2] {
                 let step_size: f64 = step_size;
 
-                let first_parameter: f64 = 0.3;
-                let second_parameter: f64 = 2.0;
+                let parameter1: f64 = 0.3;
+                let parameter2: f64 = 2.0;
                 [
 
                     (calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
 
-                        first_parameter + step_size,
+                        parameter1 + step_size,
 
-                        second_parameter,
+                        parameter2,
 
                     ) - calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
 
-                        first_parameter - step_size,
+                        parameter1 - step_size,
 
-                        second_parameter,
+                        parameter2,
 
                     )) / (2.0 * step_size),
 
                     (calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
 
-                        first_parameter,
+                        parameter1,
 
-                        second_parameter + step_size,
+                        parameter2 + step_size,
 
                     ) - calc_quadratic_function_value_as_sum_of_squared_shifts_with_second_weighted_by_three(
 
-                        first_parameter,
+                        parameter1,
 
-                        second_parameter - step_size,
+                        parameter2 - step_size,
 
                     )) / (2.0 * step_size),
                 ]

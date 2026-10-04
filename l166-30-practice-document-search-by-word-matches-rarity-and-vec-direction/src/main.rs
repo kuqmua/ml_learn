@@ -104,8 +104,7 @@ fn main() {
                 ranked_results.push((document_identifier, relevance_score));
             }
         }
-        ranked_results
-            .sort_by(|first_result, second_result| second_result.1.total_cmp(&first_result.1));
+        ranked_results.sort_by(|result1, result2| result2.1.total_cmp(&result1.1));
         ranked_results
     })()
     .into_iter()

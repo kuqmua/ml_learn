@@ -22,14 +22,14 @@ fn calc_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and
     let learned_coord_scales_after_root_mean_square_normalization: [f64; 2] = [1.0, 1.0];
     let scaled_states: [[f64; 2]; N] = std::array::from_fn(|index| {
         let input_value = &states[index];
-        let second_input_value: [f64; 2] =
+        let input2_value: [f64; 2] =
             normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights(
                 input_value,
                 &learned_coord_scales_after_root_mean_square_normalization,
                 1e-6,
             )
             .unwrap();
-        [second_input_value[0], second_input_value[1]]
+        [input2_value[0], input2_value[1]]
     });
     let keys: [[f64; 2]; N] = std::array::from_fn(|position| {
         let input_value = &scaled_states[position];

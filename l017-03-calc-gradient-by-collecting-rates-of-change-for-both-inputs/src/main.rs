@@ -6,6 +6,6 @@
 // Такой список скоростей изменения обычно называют градиентом.
 
 fn main() {
-    let (input_value, second_input_value): (f64, f64) = (0.0, 0.0);
-    let _gradient: [f64; 2] = [2.0 * (input_value - 2.0), 6.0 * (second_input_value + 1.0)];
+    let (input_value, input2_value): (f64, f64) = (0.0, 0.0);
+    let _gradient: [f64; 2] = [2.0 * (input_value - 2.0), 6.0 * (input2_value + 1.0)];
 }

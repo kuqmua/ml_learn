@@ -19,7 +19,7 @@ fn main() {
     let _: usize = last
         .iter()
         .enumerate()
-        .max_by(|first_candidate, second_candidate| first_candidate.1.total_cmp(second_candidate.1))
+        .max_by(|candidate1, candidate2| candidate1.1.total_cmp(candidate2.1))
         .unwrap()
         .0;
     assert_eq!(

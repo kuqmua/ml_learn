@@ -27,11 +27,10 @@ mod tests {
     /// Поворот сохраняет сумму квадратов координат, а значит и длину вектора.
     fn rotation_preserves_sum_of_squared_coords() {
         let input_value: [f64; 2] = [3.0, 4.0];
-        let second_input_value: [f64; 2] =
+        let input2_value: [f64; 2] =
             super::rotate_vec_coord_pair_by_token_position(input_value, 7, 0.1);
         assert!(check_f64_eq_1e_minus_10(
-            second_input_value[0] * second_input_value[0]
-                + second_input_value[1] * second_input_value[1],
+            input2_value[0] * input2_value[0] + input2_value[1] * input2_value[1],
             25.0
         ));
     }

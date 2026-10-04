@@ -5,20 +5,15 @@
 //! Чтобы получить обычное расстояние, из этого результата нужно взять квадратный корень.
 
 pub fn calc_squared_point_dist_by_summing_squared_coord_diffs<const N: usize>(
-    first_point: &[f64; N],
-    second_point: &[f64; N],
+    point1: &[f64; N],
+    point2: &[f64; N],
 ) -> Result<f64, &'static str> {
-    if N == 0
-        || first_point
-            .iter()
-            .chain(second_point)
-            .any(|value| !value.is_finite())
-    {
+    if N == 0 || point1.iter().chain(point2).any(|value| !value.is_finite()) {
         return Err("точки должны быть непустыми и содержать только конечные координаты");
     }
     let mut squared_sum: f64 = 0.0;
-    for index in 0..first_point.len() {
-        let diff: f64 = first_point[index] - second_point[index];
+    for index in 0..point1.len() {
+        let diff: f64 = point1[index] - point2[index];
         squared_sum += diff * diff;
     }
     if !squared_sum.is_finite() {

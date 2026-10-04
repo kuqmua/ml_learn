@@ -9,7 +9,7 @@
 use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_then_add_results;
 
 fn main() {
-    let first_vec: [f64; 2] = [1.0, 2.0];
+    let vec1: [f64; 2] = [1.0, 2.0];
     let cases: [(&str, &[f64], f64); 6] = [
         ("то же направление", &[2.0, 4.0], 10.0),
         ("угол меньше 90°", &[2.0, 1.0], 4.0),
@@ -19,19 +19,19 @@ fn main() {
         ("нулевой вектор без направления", &[0.0, 0.0], 0.0),
     ];
 
-    for (_description, second_vec, expected) in cases {
+    for (_description, vec2, expected) in cases {
         assert_eq!(
-            multiply_matching_coords_then_add_results(&first_vec, second_vec)
+            multiply_matching_coords_then_add_results(&vec1, vec2)
                 .expect("ожидались векторы с одинаковым числом координат"),
             expected
         );
     }
 
     let too_short: [f64; 1] = [3.0];
-    let _: &str = multiply_matching_coords_then_add_results(&first_vec, &too_short)
+    let _: &str = multiply_matching_coords_then_add_results(&vec1, &too_short)
         .expect_err("разная длина должна быть отклонена");
-    let _ = &(first_vec);
+    let _ = &(vec1);
 
     // Выполняем вычисления из примера.
-    let _ = &first_vec;
+    let _ = &vec1;
 }

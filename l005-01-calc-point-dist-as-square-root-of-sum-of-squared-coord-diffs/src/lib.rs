@@ -7,11 +7,10 @@
 use l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs::calc_squared_point_dist_by_summing_squared_coord_diffs;
 
 pub fn calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs(
-    first_point: &[f64; 2],
-    second_point: &[f64; 2],
+    point1: &[f64; 2],
+    point2: &[f64; 2],
 ) -> Result<f64, &'static str> {
-    let squared_sum =
-        calc_squared_point_dist_by_summing_squared_coord_diffs(first_point, second_point)?;
+    let squared_sum = calc_squared_point_dist_by_summing_squared_coord_diffs(point1, point2)?;
 
     Ok(squared_sum.sqrt())
 }

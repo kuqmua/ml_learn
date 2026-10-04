@@ -11,18 +11,18 @@
 
 fn main() {
     let pos: [i32; 4] = [1, 3, 5, 7];
-    let bad_first: [i32; 4] = pos;
+    let bad1: [i32; 4] = pos;
     let neg: [i32; 4] = [0, 2, 4, 6];
-    let bad_second: [i32; 4] = neg;
-    let first_fold: [i32; 4] = [pos[0], pos[1], neg[0], neg[1]];
-    let second_fold: [i32; 4] = [pos[2], pos[3], neg[2], neg[3]];
-    for (_description, first_fold, second_fold, expected_pos) in [
-        ("разбиение подряд", bad_first, bad_second, [4, 0]),
-        ("стратификация", first_fold, second_fold, [2, 2]),
+    let bad2: [i32; 4] = neg;
+    let fold1: [i32; 4] = [pos[0], pos[1], neg[0], neg[1]];
+    let fold2: [i32; 4] = [pos[2], pos[3], neg[2], neg[3]];
+    for (_description, fold1, fold2, expected_pos) in [
+        ("разбиение подряд", bad1, bad2, [4, 0]),
+        ("стратификация", fold1, fold2, [2, 2]),
     ] {
         let counts: [usize; 2] = [
-            first_fold.iter().filter(|&&value| value % 2 == 1).count(),
-            second_fold.iter().filter(|&&value| value % 2 == 1).count(),
+            fold1.iter().filter(|&&value| value % 2 == 1).count(),
+            fold2.iter().filter(|&&value| value % 2 == 1).count(),
         ];
         assert_eq!(counts, expected_pos);
     }

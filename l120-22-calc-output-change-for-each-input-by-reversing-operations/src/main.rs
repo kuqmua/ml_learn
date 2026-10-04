@@ -11,12 +11,12 @@
 // Точка входа: все определения и шаги примера выполняются внутри этой функции.
 
 fn main() {
-    let (input_value, second_input_value): (f64, f64) = (2.0, 3.0);
-    let multiplied_coords: f64 = input_value * second_input_value;
+    let (input_value, input2_value): (f64, f64) = (2.0, 3.0);
+    let multiplied_coords: f64 = input_value * input2_value;
     let _: f64 = multiplied_coords + input_value;
-    let _: f64 = second_input_value + 1.0;
+    let _: f64 = input2_value + 1.0;
     let _: f64 = input_value;
 
     // Выполняем вычисления из примера.
-    let _ = second_input_value;
+    let _ = input2_value;
 }

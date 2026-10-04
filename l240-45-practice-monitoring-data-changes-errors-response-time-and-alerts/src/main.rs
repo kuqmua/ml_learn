@@ -20,13 +20,9 @@
 
 fn main() {
     /// Выбираем большее из двух чисел для формул softmax, log-loss и Q-learning.
-    /// Аналог `first_number.max(second_number)` для обычных чисел; при NaN результат может отличаться.
-    fn choose_larger_number(first_number: f64, second_number: f64) -> f64 {
-        if first_number > second_number {
-            first_number
-        } else {
-            second_number
-        }
+    /// Аналог `number1.max(number2)` для обычных чисел; при NaN результат может отличаться.
+    fn choose_larger_number(number1: f64, number2: f64) -> f64 {
+        if number1 > number2 { number1 } else { number2 }
     }
 
     fn calc_shares_of_feature_values_in_three_bins(data: &[f64]) -> [f64; 3] {

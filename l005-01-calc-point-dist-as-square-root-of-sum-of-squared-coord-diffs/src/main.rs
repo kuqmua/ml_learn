@@ -14,10 +14,10 @@ fn main() {
         ("поменяли точки местами", &[3.0, 4.0], &[0.0, 0.0], 5.0),
         ("точки совпадают", &[3.0, 4.0], &[3.0, 4.0], 0.0),
     ];
-    for (_description, first_point, second_point, expected) in cases {
+    for (_description, point1, point2, expected) in cases {
         assert!(check_f64_eq_1e_minus_10(calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs(
-                first_point,
-                second_point,
+                point1,
+                point2,
             )
             .expect("не удалось вычислить расстояние: координаты должны быть конечными, а квадрат расстояния — помещаться в f64"), expected));
     }

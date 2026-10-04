@@ -9,13 +9,12 @@ use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_
 use l003_01_calc_vec_len_as_square_root_of_sum_of_squared_coords::calc_vec_len_as_square_root_of_sum_of_squared_coords;
 
 pub fn multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens(
-    first_vec: &[f64],
-    second_vec: &[f64],
+    vec1: &[f64],
+    vec2: &[f64],
 ) -> Result<f64, &'static str> {
-    let sum_after_multiplying_coords: f64 =
-        multiply_matching_coords_then_add_results(first_vec, second_vec)?;
-    let multiplied_vec_lens: f64 = calc_vec_len_as_square_root_of_sum_of_squared_coords(first_vec)
-        * calc_vec_len_as_square_root_of_sum_of_squared_coords(second_vec);
+    let sum_after_multiplying_coords: f64 = multiply_matching_coords_then_add_results(vec1, vec2)?;
+    let multiplied_vec_lens: f64 = calc_vec_len_as_square_root_of_sum_of_squared_coords(vec1)
+        * calc_vec_len_as_square_root_of_sum_of_squared_coords(vec2);
     if multiplied_vec_lens == 0.0 {
         return Err("у нулевого вектора нет направления");
     }

@@ -19,20 +19,15 @@ fn main() {
         "масштабы должны быть положительными"
     );
 
-    let first_example: [f64; 2] = [1.0, 1000.0];
-    let scaled_first_example: [f64; 2] = [first_example[0] / scale[0], first_example[1] / scale[1]];
-    let second_example: [f64; 2] = [2.0, 1010.0];
-    let scaled_second_example: [f64; 2] =
-        [second_example[0] / scale[0], second_example[1] / scale[1]];
+    let example1: [f64; 2] = [1.0, 1000.0];
+    let scaled_example1: [f64; 2] = [example1[0] / scale[0], example1[1] / scale[1]];
+    let example2: [f64; 2] = [2.0, 1010.0];
+    let scaled_example2: [f64; 2] = [example2[0] / scale[0], example2[1] / scale[1]];
 
     // Выполняем вычисления из примера.
     let _ = (
-        calc_squared_point_dist_by_summing_squared_coord_diffs(&first_example, &second_example)
+        calc_squared_point_dist_by_summing_squared_coord_diffs(&example1, &example2).unwrap(),
+        calc_squared_point_dist_by_summing_squared_coord_diffs(&scaled_example1, &scaled_example2)
             .unwrap(),
-        calc_squared_point_dist_by_summing_squared_coord_diffs(
-            &scaled_first_example,
-            &scaled_second_example,
-        )
-        .unwrap(),
     );
 }

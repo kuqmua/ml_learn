@@ -10,8 +10,8 @@ use lesson_float_comparison::check_f64_eq_1e_minus_12;
 /// Умножаем первое число на первое, второе на второе и так далее, затем складываем результаты.
 use l195_36_rotate_vec_coord_pair_by_token_position::rotate_vec_coord_pair_by_token_position;
 
-fn multiply_matching_coords_then_add_results(first_value: [f64; 2], second_value: [f64; 2]) -> f64 {
-    first_value[0] * second_value[0] + first_value[1] * second_value[1]
+fn multiply_matching_coords_then_add_results(value1: [f64; 2], value2: [f64; 2]) -> f64 {
+    value1[0] * value2[0] + value1[1] * value2[1]
 }
 fn main() {
     let query_vec: [f64; 2] = [1.0, 0.0];

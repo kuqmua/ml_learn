@@ -14,41 +14,27 @@ fn main() {
     ];
     for (
         description,
-        [
-            first_row_first_coef,
-            first_row_second_coef,
-            second_row_first_coef,
-            second_row_second_coef,
-        ],
-        [first_right_hand_side, second_right_hand_side],
+        [row1_coef1, row1_coef2, row2_coef1, row2_coef2],
+        [right_hand_side1, right_hand_side2],
     ) in cases
     {
-        let determinant: f64 = first_row_first_coef * second_row_second_coef
-            - first_row_second_coef * second_row_first_coef;
+        let determinant: f64 = row1_coef1 * row2_coef2 - row1_coef2 * row2_coef1;
         if determinant != 0.0 {
-            let _: f64 = (first_right_hand_side * second_row_second_coef
-                - first_row_second_coef * second_right_hand_side)
-                / determinant;
-            let _: f64 = (first_row_first_coef * second_right_hand_side
-                - first_right_hand_side * second_row_first_coef)
-                / determinant;
+            let _: f64 =
+                (right_hand_side1 * row2_coef2 - row1_coef2 * right_hand_side2) / determinant;
+            let _: f64 =
+                (row1_coef1 * right_hand_side2 - right_hand_side1 * row2_coef1) / determinant;
         } else {
-            let first_replaced: f64 = first_right_hand_side * second_row_second_coef
-                - first_row_second_coef * second_right_hand_side;
-            let second_replaced: f64 = first_row_first_coef * second_right_hand_side
-                - first_right_hand_side * second_row_first_coef;
-            let impossible_zero_row: bool = (first_row_first_coef == 0.0
-                && first_row_second_coef == 0.0
-                && first_right_hand_side != 0.0)
-                || (second_row_first_coef == 0.0
-                    && second_row_second_coef == 0.0
-                    && second_right_hand_side != 0.0);
-            let actual: &str =
-                if first_replaced == 0.0 && second_replaced == 0.0 && !impossible_zero_row {
-                    "бесконечно много решений"
-                } else {
-                    "решений нет"
-                };
+            let replaced1: f64 = right_hand_side1 * row2_coef2 - row1_coef2 * right_hand_side2;
+            let replaced2: f64 = row1_coef1 * right_hand_side2 - right_hand_side1 * row2_coef1;
+            let impossible_zero_row: bool =
+                (row1_coef1 == 0.0 && row1_coef2 == 0.0 && right_hand_side1 != 0.0)
+                    || (row2_coef1 == 0.0 && row2_coef2 == 0.0 && right_hand_side2 != 0.0);
+            let actual: &str = if replaced1 == 0.0 && replaced2 == 0.0 && !impossible_zero_row {
+                "бесконечно много решений"
+            } else {
+                "решений нет"
+            };
             assert_eq!(actual, description);
         }
     }

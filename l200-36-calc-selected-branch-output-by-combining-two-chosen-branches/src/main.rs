@@ -12,9 +12,7 @@ fn main() {
     let input: [f64; 2] = [0.8, 0.2];
     let scores: [f64; 4] = [input[0], input[1], -input[0], -input[1]];
     let mut order: [usize; 4] = [0, 1, 2, 3];
-    order.sort_by(|&first_candidate, &second_candidate| {
-        scores[second_candidate].total_cmp(&scores[first_candidate])
-    });
+    order.sort_by(|&candidate1, &candidate2| scores[candidate2].total_cmp(&scores[candidate1]));
     let selected: [usize; 2] = [order[0], order[1]];
     let expert_gain: [f64; 4] = [1.0, 2.0, -1.0, 0.5];
     let _: f64 = selected

@@ -13,9 +13,7 @@
 
 fn main() {
     let mut ranked: [(&str, f64); 3] = [("doc-a", 0.8), ("doc-b", 0.3), ("doc-c", 0.9)];
-    ranked.sort_by(|first_candidate, second_candidate| {
-        second_candidate.1.total_cmp(&first_candidate.1)
-    });
+    ranked.sort_by(|candidate1, candidate2| candidate2.1.total_cmp(&candidate1.1));
     let highest_ranked_items: &[(&str, f64)] = &ranked[..2];
 
     // Выполняем вычисления из примера.

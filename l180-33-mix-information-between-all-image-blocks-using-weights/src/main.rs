@@ -35,12 +35,12 @@ fn main() {
             .collect::<Vec<_>>()
             .try_into()
             .expect("ожидалось четыре патча 1×1 из изображения 2×2");
-    let first_patch_representation: [f64; 2] = image_patch_representations[0];
+    let patch1_representation: [f64; 2] = image_patch_representations[0];
     let weights: [f64; 4] =
         calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum(
             &std::array::from_fn::<f64, 4, _>(|index| {
                 let key = image_patch_representations[index];
-                first_patch_representation[0] * key[0] + first_patch_representation[1] * key[1]
+                patch1_representation[0] * key[0] + patch1_representation[1] * key[1]
             }),
         );
     assert!(weights[3] > 0.0);

@@ -35,7 +35,7 @@ pub fn encode_categories_as_average_previous_targets_with_prior_weight<const N: 
 mod tests {
     #[test]
     fn current_target_cannot_enter_own_encoding() {
-        let first_encoding: [f64; 2] =
+        let encoding1: [f64; 2] =
             super::encode_categories_as_average_previous_targets_with_prior_weight(
                 &["a", "a"],
                 &[0.0, 1.0],
@@ -43,10 +43,10 @@ mod tests {
                 1.0,
             )
             .unwrap();
-        assert_eq!(first_encoding[0], 0.5);
-        assert_eq!(first_encoding[1], 0.25);
+        assert_eq!(encoding1[0], 0.5);
+        assert_eq!(encoding1[1], 0.25);
         assert_eq!(
-            first_encoding[1],
+            encoding1[1],
             super::encode_categories_as_average_previous_targets_with_prior_weight(
                 &["a", "a"],
                 &[0.0, 0.0],

@@ -21,9 +21,8 @@ fn main() {
         summed_rates_of_change += 2.0 * (weight * feature - target) * feature;
     }
     let batch_loss_rate_of_change: f64 = summed_rates_of_change / data.len() as f64;
-    let (first_feature, first_target): (f64, f64) = data[0];
-    let single_example_loss_rate_of_change: f64 =
-        2.0 * (weight * first_feature - first_target) * first_feature;
+    let (feature1, target1): (f64, f64) = data[0];
+    let single_example_loss_rate_of_change: f64 = 2.0 * (weight * feature1 - target1) * feature1;
 
     // Выполняем вычисления из примера.
     let _ = (

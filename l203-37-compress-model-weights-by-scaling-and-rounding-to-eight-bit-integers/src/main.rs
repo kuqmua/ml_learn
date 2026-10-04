@@ -26,7 +26,7 @@ fn main() {
                             * weight_value_per_integer_step_setting_rounding_error_bound
                     )
             )
-            .map(|(first_value, second_value)| (first_value - second_value).abs())
+            .map(|(value1, value2)| (value1 - value2).abs())
             .fold(0.0, f64::max)
             <= weight_value_per_integer_step_setting_rounding_error_bound / 2.0 + 1e-12
     );
