@@ -1,11 +1,6 @@
-// Урок 25.1. Обновление памяти по взвешенному входу и предыдущему состоянию.
-// Зачем здесь эта тема: Последовательность требует памяти о предыдущих входах; обычный слой
-//   обрабатывает элементы независимо.
-// Почему код устроен так: Обновляем одно скрытое состояние по очереди, чтобы прошлые элементы
-//   влияли на текущий выход.
-// Представь: После входов A и B состояние сети отличается от состояния после одного B: прошлое
-//   сохраняется.
-// Состояние переносит информацию от предыдущих элементов последовательности.
+// Урок 138. Обновлять состояние последовательности по текущему входу и предыдущему состоянию.
+// На одном импульсе и следующих нулях прослеживаем, как информация о прошлом сохраняется и
+// ослабевает.
 
 use l138_25_calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state::calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state;
 
@@ -19,6 +14,19 @@ fn main() {
         ),
     )
     .expect("ожидалось по одному состоянию на каждый входной шаг"),);
+
+    let input = [1.0, 0.0, 0.0, 0.0];
+    let remembered =
+        calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
+            &input, 0.8, 0.7,
+        );
+    let forgotten =
+        calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state(
+            &input, 0.8, 0.0,
+        );
+    println!("Вход={input:?}; с прошлым={remembered:?}; без прошлого={forgotten:?}");
+    assert!(remembered[1] > 0.0);
+    assert_eq!(forgotten[1], 0.0);
 }
 
 // Чему учит этот урок:

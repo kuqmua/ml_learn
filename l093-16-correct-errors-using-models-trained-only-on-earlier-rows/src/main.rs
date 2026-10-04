@@ -21,6 +21,28 @@ fn main() {
         })[0],
         -0.5
     );
+
+    fn errors_from_past(targets: &[f64]) -> Vec<f64> {
+        let mut sum = 0.0;
+        targets
+            .iter()
+            .enumerate()
+            .map(|(i, &target)| {
+                let prediction = (sum + 0.5) / (i + 1) as f64;
+                let error = prediction - target;
+                sum += target;
+                error
+            })
+            .collect()
+    }
+    let original = errors_from_past(&targets);
+    let mut changed = targets;
+    changed[3] = 0.0;
+    let after = errors_from_past(&changed);
+    println!("Ошибки по прошлым ответам={original:?}; после изменения последней метки={after:?}");
+    assert_eq!(original[..3], after[..3]);
+    assert_ne!(original[3], after[3]);
+    println!("Будущий ответ не изменил прошлые оценки.");
 }
 
 // Чему учит этот урок:

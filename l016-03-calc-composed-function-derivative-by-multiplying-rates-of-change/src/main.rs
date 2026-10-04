@@ -5,14 +5,31 @@
 // При x=3 получаем 2*14 = 28.
 
 fn main() {
-    let input_value: f64 = 3.0;
-    let inner: f64 = 2.0 * input_value + 1.0;
-    let outer_derivative: f64 = 2.0 * inner;
-    let inner_derivative: f64 = 2.0;
-    let _composed_function_slope_as_output_change_per_original_input_change: f64 =
-        outer_derivative * inner_derivative;
+    let x: f64 = 3.0;
+    let step: f64 = 0.001;
+    let inner = 2.0 * x + 1.0;
+    let output = inner * inner;
+    let next_inner = 2.0 * (x + step) + 1.0;
+    let next_output = next_inner * next_inner;
+    let inner_derivative = 2.0;
+    let outer_derivative = 2.0 * inner;
+    let derivative = outer_derivative * inner_derivative;
+    println!("x={x} -> 2*x+1={inner} -> квадрат={output}");
+    println!(
+        "x={} -> 2*x+1={next_inner} -> квадрат={next_output}",
+        x + step
+    );
+    println!("Скорости шагов: {inner_derivative} и {outer_derivative}; общая={derivative}");
+    let actual_change = next_output - output;
+    println!(
+        "Изменение={actual_change:.6}; предсказание={:.6}",
+        derivative * step
+    );
+    assert!((actual_change - derivative * step).abs() < 5e-6);
+    // Если забыть внутренний множитель 2, оценка будет примерно вдвое меньше.
+    assert!((actual_change - outer_derivative * step).abs() > 0.01);
 }
 
 // Чему учит этот урок:
-// Учимся находить скорость изменения вычисления, состоящего из нескольких последовательных шагов.
-// Перемножаем скорости внутреннего и внешнего шагов, чтобы получить влияние исходного входа.
+// Учимся прослеживать изменение через два последовательных вычисления.
+// Проверяем произведение производных шагов и видим ошибку, если забыть влияние внутреннего шага.

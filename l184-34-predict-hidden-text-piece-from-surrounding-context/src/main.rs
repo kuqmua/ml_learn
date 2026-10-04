@@ -1,11 +1,5 @@
-// Урок 34.3. Прогноз скрытой части текста по окружающему контексту.
-// Зачем здесь эта тема: Двунаправленный encoder можно обучать восстанавливать скрытый токен по
-//   обоим соседним контекстам.
-// Почему код устроен так: Скрываем одну позицию и проверяем прогноз без доступа к её исходному
-//   значению.
-// Представь: В «кошка [MASK] молоко» encoder использует слова с обеих сторон, чтобы угадать
-//   пропуск.
-// Цель содержит только скрытые позиции, а encoder видит левый и правый контекст.
+// Урок 184. Скрывать токен, вычислять окружающий контекст и оценивать вероятность исходного токена.
+// Получаем ошибку восстановления скрытого элемента — основу задачи обучения по пропускам в тексте.
 
 use l182_34_calc_visible_context_by_summing_states_weighted_by_exponentiated_coord_scores::calc_visible_context_by_summing_states_weighted_by_exponentiated_coord_scores;
 
@@ -41,6 +35,13 @@ fn main() {
     let neg_log_hidden_token_probability: f64 =
         logarithm_of_sum_of_exponentials - raw_model_scores[hidden_text_unit_identifier];
     assert!(neg_log_hidden_token_probability.is_finite());
+
+    let probability = (-neg_log_hidden_token_probability).exp();
+    println!(
+        "Скрытый токен={hidden_text_unit_identifier}; контекст={:?}; оценки={raw_model_scores:?}; вероятность правильного={probability:.4}; ошибка={neg_log_hidden_token_probability:.4}",
+        context[1]
+    );
+    assert!(probability > 0.0 && probability < 1.0);
 }
 
 // Чему учит этот урок:

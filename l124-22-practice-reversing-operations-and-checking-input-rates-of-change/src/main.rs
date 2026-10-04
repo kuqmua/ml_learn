@@ -1,102 +1,59 @@
-// Урок 22.5. Практика: обратный проход по операциям и проверка влияния входов на результат.
-// Зачем здесь эта тема: Матричный обратный режим имеет смысл только вместе с проверкой формы и
-//   численной проверкой градиента.
-// Почему код устроен так: Проводим один малый вычислительный граф вперёд и назад и сравниваем
-//   производные.
-// Представь: Одно и то же выражение считаем вперёд как число и назад как градиенты входов.
-//
-// Что повторяем вместе: reverse mode, тензорные формы, broadcasting, проверка градиента.
-// Зачем это нужно: Автоматическое дифференцирование вычисляет градиенты составных операций, повторно
-//   применяя локальные правила производных.
-// Что показывает программа: Задаём две малые матрицы, результат умножения можно проверить вручную.
-//   Вычисляем производные суммы элементов результата по обеим матрицам. Выводим loss и обе матрицы
-//   градиентов.
-// Что проверить при изменении примера: Проверь градиенты численно на случайных малых входах и ошибку
-//   несовместимых форм.
-// Дополнительная практика: Добавь в список вычислений действия над отдельными числами или списками: поэлементное умножение и умножение таблиц.
-
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
+// Урок 124. Считать производные суммы элементов произведения матриц по обеим входным матрицам.
+// Меняем каждый входной элемент на малую величину и проверяем все полученные производные численно.
 
 fn main() {
-    // Здесь матрицы остаются динамическими: ниже упражнение проверяет совместимость их форм.
-    let left_matrix: Vec<Vec<f64>> = vec![vec![1.0, 2.0]];
-    let right_matrix: Vec<Vec<f64>> = vec![vec![3.0], vec![4.0]];
-
-    let (left_input_rates_of_change, right_input_rates_of_change): (Vec<Vec<f64>>, Vec<Vec<f64>>) =
-        (|| -> (Vec<Vec<f64>>, Vec<Vec<f64>>) {
-            let left_matrix: &[Vec<f64>] = &left_matrix;
-            let right_matrix: &[Vec<f64>] = &right_matrix;
-            let mut left_input_rates_of_change: Vec<Vec<f64>> =
-                vec![vec![0.0; right_matrix.len()]; left_matrix.len()];
-            let mut right_input_rates_of_change: Vec<Vec<f64>> =
-                vec![vec![0.0; right_matrix[0].len()]; right_matrix.len()];
-            for row_index in 0..left_matrix.len() {
-                for shared_index in 0..right_matrix.len() {
-                    for column_index in 0..right_matrix[0].len() {
-                        left_input_rates_of_change[row_index][shared_index] +=
-                            right_matrix[shared_index][column_index];
-                    }
+    fn sum_of_product(left: &[Vec<f64>], right: &[Vec<f64>]) -> f64 {
+        assert!(!left.is_empty() && !right.is_empty());
+        assert!(left.iter().all(|row| row.len() == right.len()));
+        let columns = right[0].len();
+        assert!(right.iter().all(|row| row.len() == columns));
+        let mut sum = 0.0;
+        for row in left {
+            for column in 0..columns {
+                for shared in 0..right.len() {
+                    sum += row[shared] * right[shared][column];
                 }
             }
-            for shared_index in 0..right_matrix.len() {
-                for column_index in 0..right_matrix[0].len() {
-                    for row_index in 0..left_matrix.len() {
-                        right_input_rates_of_change[shared_index][column_index] +=
-                            left_matrix[row_index][shared_index];
-                    }
-                }
-            }
-            (left_input_rates_of_change, right_input_rates_of_change)
-        })();
-
-    let _ = &((|| -> f64 {
-        let left_matrix: &[Vec<f64>] = &left_matrix;
-
-        let right_matrix: &[Vec<f64>] = &right_matrix;
-
-        (|| -> Result<Vec<Vec<f64>>, &'static str> {
-            let left_matrix: &[Vec<f64>] = left_matrix;
-
-            let right_matrix: &[Vec<f64>] = right_matrix;
-
-            if left_matrix.is_empty()
-                || right_matrix.is_empty()
-                || left_matrix
-                    .iter()
-                    .any(|row| row.len() != right_matrix.len())
-                || right_matrix
-                    .iter()
-                    .any(|row| row.len() != right_matrix[0].len())
-            {
-                return Err("несовместимые формы");
-            }
-
-            let mut matrix_multiplication_output: Vec<Vec<f64>> =
-                vec![vec![0.0; right_matrix[0].len()]; left_matrix.len()];
-
-            for row_index in 0..left_matrix.len() {
-                for column_index in 0..right_matrix[0].len() {
-                    for shared_index in 0..right_matrix.len() {
-                        matrix_multiplication_output[row_index][column_index] += left_matrix
-                            [row_index][shared_index]
-                            * right_matrix[shared_index][column_index];
-                    }
-                }
-            }
-
-            Ok(matrix_multiplication_output)
-        })()
-        .unwrap()
-        .into_iter()
-        .flatten()
-        .sum::<f64>()
-    })());
-
-    // Выполняем вычисления из примера.
-    let _ = (left_input_rates_of_change, right_input_rates_of_change);
+        }
+        sum
+    }
+    let left = vec![vec![1.0, 2.0], vec![3.0, 4.0]];
+    let right = vec![vec![5.0, 6.0], vec![7.0, 8.0]];
+    let h = 1e-5;
+    println!(
+        "Сумма всех элементов произведения={}",
+        sum_of_product(&left, &right)
+    );
+    for row in 0..left.len() {
+        for column in 0..left[0].len() {
+            let derivative = right[column].iter().sum::<f64>();
+            let mut plus = left.clone();
+            let mut minus = left.clone();
+            plus[row][column] += h;
+            minus[row][column] -= h;
+            let numerical =
+                (sum_of_product(&plus, &right) - sum_of_product(&minus, &right)) / (2.0 * h);
+            println!("Левый вход[{row}][{column}]: производная={derivative}, проверка={numerical}");
+            assert!((derivative - numerical).abs() < 1e-7);
+        }
+    }
+    for row in 0..right.len() {
+        for column in 0..right[0].len() {
+            let derivative = left.iter().map(|values| values[row]).sum::<f64>();
+            let mut plus = right.clone();
+            let mut minus = right.clone();
+            plus[row][column] += h;
+            minus[row][column] -= h;
+            let numerical =
+                (sum_of_product(&left, &plus) - sum_of_product(&left, &minus)) / (2.0 * h);
+            println!(
+                "Правый вход[{row}][{column}]: производная={derivative}, проверка={numerical}"
+            );
+            assert!((derivative - numerical).abs() < 1e-7);
+        }
+    }
 }
 
 // Чему учит этот урок:
-// Учимся считать влияние каждого элемента входных матриц на сумму элементов их произведения.
-// Получаем производные по обеим матрицам; численной проверки через малые изменения входа здесь
-// пока нет.
+// Учимся считать производные суммы элементов произведения матриц по обеим входным матрицам.
+// Меняем каждый входной элемент на малую величину и проверяем все полученные производные численно.

@@ -5,19 +5,23 @@
 // Слишком маленький step может ухудшить ответ из-за округления дробных чисел.
 
 fn main() {
-    let input_value: f64 = 3.0;
-    let step: f64 = 0.0001;
-    let value_after_adding_step: f64 = (input_value + step) * (input_value + step);
-    let value_after_subtracting_step: f64 = (input_value - step) * (input_value - step);
-    let _estimated_derivative_as_local_output_change_per_input_change: f64 =
-        (value_after_adding_step - value_after_subtracting_step) / (2.0 * step);
-    let analytical_derivative: f64 = 2.0 * input_value;
-
-    // Выполняем вычисления из примера.
-    let _ = (input_value, analytical_derivative);
+    let x: f64 = 3.0;
+    for step in [0.1_f64, 0.0001, 1e-20] {
+        let right_value = (x + step) * (x + step);
+        let left_value = (x - step) * (x - step);
+        let estimate = (right_value - left_value) / (2.0 * step);
+        println!("Шаг={step:e}: f(x+h)={right_value}, f(x-h)={left_value}, оценка={estimate}");
+        if step >= 0.0001 {
+            assert!((estimate - 2.0 * x).abs() < 1e-8);
+        } else {
+            // Такой шаг f64 уже не отличает от нуля при сложении с 3.
+            assert_eq!(x + step, x);
+            assert_eq!(estimate, 0.0);
+            println!("Слишком маленький шаг потерялся при округлении: производная 6, оценка 0.");
+        }
+    }
 }
 
 // Чему учит этот урок:
-// Учимся оценивать производную по двум близким значениям функции.
-// Этот способ позволяет проверять формулу производной, когда известны только входы и результаты
-// вычисления.
+// Учимся оценивать производную по соседним значениям и проверять её по известной формуле.
+// На слишком малом шаге видим потерю изменения при округлении f64: меньший шаг не всегда точнее.

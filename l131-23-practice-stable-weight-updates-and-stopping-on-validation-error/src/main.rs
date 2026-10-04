@@ -1,70 +1,58 @@
-// Урок 23.7. Практика: устойчивое обновление весов и остановка по ошибке на проверочных данных.
-// Зачем здесь эта тема: Устойчивое обучение требует совместить масштабирование, оптимизатор и
-//   критерий остановки.
-// Почему код устроен так: Сравниваем SGD, momentum и Adam на одной задаче при одинаковой проверке.
-// Представь: Сравниваем несколько правил обновления на одинаковой ошибке, чтобы выбрать устойчивый
-//   ход обучения.
-//
-// Что повторяем вместе: SGD, momentum, Adam, нормализация, clipping, early stopping.
-// Зачем это нужно: Momentum, ограничение градиента и ранняя остановка влияют на устойчивость и итоговую
-//   ошибку обучения.
-// Что показывает программа: Запускаем один и тот же эксперимент без импульса и с импульсом. Для каждого
-//   запуска сохраняем лучшую ошибку на validation и эпоху.
-// Что проверить при изменении примера: Сравни на одном split и одинаковой инициализации; выбери эпоху по
-//   validation loss.
-// Дополнительная практика: Добавь два оптимизатора и контроль нормы градиента к MLP.
-
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
+// Урок 131. Соединять инерцию, ограничение производной и остановку по отдельной проверочной выборке.
+// Сохраняем лучший вес по проверочной ошибке, чтобы не возвращать автоматически вес последнего
+// шага.
 
 fn main() {
-    let mut results: Vec<(f64, f64)> = Vec::new();
-    for past_update_share_kept_in_next_step in [0.0, 0.8] {
-        let (loss, _epoch): (f64, usize) = (|| -> (f64, usize) {
-            let past_update_share_kept_in_next_step: f64 = past_update_share_kept_in_next_step;
-            let (mut weight, mut velocity): (f64, f64) = (8.0, 0.0);
-            let (mut best, mut best_epoch): (f64, usize) = (f64::INFINITY, 0);
-            for epoch in 0..100 {
-                velocity = past_update_share_kept_in_next_step * velocity
-                    + (|| -> f64 {
-                        let value: f64 = (|| -> f64 {
-                            let weight: f64 = weight;
-                            2.0 * (weight - 3.0)
-                        })();
-                        let minimum: f64 = -1.0;
-                        let choose_larger_number: f64 = 1.0;
-                        if value < minimum {
-                            minimum
-                        } else if value > choose_larger_number {
-                            choose_larger_number
-                        } else {
-                            value
-                        }
-                    })();
-                weight -= 0.1 * velocity;
-                let validation: f64 = (|| -> f64 {
-                    let value: f64 = weight - 3.0;
-                    value * value
-                })();
-                if validation < best {
-                    best = validation;
-                    best_epoch = epoch;
-                }
-                if epoch - best_epoch > 12 {
-                    break;
-                }
+    // Два отдельных набора: подбираем вес по training, останавливаем по validation.
+    let training = [(1.0_f64, 3.0_f64)];
+    let validation = [(1.0_f64, 2.5_f64)];
+    let error = |weight: f64, rows: &[(f64, f64)]| {
+        rows.iter()
+            .map(|(x, y)| (weight * x - y).powi(2))
+            .sum::<f64>()
+            / rows.len() as f64
+    };
+    for momentum in [0.0, 0.8] {
+        let mut weight = 8.0;
+        let mut velocity = 0.0;
+        let mut best_weight = weight;
+        let mut best_loss = error(weight, &validation);
+        let mut stale = 0;
+        for epoch in 0..200 {
+            let slope = training
+                .iter()
+                .map(|(x, y)| 2.0 * (weight * x - y) * x)
+                .sum::<f64>()
+                / training.len() as f64;
+            let clipped = slope.clamp(-1.0, 1.0);
+            velocity = momentum * velocity + clipped;
+            weight -= 0.1 * velocity;
+            let validation_error = error(weight, &validation);
+            if validation_error < best_loss {
+                best_loss = validation_error;
+                best_weight = weight;
+                stale = 0;
+            } else {
+                stale += 1;
             }
-            (best, best_epoch)
-        })();
-
-        results.push((past_update_share_kept_in_next_step, loss));
+            if epoch % 10 == 0 {
+                println!(
+                    "Инерция={momentum}, шаг={epoch}: вес={weight:.4}, ошибка обучения={:.4}, проверки={validation_error:.4}",
+                    error(weight, &training)
+                );
+            }
+            if stale >= 12 {
+                println!("Остановка после 12 шагов без улучшения проверки");
+                break;
+            }
+        }
+        println!("Возвращаем лучший вес={best_weight}, ошибка проверки={best_loss}");
+        assert!(best_loss < error(8.0, &validation));
+        assert!(best_loss <= error(weight, &validation));
     }
-
-    // Выполняем вычисления из примера.
-    let _ = results;
 }
 
 // Чему учит этот урок:
-// Учимся объединять инерцию обновлений, ограничение производной и остановку после отсутствия
-// улучшений.
-// Здесь критерий назван проверочным, но вычисляется по той же простой функции: отдельной
-// проверочной выборки нет.
+// Учимся соединять инерцию, ограничение производной и остановку по отдельной проверочной выборке.
+// Сохраняем лучший вес по проверочной ошибке, чтобы не возвращать автоматически вес последнего
+// шага.

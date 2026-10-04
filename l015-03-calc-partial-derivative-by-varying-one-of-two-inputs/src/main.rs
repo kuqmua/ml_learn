@@ -4,13 +4,30 @@
 // Так можно узнать, какой вход и насколько влияет на ответ рядом с выбранной точкой.
 
 fn main() {
-    let (input_value, input2_value): (f64, f64) = (2.0, -1.0);
-    let _partial_derivative_as_output_change_per_input1_change_with_input2_fixed: f64 =
-        2.0 * input_value;
-    let _partial_derivative_as_output_change_per_input2_change_with_input1_fixed: f64 =
-        6.0 * input2_value;
+    let x: f64 = 2.0;
+    let y: f64 = -1.0;
+    let value = x * x + 3.0 * y * y;
+    let step = 0.001;
+    let x_derivative = 2.0 * x;
+    let y_derivative = 6.0 * y;
+    let change_when_only_x_moves = (x + step) * (x + step) + 3.0 * y * y - value;
+    let change_when_only_y_moves = x * x + 3.0 * (y + step) * (y + step) - value;
+    println!("f(x,y)=x*x+3*y*y; x={x}, y={y}, результат={value}");
+    println!(
+        "Меняем только x на {step}: изменение={change_when_only_x_moves:.6}, оценка={:.6}",
+        x_derivative * step
+    );
+    println!(
+        "Меняем только y на {step}: изменение={change_when_only_y_moves:.6}, оценка={:.6}",
+        y_derivative * step
+    );
+    assert!(change_when_only_x_moves > 0.0);
+    assert!(change_when_only_y_moves < 0.0);
+    assert!((change_when_only_x_moves - x_derivative * step).abs() < 2e-6);
+    assert!((change_when_only_y_moves - y_derivative * step).abs() < 4e-6);
 }
 
 // Чему учит этот урок:
-// Учимся отдельно оценивать влияние каждого из двух входов, удерживая другой неизменным.
-// Такие частные производные помогают понять, какой параметр и в какую сторону менять.
+// Учимся менять один вход при неизменном втором и сравнивать реальное изменение с оценкой по
+// частной производной.
+// На числах видим, почему увеличение одного входа повышает ответ, а другого — понижает.

@@ -1,7 +1,6 @@
-// Урок 155. Каждому слову уже сопоставлен список чисел. Сравниваем два таких списка:
-// умножаем числа на одинаковых местах и складываем результаты.
-// Большой положительный ответ может означать похожие направления, но зависит и от длин списков-стрелок.
-// Для сравнения только направлений нужно дополнительно разделить ответ на обе длины.
+// Урок 155. Сравнивать заданные представления слов суммой произведений координат.
+// Результат зависит и от направлений, и от длин векторов; смысловое сходство определяется
+// качеством самих представлений.
 
 use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_then_add_results;
 
@@ -12,7 +11,14 @@ fn main() {
         .expect("представления должны иметь одинаковое число координат");
 
     // Выполняем вычисления из примера.
-    let _ = (word_vec1, word_vec2);
+    let _ = (&word_vec1, &word_vec2);
+
+    let same = multiply_matching_coords_then_add_results(&word_vec1, &word_vec1).unwrap();
+    let opposite =
+        multiply_matching_coords_then_add_results(&word_vec1, &word_vec1.map(|x| -x)).unwrap();
+    let similar = multiply_matching_coords_then_add_results(&word_vec1, &word_vec2).unwrap();
+    println!("С собой={same}, с похожим вектором={similar}, с противоположным={opposite}");
+    assert!(similar > 0.0 && opposite < 0.0);
 }
 
 // Чему учит этот урок:

@@ -6,10 +6,22 @@
 // Такой список скоростей изменения обычно называют градиентом.
 
 fn main() {
-    let (input_value, input2_value): (f64, f64) = (0.0, 0.0);
-    let _gradient: [f64; 2] = [2.0 * (input_value - 2.0), 6.0 * (input2_value + 1.0)];
+    let loss = |x: f64, y: f64| (x - 2.0).powi(2) + 3.0 * (y + 1.0).powi(2);
+    let (x, y) = (0.0, 0.0);
+    let gradient = [2.0 * (x - 2.0), 6.0 * (y + 1.0)];
+    let rate = 0.1;
+    let next_x = x - rate * gradient[0];
+    let next_y = y - rate * gradient[1];
+    println!("Ошибка=(x-2)^2+3*(y+1)^2; градиент={gradient:?}");
+    println!("Параметры: [{x}, {y}] -> [{next_x}, {next_y}]");
+    println!("Ошибка: {} -> {}", loss(x, y), loss(next_x, next_y));
+    assert!(next_x > x && next_y < y);
+    assert!(loss(next_x, next_y) < loss(x, y));
+    let wrong_direction_loss = loss(x + rate * gradient[0], y + rate * gradient[1]);
+    assert!(wrong_direction_loss > loss(x, y));
+    println!("Шаг по градиенту вместо шага против него увеличил ошибку до {wrong_direction_loss}");
 }
 
 // Чему учит этот урок:
-// Учимся собирать скорости изменения по каждому входу в один список — градиент.
-// Если вычисляем ошибку, этот список подсказывает направление небольшого шага для её уменьшения.
+// Учимся применять градиент для изменения нескольких параметров и проверять уменьшение ошибки.
+// Сравниваем шаг против градиента с шагом в противоположную сторону.

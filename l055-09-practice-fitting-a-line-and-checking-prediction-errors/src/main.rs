@@ -1,7 +1,6 @@
-// Урок 055. Подбираем вес и постоянную прибавку в формуле «вход × вес + прибавка».
-// Меняем их небольшими шагами так, чтобы прогнозы приближались к известным ответам.
-// После обучения считаем ошибки на примерах, которые не использовали для подбора весов.
-// Сравниваем с простым способом: всегда выдавать средний ответ обучающих примеров.
+// Урок 055. Многократно обновлять вес и постоянную прибавку по средней производной ошибки.
+// Считаем ошибку на отдельных примерах и ошибку постоянного прогноза, получая основу для сравнения
+// моделей.
 
 use l050_09_calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count::calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count;
 
@@ -61,7 +60,25 @@ fn main() {
     .unwrap();
 
     // Выполняем вычисления из примера.
-    let _ = (weight, constant_input_weight, test);
+    let _ = (&weight, &constant_input_weight, &test);
+
+    let predictions = test.map(|(x, _)| weight * x + constant_input_weight);
+    let model_error = calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+        &targets,
+        &predictions,
+    )
+    .unwrap();
+    let baseline_error = calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+        &targets,
+        &baseline_predictions,
+    )
+    .unwrap();
+    println!("Выученные параметры: вес={weight:.6}, прибавка={constant_input_weight:.6}");
+    println!(
+        "Тест: прогнозы={predictions:?}, ошибка={model_error:.6}; постоянный ответ: ошибка={baseline_error}"
+    );
+    assert!(model_error < baseline_error);
+    assert!(model_error < 1e-6);
 }
 
 // Чему учит этот урок:

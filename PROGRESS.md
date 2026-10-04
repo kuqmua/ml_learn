@@ -19,7 +19,7 @@
 - [x] [010 · Умножение матрицы на вектор: умножение соответствующих координат строки и вектора с последующим сложением](l010-02-multiply-matrix-and-vec-by-adding-multiplied-row-coords/)
 - [x] [011 · Умножение двух матриц: умножение соответствующих элементов строк и столбцов с последующим сложением](l011-02-multiply-matrices-by-adding-multiplied-row-and-column-values/)
 - [x] [012 · Поиск двух неизвестных, удовлетворяющих двум линейным уравнениям](l012-02-solve-system-of-two-linear-equations/)
-- [ ] [013 · Практика: размеры матриц, перестановка строк в столбцы, умножение и решение уравнений](l013-02-practice-matrix-shapes-row-column-swaps-and-equation-solving/)
+- [x] [013 · Практика: размеры матриц, перестановка строк в столбцы, умножение и решение уравнений](l013-02-practice-matrix-shapes-row-column-swaps-and-equation-solving/)
 
 ## 03. Производные и градиент
 

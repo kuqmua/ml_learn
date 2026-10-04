@@ -1,26 +1,19 @@
-// Урок 20.3. Полное влияние входа: сложение вкладов всех путей к результату.
-// Зачем здесь эта тема: Один параметр может влиять на результат несколькими путями графа.
-// Почему код устроен так: Складываем вклады всех путей, иначе производная общего входа будет
-//   неполной.
-// Представь: Если x используется в двух ветвях, обе ветви влияют на производную по x.
-//
-// Что изучаем: Накопление градиентов.
-// Зачем это нужно: Если один узел участвует в нескольких путях, градиенты этих путей складываются.
-
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
+// Урок 112. Складывать вклады всех путей, по которым один вход влияет на результат.
+// На умножении x на самого себя учитываем оба появления x, поэтому производная равна 2*x.
 
 fn main() {
-    let input_value: f64 = 3.0;
-    let left_path_rate_of_change: f64 = input_value;
-    let right_path_rate_of_change: f64 = input_value;
-    let combined_rate_of_change: f64 = left_path_rate_of_change + right_path_rate_of_change;
-
-    // Выполняем вычисления из примера.
-    let _ = (
-        left_path_rate_of_change,
-        right_path_rate_of_change,
-        combined_rate_of_change,
+    let x: f64 = 3.0;
+    let left_contribution = x;
+    let right_contribution = x;
+    let derivative = left_contribution + right_contribution;
+    let h = 0.001;
+    let numerical = ((x + h) * (x + h) - (x - h) * (x - h)) / (2.0 * h);
+    println!(
+        "В x*x вход используется дважды: вклад слева={left_contribution}, справа={right_contribution}, всего={derivative}"
     );
+    assert!((derivative - numerical).abs() < 1e-9);
+    assert!((left_contribution - numerical).abs() > 2.0);
+    println!("Если учесть только один путь, половина влияния потеряется.");
 }
 
 // Чему учит этот урок:

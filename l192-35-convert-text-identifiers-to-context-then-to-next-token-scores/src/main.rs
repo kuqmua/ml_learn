@@ -26,6 +26,15 @@ fn main() {
         convert_text_identifiers_to_context_then_to_next_token_scores(&[0])[0],
         raw_model_scores[0]
     );
+
+    let chosen = last
+        .iter()
+        .enumerate()
+        .max_by(|a, b| a.1.total_cmp(b.1))
+        .unwrap()
+        .0;
+    println!("Префикс={prefix:?}; оценки следующего токена={last:?}; выбран номер={chosen}");
+    assert!(last.iter().all(|&score| score <= last[chosen]));
 }
 
 // Чему учит этот урок:

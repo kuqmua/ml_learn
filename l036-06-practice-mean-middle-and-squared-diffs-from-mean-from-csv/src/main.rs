@@ -1,12 +1,5 @@
-// Урок 06.7. Практика: среднее, середина и квадраты отклонений для данных из CSV.
-// Зачем здесь эта тема: Статистики нужны для реальных строк данных, а не только для готового
-//   массива чисел.
-// Почему код устроен так: Читаем CSV, разбираем значения и проверяем сводки после загрузки.
-// Представь: В файле числа сначала представлены текстом; перед средним их нужно прочитать и
-//   проверить.
-//
-// Разбираем CSV и объединяем вычисления среднего и дисперсии из общей библиотеки.
-// Медиану находим после сортировки. Пустые строки пропускаем, неверное число сообщаем явно.
+// Урок 036. Превращать текстовый столбец чисел в данные для вычисления среднего, медианы и разброса.
+// Пропускаем пустые строки и указываем номер строки при ошибке преобразования в число.
 
 use l030_06_calc_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
 use l032_06_calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one::calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one;
@@ -43,6 +36,17 @@ fn main() {
         calc_mean_by_summing_values_and_dividing_by_count(&values).unwrap(),
         median,
     );
+
+    let mean = calc_mean_by_summing_values_and_dividing_by_count(&values).unwrap();
+    let variance =
+        calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one(&values)
+            .unwrap();
+    println!(
+        "Прочитано {} чисел: {values:?}; среднее={mean}, медиана={median}, разброс={variance}",
+        values.len()
+    );
+    assert_eq!(mean, 5.0);
+    assert_eq!(median, 5.0);
 }
 
 // Чему учит этот урок:

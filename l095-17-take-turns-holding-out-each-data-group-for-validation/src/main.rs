@@ -1,29 +1,19 @@
-// Урок 17.1. Поочерёдное выделение каждой группы данных для проверки модели.
-// Зачем здесь эта тема: Один train/validation split может дать случайно удачную оценку.
-// Почему код устроен так: По очереди делаем каждый блок проверочным и усредняем результаты.
-// Представь: При трёх блоках каждый один раз становится проверочным, а два других служат обучением.
-//
-// Что изучаем: K-fold кросс-валидация.
-// Зачем это нужно: Каждый блок данных один раз становится проверочным, пока остальные используются для
-// обучения.
-
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
+// Урок 095. По очереди выделять одну группу данных для проверки, а остальные — для обучения.
+// Так каждый объект может побывать проверочным, а оценка меньше зависит от одного разбиения.
 
 fn main() {
-    let rows: [i32; 6] = [0, 1, 2, 3, 4, 5];
-    let folds: i32 = 3;
-    for fold in 0..folds {
-        let _: Vec<i32> = rows
-            .iter()
-            .copied()
-            .filter(|&row| row % folds == fold)
-            .collect();
-        let _: Vec<i32> = rows
-            .iter()
-            .copied()
-            .filter(|&row| row % folds != fold)
-            .collect();
+    let rows = [0, 1, 2, 3, 4, 5];
+    let mut held_out_counts = [0; 6];
+    for fold in 0..3 {
+        let training: Vec<_> = rows.iter().copied().filter(|row| row % 3 != fold).collect();
+        let validation: Vec<_> = rows.iter().copied().filter(|row| row % 3 == fold).collect();
+        println!("Группа {fold}: обучение={training:?}, проверка={validation:?}");
+        for &row in &validation {
+            assert!(!training.contains(&row));
+            held_out_counts[row as usize] += 1;
+        }
     }
+    assert_eq!(held_out_counts, [1; 6]);
 }
 
 // Чему учит этот урок:

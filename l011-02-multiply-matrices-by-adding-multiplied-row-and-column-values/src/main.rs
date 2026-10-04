@@ -42,10 +42,18 @@ fn main() {
             }
         }
         assert_eq!(multiplied_matrix, expected);
+        println!("{_description}: результат={multiplied_matrix:?}");
     }
     let incompatible_left_shape: (i32, i32) = (2, 3);
     let incompatible_right_shape: (i32, i32) = (2, 2);
-    if incompatible_left_shape.1 != incompatible_right_shape.0 {}
+    assert_ne!(incompatible_left_shape.1, incompatible_right_shape.0);
+    println!(
+        "Матрицы {:?} и {:?} нельзя умножить: внутренние размеры {} и {} различаются",
+        incompatible_left_shape,
+        incompatible_right_shape,
+        incompatible_left_shape.1,
+        incompatible_right_shape.0
+    );
 }
 
 // Чему учит этот урок:

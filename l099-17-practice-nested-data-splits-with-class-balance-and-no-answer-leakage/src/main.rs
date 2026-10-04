@@ -1,130 +1,105 @@
-// Урок 17.5. Практика: вложенное разделение данных с сохранением долей классов и без подсказок из проверочных ответов.
-// Зачем здесь эта тема: Стратификация, подбор параметров и подготовка признаков должны соблюдаться
-//   на обоих уровнях проверки.
-// Почему код устроен так: Вкладываем весь конвейер во внутренний цикл и оставляем внешний блок
-//   нетронутым.
-// Представь: Для каждого внешнего проверочного блока заново выбираем настройки и учим
-//   преобразования на оставшихся данных.
-//
-// Что повторяем вместе: k-fold, стратификация, nested evaluation, утечка в preprocessing.
-// Зачем это нужно: Кросс-валидация использует несколько разбиений для выбора параметра, сохраняя test для
-//   итоговой оценки.
-// Что показывает программа: Задаём данные для выбора числа соседей. Сравниваем значения гиперпараметра на
-//   кросс-валидации. После выбора параметра один раз оцениваем качество на test.
-// Что проверить при изменении примера: Каждый объект ровно один раз попадает в validation; test
-//   используется один раз после выбора модели.
-// Дополнительная практика: Реализуй k-fold подбор одного гиперпараметра для модели из предыдущих уроков.
-
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
+// Урок 099. Выполнять вложенную проверку: внутри каждой внешней обучающей части заново выбирать
+// настройку.
+// Сохраняем доли классов, считаем подготовку только по текущему обучению и проверяем, что каждый
+// объект стал внешним проверочным ровно один раз.
 
 fn main() {
-    /// Метод ближайших соседей: сортируем обучающие значения по расстоянию и выбираем большинство среди заданного числа ближайших.
-    fn choose_majority_class_among_nearest_training_values(
-        training_examples: &[(f64, bool)],
-
-        feature_value: f64,
-
-        neighbor_count: usize,
-    ) -> bool {
-        assert!(
-            neighbor_count > 0 && neighbor_count <= training_examples.len(),
-            "число соседей должно быть от 1 до числа обучающих примеров"
-        );
-        let mut sorted_neighbors: Vec<(f64, bool)> = training_examples
-            .iter()
-            .map(|&(training_feature, target)| {
-                (
-                    (|| -> f64 {
-                        let value: f64 = training_feature - feature_value;
-                        if value < 0.0 { -value } else { value }
-                    })(),
-                    target,
-                )
-            })
-            .collect();
-        sorted_neighbors
-            .sort_by(|left_result, right_result| left_result.0.total_cmp(&right_result.0));
-        sorted_neighbors
-            .iter()
-            .take(neighbor_count)
-            .filter(|(_, target)| *target)
-            .count()
-            * 2
-            > neighbor_count
+    fn groups(data: &[(f64, bool)], count: usize) -> Vec<Vec<usize>> {
+        let mut result = vec![Vec::new(); count];
+        let mut seen = [0; 2];
+        for (index, &(_, class)) in data.iter().enumerate() {
+            let class = usize::from(class);
+            result[seen[class] % count].push(index);
+            seen[class] += 1;
+        }
+        result
     }
-
-    let training_examples: [(f64, bool); 9] = [
+    fn accuracy(training: &[(f64, bool)], validation: &[(f64, bool)], k: usize) -> f64 {
+        assert!(k > 0 && k <= training.len());
+        // Параметр подготовки считаем заново только по текущей обучающей части.
+        let mean = training.iter().map(|v| v.0).sum::<f64>() / training.len() as f64;
+        validation
+            .iter()
+            .filter(|&&(x, y)| {
+                let query = x - mean;
+                let mut neighbors: Vec<_> = training
+                    .iter()
+                    .map(|&(value, target)| ((value - mean - query).abs(), target))
+                    .collect();
+                neighbors.sort_by(|a, b| a.0.total_cmp(&b.0));
+                (neighbors[..k].iter().filter(|v| v.1).count() * 2 > k) == y
+            })
+            .count() as f64
+            / validation.len() as f64
+    }
+    let data = [
         (0.0, false),
         (1.0, false),
         (2.0, false),
-        (3.0, true),
-        (4.0, true),
-        (5.0, true),
-        (6.0, true),
-        (7.0, false),
-        (8.0, false),
+        (3.0, false),
+        (4.0, false),
+        (5.0, false),
+        (10.0, true),
+        (11.0, true),
+        (12.0, true),
+        (13.0, true),
+        (14.0, true),
+        (15.0, true),
     ];
-    let best: (usize, f64) = [1, 3, 5]
-        .into_iter()
-        .map(|neighbor_count| {
-            (
-                neighbor_count,
-                (|| -> f64 {
-                    let data: &[(f64, bool)] = &training_examples;
-                    let neighbor_count: usize = neighbor_count;
-                    let fold_count: usize = 3;
-                    assert!(
-                        data.len() >= fold_count,
-                        "для каждого блока нужен хотя бы один пример"
-                    );
-                    let mut correct_predictions: usize = 0;
-                    for fold in 0..fold_count {
-                        let training_examples: Vec<(f64, bool)> = data
-                            .iter()
-                            .enumerate()
-                            .filter(|(sample_index, _)| sample_index % fold_count != fold)
-                            .map(|(_, record)| *record)
-                            .collect();
-                        for (_, record) in data
-                            .iter()
-                            .enumerate()
-                            .filter(|(sample_index, _)| sample_index % fold_count == fold)
-                        {
-                            correct_predictions += usize::from(
-                                choose_majority_class_among_nearest_training_values(
-                                    &training_examples,
-                                    record.0,
-                                    neighbor_count,
-                                ) == record.1,
-                            );
-                        }
-                    }
-                    correct_predictions as f64 / data.len() as f64
-                })(),
-            )
-        })
-        .max_by(|left_result, right_result| left_result.1.total_cmp(&right_result.1))
-        .unwrap();
-    let test: [(f64, bool); 2] = [(2.5, false), (5.5, true)];
-    let correct_prediction_share: f64 = test
-        .iter()
-        .filter(|&&(feature_value, target)| {
-            choose_majority_class_among_nearest_training_values(
-                &training_examples,
-                feature_value,
-                best.0,
-            ) == target
-        })
-        .count() as f64
-        / test.len() as f64;
-    let _ = (&(best.0), &(best.1));
-
-    // Выполняем вычисления из примера.
-    let _ = (best, correct_prediction_share);
+    let mut checked = vec![0; data.len()];
+    let mut outer_scores = Vec::new();
+    for (fold, outer_indices) in groups(&data, 3).iter().enumerate() {
+        let outer_training: Vec<_> = data
+            .iter()
+            .enumerate()
+            .filter(|(i, _)| !outer_indices.contains(i))
+            .map(|(_, v)| *v)
+            .collect();
+        let outer_validation: Vec<_> = outer_indices
+            .iter()
+            .map(|&i| {
+                checked[i] += 1;
+                data[i]
+            })
+            .collect();
+        assert_eq!(outer_validation.iter().filter(|v| v.1).count(), 2);
+        let inner_groups = groups(&outer_training, 2);
+        let mut best = (1, -1.0);
+        for k in [1, 3] {
+            let mut sum = 0.0;
+            for inner_indices in &inner_groups {
+                let training: Vec<_> = outer_training
+                    .iter()
+                    .enumerate()
+                    .filter(|(i, _)| !inner_indices.contains(i))
+                    .map(|(_, v)| *v)
+                    .collect();
+                let validation: Vec<_> = inner_indices.iter().map(|&i| outer_training[i]).collect();
+                sum += accuracy(&training, &validation, k);
+            }
+            let score = sum / inner_groups.len() as f64;
+            println!("Внешняя группа {fold}: внутренняя оценка k={k}: {score}");
+            if score > best.1 {
+                best = (k, score);
+            }
+        }
+        let score = accuracy(&outer_training, &outer_validation, best.0);
+        outer_scores.push(score);
+        println!(
+            "Группа {fold}: выбрали k={}, проверили на неиспользованных при выборе данных: {score}",
+            best.0
+        );
+    }
+    assert!(checked.iter().all(|&n| n == 1));
+    assert!(outer_scores.iter().all(|&score| score == 1.0));
+    println!(
+        "Средняя внешняя точность={}",
+        outer_scores.iter().sum::<f64>() / outer_scores.len() as f64
+    );
 }
 
 // Чему учит этот урок:
-// Учимся выбирать число соседей по трём проверочным группам, затем оценивать выбранный вариант на
-// отдельном тесте.
-// Текущий пример использует одно разбиение на группы для выбора; полного вложенного перебора и
-// стратификации здесь нет.
+// Учимся выполнять вложенную проверку: внутри каждой внешней обучающей части заново выбирать
+// настройку.
+// Сохраняем доли классов, считаем подготовку только по текущему обучению и проверяем, что каждый
+// объект стал внешним проверочным ровно один раз.

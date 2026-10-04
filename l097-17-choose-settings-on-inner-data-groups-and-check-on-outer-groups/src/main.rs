@@ -1,49 +1,52 @@
-// Урок 17.3. Выбор настроек на внутренних группах данных и проверка на внешних.
-// Зачем здесь эта тема: Выбор параметров по тем же проверочным данным делает оценку оптимистичной.
-// Почему код устроен так: Внутренние блоки выбирают параметры, а внешние оценивают уже выбранный
-//   алгоритм.
-// Представь: Если выбрали лучший параметр по validation, тот же validation уже не даёт независимой
-//   оценки качества.
-//
-// Что изучаем: Вложенная оценка.
-// Зачем это нужно: Внутреннее разбиение выбирает гиперпараметр, а внешнее измеряет качество выбранной
-// процедуры на новых данных.
-
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
+// Урок 097. Вычислять внутренние оценки нескольких настроек, выбирать одну и проверять её на внешнем
+// наборе.
+// Внешние правильные ответы используются только после выбора числа соседей.
 
 fn main() {
-    let inner_scores: [(usize, f64); 3] = [(1, 0.70), (3, 0.85), (5, 0.80)];
-    assert!(
-        !inner_scores.is_empty(),
-        "для выбора k нужна хотя бы одна оценка"
-    );
-    let outer_truth: [bool; 4] = [true, false, true, false];
-    let outer_predictions: [bool; 4] = [true, false, false, false];
-    assert_eq!(
-        outer_truth.len(),
-        outer_predictions.len(),
-        "число прогнозов должно совпадать с числом ответов"
-    );
-    assert!(
-        !outer_truth.is_empty(),
-        "для внешней оценки нужен хотя бы один пример"
-    );
-
-    let _: f64 = (0..outer_truth.len())
-        .filter(|&index| outer_truth[index] == outer_predictions[index])
-        .count() as f64
-        / outer_truth.len() as f64;
-    let _ = inner_scores
+    fn predict(training: &[(f64, bool)], x: f64, k: usize) -> bool {
+        let mut neighbors = training.to_vec();
+        neighbors.sort_by(|a, b| (a.0 - x).abs().total_cmp(&(b.0 - x).abs()));
+        neighbors[..k].iter().filter(|v| v.1).count() * 2 > k
+    }
+    let training = [
+        (0.0, false),
+        (1.0, false),
+        (2.0, false),
+        (3.0, true),
+        (4.0, true),
+        (5.0, true),
+    ];
+    let inner_validation = [(0.5, false), (2.7, true), (4.5, true)];
+    let outer_test = [(0.2, false), (3.5, true)];
+    let mut best = (0, 0);
+    for k in [1, 3, 5] {
+        let correct = inner_validation
+            .iter()
+            .filter(|&&(x, y)| predict(&training, x, k) == y)
+            .count();
+        println!(
+            "Внутренняя проверка: k={k}, верных={correct}/{}",
+            inner_validation.len()
+        );
+        if best.0 == 0 || correct > best.1 {
+            best = (k, correct);
+        }
+    }
+    // Настройка уже выбрана. Только теперь используем внешние правильные ответы.
+    let correct = outer_test
         .iter()
-        .max_by(|candidate1, candidate2| candidate1.1.total_cmp(&candidate2.1))
-        .unwrap()
-        .0;
-
-    // Выполняем вычисления из примера.
-    let _ = inner_scores;
+        .filter(|&&(x, y)| predict(&training, x, best.0) == y)
+        .count();
+    println!(
+        "Выбрано k={}; внешняя проверка={correct}/{}",
+        best.0,
+        outer_test.len()
+    );
+    assert_eq!(best.0, 1);
+    assert_eq!(correct, 2);
 }
 
 // Чему учит этот урок:
-// Учимся разделять выбор настройки по внутренним оценкам и оценку готовых прогнозов на внешних
-// данных.
-// Здесь оценки и прогнозы заданы заранее: полного вложенного обучения код не проводит.
+// Учимся вычислять внутренние оценки нескольких настроек, выбирать одну и проверять её на внешнем
+// наборе.
+// Внешние правильные ответы используются только после выбора числа соседей.

@@ -1,80 +1,44 @@
-// Урок 24.6. Практика: перемещение фильтра по изображению, нулевые края и выбор локальных максимумов.
-// Зачем здесь эта тема: Сверточный блок определяется совместно ядром, шагом, дополнением и pooling.
-// Почему код устроен так: На маленькой картинке проверяем промежуточную и итоговую форму после
-//   каждого шага.
-// Представь: Чтобы предсказать размер выхода, нужно учитывать размер ядра, шаг и рамку ещё до
-//   pooling.
-//
-// Что повторяем вместе: ядро, stride, padding, pooling, локальные признаки.
-// Зачем это нужно: Свёртка ищет локальные шаблоны изображения, а pooling уменьшает пространственный размер
-//   карты признаков.
-// Что показывает программа: Создаём одноканальное изображение 3×3. Задаём ядро 2×2, реагирующее на
-//   локальную разницу значений. Проводим свёртку, затем уменьшаем карту признаков max pooling.
-// Что проверить при изменении примера: Сверь небольшой результат с ручным расчётом; проверь выходную форму
-//   для разных stride/padding.
-// Дополнительная практика: Реализуй 2D свёртку для одноканального изображения и max pooling.
-
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
+// Урок 137. Соединять нулевую рамку, проход фильтра и уменьшение карты выбором локальных максимумов.
+// Прослеживаем размеры 3x3 -> 5x5 -> 4x4 -> 2x2 и проверяем конкретные значения промежуточного и
+// конечного результатов.
 
 fn main() {
-    // Размер карты вычисляется из размера изображения, ядра и шага фильтра.
-    let feature_map: Vec<Vec<f64>> = (|| -> Vec<Vec<f64>> {
-        let image: [[f64; 3]; 3] = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]];
-        let filter_weights: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, -1.0]];
-        let image: &[[f64; 3]; 3] = &image;
-        let filter_weights: &[[f64; 2]; 2] = &filter_weights;
-        let filter_step_size: usize = 1;
-        assert!(filter_step_size > 0);
-        let rows: usize = (image.len() - filter_weights.len()) / filter_step_size + 1;
-        let column_count: usize = (image[0].len() - filter_weights[0].len()) / filter_step_size + 1;
-        let mut output: Vec<Vec<f64>> = vec![vec![0.0; column_count]; rows];
-        for output_row in 0..rows {
-            for output_column in 0..column_count {
-                for filter_row in 0..filter_weights.len() {
-                    for filter_column in 0..filter_weights[0].len() {
-                        output[output_row][output_column] += filter_weights[filter_row]
-                            [filter_column]
-                            * image[output_row * filter_step_size + filter_row]
-                                [output_column * filter_step_size + filter_column];
-                    }
+    let image = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]];
+    let filter = [[1.0, 0.0], [0.0, -1.0]];
+    let mut padded = [[0.0; 5]; 5];
+    for row in 0..3 {
+        for col in 0..3 {
+            padded[row + 1][col + 1] = image[row][col];
+        }
+    }
+    let mut responses = [[0.0_f64; 4]; 4];
+    for row in 0..4 {
+        for col in 0..4 {
+            for r in 0..2 {
+                for c in 0..2 {
+                    responses[row][col] += padded[row + r][col + c] * filter[r][c];
                 }
             }
         }
-        output
-    })();
-    let _ = &((|| -> Vec<Vec<f64>> {
-        let image: &[Vec<f64>] = &feature_map;
-
-        let mut local_maximum_values: Vec<Vec<f64>> =
-            vec![vec![0.0; image[0].len() / 2]; image.len() / 2];
-
-        for output_row in 0..local_maximum_values.len() {
-            for output_column in 0..local_maximum_values[0].len() {
-                let mut largest_value: f64 = f64::NEG_INFINITY;
-
-                for local_row in 0..2 {
-                    for local_column in 0..2 {
-                        let candidate: f64 =
-                            image[2 * output_row + local_row][2 * output_column + local_column];
-
-                        if candidate > largest_value {
-                            largest_value = candidate;
-                        }
-                    }
+    }
+    let mut pooled = [[f64::NEG_INFINITY; 2]; 2];
+    for row in 0..2 {
+        for col in 0..2 {
+            for r in 0..2 {
+                for c in 0..2 {
+                    pooled[row][col] = pooled[row][col].max(responses[2 * row + r][2 * col + c]);
                 }
-
-                local_maximum_values[output_row][output_column] = largest_value;
             }
         }
-
-        local_maximum_values
-    })());
-
-    // Выполняем вычисления из примера.
-    let _ = feature_map;
+    }
+    println!(
+        "Изображение 3x3={image:?}\nС рамкой 5x5={padded:?}\nОтклики 4x4={responses:?}\nМаксимумы 2x2={pooled:?}"
+    );
+    assert_eq!(responses[1][1], -4.0);
+    assert_eq!(pooled, [[-1.0, 3.0], [7.0, 9.0]]);
 }
 
 // Чему учит этот урок:
-// Учимся соединять проход фильтра по изображению и выбор максимумов в полученной карте.
-// Получаем более компактное представление; добавление нулевой рамки в текущем примере не
-// реализовано.
+// Учимся соединять нулевую рамку, проход фильтра и уменьшение карты выбором локальных максимумов.
+// Прослеживаем размеры 3x3 -> 5x5 -> 4x4 -> 2x2 и проверяем конкретные значения промежуточного и
+// конечного результатов.

@@ -1,29 +1,30 @@
-// Урок 11.6. Качество поиска положительных примеров: сумма точности, умноженной на прирост полноты.
-// Зачем здесь эта тема: При редком положительном классе ложные положительные особенно влияют на
-//   precision.
-// Почему код устроен так: Меняем порог и смотрим площадь под кривой precision–recall на тех же
-//   оценках.
-// Представь: Для редкого класса несколько ложных тревог способны сильно снизить долю верных
-//   положительных прогнозов.
-//
-// Что изучаем: Площадь под PR-кривой.
-// Зачем это нужно: PR-AUC суммирует precision при увеличении recall и полезна при редком положительном
-// классе.
-
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
+// Урок 069. Оценивать, насколько рано нужные объекты появляются в упорядоченном списке.
+// Суммируем точность на позициях находок, чтобы получить среднюю точность поиска — average
+// precision.
 
 fn main() {
-    let ranked_targets: [bool; 4] = [true, false, true, false];
-    let pos_count: f64 = ranked_targets.iter().filter(|&&target| target).count() as f64;
-    let mut found_pos: f64 = 0.0;
-    let mut _average_precision: f64 = 0.0;
-    for (rank, target) in ranked_targets.into_iter().enumerate() {
-        if target {
-            found_pos += 1.0;
-            let correct_pos_prediction_share: f64 = found_pos / (rank + 1) as f64;
-            _average_precision += correct_pos_prediction_share / pos_count;
+    let average_precision = |ranked: &[bool]| {
+        let count = ranked.iter().filter(|&&v| v).count();
+        assert!(count > 0);
+        let mut found = 0;
+        let mut sum = 0.0;
+        for (rank, &target) in ranked.iter().enumerate() {
+            if target {
+                found += 1;
+                sum += found as f64 / (rank + 1) as f64;
+            }
         }
-    }
+        sum / count as f64
+    };
+    let good = [true, true, false, false];
+    let bad = [false, false, true, true];
+    println!(
+        "Нужные объекты в начале: {}; в конце: {}",
+        average_precision(&good),
+        average_precision(&bad)
+    );
+    assert_eq!(average_precision(&good), 1.0);
+    assert!(average_precision(&bad) < 0.5);
 }
 
 // Чему учит этот урок:

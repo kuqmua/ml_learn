@@ -19,7 +19,9 @@ fn main() {
         .expect("ожидался один контекст на каждую из трёх позиций");
     assert_eq!(context[0], states[0]);
 
-    for (_index, _state) in context.iter().enumerate() {}
+    for (index, state) in context.iter().enumerate() {
+        println!("Позиция {index}: доступны 0..={index}, контекст={state:?}");
+    }
 
     // Выполняем вычисления из примера.
     let _ = &states;

@@ -1,22 +1,6 @@
-// Урок 29.5. Практика: модель текста по частотам пар, оценка ошибки и генерация продолжения.
-// Зачем здесь эта тема: Биграммная модель позволяет увидеть полный цикл: счётчики, вероятности,
-//   loss и генерация.
-// Почему код устроен так: Оставляем контекст длиной один, чтобы каждый шаг можно было проверить по
-//   таблице частот.
-// Представь: Из частот пар получаем вероятности, по ним считаем ошибку, затем выбираем следующий
-//   токен.
-//
-// Что повторяем вместе: предсказание следующего токена, cross-entropy, perplexity, sampling.
-// Зачем это нужно: Биграммная модель оценивает следующее слово по предыдущему; perplexity измеряет качество
-//   вероятностного прогноза.
-// Что показывает программа: Задаём маленький корпус для подсчёта биграмм. Считаем частоты переходов и
-//   словарь возможных следующих токенов. Сравниваем perplexity на обучающих и новых сочетаниях слов.
-// Что проверить при изменении примера: Сравни train/validation perplexity и покажи влияние temperature и
-//   seed.
-// Дополнительная практика: Обучи маленькую n-gram модель или tiny decoder на игрушечном корпусе; реализуй
-//   генерацию.
-
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
+// Урок 161. Строить модель соседних слов по счётчикам, сглаживать вероятности и оценивать
+// последовательности.
+// Генерируем продолжение выбором самого вероятного слова, учитывая отдельный маркер завершения.
 
 fn main() {
     let training_sentences: [&str; 3] = ["кот спит", "кот ест", "пёс спит"];
@@ -165,17 +149,20 @@ fn main() {
         )
     }
 
-    let _ = (
-        &(calc_perplexity_as_e_to_average_neg_log_next_word_probability(
-            &training_sentences,
-            &bigram_counts,
-            &known_text_units,
-        )),
-        &(calc_perplexity_as_e_to_average_neg_log_next_word_probability(
-            &["пёс ест"],
-            &bigram_counts,
-            &known_text_units,
-        )),
+    println!(
+        "Языковая модель: результат: {:?}",
+        (
+            &(calc_perplexity_as_e_to_average_neg_log_next_word_probability(
+                &training_sentences,
+                &bigram_counts,
+                &known_text_units,
+            )),
+            &(calc_perplexity_as_e_to_average_neg_log_next_word_probability(
+                &["пёс ест"],
+                &bigram_counts,
+                &known_text_units,
+            )),
+        )
     );
     let mut previous_text_unit: &str = "<s>";
     let mut generated_text_units: Vec<&str> = vec![];
@@ -217,10 +204,13 @@ fn main() {
         generated_text_units.push(next_text_unit.as_str());
         previous_text_unit = next_text_unit;
     }
-    let _ = &(generated_text_units.join(" "));
+    println!(
+        "Языковая модель: результат: {:?}",
+        &(generated_text_units.join(" "))
+    );
 
     // Выполняем вычисления из примера.
-    let _ = bigram_counts;
+    println!("Языковая модель: результат: {:?}", bigram_counts);
 }
 
 // Чему учит этот урок:

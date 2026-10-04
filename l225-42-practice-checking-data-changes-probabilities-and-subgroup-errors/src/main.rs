@@ -1,19 +1,7 @@
-// Урок 42.5. Практика: проверка изменений данных, вероятностей и ошибок по подгруппам.
-// Зачем здесь эта тема: После выпуска одновременно важны сдвиг входов, калибровка, качество групп и
-//   неопределённость.
-// Почему код устроен так: Собираем метрики вместе и интерпретируем их с учётом числа наблюдений.
-// Представь: Хорошее среднее качество ещё не отменяет сдвиг входов или ошибки отдельной группы.
-//
-// Что повторяем вместе: сдвиг распределения, калибровка, ошибки подгрупп, ограничения модели.
-// Зачем это нужно: Качество AI нужно смотреть по подгруппам и вероятностям, учитывая ограничения маленькой
-//   выборки.
-// Что показывает программа: Разделяем набор по подгруппам. Для каждой группы считаем accuracy и
-//   вероятностную ошибку Brier. Указываем ограничение вывода из очень маленькой выборки.
-// Что проверить при изменении примера: Покажи ошибки, интервалы неопределённости и конкретные ограничения
-//   вывода.
-// Дополнительная практика: Составь набор сложных случаев для одного классификатора и отчёт по подгруппам.
-
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
+// Урок 225. Совместно оценивать размер подгруппы, долю верных классов и средний квадрат ошибки
+// вероятностей.
+// Это помогает различать ошибки решения и качества вероятностного прогноза; сдвиг входных данных
+// здесь не вычисляется.
 
 fn main() {
     #[derive(Clone, Copy, Debug)]
@@ -100,34 +88,54 @@ fn main() {
                 .all(|case| (0.0..=1.0).contains(&case.score)),
             "оценка вероятности должна быть от 0 до 1"
         );
-        let _ = (
-            &(group_cases.len()),
-            &((|| -> f64 {
-                let data: &[EvaluationCase] = &group_cases;
+        println!(
+            "Размер группы, точность и ошибка вероятностей: {:?}",
+            (
+                &(group_cases.len()),
+                &((|| -> f64 {
+                    let data: &[EvaluationCase] = &group_cases;
 
-                data.iter()
-                    .filter(|case| (case.score >= 0.5) == case.truth)
-                    .count() as f64
-                    / data.len() as f64
-            })()),
-            &((|| -> f64 {
-                let data: &[EvaluationCase] = &group_cases;
+                    data.iter()
+                        .filter(|case| (case.score >= 0.5) == case.truth)
+                        .count() as f64
+                        / data.len() as f64
+                })()),
+                &((|| -> f64 {
+                    let data: &[EvaluationCase] = &group_cases;
 
-                let mut squared_error_sum: f64 = 0.0;
+                    let mut squared_error_sum: f64 = 0.0;
 
-                for case in data {
-                    squared_error_sum += (|| -> f64 {
-                        let target: f64 = if case.truth { 1.0 } else { 0.0 };
-                        let value: f64 = case.score - target;
+                    for case in data {
+                        squared_error_sum += (|| -> f64 {
+                            let target: f64 = if case.truth { 1.0 } else { 0.0 };
+                            let value: f64 = case.score - target;
 
-                        value * value
-                    })();
-                }
+                            value * value
+                        })();
+                    }
 
-                squared_error_sum / data.len() as f64
-            })()),
+                    squared_error_sum / data.len() as f64
+                })()),
+            )
         );
     }
+
+    let accuracy = |group| {
+        let rows: Vec<_> = EVALUATION_CASES
+            .iter()
+            .filter(|case| case.group == group)
+            .collect();
+        rows.iter()
+            .filter(|case| (case.score >= 0.5) == case.truth)
+            .count() as f64
+            / rows.len() as f64
+    };
+    println!(
+        "Доля верных ответов: группа A={}, группа B={}",
+        accuracy("A"),
+        accuracy("B")
+    );
+    assert!(accuracy("A") > accuracy("B"));
 }
 
 // Чему учит этот урок:

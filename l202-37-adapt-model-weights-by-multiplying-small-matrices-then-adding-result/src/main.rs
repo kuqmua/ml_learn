@@ -33,6 +33,19 @@ fn main() {
         })[0],
         0.8
     );
+
+    let baseline: f64 = frozen[0].iter().zip(input).map(|(w, x)| w * x).sum();
+    let correction = adapter_output_weights[0] * projected_input;
+    println!(
+        "Исходный выход первой строки={baseline}; поправка={correction}; итог={}",
+        baseline + correction
+    );
+    println!(
+        "Полная матрица: 16 весов; поправка через два вектора: {} весов",
+        adapter_input_weights.len() + adapter_output_weights.len()
+    );
+    assert_eq!(baseline, 1.0);
+    assert_eq!(correction, -0.2);
 }
 
 // Чему учит этот урок:

@@ -1,34 +1,33 @@
-// Урок 04.4. Сравнение обновлений параметра по всем примерам и по одному примеру.
-// Зачем здесь эта тема: Градиент можно оценить по всем примерам или по одному; это меняет шум и
-//   стоимость шага.
-// Почему код устроен так: Сравниваем оба режима на одних данных, фиксируя, какой набор дал
-//   очередное обновление.
-// Представь: Среднее по всем строкам даёт ровный шаг, а отдельная случайная строка может временно
-//   толкнуть параметр в другую сторону.
-//
-// Что изучаем: Batch и stochastic обновления.
-// Зачем это нужно: Batch использует средний градиент всех примеров, stochastic — градиент одного. На одном
-// шаге их направления могут отличаться.
-
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
+// Урок 023. Считать производную ошибки по одному примеру и в среднем по всему набору.
+// Это объясняет, почему обновления по отдельным примерам могут отличаться от обновления по всей
+// выборке.
 
 fn main() {
-    let data: [(f64, f64); 2] = [(1.0, 2.0), (2.0, 4.0)];
-    assert!(!data.is_empty(), "для градиента нужны обучающие примеры");
-    let weight: f64 = 0.0;
-    let mut summed_rates_of_change: f64 = 0.0;
-    for (feature, target) in data {
-        summed_rates_of_change += 2.0 * (weight * feature - target) * feature;
-    }
-    let batch_loss_rate_of_change: f64 = summed_rates_of_change / data.len() as f64;
-    let (feature1, target1): (f64, f64) = data[0];
-    let single_example_loss_rate_of_change: f64 = 2.0 * (weight * feature1 - target1) * feature1;
-
-    // Выполняем вычисления из примера.
-    let _ = (
-        batch_loss_rate_of_change,
-        single_example_loss_rate_of_change,
+    let examples = [(1.0_f64, 2.0_f64), (2.0, 4.0)];
+    let weight = 0.0;
+    let slopes = examples.map(|(x, y)| 2.0 * (weight * x - y) * x);
+    let mean_slope = slopes.iter().sum::<f64>() / slopes.len() as f64;
+    let batch_weight = weight - 0.1 * mean_slope;
+    let single_weight = weight - 0.1 * slopes[0];
+    let loss = |w: f64| {
+        examples
+            .iter()
+            .map(|(x, y)| (w * x - y).powi(2))
+            .sum::<f64>()
+            / examples.len() as f64
+    };
+    println!("Производные отдельных примеров={slopes:?}; средняя={mean_slope}");
+    println!(
+        "По первому примеру: вес={single_weight}, общая ошибка={}",
+        loss(single_weight)
     );
+    println!(
+        "По всему набору: вес={batch_weight}, общая ошибка={}",
+        loss(batch_weight)
+    );
+    assert_ne!(single_weight, batch_weight);
+    assert!(loss(single_weight) < loss(weight));
+    assert!(loss(batch_weight) < loss(weight));
 }
 
 // Чему учит этот урок:

@@ -1,24 +1,18 @@
-// Урок 28.1. Кодирование частей текста: назначение номеров из словаря.
-// Зачем здесь эта тема: Модель работает с числами, а текст приходит строками; словарь связывает два
-//   представления.
-// Почему код устроен так: Явно строим отображение token→id и сохраняем обратное соответствие.
-// Представь: Слово «кот» получает числовой id; обратная таблица позволяет снова напечатать «кот».
-//
-// Что изучаем: Словарь токенов.
-// Зачем это нужно: Словарь сопоставляет каждой известной строке постоянный числовой индекс.
-
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
+// Урок 152. Присваивать каждому уникальному слову постоянный числовой идентификатор.
+// Повторное слово использует прежний номер, что позволяет перейти от текста к числовой обработке.
 
 fn main() {
-    let mut known_text_units: std::collections::BTreeMap<&str, usize> =
-        std::collections::BTreeMap::new();
-    let words: [&str; 3] = ["кот", "спит", "кот"];
+    let mut vocabulary = std::collections::BTreeMap::new();
+    let words = ["кот", "спит", "кот"];
+    let mut ids = Vec::new();
     for word in words {
-        if !known_text_units.contains_key(word) {
-            let text_unit_identifier: usize = known_text_units.len() + 1;
-            known_text_units.insert(word, text_unit_identifier);
-        }
+        let next = vocabulary.len() + 1;
+        let id = *vocabulary.entry(word).or_insert(next);
+        ids.push(id);
     }
+    println!("Слова={words:?}; словарь={vocabulary:?}; номера={ids:?}");
+    assert_eq!(ids[0], ids[2]);
+    assert_ne!(ids[0], ids[1]);
 }
 
 // Чему учит этот урок:

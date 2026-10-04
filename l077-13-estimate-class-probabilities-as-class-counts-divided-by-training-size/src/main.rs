@@ -1,34 +1,17 @@
-// Урок 13.2. Начальные вероятности классов: доли их примеров в обучающем наборе.
-// Зачем здесь эта тема: Чтобы сравнивать классы по Байесу, нужна исходная частота каждого класса до
-//   чтения признаков.
-// Почему код устроен так: Считаем prior по обучающим меткам и отделяем его от вероятности
-//   признаков.
-// Представь: Если 9 из 10 учебных текстов относятся к классу A, он изначально вероятнее до чтения
-//   нового текста.
-//
-// Что изучаем: Априорные вероятности классов.
-// Зачем это нужно: До чтения признаков модель учитывает, как часто встречается каждый класс в обучающем
-// наборе.
-
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
+// Урок 077. Оценивать исходные вероятности классов по их частотам в обучающих ответах.
+// Эти значения задают отправную точку классификации до учёта признаков нового объекта.
 
 fn main() {
-    let targets: [&str; 4] = ["code", "code", "code", "ml"];
-    assert!(
-        !targets.is_empty(),
-        "для частоты класса нужна хотя бы одна метка"
-    );
-
-    let code_class_probability_before_observing_words: f64 =
-        targets.iter().filter(|&&target| target == "code").count() as f64 / targets.len() as f64;
-    let machine_learning_class_probability_before_observing_words: f64 =
-        1.0 - code_class_probability_before_observing_words;
-
-    // Выполняем вычисления из примера.
-    let _ = (
-        code_class_probability_before_observing_words,
-        machine_learning_class_probability_before_observing_words,
-    );
+    for targets in [
+        vec!["code", "code", "code", "ml"],
+        vec!["code", "ml", "ml", "ml"],
+    ] {
+        let code = targets.iter().filter(|&&v| v == "code").count() as f64 / targets.len() as f64;
+        let ml = 1.0 - code;
+        println!("Ответы={targets:?}; P(code)={code}, P(ml)={ml}");
+        assert_eq!(code + ml, 1.0);
+    }
+    println!("До чтения текста исходные вероятности определяются частотами классов обучения.");
 }
 
 // Чему учит этот урок:

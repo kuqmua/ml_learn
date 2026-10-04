@@ -1,8 +1,6 @@
-// Урок 241. Проходим путь от данных до готового прогноза.
-// Сначала считаем простой ответ для сравнения, затем подбираем веса модели на обучающих примерах.
-// Отдельные примеры используем для выбора решения, а заключительный набор — для итоговой оценки.
-// Сравниваем ошибки и проверяем, стало ли лучше после обучения.
-// Важно не использовать правильные ответы итоговой проверки при подборе весов.
+// Урок 241. Проходить путь от разделения данных и подбора прямой до оценки и нового прогноза.
+// Считаем ошибки постоянного ответа и модели на проверочной части, затем ошибку модели на
+// отдельном тесте.
 
 use l030_06_calc_mean_by_summing_values_and_dividing_by_count::calc_mean_by_summing_values_and_dividing_by_count;
 use l051_09_calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count::calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count;
@@ -93,7 +91,36 @@ fn main() {
     let _ = weight * 10.0 + constant_input_weight;
 
     // Выполняем вычисления из примера.
-    let _ = (training_examples, weight, constant_input_weight);
+    let _ = (&training_examples, &weight, &constant_input_weight);
+
+    let baseline_mean = calc_mean_by_summing_values_and_dividing_by_count(
+        &training_examples.iter().map(|v| v.1).collect::<Vec<_>>(),
+    )
+    .unwrap();
+    let baseline_error =
+        calc_linear_model_error_as_average_absolute_diff_between_predictions_and_targets(
+            validation,
+            0.0,
+            baseline_mean,
+        );
+    let model_error =
+        calc_linear_model_error_as_average_absolute_diff_between_predictions_and_targets(
+            validation,
+            weight,
+            constant_input_weight,
+        );
+    let final_error =
+        calc_linear_model_error_as_average_absolute_diff_between_predictions_and_targets(
+            test,
+            weight,
+            constant_input_weight,
+        );
+    println!(
+        "Выбор на validation: постоянный ответ={baseline_error}, обученная прямая={model_error}; итоговый test={final_error}"
+    );
+    assert!(model_error < baseline_error);
+    assert!(final_error < 1e-10);
+    println!("Новый вход 10 -> {}", weight * 10.0 + constant_input_weight);
 }
 
 // Чему учит этот урок:

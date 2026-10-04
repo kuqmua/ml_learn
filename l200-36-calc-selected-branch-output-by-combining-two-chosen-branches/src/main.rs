@@ -1,10 +1,6 @@
-// Урок 36.7. Выход выбранных ветвей: выбор двух обработчиков и объединение результатов.
-// Зачем здесь эта тема: Смесь экспертов даёт много специализированных ветвей без запуска каждой для
-//   каждого токена.
-// Почему код устроен так: Выбираем две ветви по оценкам и объединяем их ответы с весами
-//   маршрутизации.
-// Представь: Из четырёх экспертов считаем только два выбранных, затем смешиваем их ответы.
-// Два выбранных эксперта обрабатывают токен; пример относится к MoE-вариантам Qwen3.
+// Урок 200. Выбирать две вычислительные ветви по оценкам и смешивать их ответы с нормализованными
+// весами.
+// Так вход обрабатывают только выбранные ветви, а не все возможные варианты.
 
 use l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum::calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum;
 
@@ -31,6 +27,21 @@ fn main() {
 
     // Выполняем вычисления из примера.
     let _ = &scores;
+
+    let selected_weights =
+        calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum(&[
+            scores[selected[0]],
+            scores[selected[1]],
+        ]);
+    let output = selected
+        .iter()
+        .zip(&selected_weights)
+        .map(|(&expert, &weight)| weight * expert_gain[expert] * input[0])
+        .sum::<f64>();
+    println!(
+        "Оценки ветвей={scores:?}; выбраны={selected:?}; доли={selected_weights:?}; ответ={output}"
+    );
+    assert!(output >= 0.8 && output <= 1.6);
 }
 
 // Чему учит этот урок:

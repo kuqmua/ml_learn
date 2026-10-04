@@ -32,6 +32,21 @@ fn main() {
         .iter()
         .all(|head_output| head_output.iter().all(|value| value.is_finite()))
     );
+
+    let separate_key_numbers = queries.len() * keys[0].len() * keys[0][0].len();
+    let shared_key_numbers = keys.len() * keys[0].len() * keys[0][0].len();
+    println!(
+        "Для {} запросов: отдельных чисел ключей={separate_key_numbers}, с разделением на {} группы={shared_key_numbers}",
+        queries.len(),
+        keys.len()
+    );
+    assert_eq!(separate_key_numbers, 2 * shared_key_numbers);
+    for head in 0..queries.len() {
+        println!(
+            "Запрос {head} использует группу ключей и значений {}",
+            head / 2
+        );
+    }
 }
 
 // Чему учит этот урок:

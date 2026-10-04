@@ -1,15 +1,6 @@
-// Урок 09.5. Проверка прогноза по прямой на данных, не использованных для обучения.
-// Зачем здесь эта тема: Уменьшение ошибки на train не доказывает обобщение; нужны данные, не
-//   участвовавшие в подгонке.
-// Почему код устроен так: Фиксируем модель и считаем ту же метрику на отложенных строках.
-// Представь: Модель может идеально помнить train и ошибаться на новых строках; отложенная часть
-//   показывает это.
-//
-// Что изучаем: Качество на отложенных данных.
-// Зачем это нужно: Train служит для выбора параметров; качество модели оцениваем на новых примерах, не
-// участвовавших в обучении.
+// Урок 054. Определять прямую по двум обучающим точкам и оценивать её на отдельных примерах.
+// Разделяем подбор параметров и проверку прогноза на данных, не использованных для подбора.
 
-// Точка входа: все определения и шаги примера выполняются внутри этой функции.
 use l050_09_calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count::calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count;
 
 fn main() {
@@ -37,7 +28,19 @@ fn main() {
     .unwrap();
 
     // Выполняем вычисления из примера.
-    let _ = (training, test, weight, constant_input_weight);
+    let _ = (&training, &test, &weight, &constant_input_weight);
+
+    let predictions = test.map(|(feature, _)| weight * feature + constant_input_weight);
+    let error = calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
+        &test.map(|(_, target)| target),
+        &predictions,
+    )
+    .unwrap();
+    println!(
+        "Из обучающих точек нашли y={weight}*x+{constant_input_weight}; прогнозы теста={predictions:?}, ошибка={error}"
+    );
+    assert_eq!(predictions, [7.0, 9.0]);
+    assert_eq!(error, 0.0);
 }
 
 // Чему учит этот урок:

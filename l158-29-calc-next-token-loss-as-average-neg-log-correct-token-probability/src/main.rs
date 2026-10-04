@@ -37,10 +37,15 @@ fn main() {
         if index > 0 {
             assert!(average_neg_log_correct_token_probability > previous_error);
         }
+        println!("{_description}: средняя ошибка={average_neg_log_correct_token_probability}");
         previous_error = average_neg_log_correct_token_probability;
     }
     let invalid: [f64; 2] = [0.0, 0.5];
-    if invalid.iter().any(|&probability| probability <= 0.0) {}
+    let valid = invalid.iter().all(|&p| p > 0.0 && p <= 1.0);
+    assert!(!valid);
+    println!(
+        "Вероятности {invalid:?} отклоняем: логарифмическую ошибку с нулём как конечное число вычислить нельзя."
+    );
 }
 
 // Чему учит этот урок:
