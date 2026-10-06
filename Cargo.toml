@@ -251,3 +251,25 @@ members = [
     "l246-51-classify-mnist-with-convolutional-network",
 ]
 resolver = "3"
+
+# MNIST обучается на CPU: обычный cargo run также использует оптимизацию.
+[profile.dev.package.l243-48-classify-mnist-digits-by-nearest-class-mean]
+opt-level = 3
+
+[profile.dev.package.l244-49-classify-mnist-with-linear-softmax]
+opt-level = 3
+
+[profile.dev.package.l245-50-classify-mnist-with-hidden-layer]
+opt-level = 3
+
+[profile.dev.package.l246-51-classify-mnist-with-convolutional-network]
+opt-level = 3
+
+[profile.dev.package.ndarray]
+opt-level = 3
+
+[profile.dev.package.matrixmultiply]
+opt-level = 3
+
+[profile.dev.package.png]
+opt-level = 3

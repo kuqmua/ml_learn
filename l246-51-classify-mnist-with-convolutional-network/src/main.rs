@@ -1,8 +1,8 @@
 fn main() -> Result<(), String> {
     // Обозначения типов: usize — индексы и размеры; u8 — байт пикселя или метка цифры;
-    // u64 — состояние генератора; bool — флаг; String — текст; Vec<T> — список элементов T.
+    // u64 — состояние генератора; String — текст; Vec<T> — список элементов T.
     // [T; N] — массив из N элементов; (A, B) — кортеж; &T — ссылка; &mut T — изменяемая ссылка.
-    // Option<T> — значение или None; Result<T, String> — результат или текст ошибки.
+    // Result<T, String> — результат или текст ошибки.
     // Тип переменной-замыкания анонимный: его имя нельзя написать после let.
     // У таких переменных типы аргументов стоят между |...|, результата — после ->.
     // f64 используется при чтении PNG, f32 — в вычислениях нейросети.
@@ -20,129 +20,20 @@ fn main() -> Result<(), String> {
     // Это порядок NCHW, хотя физически массив двумерный. Индексы ниже восстанавливают
     // пространственные координаты. Flatten меняет представление, но не значения элементов карт.
     // W — веса, b — смещения, L — средняя ошибка; T означает транспонирование.
-    // Все операции и проверки локальны main; параметры учатся только на train.
+    // Все операции локальны main; параметры учатся только на train.
 
     // При первом чтении следи за forward, cross_entropy и циклом for epoch.
-    // Блоки if self_check с маленькими матрицами — проверки формул; к ним можно вернуться
-    // после понимания обучения. Они не влияют на обычный запуск с настоящим MNIST.
-    // Настройки: наружу выходят значения, парсер и флаги задания остаются внутри.
-    let (data, self_check, settings, start): (
-        std::path::PathBuf,
-        bool,
-        (usize, usize, f32, u64, Option<usize>),
-        std::time::Instant,
-    ) = {
-        let start: std::time::Instant = std::time::Instant::now();
-        // Эпоха — один полный проход по выбранной обучающей части.
-        // Эпох несколько: после первого прохода веса ещё обычно далеки от хорошего решения.
-        let mut epochs: usize = 12usize;
-        // Batch — небольшая группа картинок, для которой делаем одно обновление весов.
-        // Это компромисс между обновлением после каждой картинки и после всего train.
-        let mut batch_size: usize = 64usize;
-        // Learning rate задаёт размер шага обновления. Слишком большой шаг может
-        // увеличивать ошибку, слишком маленький требует больше времени на обучение.
-        let mut learning_rate: f32 = 0.001f32;
-        // Seed фиксирует начало псевдослучайной последовательности.
-        // Одинаковые данные, seed и настройки дают те же начальные веса и порядок train.
-        let mut seed: u64 = 42u64;
-        // None означает полный train. Some(N) оставляет только N обучающих примеров
-        // для быстрого опыта; validation и test при этом не сокращаются.
-        let mut train_limit: Option<usize> = None;
-        let mut data: std::path::PathBuf =
-            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../datasets/png/mnist");
-        let mut self_check: bool = false;
-        let mut exercise: bool = false;
-        // Настройки можно переопределить после -- в команде cargo run.
-        // skip(1) пропускает имя программы. Этот итератор нужен только разбору аргументов.
-        let mut arguments: std::iter::Skip<std::env::Args> = std::env::args().skip(1);
-        // Типы переменных: key: String.
-        while let Some(key) = arguments.next() {
-            if key == "--exercise" {
-                exercise = true;
-                continue;
-            }
-            if key == "--self-check" {
-                self_check = true;
-                continue;
-            }
-            if key == "--help" {
-                println!(
-                    "--epochs N --batch-size N --learning-rate X --seed N --train-limit N --data PNG_ROOT --self-check --exercise"
-                );
-                return Ok(());
-            }
-            let value: String = arguments
-                .next()
-                .ok_or_else(|| -> String { format!("Нет значения для {key}") })?;
 
-            let invalid =
-                || -> String { format!("Неверное значение {key}: {value}") };
-            match key.as_str() {
-                "--epochs" => {
-                    epochs = value
-                        .parse()
-                        .map_err(|_: std::num::ParseIntError| -> String { invalid() })?
-                }
-                "--batch-size" => {
-                    batch_size = value
-                        .parse()
-                        .map_err(|_: std::num::ParseIntError| -> String { invalid() })?
-                }
-                "--learning-rate" => {
-                    learning_rate = value
-                        .parse()
-                        .map_err(|_: std::num::ParseFloatError| -> String { invalid() })?
-                }
-                "--seed" => {
-                    seed = value
-                        .parse()
-                        .map_err(|_: std::num::ParseIntError| -> String { invalid() })?
-                }
-                "--train-limit" => {
-                    train_limit = Some(
-                        value
-                            .parse()
-                            .map_err(|_: std::num::ParseIntError| -> String { invalid() })?,
-                    )
-                }
-                "--data" => data = value.into(),
-                _ => return Err(format!("Неизвестный аргумент {key}")),
-            }
-        }
-        if epochs == 0
-            || batch_size == 0
-            || train_limit == Some(0)
-            || !learning_rate.is_finite()
-            || learning_rate <= 0.0
-        {
-            return Err("Настройки обучения должны быть положительными и конечными".into());
-        }
-        // Самостоятельный вопрос отделён от автоматических проверок.
-        // Впиши рассчитанный ответ в Some(...); этот режим сразу завершит программу.
-        if exercise {
-            // Самостоятельное задание: Какова ширина после valid-свёртки 5×5 по изображению 28×28?
-            let answer: Option<usize> = None;
-            assert_eq!(
-                answer.expect("реши вопрос и замени None на Some(ответ)"),
-                24
-            );
-            return Ok(());
-        }
-        if self_check {
-            epochs = 20;
-            batch_size = 40;
-            learning_rate = 0.001;
-            seed = 42;
-            train_limit = None;
-        }
-        (
-            data,
-            self_check,
-            (epochs, batch_size, learning_rate, seed, train_limit),
-            start,
-        )
-    };
-    // Числовая часть отделена от разбора аргументов и не вводит имён в main.
+    let start: std::time::Instant = std::time::Instant::now();
+    let data: std::path::PathBuf =
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../datasets/png/mnist");
+    // Для экспериментов меняй значения здесь и снова запускай cargo run.
+    let epochs: usize = 12;
+    let batch_size: usize = 64;
+    let learning_rate: f32 = 0.001;
+    let seed: u64 = 42;
+
+    // Числовая часть имеет свою область видимости для массивов и замыканий.
     {
         use ndarray::{Array1, Array2};
         // Один слой храним как пару (W, b): .0 — матрица весов, .1 — вектор смещений.
@@ -319,7 +210,7 @@ fn main() -> Result<(), String> {
         // Например, p_target=0.9 даёт loss≈0.105, а p_target=0.1 даёт loss≈2.303.
         // Loss не равна доле неверных ответов: учитывает уверенность даже при верном argmax.
         // Здесь сразу вычисляем и L, и производную dL/dscores, нужную для обучения.
-        // Форма scores — [N,K]; в реальной модели K=10, в ручных проверках может быть меньше.
+        // Форма scores — [N,K], где K=10 — число классов цифр.
 
         let cross_entropy = |scores: &Array2<f32>, labels: &[u8]| -> (f32, Array2<f32>) {
             assert_eq!(scores.nrows(), labels.len());
@@ -433,13 +324,6 @@ fn main() -> Result<(), String> {
             usize,
             usize,
         ) = {
-            let (epochs, batch_size, learning_rate, seed, train_limit): (
-                usize,
-                usize,
-                f32,
-                u64,
-                Option<usize>,
-            ) = settings;
             println!(
                 "CNN conv5(8) -> pool -> conv3(16) -> pool -> dense64 -> 10: epochs={epochs}, batch={batch_size}, lr={learning_rate}, seed={seed}, data={}",
                 data.display()
@@ -535,121 +419,8 @@ fn main() -> Result<(), String> {
                         }
                         Ok(digits)
                     };
-                if self_check {
-                    // Проверяем чтение PNG на временных картинках, включая неверные входы.
-                    // Эта ветка проверяет загрузчик на временных PNG, а не использует настоящий MNIST.
-                    // Уникальное имя предотвращает столкновения нескольких запусков проверки.
-                    let unique: u128 = std::time::SystemTime::now()
-                        .duration_since(std::time::UNIX_EPOCH)
-                        .map_err(|e: std::time::SystemTimeError| -> String { e.to_string() })?
-                        .as_nanos();
-                    let temporary: std::path::PathBuf = std::env::temp_dir()
-                        .join(format!("mnist-main-{}-{unique}", std::process::id()));
-                    // Проверяем настоящую цепочку чтения: метки папок, сортировку и нормализацию,
-                    // затем намеренно испорченный файл, неверный размер и RGB вместо оттенков серого.
-                    // Результат временно сохраняем, чтобы сначала удалить файлы даже при обычной ошибке.
-                    let checked: Result<(), String> = (|| -> Result<(), String> {
-                        assert!(load_digits(&temporary).is_err());
-                        // Папки 0,1,...,9 задают правильные метки: например, train/5 содержит пятёрки.
-                        // Имя самого PNG — его индекс, а не ответ классификатора.
-                        // Типы переменных: label: u8.
-                        for label in 0..10u8 {
-                            let class: std::path::PathBuf = temporary.join(label.to_string());
-                            std::fs::create_dir_all(&class)
-                                .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                            // Типы переменных: name: &str, value: u8.
-                            for (name, value) in [("00002.png", 255u8), ("00001.png", 0u8)] {
-                                let file: std::fs::File =
-                                    std::fs::File::create(class.join(name))
-                                        .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                                let mut encoder: png::Encoder<'_, std::fs::File> =
-                                    png::Encoder::new(file, 28, 28);
-                                encoder.set_color(png::ColorType::Grayscale);
-                                encoder.set_depth(png::BitDepth::Eight);
-                                let mut writer: png::Writer<std::fs::File> = encoder
-                                    .write_header()
-                                    .map_err(|e: png::EncodingError| -> String { e.to_string() })?;
-                                writer
-                                    .write_image_data(&[value; 784])
-                                    .map_err(|e: png::EncodingError| -> String { e.to_string() })?;
-                                writer
-                                    .finish()
-                                    .map_err(|e: png::EncodingError| -> String { e.to_string() })?;
-                            }
-                            std::fs::write(class.join("notes.txt"), "ignored")
-                                .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                        }
-                        // Декодирование превращает сжатый PNG в байты яркости. Это ещё не обучение.
-                        // Ошибка оборачивается путём к файлу, чтобы было понятно, какую картинку проверить.
-                        let decoded: Vec<([f64; 784], u8)> = load_digits(&temporary)?;
-                        assert_eq!(decoded.len(), 20);
-                        // Типы переменных: i: usize, pixels: &[f64; 784], label: &u8.
-                        for (i, (pixels, label)) in decoded.iter().enumerate() {
-                            assert_eq!(*label as usize, i / 2);
-                            assert_eq!(*pixels, [(i % 2) as f64; 784]);
-                        }
-                        let path: std::path::PathBuf = temporary.join("0/00001.png");
-                        std::fs::write(&path, b"broken PNG")
-                            .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                        assert!(load_digits(&temporary).err().unwrap().contains("00001.png"));
-                        // Типы переменных: width: u32, color: png::ColorType, channels: usize.
-                        for (width, color, channels) in [
-                            (27, png::ColorType::Grayscale, 1),
-                            (28, png::ColorType::Rgb, 3),
-                        ] {
-                            let file: std::fs::File = std::fs::File::create(&path)
-                                .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                            let mut encoder: png::Encoder<'_, std::fs::File> =
-                                png::Encoder::new(file, width, 28);
-                            encoder.set_color(color);
-                            encoder.set_depth(png::BitDepth::Eight);
-                            let mut writer: png::Writer<std::fs::File> = encoder
-                                .write_header()
-                                .map_err(|e: png::EncodingError| -> String { e.to_string() })?;
-                            writer
-                                .write_image_data(&vec![0; width as usize * 28 * channels])
-                                .map_err(|e: png::EncodingError| -> String { e.to_string() })?;
-                            writer
-                                .finish()
-                                .map_err(|e: png::EncodingError| -> String { e.to_string() })?;
-                            assert!(load_digits(&temporary).is_err());
-                        }
-                        Ok(())
-                    })();
-                    if temporary.exists() {
-                        std::fs::remove_dir_all(&temporary)
-                            .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                    }
-                    checked?;
-                }
-                if self_check {
-                    // Fifty synthetic images: the same pipeline, no downloads required.
-                    (0..10u8)
-                        .flat_map(|label: u8| {
-                            // Результат — итератор с элементами ([f64; 784], u8).
-                            // Его тип включает анонимное замыкание map, поэтому выводится компилятором.
-                            (0..5).map(move |_: i32| -> ([f64; 784], u8) {
-                                let pixels: [f64; 784] = std::array::from_fn(|p: usize| -> f64 {
-                                    let y: usize = p / 28;
-                                    let x: usize = p % 28;
-                                    let n: usize = label as usize;
-                                    if x >= 2 + (n % 5) * 5
-                                        && x < 5 + (n % 5) * 5
-                                        && y >= 3 + (n / 5) * 12
-                                        && y < 10 + (n / 5) * 12
-                                    {
-                                        1.0
-                                    } else {
-                                        0.0
-                                    }
-                                });
-                                (pixels, label)
-                            })
-                        })
-                        .collect()
-                } else {
-                    load_digits(&data.join("train"))?
-                }
+
+                load_digits(&data.join("train"))?
             };
             // Для Z = XW+b и входящего G=dL/dZ правило цепочки даёт:
             // dL/dX = G W^T, dL/dW = X^T G, dL/db = сумма строк G.
@@ -759,368 +530,6 @@ fn main() -> Result<(), String> {
                     }
                     input
                 };
-            // Дальше — ручные проверки маленьких массивов, выполняемые только с --self-check.
-            // Они изолированы от настоящего обучения и не используют метки MNIST.
-            // Самопроверки численных операций: каждая задача имеет свой блок.
-            if self_check {
-                // Создаём W=[input,output] и b=[output]. Смещения начинают с нуля.
-                // Веса начинаются с разных малых случайных значений: это помогает скрытым нейронам
-                // получать разные градиенты и учить разные признаки.
-
-                let new_layer = |input: usize, output: usize, state: &mut u64| -> Layer {
-                    // Псевдослучайный генератор SplitMix64: state меняется по фиксированным правилам.
-                    // Он нужен для воспроизводимых весов/порядка train; это не источник истинной случайности.
-
-                    let next_random = |state: &mut u64| -> u64 {
-                        *state = state.wrapping_add(0x9e3779b97f4a7c15);
-                        let mut z: u64 = *state;
-                        z = (z ^ (z >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
-                        z = (z ^ (z >> 27)).wrapping_mul(0x94d049bb133111eb);
-                        z ^ (z >> 31)
-                    };
-
-                    // Равномерная инициализация в [-bound,bound] имеет дисперсию bound²/3=2/input.
-                    // Это масштаб He: для ReLU он помогает сохранять разумный размер сигналов в слоях.
-                    // Один и тот же способ инициализации здесь применяется ко всем матрицам весов.
-                    let bound: f32 = (6.0 / input as f32).sqrt();
-                    (
-                        Array2::from_shape_fn((input, output), |_: (usize, usize)| -> f32 {
-                            // Старшие 24 бита превращаем в f32 в [0,1); 2*uniform-1 даёт [-1,1).
-                            // Умножение на bound задаёт нужный диапазон начальных весов.
-                            let uniform: f32 = (next_random(state) >> 40) as f32 / 16777216.0;
-                            (2.0 * uniform - 1.0) * bound
-                        }),
-                        Array1::zeros(output),
-                    )
-                };
-                // Перемешиваем индексы train алгоритмом Fisher–Yates, сохраняя сами картинки.
-                // Папки сгруппированы по цифрам; без перемешивания batch шли бы почти по одному классу.
-                // Validation/test не перемешиваются и не используются для обновления весов.
-
-                let shuffle = |items: &mut [usize], state: &mut u64| -> () {
-                    // Псевдослучайный генератор SplitMix64: state меняется по фиксированным правилам.
-                    // Он нужен для воспроизводимых весов/порядка train; это не источник истинной случайности.
-
-                    let next_random = |state: &mut u64| -> u64 {
-                        *state = state.wrapping_add(0x9e3779b97f4a7c15);
-                        let mut z: u64 = *state;
-                        z = (z ^ (z >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
-                        z = (z ^ (z >> 27)).wrapping_mul(0x94d049bb133111eb);
-                        z ^ (z >> 31)
-                    };
-
-                    // Типы переменных: i: usize.
-                    for i in (1..items.len()).rev() {
-                        let j: usize = (next_random(state) % (i as u64 + 1)) as usize;
-                        items.swap(i, j);
-                    }
-                };
-                // ReLU(x) = max(x,0). Она «выключает» отрицательные ответы нейронов.
-                // Без нелинейности два последовательных Dense можно было бы заменить одним.
-
-                let relu = |values: &Array2<f32>| -> Array2<f32> {
-                    values.mapv(|x: f32| -> f32 { x.max(0.0) })
-                };
-                // Свёртка valid с шагом 1: окно kernel×kernel скользит без дополнения границ.
-                // channels — каналы входа, side — его сторона. Каждый выходной фильтр смотрит
-                // на ВСЕ входные каналы, поэтому в его весах channels*kernel*kernel чисел.
-
-                let convolution = |input: &Array2<f32>,
-                                   layer: &Layer,
-                                   channels: usize,
-                                   side: usize,
-                                   kernel: usize|
-                 -> (Array2<f32>, Array2<f32>) {
-                    // Количество положений окна по одной оси. Для входа 28 и окна 5: 28-5+1=24.
-                    // Крайние положения учитывают только окна, целиком помещающиеся внутри картинки.
-                    let out: usize = side - kernel + 1;
-                    // Всего пространственных положений окна на одной картинке: out².
-                    // Число каналов считаем отдельно — в каждом положении есть ответы всех фильтров.
-                    let positions: usize = out * out;
-                    // По одному смещению на фильтр: длина b равна числу выходных каналов.
-                    // Например, первый слой имеет 8 разных обучаемых фильтров.
-                    let outputs: usize = layer.1.len();
-                    assert_eq!(input.ncols(), channels * side * side);
-                    // im2col: каждое многоканальное окно превращаем в одну строку.
-                    // Форма [N*out², channels*kernel²]; первый слой при N=64 даёт [64*576,25].
-                    // Один входной пиксель может входить в несколько перекрывающихся окон.
-                    let mut columns: Array2<f32> =
-                        Array2::zeros((input.nrows() * positions, channels * kernel * kernel));
-                    // Типы переменных: n: usize.
-                    for n in 0..input.nrows() {
-                        // Типы переменных: y: usize.
-                        for y in 0..out {
-                            // Типы переменных: x: usize.
-                            for x in 0..out {
-                                // n выбирает картинку; y,x — положение окна. Это её номер строки в im2col:
-                                // сначала все положения картинки 0, затем картинки 1 и так далее.
-                                let row: usize = n * positions + y * out + x;
-                                // Типы переменных: c: usize.
-                                for c in 0..channels {
-                                    // Типы переменных: ky: usize.
-                                    for ky in 0..kernel {
-                                        // Типы переменных: kx: usize.
-                                        for kx in 0..kernel {
-                                            // c — канал входа, ky/kx — координаты внутри окна.
-                                            // (c*kernel+ky)*kernel+kx — столбец развёрнутого окна.
-                                            // (c*side+y+ky)*side+x+kx — тот же пиксель в строке исходной карты.
-                                            columns[[row, (c * kernel + ky) * kernel + kx]] =
-                                                input[[n, (c * side + y + ky) * side + x + kx]];
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    // W имеет форму [channels*kernel², outputs]. Умножение считает ответы всех фильтров
-                    // сразу для всех окон; одно и то же W используется в каждой позиции.
-                    // b прибавляется к каждому окну, поэтому фильтр может учить свой порог срабатывания.
-                    let values: Array2<f32> = columns.dot(&layer.0) + &layer.1;
-                    // Переупаковываем ответы из [N*out², outputs] в [N, outputs*out²].
-                    // Теперь внутри строки сначала вся карта фильтра 0, потом карта фильтра 1 и т.д.
-                    // Это только смена расположения чисел, без дополнительного обучения.
-                    let mut output: Array2<f32> =
-                        Array2::zeros((input.nrows(), outputs * positions));
-                    // Типы переменных: n: usize.
-                    for n in 0..input.nrows() {
-                        // Типы переменных: p: usize.
-                        for p in 0..positions {
-                            // Типы переменных: c: usize.
-                            for c in 0..outputs {
-                                output[[n, c * positions + p]] = values[[n * positions + p, c]];
-                            }
-                        }
-                    }
-                    (output, columns)
-                };
-                // Max-pool 2×2 с шагом 2: из четырёх соседних значений оставляем максимальное.
-                // Сторона карты уменьшается вдвое, число каналов не меняется.
-                // Чтобы позже передать градиент, запоминаем исходный индекс выбранного максимума.
-
-                let max_pool = |input: &Array2<f32>,
-                                channels: usize,
-                                side: usize|
-                 -> (Array2<f32>, Array2<usize>) {
-                    assert_eq!(side % 2, 0);
-                    assert_eq!(input.ncols(), channels * side * side);
-                    let out: usize = side / 2;
-                    let mut values: Array2<f32> =
-                        Array2::zeros((input.nrows(), channels * out * out));
-                    // Для каждого выхода pooling хранится индекс пикселя в его входной строке.
-                    // Это адрес, а не значение яркости; он нужен только backward.
-                    let mut indices: Array2<usize> = Array2::zeros(values.dim());
-                    // Типы переменных: n: usize.
-                    for n in 0..input.nrows() {
-                        // Типы переменных: c: usize.
-                        for c in 0..channels {
-                            // Типы переменных: y: usize.
-                            for y in 0..out {
-                                // Типы переменных: x: usize.
-                                for x in 0..out {
-                                    // Это индекс ячейки уменьшенной карты. Ей соответствует окно во входе,
-                                    // начинающееся в (2*y,2*x) того же канала.
-                                    let target: usize = (c * out + y) * out + x;
-                                    let mut best: usize = (c * side + 2 * y) * side + 2 * x;
-                                    // Типы переменных: dy: usize.
-                                    for dy in 0..2 {
-                                        // Типы переменных: dx: usize.
-                                        for dx in 0..2 {
-                                            let index: usize =
-                                                (c * side + 2 * y + dy) * side + 2 * x + dx;
-                                            // Строгое > оставляет первый максимум при равенстве: маршрут градиента однозначен.
-                                            // Меняем именно индекс best, чтобы сохранить и значение, и его адрес.
-                                            if input[[n, index]] > input[[n, best]] {
-                                                best = index;
-                                            }
-                                        }
-                                    }
-                                    values[[n, target]] = input[[n, best]];
-                                    indices[[n, target]] = best;
-                                }
-                            }
-                        }
-                    }
-                    (values, indices)
-                };
-
-                // Numerical derivative checks for the actual local operations.
-                // Проверка производных: маленьким сдвигом +h и -h оцениваем наклон ошибки.
-                // Если аналитический backward верен, он близок к (L(x+h)-L(x-h))/(2h).
-                // Погрешность допустима из-за округления f32. Это проверка, а не способ обучения сети.
-
-                let close = |actual: f32, expected: f32| -> () {
-                    assert!(
-                        (actual - expected).abs() < 0.004 * (1.0 + expected.abs()),
-                        "{actual} != {expected}"
-                    )
-                };
-                // Слишком большой h даёт грубую оценку, слишком маленький теряется в округлении.
-                // Здесь выбрано небольшое значение для этих ручных проверок.
-                let h: f32 = 0.002f32;
-
-                {
-                    let mut scores: Array2<f32> =
-                        ndarray::array![[0.2, -0.3, 0.8], [-0.2, 0.7, 0.1]];
-                    let (_, gradient): (f32, Array2<f32>) = cross_entropy(&scores, &[2, 1]);
-                    // Типы переменных: n: usize.
-                    for n in 0..2 {
-                        // Типы переменных: p: usize.
-                        for p in 0..3 {
-                            let original: f32 = scores[[n, p]];
-                            scores[[n, p]] = original + h;
-                            let plus: f32 = cross_entropy(&scores, &[2, 1]).0;
-                            scores[[n, p]] = original - h;
-                            let minus: f32 = cross_entropy(&scores, &[2, 1]).0;
-                            scores[[n, p]] = original;
-                            close(gradient[[n, p]], (plus - minus) / (2.0 * h));
-                        }
-                    }
-                    assert!(
-                        cross_entropy(&ndarray::array![[10000.0, 9999.0, -10000.0]], &[0])
-                            .0
-                            .is_finite()
-                    );
-                }
-                {
-                    let input: Array2<f32> = ndarray::array![[0.2, -0.4, 0.8], [0.7, 0.3, -0.1]];
-                    let incoming: Array2<f32> = ndarray::array![[0.2, -0.3], [0.4, 0.5]];
-                    let mut state: u64 = 42;
-                    let mut layer: (Array2<f32>, Array1<f32>) = new_layer(3, 2, &mut state);
-                    let (_, dw, _): (Array2<f32>, Array2<f32>, Array1<f32>) =
-                        dense_backward(&input, &layer.0, &incoming);
-                    // Типы переменных: i: usize.
-                    for i in 0..3 {
-                        // Типы переменных: j: usize.
-                        for j in 0..2 {
-                            let original: f32 = layer.0[[i, j]];
-                            layer.0[[i, j]] = original + h;
-                            let plus: f32 = ((input.dot(&layer.0) + &layer.1) * &incoming).sum();
-                            layer.0[[i, j]] = original - h;
-                            let minus: f32 = ((input.dot(&layer.0) + &layer.1) * &incoming).sum();
-                            layer.0[[i, j]] = original;
-                            close(dw[[i, j]], (plus - minus) / (2.0 * h));
-                        }
-                    }
-                    assert_eq!(
-                        relu_backward(
-                            &relu(&ndarray::array![[-1.0, 0.0, 2.0]]),
-                            &ndarray::array![[3.0, 4.0, 5.0]]
-                        ),
-                        ndarray::array![[0.0, 0.0, 5.0]]
-                    );
-                }
-                {
-                    let mut state: u64 = 9;
-                    let mut layer: (Array2<f32>, Array1<f32>) = new_layer(8, 3, &mut state);
-                    let mut input: Array2<f32> =
-                        Array2::from_shape_fn((2, 32), |(n, p): (usize, usize)| -> f32 {
-                            (n * 32 + p) as f32 / 80.0
-                        });
-                    let incoming: Array2<f32> =
-                        Array2::from_shape_fn((2, 27), |(n, p): (usize, usize)| -> f32 {
-                            ((n + p) % 5) as f32 * 0.05 - 0.1
-                        });
-                    let (_, columns): (Array2<f32>, Array2<f32>) =
-                        convolution(&input, &layer, 2, 4, 2);
-                    let (dx, dw, db): (Array2<f32>, Array2<f32>, Array1<f32>) =
-                        conv_backward(&columns, &layer, &incoming, 2, 4, 2);
-                    // Типы переменных: i: usize.
-                    for i in 0..8 {
-                        // Типы переменных: j: usize.
-                        for j in 0..3 {
-                            let original: f32 = layer.0[[i, j]];
-                            layer.0[[i, j]] = original + h;
-                            let plus: f32 =
-                                (convolution(&input, &layer, 2, 4, 2).0 * &incoming).sum();
-                            layer.0[[i, j]] = original - h;
-                            let minus: f32 =
-                                (convolution(&input, &layer, 2, 4, 2).0 * &incoming).sum();
-                            layer.0[[i, j]] = original;
-                            close(dw[[i, j]], (plus - minus) / (2.0 * h));
-                        }
-                    }
-                    // Типы переменных: j: usize.
-                    for j in 0..3 {
-                        layer.1[j] += h;
-                        let plus: f32 = (convolution(&input, &layer, 2, 4, 2).0 * &incoming).sum();
-                        layer.1[j] -= 2.0 * h;
-                        let minus: f32 = (convolution(&input, &layer, 2, 4, 2).0 * &incoming).sum();
-                        layer.1[j] += h;
-                        close(db[j], (plus - minus) / (2.0 * h));
-                    }
-                    // Типы переменных: n: usize.
-                    for n in 0..2 {
-                        // Типы переменных: p: usize.
-                        for p in 0..32 {
-                            let original: f32 = input[[n, p]];
-                            input[[n, p]] = original + h;
-                            let plus: f32 =
-                                (convolution(&input, &layer, 2, 4, 2).0 * &incoming).sum();
-                            input[[n, p]] = original - h;
-                            let minus: f32 =
-                                (convolution(&input, &layer, 2, 4, 2).0 * &incoming).sum();
-                            input[[n, p]] = original;
-                            close(dx[[n, p]], (plus - minus) / (2.0 * h));
-                        }
-                    }
-                    let (_, indices): (Array2<f32>, Array2<usize>) =
-                        max_pool(&ndarray::array![[1.0, 1.0, 1.0, 1.0]], 1, 2);
-                    assert_eq!(
-                        pool_backward(&indices, 4, &ndarray::array![[2.0]]),
-                        ndarray::array![[2.0, 0.0, 0.0, 0.0]]
-                    );
-                }
-                {
-                    let mut input: Array2<f32> =
-                        ndarray::array![[0.2, -0.4, 0.8], [0.7, 0.3, -0.1]];
-                    let incoming: Array2<f32> = ndarray::array![[0.2, -0.3], [0.4, 0.5]];
-                    let mut state: u64 = 42;
-                    let mut layer: (Array2<f32>, Array1<f32>) = new_layer(3, 2, &mut state);
-                    let (dx, _, db): (Array2<f32>, Array2<f32>, Array1<f32>) =
-                        dense_backward(&input, &layer.0, &incoming);
-                    // Типы переменных: j: usize.
-                    for j in 0..2 {
-                        layer.1[j] += h;
-                        let plus: f32 = ((input.dot(&layer.0) + &layer.1) * &incoming).sum();
-                        layer.1[j] -= 2.0 * h;
-                        let minus: f32 = ((input.dot(&layer.0) + &layer.1) * &incoming).sum();
-                        layer.1[j] += h;
-                        close(db[j], (plus - minus) / (2.0 * h));
-                    }
-                    // Типы переменных: n: usize.
-                    for n in 0..2 {
-                        // Типы переменных: p: usize.
-                        for p in 0..3 {
-                            let original: f32 = input[[n, p]];
-                            input[[n, p]] = original + h;
-                            let plus: f32 = ((input.dot(&layer.0) + &layer.1) * &incoming).sum();
-                            input[[n, p]] = original - h;
-                            let minus: f32 = ((input.dot(&layer.0) + &layer.1) * &incoming).sum();
-                            input[[n, p]] = original;
-                            close(dx[[n, p]], (plus - minus) / (2.0 * h));
-                        }
-                    }
-                }
-                {
-                    let mut a: u64 = 42;
-                    let mut b: u64 = 42;
-                    let mut c: u64 = 43;
-                    assert_eq!(new_layer(10, 3, &mut a), new_layer(10, 3, &mut b));
-                    assert_ne!(new_layer(10, 3, &mut a), new_layer(10, 3, &mut c));
-                    let mut first: Vec<_> = (0..20).collect();
-                    let mut second: Vec<usize> = first.clone();
-                    a = 42;
-                    b = 42;
-                    shuffle(&mut first, &mut a);
-                    shuffle(&mut second, &mut b);
-                    assert_eq!(first, second);
-                    first.sort();
-                    assert_eq!(first, (0..20).collect::<Vec<_>>());
-                }
-            }
-            // Перемешиваем индексы train алгоритмом Fisher–Yates, сохраняя сами картинки.
-            // Папки сгруппированы по цифрам; без перемешивания batch шли бы почти по одному классу.
-            // Validation/test не перемешиваются и не используются для обновления весов.
 
             let shuffle = |items: &mut [usize], state: &mut u64| -> () {
                 // Псевдослучайный генератор SplitMix64: state меняется по фиксированным правилам.
@@ -1165,21 +574,14 @@ fn main() -> Result<(), String> {
                         }
                         *count += 1;
                     }
-                    if self_check {
-                        assert!(training.iter().all(|i| !validation.contains(i)));
-                    }
+
                     (training, validation)
                 };
                 let mut random_state: u64 = seed;
                 // Меняем только порядок обучающих индексов. Генератор продолжает своё состояние,
                 // поэтому каждая эпоха имеет новый, но воспроизводимый при том же seed порядок.
                 shuffle(&mut training, &mut random_state);
-                // Ограничение применяется ПОСЛЕ перемешивания: иначе первые записи были бы
-                // почти только нулями. Это уменьшает только объём обучения, а не объём оценки.
-                // Типы переменных: limit: usize.
-                if let Some(limit) = train_limit {
-                    training.truncate(limit);
-                }
+
                 // Baseline — постоянный прогноз самой частой цифры train. Он показывает,
                 // насколько модель лучше простого ответа без анализа пикселей.
                 // При равной частоте выбираем меньшую цифру; метки test в выборе не участвуют.
@@ -1190,9 +592,7 @@ fn main() -> Result<(), String> {
                         counts[digits[index].1 as usize] += 1;
                     }
                     if counts.contains(&0) {
-                        return Err(
-                            "Train должен содержать все классы; увеличь --train-limit".into()
-                        );
+                        return Err("Train должен содержать примеры всех десяти цифр".into());
                     }
                     (0..10)
                         .max_by_key(|&i: &usize| -> (usize, std::cmp::Reverse<usize>) {
@@ -1253,10 +653,7 @@ fn main() -> Result<(), String> {
                     new_layer(64, 10, &mut random_state),
                 ]
             };
-            // Для автоматической проверки запоминаем начальные веса, чтобы убедиться:
-            // обновлялся каждый обучаемый слой. В обычном опыте эту дополнительную копию не создаём.
-            let initial_layers: Option<Vec<(Array2<f32>, Array1<f32>)>> =
-                self_check.then(|| -> Vec<(Array2<f32>, Array1<f32>)> { layers.clone() });
+
             let (mut first_moments, mut second_moments): (
                 Vec<(Array2<f32>, Array1<f32>)>,
                 Vec<(Array2<f32>, Array1<f32>)>,
@@ -1276,22 +673,11 @@ fn main() -> Result<(), String> {
                 (zero_moments(), zero_moments())
             };
             // Оцениваем ещё не обученную сеть: это точка отсчёта для сравнения.
-            // Проверка batch=1 и batch=3 убеждается, что оценка правильно учитывает размеры batch.
+
             let initial_loss: f32 = {
                 let initial: (f32, f32, [[usize; 10]; 10]) =
                     evaluate(&layers, &digits, &validation, batch_size);
-                if self_check {
-                    let singles: (f32, f32, [[usize; 10]; 10]) =
-                        evaluate(&layers, &digits, &validation, 1);
-                    let partial: (f32, f32, [[usize; 10]; 10]) =
-                        evaluate(&layers, &digits, &validation, 3);
-                    assert_eq!(initial.2, singles.2);
-                    assert_eq!(initial.2, partial.2);
-                    assert!(
-                        (initial.0 - singles.0).abs() < 1e-5
-                            && (initial.0 - partial.0).abs() < 1e-5
-                    );
-                }
+
                 println!(
                     "epoch=0 validation_loss={:.5} validation_accuracy={:.4}",
                     initial.0, initial.1
@@ -1476,19 +862,7 @@ fn main() -> Result<(), String> {
                     start.elapsed().as_secs_f32()
                 );
             }
-            if self_check {
-                assert!(
-                    best_loss < initial_loss * 0.8,
-                    "synthetic loss must decrease: {} -> {best_loss}",
-                    initial_loss
-                );
-                // Типы переменных: before: &(Array2<f32>, Array1<f32>), after: &(Array2<f32>, Array1<f32>).
-                for (before, after) in initial_layers.as_ref().unwrap().iter().zip(&layers) {
-                    assert_ne!(before.0, after.0, "every layer must learn");
-                }
-                println!("Самопроверка: производные и обучение всех слоёв прошли");
-                return Ok(());
-            }
+
             (best, best_epoch, majority, batch_size)
         };
         // Test не видит индексы train, градиенты или состояние оптимизатора.

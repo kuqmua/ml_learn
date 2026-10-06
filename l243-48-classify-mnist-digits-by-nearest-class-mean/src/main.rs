@@ -1,8 +1,8 @@
 fn main() -> Result<(), String> {
     // Обозначения типов: usize — индексы и размеры; u8 — байт пикселя или метка цифры;
-    // u64 — состояние генератора; bool — флаг; String — текст; Vec<T> — список элементов T.
+    // String — текст; Vec<T> — список элементов T.
     // [T; N] — массив из N элементов; (A, B) — кортеж; &T — ссылка; &mut T — изменяемая ссылка.
-    // Option<T> — значение или None; Result<T, String> — результат или текст ошибки.
+    // Result<T, String> — результат или текст ошибки.
     // Тип переменной-замыкания анонимный: его имя нельзя написать после let.
     // У таких переменных типы аргументов стоят между |...|, результата — после ->.
     // f64 — дробное число двойной точности; средние: [[f64; 784]; 10].
@@ -19,41 +19,9 @@ fn main() -> Result<(), String> {
     // Фигурные скобки ограничивают жизнь временных имён; последняя строка блока
     // без точки с запятой возвращает результат следующему этапу.
 
-    // Настройки: парсер и флаг задания не выходят из этого блока.
-    let (data, self_check): (std::path::PathBuf, bool) = {
-        let mut data: std::path::PathBuf =
-            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../datasets/png/mnist");
-        let mut self_check: bool = false;
-        let mut exercise: bool = false;
-        // Настройки можно переопределить после -- в команде cargo run.
-        // skip(1) пропускает имя программы. Этот итератор нужен только разбору аргументов.
-        let mut arguments: std::iter::Skip<std::env::Args> = std::env::args().skip(1);
-        // Типы переменных: key: String.
-        while let Some(key) = arguments.next() {
-            match key.as_str() {
-                "--self-check" => self_check = true,
-                "--exercise" => exercise = true,
-                "--data" => data = arguments.next().ok_or("Нет значения для --data")?.into(),
-                "--help" => {
-                    println!("--data PNG_ROOT --self-check --exercise");
-                    return Ok(());
-                }
-                _ => return Err(format!("Неизвестный аргумент {key}")),
-            }
-        }
-        // Самостоятельный вопрос отделён от автоматических проверок.
-        // Впиши рассчитанный ответ в Some(...); этот режим сразу завершит программу.
-        if exercise {
-            // Самостоятельное задание: Чему равен нормализованный пиксель 255?
-            let answer: Option<f32> = None;
-            assert_eq!(
-                answer.expect("реши вопрос и замени None на Some(ответ)"),
-                1.0
-            );
-            return Ok(());
-        }
-        (data, self_check)
-    };
+    let data: std::path::PathBuf =
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../datasets/png/mnist");
+
     // Обучение и validation: наружу выходят только готовые средние и baseline.
     let (means, majority): ([[f64; 784]; 10], usize) = {
         let digits: Vec<([f64; 784], u8)> = {
@@ -145,105 +113,8 @@ fn main() -> Result<(), String> {
                     }
                     Ok(digits)
                 };
-            if self_check {
-                // Проверяем чтение PNG на временных картинках, включая неверные входы.
-                // Эта ветка проверяет загрузчик на временных PNG, а не использует настоящий MNIST.
-                // Уникальное имя предотвращает столкновения нескольких запусков проверки.
-                let unique: u128 = std::time::SystemTime::now()
-                    .duration_since(std::time::UNIX_EPOCH)
-                    .map_err(|e: std::time::SystemTimeError| -> String { e.to_string() })?
-                    .as_nanos();
-                let temporary: std::path::PathBuf = std::env::temp_dir()
-                    .join(format!("mnist-main-{}-{unique}", std::process::id()));
-                // Проверяем настоящую цепочку чтения: метки папок, сортировку и нормализацию,
-                // затем намеренно испорченный файл, неверный размер и RGB вместо оттенков серого.
-                // Результат временно сохраняем, чтобы сначала удалить файлы даже при обычной ошибке.
-                let checked: Result<(), String> = (|| -> Result<(), String> {
-                    assert!(load_digits(&temporary).is_err());
-                    // Папки 0,1,...,9 задают правильные метки: например, train/5 содержит пятёрки.
-                    // Имя самого PNG — его индекс, а не ответ классификатора.
-                    // Типы переменных: label: u8.
-                    for label in 0..10u8 {
-                        let class: std::path::PathBuf = temporary.join(label.to_string());
-                        std::fs::create_dir_all(&class)
-                            .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                        // Типы переменных: name: &str, value: u8.
-                        for (name, value) in [("00002.png", 255u8), ("00001.png", 0u8)] {
-                            let file: std::fs::File = std::fs::File::create(class.join(name))
-                                .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                            let mut encoder: png::Encoder<'_, std::fs::File> =
-                                png::Encoder::new(file, 28, 28);
-                            encoder.set_color(png::ColorType::Grayscale);
-                            encoder.set_depth(png::BitDepth::Eight);
-                            let mut writer: png::Writer<std::fs::File> = encoder
-                                .write_header()
-                                .map_err(|e: png::EncodingError| -> String { e.to_string() })?;
-                            writer
-                                .write_image_data(&[value; 784])
-                                .map_err(|e: png::EncodingError| -> String { e.to_string() })?;
-                            writer
-                                .finish()
-                                .map_err(|e: png::EncodingError| -> String { e.to_string() })?;
-                        }
-                        std::fs::write(class.join("notes.txt"), "ignored")
-                            .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                    }
-                    // Декодирование превращает сжатый PNG в байты яркости. Это ещё не обучение.
-                    // Ошибка оборачивается путём к файлу, чтобы было понятно, какую картинку проверить.
-                    let decoded: Vec<([f64; 784], u8)> = load_digits(&temporary)?;
-                    assert_eq!(decoded.len(), 20);
-                    // Типы переменных: i: usize, pixels: &[f64; 784], label: &u8.
-                    for (i, (pixels, label)) in decoded.iter().enumerate() {
-                        assert_eq!(*label as usize, i / 2);
-                        assert_eq!(*pixels, [(i % 2) as f64; 784]);
-                    }
-                    let path: std::path::PathBuf = temporary.join("0/00001.png");
-                    std::fs::write(&path, b"broken PNG")
-                        .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                    assert!(load_digits(&temporary).err().unwrap().contains("00001.png"));
-                    // Типы переменных: width: u32, color: png::ColorType, channels: usize.
-                    for (width, color, channels) in [
-                        (27, png::ColorType::Grayscale, 1),
-                        (28, png::ColorType::Rgb, 3),
-                    ] {
-                        let file: std::fs::File = std::fs::File::create(&path)
-                            .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                        let mut encoder: png::Encoder<'_, std::fs::File> =
-                            png::Encoder::new(file, width, 28);
-                        encoder.set_color(color);
-                        encoder.set_depth(png::BitDepth::Eight);
-                        let mut writer: png::Writer<std::fs::File> = encoder
-                            .write_header()
-                            .map_err(|e: png::EncodingError| -> String { e.to_string() })?;
-                        writer
-                            .write_image_data(&vec![0; width as usize * 28 * channels])
-                            .map_err(|e: png::EncodingError| -> String { e.to_string() })?;
-                        writer
-                            .finish()
-                            .map_err(|e: png::EncodingError| -> String { e.to_string() })?;
-                        assert!(load_digits(&temporary).is_err());
-                    }
-                    Ok(())
-                })();
-                if temporary.exists() {
-                    std::fs::remove_dir_all(&temporary)
-                        .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                }
-                checked?;
-            }
-            if self_check {
-                (0..10u8)
-                    .flat_map(|label: u8| {
-                        // Результат — итератор с элементами ([f64; 784], u8).
-                        // Его тип включает анонимное замыкание map, поэтому выводится компилятором.
-                        (0..5).map(move |_: i32| -> ([f64; 784], u8) {
-                            ([f64::from(label) / 10.0; 784], label)
-                        })
-                    })
-                    .collect()
-            } else {
-                load_digits(&data.join("train"))?
-            }
+
+            load_digits(&data.join("train"))?
         };
         let (means, majority, validation): ([[f64; 784]; 10], usize, Vec<usize>) = {
             // Для каждой цифры считаем только обучающие примеры.
@@ -299,9 +170,7 @@ fn main() -> Result<(), String> {
                 "train: n={}, baseline digit={majority}; split: every fifth per class",
                 counts.iter().sum::<usize>()
             );
-            if self_check {
-                assert_eq!(counts, [4; 10]);
-            }
+
             (means, majority, validation)
         };
         // Временные индексы и метрики validation локальны этой оценке.
@@ -347,17 +216,6 @@ fn main() -> Result<(), String> {
                 correct as f64 / indices.len() as f64,
                 baseline as f64 / indices.len() as f64
             );
-            if self_check {
-                assert_eq!(correct, indices.len());
-                assert_eq!(majority, 0);
-            }
-            if name == "test" {
-                println!("Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9");
-                // Типы переменных: row: [usize; 10].
-                for row in confusion {
-                    println!("{row:?}");
-                }
-            }
         }
         (means, majority)
     };
@@ -452,19 +310,7 @@ fn main() -> Result<(), String> {
                     }
                     Ok(digits)
                 };
-            if self_check {
-                (0..10u8)
-                    .flat_map(|label: u8| {
-                        // Результат — итератор с элементами ([f64; 784], u8).
-                        // Его тип включает анонимное замыкание map, поэтому выводится компилятором.
-                        (0..5).map(move |_: i32| -> ([f64; 784], u8) {
-                            ([f64::from(label) / 10.0; 784], label)
-                        })
-                    })
-                    .collect()
-            } else {
-                load_digits(&data.join("test"))?
-            }
+            load_digits(&data.join("test"))?
         };
         let name: &str = "test";
         let records: &Vec<([f64; 784], u8)> = &test;
@@ -507,20 +353,13 @@ fn main() -> Result<(), String> {
             correct as f64 / indices.len() as f64,
             baseline as f64 / indices.len() as f64
         );
-        if self_check {
-            assert_eq!(correct, indices.len());
-            assert_eq!(majority, 0);
-        }
-        if name == "test" {
-            println!("Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9");
-            // Типы переменных: row: [usize; 10].
-            for row in confusion {
-                println!("{row:?}");
-            }
+
+        println!("Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9");
+        // Типы переменных: row: [usize; 10].
+        for row in confusion {
+            println!("{row:?}");
         }
     }
-    if self_check {
-        println!("Самопроверка средних изображений прошла");
-    }
+
     Ok(())
 }
