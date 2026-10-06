@@ -1,5 +1,35 @@
 fn main() -> Result<(), String> {
-    // Обозначения типов: usize — индексы и размеры; u8 — байт пикселя или метка цифры;
+    // Метка — одна из десяти цифр. Значения вроде 42 теперь нельзя записать как метку.
+    // digit as usize даёт число 0..9 для индексов массивов, имён папок и печати.
+    #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+    #[repr(u8)]
+    enum Digit {
+        Zero = 0,
+        One = 1,
+        Two = 2,
+        Three = 3,
+        Four = 4,
+        Five = 5,
+        Six = 6,
+        Seven = 7,
+        Eight = 8,
+        Nine = 9,
+    }
+    // Порядок соответствует папкам 0..9 и столбцам выходной матрицы модели.
+    let classes: [Digit; 10] = [
+        Digit::Zero,
+        Digit::One,
+        Digit::Two,
+        Digit::Three,
+        Digit::Four,
+        Digit::Five,
+        Digit::Six,
+        Digit::Seven,
+        Digit::Eight,
+        Digit::Nine,
+    ];
+
+    // Обозначения типов: usize — индексы и размеры; u8 — байт пикселя; Digit — метка цифры;
     // String — текст; Vec<T> — список элементов T.
     // [T; N] — массив из N элементов; (A, B) — кортеж; &T — ссылка; &mut T — изменяемая ссылка.
     // Result<T, String> — результат или текст ошибки.
@@ -22,14 +52,15 @@ fn main() -> Result<(), String> {
     let data: std::path::PathBuf =
         std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../datasets/png/mnist");
 
+    // Запись датасета: ([f64; 784], Digit), например (pixels, Digit::Seven).
     // Один загрузчик PNG для train и test: возвращает пиксели и правильные метки.
-    let load_digits = |directory: &std::path::Path| -> Result<Vec<([f64; 784], u8)>, String> {
-        let mut digits: Vec<([f64; 784], u8)> = Vec::new();
+    let load_digits = |directory: &std::path::Path| -> Result<Vec<([f64; 784], Digit)>, String> {
+        let mut digits: Vec<([f64; 784], Digit)> = Vec::new();
         // Папки 0,1,...,9 задают правильные метки: например, train/5 содержит пятёрки.
         // Имя самого PNG — его индекс, а не ответ классификатора.
-        // Типы переменных: label: u8.
-        for label in 0..10u8 {
-            let class: std::path::PathBuf = directory.join(label.to_string());
+        // Типы переменных: label: Digit.
+        for label in classes {
+            let class: std::path::PathBuf = directory.join((label as usize).to_string());
             let entries: std::fs::ReadDir =
                 std::fs::read_dir(&class).map_err(|e: std::io::Error| -> String {
                     format!(
@@ -104,9 +135,9 @@ fn main() -> Result<(), String> {
 
     // Одна оценка для validation и test: прогнозы, baseline и матрица ошибок.
     let evaluate = |means: &[[f64; 784]; 10],
-                    records: &[([f64; 784], u8)],
+                    records: &[([f64; 784], Digit)],
                     indices: &[usize],
-                    majority: usize|
+                    majority: Digit|
      -> (usize, usize, [[usize; 10]; 10]) {
         // confusion[истинная_цифра][предсказанная_цифра] считает такие пары.
         // Диагональ — верные ответы; числа вне диагонали показывают, какие цифры путаются.
@@ -114,27 +145,28 @@ fn main() -> Result<(), String> {
         let mut baseline: usize = 0usize;
         // Типы переменных: index: usize.
         for &index in indices {
-            let (pixels, label): &([f64; 784], u8) = &records[index];
+            let (pixels, label): &([f64; 784], Digit) = &records[index];
             // Проверяем все десять классов и выбираем наименьшее расстояние до среднего.
             // Метка текущей картинки не участвует в выборе; её используем позже для проверки ответа.
-            let predicted: usize = (0..10)
-                .min_by(|&a: &usize, &b: &usize| -> std::cmp::Ordering {
+            let predicted: Digit = classes
+                .into_iter()
+                .min_by(|&a: &Digit, &b: &Digit| -> std::cmp::Ordering {
                     // Квадрат евклидова расстояния: sum_p((pixel[p]-mean[c,p])²).
                     // Квадраты не дают положительным и отрицательным различиям сократиться.
                     // Корень не нужен: он не меняет порядок расстояний и выбранную цифру.
 
-                    let distance = |class: usize| -> f64 {
+                    let distance = |class: Digit| -> f64 {
                         pixels
                             .iter()
-                            .zip(means[class])
+                            .zip(means[class as usize])
                             .map(|(x, y): (&f64, f64)| -> f64 { (x - y).powi(2) })
                             .sum::<f64>()
                     };
                     distance(a).total_cmp(&distance(b))
                 })
                 .unwrap();
-            confusion[*label as usize][predicted] += 1;
-            baseline += usize::from(*label as usize == majority);
+            confusion[*label as usize][predicted as usize] += 1;
+            baseline += usize::from(*label == majority);
         }
         // Сумма диагонали матрицы ошибок — число правильных прогнозов.
         // Accuracy = correct / число проверенных картинок; например, 8 верных из 10 дают 0.8.
@@ -160,9 +192,9 @@ fn main() -> Result<(), String> {
     };
 
     // Обучение и validation: наружу выходят только готовые средние и baseline.
-    let (means, majority): ([[f64; 784]; 10], usize) = {
-        let digits: Vec<([f64; 784], u8)> = load_digits(&data.join("train"))?;
-        let (means, majority, validation): ([[f64; 784]; 10], usize, Vec<usize>) = {
+    let (means, majority): ([[f64; 784]; 10], Digit) = {
+        let digits: Vec<([f64; 784], Digit)> = load_digits(&data.join("train"))?;
+        let (means, majority, validation): ([[f64; 784]; 10], Digit, Vec<usize>) = {
             // Для каждой цифры считаем только обучающие примеры.
             // Эти числа нужны для деления суммы пикселей на число картинок и выбора baseline.
             let mut counts: [usize; 10] = [0usize; 10];
@@ -173,7 +205,7 @@ fn main() -> Result<(), String> {
             // Он отвечает за разделение, а counts — только за количество использованных в обучении.
             let mut seen: [usize; 10] = [0usize; 10];
             let mut validation: Vec<usize> = Vec::new();
-            // Типы переменных: index: usize, pixels: &[f64; 784], label: &u8.
+            // Типы переменных: index: usize, pixels: &[f64; 784], label: &Digit.
             for (index, (pixels, label)) in digits.iter().enumerate() {
                 let class: usize = *label as usize;
                 // Отложенный пример добавляем только в validation: он не меняет sums или counts.
@@ -207,14 +239,17 @@ fn main() -> Result<(), String> {
             // Baseline — постоянный прогноз самой частой цифры train. Он показывает,
             // насколько модель лучше простого ответа без анализа пикселей.
             // При равной частоте выбираем меньшую цифру; метки test в выборе не участвуют.
-            let majority: usize = (0..10)
-                .max_by_key(|&i: &usize| -> (usize, std::cmp::Reverse<usize>) {
-                    (counts[i], std::cmp::Reverse(i))
+            let majority: Digit = classes
+                .into_iter()
+                .max_by_key(|&digit: &Digit| -> (usize, std::cmp::Reverse<usize>) {
+                    let index: usize = digit as usize;
+                    (counts[index], std::cmp::Reverse(index))
                 })
                 .unwrap();
             println!(
-                "train: n={}, baseline digit={majority}; split: every fifth per class",
-                counts.iter().sum::<usize>()
+                "train: n={}, baseline digit={}; split: every fifth per class",
+                counts.iter().sum::<usize>(),
+                majority as usize
             );
 
             (means, majority, validation)
@@ -229,7 +264,7 @@ fn main() -> Result<(), String> {
     };
     // Test загружается после обучения; его данные и метрики остаются здесь.
     {
-        let test: Vec<([f64; 784], u8)> = load_digits(&data.join("test"))?;
+        let test: Vec<([f64; 784], Digit)> = load_digits(&data.join("test"))?;
         let indices: Vec<usize> = (0..test.len()).collect();
         report(
             "test",

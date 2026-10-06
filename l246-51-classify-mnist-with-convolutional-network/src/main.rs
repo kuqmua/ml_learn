@@ -1,5 +1,35 @@
 fn main() -> Result<(), String> {
-    // Обозначения типов: usize — индексы и размеры; u8 — байт пикселя или метка цифры;
+    // Метка — одна из десяти цифр. Значения вроде 42 теперь нельзя записать как метку.
+    // digit as usize даёт число 0..9 для индексов массивов, имён папок и печати.
+    #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+    #[repr(u8)]
+    enum Digit {
+        Zero = 0,
+        One = 1,
+        Two = 2,
+        Three = 3,
+        Four = 4,
+        Five = 5,
+        Six = 6,
+        Seven = 7,
+        Eight = 8,
+        Nine = 9,
+    }
+    // Порядок соответствует папкам 0..9 и столбцам выходной матрицы модели.
+    let classes: [Digit; 10] = [
+        Digit::Zero,
+        Digit::One,
+        Digit::Two,
+        Digit::Three,
+        Digit::Four,
+        Digit::Five,
+        Digit::Six,
+        Digit::Seven,
+        Digit::Eight,
+        Digit::Nine,
+    ];
+
+    // Обозначения типов: usize — индексы и размеры; u8 — байт пикселя; Digit — метка цифры;
     // u64 — состояние генератора; String — текст; Vec<T> — список элементов T.
     // [T; N] — массив из N элементов; (A, B) — кортеж; &T — ссылка; &mut T — изменяемая ссылка.
     // Result<T, String> — результат или текст ошибки.
@@ -33,14 +63,15 @@ fn main() -> Result<(), String> {
     let learning_rate: f32 = 0.001;
     let seed: u64 = 42;
 
+    // Запись датасета: ([f64; 784], Digit), например (pixels, Digit::Seven).
     // Один загрузчик PNG для train и test: возвращает пиксели и правильные метки.
-    let load_digits = |directory: &std::path::Path| -> Result<Vec<([f64; 784], u8)>, String> {
-        let mut digits: Vec<([f64; 784], u8)> = Vec::new();
+    let load_digits = |directory: &std::path::Path| -> Result<Vec<([f64; 784], Digit)>, String> {
+        let mut digits: Vec<([f64; 784], Digit)> = Vec::new();
         // Папки 0,1,...,9 задают правильные метки: например, train/5 содержит пятёрки.
         // Имя самого PNG — его индекс, а не ответ классификатора.
-        // Типы переменных: label: u8.
-        for label in 0..10u8 {
-            let class: std::path::PathBuf = directory.join(label.to_string());
+        // Типы переменных: label: Digit.
+        for label in classes {
+            let class: std::path::PathBuf = directory.join((label as usize).to_string());
             let entries: std::fs::ReadDir =
                 std::fs::read_dir(&class).map_err(|e: std::io::Error| -> String {
                     format!(
@@ -292,21 +323,21 @@ fn main() -> Result<(), String> {
         // Здесь сразу вычисляем и L, и производную dL/dscores, нужную для обучения.
         // Форма scores — [N,K], где K=10 — число классов цифр.
 
-        let cross_entropy = |scores: &Array2<f32>, labels: &[u8]| -> (f32, Array2<f32>) {
+        let cross_entropy = |scores: &Array2<f32>, labels: &[Digit]| -> (f32, Array2<f32>) {
             assert_eq!(scores.nrows(), labels.len());
             assert!(!labels.is_empty());
             // Копия сначала содержит scores. По ходу цикла превращаем её в вероятности,
             // а затем в производные; исходные scores при этом остаются неизменными.
             let mut gradient: Array2<f32> = scores.clone();
             let mut loss: f32 = 0.0;
-            // Типы переменных: row: ndarray::ArrayViewMut1<'_, f32>, label: u8.
+            // Типы переменных: row: ndarray::ArrayViewMut1<'_, f32>, label: Digit.
             for (mut row, &label) in gradient.rows_mut().into_iter().zip(labels) {
                 assert!((label as usize) < row.len());
                 // Softmax: p_c = exp(score_c) / sum(exp(scores)). Вычитаем один максимум
                 // из всех scores: вероятности сохраняются, а экспоненты не переполняются.
                 let max: f32 = row.iter().copied().fold(f32::NEG_INFINITY, f32::max);
                 // Сохраняем исходный score правильного класса до преобразования строки.
-                // label — индекс правильной цифры, известный из папки датасета.
+                // label — правильная цифра; label as usize — её индекс, известный из папки датасета.
                 let target: f32 = row[label as usize];
                 // Теперь в строке exp(score_c - max); это положительные ненормированные веса.
                 // Их сумма далее нормирует строку до вероятностей с суммой 1.
@@ -328,17 +359,18 @@ fn main() -> Result<(), String> {
         };
         // Один batch для обучения и оценки: строки X=[N,784], метки labels=[N].
         // Индексы выбирают записи; нормализованные f64 пиксели переводим в f32 сети.
-        let batch = |digits: &[([f64; 784], u8)], examples: &[usize]| -> (Array2<f32>, Vec<u8>) {
-            (
-                Array2::from_shape_fn((examples.len(), 784), |(n, p): (usize, usize)| -> f32 {
-                    digits[examples[n]].0[p] as f32
-                }),
-                examples
-                    .iter()
-                    .map(|&i: &usize| -> u8 { digits[i].1 })
-                    .collect::<Vec<_>>(),
-            )
-        };
+        let batch =
+            |digits: &[([f64; 784], Digit)], examples: &[usize]| -> (Array2<f32>, Vec<Digit>) {
+                (
+                    Array2::from_shape_fn((examples.len(), 784), |(n, p): (usize, usize)| -> f32 {
+                        digits[examples[n]].0[p] as f32
+                    }),
+                    examples
+                        .iter()
+                        .map(|&i: &usize| -> Digit { digits[i].1 })
+                        .collect::<Vec<Digit>>(),
+                )
+            };
 
         // Оценка только читает веса: не передаёт производные назад через слои и не обновляет параметры.
         // Возвращаем (средняя loss, доля верных ответов, матрица ошибок).
@@ -346,7 +378,7 @@ fn main() -> Result<(), String> {
         // cross_entropy возвращает и loss, и производную по scores; здесь берём только .0 (loss).
 
         let evaluate = |layers: &[Layer],
-                        digits: &[([f64; 784], u8)],
+                        digits: &[([f64; 784], Digit)],
                         examples: &[usize],
                         batch_size: usize|
          -> (f32, f32, [[usize; 10]; 10]) {
@@ -354,14 +386,15 @@ fn main() -> Result<(), String> {
             // Softmax сохраняет порядок scores, поэтому для выбора класса вероятности не нужны.
             // При одинаковых scores берём меньший индекс: результат однозначен.
 
-            let argmax = |row: ndarray::ArrayView1<'_, f32>| -> usize {
-                (0..row.len())
+            let argmax = |row: ndarray::ArrayView1<'_, f32>| -> Digit {
+                let index: usize = (0..row.len())
                     .max_by(|&a: &usize, &b: &usize| -> std::cmp::Ordering {
                         row[a]
                             .total_cmp(&row[b])
                             .then_with(|| -> std::cmp::Ordering { b.cmp(&a) })
                     })
-                    .unwrap()
+                    .unwrap();
+                classes[index]
             };
 
             assert!(!examples.is_empty() && batch_size > 0);
@@ -371,7 +404,7 @@ fn main() -> Result<(), String> {
             let mut loss: f32 = 0.0;
             // Типы переменных: indices: &[usize].
             for indices in examples.chunks(batch_size) {
-                let (input, labels): (Array2<f32>, Vec<u8>) = batch(digits, indices);
+                let (input, labels): (Array2<f32>, Vec<Digit>) = batch(digits, indices);
                 let (states, _, _): (Vec<Array2<f32>>, Vec<Array2<f32>>, Vec<Array2<usize>>) =
                     forward(layers, &input);
                 let scores: &Array2<f32> = states.last().unwrap();
@@ -379,9 +412,10 @@ fn main() -> Result<(), String> {
                 // чтобы накопить сумму по картинкам; в конце делим на размер всей выборки.
                 // Так маленький последний batch не получает такой же вес, как большой.
                 loss += cross_entropy(scores, &labels).0 * indices.len() as f32;
-                // Типы переменных: row: ndarray::ArrayBase<ndarray::ViewRepr<&f32>, ndarray::Dim<[usize; 1]>, f32>, label: u8.
+                // Типы переменных: row: ndarray::ArrayBase<ndarray::ViewRepr<&f32>, ndarray::Dim<[usize; 1]>, f32>, label: Digit.
                 for (row, label) in scores.rows().into_iter().zip(labels) {
-                    confusion[label as usize][argmax(row)] += 1;
+                    let predicted: Digit = argmax(row);
+                    confusion[label as usize][predicted as usize] += 1;
                 }
             }
             (
@@ -397,14 +431,14 @@ fn main() -> Result<(), String> {
         let (best, best_epoch, majority, batch_size): (
             Vec<(Array2<f32>, Array1<f32>)>,
             usize,
-            usize,
+            Digit,
             usize,
         ) = {
             println!(
                 "CNN conv5(8) -> pool -> conv3(16) -> pool -> dense64 -> 10: epochs={epochs}, batch={batch_size}, lr={learning_rate}, seed={seed}, data={}",
                 data.display()
             );
-            let digits: Vec<([f64; 784], u8)> = load_digits(&data.join("train"))?;
+            let digits: Vec<([f64; 784], Digit)> = load_digits(&data.join("train"))?;
             // Для Z = XW+b и входящего G=dL/dZ правило цепочки даёт:
             // dL/dX = G W^T, dL/dW = X^T G, dL/db = сумма строк G.
             // Формы: X=[R,D], W=[D,K], G=[R,K]; результаты [R,D], [D,K], [K].
@@ -534,7 +568,7 @@ fn main() -> Result<(), String> {
             let (mut training, validation, majority, mut random_state): (
                 Vec<usize>,
                 Vec<usize>,
-                usize,
+                Digit,
                 u64,
             ) = {
                 let (mut training, validation): (Vec<usize>, Vec<usize>) = {
@@ -543,7 +577,7 @@ fn main() -> Result<(), String> {
                     let mut class_counts: [usize; 10] = [0usize; 10];
                     let (mut training, mut validation): (Vec<usize>, Vec<usize>) =
                         (Vec::new(), Vec::new());
-                    // Типы переменных: index: usize, label: &u8.
+                    // Типы переменных: index: usize, label: &Digit.
                     for (index, (_, label)) in digits.iter().enumerate() {
                         let count: &mut usize = &mut class_counts[*label as usize];
                         // Каждый пятый пример своего класса идёт в validation, остальные — в train.
@@ -567,7 +601,7 @@ fn main() -> Result<(), String> {
                 // Baseline — постоянный прогноз самой частой цифры train. Он показывает,
                 // насколько модель лучше простого ответа без анализа пикселей.
                 // При равной частоте выбираем меньшую цифру; метки test в выборе не участвуют.
-                let majority: usize = {
+                let majority: Digit = {
                     let mut counts: [usize; 10] = [0usize; 10];
                     // Типы переменных: index: usize.
                     for &index in &training {
@@ -576,16 +610,19 @@ fn main() -> Result<(), String> {
                     if counts.contains(&0) {
                         return Err("Train должен содержать примеры всех десяти цифр".into());
                     }
-                    (0..10)
-                        .max_by_key(|&i: &usize| -> (usize, std::cmp::Reverse<usize>) {
-                            (counts[i], std::cmp::Reverse(i))
+                    classes
+                        .into_iter()
+                        .max_by_key(|&digit: &Digit| -> (usize, std::cmp::Reverse<usize>) {
+                            let index: usize = digit as usize;
+                            (counts[index], std::cmp::Reverse(index))
                         })
                         .unwrap()
                 };
                 println!(
-                    "train={}, validation={}, baseline digit={majority}; split=every fifth per class, sorted PNG filenames",
+                    "train={}, validation={}, baseline digit={}; split=every fifth per class, sorted PNG filenames",
                     training.len(),
-                    validation.len()
+                    validation.len(),
+                    majority as usize
                 );
                 (training, validation, majority, random_state)
             };
@@ -674,7 +711,7 @@ fn main() -> Result<(), String> {
                     // Наружу из этого блока выходят только ошибка batch и градиенты параметров;
                     // активации, окна свёрток и промежуточные производные остаются внутри.
                     let (loss, gradients): (f32, Vec<(Array2<f32>, Array1<f32>)>) = {
-                        let (input, labels): (Array2<f32>, Vec<u8>) = batch(&digits, examples);
+                        let (input, labels): (Array2<f32>, Vec<Digit>) = batch(&digits, examples);
                         let (states, columns, indices): (
                             Vec<Array2<f32>>,
                             Vec<Array2<f32>>,
@@ -814,8 +851,8 @@ fn main() -> Result<(), String> {
         };
         // Test не видит индексы train, градиенты или состояние оптимизатора.
         {
-            let test: Vec<([f64; 784], u8)> = load_digits(&data.join("test"))?;
-            let test_indices: Vec<_> = (0..test.len()).collect();
+            let test: Vec<([f64; 784], Digit)> = load_digits(&data.join("test"))?;
+            let test_indices: Vec<usize> = (0..test.len()).collect();
             // Итоговый отчёт на официальном test: используем выбранную по validation копию best.
             // По test не выбираем веса, число эпох или скорость обучения.
             let metrics: (f32, f32, [[usize; 10]; 10]) =
@@ -824,7 +861,7 @@ fn main() -> Result<(), String> {
             // используются только для подсчёта качества уже выбранного baseline.
             let baseline: f32 = test
                 .iter()
-                .filter(|d: &&([f64; 784], u8)| -> bool { d.1 as usize == majority })
+                .filter(|d: &&([f64; 784], Digit)| -> bool { d.1 == majority })
                 .count() as f32
                 / test.len() as f32;
             println!(
