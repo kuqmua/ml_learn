@@ -1,22 +1,22 @@
 MLP 784 -> 128 -> ReLU -> 10: epochs=15, batch=64, lr=0.001, seed=42, data=/home/sergey/projects/ml_learn/l245-50-classify-mnist-with-hidden-layer/../datasets/png/mnist
 train=47995, validation=12005, baseline digit=1; split=every fifth per class, sorted PNG filenames
 epoch=0 validation_loss=2.41233 validation_accuracy=0.0674
-epoch=1 train_loss=0.32135 validation_loss=0.18820 validation_accuracy=0.9488 elapsed=7.3s
-epoch=2 train_loss=0.14709 validation_loss=0.13624 validation_accuracy=0.9613 elapsed=8.5s
-epoch=3 train_loss=0.10467 validation_loss=0.11664 validation_accuracy=0.9666 elapsed=9.9s
-epoch=4 train_loss=0.08004 validation_loss=0.10124 validation_accuracy=0.9711 elapsed=11.4s
-epoch=5 train_loss=0.06314 validation_loss=0.09396 validation_accuracy=0.9736 elapsed=12.6s
-epoch=6 train_loss=0.05064 validation_loss=0.09092 validation_accuracy=0.9745 elapsed=14.2s
-epoch=7 train_loss=0.04096 validation_loss=0.08609 validation_accuracy=0.9757 elapsed=15.5s
-epoch=8 train_loss=0.03287 validation_loss=0.08977 validation_accuracy=0.9748 elapsed=17.1s
-epoch=9 train_loss=0.02765 validation_loss=0.08500 validation_accuracy=0.9757 elapsed=18.6s
-epoch=10 train_loss=0.02191 validation_loss=0.09348 validation_accuracy=0.9754 elapsed=19.9s
-epoch=11 train_loss=0.01851 validation_loss=0.09690 validation_accuracy=0.9747 elapsed=21.2s
-epoch=12 train_loss=0.01452 validation_loss=0.09460 validation_accuracy=0.9761 elapsed=22.6s
-epoch=13 train_loss=0.01274 validation_loss=0.09351 validation_accuracy=0.9761 elapsed=23.9s
-epoch=14 train_loss=0.01012 validation_loss=0.09982 validation_accuracy=0.9754 elapsed=25.0s
-epoch=15 train_loss=0.00825 validation_loss=0.09716 validation_accuracy=0.9761 elapsed=26.0s
-selected_epoch=9; test=10000 loss=0.07475 accuracy=0.9772 baseline=0.1135 elapsed=26.2s
+epoch=1 train_loss=0.32135 validation_loss=0.18820 validation_accuracy=0.9488 elapsed=7.9s
+epoch=2 train_loss=0.14709 validation_loss=0.13624 validation_accuracy=0.9613 elapsed=8.9s
+epoch=3 train_loss=0.10467 validation_loss=0.11664 validation_accuracy=0.9666 elapsed=9.7s
+epoch=4 train_loss=0.08004 validation_loss=0.10124 validation_accuracy=0.9711 elapsed=11.1s
+epoch=5 train_loss=0.06314 validation_loss=0.09396 validation_accuracy=0.9736 elapsed=12.2s
+epoch=6 train_loss=0.05064 validation_loss=0.09092 validation_accuracy=0.9745 elapsed=13.7s
+epoch=7 train_loss=0.04096 validation_loss=0.08609 validation_accuracy=0.9757 elapsed=14.8s
+epoch=8 train_loss=0.03287 validation_loss=0.08977 validation_accuracy=0.9748 elapsed=16.1s
+epoch=9 train_loss=0.02765 validation_loss=0.08500 validation_accuracy=0.9757 elapsed=17.5s
+epoch=10 train_loss=0.02191 validation_loss=0.09348 validation_accuracy=0.9754 elapsed=18.6s
+epoch=11 train_loss=0.01851 validation_loss=0.09690 validation_accuracy=0.9747 elapsed=19.7s
+epoch=12 train_loss=0.01452 validation_loss=0.09460 validation_accuracy=0.9761 elapsed=20.7s
+epoch=13 train_loss=0.01274 validation_loss=0.09351 validation_accuracy=0.9761 elapsed=21.9s
+epoch=14 train_loss=0.01012 validation_loss=0.09982 validation_accuracy=0.9754 elapsed=23.1s
+epoch=15 train_loss=0.00825 validation_loss=0.09716 validation_accuracy=0.9761 elapsed=24.2s
+selected_epoch=9; test=10000 loss=0.07475 accuracy=0.9772 baseline=0.1135 elapsed=24.4s
 Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9
 [967, 0, 2, 1, 0, 2, 3, 1, 4, 0]
 [0, 1124, 4, 0, 0, 1, 3, 0, 3, 0]
