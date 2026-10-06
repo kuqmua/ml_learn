@@ -32,6 +32,86 @@ fn main() -> Result<(), String> {
     let learning_rate: f32 = 0.001;
     let seed: u64 = 42;
 
+    // Один загрузчик PNG для train и test: возвращает пиксели и правильные метки.
+    let load_digits = |directory: &std::path::Path| -> Result<Vec<([f64; 784], u8)>, String> {
+        let mut digits: Vec<([f64; 784], u8)> = Vec::new();
+        // Папки 0,1,...,9 задают правильные метки: например, train/5 содержит пятёрки.
+        // Имя самого PNG — его индекс, а не ответ классификатора.
+        // Типы переменных: label: u8.
+        for label in 0..10u8 {
+            let class: std::path::PathBuf = directory.join(label.to_string());
+            let entries: std::fs::ReadDir =
+                std::fs::read_dir(&class).map_err(|e: std::io::Error| -> String {
+                    format!(
+                        "{}: {e}. Подготовь PNG: python3 scripts/prepare_mnist.py",
+                        class.display()
+                    )
+                })?;
+            let mut paths: Vec<std::path::PathBuf> = Vec::new();
+            // Типы переменных: entry: Result<std::fs::DirEntry, std::io::Error>.
+            for entry in entries {
+                let path: std::path::PathBuf = entry
+                    .map_err(|e: std::io::Error| -> String { e.to_string() })?
+                    .path();
+                if path
+                    .extension()
+                    .is_some_and(|ext: &std::ffi::OsStr| -> bool {
+                        ext.eq_ignore_ascii_case("png")
+                    })
+                {
+                    paths.push(path);
+                }
+            }
+            // Файловая система не обещает порядок чтения. Сортировка фиксирует порядок
+            // картинок и, следовательно, одинаковое разделение train/validation при повторном запуске.
+            paths.sort();
+            if paths.is_empty() {
+                return Err(format!("{}: нет PNG", class.display()));
+            }
+            // Типы переменных: path: std::path::PathBuf.
+            for path in paths {
+                // Декодирование превращает сжатый PNG в байты яркости. Это ещё не обучение.
+                // Ошибка оборачивается путём к файлу, чтобы было понятно, какую картинку проверить.
+                let decoded: [f64; 784] = (|| -> Result<[f64; 784], String> {
+                    let file: std::fs::File = std::fs::File::open(&path)
+                        .map_err(|e: std::io::Error| -> String { e.to_string() })?;
+                    let mut reader: png::Reader<std::io::BufReader<std::fs::File>> =
+                        png::Decoder::new(std::io::BufReader::new(file))
+                            .read_info()
+                            .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
+                    let info: &png::Info<'_> = reader.info();
+                    // Проверяем договорённость о данных: статический PNG 28×28, один серый канал,
+                    // 8 бит на пиксель. Цветной или другого размера файл нельзя подать как 784 яркости.
+                    if info.width != 28
+                        || info.height != 28
+                        || info.color_type != png::ColorType::Grayscale
+                        || info.bit_depth != png::BitDepth::Eight
+                        || info.animation_control.is_some()
+                    {
+                        return Err("Ожидается статический PNG 28×28, grayscale, 8 бит".into());
+                    }
+                    // u8 хранит целую яркость от 0 до 255: 0 — чёрный фон, 255 — белый штрих.
+                    // Пиксели идут строка за строкой: индекс y*28+x соответствует координатам (y,x).
+                    let mut pixels: [u8; 784] = [0u8; 784];
+                    reader
+                        .next_frame(&mut pixels)
+                        .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
+                    reader
+                        .finish()
+                        .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
+                    // Делим каждый пиксель на 255: 0 -> 0.0, 128 -> примерно 0.502, 255 -> 1.0.
+                    // Это фиксированная нормализация, не требующая статистик validation или test.
+                    Ok(std::array::from_fn(|i: usize| -> f64 {
+                        f64::from(pixels[i]) / 255.0
+                    }))
+                })()
+                .map_err(|e: String| -> String { format!("{}: {e}", path.display()) })?;
+                digits.push((decoded, label));
+            }
+        }
+        Ok(digits)
+    };
+
     // Числовая часть имеет свою область видимости для массивов и замыканий.
     {
         use ndarray::{Array1, Array2};
@@ -105,6 +185,20 @@ fn main() -> Result<(), String> {
             }
             (loss / labels.len() as f32, gradient)
         };
+        // Один batch для обучения и оценки: строки X=[N,784], метки labels=[N].
+        // Индексы выбирают записи; нормализованные f64 пиксели переводим в f32 сети.
+        let batch = |digits: &[([f64; 784], u8)], examples: &[usize]| -> (Array2<f32>, Vec<u8>) {
+            (
+                Array2::from_shape_fn((examples.len(), 784), |(n, p): (usize, usize)| -> f32 {
+                    digits[examples[n]].0[p] as f32
+                }),
+                examples
+                    .iter()
+                    .map(|&i: &usize| -> u8 { digits[i].1 })
+                    .collect::<Vec<_>>(),
+            )
+        };
+
         // Оценка только читает веса: не передаёт производные назад через слои и не обновляет параметры.
         // Возвращаем (средняя loss, доля верных ответов, матрица ошибок).
         // Это же правило используем для validation и итогового test.
@@ -127,23 +221,6 @@ fn main() -> Result<(), String> {
                             .then_with(|| -> std::cmp::Ordering { b.cmp(&a) })
                     })
                     .unwrap()
-            };
-            // Из индексов выбираем конкретные записи: X имеет форму [N,784], labels — [N].
-            // Яркости уже лежат в [0,1]; здесь только переводим f64 загрузчика в f32 сети.
-            // Строка матрицы соответствует одной картинке, не одной строке PNG.
-
-            let batch = |digits: &[([f64; 784], u8)],
-                         examples: &[usize]|
-             -> (Array2<f32>, Vec<u8>) {
-                (
-                    Array2::from_shape_fn((examples.len(), 784), |(n, p): (usize, usize)| -> f32 {
-                        digits[examples[n]].0[p] as f32
-                    }),
-                    examples
-                        .iter()
-                        .map(|&i: &usize| -> u8 { digits[i].1 })
-                        .collect::<Vec<_>>(),
-                )
             };
 
             assert!(!examples.is_empty() && batch_size > 0);
@@ -186,100 +263,7 @@ fn main() -> Result<(), String> {
                 "MLP 784 -> 128 -> ReLU -> 10: epochs={epochs}, batch={batch_size}, lr={learning_rate}, seed={seed}, data={}",
                 data.display()
             );
-            let digits: Vec<([f64; 784], u8)> = {
-                // Загрузчик возвращает записи (784 нормализованных пикселя, правильная цифра).
-                // Он локален блоку загрузки: после получения данных это имя больше не нужно.
-
-                let load_digits =
-                    |directory: &std::path::Path| -> Result<Vec<([f64; 784], u8)>, String> {
-                        let mut digits: Vec<([f64; 784], u8)> = Vec::new();
-                        // Папки 0,1,...,9 задают правильные метки: например, train/5 содержит пятёрки.
-                        // Имя самого PNG — его индекс, а не ответ классификатора.
-                        // Типы переменных: label: u8.
-                        for label in 0..10u8 {
-                            let class: std::path::PathBuf = directory.join(label.to_string());
-                            let entries: std::fs::ReadDir = std::fs::read_dir(&class).map_err(
-                                |e: std::io::Error| -> String {
-                                    format!(
-                                        "{}: {e}. Подготовь PNG: python3 scripts/prepare_mnist.py",
-                                        class.display()
-                                    )
-                                },
-                            )?;
-                            let mut paths: Vec<std::path::PathBuf> = Vec::new();
-                            // Типы переменных: entry: Result<std::fs::DirEntry, std::io::Error>.
-                            for entry in entries {
-                                let path: std::path::PathBuf = entry
-                                    .map_err(|e: std::io::Error| -> String { e.to_string() })?
-                                    .path();
-                                if path
-                                    .extension()
-                                    .is_some_and(|ext: &std::ffi::OsStr| -> bool {
-                                        ext.eq_ignore_ascii_case("png")
-                                    })
-                                {
-                                    paths.push(path);
-                                }
-                            }
-                            // Файловая система не обещает порядок чтения. Сортировка фиксирует порядок
-                            // картинок и, следовательно, одинаковое разделение train/validation при повторном запуске.
-                            paths.sort();
-                            if paths.is_empty() {
-                                return Err(format!("{}: нет PNG", class.display()));
-                            }
-                            // Типы переменных: path: std::path::PathBuf.
-                            for path in paths {
-                                // Декодирование превращает сжатый PNG в байты яркости. Это ещё не обучение.
-                                // Ошибка оборачивается путём к файлу, чтобы было понятно, какую картинку проверить.
-                                let decoded: [f64; 784] = (|| -> Result<[f64; 784], String> {
-                                    let file: std::fs::File = std::fs::File::open(&path)
-                                        .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                                    let mut reader: png::Reader<std::io::BufReader<std::fs::File>> =
-                                        png::Decoder::new(std::io::BufReader::new(file))
-                                            .read_info()
-                                            .map_err(|e: png::DecodingError| -> String {
-                                                e.to_string()
-                                            })?;
-                                    let info: &png::Info<'_> = reader.info();
-                                    // Проверяем договорённость о данных: статический PNG 28×28, один серый канал,
-                                    // 8 бит на пиксель. Цветной или другого размера файл нельзя подать как 784 яркости.
-                                    if info.width != 28
-                                        || info.height != 28
-                                        || info.color_type != png::ColorType::Grayscale
-                                        || info.bit_depth != png::BitDepth::Eight
-                                        || info.animation_control.is_some()
-                                    {
-                                        return Err(
-                                            "Ожидается статический PNG 28×28, grayscale, 8 бит"
-                                                .into(),
-                                        );
-                                    }
-                                    // u8 хранит целую яркость от 0 до 255: 0 — чёрный фон, 255 — белый штрих.
-                                    // Пиксели идут строка за строкой: индекс y*28+x соответствует координатам (y,x).
-                                    let mut pixels: [u8; 784] = [0u8; 784];
-                                    reader.next_frame(&mut pixels).map_err(
-                                        |e: png::DecodingError| -> String { e.to_string() },
-                                    )?;
-                                    reader.finish().map_err(|e: png::DecodingError| -> String {
-                                        e.to_string()
-                                    })?;
-                                    // Делим каждый пиксель на 255: 0 -> 0.0, 128 -> примерно 0.502, 255 -> 1.0.
-                                    // Это фиксированная нормализация, не требующая статистик validation или test.
-                                    Ok(std::array::from_fn(|i: usize| -> f64 {
-                                        f64::from(pixels[i]) / 255.0
-                                    }))
-                                })()
-                                .map_err(|e: String| -> String {
-                                    format!("{}: {e}", path.display())
-                                })?;
-                                digits.push((decoded, label));
-                            }
-                        }
-                        Ok(digits)
-                    };
-
-                load_digits(&data.join("train"))?
-            };
+            let digits: Vec<([f64; 784], u8)> = load_digits(&data.join("train"))?;
             // Для Z = XW+b и входящего G=dL/dZ правило цепочки даёт:
             // dL/dX = G W^T, dL/dW = X^T G, dL/db = сумма строк G.
             // Формы: X=[N,D], W=[D,K], G=[N,K]; результаты [N,D], [D,K], [K].
@@ -309,18 +293,17 @@ fn main() -> Result<(), String> {
                 )
             };
 
+            // Общий SplitMix64 для перемешивания и инициализации весов.
+            // Состояние передаём явно: оба потребителя продолжают одну последовательность seed.
+            let next_random = |state: &mut u64| -> u64 {
+                *state = state.wrapping_add(0x9e3779b97f4a7c15);
+                let mut z: u64 = *state;
+                z = (z ^ (z >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
+                z = (z ^ (z >> 27)).wrapping_mul(0x94d049bb133111eb);
+                z ^ (z >> 31)
+            };
+
             let shuffle = |items: &mut [usize], state: &mut u64| -> () {
-                // Псевдослучайный генератор SplitMix64: state меняется по фиксированным правилам.
-                // Он нужен для воспроизводимых весов/порядка train; это не источник истинной случайности.
-
-                let next_random = |state: &mut u64| -> u64 {
-                    *state = state.wrapping_add(0x9e3779b97f4a7c15);
-                    let mut z: u64 = *state;
-                    z = (z ^ (z >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
-                    z = (z ^ (z >> 27)).wrapping_mul(0x94d049bb133111eb);
-                    z ^ (z >> 31)
-                };
-
                 // Типы переменных: i: usize.
                 for i in (1..items.len()).rev() {
                     let j: usize = (next_random(state) % (i as u64 + 1)) as usize;
@@ -391,17 +374,6 @@ fn main() -> Result<(), String> {
                 // получать разные градиенты и учить разные признаки.
 
                 let new_layer = |input: usize, output: usize, state: &mut u64| -> Layer {
-                    // Псевдослучайный генератор SplitMix64: state меняется по фиксированным правилам.
-                    // Он нужен для воспроизводимых весов/порядка train; это не источник истинной случайности.
-
-                    let next_random = |state: &mut u64| -> u64 {
-                        *state = state.wrapping_add(0x9e3779b97f4a7c15);
-                        let mut z: u64 = *state;
-                        z = (z ^ (z >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
-                        z = (z ^ (z >> 27)).wrapping_mul(0x94d049bb133111eb);
-                        z ^ (z >> 31)
-                    };
-
                     // Равномерная инициализация в [-bound,bound] имеет дисперсию bound²/3=2/input.
                     // Это масштаб He: для ReLU он помогает сохранять разумный размер сигналов в слоях.
                     // Один и тот же способ инициализации здесь применяется ко всем матрицам весов.
@@ -477,26 +449,6 @@ fn main() -> Result<(), String> {
                     // Наружу из этого блока выходят только ошибка batch и градиенты параметров;
                     // активации, окна свёрток и промежуточные производные остаются внутри.
                     let (loss, gradients): (f32, Vec<(Array2<f32>, Array1<f32>)>) = {
-                        // Из индексов выбираем конкретные записи: X имеет форму [N,784], labels — [N].
-                        // Яркости уже лежат в [0,1]; здесь только переводим f64 загрузчика в f32 сети.
-                        // Строка матрицы соответствует одной картинке, не одной строке PNG.
-
-                        let batch = |digits: &[([f64; 784], u8)],
-                                     examples: &[usize]|
-                         -> (Array2<f32>, Vec<u8>) {
-                            (
-                                Array2::from_shape_fn(
-                                    (examples.len(), 784),
-                                    |(n, p): (usize, usize)| -> f32 {
-                                        digits[examples[n]].0[p] as f32
-                                    },
-                                ),
-                                examples
-                                    .iter()
-                                    .map(|&i: &usize| -> u8 { digits[i].1 })
-                                    .collect::<Vec<_>>(),
-                            )
-                        };
                         let (input, labels): (Array2<f32>, Vec<u8>) = batch(&digits, examples);
                         let (states, _, _): (
                             Vec<Array2<f32>>,
@@ -608,99 +560,7 @@ fn main() -> Result<(), String> {
         };
         // Test не видит индексы train, градиенты или состояние оптимизатора.
         {
-            let test: Vec<([f64; 784], u8)> = {
-                // Загрузчик возвращает записи (784 нормализованных пикселя, правильная цифра).
-                // Он локален блоку загрузки: после получения данных это имя больше не нужно.
-
-                let load_digits =
-                    |directory: &std::path::Path| -> Result<Vec<([f64; 784], u8)>, String> {
-                        let mut digits: Vec<([f64; 784], u8)> = Vec::new();
-                        // Папки 0,1,...,9 задают правильные метки: например, train/5 содержит пятёрки.
-                        // Имя самого PNG — его индекс, а не ответ классификатора.
-                        // Типы переменных: label: u8.
-                        for label in 0..10u8 {
-                            let class: std::path::PathBuf = directory.join(label.to_string());
-                            let entries: std::fs::ReadDir = std::fs::read_dir(&class).map_err(
-                                |e: std::io::Error| -> String {
-                                    format!(
-                                        "{}: {e}. Подготовь PNG: python3 scripts/prepare_mnist.py",
-                                        class.display()
-                                    )
-                                },
-                            )?;
-                            let mut paths: Vec<std::path::PathBuf> = Vec::new();
-                            // Типы переменных: entry: Result<std::fs::DirEntry, std::io::Error>.
-                            for entry in entries {
-                                let path: std::path::PathBuf = entry
-                                    .map_err(|e: std::io::Error| -> String { e.to_string() })?
-                                    .path();
-                                if path
-                                    .extension()
-                                    .is_some_and(|ext: &std::ffi::OsStr| -> bool {
-                                        ext.eq_ignore_ascii_case("png")
-                                    })
-                                {
-                                    paths.push(path);
-                                }
-                            }
-                            // Файловая система не обещает порядок чтения. Сортировка фиксирует порядок
-                            // картинок и, следовательно, одинаковое разделение train/validation при повторном запуске.
-                            paths.sort();
-                            if paths.is_empty() {
-                                return Err(format!("{}: нет PNG", class.display()));
-                            }
-                            // Типы переменных: path: std::path::PathBuf.
-                            for path in paths {
-                                // Декодирование превращает сжатый PNG в байты яркости. Это ещё не обучение.
-                                // Ошибка оборачивается путём к файлу, чтобы было понятно, какую картинку проверить.
-                                let decoded: [f64; 784] = (|| -> Result<[f64; 784], String> {
-                                    let file: std::fs::File = std::fs::File::open(&path)
-                                        .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                                    let mut reader: png::Reader<std::io::BufReader<std::fs::File>> =
-                                        png::Decoder::new(std::io::BufReader::new(file))
-                                            .read_info()
-                                            .map_err(|e: png::DecodingError| -> String {
-                                                e.to_string()
-                                            })?;
-                                    let info: &png::Info<'_> = reader.info();
-                                    // Проверяем договорённость о данных: статический PNG 28×28, один серый канал,
-                                    // 8 бит на пиксель. Цветной или другого размера файл нельзя подать как 784 яркости.
-                                    if info.width != 28
-                                        || info.height != 28
-                                        || info.color_type != png::ColorType::Grayscale
-                                        || info.bit_depth != png::BitDepth::Eight
-                                        || info.animation_control.is_some()
-                                    {
-                                        return Err(
-                                            "Ожидается статический PNG 28×28, grayscale, 8 бит"
-                                                .into(),
-                                        );
-                                    }
-                                    // u8 хранит целую яркость от 0 до 255: 0 — чёрный фон, 255 — белый штрих.
-                                    // Пиксели идут строка за строкой: индекс y*28+x соответствует координатам (y,x).
-                                    let mut pixels: [u8; 784] = [0u8; 784];
-                                    reader.next_frame(&mut pixels).map_err(
-                                        |e: png::DecodingError| -> String { e.to_string() },
-                                    )?;
-                                    reader.finish().map_err(|e: png::DecodingError| -> String {
-                                        e.to_string()
-                                    })?;
-                                    // Делим каждый пиксель на 255: 0 -> 0.0, 128 -> примерно 0.502, 255 -> 1.0.
-                                    // Это фиксированная нормализация, не требующая статистик validation или test.
-                                    Ok(std::array::from_fn(|i: usize| -> f64 {
-                                        f64::from(pixels[i]) / 255.0
-                                    }))
-                                })()
-                                .map_err(|e: String| -> String {
-                                    format!("{}: {e}", path.display())
-                                })?;
-                                digits.push((decoded, label));
-                            }
-                        }
-                        Ok(digits)
-                    };
-                load_digits(&data.join("test"))?
-            };
+            let test: Vec<([f64; 784], u8)> = load_digits(&data.join("test"))?;
             let test_indices: Vec<_> = (0..test.len()).collect();
             // Итоговый отчёт на официальном test: используем выбранную по validation копию best.
             // По test не выбираем веса, число эпох или скорость обучения.
