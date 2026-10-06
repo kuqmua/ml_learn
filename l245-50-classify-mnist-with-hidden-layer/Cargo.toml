@@ -1,0 +1,8 @@
+[package]
+name = "l245-50-classify-mnist-with-hidden-layer"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+png = "0.18.1"
+ndarray = "0.17.2"

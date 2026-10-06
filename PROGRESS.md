@@ -384,3 +384,19 @@
 ## 47. Итоговый проект: сравнение способов решения задачи и разбор ошибок — `l242-47-project-compare-solution-methods-and-explain-errors`
 
 - [ ] [242 · Итоговый проект: сравнение способов решения задачи и разбор ошибок](l242-47-project-compare-solution-methods-and-explain-errors/)
+
+## 48. MNIST: распознавание рукописных цифр
+
+- [ ] [243 · MNIST: классификация по ближайшему среднему изображению класса](l243-48-classify-mnist-digits-by-nearest-class-mean/)
+
+## 49. MNIST: Линейный классификатор и softmax
+
+- [ ] [244 · Линейный классификатор и softmax](l244-49-classify-mnist-with-linear-softmax/README.md)
+
+## 50. MNIST: Нейросеть с одним скрытым слоем
+
+- [ ] [245 · Нейросеть с одним скрытым слоем](l245-50-classify-mnist-with-hidden-layer/README.md)
+
+## 51. MNIST: Свёрточная нейросеть для PNG
+
+- [ ] [246 · Свёрточная нейросеть для PNG](l246-51-classify-mnist-with-convolutional-network/README.md)

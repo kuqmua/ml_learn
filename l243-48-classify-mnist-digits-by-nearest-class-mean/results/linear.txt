@@ -1,0 +1,30 @@
+Linear 784 -> 10: epochs=15, batch=64, lr=0.001, seed=42, data=/home/sergey/projects/ml_learn/l244-49-classify-mnist-with-linear-softmax/../datasets/png/mnist
+train=47995, validation=12005, baseline digit=1; split=every fifth per class, sorted PNG filenames
+epoch=0 validation_loss=2.36542 validation_accuracy=0.1269
+epoch=1 train_loss=0.59397 validation_loss=0.37462 validation_accuracy=0.8978 elapsed=6.6s
+epoch=2 train_loss=0.33736 validation_loss=0.32694 validation_accuracy=0.9096 elapsed=6.8s
+epoch=3 train_loss=0.30303 validation_loss=0.30812 validation_accuracy=0.9156 elapsed=7.0s
+epoch=4 train_loss=0.28705 validation_loss=0.30178 validation_accuracy=0.9165 elapsed=7.3s
+epoch=5 train_loss=0.27719 validation_loss=0.29810 validation_accuracy=0.9192 elapsed=7.5s
+epoch=6 train_loss=0.26971 validation_loss=0.29665 validation_accuracy=0.9200 elapsed=7.8s
+epoch=7 train_loss=0.26448 validation_loss=0.29009 validation_accuracy=0.9221 elapsed=8.1s
+epoch=8 train_loss=0.26028 validation_loss=0.28847 validation_accuracy=0.9216 elapsed=8.3s
+epoch=9 train_loss=0.25692 validation_loss=0.29096 validation_accuracy=0.9221 elapsed=8.6s
+epoch=10 train_loss=0.25396 validation_loss=0.28756 validation_accuracy=0.9229 elapsed=8.9s
+epoch=11 train_loss=0.25155 validation_loss=0.28663 validation_accuracy=0.9228 elapsed=9.2s
+epoch=12 train_loss=0.24891 validation_loss=0.28721 validation_accuracy=0.9219 elapsed=9.6s
+epoch=13 train_loss=0.24735 validation_loss=0.28425 validation_accuracy=0.9249 elapsed=9.8s
+epoch=14 train_loss=0.24533 validation_loss=0.28595 validation_accuracy=0.9248 elapsed=10.1s
+epoch=15 train_loss=0.24383 validation_loss=0.28613 validation_accuracy=0.9255 elapsed=10.4s
+selected_epoch=13; test=10000 loss=0.26661 accuracy=0.9272 baseline=0.1135 elapsed=10.5s
+Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9
+[963, 0, 0, 2, 0, 5, 5, 3, 2, 0]
+[0, 1112, 3, 2, 0, 1, 4, 2, 11, 0]
+[5, 9, 927, 15, 8, 4, 12, 10, 38, 4]
+[1, 0, 20, 929, 0, 22, 2, 10, 18, 8]
+[1, 1, 4, 2, 918, 0, 12, 5, 8, 31]
+[10, 3, 3, 36, 9, 778, 11, 8, 28, 6]
+[12, 3, 7, 1, 7, 14, 910, 2, 2, 0]
+[1, 7, 23, 8, 8, 1, 0, 948, 1, 31]
+[7, 7, 7, 28, 9, 22, 9, 10, 866, 9]
+[11, 7, 1, 12, 24, 5, 0, 24, 4, 921]

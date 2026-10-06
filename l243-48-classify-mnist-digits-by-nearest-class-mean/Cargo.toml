@@ -1,0 +1,8 @@
+[package]
+name = "l243-48-classify-mnist-digits-by-nearest-class-mean"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+png = "0.18.1"
+

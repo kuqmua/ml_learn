@@ -1,0 +1,27 @@
+CNN conv5(8) -> pool -> conv3(16) -> pool -> dense64 -> 10: epochs=12, batch=64, lr=0.001, seed=42, data=/home/sergey/projects/ml_learn/l246-51-classify-mnist-with-convolutional-network/../datasets/png/mnist
+train=47995, validation=12005, baseline digit=1; split=every fifth per class, sorted PNG filenames
+epoch=0 validation_loss=2.77026 validation_accuracy=0.0546
+epoch=1 train_loss=0.24963 validation_loss=0.09827 validation_accuracy=0.9717 elapsed=23.6s
+epoch=2 train_loss=0.07296 validation_loss=0.07146 validation_accuracy=0.9788 elapsed=35.1s
+epoch=3 train_loss=0.05442 validation_loss=0.06935 validation_accuracy=0.9796 elapsed=45.9s
+epoch=4 train_loss=0.04385 validation_loss=0.05736 validation_accuracy=0.9836 elapsed=56.9s
+epoch=5 train_loss=0.03667 validation_loss=0.05610 validation_accuracy=0.9836 elapsed=68.9s
+epoch=6 train_loss=0.03151 validation_loss=0.04900 validation_accuracy=0.9870 elapsed=80.6s
+epoch=7 train_loss=0.02557 validation_loss=0.05077 validation_accuracy=0.9866 elapsed=94.9s
+epoch=8 train_loss=0.02346 validation_loss=0.04751 validation_accuracy=0.9873 elapsed=110.0s
+epoch=9 train_loss=0.01909 validation_loss=0.05775 validation_accuracy=0.9842 elapsed=122.1s
+epoch=10 train_loss=0.01638 validation_loss=0.05425 validation_accuracy=0.9848 elapsed=135.9s
+epoch=11 train_loss=0.01482 validation_loss=0.05591 validation_accuracy=0.9868 elapsed=150.8s
+epoch=12 train_loss=0.01194 validation_loss=0.05657 validation_accuracy=0.9874 elapsed=163.5s
+selected_epoch=8; test=10000 loss=0.04470 accuracy=0.9881 baseline=0.1135 elapsed=166.4s
+Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9
+[979, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+[0, 1129, 2, 2, 0, 0, 1, 1, 0, 0]
+[2, 0, 1024, 0, 1, 0, 0, 4, 1, 0]
+[0, 0, 1, 1008, 0, 1, 0, 0, 0, 0]
+[0, 0, 0, 0, 977, 0, 1, 2, 1, 1]
+[2, 0, 0, 10, 0, 875, 1, 1, 3, 0]
+[5, 2, 0, 0, 3, 4, 940, 0, 4, 0]
+[0, 0, 4, 3, 0, 0, 0, 1019, 1, 1]
+[4, 0, 2, 1, 1, 0, 0, 0, 964, 2]
+[4, 2, 2, 8, 10, 8, 0, 5, 4, 966]

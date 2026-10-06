@@ -245,5 +245,9 @@ members = [
     "l240-45-practice-monitoring-data-changes-errors-response-time-and-alerts",
     "l241-46-project-compare-train-and-run-prediction-model",
     "l242-47-project-compare-solution-methods-and-explain-errors",
+    "l243-48-classify-mnist-digits-by-nearest-class-mean",
+    "l244-49-classify-mnist-with-linear-softmax",
+    "l245-50-classify-mnist-with-hidden-layer",
+    "l246-51-classify-mnist-with-convolutional-network",
 ]
 resolver = "3"
