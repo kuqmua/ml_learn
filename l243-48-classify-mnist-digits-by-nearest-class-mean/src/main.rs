@@ -1,6 +1,29 @@
 fn main() -> Result<(), String> {
+    // Урок 243. Путь данных: PNG -> 784 числа -> средние изображения -> прогноз цифры.
+    // Каждая картинка имеет размер 28×28, поэтому в ней 28*28 = 784 пикселя.
+    // У одной записи два поля: массив яркостей и правильная метка (цифра 0–9).
+    // «Обучение» здесь — накопление и усреднение примеров каждой цифры.
+    // Затем новую картинку сравниваем с десятью средними и выбираем ближайшее.
+    //
+    // Сначала объявлены Digit и общие операции: загрузка PNG, оценка и вывод метрик.
+    // Затем выполняются обучение средних, оценка validation и оценка test.
+    // Train учит модель; validation проверяет её на отложенных примерах;
+    // test даёт итоговую независимую оценку. Ниже средние вычисляются только по train.
+    // Фигурные скобки ограничивают жизнь временных имён; последняя строка блока
+    // без точки с запятой возвращает результат следующему этапу.
+
+    // Обозначения типов: usize — индексы и размеры; u8 — байт пикселя; Digit — метка цифры;
+    // String — текст; Vec<T> — список элементов T.
+    // [T; N] — массив из N элементов; (A, B) — кортеж; &T — ссылка; &mut T — изменяемая ссылка.
+    // Result<T, String> — результат или текст ошибки.
+    // Тип переменной-замыкания анонимный: его имя нельзя написать после let.
+    // У таких переменных типы аргументов стоят между |...|, результата — после ->.
+    // f64 — дробное число двойной точности; средние: [[f64; 784]; 10].
+
     // Метка — одна из десяти цифр. Значения вроде 42 теперь нельзя записать как метку.
     // digit as usize даёт число 0..9 для индексов массивов, имён папок и печати.
+    // Copy позволяет копировать метки; PartialEq/Eq — сравнивать правильную цифру с прогнозом.
+    // repr(u8) задаёт однобайтовое хранение варианта, но тип метки остаётся Digit.
     #[derive(Clone, Copy, Debug, PartialEq, Eq)]
     #[repr(u8)]
     enum Digit {
@@ -15,7 +38,7 @@ fn main() -> Result<(), String> {
         Eight = 8,
         Nine = 9,
     }
-    // Порядок соответствует папкам 0..9 и столбцам выходной матрицы модели.
+    // Порядок соответствует папкам 0..9 и индексам классов в массивах.
     let classes: [Digit; 10] = [
         Digit::Zero,
         Digit::One,
@@ -29,26 +52,7 @@ fn main() -> Result<(), String> {
         Digit::Nine,
     ];
 
-    // Обозначения типов: usize — индексы и размеры; u8 — байт пикселя; Digit — метка цифры;
-    // String — текст; Vec<T> — список элементов T.
-    // [T; N] — массив из N элементов; (A, B) — кортеж; &T — ссылка; &mut T — изменяемая ссылка.
-    // Result<T, String> — результат или текст ошибки.
-    // Тип переменной-замыкания анонимный: его имя нельзя написать после let.
-    // У таких переменных типы аргументов стоят между |...|, результата — после ->.
-    // f64 — дробное число двойной точности; средние: [[f64; 784]; 10].
-
-    // Урок 243. Путь данных: PNG -> 784 числа -> средние изображения -> прогноз цифры.
-    // Каждая картинка имеет размер 28×28, поэтому в ней 28*28 = 784 пикселя.
-    // У одной записи два поля: массив яркостей и правильная метка (цифра 0–9).
-    // «Обучение» здесь — накопление и усреднение примеров каждой цифры.
-    // Затем новую картинку сравниваем с десятью средними и выбираем ближайшее.
-    //
-    // Читай блоки последовательно: настройки, подготовка/обучение, validation, test.
-    // Train учит модель; validation проверяет её на отложенных примерах;
-    // test даёт итоговую независимую оценку. Ниже средние вычисляются только по train.
-    // Фигурные скобки ограничивают жизнь временных имён; последняя строка блока
-    // без точки с запятой возвращает результат следующему этапу.
-
+    // Корень PNG фиксирован относительно папки урока; аргументы запуска не требуются.
     let data: std::path::PathBuf =
         std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../datasets/png/mnist");
 
@@ -57,15 +61,15 @@ fn main() -> Result<(), String> {
     let load_digits = |directory: &std::path::Path| -> Result<Vec<([f64; 784], Digit)>, String> {
         let mut digits: Vec<([f64; 784], Digit)> = Vec::new();
         // Папки 0,1,...,9 задают правильные метки: например, train/5 содержит пятёрки.
-        // Имя самого PNG — его индекс, а не ответ классификатора.
-        // Типы переменных: label: Digit.
-        for label in classes {
-            let class: std::path::PathBuf = directory.join((label as usize).to_string());
+        // Имя PNG обозначает номер файла; правильная цифра определяется папкой.
+        // Типы переменных: class: Digit.
+        for class in classes {
+            let class_directory: std::path::PathBuf = directory.join((class as usize).to_string());
             let entries: std::fs::ReadDir =
-                std::fs::read_dir(&class).map_err(|e: std::io::Error| -> String {
+                std::fs::read_dir(&class_directory).map_err(|e: std::io::Error| -> String {
                     format!(
                         "{}: {e}. Подготовь PNG: python3 scripts/prepare_mnist.py",
-                        class.display()
+                        class_directory.display()
                     )
                 })?;
             let mut paths: Vec<std::path::PathBuf> = Vec::new();
@@ -87,12 +91,11 @@ fn main() -> Result<(), String> {
             // картинок и, следовательно, одинаковое разделение train/validation при повторном запуске.
             paths.sort();
             if paths.is_empty() {
-                return Err(format!("{}: нет PNG", class.display()));
+                return Err(format!("{}: нет PNG", class_directory.display()));
             }
             // Типы переменных: path: std::path::PathBuf.
             for path in paths {
                 // Декодирование превращает сжатый PNG в байты яркости. Это ещё не обучение.
-                // Ошибка оборачивается путём к файлу, чтобы было понятно, какую картинку проверить.
                 let decoded: [f64; 784] = (|| -> Result<[f64; 784], String> {
                     let file: std::fs::File = std::fs::File::open(&path)
                         .map_err(|e: std::io::Error| -> String { e.to_string() })?;
@@ -126,14 +129,16 @@ fn main() -> Result<(), String> {
                         f64::from(pixels[i]) / 255.0
                     }))
                 })()
+                // Добавляем путь к ошибке декодирования, чтобы найти проблемный PNG.
                 .map_err(|e: String| -> String { format!("{}: {e}", path.display()) })?;
-                digits.push((decoded, label));
+                digits.push((decoded, class));
             }
         }
         Ok(digits)
     };
 
-    // Одна оценка для validation и test: прогнозы, baseline и матрица ошибок.
+    // Общая оценка validation и test. Возвращаем число верных прогнозов модели,
+    // число верных прогнозов baseline и матрицу ошибок; доли вычисляет report.
     let evaluate = |means: &[[f64; 784]; 10],
                     records: &[([f64; 784], Digit)],
                     indices: &[usize],
@@ -142,6 +147,7 @@ fn main() -> Result<(), String> {
         // confusion[истинная_цифра][предсказанная_цифра] считает такие пары.
         // Диагональ — верные ответы; числа вне диагонали показывают, какие цифры путаются.
         let mut confusion: [[usize; 10]; 10] = [[0usize; 10]; 10];
+        // Здесь baseline — счётчик верных ответов постоянной цифрой majority, а не сама цифра.
         let mut baseline: usize = 0usize;
         // Типы переменных: index: usize.
         for &index in indices {
@@ -154,7 +160,6 @@ fn main() -> Result<(), String> {
                     // Квадрат евклидова расстояния: sum_p((pixel[p]-mean[c,p])²).
                     // Квадраты не дают положительным и отрицательным различиям сократиться.
                     // Корень не нужен: он не меняет порядок расстояний и выбранную цифру.
-
                     let distance = |class: Digit| -> f64 {
                         pixels
                             .iter()
@@ -165,11 +170,11 @@ fn main() -> Result<(), String> {
                     distance(a).total_cmp(&distance(b))
                 })
                 .unwrap();
+            // Digit преобразуем в usize только для выбора строки и столбца счётчиков.
             confusion[*label as usize][predicted as usize] += 1;
             baseline += usize::from(*label == majority);
         }
         // Сумма диагонали матрицы ошибок — число правильных прогнозов.
-        // Accuracy = correct / число проверенных картинок; например, 8 верных из 10 дают 0.8.
         let correct: usize = (0..10).map(|i: usize| -> usize { confusion[i][i] }).sum();
         (correct, baseline, confusion)
     };
@@ -177,6 +182,7 @@ fn main() -> Result<(), String> {
     // Печатаем одинаковые метрики для обеих частей; матрица ошибок нужна для test.
     let report = |name: &str, count: usize, metrics: (usize, usize, [[usize; 10]; 10])| -> () {
         let (correct, baseline, confusion): (usize, usize, [[usize; 10]; 10]) = metrics;
+        // Accuracy = correct/count; для baseline аналогично. Например, 8 из 10 дают 0.8.
         println!(
             "{name}: n={count}, accuracy={:.4}, baseline={:.4}",
             correct as f64 / count as f64,
@@ -191,8 +197,10 @@ fn main() -> Result<(), String> {
         }
     };
 
-    // Обучение и validation: наружу выходят только готовые средние и baseline.
+    // Загружаем исходный train, отделяем validation и обучаем десять средних изображений.
+    // Наружу выходят means и цифра baseline; картинки и счётчики остаются в этом блоке.
     let (means, majority): ([[f64; 784]; 10], Digit) = {
+        // Загрузчик читает весь исходный train; разделение на train/validation идёт ниже.
         let digits: Vec<([f64; 784], Digit)> = load_digits(&data.join("train"))?;
         let (means, majority, validation): ([[f64; 784]; 10], Digit, Vec<usize>) = {
             // Для каждой цифры считаем только обучающие примеры.
@@ -254,7 +262,7 @@ fn main() -> Result<(), String> {
 
             (means, majority, validation)
         };
-        // Временные индексы и метрики validation локальны этой оценке.
+        // Общие evaluate/report проверяют отложенные индексы, не изменяя обученные means.
         report(
             "validation",
             validation.len(),
