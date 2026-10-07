@@ -77,64 +77,72 @@ fn main() -> Result<(), String> {
         // Типы переменных: class: Digit.
         for class in classes {
             let class_directory: std::path::PathBuf = directory.join((class as usize).to_string());
-            let entries: std::fs::ReadDir =
-                std::fs::read_dir(&class_directory).map_err(|e: std::io::Error| -> String {
-                    format!(
-                        "{}: {e}. Подготовь PNG: python3 scripts/prepare_mnist.py",
-                        class_directory.display()
-                    )
-                })?;
-            let mut paths: Vec<std::path::PathBuf> = Vec::new();
-            // Типы переменных: entry: Result<std::fs::DirEntry, std::io::Error>.
-            for entry in entries {
-                let path: std::path::PathBuf = entry
-                    .map_err(|e: std::io::Error| -> String { e.to_string() })?
-                    .path();
-                if path
-                    .extension()
-                    .is_some_and(|ext: &std::ffi::OsStr| -> bool {
-                        ext.eq_ignore_ascii_case("png")
-                    })
-                {
-                    paths.push(path);
+            // Изменяемый список нужен только сбору и сортировке; дальше paths неизменяемый.
+            let paths: Vec<std::path::PathBuf> = {
+                let directory_entries: std::fs::ReadDir = std::fs::read_dir(&class_directory)
+                    .map_err(|e: std::io::Error| -> String {
+                        format!(
+                            "{}: {e}. Подготовь PNG: python3 scripts/prepare_mnist.py",
+                            class_directory.display()
+                        )
+                    })?;
+                let mut paths: Vec<std::path::PathBuf> = Vec::new();
+                // Типы переменных: directory_entry: Result<std::fs::DirEntry, std::io::Error>.
+                for directory_entry in directory_entries {
+                    let path: std::path::PathBuf = directory_entry
+                        .map_err(|e: std::io::Error| -> String { e.to_string() })?
+                        .path();
+                    if path
+                        .extension()
+                        .is_some_and(|ext: &std::ffi::OsStr| -> bool {
+                            ext.eq_ignore_ascii_case("png")
+                        })
+                    {
+                        paths.push(path);
+                    }
                 }
-            }
-            // Файловая система не обещает порядок чтения. Сортировка фиксирует порядок
-            // картинок и, следовательно, одинаковое разделение train/validation при повторном запуске.
-            paths.sort();
-            if paths.is_empty() {
-                return Err(format!("{}: нет PNG", class_directory.display()));
-            }
+                // Файловая система не обещает порядок чтения. Сортировка фиксирует порядок
+                // картинок и, следовательно, одинаковое разделение train/validation при повторном запуске.
+                paths.sort();
+                if paths.is_empty() {
+                    return Err(format!("{}: нет PNG", class_directory.display()));
+                }
+                paths
+            };
             // Типы переменных: path: std::path::PathBuf.
             for path in paths {
                 // Декодирование превращает сжатый PNG в байты яркости. Это ещё не обучение.
                 let decoded: [f64; 784] = (|| -> Result<[f64; 784], String> {
-                    let file: std::fs::File = std::fs::File::open(&path)
-                        .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                    let mut reader: png::Reader<std::io::BufReader<std::fs::File>> =
-                        png::Decoder::new(std::io::BufReader::new(file))
-                            .read_info()
+                    // Читатель и изменяемый буфер живут только во время декодирования PNG.
+                    let pixels: [u8; 784] = {
+                        let file: std::fs::File = std::fs::File::open(&path)
+                            .map_err(|e: std::io::Error| -> String { e.to_string() })?;
+                        let mut reader: png::Reader<std::io::BufReader<std::fs::File>> =
+                            png::Decoder::new(std::io::BufReader::new(file))
+                                .read_info()
+                                .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
+                        let info: &png::Info<'_> = reader.info();
+                        // Проверяем договорённость о данных: статический PNG 28×28, один серый канал,
+                        // 8 бит на пиксель. Цветной или другого размера файл нельзя подать как 784 яркости.
+                        if info.width != 28
+                            || info.height != 28
+                            || info.color_type != png::ColorType::Grayscale
+                            || info.bit_depth != png::BitDepth::Eight
+                            || info.animation_control.is_some()
+                        {
+                            return Err("Ожидается статический PNG 28×28, grayscale, 8 бит".into());
+                        }
+                        // u8 хранит целую яркость от 0 до 255: 0 — чёрный фон, 255 — белый штрих.
+                        // Пиксели идут строка за строкой: индекс y*28+x соответствует координатам (y,x).
+                        let mut pixels: [u8; 784] = [0u8; 784];
+                        reader
+                            .next_frame(&mut pixels)
                             .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
-                    let info: &png::Info<'_> = reader.info();
-                    // Проверяем договорённость о данных: статический PNG 28×28, один серый канал,
-                    // 8 бит на пиксель. Цветной или другого размера файл нельзя подать как 784 яркости.
-                    if info.width != 28
-                        || info.height != 28
-                        || info.color_type != png::ColorType::Grayscale
-                        || info.bit_depth != png::BitDepth::Eight
-                        || info.animation_control.is_some()
-                    {
-                        return Err("Ожидается статический PNG 28×28, grayscale, 8 бит".into());
-                    }
-                    // u8 хранит целую яркость от 0 до 255: 0 — чёрный фон, 255 — белый штрих.
-                    // Пиксели идут строка за строкой: индекс y*28+x соответствует координатам (y,x).
-                    let mut pixels: [u8; 784] = [0u8; 784];
-                    reader
-                        .next_frame(&mut pixels)
-                        .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
-                    reader
-                        .finish()
-                        .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
+                        reader
+                            .finish()
+                            .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
+                        pixels
+                    };
                     // Делим каждый пиксель на 255: 0 -> 0.0, 128 -> примерно 0.502, 255 -> 1.0.
                     // Это фиксированная нормализация, не требующая статистик validation или test.
                     Ok(std::array::from_fn(|i: usize| -> f64 {
@@ -188,35 +196,39 @@ fn main() -> Result<(), String> {
         let cross_entropy = |scores: &Array2<f32>, labels: &[Digit]| -> (f32, Array2<f32>) {
             assert_eq!(scores.nrows(), labels.len());
             assert!(!labels.is_empty());
-            // Копия сначала содержит scores. По ходу цикла превращаем её в вероятности,
-            // а затем в производные; исходные scores при этом остаются неизменными.
-            let mut gradient: Array2<f32> = scores.clone();
-            let mut loss: f32 = 0.0;
-            // Типы переменных: row: ndarray::ArrayViewMut1<'_, f32>, label: Digit.
-            for (mut row, &label) in gradient.rows_mut().into_iter().zip(labels) {
-                assert!((label as usize) < row.len());
-                // Softmax: p_c = exp(score_c) / sum(exp(scores)). Вычитаем один максимум
-                // из всех scores: вероятности сохраняются, а экспоненты не переполняются.
-                let max: f32 = row.iter().copied().fold(f32::NEG_INFINITY, f32::max);
-                // Сохраняем исходный score правильного класса до преобразования строки.
-                // label — вариант Digit; label as usize выбирает столбец этой цифры в scores.
-                let target: f32 = row[label as usize];
-                // Теперь в строке exp(score_c - max); это положительные ненормированные веса.
-                row.mapv_inplace(|x: f32| -> f32 { (x - max).exp() });
-                let sum: f32 = row.sum();
-                // Это -ln(p_target), записанное как log-sum-exp - score_target.
-                // Так не нужно вычислять ln почти нулевой вероятности, которая могла округлиться до 0.
-                loss += max + sum.ln() - target;
-                // Делим экспоненты на их сумму: получаем вероятности, сумма которых равна 1.
-                row /= sum;
-                // Для softmax вместе с cross-entropy производная равна p - one_hot(label).
-                // one_hot — строка с единицей у правильного класса и нулями у остальных.
-                // Пример: p=[0.2,0.8], правильный класс 0 -> производная [-0.8,0.8].
-                row[label as usize] -= 1.0;
-                // Мы учим по СРЕДНЕЙ ошибке batch, поэтому делим производные на фактический N.
-                // Неполный последний batch тоже считается правильно. Повторно делить градиенты не надо.
-                row /= labels.len() as f32;
-            }
+            // Изменяемая копия scores нужна только вычислению вероятностей и производной.
+            let (gradient, loss): (Array2<f32>, f32) = {
+                // Копия сначала содержит scores. По ходу цикла превращаем её в вероятности,
+                // а затем в производные; исходные scores при этом остаются неизменными.
+                let mut gradient: Array2<f32> = scores.clone();
+                let mut loss: f32 = 0.0;
+                // Типы переменных: row: ndarray::ArrayViewMut1<'_, f32>, label: Digit.
+                for (mut row, &label) in gradient.rows_mut().into_iter().zip(labels) {
+                    assert!((label as usize) < row.len());
+                    // Softmax: p_c = exp(score_c) / sum(exp(scores)). Вычитаем один максимум
+                    // из всех scores: вероятности сохраняются, а экспоненты не переполняются.
+                    let max: f32 = row.iter().copied().fold(f32::NEG_INFINITY, f32::max);
+                    // Сохраняем исходный score правильного класса до преобразования строки.
+                    // label — вариант Digit; label as usize выбирает столбец этой цифры в scores.
+                    let target: f32 = row[label as usize];
+                    // Теперь в строке exp(score_c - max); это положительные ненормированные веса.
+                    row.mapv_inplace(|x: f32| -> f32 { (x - max).exp() });
+                    let sum: f32 = row.sum();
+                    // Это -ln(p_target), записанное как log-sum-exp - score_target.
+                    // Так не нужно вычислять ln почти нулевой вероятности, которая могла округлиться до 0.
+                    loss += max + sum.ln() - target;
+                    // Делим экспоненты на их сумму: получаем вероятности, сумма которых равна 1.
+                    row /= sum;
+                    // Для softmax вместе с cross-entropy производная равна p - one_hot(label).
+                    // one_hot — строка с единицей у правильного класса и нулями у остальных.
+                    // Пример: p=[0.2,0.8], правильный класс 0 -> производная [-0.8,0.8].
+                    row[label as usize] -= 1.0;
+                    // Мы учим по СРЕДНЕЙ ошибке batch, поэтому делим производные на фактический N.
+                    // Неполный последний batch тоже считается правильно. Повторно делить градиенты не надо.
+                    row /= labels.len() as f32;
+                }
+                (gradient, loss)
+            };
             (loss / labels.len() as f32, gradient)
         };
         // Один batch для обучения и оценки: строки X=[N,784], метки labels=[N].
@@ -258,27 +270,31 @@ fn main() -> Result<(), String> {
             };
 
             assert!(!examples.is_empty() && batch_size > 0);
-            // confusion[истинная_цифра][предсказанная_цифра] считает такие пары.
-            // Диагональ — верные ответы; числа вне диагонали показывают, какие цифры путаются.
-            let mut confusion: [[usize; 10]; 10] = [[0usize; 10]; 10];
-            let mut loss: f32 = 0.0;
-            // Типы переменных: indices: &[usize].
-            for indices in examples.chunks(batch_size) {
-                let (input, labels): (Array2<f32>, Vec<Digit>) = batch(digits, indices);
-                let (states, _, _): (Vec<Array2<f32>>, Vec<Array2<f32>>, Vec<Array2<usize>>) =
-                    forward(layers, &input);
-                let scores: &Array2<f32> = states.last().unwrap();
-                // cross_entropy возвращает (loss, градиент); для оценки используем только .0.
-                // Функция возвращает среднюю loss одного batch. Умножаем на его размер,
-                // чтобы накопить сумму по картинкам; в конце делим на размер всей выборки.
-                // Так маленький последний batch не получает такой же вес, как большой.
-                loss += cross_entropy(scores, &labels).0 * indices.len() as f32;
-                // Типы переменных: row: ndarray::ArrayView1<'_, f32>, label: Digit.
-                for (row, label) in scores.rows().into_iter().zip(labels) {
-                    let predicted: Digit = argmax(row);
-                    confusion[label as usize][predicted as usize] += 1;
+            // Накопление метрик отделено от расчёта итоговых долей.
+            let (confusion, loss): ([[usize; 10]; 10], f32) = {
+                // confusion[истинная_цифра][предсказанная_цифра] считает такие пары.
+                // Диагональ — верные ответы; числа вне диагонали показывают, какие цифры путаются.
+                let mut confusion: [[usize; 10]; 10] = [[0usize; 10]; 10];
+                let mut loss: f32 = 0.0;
+                // Типы переменных: indices: &[usize].
+                for indices in examples.chunks(batch_size) {
+                    let (input, labels): (Array2<f32>, Vec<Digit>) = batch(digits, indices);
+                    let (states, _, _): (Vec<Array2<f32>>, Vec<Array2<f32>>, Vec<Array2<usize>>) =
+                        forward(layers, &input);
+                    let scores: &Array2<f32> = states.last().unwrap();
+                    // cross_entropy возвращает (loss, градиент); для оценки используем только .0.
+                    // Функция возвращает среднюю loss одного batch. Умножаем на его размер,
+                    // чтобы накопить сумму по картинкам; в конце делим на размер всей выборки.
+                    // Так маленький последний batch не получает такой же вес, как большой.
+                    loss += cross_entropy(scores, &labels).0 * indices.len() as f32;
+                    // Типы переменных: row: ndarray::ArrayView1<'_, f32>, label: Digit.
+                    for (row, label) in scores.rows().into_iter().zip(labels) {
+                        let predicted: Digit = argmax(row);
+                        confusion[label as usize][predicted as usize] += 1;
+                    }
                 }
-            }
+                (confusion, loss)
+            };
             (
                 loss / examples.len() as f32,
                 (0..10)
@@ -348,13 +364,13 @@ fn main() -> Result<(), String> {
                 }
             };
             // Подготовка индексов двух частей, цифры baseline и состояния генератора.
-            let (mut training, validation, majority, mut random_state): (
+            let (training, validation, majority, random_state): (
                 Vec<usize>,
                 Vec<usize>,
                 Digit,
                 u64,
             ) = {
-                let (mut training, validation): (Vec<usize>, Vec<usize>) = {
+                let (training, validation): (Vec<usize>, Vec<usize>) = {
                     // Счётчик отдельный для каждой цифры: сохраняем примерно долю классов в обеих частях.
                     // Он нужен только разделению данных и не становится параметром модели.
                     let mut class_counts: [usize; 10] = [0usize; 10];
@@ -376,20 +392,29 @@ fn main() -> Result<(), String> {
 
                     (training, validation)
                 };
-                let mut random_state: u64 = seed;
-                // Первое перемешивание выполняется до инициализации весов.
-                // Затем new_layer продолжит тот же генератор, поэтому порядок вызовов важен.
-                shuffle(&mut training, &mut random_state);
+                // Перемешивание возвращает готовые индексы и новое состояние генератора.
+                let (training, random_state): (Vec<usize>, u64) = {
+                    let mut training: Vec<usize> = training;
+                    let mut random_state: u64 = seed;
+                    // Первое перемешивание выполняется до инициализации весов.
+                    // Затем new_layer продолжит тот же генератор, поэтому порядок вызовов важен.
+                    shuffle(&mut training, &mut random_state);
 
+                    (training, random_state)
+                };
                 // Baseline — постоянный прогноз самой частой цифры train. Он показывает,
                 // насколько модель лучше простого ответа без анализа пикселей.
                 // При равной частоте выбираем меньшую цифру; метки test в выборе не участвуют.
                 let majority: Digit = {
-                    let mut counts: [usize; 10] = [0usize; 10];
-                    // Типы переменных: index: usize.
-                    for &index in &training {
-                        counts[digits[index].1 as usize] += 1;
-                    }
+                    // Счётчик классов после обхода нужен только для чтения.
+                    let counts: [usize; 10] = {
+                        let mut counts: [usize; 10] = [0usize; 10];
+                        // Типы переменных: index: usize.
+                        for &index in &training {
+                            counts[digits[index].1 as usize] += 1;
+                        }
+                        counts
+                    };
                     if counts.contains(&0) {
                         return Err("Train должен содержать примеры всех десяти цифр".into());
                     }
@@ -409,7 +434,8 @@ fn main() -> Result<(), String> {
                 );
                 (training, validation, majority, random_state)
             };
-            let mut layers: Vec<(Array2<f32>, Array1<f32>)> = {
+            let (layers, random_state): (Vec<Layer>, u64) = {
+                let mut random_state: u64 = random_state;
                 // Создаём W=[input,output] и b=[output]. Смещения начинают с нуля.
                 // Веса начинаются с разных малых случайных значений: это помогает скрытым нейронам
                 // получать разные градиенты и учить разные признаки.
@@ -428,15 +454,16 @@ fn main() -> Result<(), String> {
                         Array1::zeros(output),
                     )
                 };
-                vec![
+                let layers: Vec<Layer> = vec![
                     // layers[0]: пиксели -> скрытые признаки, W=[784,128], b=[128].
                     new_layer(784, 128, &mut random_state),
                     // layers[1]: скрытые признаки -> классы, W=[128,10], b=[10].
                     new_layer(128, 10, &mut random_state),
-                ]
+                ];
+                (layers, random_state)
             };
 
-            let (mut first_moments, mut second_moments): (
+            let (first_moments, second_moments): (
                 Vec<(Array2<f32>, Array1<f32>)>,
                 Vec<(Array2<f32>, Array1<f32>)>,
             ) = {
@@ -464,134 +491,153 @@ fn main() -> Result<(), String> {
                 );
                 initial.0
             };
-            // Сохраняем отдельную копию лучших весов по validation loss.
-            // Копия нужна, потому что следующие эпохи продолжат менять текущие layers.
-            // В начале лучший кандидат — ещё не обученная сеть (эпоха 0).
-            let mut best: Vec<(Array2<f32>, Array1<f32>)> = layers.clone();
-            let mut best_loss: f32 = initial_loss;
-            let mut best_epoch: usize = 0;
-            // step — номер ОБНОВЛЕНИЯ весов, не эпохи. Он увеличивается после каждого batch
-            // и нужен Adam для поправки на нулевые начальные средние.
-            let mut step: i32 = 0i32;
-            // Одна эпоха: пройти все batch train, затем оценить validation без обновления весов.
-            // Повторяем этот цикл; test до выбора лучшей эпохи не загружаем.
-            // Типы переменных: epoch: usize.
-            for epoch in 1..=epochs {
-                // Меняем только порядок обучающих индексов. Генератор продолжает своё состояние,
-                // поэтому каждая эпоха имеет новый, но воспроизводимый при том же seed порядок.
-                shuffle(&mut training, &mut random_state);
-                let mut epoch_loss: f32 = 0.0;
-                // Типы переменных: examples: &[usize].
-                for examples in training.chunks(batch_size) {
-                    // Сначала весь прямой и обратный проход по СТАРЫМ весам.
-                    // Наружу из этого блока выходят только ошибка batch и градиенты параметров;
-                    // активации, окна свёрток и промежуточные производные остаются внутри.
-                    let (loss, gradients): (f32, Vec<(Array2<f32>, Array1<f32>)>) = {
-                        let (input, labels): (Array2<f32>, Vec<Digit>) = batch(&digits, examples);
-                        let (states, _, _): (
-                            Vec<Array2<f32>>,
-                            Vec<Array2<f32>>,
-                            Vec<Array2<usize>>,
-                        ) = forward(&layers, &input);
-                        // Получаем среднюю ошибку batch и dL/dscores — начало обратного прохода.
-                        // Ошибка должна быть конечной; NaN/∞ означают, что численный расчёт нарушился.
-                        let (loss, gradient): (f32, Array2<f32>) =
-                            cross_entropy(states.last().unwrap(), &labels);
-                        if !loss.is_finite() {
-                            return Err("Ошибка обучения не конечна; уменьши learning-rate".into());
-                        }
-                        // Начинаем с выхода: G по scores даёт ow/ob выходного слоя и dh по hidden.
-                        // Веса layers[1] пока не меняем — они ещё нужны для правильного backward.
-                        let (dh, ow, ob): (Array2<f32>, Array2<f32>, Array1<f32>) =
-                            dense_backward(&states[1], &layers[1].0, &gradient);
-                        // Перед первым Dense пропускаем dh через маску ReLU hidden.
-                        // Затем считаем градиенты hw/hb весов и смещений первого слоя; производные по пикселям не нужны.
-                        let (_, hw, hb): (Array2<f32>, Array2<f32>, Array1<f32>) = dense_backward(
-                            &states[0],
-                            &layers[0].0,
-                            &relu_backward(&states[1], &dh),
-                        );
-                        // Градиенты возвращаем в порядке слоёв: сначала скрытый, затем выходной.
-                        // Вычисляли их в обратном порядке, но обновление всё равно должно попасть в свои веса.
-                        let gradients: Vec<(Array2<f32>, Array1<f32>)> = vec![(hw, hb), (ow, ob)];
+            // Всё изменяемое состояние обучения живёт только в этом блоке эпох.
+            // За его пределами доступны выбранная модель best и номер её эпохи без mut.
+            let (best, best_epoch): (Vec<Layer>, usize) = {
+                let mut layers: Vec<Layer> = layers;
+                let mut training: Vec<usize> = training;
+                let mut random_state: u64 = random_state;
+                let mut first_moments: Vec<Layer> = first_moments;
+                let mut second_moments: Vec<Layer> = second_moments;
+                // Сохраняем отдельную копию лучших весов по validation loss.
+                // Копия нужна, потому что следующие эпохи продолжат менять текущие layers.
+                // В начале лучший кандидат — ещё не обученная сеть (эпоха 0).
+                let mut best: Vec<(Array2<f32>, Array1<f32>)> = layers.clone();
+                let mut best_loss: f32 = initial_loss;
+                let mut best_epoch: usize = 0;
+                // step — номер ОБНОВЛЕНИЯ весов, не эпохи. Он увеличивается после каждого batch
+                // и нужен Adam для поправки на нулевые начальные средние.
+                let mut step: i32 = 0i32;
+                // Одна эпоха: пройти все batch train, затем оценить validation без обновления весов.
+                // Повторяем этот цикл; test до выбора лучшей эпохи не загружаем.
+                // Типы переменных: epoch: usize.
+                for epoch in 1..=epochs {
+                    // Меняем только порядок обучающих индексов. Генератор продолжает своё состояние,
+                    // поэтому каждая эпоха имеет новый, но воспроизводимый при том же seed порядок.
+                    shuffle(&mut training, &mut random_state);
+                    // Сумма меняется только при обходе train; для отчёта возвращаем готовую train loss.
+                    let epoch_loss: f32 = {
+                        let mut epoch_loss: f32 = 0.0;
+                        // Типы переменных: examples: &[usize].
+                        for examples in training.chunks(batch_size) {
+                            // Сначала весь прямой и обратный проход по СТАРЫМ весам.
+                            // Наружу из этого блока выходят только ошибка batch и градиенты параметров;
+                            // активации, окна свёрток и промежуточные производные остаются внутри.
+                            let (loss, gradients): (f32, Vec<(Array2<f32>, Array1<f32>)>) = {
+                                let (input, labels): (Array2<f32>, Vec<Digit>) =
+                                    batch(&digits, examples);
+                                let (states, _, _): (
+                                    Vec<Array2<f32>>,
+                                    Vec<Array2<f32>>,
+                                    Vec<Array2<usize>>,
+                                ) = forward(&layers, &input);
+                                // Получаем среднюю ошибку batch и dL/dscores — начало обратного прохода.
+                                // Ошибка должна быть конечной; NaN/∞ означают, что численный расчёт нарушился.
+                                let (loss, gradient): (f32, Array2<f32>) =
+                                    cross_entropy(states.last().unwrap(), &labels);
+                                if !loss.is_finite() {
+                                    return Err(
+                                        "Ошибка обучения не конечна; уменьши learning-rate".into(),
+                                    );
+                                }
+                                // Начинаем с выхода: G по scores даёт ow/ob выходного слоя и dh по hidden.
+                                // Веса layers[1] пока не меняем — они ещё нужны для правильного backward.
+                                let (dh, ow, ob): (Array2<f32>, Array2<f32>, Array1<f32>) =
+                                    dense_backward(&states[1], &layers[1].0, &gradient);
+                                // Перед первым Dense пропускаем dh через маску ReLU hidden.
+                                // Затем считаем градиенты hw/hb весов и смещений первого слоя; производные по пикселям не нужны.
+                                let (_, hw, hb): (Array2<f32>, Array2<f32>, Array1<f32>) =
+                                    dense_backward(
+                                        &states[0],
+                                        &layers[0].0,
+                                        &relu_backward(&states[1], &dh),
+                                    );
+                                // Градиенты возвращаем в порядке слоёв: сначала скрытый, затем выходной.
+                                // Вычисляли их в обратном порядке, но обновление всё равно должно попасть в свои веса.
+                                let gradients: Vec<(Array2<f32>, Array1<f32>)> =
+                                    vec![(hw, hb), (ow, ob)];
 
-                        (loss, gradients)
+                                (loss, gradients)
+                            };
+                            // Все градиенты рассчитаны по прежним весам; теперь обновляем веса и смещения Adam.
+                            {
+                                // Теперь все производные уже рассчитаны: можно менять веса.
+                                // Обновляем каждый слой по его градиенту, не смешивая новые веса со старым backward.
+                                step += 1;
+                                // В начале m и v равны нулю, поэтому первые средние занижены.
+                                // Деление на 1-β^step исправляет это смещение: β₁=0.9, β₂=0.999.
+                                let correction1: f32 = 1.0 - 0.9f32.powi(step);
+                                let correction2: f32 = 1.0 - 0.999f32.powi(step);
+                                // Типы переменных: i: usize.
+                                for i in 0..layers.len() {
+                                    // Обновление весов W (поле .0 слоя).
+                                    // Типы переменных: parameter: &mut f32, m: &mut f32, v: &mut f32, g: f32.
+                                    for (((parameter, m), v), &g) in layers[i]
+                                        .0
+                                        .iter_mut()
+                                        .zip(first_moments[i].0.iter_mut())
+                                        .zip(second_moments[i].0.iter_mut())
+                                        .zip(gradients[i].0.iter())
+                                    {
+                                        // m хранит сглаженный градиент, включая его знак: 90% прежнего + 10% нового.
+                                        // v сглаживает квадрат градиента: 99.9% прежнего + 0.1% нового квадрата.
+                                        *m = 0.9 * *m + 0.1 * g;
+                                        *v = 0.999 * *v + 0.001 * g * g;
+                                        // Adam: parameter -= learning_rate * m_hat / (sqrt(v_hat)+epsilon).
+                                        // Вычитаем направление градиента, чтобы уменьшать ошибку; большой накопленный
+                                        // масштаб градиента уменьшает относительный шаг. epsilon=1e-8 защищает от деления на 0.
+                                        *parameter -= learning_rate * (*m / correction1)
+                                            / ((*v / correction2).sqrt() + 1e-8);
+                                    }
+                                    // Та же формула Adam для смещений b (поле .1 слоя).
+                                    // Типы переменных: parameter: &mut f32, m: &mut f32, v: &mut f32, g: f32.
+                                    for (((parameter, m), v), &g) in layers[i]
+                                        .1
+                                        .iter_mut()
+                                        .zip(first_moments[i].1.iter_mut())
+                                        .zip(second_moments[i].1.iter_mut())
+                                        .zip(gradients[i].1.iter())
+                                    {
+                                        *m = 0.9 * *m + 0.1 * g;
+                                        *v = 0.999 * *v + 0.001 * g * g;
+
+                                        *parameter -= learning_rate * (*m / correction1)
+                                            / ((*v / correction2).sqrt() + 1e-8);
+                                    }
+                                }
+                            }
+                            // Накопленная train loss относится к моментам обновлений: разные batch оценивались
+                            // при разных весах. Умножение на N даёт сумму ошибок, чтобы правильно усреднить эпоху.
+                            epoch_loss += loss * examples.len() as f32;
+                        }
+                        epoch_loss
                     };
-                    // Все градиенты рассчитаны по прежним весам; теперь обновляем веса и смещения Adam.
-                    {
-                        // Теперь все производные уже рассчитаны: можно менять веса.
-                        // Обновляем каждый слой по его градиенту, не смешивая новые веса со старым backward.
-                        step += 1;
-                        // В начале m и v равны нулю, поэтому первые средние занижены.
-                        // Деление на 1-β^step исправляет это смещение: β₁=0.9, β₂=0.999.
-                        let correction1: f32 = 1.0 - 0.9f32.powi(step);
-                        let correction2: f32 = 1.0 - 0.999f32.powi(step);
-                        // Типы переменных: i: usize.
-                        for i in 0..layers.len() {
-                            // Обновление весов W (поле .0 слоя).
-                            // Типы переменных: parameter: &mut f32, m: &mut f32, v: &mut f32, g: f32.
-                            for (((parameter, m), v), &g) in layers[i]
-                                .0
-                                .iter_mut()
-                                .zip(first_moments[i].0.iter_mut())
-                                .zip(second_moments[i].0.iter_mut())
-                                .zip(gradients[i].0.iter())
-                            {
-                                // m хранит сглаженный градиент, включая его знак: 90% прежнего + 10% нового.
-                                // v сглаживает квадрат градиента: 99.9% прежнего + 0.1% нового квадрата.
-                                *m = 0.9 * *m + 0.1 * g;
-                                *v = 0.999 * *v + 0.001 * g * g;
-                                // Adam: parameter -= learning_rate * m_hat / (sqrt(v_hat)+epsilon).
-                                // Вычитаем направление градиента, чтобы уменьшать ошибку; большой накопленный
-                                // масштаб градиента уменьшает относительный шаг. epsilon=1e-8 защищает от деления на 0.
-                                *parameter -= learning_rate * (*m / correction1)
-                                    / ((*v / correction2).sqrt() + 1e-8);
-                            }
-                            // Та же формула Adam для смещений b (поле .1 слоя).
-                            // Типы переменных: parameter: &mut f32, m: &mut f32, v: &mut f32, g: f32.
-                            for (((parameter, m), v), &g) in layers[i]
-                                .1
-                                .iter_mut()
-                                .zip(first_moments[i].1.iter_mut())
-                                .zip(second_moments[i].1.iter_mut())
-                                .zip(gradients[i].1.iter())
-                            {
-                                *m = 0.9 * *m + 0.1 * g;
-                                *v = 0.999 * *v + 0.001 * g * g;
-
-                                *parameter -= learning_rate * (*m / correction1)
-                                    / ((*v / correction2).sqrt() + 1e-8);
-                            }
-                        }
+                    // Validation — отложенные картинки: они помогают выбрать эпоху, но не меняют веса.
+                    // Падающая train loss при растущей validation loss может указывать на переобучение.
+                    let metrics: (f32, f32, [[usize; 10]; 10]) =
+                        evaluate(&layers, &digits, &validation, batch_size);
+                    if !metrics.0.is_finite() {
+                        return Err("Validation loss не конечна".into());
                     }
-                    // Накопленная train loss относится к моментам обновлений: разные batch оценивались
-                    // при разных весах. Умножение на N даёт сумму ошибок, чтобы правильно усреднить эпоху.
-                    epoch_loss += loss * examples.len() as f32;
+                    // Запоминаем эпоху только при уменьшении validation loss (metrics.0).
+                    // Выбор идёт по ошибке, а не по accuracy: уверенные неправильные ответы тоже важны.
+                    // Последняя эпоха не обязана быть лучшей, поэтому на test пойдут сохранённые best.
+                    if metrics.0 < best_loss {
+                        best_loss = metrics.0;
+                        best_epoch = epoch;
+                        best = layers.clone();
+                    }
+                    println!(
+                        "epoch={epoch} train_loss={:.5} validation_loss={:.5} validation_accuracy={:.4} elapsed={:.1}s",
+                        epoch_loss / training.len() as f32,
+                        metrics.0,
+                        metrics.1,
+                        start.elapsed().as_secs_f32()
+                    );
                 }
-                // Validation — отложенные картинки: они помогают выбрать эпоху, но не меняют веса.
-                // Падающая train loss при растущей validation loss может указывать на переобучение.
-                let metrics: (f32, f32, [[usize; 10]; 10]) =
-                    evaluate(&layers, &digits, &validation, batch_size);
-                if !metrics.0.is_finite() {
-                    return Err("Validation loss не конечна".into());
-                }
-                // Запоминаем эпоху только при уменьшении validation loss (metrics.0).
-                // Выбор идёт по ошибке, а не по accuracy: уверенные неправильные ответы тоже важны.
-                // Последняя эпоха не обязана быть лучшей, поэтому на test пойдут сохранённые best.
-                if metrics.0 < best_loss {
-                    best_loss = metrics.0;
-                    best_epoch = epoch;
-                    best = layers.clone();
-                }
-                println!(
-                    "epoch={epoch} train_loss={:.5} validation_loss={:.5} validation_accuracy={:.4} elapsed={:.1}s",
-                    epoch_loss / training.len() as f32,
-                    metrics.0,
-                    metrics.1,
-                    start.elapsed().as_secs_f32()
-                );
-            }
 
+                (best, best_epoch)
+            };
             (best, best_epoch, majority, batch_size)
         };
         // Обучение завершено: загружаем официальный test и оцениваем сохранённую модель best.

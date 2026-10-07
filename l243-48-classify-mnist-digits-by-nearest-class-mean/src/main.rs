@@ -65,64 +65,72 @@ fn main() -> Result<(), String> {
         // Типы переменных: class: Digit.
         for class in classes {
             let class_directory: std::path::PathBuf = directory.join((class as usize).to_string());
-            let entries: std::fs::ReadDir =
-                std::fs::read_dir(&class_directory).map_err(|e: std::io::Error| -> String {
-                    format!(
-                        "{}: {e}. Подготовь PNG: python3 scripts/prepare_mnist.py",
-                        class_directory.display()
-                    )
-                })?;
-            let mut paths: Vec<std::path::PathBuf> = Vec::new();
-            // Типы переменных: entry: Result<std::fs::DirEntry, std::io::Error>.
-            for entry in entries {
-                let path: std::path::PathBuf = entry
-                    .map_err(|e: std::io::Error| -> String { e.to_string() })?
-                    .path();
-                if path
-                    .extension()
-                    .is_some_and(|ext: &std::ffi::OsStr| -> bool {
-                        ext.eq_ignore_ascii_case("png")
-                    })
-                {
-                    paths.push(path);
+            // Изменяемый список нужен только сбору и сортировке; дальше paths неизменяемый.
+            let paths: Vec<std::path::PathBuf> = {
+                let directory_entries: std::fs::ReadDir = std::fs::read_dir(&class_directory)
+                    .map_err(|e: std::io::Error| -> String {
+                        format!(
+                            "{}: {e}. Подготовь PNG: python3 scripts/prepare_mnist.py",
+                            class_directory.display()
+                        )
+                    })?;
+                let mut paths: Vec<std::path::PathBuf> = Vec::new();
+                // Типы переменных: directory_entry: Result<std::fs::DirEntry, std::io::Error>.
+                for directory_entry in directory_entries {
+                    let path: std::path::PathBuf = directory_entry
+                        .map_err(|e: std::io::Error| -> String { e.to_string() })?
+                        .path();
+                    if path
+                        .extension()
+                        .is_some_and(|ext: &std::ffi::OsStr| -> bool {
+                            ext.eq_ignore_ascii_case("png")
+                        })
+                    {
+                        paths.push(path);
+                    }
                 }
-            }
-            // Файловая система не обещает порядок чтения. Сортировка фиксирует порядок
-            // картинок и, следовательно, одинаковое разделение train/validation при повторном запуске.
-            paths.sort();
-            if paths.is_empty() {
-                return Err(format!("{}: нет PNG", class_directory.display()));
-            }
+                // Файловая система не обещает порядок чтения. Сортировка фиксирует порядок
+                // картинок и, следовательно, одинаковое разделение train/validation при повторном запуске.
+                paths.sort();
+                if paths.is_empty() {
+                    return Err(format!("{}: нет PNG", class_directory.display()));
+                }
+                paths
+            };
             // Типы переменных: path: std::path::PathBuf.
             for path in paths {
                 // Декодирование превращает сжатый PNG в байты яркости. Это ещё не обучение.
                 let decoded: [f64; 784] = (|| -> Result<[f64; 784], String> {
-                    let file: std::fs::File = std::fs::File::open(&path)
-                        .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                    let mut reader: png::Reader<std::io::BufReader<std::fs::File>> =
-                        png::Decoder::new(std::io::BufReader::new(file))
-                            .read_info()
+                    // Читатель и изменяемый буфер живут только во время декодирования PNG.
+                    let pixels: [u8; 784] = {
+                        let file: std::fs::File = std::fs::File::open(&path)
+                            .map_err(|e: std::io::Error| -> String { e.to_string() })?;
+                        let mut reader: png::Reader<std::io::BufReader<std::fs::File>> =
+                            png::Decoder::new(std::io::BufReader::new(file))
+                                .read_info()
+                                .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
+                        let info: &png::Info<'_> = reader.info();
+                        // Проверяем договорённость о данных: статический PNG 28×28, один серый канал,
+                        // 8 бит на пиксель. Цветной или другого размера файл нельзя подать как 784 яркости.
+                        if info.width != 28
+                            || info.height != 28
+                            || info.color_type != png::ColorType::Grayscale
+                            || info.bit_depth != png::BitDepth::Eight
+                            || info.animation_control.is_some()
+                        {
+                            return Err("Ожидается статический PNG 28×28, grayscale, 8 бит".into());
+                        }
+                        // u8 хранит целую яркость от 0 до 255: 0 — чёрный фон, 255 — белый штрих.
+                        // Пиксели идут строка за строкой: индекс y*28+x соответствует координатам (y,x).
+                        let mut pixels: [u8; 784] = [0u8; 784];
+                        reader
+                            .next_frame(&mut pixels)
                             .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
-                    let info: &png::Info<'_> = reader.info();
-                    // Проверяем договорённость о данных: статический PNG 28×28, один серый канал,
-                    // 8 бит на пиксель. Цветной или другого размера файл нельзя подать как 784 яркости.
-                    if info.width != 28
-                        || info.height != 28
-                        || info.color_type != png::ColorType::Grayscale
-                        || info.bit_depth != png::BitDepth::Eight
-                        || info.animation_control.is_some()
-                    {
-                        return Err("Ожидается статический PNG 28×28, grayscale, 8 бит".into());
-                    }
-                    // u8 хранит целую яркость от 0 до 255: 0 — чёрный фон, 255 — белый штрих.
-                    // Пиксели идут строка за строкой: индекс y*28+x соответствует координатам (y,x).
-                    let mut pixels: [u8; 784] = [0u8; 784];
-                    reader
-                        .next_frame(&mut pixels)
-                        .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
-                    reader
-                        .finish()
-                        .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
+                        reader
+                            .finish()
+                            .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
+                        pixels
+                    };
                     // Делим каждый пиксель на 255: 0 -> 0.0, 128 -> примерно 0.502, 255 -> 1.0.
                     // Это фиксированная нормализация, не требующая статистик validation или test.
                     Ok(std::array::from_fn(|i: usize| -> f64 {
@@ -144,36 +152,40 @@ fn main() -> Result<(), String> {
                     indices: &[usize],
                     majority: Digit|
      -> (usize, usize, [[usize; 10]; 10]) {
-        // confusion[истинная_цифра][предсказанная_цифра] считает такие пары.
-        // Диагональ — верные ответы; числа вне диагонали показывают, какие цифры путаются.
-        let mut confusion: [[usize; 10]; 10] = [[0usize; 10]; 10];
-        // Здесь baseline — счётчик верных ответов постоянной цифрой majority, а не сама цифра.
-        let mut baseline: usize = 0usize;
-        // Типы переменных: index: usize.
-        for &index in indices {
-            let (pixels, label): &([f64; 784], Digit) = &records[index];
-            // Проверяем все десять классов и выбираем наименьшее расстояние до среднего.
-            // Метка текущей картинки не участвует в выборе; её используем позже для проверки ответа.
-            let predicted: Digit = classes
-                .into_iter()
-                .min_by(|&a: &Digit, &b: &Digit| -> std::cmp::Ordering {
-                    // Квадрат евклидова расстояния: sum_p((pixel[p]-mean[c,p])²).
-                    // Квадраты не дают положительным и отрицательным различиям сократиться.
-                    // Корень не нужен: он не меняет порядок расстояний и выбранную цифру.
-                    let distance = |class: Digit| -> f64 {
-                        pixels
-                            .iter()
-                            .zip(means[class as usize])
-                            .map(|(x, y): (&f64, f64)| -> f64 { (x - y).powi(2) })
-                            .sum::<f64>()
-                    };
-                    distance(a).total_cmp(&distance(b))
-                })
-                .unwrap();
-            // Digit преобразуем в usize только для выбора строки и столбца счётчиков.
-            confusion[*label as usize][predicted as usize] += 1;
-            baseline += usize::from(*label == majority);
-        }
+        // Счётчики меняются только во время обхода примеров.
+        let (confusion, baseline): ([[usize; 10]; 10], usize) = {
+            // confusion[истинная_цифра][предсказанная_цифра] считает такие пары.
+            // Диагональ — верные ответы; числа вне диагонали показывают, какие цифры путаются.
+            let mut confusion: [[usize; 10]; 10] = [[0usize; 10]; 10];
+            // Здесь baseline — счётчик верных ответов постоянной цифрой majority, а не сама цифра.
+            let mut baseline: usize = 0usize;
+            // Типы переменных: index: usize.
+            for &index in indices {
+                let (pixels, label): &([f64; 784], Digit) = &records[index];
+                // Проверяем все десять классов и выбираем наименьшее расстояние до среднего.
+                // Метка текущей картинки не участвует в выборе; её используем позже для проверки ответа.
+                let predicted: Digit = classes
+                    .into_iter()
+                    .min_by(|&a: &Digit, &b: &Digit| -> std::cmp::Ordering {
+                        // Квадрат евклидова расстояния: sum_p((pixel[p]-mean[c,p])²).
+                        // Квадраты не дают положительным и отрицательным различиям сократиться.
+                        // Корень не нужен: он не меняет порядок расстояний и выбранную цифру.
+                        let distance = |class: Digit| -> f64 {
+                            pixels
+                                .iter()
+                                .zip(means[class as usize])
+                                .map(|(x, y): (&f64, f64)| -> f64 { (x - y).powi(2) })
+                                .sum::<f64>()
+                        };
+                        distance(a).total_cmp(&distance(b))
+                    })
+                    .unwrap();
+                // Digit преобразуем в usize только для выбора строки и столбца счётчиков.
+                confusion[*label as usize][predicted as usize] += 1;
+                baseline += usize::from(*label == majority);
+            }
+            (confusion, baseline)
+        };
         // Сумма диагонали матрицы ошибок — число правильных прогнозов.
         let correct: usize = (0..10).map(|i: usize| -> usize { confusion[i][i] }).sum();
         (correct, baseline, confusion)
@@ -203,47 +215,55 @@ fn main() -> Result<(), String> {
         // Загрузчик читает весь исходный train; разделение на train/validation идёт ниже.
         let digits: Vec<([f64; 784], Digit)> = load_digits(&data.join("train"))?;
         let (means, majority, validation): ([[f64; 784]; 10], Digit, Vec<usize>) = {
-            // Для каждой цифры считаем только обучающие примеры.
-            // Эти числа нужны для деления суммы пикселей на число картинок и выбора baseline.
-            let mut counts: [usize; 10] = [0usize; 10];
-            // sums[c][p] — сумма яркости пикселя p у всех train-картинок цифры c.
-            // После деления получим десять средних изображений, каждое из 784 чисел.
-            let mut sums: [[f64; 784]; 10] = [[0.0; 784]; 10];
-            // seen считает все просмотренные примеры класса, включая отложенные.
-            // Он отвечает за разделение, а counts — только за количество использованных в обучении.
-            let mut seen: [usize; 10] = [0usize; 10];
-            let mut validation: Vec<usize> = Vec::new();
-            // Типы переменных: index: usize, pixels: &[f64; 784], label: &Digit.
-            for (index, (pixels, label)) in digits.iter().enumerate() {
-                let class: usize = *label as usize;
-                // Отложенный пример добавляем только в validation: он не меняет sums или counts.
-                // Так оценка проверяет перенос на картинки, которых среднее изображение не видело.
-                if seen[class] % 5 == 0 {
-                    validation.push(index);
-                } else {
-                    counts[class] += 1;
-                    // Типы переменных: sum: &mut f64, pixel: &f64.
-                    for (sum, pixel) in sums[class].iter_mut().zip(pixels) {
-                        // Прибавляем яркость в ТОЙ ЖЕ координате. Это выравнивание всех картинок по пикселям:
-                        // сдвинутые или очень разные почерки будут размываться в среднем изображении.
-                        *sum += pixel;
+            // Изменяемые накопители остаются в блоке разделения и суммирования.
+            let (counts, sums, validation): ([usize; 10], [[f64; 784]; 10], Vec<usize>) = {
+                // Для каждой цифры считаем только обучающие примеры.
+                // Эти числа нужны для деления суммы пикселей на число картинок и выбора baseline.
+                let mut counts: [usize; 10] = [0usize; 10];
+                // sums[c][p] — сумма яркости пикселя p у всех train-картинок цифры c.
+                // После деления получим десять средних изображений, каждое из 784 чисел.
+                let mut sums: [[f64; 784]; 10] = [[0.0; 784]; 10];
+                // seen считает все просмотренные примеры класса, включая отложенные.
+                // Он отвечает за разделение, а counts — только за количество использованных в обучении.
+                let mut seen: [usize; 10] = [0usize; 10];
+                let mut validation: Vec<usize> = Vec::new();
+                // Типы переменных: index: usize, pixels: &[f64; 784], label: &Digit.
+                for (index, (pixels, label)) in digits.iter().enumerate() {
+                    let class: usize = *label as usize;
+                    // Отложенный пример добавляем только в validation: он не меняет sums или counts.
+                    // Так оценка проверяет перенос на картинки, которых среднее изображение не видело.
+                    if seen[class] % 5 == 0 {
+                        validation.push(index);
+                    } else {
+                        counts[class] += 1;
+                        // Типы переменных: sum: &mut f64, pixel: &f64.
+                        for (sum, pixel) in sums[class].iter_mut().zip(pixels) {
+                            // Прибавляем яркость в ТОЙ ЖЕ координате. Это выравнивание всех картинок по пикселям:
+                            // сдвинутые или очень разные почерки будут размываться в среднем изображении.
+                            *sum += pixel;
+                        }
+                    }
+                    seen[class] += 1;
+                }
+                if counts.contains(&0) {
+                    return Err("В train нужны все десять классов".into());
+                }
+                (counts, sums, validation)
+            };
+            // Готовые средние передаём оценке без mut.
+            let means: [[f64; 784]; 10] = {
+                // Делим покоординатную сумму на число примеров класса: mean[c,p]=sum[c,p]/count[c].
+                // Обучение этой простой модели на этом заканчивается — итераций и градиентов здесь нет.
+                let mut means: [[f64; 784]; 10] = sums;
+                // Типы переменных: mean: &mut [f64; 784], count: usize.
+                for (mean, count) in means.iter_mut().zip(counts) {
+                    // Типы переменных: pixel: &mut f64.
+                    for pixel in mean {
+                        *pixel /= count as f64;
                     }
                 }
-                seen[class] += 1;
-            }
-            if counts.contains(&0) {
-                return Err("В train нужны все десять классов".into());
-            }
-            // Делим покоординатную сумму на число примеров класса: mean[c,p]=sum[c,p]/count[c].
-            // Обучение этой простой модели на этом заканчивается — итераций и градиентов здесь нет.
-            let mut means: [[f64; 784]; 10] = sums;
-            // Типы переменных: mean: &mut [f64; 784], count: usize.
-            for (mean, count) in means.iter_mut().zip(counts) {
-                // Типы переменных: pixel: &mut f64.
-                for pixel in mean {
-                    *pixel /= count as f64;
-                }
-            }
+                means
+            };
             // Baseline — постоянный прогноз самой частой цифры train. Он показывает,
             // насколько модель лучше простого ответа без анализа пикселей.
             // При равной частоте выбираем меньшую цифру; метки test в выборе не участвуют.
