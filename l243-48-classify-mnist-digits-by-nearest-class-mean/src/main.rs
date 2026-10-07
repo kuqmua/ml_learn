@@ -18,7 +18,7 @@ fn main() -> Result<(), String> {
     // Result<T, String> — результат или текст ошибки.
     // Тип переменной-замыкания анонимный: его имя нельзя написать после let.
     // У таких переменных типы аргументов стоят между |...|, результата — после ->.
-    // f64 — дробное число двойной точности; средние: [[f64; 784]; 10].
+    // f64 — дробное число двойной точности; DataByDigit хранит отдельное поле для каждой цифры.
 
     // Метка — одна из десяти цифр. Значения вроде 42 теперь нельзя записать как метку.
     // digit as usize даёт число 0..9 для индексов массивов, имён папок и печати.
@@ -38,8 +38,23 @@ fn main() -> Result<(), String> {
         Eight = 8,
         Nine = 9,
     }
-    // Порядок соответствует папкам 0..9 и индексам классов в массивах.
-    let classes: [Digit; 10] = [
+    // У каждой цифры своё именованное поле. T задаёт содержимое поля:
+    // usize для счётчика, [f64; 784] для суммы яркостей или среднего изображения.
+    struct DataByDigit<T> {
+        zero: T,
+        one: T,
+        two: T,
+        three: T,
+        four: T,
+        five: T,
+        six: T,
+        seven: T,
+        eight: T,
+        nine: T,
+    }
+
+    // Порядок соответствует папкам 0..9; при равном расстоянии выбирается меньшая цифра.
+    let all_digits: [Digit; 10] = [
         Digit::Zero,
         Digit::One,
         Digit::Two,
@@ -53,251 +68,504 @@ fn main() -> Result<(), String> {
     ];
 
     // Корень PNG фиксирован относительно папки урока; аргументы запуска не требуются.
-    let data: std::path::PathBuf =
+    let dataset_directory: std::path::PathBuf =
         std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../datasets/png/mnist");
 
-    // Запись датасета: ([f64; 784], Digit), например (pixels, Digit::Seven).
+    // Запись датасета: ([f64; 784], Digit), например (normalized_pixels, Digit::Seven).
     // Один загрузчик PNG для train и test: возвращает пиксели и правильные метки.
-    let load_digits = |directory: &std::path::Path| -> Result<Vec<([f64; 784], Digit)>, String> {
-        let mut digits: Vec<([f64; 784], Digit)> = Vec::new();
-        // Папки 0,1,...,9 задают правильные метки: например, train/5 содержит пятёрки.
-        // Имя PNG обозначает номер файла; правильная цифра определяется папкой.
-        // Типы переменных: class: Digit.
-        for class in classes {
-            let class_directory: std::path::PathBuf = directory.join((class as usize).to_string());
-            // Изменяемый список нужен только сбору и сортировке; дальше paths неизменяемый.
-            let paths: Vec<std::path::PathBuf> = {
-                let directory_entries: std::fs::ReadDir = std::fs::read_dir(&class_directory)
-                    .map_err(|e: std::io::Error| -> String {
-                        format!(
-                            "{}: {e}. Подготовь PNG: python3 scripts/prepare_mnist.py",
-                            class_directory.display()
-                        )
-                    })?;
-                let mut paths: Vec<std::path::PathBuf> = Vec::new();
-                // Типы переменных: directory_entry: Result<std::fs::DirEntry, std::io::Error>.
-                for directory_entry in directory_entries {
-                    let path: std::path::PathBuf = directory_entry
-                        .map_err(|e: std::io::Error| -> String { e.to_string() })?
-                        .path();
-                    if path
-                        .extension()
-                        .is_some_and(|ext: &std::ffi::OsStr| -> bool {
-                            ext.eq_ignore_ascii_case("png")
-                        })
-                    {
-                        paths.push(path);
-                    }
-                }
-                // Файловая система не обещает порядок чтения. Сортировка фиксирует порядок
-                // картинок и, следовательно, одинаковое разделение train/validation при повторном запуске.
-                paths.sort();
-                if paths.is_empty() {
-                    return Err(format!("{}: нет PNG", class_directory.display()));
-                }
-                paths
-            };
-            // Типы переменных: path: std::path::PathBuf.
-            for path in paths {
-                // Декодирование превращает сжатый PNG в байты яркости. Это ещё не обучение.
-                let decoded: [f64; 784] = (|| -> Result<[f64; 784], String> {
-                    // Читатель и изменяемый буфер живут только во время декодирования PNG.
-                    let pixels: [u8; 784] = {
-                        let file: std::fs::File = std::fs::File::open(&path)
-                            .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                        let mut reader: png::Reader<std::io::BufReader<std::fs::File>> =
-                            png::Decoder::new(std::io::BufReader::new(file))
-                                .read_info()
-                                .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
-                        let info: &png::Info<'_> = reader.info();
-                        // Проверяем договорённость о данных: статический PNG 28×28, один серый канал,
-                        // 8 бит на пиксель. Цветной или другого размера файл нельзя подать как 784 яркости.
-                        if info.width != 28
-                            || info.height != 28
-                            || info.color_type != png::ColorType::Grayscale
-                            || info.bit_depth != png::BitDepth::Eight
-                            || info.animation_control.is_some()
-                        {
-                            return Err("Ожидается статический PNG 28×28, grayscale, 8 бит".into());
+    let load_labeled_png_images =
+        |images_directory: &std::path::Path| -> Result<Vec<([f64; 784], Digit)>, String> {
+            let mut labeled_images: Vec<([f64; 784], Digit)> = Vec::new();
+            // Папки 0,1,...,9 задают правильные метки: например, train/5 содержит пятёрки.
+            // Имя PNG обозначает номер файла; правильная цифра определяется папкой.
+            // Типы переменных: digit: Digit.
+            for digit in all_digits {
+                let digit_directory: std::path::PathBuf =
+                    images_directory.join((digit as usize).to_string());
+                // Изменяемый список нужен только сбору и сортировке; дальше png_file_paths неизменяемый.
+                let png_file_paths: Vec<std::path::PathBuf> = {
+                    let directory_entries: std::fs::ReadDir = std::fs::read_dir(&digit_directory)
+                        .map_err(
+                        |error: std::io::Error| -> String {
+                            format!(
+                                "{}: {error}. Подготовь PNG: python3 scripts/prepare_mnist.py",
+                                digit_directory.display()
+                            )
+                        },
+                    )?;
+                    let mut png_file_paths: Vec<std::path::PathBuf> = Vec::new();
+                    // Типы переменных: directory_entry: Result<std::fs::DirEntry, std::io::Error>.
+                    for directory_entry in directory_entries {
+                        let png_file_path: std::path::PathBuf = directory_entry
+                            .map_err(|error: std::io::Error| -> String { error.to_string() })?
+                            .path();
+                        if png_file_path.extension().is_some_and(
+                            |file_extension: &std::ffi::OsStr| -> bool {
+                                file_extension.eq_ignore_ascii_case("png")
+                            },
+                        ) {
+                            png_file_paths.push(png_file_path);
                         }
-                        // u8 хранит целую яркость от 0 до 255: 0 — чёрный фон, 255 — белый штрих.
-                        // Пиксели идут строка за строкой: индекс y*28+x соответствует координатам (y,x).
-                        let mut pixels: [u8; 784] = [0u8; 784];
-                        reader
-                            .next_frame(&mut pixels)
-                            .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
-                        reader
-                            .finish()
-                            .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
-                        pixels
+                    }
+                    // Файловая система не обещает порядок чтения. Сортировка фиксирует порядок
+                    // картинок и, следовательно, одинаковое разделение train/validation при повторном запуске.
+                    png_file_paths.sort();
+                    if png_file_paths.is_empty() {
+                        return Err(format!("{}: нет PNG", digit_directory.display()));
+                    }
+                    png_file_paths
+                };
+                // Типы переменных: png_file_path: std::path::PathBuf.
+                for png_file_path in png_file_paths {
+                    // Декодирование превращает сжатый PNG в байты яркости. Это ещё не обучение.
+                    let normalized_pixels: [f64; 784] = {
+                        // Читатель и изменяемый буфер живут только во время декодирования PNG.
+                        // К каждой ошибке добавляем путь, чтобы найти проблемную картинку.
+                        let pixel_bytes: [u8; 784] = {
+                            let png_file: std::fs::File = std::fs::File::open(&png_file_path)
+                                .map_err(|error: std::io::Error| -> String {
+                                    format!("{}: {error}", png_file_path.display())
+                                })?;
+                            let mut png_reader: png::Reader<std::io::BufReader<std::fs::File>> =
+                                png::Decoder::new(std::io::BufReader::new(png_file))
+                                    .read_info()
+                                    .map_err(|error: png::DecodingError| -> String {
+                                        format!("{}: {error}", png_file_path.display())
+                                    })?;
+                            let png_metadata: &png::Info<'_> = png_reader.info();
+                            // Проверяем договорённость о данных: статический PNG 28×28, один серый канал,
+                            // 8 бит на пиксель. Цветной или другого размера файл нельзя подать как 784 яркости.
+                            if png_metadata.width != 28
+                                || png_metadata.height != 28
+                                || png_metadata.color_type != png::ColorType::Grayscale
+                                || png_metadata.bit_depth != png::BitDepth::Eight
+                                || png_metadata.animation_control.is_some()
+                            {
+                                return Err(format!(
+                                    "{}: Ожидается статический PNG 28×28, grayscale, 8 бит",
+                                    png_file_path.display()
+                                ));
+                            }
+                            // u8 хранит целую яркость от 0 до 255: 0 — чёрный фон, 255 — белый штрих.
+                            // Пиксели идут строка за строкой: индекс y*28+x соответствует координатам (y,x).
+                            let mut pixel_bytes: [u8; 784] = [0u8; 784];
+                            png_reader.next_frame(&mut pixel_bytes).map_err(
+                                |error: png::DecodingError| -> String {
+                                    format!("{}: {error}", png_file_path.display())
+                                },
+                            )?;
+                            png_reader
+                                .finish()
+                                .map_err(|error: png::DecodingError| -> String {
+                                    format!("{}: {error}", png_file_path.display())
+                                })?;
+                            pixel_bytes
+                        };
+                        // Делим каждый пиксель на 255: 0 -> 0.0, 128 -> примерно 0.502, 255 -> 1.0.
+                        // Это фиксированная нормализация, не требующая статистик validation или test.
+                        std::array::from_fn(|pixel_index: usize| -> f64 {
+                            f64::from(pixel_bytes[pixel_index]) / 255.0
+                        })
                     };
-                    // Делим каждый пиксель на 255: 0 -> 0.0, 128 -> примерно 0.502, 255 -> 1.0.
-                    // Это фиксированная нормализация, не требующая статистик validation или test.
-                    Ok(std::array::from_fn(|i: usize| -> f64 {
-                        f64::from(pixels[i]) / 255.0
-                    }))
-                })()
-                // Добавляем путь к ошибке декодирования, чтобы найти проблемный PNG.
-                .map_err(|e: String| -> String { format!("{}: {e}", path.display()) })?;
-                digits.push((decoded, class));
+                    labeled_images.push((normalized_pixels, digit));
+                }
             }
-        }
-        Ok(digits)
-    };
+            Ok(labeled_images)
+        };
 
-    // Общая оценка validation и test. Возвращаем число верных прогнозов модели,
-    // число верных прогнозов baseline и матрицу ошибок; доли вычисляет report.
-    let evaluate = |means: &[[f64; 784]; 10],
-                    records: &[([f64; 784], Digit)],
-                    indices: &[usize],
-                    majority: Digit|
+    // Проверяем распознавание выбранных картинок, не меняя средние изображения.
+    // mean_image_by_digit — среднее изображение каждой цифры; labeled_images — картинки с ответами.
+    // image_indices — номера проверяемых картинок; most_common_training_digit — постоянный прогноз для сравнения.
+    // Результат: число верных ответов модели, число верных постоянных ответов, таблица предсказаний.
+    // Доли правильных ответов вычисляет print_prediction_report.
+    let evaluate_digit_predictions = |mean_image_by_digit: &DataByDigit<[f64; 784]>,
+                                      labeled_images: &[([f64; 784], Digit)],
+                                      image_indices: &[usize],
+                                      most_common_training_digit: Digit|
      -> (usize, usize, [[usize; 10]; 10]) {
         // Счётчики меняются только во время обхода примеров.
-        let (confusion, baseline): ([[usize; 10]; 10], usize) = {
-            // confusion[истинная_цифра][предсказанная_цифра] считает такие пары.
+        let (prediction_counts, constant_prediction_correct_count): ([[usize; 10]; 10], usize) = {
+            // prediction_counts[истинная_цифра][предсказанная_цифра] считает такие пары.
             // Диагональ — верные ответы; числа вне диагонали показывают, какие цифры путаются.
-            let mut confusion: [[usize; 10]; 10] = [[0usize; 10]; 10];
-            // Здесь baseline — счётчик верных ответов постоянной цифрой majority, а не сама цифра.
-            let mut baseline: usize = 0usize;
-            // Типы переменных: index: usize.
-            for &index in indices {
-                let (pixels, label): &([f64; 784], Digit) = &records[index];
+            let mut prediction_counts: [[usize; 10]; 10] = [[0usize; 10]; 10];
+            // Здесь constant_prediction_correct_count — счётчик верных ответов постоянной цифрой most_common_training_digit, а не сама цифра.
+            let mut constant_prediction_correct_count: usize = 0usize;
+            // Типы переменных: image_index: usize.
+            for &image_index in image_indices {
+                let (normalized_pixels, actual_digit): &([f64; 784], Digit) =
+                    &labeled_images[image_index];
                 // Проверяем все десять классов и выбираем наименьшее расстояние до среднего.
                 // Метка текущей картинки не участвует в выборе; её используем позже для проверки ответа.
-                let predicted: Digit = classes
+                let predicted_digit: Digit = all_digits
                     .into_iter()
-                    .min_by(|&a: &Digit, &b: &Digit| -> std::cmp::Ordering {
-                        // Квадрат евклидова расстояния: sum_p((pixel[p]-mean[c,p])²).
-                        // Квадраты не дают положительным и отрицательным различиям сократиться.
-                        // Корень не нужен: он не меняет порядок расстояний и выбранную цифру.
-                        let distance = |class: Digit| -> f64 {
-                            pixels
-                                .iter()
-                                .zip(means[class as usize])
-                                .map(|(x, y): (&f64, f64)| -> f64 { (x - y).powi(2) })
-                                .sum::<f64>()
-                        };
-                        distance(a).total_cmp(&distance(b))
-                    })
+                    .min_by(
+                        |&first_candidate_digit: &Digit,
+                         &second_candidate_digit: &Digit|
+                         -> std::cmp::Ordering {
+                            // Квадрат евклидова расстояния: sum_p((pixel_brightness[p]-mean_image[c,p])²).
+                            // Квадраты не дают положительным и отрицательным различиям сократиться.
+                            // Корень не нужен: он не меняет порядок расстояний и выбранную цифру.
+                            let squared_distance_to_mean_image = |digit: Digit| -> f64 {
+                                normalized_pixels
+                                    .iter()
+                                    .zip(match digit {
+                                        Digit::Zero => &mean_image_by_digit.zero,
+                                        Digit::One => &mean_image_by_digit.one,
+                                        Digit::Two => &mean_image_by_digit.two,
+                                        Digit::Three => &mean_image_by_digit.three,
+                                        Digit::Four => &mean_image_by_digit.four,
+                                        Digit::Five => &mean_image_by_digit.five,
+                                        Digit::Six => &mean_image_by_digit.six,
+                                        Digit::Seven => &mean_image_by_digit.seven,
+                                        Digit::Eight => &mean_image_by_digit.eight,
+                                        Digit::Nine => &mean_image_by_digit.nine,
+                                    })
+                                    .map(
+                                        |(image_pixel_brightness, mean_pixel_brightness): (
+                                            &f64,
+                                            &f64,
+                                        )|
+                                         -> f64 {
+                                            (image_pixel_brightness - mean_pixel_brightness).powi(2)
+                                        },
+                                    )
+                                    .sum::<f64>()
+                            };
+                            squared_distance_to_mean_image(first_candidate_digit)
+                                .total_cmp(&squared_distance_to_mean_image(second_candidate_digit))
+                        },
+                    )
                     .unwrap();
                 // Digit преобразуем в usize только для выбора строки и столбца счётчиков.
-                confusion[*label as usize][predicted as usize] += 1;
-                baseline += usize::from(*label == majority);
+                prediction_counts[*actual_digit as usize][predicted_digit as usize] += 1;
+                constant_prediction_correct_count +=
+                    usize::from(*actual_digit == most_common_training_digit);
             }
-            (confusion, baseline)
+            (prediction_counts, constant_prediction_correct_count)
         };
         // Сумма диагонали матрицы ошибок — число правильных прогнозов.
-        let correct: usize = (0..10).map(|i: usize| -> usize { confusion[i][i] }).sum();
-        (correct, baseline, confusion)
+        let model_correct_count: usize = (0..10)
+            .map(|digit_index: usize| -> usize { prediction_counts[digit_index][digit_index] })
+            .sum();
+        (
+            model_correct_count,
+            constant_prediction_correct_count,
+            prediction_counts,
+        )
     };
 
     // Печатаем одинаковые метрики для обеих частей; матрица ошибок нужна для test.
-    let report = |name: &str, count: usize, metrics: (usize, usize, [[usize; 10]; 10])| -> () {
-        let (correct, baseline, confusion): (usize, usize, [[usize; 10]; 10]) = metrics;
-        // Accuracy = correct/count; для baseline аналогично. Например, 8 из 10 дают 0.8.
-        println!(
-            "{name}: n={count}, accuracy={:.4}, baseline={:.4}",
-            correct as f64 / count as f64,
-            baseline as f64 / count as f64
-        );
-        if name == "test" {
-            println!("Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9");
-            // Типы переменных: row: [usize; 10].
-            for row in confusion {
-                println!("{row:?}");
+    let print_prediction_report =
+        |dataset_name: &str, evaluation_results: (usize, usize, [[usize; 10]; 10])| -> () {
+            let (model_correct_count, constant_prediction_correct_count, prediction_counts): (
+                usize,
+                usize,
+                [[usize; 10]; 10],
+            ) = evaluation_results;
+            // Каждая проверенная картинка увеличивает одну ячейку таблицы на 1.
+            // Поэтому сумма всех ячеек равна числу проверенных картинок.
+            let image_count: usize = prediction_counts.iter().flatten().sum();
+            // Accuracy = model_correct_count/image_count; для постоянного прогноза аналогично. Например, 8 из 10 дают 0.8.
+            println!(
+                "{dataset_name}: n={image_count}, accuracy={:.4}, baseline={:.4}",
+                model_correct_count as f64 / image_count as f64,
+                constant_prediction_correct_count as f64 / image_count as f64
+            );
+            if dataset_name == "test" {
+                println!("Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9");
+                // Типы переменных: counts_for_actual_digit: [usize; 10].
+                for counts_for_actual_digit in prediction_counts {
+                    println!("{counts_for_actual_digit:?}");
+                }
             }
-        }
-    };
+        };
 
     // Загружаем исходный train, отделяем validation и обучаем десять средних изображений.
-    // Наружу выходят means и цифра baseline; картинки и счётчики остаются в этом блоке.
-    let (means, majority): ([[f64; 784]; 10], Digit) = {
+    // Наружу выходят mean_image_by_digit и most_common_training_digit; картинки и счётчики остаются в этом блоке.
+    let (mean_image_by_digit, most_common_training_digit): (DataByDigit<[f64; 784]>, Digit) = {
         // Загрузчик читает весь исходный train; разделение на train/validation идёт ниже.
-        let digits: Vec<([f64; 784], Digit)> = load_digits(&data.join("train"))?;
-        let (means, majority, validation): ([[f64; 784]; 10], Digit, Vec<usize>) = {
-            // Изменяемые накопители остаются в блоке разделения и суммирования.
-            let (counts, sums, validation): ([usize; 10], [[f64; 784]; 10], Vec<usize>) = {
+        let labeled_images: Vec<([f64; 784], Digit)> =
+            load_labeled_png_images(&dataset_directory.join("train"))?;
+        // Сначала разделяем номера картинок. Сами 784 яркости остаются в labeled_images.
+        let (training_image_indices, validation_image_indices): (Vec<usize>, Vec<usize>) = {
+            let mut training_image_indices: Vec<usize> = Vec::new();
+            let mut validation_image_indices: Vec<usize> = Vec::new();
+            // Типы переменных: digit: Digit.
+            for digit in all_digits {
+                // Отбираем картинки одной цифры, сохраняя порядок имён файлов.
+                let digit_image_indices: Vec<usize> = labeled_images
+                    .iter()
+                    .enumerate()
+                    .filter(
+                        |(_, (_, actual_digit)): &(usize, &([f64; 784], Digit))| -> bool {
+                            *actual_digit == digit
+                        },
+                    )
+                    .map(|(image_index, _): (usize, &([f64; 784], Digit))| -> usize { image_index })
+                    .collect();
+                // Обучение: все позиции, кроме 0, 5, 10… внутри этой цифры.
+                training_image_indices.extend(
+                    digit_image_indices
+                        .iter()
+                        .enumerate()
+                        .filter(|(position, _): &(usize, &usize)| -> bool { position % 5 != 0 })
+                        .map(|(_, &image_index): (usize, &usize)| -> usize { image_index }),
+                );
+                // Проверка: позиции 0, 5, 10…; эти картинки не участвуют в обучении.
+                validation_image_indices.extend(
+                    digit_image_indices
+                        .iter()
+                        .enumerate()
+                        .filter(|(position, _): &(usize, &usize)| -> bool { position % 5 == 0 })
+                        .map(|(_, &image_index): (usize, &usize)| -> usize { image_index }),
+                );
+            }
+            (training_image_indices, validation_image_indices)
+        };
+        let (mean_image_by_digit, most_common_training_digit): (DataByDigit<[f64; 784]>, Digit) = {
+            // Теперь обучаем модель только по training_image_indices.
+            let (training_image_count_by_digit, pixel_brightness_sums_by_digit): (
+                DataByDigit<usize>,
+                DataByDigit<[f64; 784]>,
+            ) = {
                 // Для каждой цифры считаем только обучающие примеры.
-                // Эти числа нужны для деления суммы пикселей на число картинок и выбора baseline.
-                let mut counts: [usize; 10] = [0usize; 10];
-                // sums[c][p] — сумма яркости пикселя p у всех train-картинок цифры c.
+                // Эти числа нужны для деления суммы пикселей на число картинок и выбора самой частой цифры.
+                let mut training_image_count_by_digit: DataByDigit<usize> = DataByDigit {
+                    zero: 0usize,
+                    one: 0usize,
+                    two: 0usize,
+                    three: 0usize,
+                    four: 0usize,
+                    five: 0usize,
+                    six: 0usize,
+                    seven: 0usize,
+                    eight: 0usize,
+                    nine: 0usize,
+                };
+                // Например, pixel_brightness_sums_by_digit.seven[p] — сумма яркости пикселя p у семёрок train.
                 // После деления получим десять средних изображений, каждое из 784 чисел.
-                let mut sums: [[f64; 784]; 10] = [[0.0; 784]; 10];
-                // seen считает все просмотренные примеры класса, включая отложенные.
-                // Он отвечает за разделение, а counts — только за количество использованных в обучении.
-                let mut seen: [usize; 10] = [0usize; 10];
-                let mut validation: Vec<usize> = Vec::new();
-                // Типы переменных: index: usize, pixels: &[f64; 784], label: &Digit.
-                for (index, (pixels, label)) in digits.iter().enumerate() {
-                    let class: usize = *label as usize;
-                    // Отложенный пример добавляем только в validation: он не меняет sums или counts.
-                    // Так оценка проверяет перенос на картинки, которых среднее изображение не видело.
-                    if seen[class] % 5 == 0 {
-                        validation.push(index);
-                    } else {
-                        counts[class] += 1;
-                        // Типы переменных: sum: &mut f64, pixel: &f64.
-                        for (sum, pixel) in sums[class].iter_mut().zip(pixels) {
-                            // Прибавляем яркость в ТОЙ ЖЕ координате. Это выравнивание всех картинок по пикселям:
-                            // сдвинутые или очень разные почерки будут размываться в среднем изображении.
-                            *sum += pixel;
-                        }
+                let mut pixel_brightness_sums_by_digit: DataByDigit<[f64; 784]> = DataByDigit {
+                    zero: [0.0; 784],
+                    one: [0.0; 784],
+                    two: [0.0; 784],
+                    three: [0.0; 784],
+                    four: [0.0; 784],
+                    five: [0.0; 784],
+                    six: [0.0; 784],
+                    seven: [0.0; 784],
+                    eight: [0.0; 784],
+                    nine: [0.0; 784],
+                };
+                // Типы переменных: image_index: usize.
+                for &image_index in &training_image_indices {
+                    let (normalized_pixels, actual_digit): &([f64; 784], Digit) =
+                        &labeled_images[image_index];
+                    // Выбираем счётчик и сумму яркостей для правильной цифры.
+                    let (training_image_count, pixel_brightness_sums): (
+                        &mut usize,
+                        &mut [f64; 784],
+                    ) = match *actual_digit {
+                        Digit::Zero => (
+                            &mut training_image_count_by_digit.zero,
+                            &mut pixel_brightness_sums_by_digit.zero,
+                        ),
+                        Digit::One => (
+                            &mut training_image_count_by_digit.one,
+                            &mut pixel_brightness_sums_by_digit.one,
+                        ),
+                        Digit::Two => (
+                            &mut training_image_count_by_digit.two,
+                            &mut pixel_brightness_sums_by_digit.two,
+                        ),
+                        Digit::Three => (
+                            &mut training_image_count_by_digit.three,
+                            &mut pixel_brightness_sums_by_digit.three,
+                        ),
+                        Digit::Four => (
+                            &mut training_image_count_by_digit.four,
+                            &mut pixel_brightness_sums_by_digit.four,
+                        ),
+                        Digit::Five => (
+                            &mut training_image_count_by_digit.five,
+                            &mut pixel_brightness_sums_by_digit.five,
+                        ),
+                        Digit::Six => (
+                            &mut training_image_count_by_digit.six,
+                            &mut pixel_brightness_sums_by_digit.six,
+                        ),
+                        Digit::Seven => (
+                            &mut training_image_count_by_digit.seven,
+                            &mut pixel_brightness_sums_by_digit.seven,
+                        ),
+                        Digit::Eight => (
+                            &mut training_image_count_by_digit.eight,
+                            &mut pixel_brightness_sums_by_digit.eight,
+                        ),
+                        Digit::Nine => (
+                            &mut training_image_count_by_digit.nine,
+                            &mut pixel_brightness_sums_by_digit.nine,
+                        ),
+                    };
+                    *training_image_count += 1;
+                    // Типы переменных: pixel_brightness_sum: &mut f64, pixel_brightness: &f64.
+                    for (pixel_brightness_sum, pixel_brightness) in
+                        pixel_brightness_sums.iter_mut().zip(normalized_pixels)
+                    {
+                        // Складываем яркости в одной и той же координате изображения.
+                        *pixel_brightness_sum += pixel_brightness;
                     }
-                    seen[class] += 1;
                 }
-                if counts.contains(&0) {
+                if all_digits.into_iter().any(|digit: Digit| -> bool {
+                    (match digit {
+                        Digit::Zero => training_image_count_by_digit.zero,
+                        Digit::One => training_image_count_by_digit.one,
+                        Digit::Two => training_image_count_by_digit.two,
+                        Digit::Three => training_image_count_by_digit.three,
+                        Digit::Four => training_image_count_by_digit.four,
+                        Digit::Five => training_image_count_by_digit.five,
+                        Digit::Six => training_image_count_by_digit.six,
+                        Digit::Seven => training_image_count_by_digit.seven,
+                        Digit::Eight => training_image_count_by_digit.eight,
+                        Digit::Nine => training_image_count_by_digit.nine,
+                    }) == 0
+                }) {
                     return Err("В train нужны все десять классов".into());
                 }
-                (counts, sums, validation)
+                (
+                    training_image_count_by_digit,
+                    pixel_brightness_sums_by_digit,
+                )
             };
             // Готовые средние передаём оценке без mut.
-            let means: [[f64; 784]; 10] = {
-                // Делим покоординатную сумму на число примеров класса: mean[c,p]=sum[c,p]/count[c].
+            let mean_image_by_digit: DataByDigit<[f64; 784]> = {
+                // Для каждой цифры делим сумму яркостей на число её обучающих картинок.
                 // Обучение этой простой модели на этом заканчивается — итераций и градиентов здесь нет.
-                let mut means: [[f64; 784]; 10] = sums;
-                // Типы переменных: mean: &mut [f64; 784], count: usize.
-                for (mean, count) in means.iter_mut().zip(counts) {
-                    // Типы переменных: pixel: &mut f64.
-                    for pixel in mean {
-                        *pixel /= count as f64;
+                let mut mean_image_by_digit: DataByDigit<[f64; 784]> =
+                    pixel_brightness_sums_by_digit;
+                // Типы переменных: digit: Digit.
+                for digit in all_digits {
+                    let (mean_image, image_count): (&mut [f64; 784], usize) = match digit {
+                        Digit::Zero => (
+                            &mut mean_image_by_digit.zero,
+                            training_image_count_by_digit.zero,
+                        ),
+                        Digit::One => (
+                            &mut mean_image_by_digit.one,
+                            training_image_count_by_digit.one,
+                        ),
+                        Digit::Two => (
+                            &mut mean_image_by_digit.two,
+                            training_image_count_by_digit.two,
+                        ),
+                        Digit::Three => (
+                            &mut mean_image_by_digit.three,
+                            training_image_count_by_digit.three,
+                        ),
+                        Digit::Four => (
+                            &mut mean_image_by_digit.four,
+                            training_image_count_by_digit.four,
+                        ),
+                        Digit::Five => (
+                            &mut mean_image_by_digit.five,
+                            training_image_count_by_digit.five,
+                        ),
+                        Digit::Six => (
+                            &mut mean_image_by_digit.six,
+                            training_image_count_by_digit.six,
+                        ),
+                        Digit::Seven => (
+                            &mut mean_image_by_digit.seven,
+                            training_image_count_by_digit.seven,
+                        ),
+                        Digit::Eight => (
+                            &mut mean_image_by_digit.eight,
+                            training_image_count_by_digit.eight,
+                        ),
+                        Digit::Nine => (
+                            &mut mean_image_by_digit.nine,
+                            training_image_count_by_digit.nine,
+                        ),
+                    };
+                    // Типы переменных: pixel_brightness: &mut f64.
+                    for pixel_brightness in mean_image {
+                        *pixel_brightness /= image_count as f64;
                     }
                 }
-                means
+                mean_image_by_digit
             };
             // Baseline — постоянный прогноз самой частой цифры train. Он показывает,
             // насколько модель лучше простого ответа без анализа пикселей.
             // При равной частоте выбираем меньшую цифру; метки test в выборе не участвуют.
-            let majority: Digit = classes
+            let most_common_training_digit: Digit = all_digits
                 .into_iter()
                 .max_by_key(|&digit: &Digit| -> (usize, std::cmp::Reverse<usize>) {
-                    let index: usize = digit as usize;
-                    (counts[index], std::cmp::Reverse(index))
+                    let digit_index: usize = digit as usize;
+                    (
+                        (match digit {
+                            Digit::Zero => training_image_count_by_digit.zero,
+                            Digit::One => training_image_count_by_digit.one,
+                            Digit::Two => training_image_count_by_digit.two,
+                            Digit::Three => training_image_count_by_digit.three,
+                            Digit::Four => training_image_count_by_digit.four,
+                            Digit::Five => training_image_count_by_digit.five,
+                            Digit::Six => training_image_count_by_digit.six,
+                            Digit::Seven => training_image_count_by_digit.seven,
+                            Digit::Eight => training_image_count_by_digit.eight,
+                            Digit::Nine => training_image_count_by_digit.nine,
+                        }),
+                        std::cmp::Reverse(digit_index),
+                    )
                 })
                 .unwrap();
             println!(
                 "train: n={}, baseline digit={}; split: every fifth per class",
-                counts.iter().sum::<usize>(),
-                majority as usize
+                all_digits
+                    .into_iter()
+                    .map(|digit: Digit| -> usize {
+                        match digit {
+                            Digit::Zero => training_image_count_by_digit.zero,
+                            Digit::One => training_image_count_by_digit.one,
+                            Digit::Two => training_image_count_by_digit.two,
+                            Digit::Three => training_image_count_by_digit.three,
+                            Digit::Four => training_image_count_by_digit.four,
+                            Digit::Five => training_image_count_by_digit.five,
+                            Digit::Six => training_image_count_by_digit.six,
+                            Digit::Seven => training_image_count_by_digit.seven,
+                            Digit::Eight => training_image_count_by_digit.eight,
+                            Digit::Nine => training_image_count_by_digit.nine,
+                        }
+                    })
+                    .sum::<usize>(),
+                most_common_training_digit as usize
             );
 
-            (means, majority, validation)
+            (mean_image_by_digit, most_common_training_digit)
         };
-        // Общие evaluate/report проверяют отложенные индексы, не изменяя обученные means.
-        report(
+        // Общие evaluate_digit_predictions/print_prediction_report проверяют отложенные индексы, не изменяя обученные mean_image_by_digit.
+        print_prediction_report(
             "validation",
-            validation.len(),
-            evaluate(&means, &digits, &validation, majority),
+            evaluate_digit_predictions(
+                &mean_image_by_digit,
+                &labeled_images,
+                &validation_image_indices,
+                most_common_training_digit,
+            ),
         );
-        (means, majority)
+        (mean_image_by_digit, most_common_training_digit)
     };
     // Test загружается после обучения; его данные и метрики остаются здесь.
     {
-        let test: Vec<([f64; 784], Digit)> = load_digits(&data.join("test"))?;
-        let indices: Vec<usize> = (0..test.len()).collect();
-        report(
+        let test_images: Vec<([f64; 784], Digit)> =
+            load_labeled_png_images(&dataset_directory.join("test"))?;
+        let image_indices: Vec<usize> = (0..test_images.len()).collect();
+        print_prediction_report(
             "test",
-            indices.len(),
-            evaluate(&means, &test, &indices, majority),
+            evaluate_digit_predictions(
+                &mean_image_by_digit,
+                &test_images,
+                &image_indices,
+                most_common_training_digit,
+            ),
         );
     }
 
