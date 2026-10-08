@@ -5,8 +5,9 @@ fn main() -> Result<(), String> {
     // «Обучение» здесь — накопление и усреднение примеров каждой цифры.
     // Затем новую картинку сравниваем с десятью средними и выбираем ближайшее.
     //
-    // Сначала объявлены Digit и общие операции: загрузка PNG, оценка и вывод метрик.
-    // Затем выполняются обучение средних, оценка validation и оценка test.
+    // Сначала объявлены типы и загрузка PNG.
+    // Затем обучаем средние изображения и объявляем замыкание, которое использует готовую модель.
+    // После этого выполняем проверку validation и test.
     // Train учит модель; validation проверяет её на отложенных примерах;
     // test даёт итоговую независимую оценку. Ниже средние вычисляются только по train.
     // Фигурные скобки ограничивают жизнь временных имён; последняя строка блока
@@ -36,6 +37,12 @@ fn main() -> Result<(), String> {
         Eight,
         Nine,
     }
+    // Результат распознавания одной картинки: правильная цифра и ответ модели.
+    struct DigitPrediction {
+        actual_digit: Digit,
+        predicted_digit: Digit,
+    }
+
     // У каждой цифры своё именованное поле. T задаёт содержимое поля:
     // usize для счётчика, [f64; 784] для суммы яркостей или среднего изображения.
     #[derive(Debug)]
@@ -172,24 +179,266 @@ fn main() -> Result<(), String> {
             Ok(labeled_images)
         };
 
+    // Сначала готовим три набора: обучение, проверку и итоговый тест.
+    let (train_images, validation_images): (Vec<([f64; 784], Digit)>, Vec<([f64; 784], Digit)>) = {
+        let original_train_images: Vec<([f64; 784], Digit)> =
+            load_labeled_png_images(&dataset_directory.join("train"))?;
+        let mut train_images: Vec<([f64; 784], Digit)> = Vec::new();
+        let mut validation_images: Vec<([f64; 784], Digit)> = Vec::new();
+        // Типы переменных: digit: Digit.
+        for digit in all_digits {
+            // Фильтруем картинки одной цифры, сохраняя порядок имён файлов.
+            let images_of_current_digit: Vec<&([f64; 784], Digit)> = original_train_images
+                .iter()
+                .filter(|image: &&([f64; 784], Digit)| -> bool { image.1 == digit })
+                .collect();
+            // В train копируем все картинки, кроме каждой пятой внутри этой цифры.
+            train_images.extend(
+                images_of_current_digit
+                    .iter()
+                    .enumerate()
+                    .filter(|(position, _): &(usize, &&([f64; 784], Digit))| -> bool {
+                        position % 5 != 0
+                    })
+                    .map(
+                        |(_, &image): (usize, &&([f64; 784], Digit))| -> ([f64; 784], Digit) {
+                            *image
+                        },
+                    ),
+            );
+            // В validation копируем каждую пятую: позиции 0, 5, 10…
+            validation_images.extend(
+                images_of_current_digit
+                    .iter()
+                    .enumerate()
+                    .filter(|(position, _): &(usize, &&([f64; 784], Digit))| -> bool {
+                        position % 5 == 0
+                    })
+                    .map(
+                        |(_, &image): (usize, &&([f64; 784], Digit))| -> ([f64; 784], Digit) {
+                            *image
+                        },
+                    ),
+            );
+        }
+        (train_images, validation_images)
+    };
+    // Официальный test уже хранится отдельно: его не берём из обучающих картинок.
+    let test_images: Vec<([f64; 784], Digit)> =
+        load_labeled_png_images(&dataset_directory.join("test"))?;
+    let mean_image_by_digit: DataByDigit<[f64; 784]> = {
+        // Теперь обучаем модель только по train_images.
+        let (training_image_count_by_digit, zero_initialized_pixel_brightness_sums_by_digit): (
+            DataByDigit<usize>,
+            DataByDigit<[f64; 784]>,
+        ) = {
+            // Для каждой цифры считаем только обучающие примеры.
+            // Эти числа нужны для деления суммы пикселей на число картинок.
+            let mut training_image_count_by_digit: DataByDigit<usize> = DataByDigit {
+                zero: 0usize,
+                one: 0usize,
+                two: 0usize,
+                three: 0usize,
+                four: 0usize,
+                five: 0usize,
+                six: 0usize,
+                seven: 0usize,
+                eight: 0usize,
+                nine: 0usize,
+            };
+            // Например, zero_initialized_pixel_brightness_sums_by_digit.seven[p] — сумма яркости пикселя p у семёрок train.
+            // После деления получим десять средних изображений, каждое из 784 чисел.
+            // Изначально суммы равны нулю: каждое из десяти полей содержит 784 значения 0.0.
+            // Далее к ним прибавляем яркости пикселей обучающих картинок.
+            let mut zero_initialized_pixel_brightness_sums_by_digit: DataByDigit<[f64; 784]> =
+                DataByDigit {
+                    zero: [0.0; 784],
+                    one: [0.0; 784],
+                    two: [0.0; 784],
+                    three: [0.0; 784],
+                    four: [0.0; 784],
+                    five: [0.0; 784],
+                    six: [0.0; 784],
+                    seven: [0.0; 784],
+                    eight: [0.0; 784],
+                    nine: [0.0; 784],
+                };
+            // Типы переменных: normalized_pixels: &[f64; 784], actual_digit: &Digit.
+            for (normalized_pixels, actual_digit) in &train_images {
+                // Выбираем счётчик и сумму яркостей для правильной цифры.
+                let (
+                    training_image_count_for_actual_digit,
+                    zero_initialized_pixel_brightness_sums_for_actual_digit,
+                ): (&mut usize, &mut [f64; 784]) = match *actual_digit {
+                    Digit::Zero => (
+                        &mut training_image_count_by_digit.zero,
+                        &mut zero_initialized_pixel_brightness_sums_by_digit.zero,
+                    ),
+                    Digit::One => (
+                        &mut training_image_count_by_digit.one,
+                        &mut zero_initialized_pixel_brightness_sums_by_digit.one,
+                    ),
+                    Digit::Two => (
+                        &mut training_image_count_by_digit.two,
+                        &mut zero_initialized_pixel_brightness_sums_by_digit.two,
+                    ),
+                    Digit::Three => (
+                        &mut training_image_count_by_digit.three,
+                        &mut zero_initialized_pixel_brightness_sums_by_digit.three,
+                    ),
+                    Digit::Four => (
+                        &mut training_image_count_by_digit.four,
+                        &mut zero_initialized_pixel_brightness_sums_by_digit.four,
+                    ),
+                    Digit::Five => (
+                        &mut training_image_count_by_digit.five,
+                        &mut zero_initialized_pixel_brightness_sums_by_digit.five,
+                    ),
+                    Digit::Six => (
+                        &mut training_image_count_by_digit.six,
+                        &mut zero_initialized_pixel_brightness_sums_by_digit.six,
+                    ),
+                    Digit::Seven => (
+                        &mut training_image_count_by_digit.seven,
+                        &mut zero_initialized_pixel_brightness_sums_by_digit.seven,
+                    ),
+                    Digit::Eight => (
+                        &mut training_image_count_by_digit.eight,
+                        &mut zero_initialized_pixel_brightness_sums_by_digit.eight,
+                    ),
+                    Digit::Nine => (
+                        &mut training_image_count_by_digit.nine,
+                        &mut zero_initialized_pixel_brightness_sums_by_digit.nine,
+                    ),
+                };
+                *training_image_count_for_actual_digit += 1;
+                // println!("@{training_image_count_for_actual_digit}");
+                // Типы переменных: pixel_brightness_sum: &mut f64, pixel_brightness: &f64.
+                for (pixel_brightness_sum, pixel_brightness) in
+                    zero_initialized_pixel_brightness_sums_for_actual_digit
+                        .iter_mut()
+                        .zip(normalized_pixels)
+                {
+                    // Складываем яркости в одной и той же координате изображения.
+                    *pixel_brightness_sum += pixel_brightness;
+                }
+            }
+            if all_digits.into_iter().any(|digit: Digit| -> bool {
+                (match digit {
+                    Digit::Zero => training_image_count_by_digit.zero,
+                    Digit::One => training_image_count_by_digit.one,
+                    Digit::Two => training_image_count_by_digit.two,
+                    Digit::Three => training_image_count_by_digit.three,
+                    Digit::Four => training_image_count_by_digit.four,
+                    Digit::Five => training_image_count_by_digit.five,
+                    Digit::Six => training_image_count_by_digit.six,
+                    Digit::Seven => training_image_count_by_digit.seven,
+                    Digit::Eight => training_image_count_by_digit.eight,
+                    Digit::Nine => training_image_count_by_digit.nine,
+                }) == 0
+            }) {
+                return Err("В train нужны все десять классов".into());
+            }
+            (
+                training_image_count_by_digit,
+                zero_initialized_pixel_brightness_sums_by_digit,
+            )
+        };
+        // println!("{training_image_count_by_digit:#?}");
+        // println!("{zero_initialized_pixel_brightness_sums_by_digit:#?}");
+        // Готовые средние передаём оценке без mut.
+        let mean_image_by_digit: DataByDigit<[f64; 784]> = {
+            // Для каждой цифры делим сумму яркостей на число её обучающих картинок.
+            // Обучение этой простой модели на этом заканчивается — итераций и градиентов здесь нет.
+            let mut mean_image_by_digit: DataByDigit<[f64; 784]> =
+                zero_initialized_pixel_brightness_sums_by_digit;
+            // Типы переменных: digit: Digit.
+            for digit in all_digits {
+                let (mean_image, image_count): (&mut [f64; 784], usize) = match digit {
+                    Digit::Zero => (
+                        &mut mean_image_by_digit.zero,
+                        training_image_count_by_digit.zero,
+                    ),
+                    Digit::One => (
+                        &mut mean_image_by_digit.one,
+                        training_image_count_by_digit.one,
+                    ),
+                    Digit::Two => (
+                        &mut mean_image_by_digit.two,
+                        training_image_count_by_digit.two,
+                    ),
+                    Digit::Three => (
+                        &mut mean_image_by_digit.three,
+                        training_image_count_by_digit.three,
+                    ),
+                    Digit::Four => (
+                        &mut mean_image_by_digit.four,
+                        training_image_count_by_digit.four,
+                    ),
+                    Digit::Five => (
+                        &mut mean_image_by_digit.five,
+                        training_image_count_by_digit.five,
+                    ),
+                    Digit::Six => (
+                        &mut mean_image_by_digit.six,
+                        training_image_count_by_digit.six,
+                    ),
+                    Digit::Seven => (
+                        &mut mean_image_by_digit.seven,
+                        training_image_count_by_digit.seven,
+                    ),
+                    Digit::Eight => (
+                        &mut mean_image_by_digit.eight,
+                        training_image_count_by_digit.eight,
+                    ),
+                    Digit::Nine => (
+                        &mut mean_image_by_digit.nine,
+                        training_image_count_by_digit.nine,
+                    ),
+                };
+                // Типы переменных: pixel_brightness: &mut f64.
+                for pixel_brightness in mean_image {
+                    *pixel_brightness /= image_count as f64;
+                }
+            }
+            mean_image_by_digit
+        };
+        // println!("{mean_image_by_digit:#?}");
+        println!("{training_image_count_by_digit:#?}");
+        println!(
+            "train: n={}; split: every fifth per class",
+            all_digits
+                .into_iter()
+                .map(|digit: Digit| -> usize {
+                    match digit {
+                        Digit::Zero => training_image_count_by_digit.zero,
+                        Digit::One => training_image_count_by_digit.one,
+                        Digit::Two => training_image_count_by_digit.two,
+                        Digit::Three => training_image_count_by_digit.three,
+                        Digit::Four => training_image_count_by_digit.four,
+                        Digit::Five => training_image_count_by_digit.five,
+                        Digit::Six => training_image_count_by_digit.six,
+                        Digit::Seven => training_image_count_by_digit.seven,
+                        Digit::Eight => training_image_count_by_digit.eight,
+                        Digit::Nine => training_image_count_by_digit.nine,
+                    }
+                })
+                .sum::<usize>()
+        );
+
+        mean_image_by_digit
+    };
     // Проверяем распознавание выбранных картинок, не меняя средние изображения.
-    // mean_image_by_digit — среднее изображение каждой цифры; labeled_images — картинки с ответами.
-    // image_indices — номера проверяемых картинок.
-    // Результат: число верных ответов модели и таблица предсказаний.
-    // Доли правильных ответов вычисляет print_prediction_report.
-    let evaluate_digit_predictions = |mean_image_by_digit: &DataByDigit<[f64; 784]>,
-                                      labeled_images: &[([f64; 784], Digit)],
-                                      image_indices: &[usize]|
-     -> (usize, [[usize; 10]; 10]) {
-        // Счётчики меняются только во время обхода примеров.
-        let prediction_counts: [[usize; 10]; 10] = {
-            // prediction_counts[истинная_цифра][предсказанная_цифра] считает такие пары.
-            // Диагональ — верные ответы; числа вне диагонали показывают, какие цифры путаются.
-            let mut prediction_counts: [[usize; 10]; 10] = [[0usize; 10]; 10];
-            // Типы переменных: image_index: usize.
-            for &image_index in image_indices {
-                let (normalized_pixels, actual_digit): &([f64; 784], Digit) =
-                    &labeled_images[image_index];
+    // mean_image_by_digit берём из окружающего блока: это уже обученные средние изображения.
+    // images_with_actual_digits — картинки с правильными ответами.
+    // Для каждой картинки сохраняем правильную и предсказанную цифры, затем печатаем точность.
+    let evaluate_digit_predictions = |images_with_actual_digits: &[([f64; 784], Digit)]| -> () {
+        // Список пополняется только во время обхода проверяемых картинок.
+        let predictions: Vec<DigitPrediction> = {
+            let mut predictions: Vec<DigitPrediction> =
+                Vec::with_capacity(images_with_actual_digits.len());
+            // Типы переменных: normalized_pixels: &[f64; 784], actual_digit: &Digit.
+            for (normalized_pixels, actual_digit) in images_with_actual_digits {
                 // Проверяем все десять классов и выбираем наименьшее расстояние до среднего.
                 // Метка текущей картинки не участвует в выборе; её используем позже для проверки ответа.
                 let predicted_digit: Digit = all_digits
@@ -198,6 +447,12 @@ fn main() -> Result<(), String> {
                         |&first_candidate_digit: &Digit,
                          &second_candidate_digit: &Digit|
                          -> std::cmp::Ordering {
+                            // Представляем картинку как точку с 784 координатами:
+                            // каждая координата — нормализованная яркость одного пикселя, а не его положение (x, y).
+                            // Среднее изображение цифры — тоже точка с 784 координатами.
+                            // Сравниваем яркости в одинаковых позициях: чем меньше сумма квадратов разниц,
+                            // тем ближе эти точки и тем больше картинка похожа на среднее изображение.
+                            // min_by выбирает цифру, среднее изображение которой ближе всего.
                             // Квадрат евклидова расстояния: sum_p((pixel_brightness[p]-mean_image[c,p])²).
                             // Квадраты не дают положительным и отрицательным различиям сократиться.
                             // Корень не нужен: он не меняет порядок расстояний и выбранную цифру.
@@ -222,317 +477,66 @@ fn main() -> Result<(), String> {
                                             &f64,
                                         )|
                                          -> f64 {
+                                            // println!(
+                                            //     "digit={digit:?}, image_pixel_brightness={image_pixel_brightness}, mean_pixel_brightness={mean_pixel_brightness}"
+                                            // );
                                             (image_pixel_brightness - mean_pixel_brightness).powi(2)
                                         },
                                     )
                                     .sum::<f64>()
                             };
-                            squared_distance_to_mean_image(first_candidate_digit)
-                                .total_cmp(&squared_distance_to_mean_image(second_candidate_digit))
+                            let first = squared_distance_to_mean_image(first_candidate_digit);
+                            let second = squared_distance_to_mean_image(second_candidate_digit);
+                            println!("first {first}, second {second}");
+                            first.total_cmp(&second)
                         },
                     )
                     .unwrap();
-                // Digit преобразуем в usize только для выбора строки и столбца счётчиков.
-                prediction_counts[*actual_digit as usize][predicted_digit as usize] += 1;
+                predictions.push(DigitPrediction {
+                    actual_digit: *actual_digit,
+                    predicted_digit,
+                });
             }
-            prediction_counts
+            predictions
         };
-        // Сумма диагонали матрицы ошибок — число правильных прогнозов.
-        let model_correct_count: usize = (0..10)
-            .map(|digit_index: usize| -> usize { prediction_counts[digit_index][digit_index] })
-            .sum();
-        (model_correct_count, prediction_counts)
+        let image_count: usize = predictions.len();
+        // Ответ правильный, если предсказанная цифра совпадает с настоящей.
+        let model_correct_count: usize = predictions
+            .iter()
+            .filter(|prediction: &&DigitPrediction| -> bool {
+                prediction.actual_digit == prediction.predicted_digit
+            })
+            .count();
+        // Accuracy = model_correct_count/image_count. Например, 8 из 10 дают 0.8.
+        println!(
+            "n={image_count}, accuracy={:.4}",
+            model_correct_count as f64 / image_count as f64
+        );
+        // if dataset_name == "test" {
+        //     println!("Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9");
+        //     // Типы переменных: actual_digit: Digit.
+        //     for actual_digit in all_digits {
+        //         // Для каждой предсказанной цифры считаем записи с нужной парой цифр.
+        //         let counts_for_actual_digit: Vec<usize> = all_digits
+        //             .into_iter()
+        //             .map(|predicted_digit: Digit| -> usize {
+        //                 predictions
+        //                     .iter()
+        //                     .filter(|prediction: &&DigitPrediction| -> bool {
+        //                         prediction.actual_digit == actual_digit
+        //                             && prediction.predicted_digit == predicted_digit
+        //                     })
+        //                     .count()
+        //             })
+        //             .collect();
+        //         println!("{counts_for_actual_digit:?}");
+        //     }
+        // }
     };
 
-    // Печатаем одинаковые метрики для обеих частей; матрица ошибок нужна для test.
-    let print_prediction_report =
-        |dataset_name: &str, evaluation_results: (usize, [[usize; 10]; 10])| -> () {
-            let (model_correct_count, prediction_counts): (usize, [[usize; 10]; 10]) =
-                evaluation_results;
-            // Каждая проверенная картинка увеличивает одну ячейку таблицы на 1.
-            // Поэтому сумма всех ячеек равна числу проверенных картинок.
-            let image_count: usize = prediction_counts.iter().flatten().sum();
-            // Accuracy = model_correct_count/image_count. Например, 8 из 10 дают 0.8.
-            println!(
-                "{dataset_name}: n={image_count}, accuracy={:.4}",
-                model_correct_count as f64 / image_count as f64
-            );
-            if dataset_name == "test" {
-                println!("Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9");
-                // Типы переменных: counts_for_actual_digit: [usize; 10].
-                for counts_for_actual_digit in prediction_counts {
-                    println!("{counts_for_actual_digit:?}");
-                }
-            }
-        };
-
-    // Загружаем исходный train, отделяем validation и обучаем десять средних изображений.
-    // Наружу выходят только mean_image_by_digit; картинки и счётчики остаются в этом блоке.
-    let mean_image_by_digit: DataByDigit<[f64; 784]> = {
-        // Загрузчик читает весь исходный train; разделение на train/validation идёт ниже.
-        let labeled_images: Vec<([f64; 784], Digit)> =
-            load_labeled_png_images(&dataset_directory.join("train"))?;
-        // Сначала разделяем номера картинок. Сами 784 яркости остаются в labeled_images.
-        let (training_image_indices, validation_image_indices): (Vec<usize>, Vec<usize>) = {
-            let mut training_image_indices: Vec<usize> = Vec::new();
-            let mut validation_image_indices: Vec<usize> = Vec::new();
-            // Типы переменных: digit: Digit.
-            for digit in all_digits {
-                // Отбираем картинки одной цифры, сохраняя порядок имён файлов.
-                let digit_image_indices: Vec<usize> = labeled_images
-                    .iter()
-                    .enumerate()
-                    .filter(
-                        |(_, (_, actual_digit)): &(usize, &([f64; 784], Digit))| -> bool {
-                            *actual_digit == digit
-                        },
-                    )
-                    .map(|(image_index, _): (usize, &([f64; 784], Digit))| -> usize { image_index })
-                    .collect();
-                // Обучение: все позиции, кроме 0, 5, 10… внутри этой цифры.
-                training_image_indices.extend(
-                    digit_image_indices
-                        .iter()
-                        .enumerate()
-                        .filter(|(position, _): &(usize, &usize)| -> bool { position % 5 != 0 })
-                        .map(|(_, &image_index): (usize, &usize)| -> usize { image_index }),
-                );
-                // Проверка: позиции 0, 5, 10…; эти картинки не участвуют в обучении.
-                validation_image_indices.extend(
-                    digit_image_indices
-                        .iter()
-                        .enumerate()
-                        .filter(|(position, _): &(usize, &usize)| -> bool { position % 5 == 0 })
-                        .map(|(_, &image_index): (usize, &usize)| -> usize { image_index }),
-                );
-            }
-            (training_image_indices, validation_image_indices)
-        };
-        let mean_image_by_digit: DataByDigit<[f64; 784]> = {
-            // Теперь обучаем модель только по training_image_indices.
-            let (training_image_count_by_digit, zero_initialized_pixel_brightness_sums_by_digit): (
-                DataByDigit<usize>,
-                DataByDigit<[f64; 784]>,
-            ) = {
-                // Для каждой цифры считаем только обучающие примеры.
-                // Эти числа нужны для деления суммы пикселей на число картинок.
-                let mut training_image_count_by_digit: DataByDigit<usize> = DataByDigit {
-                    zero: 0usize,
-                    one: 0usize,
-                    two: 0usize,
-                    three: 0usize,
-                    four: 0usize,
-                    five: 0usize,
-                    six: 0usize,
-                    seven: 0usize,
-                    eight: 0usize,
-                    nine: 0usize,
-                };
-                // Например, zero_initialized_pixel_brightness_sums_by_digit.seven[p] — сумма яркости пикселя p у семёрок train.
-                // После деления получим десять средних изображений, каждое из 784 чисел.
-                // Изначально суммы равны нулю: каждое из десяти полей содержит 784 значения 0.0.
-                // Далее к ним прибавляем яркости пикселей обучающих картинок.
-                let mut zero_initialized_pixel_brightness_sums_by_digit: DataByDigit<[f64; 784]> =
-                    DataByDigit {
-                        zero: [0.0; 784],
-                        one: [0.0; 784],
-                        two: [0.0; 784],
-                        three: [0.0; 784],
-                        four: [0.0; 784],
-                        five: [0.0; 784],
-                        six: [0.0; 784],
-                        seven: [0.0; 784],
-                        eight: [0.0; 784],
-                        nine: [0.0; 784],
-                    };
-                // Типы переменных: image_index: usize.
-                for &image_index in &training_image_indices {
-                    let (normalized_pixels, actual_digit): &([f64; 784], Digit) =
-                        &labeled_images[image_index];
-                    // Выбираем счётчик и сумму яркостей для правильной цифры.
-                    let (
-                        training_image_count_for_actual_digit,
-                        zero_initialized_pixel_brightness_sums_for_actual_digit,
-                    ): (&mut usize, &mut [f64; 784]) = match *actual_digit {
-                        Digit::Zero => (
-                            &mut training_image_count_by_digit.zero,
-                            &mut zero_initialized_pixel_brightness_sums_by_digit.zero,
-                        ),
-                        Digit::One => (
-                            &mut training_image_count_by_digit.one,
-                            &mut zero_initialized_pixel_brightness_sums_by_digit.one,
-                        ),
-                        Digit::Two => (
-                            &mut training_image_count_by_digit.two,
-                            &mut zero_initialized_pixel_brightness_sums_by_digit.two,
-                        ),
-                        Digit::Three => (
-                            &mut training_image_count_by_digit.three,
-                            &mut zero_initialized_pixel_brightness_sums_by_digit.three,
-                        ),
-                        Digit::Four => (
-                            &mut training_image_count_by_digit.four,
-                            &mut zero_initialized_pixel_brightness_sums_by_digit.four,
-                        ),
-                        Digit::Five => (
-                            &mut training_image_count_by_digit.five,
-                            &mut zero_initialized_pixel_brightness_sums_by_digit.five,
-                        ),
-                        Digit::Six => (
-                            &mut training_image_count_by_digit.six,
-                            &mut zero_initialized_pixel_brightness_sums_by_digit.six,
-                        ),
-                        Digit::Seven => (
-                            &mut training_image_count_by_digit.seven,
-                            &mut zero_initialized_pixel_brightness_sums_by_digit.seven,
-                        ),
-                        Digit::Eight => (
-                            &mut training_image_count_by_digit.eight,
-                            &mut zero_initialized_pixel_brightness_sums_by_digit.eight,
-                        ),
-                        Digit::Nine => (
-                            &mut training_image_count_by_digit.nine,
-                            &mut zero_initialized_pixel_brightness_sums_by_digit.nine,
-                        ),
-                    };
-                    *training_image_count_for_actual_digit += 1;
-                    // println!("@{training_image_count_for_actual_digit}");
-                    // Типы переменных: pixel_brightness_sum: &mut f64, pixel_brightness: &f64.
-                    for (pixel_brightness_sum, pixel_brightness) in
-                        zero_initialized_pixel_brightness_sums_for_actual_digit
-                            .iter_mut()
-                            .zip(normalized_pixels)
-                    {
-                        // Складываем яркости в одной и той же координате изображения.
-                        *pixel_brightness_sum += pixel_brightness;
-                    }
-                }
-                if all_digits.into_iter().any(|digit: Digit| -> bool {
-                    (match digit {
-                        Digit::Zero => training_image_count_by_digit.zero,
-                        Digit::One => training_image_count_by_digit.one,
-                        Digit::Two => training_image_count_by_digit.two,
-                        Digit::Three => training_image_count_by_digit.three,
-                        Digit::Four => training_image_count_by_digit.four,
-                        Digit::Five => training_image_count_by_digit.five,
-                        Digit::Six => training_image_count_by_digit.six,
-                        Digit::Seven => training_image_count_by_digit.seven,
-                        Digit::Eight => training_image_count_by_digit.eight,
-                        Digit::Nine => training_image_count_by_digit.nine,
-                    }) == 0
-                }) {
-                    return Err("В train нужны все десять классов".into());
-                }
-                (
-                    training_image_count_by_digit,
-                    zero_initialized_pixel_brightness_sums_by_digit,
-                )
-            };
-            // println!("{training_image_count_by_digit:#?}");
-            // println!("{zero_initialized_pixel_brightness_sums_by_digit:#?}");
-            // Готовые средние передаём оценке без mut.
-            let mean_image_by_digit: DataByDigit<[f64; 784]> = {
-                // Для каждой цифры делим сумму яркостей на число её обучающих картинок.
-                // Обучение этой простой модели на этом заканчивается — итераций и градиентов здесь нет.
-                let mut mean_image_by_digit: DataByDigit<[f64; 784]> =
-                    zero_initialized_pixel_brightness_sums_by_digit;
-                // Типы переменных: digit: Digit.
-                for digit in all_digits {
-                    let (mean_image, image_count): (&mut [f64; 784], usize) = match digit {
-                        Digit::Zero => (
-                            &mut mean_image_by_digit.zero,
-                            training_image_count_by_digit.zero,
-                        ),
-                        Digit::One => (
-                            &mut mean_image_by_digit.one,
-                            training_image_count_by_digit.one,
-                        ),
-                        Digit::Two => (
-                            &mut mean_image_by_digit.two,
-                            training_image_count_by_digit.two,
-                        ),
-                        Digit::Three => (
-                            &mut mean_image_by_digit.three,
-                            training_image_count_by_digit.three,
-                        ),
-                        Digit::Four => (
-                            &mut mean_image_by_digit.four,
-                            training_image_count_by_digit.four,
-                        ),
-                        Digit::Five => (
-                            &mut mean_image_by_digit.five,
-                            training_image_count_by_digit.five,
-                        ),
-                        Digit::Six => (
-                            &mut mean_image_by_digit.six,
-                            training_image_count_by_digit.six,
-                        ),
-                        Digit::Seven => (
-                            &mut mean_image_by_digit.seven,
-                            training_image_count_by_digit.seven,
-                        ),
-                        Digit::Eight => (
-                            &mut mean_image_by_digit.eight,
-                            training_image_count_by_digit.eight,
-                        ),
-                        Digit::Nine => (
-                            &mut mean_image_by_digit.nine,
-                            training_image_count_by_digit.nine,
-                        ),
-                    };
-                    // Типы переменных: pixel_brightness: &mut f64.
-                    for pixel_brightness in mean_image {
-                        *pixel_brightness /= image_count as f64;
-                    }
-                }
-                mean_image_by_digit
-            };
-            // println!("{mean_image_by_digit:#?}");
-            println!("{training_image_count_by_digit:#?}");
-            println!(
-                "train: n={}; split: every fifth per class",
-                all_digits
-                    .into_iter()
-                    .map(|digit: Digit| -> usize {
-                        match digit {
-                            Digit::Zero => training_image_count_by_digit.zero,
-                            Digit::One => training_image_count_by_digit.one,
-                            Digit::Two => training_image_count_by_digit.two,
-                            Digit::Three => training_image_count_by_digit.three,
-                            Digit::Four => training_image_count_by_digit.four,
-                            Digit::Five => training_image_count_by_digit.five,
-                            Digit::Six => training_image_count_by_digit.six,
-                            Digit::Seven => training_image_count_by_digit.seven,
-                            Digit::Eight => training_image_count_by_digit.eight,
-                            Digit::Nine => training_image_count_by_digit.nine,
-                        }
-                    })
-                    .sum::<usize>()
-            );
-
-            mean_image_by_digit
-        };
-        // Общие evaluate_digit_predictions/print_prediction_report проверяют отложенные индексы, не изменяя обученные mean_image_by_digit.
-        print_prediction_report(
-            "validation",
-            evaluate_digit_predictions(
-                &mean_image_by_digit,
-                &labeled_images,
-                &validation_image_indices,
-            ),
-        );
-        mean_image_by_digit
-    };
-    // Test загружается после обучения; его данные и метрики остаются здесь.
-    {
-        let test_images: Vec<([f64; 784], Digit)> =
-            load_labeled_png_images(&dataset_directory.join("test"))?;
-        let image_indices: Vec<usize> = (0..test_images.len()).collect();
-        print_prediction_report(
-            "test",
-            evaluate_digit_predictions(&mean_image_by_digit, &test_images, &image_indices),
-        );
-    }
+    // Проверяем готовые наборы validation и test, не изменяя обученные средние изображения.
+    evaluate_digit_predictions(&validation_images);
+    evaluate_digit_predictions(&test_images);
 
     Ok(())
 }
