@@ -297,12 +297,7 @@ fn main() -> Result<(), String> {
             )
         };
         // Из обучения выходят только выбранные веса и необходимые для отчёта значения.
-        let (best, best_epoch, majority, batch_size): (
-            Vec<(Array2<f32>, Array1<f32>)>,
-            usize,
-            Digit,
-            usize,
-        ) = {
+        let (best, best_epoch, batch_size): (Vec<(Array2<f32>, Array1<f32>)>, usize, usize) = {
             println!(
                 "Linear 784 -> 10: epochs={epochs}, batch={batch_size}, lr={learning_rate}, seed={seed}, data={}",
                 data.display()
@@ -346,13 +341,8 @@ fn main() -> Result<(), String> {
                     items.swap(i, j);
                 }
             };
-            // Подготовка индексов двух частей, цифры baseline и состояния генератора.
-            let (training, validation, majority, random_state): (
-                Vec<usize>,
-                Vec<usize>,
-                Digit,
-                u64,
-            ) = {
+            // Подготовка индексов двух частей и состояния генератора.
+            let (training, validation, random_state): (Vec<usize>, Vec<usize>, u64) = {
                 let (training, validation): (Vec<usize>, Vec<usize>) = {
                     // Счётчик отдельный для каждой цифры: сохраняем примерно долю классов в обеих частях.
                     // Он нужен только разделению данных и не становится параметром модели.
@@ -385,37 +375,23 @@ fn main() -> Result<(), String> {
 
                     (training, random_state)
                 };
-                // Baseline — постоянный прогноз самой частой цифры train. Он показывает,
-                // насколько модель лучше простого ответа без анализа пикселей.
-                // При равной частоте выбираем меньшую цифру; метки test в выборе не участвуют.
-                let majority: Digit = {
-                    // Счётчик классов после обхода нужен только для чтения.
-                    let counts: [usize; 10] = {
-                        let mut counts: [usize; 10] = [0usize; 10];
-                        // Типы переменных: index: usize.
-                        for &index in &training {
-                            counts[digits[index].1 as usize] += 1;
-                        }
-                        counts
-                    };
+                // Проверяем, что в обучающей части есть все десять цифр.
+                {
+                    let mut counts: [usize; 10] = [0usize; 10];
+                    // Типы переменных: index: usize.
+                    for &index in &training {
+                        counts[digits[index].1 as usize] += 1;
+                    }
                     if counts.contains(&0) {
                         return Err("Train должен содержать примеры всех десяти цифр".into());
                     }
-                    classes
-                        .into_iter()
-                        .max_by_key(|&digit: &Digit| -> (usize, std::cmp::Reverse<usize>) {
-                            let index: usize = digit as usize;
-                            (counts[index], std::cmp::Reverse(index))
-                        })
-                        .unwrap()
-                };
+                }
                 println!(
-                    "train={}, validation={}, baseline digit={}; split=every fifth per class, sorted PNG filenames",
+                    "train={}, validation={}; split=every fifth per class, sorted PNG filenames",
                     training.len(),
-                    validation.len(),
-                    majority as usize
+                    validation.len()
                 );
-                (training, validation, majority, random_state)
+                (training, validation, random_state)
             };
             let (layers, random_state): (Vec<Layer>, u64) = {
                 let mut random_state: u64 = random_state;
@@ -608,7 +584,7 @@ fn main() -> Result<(), String> {
 
                 (best, best_epoch)
             };
-            (best, best_epoch, majority, batch_size)
+            (best, best_epoch, batch_size)
         };
         // Обучение завершено: загружаем официальный test и оцениваем сохранённую модель best.
         // В этом блоке нет индексов train и состояния Adam; обновления весов не выполняются.
@@ -619,15 +595,8 @@ fn main() -> Result<(), String> {
             // По test не выбираем веса, число эпох или скорость обучения.
             let metrics: (f32, f32, [[usize; 10]; 10]) =
                 evaluate(&best, &test, &test_indices, batch_size);
-            // Доля test, угаданная постоянным ответом majority. Правильные test-метки
-            // используются только для подсчёта качества уже выбранного baseline.
-            let baseline: f32 = test
-                .iter()
-                .filter(|d: &&([f64; 784], Digit)| -> bool { d.1 == majority })
-                .count() as f32
-                / test.len() as f32;
             println!(
-                "selected_epoch={best_epoch}; test={} loss={:.5} accuracy={:.4} baseline={baseline:.4} elapsed={:.1}s",
+                "selected_epoch={best_epoch}; test={} loss={:.5} accuracy={:.4} elapsed={:.1}s",
                 test.len(),
                 metrics.0,
                 metrics.1,

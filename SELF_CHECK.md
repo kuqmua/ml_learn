@@ -507,7 +507,7 @@ cargo test -p l001-01-multiply-matching-coords-then-add-results --test self_chec
 
 ## 48. MNIST
 
-[Урок 243 и самостоятельное задание](l243-48-classify-mnist-digits-by-nearest-class-mean/README.md): нормализуй пиксели, объясни train/validation/test, сравни с baseline и прочитай матрицу ошибок. Критерий прохождения и команда теста приведены в уроке.
+[Урок 243 и самостоятельное задание](l243-48-classify-mnist-digits-by-nearest-class-mean/README.md): нормализуй пиксели, объясни train/validation/test, оцени точность и прочитай матрицу ошибок. Критерий прохождения и команда теста приведены в уроке.
 
 ## 49. MNIST: Линейный классификатор и softmax
 

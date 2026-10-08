@@ -82,7 +82,7 @@ let training_features: Vec<[f64; 4]> = split.training_indices.iter()
 
 ## MNIST: изображения рукописных цифр
 
-[Урок 243](l243-48-classify-mnist-digits-by-nearest-class-mean/README.md) загружает настоящие изображения, обучает классификатор по средним изображениям классов, сравнивает accuracy с baseline и печатает матрицу ошибок. Подготовка отдельно от трёх наборов UCI:
+[Урок 243](l243-48-classify-mnist-digits-by-nearest-class-mean/README.md) загружает настоящие изображения, обучает классификатор по средним изображениям классов, вычисляет accuracy и печатает матрицу ошибок. Подготовка отдельно от трёх наборов UCI:
 
 ```bash
 python3 scripts/prepare_mnist.py
