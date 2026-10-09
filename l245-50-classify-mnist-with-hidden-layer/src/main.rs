@@ -21,7 +21,7 @@ fn main() -> Result<(), String> {
     // Тип переменной-замыкания анонимный: его имя нельзя написать после let.
     // У таких переменных типы аргументов стоят между |...|, результата — после ->.
     // f64 используется при чтении PNG, f32 — в вычислениях нейросети.
-    // Array1<f32> — вектор, Array2<f32> — матрица; Layer — пара (матрица весов, вектор смещений).
+    // ndarray::Array1<f32> — вектор, ndarray::Array2<f32> — матрица; Layer — пара (матрица весов, вектор смещений).
 
     // Digit и порядок цифр общие для всех четырёх уроков MNIST.
     use mnist_data::{ALL_DIGITS, Digit, load_labeled_png_images};
@@ -45,29 +45,32 @@ fn main() -> Result<(), String> {
 
     // Числовая часть имеет свою область видимости для массивов и замыканий.
     {
-        use ndarray::{Array1, Array2};
         // Один слой храним как пару (W, b): .0 — матрица весов, .1 — вектор смещений.
         // Для Dense W имеет форму [число входов, число выходов], b — [число выходов].
-        type Layer = (Array2<f32>, Array1<f32>);
+        type Layer = (ndarray::Array2<f32>, ndarray::Array1<f32>);
         // Общие для обучения и оценки операции; их внутренние помощники локальны вызову.
         // Forward — прямой проход: из пикселей получаем оценки десяти цифр.
         // Возвращаем также промежуточные значения, которые понадобятся backward.
         // Второй и третий результаты — окна свёртки и индексы pooling; у Dense они пусты.
         let forward = |layers: &[Layer],
-                       input: &Array2<f32>|
-         -> (Vec<Array2<f32>>, Vec<Array2<f32>>, Vec<Array2<usize>>) {
+                       input: &ndarray::Array2<f32>|
+         -> (
+            Vec<ndarray::Array2<f32>>,
+            Vec<ndarray::Array2<f32>>,
+            Vec<ndarray::Array2<usize>>,
+        ) {
             // ReLU(x) = max(x,0). Она «выключает» отрицательные ответы нейронов.
             // Без нелинейности два последовательных Dense можно было бы заменить одним.
-            let relu = |values: &Array2<f32>| -> Array2<f32> {
+            let relu = |values: &ndarray::Array2<f32>| -> ndarray::Array2<f32> {
                 values.mapv(|x: f32| -> f32 { x.max(0.0) })
             };
 
             // Первый Dense: [N,784] * [784,128] + [128] -> [N,128], затем ReLU.
             // 128 признаков учатся совместно с выходным слоем, а не задаются вручную.
-            let hidden: Array2<f32> = relu(&(input.dot(&layers[0].0) + &layers[0].1));
+            let hidden: ndarray::Array2<f32> = relu(&(input.dot(&layers[0].0) + &layers[0].1));
             // Второй Dense: [N,128] * [128,10] + [10] -> [N,10].
             // Последний слой оставляем линейным: softmax включён в расчёт loss ниже.
-            let scores: Array2<f32> = hidden.dot(&layers[1].0) + &layers[1].1;
+            let scores: ndarray::Array2<f32> = hidden.dot(&layers[1].0) + &layers[1].1;
             // states[0]=X, states[1]=hidden после ReLU, states[2]=scores.
             // X нужен для dW первого слоя, hidden — для dW второго и маски ReLU.
             // Пустые векторы означают, что окон свёрток и индексов pooling у этой модели нет.
@@ -79,58 +82,61 @@ fn main() -> Result<(), String> {
         // Loss не равна доле неверных ответов: учитывает уверенность даже при верном argmax.
         // Здесь сразу вычисляем и L, и производную dL/dscores, нужную для обучения.
         // Форма scores — [N,K], где K=10 — число классов цифр.
-        let cross_entropy = |scores: &Array2<f32>, labels: &[Digit]| -> (f32, Array2<f32>) {
-            assert_eq!(scores.nrows(), labels.len());
-            assert!(!labels.is_empty());
-            // Изменяемая копия scores нужна только вычислению вероятностей и производной.
-            let (gradient, loss): (Array2<f32>, f32) = {
-                // Копия сначала содержит scores. По ходу цикла превращаем её в вероятности,
-                // а затем в производные; исходные scores при этом остаются неизменными.
-                let mut gradient: Array2<f32> = scores.clone();
-                let mut loss: f32 = 0.0;
-                // Типы переменных: row: ndarray::ArrayViewMut1<'_, f32>, label: Digit.
-                for (mut row, &label) in gradient.rows_mut().into_iter().zip(labels) {
-                    assert!((label as usize) < row.len());
-                    // Softmax: p_c = exp(score_c) / sum(exp(scores)). Вычитаем один максимум
-                    // из всех scores: вероятности сохраняются, а экспоненты не переполняются.
-                    let max: f32 = row.iter().copied().fold(f32::NEG_INFINITY, f32::max);
-                    // Сохраняем исходный score правильного класса до преобразования строки.
-                    // label — вариант Digit; label as usize выбирает столбец этой цифры в scores.
-                    let target: f32 = row[label as usize];
-                    // Теперь в строке exp(score_c - max); это положительные ненормированные веса.
-                    row.mapv_inplace(|x: f32| -> f32 { (x - max).exp() });
-                    let sum: f32 = row.sum();
-                    // Это -ln(p_target), записанное как log-sum-exp - score_target.
-                    // Так не нужно вычислять ln почти нулевой вероятности, которая могла округлиться до 0.
-                    loss += max + sum.ln() - target;
-                    // Делим экспоненты на их сумму: получаем вероятности, сумма которых равна 1.
-                    row /= sum;
-                    // Для softmax вместе с cross-entropy производная равна p - one_hot(label).
-                    // one_hot — строка с единицей у правильного класса и нулями у остальных.
-                    // Пример: p=[0.2,0.8], правильный класс 0 -> производная [-0.8,0.8].
-                    row[label as usize] -= 1.0;
-                    // Мы учим по СРЕДНЕЙ ошибке batch, поэтому делим производные на фактический N.
-                    // Неполный последний batch тоже считается правильно. Повторно делить градиенты не надо.
-                    row /= labels.len() as f32;
-                }
-                (gradient, loss)
+        let cross_entropy =
+            |scores: &ndarray::Array2<f32>, labels: &[Digit]| -> (f32, ndarray::Array2<f32>) {
+                assert_eq!(scores.nrows(), labels.len());
+                assert!(!labels.is_empty());
+                // Изменяемая копия scores нужна только вычислению вероятностей и производной.
+                let (gradient, loss): (ndarray::Array2<f32>, f32) = {
+                    // Копия сначала содержит scores. По ходу цикла превращаем её в вероятности,
+                    // а затем в производные; исходные scores при этом остаются неизменными.
+                    let mut gradient: ndarray::Array2<f32> = scores.clone();
+                    let mut loss: f32 = 0.0;
+                    // Типы переменных: row: ndarray::ArrayViewMut1<'_, f32>, label: Digit.
+                    for (mut row, &label) in gradient.rows_mut().into_iter().zip(labels) {
+                        assert!((label as usize) < row.len());
+                        // Softmax: p_c = exp(score_c) / sum(exp(scores)). Вычитаем один максимум
+                        // из всех scores: вероятности сохраняются, а экспоненты не переполняются.
+                        let max: f32 = row.iter().copied().fold(f32::NEG_INFINITY, f32::max);
+                        // Сохраняем исходный score правильного класса до преобразования строки.
+                        // label — вариант Digit; label as usize выбирает столбец этой цифры в scores.
+                        let target: f32 = row[label as usize];
+                        // Теперь в строке exp(score_c - max); это положительные ненормированные веса.
+                        row.mapv_inplace(|x: f32| -> f32 { (x - max).exp() });
+                        let sum: f32 = row.sum();
+                        // Это -ln(p_target), записанное как log-sum-exp - score_target.
+                        // Так не нужно вычислять ln почти нулевой вероятности, которая могла округлиться до 0.
+                        loss += max + sum.ln() - target;
+                        // Делим экспоненты на их сумму: получаем вероятности, сумма которых равна 1.
+                        row /= sum;
+                        // Для softmax вместе с cross-entropy производная равна p - one_hot(label).
+                        // one_hot — строка с единицей у правильного класса и нулями у остальных.
+                        // Пример: p=[0.2,0.8], правильный класс 0 -> производная [-0.8,0.8].
+                        row[label as usize] -= 1.0;
+                        // Мы учим по СРЕДНЕЙ ошибке batch, поэтому делим производные на фактический N.
+                        // Неполный последний batch тоже считается правильно. Повторно делить градиенты не надо.
+                        row /= labels.len() as f32;
+                    }
+                    (gradient, loss)
+                };
+                (loss / labels.len() as f32, gradient)
             };
-            (loss / labels.len() as f32, gradient)
-        };
         // Один batch для обучения и оценки: строки X=[N,784], метки labels=[N].
         // Индексы выбирают записи; нормализованные f64 пиксели переводим в f32 сети.
-        let batch =
-            |digits: &[([f64; 784], Digit)], examples: &[usize]| -> (Array2<f32>, Vec<Digit>) {
-                (
-                    Array2::from_shape_fn((examples.len(), 784), |(n, p): (usize, usize)| -> f32 {
-                        digits[examples[n]].0[p] as f32
-                    }),
-                    examples
-                        .iter()
-                        .map(|&i: &usize| -> Digit { digits[i].1 })
-                        .collect::<Vec<Digit>>(),
-                )
-            };
+        let batch = |digits: &[([f64; 784], Digit)],
+                     examples: &[usize]|
+         -> (ndarray::Array2<f32>, Vec<Digit>) {
+            (
+                ndarray::Array2::from_shape_fn(
+                    (examples.len(), 784),
+                    |(n, p): (usize, usize)| -> f32 { digits[examples[n]].0[p] as f32 },
+                ),
+                examples
+                    .iter()
+                    .map(|&i: &usize| -> Digit { digits[i].1 })
+                    .collect::<Vec<Digit>>(),
+            )
+        };
 
         // Оценка только читает веса: не передаёт производные назад через слои и не обновляет параметры.
         // Возвращаем (средняя loss, доля верных ответов, матрица ошибок).
@@ -164,10 +170,14 @@ fn main() -> Result<(), String> {
                 let mut loss: f32 = 0.0;
                 // Типы переменных: indices: &[usize].
                 for indices in examples.chunks(batch_size) {
-                    let (input, labels): (Array2<f32>, Vec<Digit>) = batch(digits, indices);
-                    let (states, _, _): (Vec<Array2<f32>>, Vec<Array2<f32>>, Vec<Array2<usize>>) =
-                        forward(layers, &input);
-                    let scores: &Array2<f32> = states.last().unwrap();
+                    let (input, labels): (ndarray::Array2<f32>, Vec<Digit>) =
+                        batch(digits, indices);
+                    let (states, _, _): (
+                        Vec<ndarray::Array2<f32>>,
+                        Vec<ndarray::Array2<f32>>,
+                        Vec<ndarray::Array2<usize>>,
+                    ) = forward(layers, &input);
+                    let scores: &ndarray::Array2<f32> = states.last().unwrap();
                     // cross_entropy возвращает (loss, градиент); для оценки используем только .0.
                     // Функция возвращает среднюю loss одного batch. Умножаем на его размер,
                     // чтобы накопить сумму по картинкам; в конце делим на размер всей выборки.
@@ -191,7 +201,11 @@ fn main() -> Result<(), String> {
             )
         };
         // Из обучения выходят только выбранные веса и необходимые для отчёта значения.
-        let (best, best_epoch, batch_size): (Vec<(Array2<f32>, Array1<f32>)>, usize, usize) = {
+        let (best, best_epoch, batch_size): (
+            Vec<(ndarray::Array2<f32>, ndarray::Array1<f32>)>,
+            usize,
+            usize,
+        ) = {
             println!(
                 "MLP 784 -> 128 -> ReLU -> 10: epochs={epochs}, batch={batch_size}, lr={learning_rate}, seed={seed}, data={}",
                 data.display()
@@ -202,23 +216,28 @@ fn main() -> Result<(), String> {
             // dL/dX = G W^T, dL/dW = X^T G, dL/db = сумма строк G.
             // Формы: X=[N,D], W=[D,K], G=[N,K]; результаты [N,D], [D,K], [K].
             // Результат — (градиент по входу, градиент весов, градиент смещений).
-            let dense_backward = |input: &Array2<f32>,
-                                  weights: &Array2<f32>,
-                                  gradient: &Array2<f32>|
-             -> (Array2<f32>, Array2<f32>, Array1<f32>) {
-                use ndarray::Axis;
+            let dense_backward = |input: &ndarray::Array2<f32>,
+                                  weights: &ndarray::Array2<f32>,
+                                  gradient: &ndarray::Array2<f32>|
+             -> (
+                ndarray::Array2<f32>,
+                ndarray::Array2<f32>,
+                ndarray::Array1<f32>,
+            ) {
                 (
                     gradient.dot(&weights.t()),
                     input.t().dot(gradient),
                     // Одно смещение b_k добавлялось каждой строке, поэтому его производная
                     // суммирует вклад всех строк (ось 0). Усреднение по N уже учтено в cross-entropy.
-                    gradient.sum_axis(Axis(0)),
+                    gradient.sum_axis(ndarray::Axis(0)),
                 )
             };
             // Производная ReLU равна 1 для положительного входа и 0 для отрицательного.
             // В нуле здесь выбираем 0. Положительность сохранённого выхода ReLU даёт эту маску:
             // пропускаем G там, где нейрон был активен, и обнуляем в остальных координатах.
-            let relu_backward = |activated: &Array2<f32>, gradient: &Array2<f32>| -> Array2<f32> {
+            let relu_backward = |activated: &ndarray::Array2<f32>,
+                                 gradient: &ndarray::Array2<f32>|
+             -> ndarray::Array2<f32> {
                 assert_eq!(activated.dim(), gradient.dim());
                 ndarray::Zip::from(activated).and(gradient).map_collect(
                     |&x: &f32, &g: &f32| -> f32 { if x > 0.0 { g } else { 0.0 } },
@@ -307,13 +326,16 @@ fn main() -> Result<(), String> {
                     // Один и тот же способ инициализации здесь применяется ко всем матрицам весов.
                     let bound: f32 = (6.0 / input as f32).sqrt();
                     (
-                        Array2::from_shape_fn((input, output), |_: (usize, usize)| -> f32 {
-                            // Старшие 24 бита превращаем в f32 в [0,1); 2*uniform-1 даёт [-1,1).
-                            // Умножение на bound задаёт нужный диапазон начальных весов.
-                            let uniform: f32 = (next_random(state) >> 40) as f32 / 16777216.0;
-                            (2.0 * uniform - 1.0) * bound
-                        }),
-                        Array1::zeros(output),
+                        ndarray::Array2::from_shape_fn(
+                            (input, output),
+                            |_: (usize, usize)| -> f32 {
+                                // Старшие 24 бита превращаем в f32 в [0,1); 2*uniform-1 даёт [-1,1).
+                                // Умножение на bound задаёт нужный диапазон начальных весов.
+                                let uniform: f32 = (next_random(state) >> 40) as f32 / 16777216.0;
+                                (2.0 * uniform - 1.0) * bound
+                            },
+                        ),
+                        ndarray::Array1::zeros(output),
                     )
                 };
                 let layers: Vec<Layer> = vec![
@@ -326,22 +348,24 @@ fn main() -> Result<(), String> {
             };
 
             let (first_moments, second_moments): (
-                Vec<(Array2<f32>, Array1<f32>)>,
-                Vec<(Array2<f32>, Array1<f32>)>,
-            ) = {
-                // Adam помнит историю отдельно для каждого веса и смещения.
-                // Создаём два набора нулей той же формы: среднее градиентов m и среднее их квадратов v.
-                // Замыкание нужно только для начального создания этих массивов.
-                let zero_moments = || -> Vec<(Array2<f32>, Array1<f32>)> {
-                    layers
+                Vec<(ndarray::Array2<f32>, ndarray::Array1<f32>)>,
+                Vec<(ndarray::Array2<f32>, ndarray::Array1<f32>)>,
+            ) =
+                {
+                    // Adam помнит историю отдельно для каждого веса и смещения.
+                    // Создаём два набора нулей той же формы: среднее градиентов m и среднее их квадратов v.
+                    // Замыкание нужно только для начального создания этих массивов.
+                    let zero_moments =
+                        || -> Vec<(ndarray::Array2<f32>, ndarray::Array1<f32>)> {
+                            layers
                         .iter()
-                        .map(|(w, b): &Layer| -> (Array2<f32>, Array1<f32>) {
-                            (Array2::zeros(w.dim()), Array1::zeros(b.dim()))
+                        .map(|(w, b): &Layer| -> (ndarray::Array2<f32>, ndarray::Array1<f32>) {
+                            (ndarray::Array2::zeros(w.dim()), ndarray::Array1::zeros(b.dim()))
                         })
                         .collect::<Vec<Layer>>()
+                        };
+                    (zero_moments(), zero_moments())
                 };
-                (zero_moments(), zero_moments())
-            };
             // Оцениваем ещё не обученную сеть: это точка отсчёта для сравнения.
             let initial_loss: f32 = {
                 let initial: (f32, f32, [[usize; 10]; 10]) =
@@ -364,7 +388,7 @@ fn main() -> Result<(), String> {
                 // Сохраняем отдельную копию лучших весов по validation loss.
                 // Копия нужна, потому что следующие эпохи продолжат менять текущие layers.
                 // В начале лучший кандидат — ещё не обученная сеть (эпоха 0).
-                let mut best: Vec<(Array2<f32>, Array1<f32>)> = layers.clone();
+                let mut best: Vec<(ndarray::Array2<f32>, ndarray::Array1<f32>)> = layers.clone();
                 let mut best_loss: f32 = initial_loss;
                 let mut best_epoch: usize = 0;
                 // step — номер ОБНОВЛЕНИЯ весов, не эпохи. Он увеличивается после каждого batch
@@ -385,17 +409,20 @@ fn main() -> Result<(), String> {
                             // Сначала весь прямой и обратный проход по СТАРЫМ весам.
                             // Наружу из этого блока выходят только ошибка batch и градиенты параметров;
                             // активации, окна свёрток и промежуточные производные остаются внутри.
-                            let (loss, gradients): (f32, Vec<(Array2<f32>, Array1<f32>)>) = {
-                                let (input, labels): (Array2<f32>, Vec<Digit>) =
+                            let (loss, gradients): (
+                                f32,
+                                Vec<(ndarray::Array2<f32>, ndarray::Array1<f32>)>,
+                            ) = {
+                                let (input, labels): (ndarray::Array2<f32>, Vec<Digit>) =
                                     batch(&digits, examples);
                                 let (states, _, _): (
-                                    Vec<Array2<f32>>,
-                                    Vec<Array2<f32>>,
-                                    Vec<Array2<usize>>,
+                                    Vec<ndarray::Array2<f32>>,
+                                    Vec<ndarray::Array2<f32>>,
+                                    Vec<ndarray::Array2<usize>>,
                                 ) = forward(&layers, &input);
                                 // Получаем среднюю ошибку batch и dL/dscores — начало обратного прохода.
                                 // Ошибка должна быть конечной; NaN/∞ означают, что численный расчёт нарушился.
-                                let (loss, gradient): (f32, Array2<f32>) =
+                                let (loss, gradient): (f32, ndarray::Array2<f32>) =
                                     cross_entropy(states.last().unwrap(), &labels);
                                 if !loss.is_finite() {
                                     return Err(
@@ -404,19 +431,25 @@ fn main() -> Result<(), String> {
                                 }
                                 // Начинаем с выхода: G по scores даёт ow/ob выходного слоя и dh по hidden.
                                 // Веса layers[1] пока не меняем — они ещё нужны для правильного backward.
-                                let (dh, ow, ob): (Array2<f32>, Array2<f32>, Array1<f32>) =
-                                    dense_backward(&states[1], &layers[1].0, &gradient);
+                                let (dh, ow, ob): (
+                                    ndarray::Array2<f32>,
+                                    ndarray::Array2<f32>,
+                                    ndarray::Array1<f32>,
+                                ) = dense_backward(&states[1], &layers[1].0, &gradient);
                                 // Перед первым Dense пропускаем dh через маску ReLU hidden.
                                 // Затем считаем градиенты hw/hb весов и смещений первого слоя; производные по пикселям не нужны.
-                                let (_, hw, hb): (Array2<f32>, Array2<f32>, Array1<f32>) =
-                                    dense_backward(
-                                        &states[0],
-                                        &layers[0].0,
-                                        &relu_backward(&states[1], &dh),
-                                    );
+                                let (_, hw, hb): (
+                                    ndarray::Array2<f32>,
+                                    ndarray::Array2<f32>,
+                                    ndarray::Array1<f32>,
+                                ) = dense_backward(
+                                    &states[0],
+                                    &layers[0].0,
+                                    &relu_backward(&states[1], &dh),
+                                );
                                 // Градиенты возвращаем в порядке слоёв: сначала скрытый, затем выходной.
                                 // Вычисляли их в обратном порядке, но обновление всё равно должно попасть в свои веса.
-                                let gradients: Vec<(Array2<f32>, Array1<f32>)> =
+                                let gradients: Vec<(ndarray::Array2<f32>, ndarray::Array1<f32>)> =
                                     vec![(hw, hb), (ow, ob)];
 
                                 (loss, gradients)

@@ -22,7 +22,7 @@ fn main() -> Result<(), String> {
     // Тип переменной-замыкания анонимный: его имя нельзя написать после let.
     // У таких переменных типы аргументов стоят между |...|, результата — после ->.
     // f64 используется при чтении PNG, f32 — в вычислениях нейросети.
-    // Array1<f32> — вектор, Array2<f32> — матрица; LinearLayer — структура с полями weights (веса) и biases (смещения).
+    // ndarray::Array1<f32> — вектор, ndarray::Array2<f32> — матрица; LinearLayer — структура с полями weights (веса) и biases (смещения).
 
     // Digit и порядок цифр общие для всех четырёх уроков MNIST.
     use mnist_data::{ALL_DIGITS, Digit, load_labeled_png_images};
@@ -91,17 +91,16 @@ fn main() -> Result<(), String> {
     // Официальный test уже хранится отдельно: его не берём из обучающих картинок.
     let test_images: Vec<([f64; 784], Digit)> =
         load_labeled_png_images(&dataset_directory.join("test"))?;
-    use ndarray::{Array1, Array2};
     // LinearLayer хранит веса и смещения в именованных полях.
     // Такую же форму используем для градиентов и накопленных средних Adam.
     #[derive(Clone)]
     struct LinearLayer {
-        weights: Array2<f32>,
-        biases: Array1<f32>,
+        weights: ndarray::Array2<f32>,
+        biases: ndarray::Array1<f32>,
     }
     struct ForwardPass {
-        input_pixels: Array2<f32>,
-        digit_scores: Array2<f32>,
+        input_pixels: ndarray::Array2<f32>,
+        digit_scores: ndarray::Array2<f32>,
     }
     struct DigitPrediction {
         actual_digit: Digit,
@@ -116,10 +115,10 @@ fn main() -> Result<(), String> {
     // Forward — прямой проход: из пикселей получаем оценки десяти цифр.
     // Сохраняем входы и оценки: они нужны для расчёта градиентов.
     let calculate_digit_scores =
-        |model_layers: &[LinearLayer], input_pixels: &Array2<f32>| -> ForwardPass {
+        |model_layers: &[LinearLayer], input_pixels: &ndarray::Array2<f32>| -> ForwardPass {
             // X=[N,784], W=[784,10], b=[10] -> scores=[N,10].
             // dot — матричное умножение; смещения прибавляются к каждой строке.
-            let digit_scores: Array2<f32> =
+            let digit_scores: ndarray::Array2<f32> =
                 input_pixels.dot(&model_layers[0].weights) + &model_layers[0].biases;
             ForwardPass {
                 input_pixels: input_pixels.clone(),
@@ -132,59 +131,60 @@ fn main() -> Result<(), String> {
     // Loss не равна доле неверных ответов: учитывает уверенность даже при правильном прогнозе.
     // Здесь сразу вычисляем и L, и производную dL/dscores, нужную для обучения.
     // Форма scores — [N,K], где K=10 — число классов цифр.
-    let calculate_cross_entropy_and_gradient =
-        |digit_scores: &Array2<f32>, actual_digits: &[Digit]| -> (f32, Array2<f32>) {
-            assert_eq!(digit_scores.nrows(), actual_digits.len());
-            assert!(!actual_digits.is_empty());
-            // Изменяемая копия scores нужна только вычислению вероятностей и производной.
-            let (score_gradients, total_loss): (Array2<f32>, f32) = {
-                // Копия сначала содержит scores. По ходу цикла превращаем её в вероятности,
-                // а затем в производные; исходные scores при этом остаются неизменными.
-                let mut score_gradients: Array2<f32> = digit_scores.clone();
-                let mut total_loss: f32 = 0.0;
-                // Типы переменных: scores_then_gradients_for_image: ndarray::ArrayViewMut1<'_, f32>, actual_digit: Digit.
-                for (mut scores_then_gradients_for_image, &actual_digit) in
-                    score_gradients.rows_mut().into_iter().zip(actual_digits)
-                {
-                    assert!((actual_digit as usize) < scores_then_gradients_for_image.len());
-                    // Softmax: p_c = exp(score_c) / sum(exp(scores)). Вычитаем один максимум
-                    // из всех scores: вероятности сохраняются, а экспоненты не переполняются.
-                    let maximum_score: f32 = scores_then_gradients_for_image
-                        .iter()
-                        .copied()
-                        .fold(f32::NEG_INFINITY, f32::max);
-                    // Сохраняем исходный score правильного класса до преобразования строки.
-                    // actual_digit as usize выбирает столбец правильной цифры в digit_scores.
-                    let actual_digit_score: f32 =
-                        scores_then_gradients_for_image[actual_digit as usize];
-                    // Теперь в строке exp(score_c - max); это положительные ненормированные веса.
-                    scores_then_gradients_for_image
-                        .mapv_inplace(|score: f32| -> f32 { (score - maximum_score).exp() });
-                    let exponential_sum: f32 = scores_then_gradients_for_image.sum();
-                    // Это -ln(p_target), записанное как log-sum-exp - score_target.
-                    // Так не нужно вычислять ln почти нулевой вероятности, которая могла округлиться до 0.
-                    total_loss += maximum_score + exponential_sum.ln() - actual_digit_score;
-                    // Делим экспоненты на их сумму: получаем вероятности, сумма которых равна 1.
-                    scores_then_gradients_for_image /= exponential_sum;
-                    // Для softmax вместе с cross-entropy производная равна p - one_hot(label).
-                    // one_hot — строка с единицей у правильного класса и нулями у остальных.
-                    // Пример: p=[0.2,0.8], правильный класс 0 -> производная [-0.8,0.8].
-                    scores_then_gradients_for_image[actual_digit as usize] -= 1.0;
-                    // Мы учим по СРЕДНЕЙ ошибке batch, поэтому делим производные на фактический N.
-                    // Неполный последний batch тоже считается правильно. Повторно делить градиенты не надо.
-                    scores_then_gradients_for_image /= actual_digits.len() as f32;
-                }
-                (score_gradients, total_loss)
-            };
-            (total_loss / actual_digits.len() as f32, score_gradients)
+    let calculate_cross_entropy_and_gradient = |digit_scores: &ndarray::Array2<f32>,
+                                                actual_digits: &[Digit]|
+     -> (f32, ndarray::Array2<f32>) {
+        assert_eq!(digit_scores.nrows(), actual_digits.len());
+        assert!(!actual_digits.is_empty());
+        // Изменяемая копия scores нужна только вычислению вероятностей и производной.
+        let (score_gradients, total_loss): (ndarray::Array2<f32>, f32) = {
+            // Копия сначала содержит scores. По ходу цикла превращаем её в вероятности,
+            // а затем в производные; исходные scores при этом остаются неизменными.
+            let mut score_gradients: ndarray::Array2<f32> = digit_scores.clone();
+            let mut total_loss: f32 = 0.0;
+            // Типы переменных: scores_then_gradients_for_image: ndarray::ArrayViewMut1<'_, f32>, actual_digit: Digit.
+            for (mut scores_then_gradients_for_image, &actual_digit) in
+                score_gradients.rows_mut().into_iter().zip(actual_digits)
+            {
+                assert!((actual_digit as usize) < scores_then_gradients_for_image.len());
+                // Softmax: p_c = exp(score_c) / sum(exp(scores)). Вычитаем один максимум
+                // из всех scores: вероятности сохраняются, а экспоненты не переполняются.
+                let maximum_score: f32 = scores_then_gradients_for_image
+                    .iter()
+                    .copied()
+                    .fold(f32::NEG_INFINITY, f32::max);
+                // Сохраняем исходный score правильного класса до преобразования строки.
+                // actual_digit as usize выбирает столбец правильной цифры в digit_scores.
+                let actual_digit_score: f32 =
+                    scores_then_gradients_for_image[actual_digit as usize];
+                // Теперь в строке exp(score_c - max); это положительные ненормированные веса.
+                scores_then_gradients_for_image
+                    .mapv_inplace(|score: f32| -> f32 { (score - maximum_score).exp() });
+                let exponential_sum: f32 = scores_then_gradients_for_image.sum();
+                // Это -ln(p_target), записанное как log-sum-exp - score_target.
+                // Так не нужно вычислять ln почти нулевой вероятности, которая могла округлиться до 0.
+                total_loss += maximum_score + exponential_sum.ln() - actual_digit_score;
+                // Делим экспоненты на их сумму: получаем вероятности, сумма которых равна 1.
+                scores_then_gradients_for_image /= exponential_sum;
+                // Для softmax вместе с cross-entropy производная равна p - one_hot(label).
+                // one_hot — строка с единицей у правильного класса и нулями у остальных.
+                // Пример: p=[0.2,0.8], правильный класс 0 -> производная [-0.8,0.8].
+                scores_then_gradients_for_image[actual_digit as usize] -= 1.0;
+                // Мы учим по СРЕДНЕЙ ошибке batch, поэтому делим производные на фактический N.
+                // Неполный последний batch тоже считается правильно. Повторно делить градиенты не надо.
+                scores_then_gradients_for_image /= actual_digits.len() as f32;
+            }
+            (score_gradients, total_loss)
         };
+        (total_loss / actual_digits.len() as f32, score_gradients)
+    };
     // Один batch для обучения и оценки: строки X=[N,784], метки actual_digits=[N].
     // Индексы выбирают записи; нормализованные f64 пиксели переводим в f32 сети.
     let build_image_batch = |images_with_actual_digits: &[([f64; 784], Digit)],
                              batch_image_indices: &[usize]|
-     -> (Array2<f32>, Vec<Digit>) {
+     -> (ndarray::Array2<f32>, Vec<Digit>) {
         (
-            Array2::from_shape_fn(
+            ndarray::Array2::from_shape_fn(
                 (batch_image_indices.len(), 784),
                 |(image_position, pixel_index): (usize, usize)| -> f32 {
                     images_with_actual_digits[batch_image_indices[image_position]].0[pixel_index]
@@ -230,11 +230,11 @@ fn main() -> Result<(), String> {
             let mut total_loss: f32 = 0.0;
             // Типы переменных: batch_image_indices: &[usize].
             for batch_image_indices in image_indices.chunks(batch_size) {
-                let (input_pixels, actual_digits): (Array2<f32>, Vec<Digit>) =
+                let (input_pixels, actual_digits): (ndarray::Array2<f32>, Vec<Digit>) =
                     build_image_batch(images_with_actual_digits, batch_image_indices);
                 let forward_values: ForwardPass =
                     calculate_digit_scores(model_layers, &input_pixels);
-                let digit_scores: &Array2<f32> = &forward_values.digit_scores;
+                let digit_scores: &ndarray::Array2<f32> = &forward_values.digit_scores;
                 // loss одного batch — средняя: умножаем на его фактический размер.
                 // Затем делим общую сумму на число картинок, учитывая неполный последний batch.
                 total_loss += calculate_cross_entropy_and_gradient(digit_scores, &actual_digits).0
@@ -273,17 +273,20 @@ fn main() -> Result<(), String> {
         // dL/dX = G W^T, dL/dW = X^T G, dL/db = сумма строк G.
         // Формы: X=[N,D], W=[D,K], G=[N,K]; результаты [N,D], [D,K], [K].
         // Результат — (градиент по входу, градиент весов, градиент смещений).
-        let calculate_linear_layer_gradients = |input_pixels: &Array2<f32>,
-                                                weights: &Array2<f32>,
-                                                score_gradients: &Array2<f32>|
-         -> (Array2<f32>, Array2<f32>, Array1<f32>) {
-            use ndarray::Axis;
+        let calculate_linear_layer_gradients = |input_pixels: &ndarray::Array2<f32>,
+                                                weights: &ndarray::Array2<f32>,
+                                                score_gradients: &ndarray::Array2<f32>|
+         -> (
+            ndarray::Array2<f32>,
+            ndarray::Array2<f32>,
+            ndarray::Array1<f32>,
+        ) {
             (
                 score_gradients.dot(&weights.t()),
                 input_pixels.t().dot(score_gradients),
                 // Одно смещение b_k добавлялось каждой строке, поэтому его производная
                 // суммирует вклад всех строк (ось 0). Усреднение по N уже учтено в cross-entropy.
-                score_gradients.sum_axis(Axis(0)),
+                score_gradients.sum_axis(ndarray::Axis(0)),
             )
         };
 
@@ -343,7 +346,7 @@ fn main() -> Result<(), String> {
                 // Один и тот же способ инициализации здесь применяется ко всем матрицам весов.
                 let initial_weight_bound: f32 = (6.0 / input_feature_count as f32).sqrt();
                 LinearLayer {
-                    weights: Array2::from_shape_fn(
+                    weights: ndarray::Array2::from_shape_fn(
                         (input_feature_count, output_digit_count),
                         |_: (usize, usize)| -> f32 {
                             // Старшие 24 бита превращаем в random_fraction от 0 до 1; 2*random_fraction-1 даёт [-1,1).
@@ -353,7 +356,7 @@ fn main() -> Result<(), String> {
                             (2.0 * random_fraction - 1.0) * initial_weight_bound
                         },
                     ),
-                    biases: Array1::zeros(output_digit_count),
+                    biases: ndarray::Array1::zeros(output_digit_count),
                 }
             };
             // Единственный слой: 784 входа и 10 классов; W=[784,10], b=[10].
@@ -372,8 +375,8 @@ fn main() -> Result<(), String> {
                     .iter()
                     .map(|layer: &LinearLayer| -> LinearLayer {
                         LinearLayer {
-                            weights: Array2::zeros(layer.weights.dim()),
-                            biases: Array1::zeros(layer.biases.dim()),
+                            weights: ndarray::Array2::zeros(layer.weights.dim()),
+                            biases: ndarray::Array1::zeros(layer.biases.dim()),
                         }
                     })
                     .collect::<Vec<LinearLayer>>()
@@ -424,13 +427,13 @@ fn main() -> Result<(), String> {
                         // Наружу из этого блока выходят только ошибка batch и градиенты параметров;
                         // входы, оценки цифр и промежуточные производные остаются внутри.
                         let (mean_loss, parameter_gradients): (f32, Vec<LinearLayer>) = {
-                            let (input_pixels, actual_digits): (Array2<f32>, Vec<Digit>) =
+                            let (input_pixels, actual_digits): (ndarray::Array2<f32>, Vec<Digit>) =
                                 build_image_batch(&train_images, batch_image_indices);
                             let forward_values: ForwardPass =
                                 calculate_digit_scores(&model_layers, &input_pixels);
                             // Получаем среднюю ошибку batch и dL/dscores — начало обратного прохода.
                             // Ошибка должна быть конечной; NaN/∞ означают, что численный расчёт нарушился.
-                            let (mean_loss, score_gradients): (f32, Array2<f32>) =
+                            let (mean_loss, score_gradients): (f32, ndarray::Array2<f32>) =
                                 calculate_cross_entropy_and_gradient(
                                     &forward_values.digit_scores,
                                     &actual_digits,
@@ -443,9 +446,9 @@ fn main() -> Result<(), String> {
                             // Для единственного слоя получаем dL/dW и dL/db. forward_values.input_pixels — сохранённый X.
                             // Производную по самим входным пикселям не используем: картинки здесь не обучаются.
                             let (_, weight_gradients, bias_gradients): (
-                                Array2<f32>,
-                                Array2<f32>,
-                                Array1<f32>,
+                                ndarray::Array2<f32>,
+                                ndarray::Array2<f32>,
+                                ndarray::Array1<f32>,
                             ) = calculate_linear_layer_gradients(
                                 &forward_values.input_pixels,
                                 &model_layers[0].weights,
