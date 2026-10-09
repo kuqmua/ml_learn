@@ -6,10 +6,9 @@ fn main() -> Result<(), String> {
     // градиент говорит, как изменятся ошибки при небольшом изменении весов.
     // Adam обновляет веса по этим градиентам. Так повторяем много batch и эпох.
     //
-    // Обозначения в комментариях: N — число изображений в batch, D — число входов,
-    // K — число выходов; X — входы, W — веса, b — смещения, L — средняя ошибка.
-    // [N,D] означает матрицу из N строк и D столбцов; T означает транспонирование.
-    // Реальный N обычно равен 64, но последний batch может быть меньше.
+    // Картинки обрабатываются группами: обычно по 64, последняя группа может быть меньше.
+    // В матрице входов каждая строка содержит 784 яркости одной картинки.
+    // Матрица весов связывает каждый пиксель с оценкой каждой из десяти цифр.
     // Весь код остаётся в main: замыкания ниже объявляют операции, а вызываются
     // в блоках обучения и оценки. Из вложенных блоков выходят только нужные результаты.
 
@@ -22,7 +21,7 @@ fn main() -> Result<(), String> {
     // Тип переменной-замыкания анонимный: его имя нельзя написать после let.
     // У таких переменных типы аргументов стоят между |...|, результата — после ->.
     // f64 используется при чтении PNG, f32 — в вычислениях нейросети.
-    // ndarray::Array1<f32> — вектор, ndarray::Array2<f32> — матрица; LinearLayer — структура с полями weights (веса) и biases (смещения).
+    // ndarray::Array1<f32> — вектор, ndarray::Array2<f32> — матрица; WeightsAndBiasesAsLinearLayer — структура с полями weights (веса) и biases (смещения).
 
     // Digit и порядок цифр общие для всех четырёх уроков MNIST.
     use mnist_data::{ALL_DIGITS, Digit, load_labeled_png_images};
@@ -91,10 +90,10 @@ fn main() -> Result<(), String> {
     // Официальный test уже хранится отдельно: его не берём из обучающих картинок.
     let test_images: Vec<([f64; 784], Digit)> =
         load_labeled_png_images(&dataset_directory.join("test"))?;
-    // LinearLayer хранит веса и смещения в именованных полях.
+    // WeightsAndBiasesAsLinearLayer хранит веса и смещения в именованных полях.
     // Такую же форму используем для градиентов и накопленных средних Adam.
     #[derive(Clone)]
-    struct LinearLayer {
+    struct WeightsAndBiasesAsLinearLayer {
         weights: ndarray::Array2<f32>,
         biases: ndarray::Array1<f32>,
     }
@@ -115,22 +114,32 @@ fn main() -> Result<(), String> {
     // Forward — прямой проход: из пикселей получаем оценки десяти цифр.
     // Сохраняем входы и оценки: они нужны для расчёта градиентов.
     let calculate_digit_scores =
-        |model_layers: &[LinearLayer], input_pixels: &ndarray::Array2<f32>| -> ForwardPass {
-            // X=[N,784], W=[784,10], b=[10] -> scores=[N,10].
+        |weights_and_biases_as_linear_layers: &[WeightsAndBiasesAsLinearLayer],
+         input_pixels: &ndarray::Array2<f32>|
+         -> ForwardPass {
+            // input_pixels — матрица яркостей: одна строка на картинку, 784 столбца для пикселей.
+            // weights — матрица весов: 784 строки для пикселей, 10 столбцов для цифр.
+            // Каждый вес задаёт вклад яркости определённого пикселя в оценку определённой цифры.
+            // biases — 10 обучаемых смещений, по одному на цифру.
+            // Смещение цифры прибавляется к её оценке для каждой картинки независимо от пикселей.
+            // digit_scores — матрица результатов: одна строка на картинку, 10 столбцов для оценок цифр.
+            // Оценки пока не являются вероятностями.
+            // Оценка цифры = сумма произведений яркостей пикселей на веса этой цифры + её смещение.
             // dot — матричное умножение; смещения прибавляются к каждой строке.
-            let digit_scores: ndarray::Array2<f32> =
-                input_pixels.dot(&model_layers[0].weights) + &model_layers[0].biases;
+            let digit_scores: ndarray::Array2<f32> = input_pixels
+                .dot(&weights_and_biases_as_linear_layers[0].weights)
+                + &weights_and_biases_as_linear_layers[0].biases;
             ForwardPass {
                 input_pixels: input_pixels.clone(),
                 digit_scores,
             }
         };
-    // Считаем среднюю cross-entropy: L = mean(-ln(p_правильной_цифры)).
+    // Cross-entropy — среднее отрицательных натуральных логарифмов вероятностей правильных цифр.
     // Если правильному классу дана большая вероятность, ошибка мала; если малая — велика.
-    // Например, p_target=0.9 даёт loss≈0.105, а p_target=0.1 даёт loss≈2.303.
+    // Вероятность правильной цифры 0.9 даёт ошибку около 0.105, а 0.1 — около 2.303.
     // Loss не равна доле неверных ответов: учитывает уверенность даже при правильном прогнозе.
-    // Здесь сразу вычисляем и L, и производную dL/dscores, нужную для обучения.
-    // Форма scores — [N,K], где K=10 — число классов цифр.
+    // Вычисляем среднюю ошибку и её производные по оценкам цифр для обновления весов.
+    // В digit_scores одна строка на картинку и десять столбцов с оценками цифр.
     let calculate_cross_entropy_and_gradient = |digit_scores: &ndarray::Array2<f32>,
                                                 actual_digits: &[Digit]|
      -> (f32, ndarray::Array2<f32>) {
@@ -147,8 +156,8 @@ fn main() -> Result<(), String> {
                 score_gradients.rows_mut().into_iter().zip(actual_digits)
             {
                 assert!((actual_digit as usize) < scores_then_gradients_for_image.len());
-                // Softmax: p_c = exp(score_c) / sum(exp(scores)). Вычитаем один максимум
-                // из всех scores: вероятности сохраняются, а экспоненты не переполняются.
+                // Softmax: экспоненту оценки каждой цифры делим на сумму экспонент всех десяти оценок.
+                // Перед этим вычитаем максимальную оценку: вероятности сохраняются, экспоненты не переполняются.
                 let maximum_score: f32 = scores_then_gradients_for_image
                     .iter()
                     .copied()
@@ -157,20 +166,19 @@ fn main() -> Result<(), String> {
                 // actual_digit as usize выбирает столбец правильной цифры в digit_scores.
                 let actual_digit_score: f32 =
                     scores_then_gradients_for_image[actual_digit as usize];
-                // Теперь в строке exp(score_c - max); это положительные ненормированные веса.
+                // Строка теперь содержит экспоненты разностей оценок и максимальной оценки.
                 scores_then_gradients_for_image
                     .mapv_inplace(|score: f32| -> f32 { (score - maximum_score).exp() });
                 let exponential_sum: f32 = scores_then_gradients_for_image.sum();
-                // Это -ln(p_target), записанное как log-sum-exp - score_target.
+                // Ошибка = максимальная оценка + логарифм суммы экспонент − оценка правильной цифры.
                 // Так не нужно вычислять ln почти нулевой вероятности, которая могла округлиться до 0.
                 total_loss += maximum_score + exponential_sum.ln() - actual_digit_score;
                 // Делим экспоненты на их сумму: получаем вероятности, сумма которых равна 1.
                 scores_then_gradients_for_image /= exponential_sum;
-                // Для softmax вместе с cross-entropy производная равна p - one_hot(label).
-                // one_hot — строка с единицей у правильного класса и нулями у остальных.
-                // Пример: p=[0.2,0.8], правильный класс 0 -> производная [-0.8,0.8].
+                // Производная для каждой цифры — её вероятность минус 1 для правильной цифры или минус 0 для остальных.
+                // Например, вероятности [0.2, 0.8] при правильной цифре 0 дают производные [-0.8, 0.8].
                 scores_then_gradients_for_image[actual_digit as usize] -= 1.0;
-                // Мы учим по СРЕДНЕЙ ошибке batch, поэтому делим производные на фактический N.
+                // Учим по средней ошибке группы, поэтому делим производные на число картинок в ней.
                 // Неполный последний batch тоже считается правильно. Повторно делить градиенты не надо.
                 scores_then_gradients_for_image /= actual_digits.len() as f32;
             }
@@ -178,7 +186,7 @@ fn main() -> Result<(), String> {
         };
         (total_loss / actual_digits.len() as f32, score_gradients)
     };
-    // Один batch для обучения и оценки: строки X=[N,784], метки actual_digits=[N].
+    // Группа для обучения и оценки: строка из 784 яркостей и правильная цифра для каждой картинки.
     // Индексы выбирают записи; нормализованные f64 пиксели переводим в f32 сети.
     let build_image_batch = |images_with_actual_digits: &[([f64; 784], Digit)],
                              batch_image_indices: &[usize]|
@@ -200,78 +208,83 @@ fn main() -> Result<(), String> {
 
     // Оценка читает текущую модель, не обновляя веса. Передаём целый готовый набор.
     // Модель остаётся параметром: validation проверяет разные веса после каждой эпохи.
-    let measure_prediction_quality = |model_layers: &[LinearLayer],
-                                      images_with_actual_digits: &[([f64; 784], Digit)]|
-     -> PredictionEvaluation {
-        // Наибольшая оценка выбирает цифру; при равенстве предпочитаем меньшую.
-        let digit_with_highest_score =
-            |digit_scores_for_image: ndarray::ArrayView1<'_, f32>| -> Digit {
-                let predicted_digit_index: usize = (0..digit_scores_for_image.len())
-                    .max_by(
-                        |&first_digit_index: &usize,
-                         &second_digit_index: &usize|
-                         -> std::cmp::Ordering {
-                            digit_scores_for_image[first_digit_index]
-                                .total_cmp(&digit_scores_for_image[second_digit_index])
-                                .then_with(|| -> std::cmp::Ordering {
-                                    second_digit_index.cmp(&first_digit_index)
-                                })
-                        },
-                    )
-                    .unwrap();
-                all_digits[predicted_digit_index]
-            };
-        assert!(!images_with_actual_digits.is_empty() && batch_size > 0);
-        // Индексы здесь нужны только сборке batch; снаружи передаётся сам набор картинок.
-        let image_indices: Vec<usize> = (0..images_with_actual_digits.len()).collect();
-        let (predictions, total_loss): (Vec<DigitPrediction>, f32) = {
-            let mut predictions: Vec<DigitPrediction> =
-                Vec::with_capacity(images_with_actual_digits.len());
-            let mut total_loss: f32 = 0.0;
-            // Типы переменных: batch_image_indices: &[usize].
-            for batch_image_indices in image_indices.chunks(batch_size) {
-                let (input_pixels, actual_digits): (ndarray::Array2<f32>, Vec<Digit>) =
-                    build_image_batch(images_with_actual_digits, batch_image_indices);
-                let forward_values: ForwardPass =
-                    calculate_digit_scores(model_layers, &input_pixels);
-                let digit_scores: &ndarray::Array2<f32> = &forward_values.digit_scores;
-                // loss одного batch — средняя: умножаем на его фактический размер.
-                // Затем делим общую сумму на число картинок, учитывая неполный последний batch.
-                total_loss += calculate_cross_entropy_and_gradient(digit_scores, &actual_digits).0
-                    * batch_image_indices.len() as f32;
-                // Типы переменных: digit_scores_for_image: ndarray::ArrayView1<'_, f32>, actual_digit: Digit.
-                for (digit_scores_for_image, actual_digit) in
-                    digit_scores.rows().into_iter().zip(actual_digits)
-                {
-                    predictions.push(DigitPrediction {
-                        actual_digit,
-                        predicted_digit: digit_with_highest_score(digit_scores_for_image),
-                    });
+    let measure_prediction_quality =
+        |weights_and_biases_as_linear_layers: &[WeightsAndBiasesAsLinearLayer],
+         images_with_actual_digits: &[([f64; 784], Digit)]|
+         -> PredictionEvaluation {
+            // Наибольшая оценка выбирает цифру; при равенстве предпочитаем меньшую.
+            let digit_with_highest_score =
+                |digit_scores_for_image: ndarray::ArrayView1<'_, f32>| -> Digit {
+                    let predicted_digit_index: usize = (0..digit_scores_for_image.len())
+                        .max_by(
+                            |&first_digit_index: &usize,
+                             &second_digit_index: &usize|
+                             -> std::cmp::Ordering {
+                                digit_scores_for_image[first_digit_index]
+                                    .total_cmp(&digit_scores_for_image[second_digit_index])
+                                    .then_with(|| -> std::cmp::Ordering {
+                                        second_digit_index.cmp(&first_digit_index)
+                                    })
+                            },
+                        )
+                        .unwrap();
+                    all_digits[predicted_digit_index]
+                };
+            assert!(!images_with_actual_digits.is_empty() && batch_size > 0);
+            // Индексы здесь нужны только сборке batch; снаружи передаётся сам набор картинок.
+            let image_indices: Vec<usize> = (0..images_with_actual_digits.len()).collect();
+            let (predictions, total_loss): (Vec<DigitPrediction>, f32) = {
+                let mut predictions: Vec<DigitPrediction> =
+                    Vec::with_capacity(images_with_actual_digits.len());
+                let mut total_loss: f32 = 0.0;
+                // Типы переменных: batch_image_indices: &[usize].
+                for batch_image_indices in image_indices.chunks(batch_size) {
+                    let (input_pixels, actual_digits): (ndarray::Array2<f32>, Vec<Digit>) =
+                        build_image_batch(images_with_actual_digits, batch_image_indices);
+                    let forward_values: ForwardPass =
+                        calculate_digit_scores(weights_and_biases_as_linear_layers, &input_pixels);
+                    let digit_scores: &ndarray::Array2<f32> = &forward_values.digit_scores;
+                    // loss одного batch — средняя: умножаем на его фактический размер.
+                    // Затем делим общую сумму на число картинок, учитывая неполный последний batch.
+                    total_loss +=
+                        calculate_cross_entropy_and_gradient(digit_scores, &actual_digits).0
+                            * batch_image_indices.len() as f32;
+                    // Типы переменных: digit_scores_for_image: ndarray::ArrayView1<'_, f32>, actual_digit: Digit.
+                    for (digit_scores_for_image, actual_digit) in
+                        digit_scores.rows().into_iter().zip(actual_digits)
+                    {
+                        predictions.push(DigitPrediction {
+                            actual_digit,
+                            predicted_digit: digit_with_highest_score(digit_scores_for_image),
+                        });
+                    }
                 }
+                (predictions, total_loss)
+            };
+            let correct_prediction_count: usize = predictions
+                .iter()
+                .filter(|prediction: &&DigitPrediction| -> bool {
+                    prediction.actual_digit == prediction.predicted_digit
+                })
+                .count();
+            PredictionEvaluation {
+                mean_loss: total_loss / images_with_actual_digits.len() as f32,
+                accuracy: correct_prediction_count as f32 / images_with_actual_digits.len() as f32,
+                predictions,
             }
-            (predictions, total_loss)
         };
-        let correct_prediction_count: usize = predictions
-            .iter()
-            .filter(|prediction: &&DigitPrediction| -> bool {
-                prediction.actual_digit == prediction.predicted_digit
-            })
-            .count();
-        PredictionEvaluation {
-            mean_loss: total_loss / images_with_actual_digits.len() as f32,
-            accuracy: correct_prediction_count as f32 / images_with_actual_digits.len() as f32,
-            predictions,
-        }
-    };
     // Из обучения выходят только выбранные веса и необходимые для отчёта значения.
-    let (best_model_layers, best_epoch_number): (Vec<LinearLayer>, usize) = {
+    let (best_weights_and_biases_as_linear_layers, best_epoch_number): (
+        Vec<WeightsAndBiasesAsLinearLayer>,
+        usize,
+    ) = {
         println!(
             "Linear 784 -> 10: epochs={epoch_count}, batch={batch_size}, lr={learning_rate}, seed={random_seed}, data={}",
             dataset_directory.display()
         );
-        // Для Z = XW+b и входящего G=dL/dZ правило цепочки даёт:
-        // dL/dX = G W^T, dL/dW = X^T G, dL/db = сумма строк G.
-        // Формы: X=[N,D], W=[D,K], G=[N,K]; результаты [N,D], [D,K], [K].
+        // Производные по пикселям: производные по оценкам умножаем на транспонированную матрицу весов.
+        // Производные по весам: транспонированную матрицу пикселей умножаем на производные по оценкам.
+        // Производные по смещениям: складываем производные по оценкам всех картинок отдельно для каждой цифры.
         // Результат — (градиент по входу, градиент весов, градиент смещений).
         let calculate_linear_layer_gradients = |input_pixels: &ndarray::Array2<f32>,
                                                 weights: &ndarray::Array2<f32>,
@@ -284,8 +297,8 @@ fn main() -> Result<(), String> {
             (
                 score_gradients.dot(&weights.t()),
                 input_pixels.t().dot(score_gradients),
-                // Одно смещение b_k добавлялось каждой строке, поэтому его производная
-                // суммирует вклад всех строк (ось 0). Усреднение по N уже учтено в cross-entropy.
+                // Смещение одной цифры добавлялось каждой картинке, поэтому его производная
+                // суммирует вклад всех строк (ось 0). Деление на число картинок уже учтено в cross-entropy.
                 score_gradients.sum_axis(ndarray::Axis(0)),
             )
         };
@@ -332,20 +345,23 @@ fn main() -> Result<(), String> {
             train_images.len(),
             validation_images.len()
         );
-        let (model_layers, random_state): (Vec<LinearLayer>, u64) = {
+        let (weights_and_biases_as_linear_layers, random_state): (
+            Vec<WeightsAndBiasesAsLinearLayer>,
+            u64,
+        ) = {
             let mut random_state: u64 = random_state;
             // Создаём weights=[input_feature_count,output_digit_count] и biases=[output_digit_count]. Смещения начинают с нуля.
             // Веса начинаются с малых случайных значений по прежней формуле инициализации.
             let initialize_linear_layer = |input_feature_count: usize,
                                            output_digit_count: usize,
                                            random_state: &mut u64|
-             -> LinearLayer {
+             -> WeightsAndBiasesAsLinearLayer {
                 // Граница initial_weight_bound задаёт диапазон начальных весов.
                 // Дисперсия этого распределения равна 2/input_feature_count.
                 // Это масштаб He: для ReLU он помогает сохранять разумный размер сигналов в слоях.
                 // Один и тот же способ инициализации здесь применяется ко всем матрицам весов.
                 let initial_weight_bound: f32 = (6.0 / input_feature_count as f32).sqrt();
-                LinearLayer {
+                WeightsAndBiasesAsLinearLayer {
                     weights: ndarray::Array2::from_shape_fn(
                         (input_feature_count, output_digit_count),
                         |_: (usize, usize)| -> f32 {
@@ -359,34 +375,39 @@ fn main() -> Result<(), String> {
                     biases: ndarray::Array1::zeros(output_digit_count),
                 }
             };
-            // Единственный слой: 784 входа и 10 классов; W=[784,10], b=[10].
-            let model_layers: Vec<LinearLayer> =
+            // Единственный слой: матрица из 784×10 весов и вектор из 10 смещений.
+            let weights_and_biases_as_linear_layers: Vec<WeightsAndBiasesAsLinearLayer> =
                 vec![initialize_linear_layer(784, 10, &mut random_state)];
-            (model_layers, random_state)
+            (weights_and_biases_as_linear_layers, random_state)
         };
 
-        let (average_gradients, average_squared_gradients): (Vec<LinearLayer>, Vec<LinearLayer>) = {
+        let (average_gradients, average_squared_gradients): (
+            Vec<WeightsAndBiasesAsLinearLayer>,
+            Vec<WeightsAndBiasesAsLinearLayer>,
+        ) = {
             // Adam помнит историю отдельно для каждого веса и смещения.
             // average_gradients и average_squared_gradients изначально заполнены нулями.
             // Это сглаженные градиенты и их квадраты; формы совпадают с weights и biases.
             // Замыкание нужно только для начального создания этих массивов.
-            let initialize_zero_averages = || -> Vec<LinearLayer> {
-                model_layers
+            let initialize_zero_averages = || -> Vec<WeightsAndBiasesAsLinearLayer> {
+                weights_and_biases_as_linear_layers
                     .iter()
-                    .map(|layer: &LinearLayer| -> LinearLayer {
-                        LinearLayer {
-                            weights: ndarray::Array2::zeros(layer.weights.dim()),
-                            biases: ndarray::Array1::zeros(layer.biases.dim()),
+                    .map(|weights_and_biases_as_linear_layer: &WeightsAndBiasesAsLinearLayer| -> WeightsAndBiasesAsLinearLayer {
+                        WeightsAndBiasesAsLinearLayer {
+                            weights: ndarray::Array2::zeros(weights_and_biases_as_linear_layer.weights.dim()),
+                            biases: ndarray::Array1::zeros(weights_and_biases_as_linear_layer.biases.dim()),
                         }
                     })
-                    .collect::<Vec<LinearLayer>>()
+                    .collect::<Vec<WeightsAndBiasesAsLinearLayer>>()
             };
             (initialize_zero_averages(), initialize_zero_averages())
         };
         // Оцениваем ещё не обученную сеть: это точка отсчёта для сравнения.
         let initial_validation_loss: f32 = {
-            let initial_evaluation: PredictionEvaluation =
-                measure_prediction_quality(&model_layers, &validation_images);
+            let initial_evaluation: PredictionEvaluation = measure_prediction_quality(
+                &weights_and_biases_as_linear_layers,
+                &validation_images,
+            );
 
             println!(
                 "epoch=0 validation_loss={:.5} validation_accuracy={:.4}",
@@ -395,17 +416,23 @@ fn main() -> Result<(), String> {
             initial_evaluation.mean_loss
         };
         // Всё изменяемое состояние обучения живёт только в этом блоке эпох.
-        // За его пределами доступны best_model_layers и best_epoch_number без mut.
-        let (best_model_layers, best_epoch_number): (Vec<LinearLayer>, usize) = {
-            let mut model_layers: Vec<LinearLayer> = model_layers;
+        // За его пределами доступны best_weights_and_biases_as_linear_layers и best_epoch_number без mut.
+        let (best_weights_and_biases_as_linear_layers, best_epoch_number): (
+            Vec<WeightsAndBiasesAsLinearLayer>,
+            usize,
+        ) = {
+            let mut weights_and_biases_as_linear_layers: Vec<WeightsAndBiasesAsLinearLayer> =
+                weights_and_biases_as_linear_layers;
             let mut training_image_order: Vec<usize> = training_image_order;
             let mut random_state: u64 = random_state;
-            let mut average_gradients: Vec<LinearLayer> = average_gradients;
-            let mut average_squared_gradients: Vec<LinearLayer> = average_squared_gradients;
+            let mut average_gradients: Vec<WeightsAndBiasesAsLinearLayer> = average_gradients;
+            let mut average_squared_gradients: Vec<WeightsAndBiasesAsLinearLayer> =
+                average_squared_gradients;
             // Сохраняем отдельную копию лучших весов по validation loss.
-            // Копия нужна, потому что следующие эпохи продолжат менять текущие model_layers.
+            // Копия нужна, потому что следующие эпохи продолжат менять текущие weights_and_biases_as_linear_layers.
             // В начале лучший кандидат — ещё не обученная сеть (эпоха 0).
-            let mut best_model_layers: Vec<LinearLayer> = model_layers.clone();
+            let mut best_weights_and_biases_as_linear_layers: Vec<WeightsAndBiasesAsLinearLayer> =
+                weights_and_biases_as_linear_layers.clone();
             let mut best_validation_loss: f32 = initial_validation_loss;
             let mut best_epoch_number: usize = 0;
             // parameter_update_count — номер ОБНОВЛЕНИЯ весов, не эпохи. Он увеличивается после каждого batch
@@ -426,12 +453,17 @@ fn main() -> Result<(), String> {
                         // Сначала весь прямой и обратный проход по СТАРЫМ весам.
                         // Наружу из этого блока выходят только ошибка batch и градиенты параметров;
                         // входы, оценки цифр и промежуточные производные остаются внутри.
-                        let (mean_loss, parameter_gradients): (f32, Vec<LinearLayer>) = {
+                        let (mean_loss, parameter_gradients): (
+                            f32,
+                            Vec<WeightsAndBiasesAsLinearLayer>,
+                        ) = {
                             let (input_pixels, actual_digits): (ndarray::Array2<f32>, Vec<Digit>) =
                                 build_image_batch(&train_images, batch_image_indices);
-                            let forward_values: ForwardPass =
-                                calculate_digit_scores(&model_layers, &input_pixels);
-                            // Получаем среднюю ошибку batch и dL/dscores — начало обратного прохода.
+                            let forward_values: ForwardPass = calculate_digit_scores(
+                                &weights_and_biases_as_linear_layers,
+                                &input_pixels,
+                            );
+                            // Получаем среднюю ошибку группы и производные по оценкам цифр — начало обратного прохода.
                             // Ошибка должна быть конечной; NaN/∞ означают, что численный расчёт нарушился.
                             let (mean_loss, score_gradients): (f32, ndarray::Array2<f32>) =
                                 calculate_cross_entropy_and_gradient(
@@ -443,7 +475,7 @@ fn main() -> Result<(), String> {
                                     "Ошибка обучения не конечна; уменьши learning-rate".into()
                                 );
                             }
-                            // Для единственного слоя получаем dL/dW и dL/db. forward_values.input_pixels — сохранённый X.
+                            // Вычисляем производные по весам и смещениям; forward_values.input_pixels хранит входные яркости.
                             // Производную по самим входным пикселям не используем: картинки здесь не обучаются.
                             let (_, weight_gradients, bias_gradients): (
                                 ndarray::Array2<f32>,
@@ -451,15 +483,16 @@ fn main() -> Result<(), String> {
                                 ndarray::Array1<f32>,
                             ) = calculate_linear_layer_gradients(
                                 &forward_values.input_pixels,
-                                &model_layers[0].weights,
+                                &weights_and_biases_as_linear_layers[0].weights,
                                 &score_gradients,
                             );
-                            // Один слой — одна пара градиентов. Порядок совпадает с порядком model_layers,
+                            // Один слой — одна пара градиентов. Порядок совпадает с порядком weights_and_biases_as_linear_layers,
                             // поэтому цикл Adam ниже обновит правильную матрицу и её смещения.
-                            let parameter_gradients: Vec<LinearLayer> = vec![LinearLayer {
-                                weights: weight_gradients,
-                                biases: bias_gradients,
-                            }];
+                            let parameter_gradients: Vec<WeightsAndBiasesAsLinearLayer> =
+                                vec![WeightsAndBiasesAsLinearLayer {
+                                    weights: weight_gradients,
+                                    biases: bias_gradients,
+                                }];
 
                             (mean_loss, parameter_gradients)
                         };
@@ -468,25 +501,29 @@ fn main() -> Result<(), String> {
                             // Теперь все производные уже рассчитаны: можно менять веса.
                             // Обновляем каждый слой по его градиенту, не смешивая новые веса со старым backward.
                             parameter_update_count += 1;
-                            // В начале m и v равны нулю, поэтому первые средние занижены.
-                            // Деление на 1-β^step исправляет это смещение: β₁=0.9, β₂=0.999.
+                            // Средние градиентов и их квадратов начинаются с нуля, поэтому первые значения занижены.
+                            // Поправки: 1 минус 0.9 в степени числа обновлений и 1 минус 0.999 в той же степени.
                             let gradient_average_bias_correction: f32 =
                                 1.0 - 0.9f32.powi(parameter_update_count);
                             let squared_gradient_average_bias_correction: f32 =
                                 1.0 - 0.999f32.powi(parameter_update_count);
-                            // Типы переменных: layer_index: usize.
-                            for layer_index in 0..model_layers.len() {
+                            // Типы переменных: linear_layer_index: usize.
+                            for linear_layer_index in 0..weights_and_biases_as_linear_layers.len() {
                                 // Обновление весов: поле weights.
                                 // Типы переменных: parameter: &mut f32, average_gradient: &mut f32, average_squared_gradient: &mut f32, parameter_gradient: f32.
                                 for (
                                     ((parameter, average_gradient), average_squared_gradient),
                                     &parameter_gradient,
-                                ) in model_layers[layer_index]
+                                ) in weights_and_biases_as_linear_layers[linear_layer_index]
                                     .weights
                                     .iter_mut()
-                                    .zip(average_gradients[layer_index].weights.iter_mut())
-                                    .zip(average_squared_gradients[layer_index].weights.iter_mut())
-                                    .zip(parameter_gradients[layer_index].weights.iter())
+                                    .zip(average_gradients[linear_layer_index].weights.iter_mut())
+                                    .zip(
+                                        average_squared_gradients[linear_layer_index]
+                                            .weights
+                                            .iter_mut(),
+                                    )
+                                    .zip(parameter_gradients[linear_layer_index].weights.iter())
                                 {
                                     // average_gradient хранит сглаженный градиент, включая его знак: 90% прежнего + 10% нового.
                                     // average_squared_gradient сглаживает квадрат градиента: 99.9% прежнего + 0.1% нового квадрата.
@@ -494,7 +531,8 @@ fn main() -> Result<(), String> {
                                         0.9 * *average_gradient + 0.1 * parameter_gradient;
                                     *average_squared_gradient = 0.999 * *average_squared_gradient
                                         + 0.001 * parameter_gradient * parameter_gradient;
-                                    // Adam: parameter -= learning_rate * m_hat / (sqrt(v_hat)+epsilon).
+                                    // Обновление Adam: из параметра вычитаем скорость обучения, умноженную на исправленный
+                                    // средний градиент и делённую на корень исправленного среднего квадратов плюс 0.00000001.
                                     // Вычитаем направление градиента, чтобы уменьшать ошибку; большой накопленный
                                     // масштаб градиента уменьшает относительный шаг. epsilon=1e-8 защищает от деления на 0.
                                     *parameter -= learning_rate
@@ -509,12 +547,16 @@ fn main() -> Result<(), String> {
                                 for (
                                     ((parameter, average_gradient), average_squared_gradient),
                                     &parameter_gradient,
-                                ) in model_layers[layer_index]
+                                ) in weights_and_biases_as_linear_layers[linear_layer_index]
                                     .biases
                                     .iter_mut()
-                                    .zip(average_gradients[layer_index].biases.iter_mut())
-                                    .zip(average_squared_gradients[layer_index].biases.iter_mut())
-                                    .zip(parameter_gradients[layer_index].biases.iter())
+                                    .zip(average_gradients[linear_layer_index].biases.iter_mut())
+                                    .zip(
+                                        average_squared_gradients[linear_layer_index]
+                                            .biases
+                                            .iter_mut(),
+                                    )
+                                    .zip(parameter_gradients[linear_layer_index].biases.iter())
                                 {
                                     *average_gradient =
                                         0.9 * *average_gradient + 0.1 * parameter_gradient;
@@ -531,25 +573,28 @@ fn main() -> Result<(), String> {
                             }
                         }
                         // Накопленная train loss относится к моментам обновлений: разные batch оценивались
-                        // при разных весах. Умножение на N даёт сумму ошибок, чтобы правильно усреднить эпоху.
+                        // при разных весах. Умножаем среднюю ошибку группы на число её картинок для усреднения эпохи.
                         total_training_loss += mean_loss * batch_image_indices.len() as f32;
                     }
                     total_training_loss
                 };
                 // Validation — отложенные картинки: они помогают выбрать эпоху, но не меняют веса.
                 // Падающая train loss при растущей validation loss может указывать на переобучение.
-                let evaluation: PredictionEvaluation =
-                    measure_prediction_quality(&model_layers, &validation_images);
+                let evaluation: PredictionEvaluation = measure_prediction_quality(
+                    &weights_and_biases_as_linear_layers,
+                    &validation_images,
+                );
                 if !evaluation.mean_loss.is_finite() {
                     return Err("Validation loss не конечна".into());
                 }
                 // Запоминаем эпоху только при уменьшении validation loss (evaluation.mean_loss).
                 // Выбор идёт по ошибке, а не по accuracy: уверенные неправильные ответы тоже важны.
-                // Последняя эпоха не обязана быть лучшей, поэтому на test пойдут сохранённые best_model_layers.
+                // Последняя эпоха не обязана быть лучшей, поэтому на test пойдут сохранённые best_weights_and_biases_as_linear_layers.
                 if evaluation.mean_loss < best_validation_loss {
                     best_validation_loss = evaluation.mean_loss;
                     best_epoch_number = epoch;
-                    best_model_layers = model_layers.clone();
+                    best_weights_and_biases_as_linear_layers =
+                        weights_and_biases_as_linear_layers.clone();
                 }
                 println!(
                     "epoch={epoch} train_loss={:.5} validation_loss={:.5} validation_accuracy={:.4} elapsed={:.1}s",
@@ -560,16 +605,18 @@ fn main() -> Result<(), String> {
                 );
             }
 
-            (best_model_layers, best_epoch_number)
+            (best_weights_and_biases_as_linear_layers, best_epoch_number)
         };
-        (best_model_layers, best_epoch_number)
+        (best_weights_and_biases_as_linear_layers, best_epoch_number)
     };
     // Итоговая проверка и вывод, как в 243: выбранная модель берётся из окружающего main.
     let evaluate_digit_predictions = |images_with_actual_digits: &[([f64; 784], Digit)]| -> () {
-        // Итоговый отчёт на официальном test: используем выбранную по validation копию best_model_layers.
+        // Итоговый отчёт на официальном test: используем выбранную по validation копию best_weights_and_biases_as_linear_layers.
         // По test не выбираем веса, число эпох или скорость обучения.
-        let evaluation: PredictionEvaluation =
-            measure_prediction_quality(&best_model_layers, images_with_actual_digits);
+        let evaluation: PredictionEvaluation = measure_prediction_quality(
+            &best_weights_and_biases_as_linear_layers,
+            images_with_actual_digits,
+        );
         println!(
             "selected_epoch={best_epoch_number}; test={} loss={:.5} accuracy={:.4} elapsed={:.1}s",
             images_with_actual_digits.len(),
