@@ -387,7 +387,7 @@
 
 ## 48. MNIST: распознавание рукописных цифр
 
-- [ ] [243 · MNIST: классификация по ближайшему среднему изображению класса](l243-48-classify-mnist-digits-by-nearest-class-mean/)
+- [x] [243 · MNIST: классификация по ближайшему среднему изображению класса](l243-48-classify-mnist-digits-by-nearest-class-mean/)
 
 ## 49. MNIST: Линейный классификатор и softmax
 

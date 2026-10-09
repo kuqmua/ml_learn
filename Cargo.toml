@@ -3,6 +3,7 @@ members = [
     "lesson-float-comparison",
     "lesson-structure",
     "lesson-datasets",
+    "mnist-data",
     "l001-01-multiply-matching-coords-then-add-results",
     "l002-01-calc-sum-of-absolute-vec-coords",
     "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords",
@@ -272,4 +273,7 @@ opt-level = 3
 opt-level = 3
 
 [profile.dev.package.png]
+opt-level = 3
+
+[profile.dev.package.mnist_data]
 opt-level = 3

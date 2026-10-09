@@ -1374,31 +1374,31 @@ version = "0.1.0"
 name = "l243-48-classify-mnist-digits-by-nearest-class-mean"
 version = "0.1.0"
 dependencies = [
- "png",
+ "mnist_data",
 ]
 
 [[package]]
 name = "l244-49-classify-mnist-with-linear-softmax"
 version = "0.1.0"
 dependencies = [
+ "mnist_data",
  "ndarray",
- "png",
 ]
 
 [[package]]
 name = "l245-50-classify-mnist-with-hidden-layer"
 version = "0.1.0"
 dependencies = [
+ "mnist_data",
  "ndarray",
- "png",
 ]
 
 [[package]]
 name = "l246-51-classify-mnist-with-convolutional-network"
 version = "0.1.0"
 dependencies = [
+ "mnist_data",
  "ndarray",
- "png",
 ]
 
 [[package]]
@@ -1453,6 +1453,13 @@ checksum = "b63fbc4a50860e98e7b2aa7804ded1db5cbc3aff9193adaff57a6931bf7c4b4c"
 dependencies = [
  "adler2",
  "simd-adler32",
+]
+
+[[package]]
+name = "mnist_data"
+version = "0.1.0"
+dependencies = [
+ "png",
 ]
 
 [[package]]

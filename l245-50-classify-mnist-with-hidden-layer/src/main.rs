@@ -23,37 +23,10 @@ fn main() -> Result<(), String> {
     // f64 используется при чтении PNG, f32 — в вычислениях нейросети.
     // Array1<f32> — вектор, Array2<f32> — матрица; Layer — пара (матрица весов, вектор смещений).
 
-    // Метка — одна из десяти цифр. Значения вроде 42 теперь нельзя записать как метку.
-    // digit as usize даёт число 0..9 для индексов массивов, имён папок и печати.
-    // Copy позволяет копировать метки; PartialEq/Eq — сравнивать правильную цифру с прогнозом.
-    // repr(u8) задаёт однобайтовое хранение варианта, но тип метки остаётся Digit.
-    #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-    #[repr(u8)]
-    enum Digit {
-        Zero = 0,
-        One = 1,
-        Two = 2,
-        Three = 3,
-        Four = 4,
-        Five = 5,
-        Six = 6,
-        Seven = 7,
-        Eight = 8,
-        Nine = 9,
-    }
+    // Digit и порядок цифр общие для всех четырёх уроков MNIST.
+    use mnist_data::{ALL_DIGITS, Digit, load_labeled_png_images};
     // Порядок соответствует папкам 0..9 и индексам классов в массивах.
-    let classes: [Digit; 10] = [
-        Digit::Zero,
-        Digit::One,
-        Digit::Two,
-        Digit::Three,
-        Digit::Four,
-        Digit::Five,
-        Digit::Six,
-        Digit::Seven,
-        Digit::Eight,
-        Digit::Nine,
-    ];
+    let classes: [Digit; 10] = ALL_DIGITS;
 
     // Засекаем время загрузки данных, обучения и итоговой оценки.
     let start: std::time::Instant = std::time::Instant::now();
@@ -68,94 +41,7 @@ fn main() -> Result<(), String> {
     let learning_rate: f32 = 0.001;
     let seed: u64 = 42;
 
-    // Запись датасета: ([f64; 784], Digit), например (pixels, Digit::Seven).
-    // Один загрузчик PNG для train и test: возвращает пиксели и правильные метки.
-    let load_digits = |directory: &std::path::Path| -> Result<Vec<([f64; 784], Digit)>, String> {
-        let mut digits: Vec<([f64; 784], Digit)> = Vec::new();
-        // Папки 0,1,...,9 задают правильные метки: например, train/5 содержит пятёрки.
-        // Имя PNG обозначает номер файла; правильная цифра определяется папкой.
-        // Типы переменных: class: Digit.
-        for class in classes {
-            let class_directory: std::path::PathBuf = directory.join((class as usize).to_string());
-            // Изменяемый список нужен только сбору и сортировке; дальше paths неизменяемый.
-            let paths: Vec<std::path::PathBuf> = {
-                let directory_entries: std::fs::ReadDir = std::fs::read_dir(&class_directory)
-                    .map_err(|e: std::io::Error| -> String {
-                        format!(
-                            "{}: {e}. Подготовь PNG: python3 scripts/prepare_mnist.py",
-                            class_directory.display()
-                        )
-                    })?;
-                let mut paths: Vec<std::path::PathBuf> = Vec::new();
-                // Типы переменных: directory_entry: Result<std::fs::DirEntry, std::io::Error>.
-                for directory_entry in directory_entries {
-                    let path: std::path::PathBuf = directory_entry
-                        .map_err(|e: std::io::Error| -> String { e.to_string() })?
-                        .path();
-                    if path
-                        .extension()
-                        .is_some_and(|ext: &std::ffi::OsStr| -> bool {
-                            ext.eq_ignore_ascii_case("png")
-                        })
-                    {
-                        paths.push(path);
-                    }
-                }
-                // Файловая система не обещает порядок чтения. Сортировка фиксирует порядок
-                // картинок и, следовательно, одинаковое разделение train/validation при повторном запуске.
-                paths.sort();
-                if paths.is_empty() {
-                    return Err(format!("{}: нет PNG", class_directory.display()));
-                }
-                paths
-            };
-            // Типы переменных: path: std::path::PathBuf.
-            for path in paths {
-                // Декодирование превращает сжатый PNG в байты яркости. Это ещё не обучение.
-                let decoded: [f64; 784] = (|| -> Result<[f64; 784], String> {
-                    // Читатель и изменяемый буфер живут только во время декодирования PNG.
-                    let pixels: [u8; 784] = {
-                        let file: std::fs::File = std::fs::File::open(&path)
-                            .map_err(|e: std::io::Error| -> String { e.to_string() })?;
-                        let mut reader: png::Reader<std::io::BufReader<std::fs::File>> =
-                            png::Decoder::new(std::io::BufReader::new(file))
-                                .read_info()
-                                .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
-                        let info: &png::Info<'_> = reader.info();
-                        // Проверяем договорённость о данных: статический PNG 28×28, один серый канал,
-                        // 8 бит на пиксель. Цветной или другого размера файл нельзя подать как 784 яркости.
-                        if info.width != 28
-                            || info.height != 28
-                            || info.color_type != png::ColorType::Grayscale
-                            || info.bit_depth != png::BitDepth::Eight
-                            || info.animation_control.is_some()
-                        {
-                            return Err("Ожидается статический PNG 28×28, grayscale, 8 бит".into());
-                        }
-                        // u8 хранит целую яркость от 0 до 255: 0 — чёрный фон, 255 — белый штрих.
-                        // Пиксели идут строка за строкой: индекс y*28+x соответствует координатам (y,x).
-                        let mut pixels: [u8; 784] = [0u8; 784];
-                        reader
-                            .next_frame(&mut pixels)
-                            .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
-                        reader
-                            .finish()
-                            .map_err(|e: png::DecodingError| -> String { e.to_string() })?;
-                        pixels
-                    };
-                    // Делим каждый пиксель на 255: 0 -> 0.0, 128 -> примерно 0.502, 255 -> 1.0.
-                    // Это фиксированная нормализация, не требующая статистик validation или test.
-                    Ok(std::array::from_fn(|i: usize| -> f64 {
-                        f64::from(pixels[i]) / 255.0
-                    }))
-                })()
-                // Добавляем путь к ошибке декодирования, чтобы найти проблемный PNG.
-                .map_err(|e: String| -> String { format!("{}: {e}", path.display()) })?;
-                digits.push((decoded, class));
-            }
-        }
-        Ok(digits)
-    };
+    // PNG читает общий загрузчик из mnist_data: сортировка, проверка формата и нормализация.
 
     // Числовая часть имеет свою область видимости для массивов и замыканий.
     {
@@ -311,7 +197,7 @@ fn main() -> Result<(), String> {
                 data.display()
             );
             // Читаем исходный train; его отложенная часть validation будет выделена ниже.
-            let digits: Vec<([f64; 784], Digit)> = load_digits(&data.join("train"))?;
+            let digits: Vec<([f64; 784], Digit)> = load_labeled_png_images(&data.join("train"))?;
             // Для Z = XW+b и входящего G=dL/dZ правило цепочки даёт:
             // dL/dX = G W^T, dL/dW = X^T G, dL/db = сумма строк G.
             // Формы: X=[N,D], W=[D,K], G=[N,K]; результаты [N,D], [D,K], [K].
@@ -619,7 +505,7 @@ fn main() -> Result<(), String> {
         // Обучение завершено: загружаем официальный test и оцениваем сохранённую модель best.
         // В этом блоке нет индексов train и состояния Adam; обновления весов не выполняются.
         {
-            let test: Vec<([f64; 784], Digit)> = load_digits(&data.join("test"))?;
+            let test: Vec<([f64; 784], Digit)> = load_labeled_png_images(&data.join("test"))?;
             let test_indices: Vec<usize> = (0..test.len()).collect();
             // Итоговый отчёт на официальном test: используем выбранную по validation копию best.
             // По test не выбираем веса, число эпох или скорость обучения.
