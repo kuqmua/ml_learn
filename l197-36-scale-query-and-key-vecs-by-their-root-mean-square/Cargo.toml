@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-lesson-float-comparison = { path = "../lesson-float-comparison" }
-l194_36_normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights = { package = "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights", path = "../l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights" }
-l195_36_rotate_vec_coord_pair_by_token_position = { package = "l195-36-rotate-vec-coord-pair-by-token-position", path = "../l195-36-rotate-vec-coord-pair-by-token-position" }
+lesson-float-comparison.workspace = true
+l194_36_normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights.workspace = true
+l195_36_rotate_vec_coord_pair_by_token_position.workspace = true

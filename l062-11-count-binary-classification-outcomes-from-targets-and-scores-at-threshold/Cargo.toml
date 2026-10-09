@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-l061_11_count_binary_classification_outcomes_from_targets_and_predictions = { package = "l061-11-count-binary-classification-outcomes-from-targets-and-predictions", path = "../l061-11-count-binary-classification-outcomes-from-targets-and-predictions" }
+l061_11_count_binary_classification_outcomes_from_targets_and_predictions.workspace = true
 
 [dev-dependencies]
-lesson-float-comparison = { path = "../lesson-float-comparison" }
+lesson-float-comparison.workspace = true

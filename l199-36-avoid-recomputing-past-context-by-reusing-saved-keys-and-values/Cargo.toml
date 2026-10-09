@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-lesson-float-comparison = { path = "../lesson-float-comparison" }
-l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum = { package = "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum", path = "../l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum" }
-l187_35_calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches = { package = "l187-35-calc-past-context-by-summing-current-and-past-values-weighted-by-query-key-matches", path = "../l187-35-calc-past-context-by-summing-current-and-past-values-weighted-by-query-key-matches" }
+lesson-float-comparison.workspace = true
+l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum.workspace = true
+l187_35_calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches.workspace = true

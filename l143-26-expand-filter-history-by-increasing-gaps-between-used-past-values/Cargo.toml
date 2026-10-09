@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-l142_26_calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values = { package = "l142-26-calc-causal-filter-output-by-summing-weighted-current-and-spaced-past-values", path = "../l142-26-calc-causal-filter-output-by-summing-weighted-current-and-spaced-past-values" }
+l142_26_calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values.workspace = true

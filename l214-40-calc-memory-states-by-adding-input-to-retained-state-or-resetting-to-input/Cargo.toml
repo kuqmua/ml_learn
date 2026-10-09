@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-l212_40_calc_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state = { package = "l212-40-calc-memory-states-by-repeatedly-adding-weighted-input-to-retained-previous-state", path = "../l212-40-calc-memory-states-by-repeatedly-adding-weighted-input-to-retained-previous-state" }
+l212_40_calc_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state.workspace = true

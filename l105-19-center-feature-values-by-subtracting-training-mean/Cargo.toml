@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-lesson-float-comparison = { path = "../lesson-float-comparison" }
-l030_06_calc_mean_by_summing_values_and_dividing_by_count = { package = "l030-06-calc-mean-by-summing-values-and-dividing-by-count", path = "../l030-06-calc-mean-by-summing-values-and-dividing-by-count" }
+lesson-float-comparison.workspace = true
+l030_06_calc_mean_by_summing_values_and_dividing_by_count.workspace = true

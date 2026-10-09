@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-lesson-float-comparison = { path = "../lesson-float-comparison" }
-l138_25_calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state = { package = "l138-25-calc-memory-states-by-applying-tanh-to-weighted-input-plus-weighted-previous-state", path = "../l138-25-calc-memory-states-by-applying-tanh-to-weighted-input-plus-weighted-previous-state" }
+lesson-float-comparison.workspace = true
+l138_25_calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state.workspace = true

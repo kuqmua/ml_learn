@@ -8,4 +8,4 @@ name = "lesson_structure"
 path = "tests/lesson_structure.rs"
 
 [dev-dependencies]
-syn = { version = "2", features = ["full", "visit"] }
+syn.workspace = true

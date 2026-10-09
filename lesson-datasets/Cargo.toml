@@ -6,10 +6,10 @@ edition = "2024"
 [dependencies]
 
 [dev-dependencies]
-l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs = { package = "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs", path = "../l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs" }
-l030_06_calc_mean_by_summing_values_and_dividing_by_count = { package = "l030-06-calc-mean-by-summing-values-and-dividing-by-count", path = "../l030-06-calc-mean-by-summing-values-and-dividing-by-count" }
-l050_09_calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count = { package = "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count", path = "../l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count" }
-l051_09_calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count = { package = "l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count", path = "../l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count" }
-l061_11_count_binary_classification_outcomes_from_targets_and_predictions = { package = "l061-11-count-binary-classification-outcomes-from-targets-and-predictions", path = "../l061-11-count-binary-classification-outcomes-from-targets-and-predictions" }
-l063_11_calc_prediction_accuracy_as_correct_predictions_divided_by_all_predictions = { package = "l063-11-calc-prediction-accuracy-as-correct-predictions-divided-by-all-predictions", path = "../l063-11-calc-prediction-accuracy-as-correct-predictions-divided-by-all-predictions" }
-l065_11_calc_pos_detection_recall_as_true_poss_divided_by_actual_poss = { package = "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss", path = "../l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss" }
+l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs.workspace = true
+l030_06_calc_mean_by_summing_values_and_dividing_by_count.workspace = true
+l050_09_calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count.workspace = true
+l051_09_calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count.workspace = true
+l061_11_count_binary_classification_outcomes_from_targets_and_predictions.workspace = true
+l063_11_calc_prediction_accuracy_as_correct_predictions_divided_by_all_predictions.workspace = true
+l065_11_calc_pos_detection_recall_as_true_poss_divided_by_actual_poss.workspace = true

@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-lesson-float-comparison = { path = "../lesson-float-comparison" }
-l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs = { package = "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs", path = "../l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs" }
+lesson-float-comparison.workspace = true
+l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs.workspace = true

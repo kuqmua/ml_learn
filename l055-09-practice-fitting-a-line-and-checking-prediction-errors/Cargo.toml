@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-l050_09_calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count = { package = "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count", path = "../l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count" }
+l050_09_calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count.workspace = true

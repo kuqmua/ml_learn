@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-l030_06_calc_mean_by_summing_values_and_dividing_by_count = { package = "l030-06-calc-mean-by-summing-values-and-dividing-by-count", path = "../l030-06-calc-mean-by-summing-values-and-dividing-by-count" }
-l051_09_calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count = { package = "l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count", path = "../l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count" }
+l030_06_calc_mean_by_summing_values_and_dividing_by_count.workspace = true
+l051_09_calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count.workspace = true

@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum = { package = "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum", path = "../l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum" }
-l194_36_normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights = { package = "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights", path = "../l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights" }
-l195_36_rotate_vec_coord_pair_by_token_position = { package = "l195-36-rotate-vec-coord-pair-by-token-position", path = "../l195-36-rotate-vec-coord-pair-by-token-position" }
-l198_36_calc_gated_layer_output_as_silu_gate_times_up_value = { package = "l198-36-calc-gated-layer-output-as-silu-gate-times-up-value", path = "../l198-36-calc-gated-layer-output-as-silu-gate-times-up-value" }
+l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum.workspace = true
+l194_36_normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights.workspace = true
+l195_36_rotate_vec_coord_pair_by_token_position.workspace = true
+l198_36_calc_gated_layer_output_as_silu_gate_times_up_value.workspace = true

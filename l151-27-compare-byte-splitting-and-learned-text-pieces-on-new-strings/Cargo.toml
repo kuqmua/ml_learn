@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-l148_27_train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair = { package = "l148-27-train-text-tokenizer-by-repeatedly-merging-most-frequent-adjacent-pair", path = "../l148-27-train-text-tokenizer-by-repeatedly-merging-most-frequent-adjacent-pair" }
+l148_27_train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair.workspace = true

@@ -253,6 +253,46 @@ members = [
 ]
 resolver = "3"
 
+# Версии, пути и настройки зависимостей объявляются только здесь.
+[workspace.dependencies]
+l001_01_multiply_matching_coords_then_add_results = { package = "l001-01-multiply-matching-coords-then-add-results", path = "l001-01-multiply-matching-coords-then-add-results" }
+l002_01_calc_sum_of_absolute_vec_coords = { package = "l002-01-calc-sum-of-absolute-vec-coords", path = "l002-01-calc-sum-of-absolute-vec-coords" }
+l003_01_calc_vec_len_as_square_root_of_sum_of_squared_coords = { package = "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords", path = "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords" }
+l004_01_calc_squared_point_dist_by_summing_squared_coord_diffs = { package = "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs", path = "l004-01-calc-squared-point-dist-by-summing-squared-coord-diffs" }
+l005_01_calc_point_dist_as_square_root_of_sum_of_squared_coord_diffs = { package = "l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs", path = "l005-01-calc-point-dist-as-square-root-of-sum-of-squared-coord-diffs" }
+l006_01_multiply_matching_coords_then_add_results_and_normalize_by_both_vec_lens = { package = "l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens", path = "l006-01-multiply-matching-coords-then-add-results-and-normalize-by-both-vec-lens" }
+l018-03-estimate-derivative-from-two-nearby-function-values = { path = "l018-03-estimate-derivative-from-two-nearby-function-values" }
+l030_06_calc_mean_by_summing_values_and_dividing_by_count = { package = "l030-06-calc-mean-by-summing-values-and-dividing-by-count", path = "l030-06-calc-mean-by-summing-values-and-dividing-by-count" }
+l032_06_calc_sample_variance_from_squared_diffs_from_mean_divided_by_count_minus_one = { package = "l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one", path = "l032-06-calc-sample-variance-from-squared-diffs-from-mean-divided-by-count-minus-one" }
+l050_09_calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count = { package = "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count", path = "l050-09-calc-mean-squared-error-by-summing-squared-errors-and-dividing-by-count" }
+l051_09_calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count = { package = "l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count", path = "l051-09-calc-mean-absolute-error-by-summing-absolute-errors-and-dividing-by-count" }
+l061_11_count_binary_classification_outcomes_from_targets_and_predictions = { package = "l061-11-count-binary-classification-outcomes-from-targets-and-predictions", path = "l061-11-count-binary-classification-outcomes-from-targets-and-predictions" }
+l062_11_count_binary_classification_outcomes_from_targets_and_scores_at_threshold = { package = "l062-11-count-binary-classification-outcomes-from-targets-and-scores-at-threshold", path = "l062-11-count-binary-classification-outcomes-from-targets-and-scores-at-threshold" }
+l063_11_calc_prediction_accuracy_as_correct_predictions_divided_by_all_predictions = { package = "l063-11-calc-prediction-accuracy-as-correct-predictions-divided-by-all-predictions", path = "l063-11-calc-prediction-accuracy-as-correct-predictions-divided-by-all-predictions" }
+l064_11_calc_pos_prediction_precision_as_true_poss_divided_by_pos_predictions = { package = "l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predictions", path = "l064-11-calc-pos-prediction-precision-as-true-poss-divided-by-pos-predictions" }
+l065_11_calc_pos_detection_recall_as_true_poss_divided_by_actual_poss = { package = "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss", path = "l065-11-calc-pos-detection-recall-as-true-poss-divided-by-actual-poss" }
+l066_11_calc_f1_score_as_twice_precision_times_recall_divided_by_their_sum = { package = "l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum", path = "l066-11-calc-f1-score-as-twice-precision-times-recall-divided-by-their-sum" }
+l091_16_predict_tree_output_by_choosing_leaf_with_shared_threshold_tests = { package = "l091-16-predict-tree-output-by-choosing-leaf-with-shared-threshold-tests", path = "l091-16-predict-tree-output-by-choosing-leaf-with-shared-threshold-tests" }
+l092_16_encode_categories_as_average_previous_targets_with_prior_weight = { package = "l092-16-encode-categories-as-average-previous-targets-with-prior-weight", path = "l092-16-encode-categories-as-average-previous-targets-with-prior-weight" }
+l138_25_calc_memory_states_by_applying_tanh_to_weighted_input_plus_weighted_previous_state = { package = "l138-25-calc-memory-states-by-applying-tanh-to-weighted-input-plus-weighted-previous-state", path = "l138-25-calc-memory-states-by-applying-tanh-to-weighted-input-plus-weighted-previous-state" }
+l142_26_calc_causal_filter_output_by_summing_weighted_current_and_spaced_past_values = { package = "l142-26-calc-causal-filter-output-by-summing-weighted-current-and-spaced-past-values", path = "l142-26-calc-causal-filter-output-by-summing-weighted-current-and-spaced-past-values" }
+l148_27_train_text_tokenizer_by_repeatedly_merging_most_frequent_adjacent_pair = { package = "l148-27-train-text-tokenizer-by-repeatedly-merging-most-frequent-adjacent-pair", path = "l148-27-train-text-tokenizer-by-repeatedly-merging-most-frequent-adjacent-pair" }
+l179_33_extract_nonoverlapping_square_patches_from_square_image = { package = "l179-33-extract-nonoverlapping-square-patches-from-square-image", path = "l179-33-extract-nonoverlapping-square-patches-from-square-image" }
+l182_34_calc_visible_context_by_summing_states_weighted_by_exponentiated_coord_scores = { package = "l182-34-calc-visible-context-by-summing-states-weighted-by-exponentiated-coord-scores", path = "l182-34-calc-visible-context-by-summing-states-weighted-by-exponentiated-coord-scores" }
+l186_35_calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum = { package = "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum", path = "l186-35-calc-softmax-probability-weights-by-exponentiating-shifted-scores-then-dividing-by-sum" }
+l187_35_calc_past_context_by_summing_current_and_past_values_weighted_by_query_key_matches = { package = "l187-35-calc-past-context-by-summing-current-and-past-values-weighted-by-query-key-matches", path = "l187-35-calc-past-context-by-summing-current-and-past-values-weighted-by-query-key-matches" }
+l191_35_calc_text_context_vecs_by_adding_position_and_weighted_past_context = { package = "l191-35-calc-text-context-vecs-by-adding-position-and-weighted-past-context", path = "l191-35-calc-text-context-vecs-by-adding-position-and-weighted-past-context" }
+l194_36_normalize_vec_scale_by_dividing_coords_by_root_mean_square_then_applying_weights = { package = "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights", path = "l194-36-normalize-vec-scale-by-dividing-coords-by-root-mean-square-then-applying-weights" }
+l195_36_rotate_vec_coord_pair_by_token_position = { package = "l195-36-rotate-vec-coord-pair-by-token-position", path = "l195-36-rotate-vec-coord-pair-by-token-position" }
+l198_36_calc_gated_layer_output_as_silu_gate_times_up_value = { package = "l198-36-calc-gated-layer-output-as-silu-gate-times-up-value", path = "l198-36-calc-gated-layer-output-as-silu-gate-times-up-value" }
+l209_39_calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_variance_shares = { package = "l209-39-calc-noisy-signal-by-mixing-signal-and-noise-using-square-roots-of-variance-shares", path = "l209-39-calc-noisy-signal-by-mixing-signal-and-noise-using-square-roots-of-variance-shares" }
+l212_40_calc_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state = { package = "l212-40-calc-memory-states-by-repeatedly-adding-weighted-input-to-retained-previous-state", path = "l212-40-calc-memory-states-by-repeatedly-adding-weighted-input-to-retained-previous-state" }
+lesson-float-comparison = { path = "lesson-float-comparison" }
+mnist_data = { path = "mnist-data" }
+ndarray = "0.17.2"
+png = "0.18.1"
+syn = { version = "2", features = ["full", "visit"] }
+
 # MNIST обучается на CPU: обычный cargo run также использует оптимизацию.
 [profile.dev.package.l243-48-classify-mnist-digits-by-nearest-class-mean]
 opt-level = 3

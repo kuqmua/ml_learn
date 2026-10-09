@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-lesson-float-comparison = { path = "../lesson-float-comparison" }
-l018-03-estimate-derivative-from-two-nearby-function-values = { path = "../l018-03-estimate-derivative-from-two-nearby-function-values" }
+lesson-float-comparison.workspace = true
+l018-03-estimate-derivative-from-two-nearby-function-values.workspace = true
