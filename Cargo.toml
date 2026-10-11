@@ -289,7 +289,6 @@ l209_39_calc_noisy_signal_by_mixing_signal_and_noise_using_square_roots_of_varia
 l212_40_calc_memory_states_by_repeatedly_adding_weighted_input_to_retained_previous_state = { package = "l212-40-calc-memory-states-by-repeatedly-adding-weighted-input-to-retained-previous-state", path = "l212-40-calc-memory-states-by-repeatedly-adding-weighted-input-to-retained-previous-state" }
 lesson-float-comparison = { path = "lesson-float-comparison" }
 mnist_data = { path = "mnist-data" }
-ndarray = "0.17.2"
 png = "0.18.1"
 syn = { version = "2", features = ["full", "visit"] }
 
@@ -304,12 +303,6 @@ opt-level = 3
 opt-level = 3
 
 [profile.dev.package.l246-51-classify-mnist-with-convolutional-network]
-opt-level = 3
-
-[profile.dev.package.ndarray]
-opt-level = 3
-
-[profile.dev.package.matrixmultiply]
 opt-level = 3
 
 [profile.dev.package.png]

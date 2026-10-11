@@ -21,17 +21,16 @@ fn main() -> Result<(), String> {
     // Тип переменной-замыкания анонимный: его имя нельзя написать после let.
     // У таких переменных типы аргументов стоят между |...|, результата — после ->.
     // f64 используется при чтении PNG, f32 — в вычислениях нейросети.
-    // ndarray::Array1<f32> — вектор, ndarray::Array2<f32> — матрица; WeightsAndBiasesAsLinearLayer — структура с полями weights (веса) и biases (смещения).
+    // Vec<f32> — вектор, Vec<Vec<f32>> — матрица; WeightsAndBiasesAsLinearLayer — структура с полями weights (веса) и biases (смещения).
 
     // Digit и порядок цифр общие для всех четырёх уроков MNIST.
     // Порядок соответствует папкам 0..9 и индексам классов в массивах.
-    use mnist_data::{ALL_DIGITS, Digit, load_labeled_png_images};
+    use mnist_data::{ALL_DIGITS, Digit, load_mnist_images, mnist_dataset_directory};
 
     // Засекаем время загрузки данных, обучения и итоговой оценки.
     let started_at: std::time::Instant = std::time::Instant::now();
-    // Корень PNG фиксирован относительно папки урока; аргументы запуска не требуются.
-    let dataset_directory: std::path::PathBuf =
-        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../datasets/png/mnist");
+    // Общий путь к PNG задаётся в mnist_data; аргументы запуска не требуются.
+    let dataset_directory: std::path::PathBuf = mnist_dataset_directory();
     // Для экспериментов меняй значения здесь и снова запускай cargo run.
     // epoch_count — полные проходы по train; batch_size — число картинок в одном обновлении.
     // learning_rate — размер шага Adam; random_seed — начальное состояние генератора.
@@ -43,62 +42,21 @@ fn main() -> Result<(), String> {
     // PNG читает общий загрузчик из mnist_data: сортировка, проверка формата и нормализация.
 
     // Сначала готовим три набора: обучение, проверку и итоговый тест.
-    let (train_images, validation_images): (Vec<([f64; 784], Digit)>, Vec<([f64; 784], Digit)>) = {
-        let original_train_images: Vec<([f64; 784], Digit)> =
-            load_labeled_png_images(&dataset_directory.join("train"))?;
-        let mut train_images: Vec<([f64; 784], Digit)> = Vec::new();
-        let mut validation_images: Vec<([f64; 784], Digit)> = Vec::new();
-        // Типы переменных: digit: Digit.
-        for digit in ALL_DIGITS {
-            // Фильтруем картинки одной цифры, сохраняя порядок имён файлов.
-            let images_of_current_digit: Vec<&([f64; 784], Digit)> = original_train_images
-                .iter()
-                .filter(|image: &&([f64; 784], Digit)| -> bool { image.1 == digit })
-                .collect();
-            // В train копируем все картинки, кроме каждой пятой внутри этой цифры.
-            train_images.extend(
-                images_of_current_digit
-                    .iter()
-                    .enumerate()
-                    .filter(|(position, _): &(usize, &&([f64; 784], Digit))| -> bool {
-                        position % 5 != 0
-                    })
-                    .map(
-                        |(_, &image): (usize, &&([f64; 784], Digit))| -> ([f64; 784], Digit) {
-                            *image
-                        },
-                    ),
-            );
-            // В validation копируем каждую пятую: позиции 0, 5, 10…
-            validation_images.extend(
-                images_of_current_digit
-                    .iter()
-                    .enumerate()
-                    .filter(|(position, _): &(usize, &&([f64; 784], Digit))| -> bool {
-                        position % 5 == 0
-                    })
-                    .map(
-                        |(_, &image): (usize, &&([f64; 784], Digit))| -> ([f64; 784], Digit) {
-                            *image
-                        },
-                    ),
-            );
-        }
-        (train_images, validation_images)
-    };
-    // Официальный test уже хранится отдельно: его не берём из обучающих картинок.
-    let test_images: Vec<([f64; 784], Digit)> =
-        load_labeled_png_images(&dataset_directory.join("test"))?;
+    let (train_images, validation_images, test_images): (
+        Vec<([f64; 784], Digit)>,
+        Vec<([f64; 784], Digit)>,
+        Vec<([f64; 784], Digit)>,
+    ) = load_mnist_images(&dataset_directory)?;
     // WeightsAndBiasesAsLinearLayer хранит веса и смещения в именованных полях.
     // Такую же форму используем для градиентов и накопленных средних Adam.
     #[derive(Clone)]
     struct WeightsAndBiasesAsLinearLayer {
-        weights: ndarray::Array2<f32>,
-        biases: ndarray::Array1<f32>,
+        weights: Vec<Vec<f32>>,
+        biases: Vec<f32>,
     }
     struct ForwardPass {
-        input_pixels: ndarray::Array2<f32>,
-        digit_scores: ndarray::Array2<f32>,
+        input_pixels: Vec<Vec<f32>>,
+        digit_scores: Vec<Vec<f32>>,
     }
     struct DigitPrediction {
         actual_digit: Digit,
@@ -114,7 +72,7 @@ fn main() -> Result<(), String> {
     // Сохраняем входы и оценки: они нужны для расчёта градиентов.
     let calculate_digit_scores =
         |weights_and_biases_as_linear_layers: &[WeightsAndBiasesAsLinearLayer],
-         input_pixels: &ndarray::Array2<f32>|
+         input_pixels: &Vec<Vec<f32>>|
          -> ForwardPass {
             // input_pixels — матрица яркостей: одна строка на картинку, 784 столбца для пикселей.
             // weights — матрица весов: 784 строки для пикселей, 10 столбцов для цифр.
@@ -124,10 +82,21 @@ fn main() -> Result<(), String> {
             // digit_scores — матрица результатов: одна строка на картинку, 10 столбцов для оценок цифр.
             // Оценки пока не являются вероятностями.
             // Оценка цифры = сумма произведений яркостей пикселей на веса этой цифры + её смещение.
-            // dot — матричное умножение; смещения прибавляются к каждой строке.
-            let digit_scores: ndarray::Array2<f32> = input_pixels
-                .dot(&weights_and_biases_as_linear_layers[0].weights)
-                + &weights_and_biases_as_linear_layers[0].biases;
+            // Вложенные циклы суммируют вклады пикселей, затем прибавляют смещения.
+            let weights = &weights_and_biases_as_linear_layers[0].weights;
+            let biases = &weights_and_biases_as_linear_layers[0].biases;
+            let mut digit_scores: Vec<Vec<f32>> = vec![vec![0.0; biases.len()]; input_pixels.len()];
+            for image in 0..input_pixels.len() {
+                for pixel in 0..weights.len() {
+                    for digit in 0..biases.len() {
+                        digit_scores[image][digit] +=
+                            input_pixels[image][pixel] * weights[pixel][digit];
+                    }
+                }
+                for digit in 0..biases.len() {
+                    digit_scores[image][digit] += biases[digit];
+                }
+            }
             ForwardPass {
                 input_pixels: input_pixels.clone(),
                 digit_scores,
@@ -139,65 +108,77 @@ fn main() -> Result<(), String> {
     // Loss не равна доле неверных ответов: учитывает уверенность даже при правильном прогнозе.
     // Вычисляем среднюю ошибку и её производные по оценкам цифр для обновления весов.
     // В digit_scores одна строка на картинку и десять столбцов с оценками цифр.
-    let calculate_cross_entropy_and_gradient = |digit_scores: &ndarray::Array2<f32>,
-                                                actual_digits: &[Digit]|
-     -> (f32, ndarray::Array2<f32>) {
-        assert_eq!(digit_scores.nrows(), actual_digits.len());
-        assert!(!actual_digits.is_empty());
-        // Изменяемая копия scores нужна только вычислению вероятностей и производной.
-        let (score_gradients, total_loss): (ndarray::Array2<f32>, f32) = {
-            // Копия сначала содержит scores. По ходу цикла превращаем её в вероятности,
-            // а затем в производные; исходные scores при этом остаются неизменными.
-            let mut score_gradients: ndarray::Array2<f32> = digit_scores.clone();
-            let mut total_loss: f32 = 0.0;
-            // Типы переменных: scores_then_gradients_for_image: ndarray::ArrayViewMut1<'_, f32>, actual_digit: Digit.
-            for (mut scores_then_gradients_for_image, &actual_digit) in
-                score_gradients.rows_mut().into_iter().zip(actual_digits)
-            {
-                assert!((actual_digit as usize) < scores_then_gradients_for_image.len());
-                // Softmax: экспоненту оценки каждой цифры делим на сумму экспонент всех десяти оценок.
-                // Перед этим вычитаем максимальную оценку: вероятности сохраняются, экспоненты не переполняются.
-                let maximum_score: f32 = scores_then_gradients_for_image
-                    .iter()
-                    .copied()
-                    .fold(f32::NEG_INFINITY, f32::max);
-                // Сохраняем исходный score правильного класса до преобразования строки.
-                // actual_digit as usize выбирает столбец правильной цифры в digit_scores.
-                let actual_digit_score: f32 =
-                    scores_then_gradients_for_image[actual_digit as usize];
-                // Строка теперь содержит экспоненты разностей оценок и максимальной оценки.
-                scores_then_gradients_for_image
-                    .mapv_inplace(|score: f32| -> f32 { (score - maximum_score).exp() });
-                let exponential_sum: f32 = scores_then_gradients_for_image.sum();
-                // Ошибка = максимальная оценка + логарифм суммы экспонент − оценка правильной цифры.
-                // Так не нужно вычислять ln почти нулевой вероятности, которая могла округлиться до 0.
-                total_loss += maximum_score + exponential_sum.ln() - actual_digit_score;
-                // Делим экспоненты на их сумму: получаем вероятности, сумма которых равна 1.
-                scores_then_gradients_for_image /= exponential_sum;
-                // Производная для каждой цифры — её вероятность минус 1 для правильной цифры или минус 0 для остальных.
-                // Например, вероятности [0.2, 0.8] при правильной цифре 0 дают производные [-0.8, 0.8].
-                scores_then_gradients_for_image[actual_digit as usize] -= 1.0;
-                // Учим по средней ошибке группы, поэтому делим производные на число картинок в ней.
-                // Неполный последний batch тоже считается правильно. Повторно делить градиенты не надо.
-                scores_then_gradients_for_image /= actual_digits.len() as f32;
-            }
-            (score_gradients, total_loss)
+    let calculate_cross_entropy_and_gradient =
+        |digit_scores: &Vec<Vec<f32>>, actual_digits: &[Digit]| -> (f32, Vec<Vec<f32>>) {
+            assert_eq!(digit_scores.len(), actual_digits.len());
+            assert!(!actual_digits.is_empty());
+            // Изменяемая копия scores нужна только вычислению вероятностей и производной.
+            let (score_gradients, total_loss): (Vec<Vec<f32>>, f32) = {
+                // Копия сначала содержит scores. По ходу цикла превращаем её в вероятности,
+                // а затем в производные; исходные scores при этом остаются неизменными.
+                let mut score_gradients: Vec<Vec<f32>> = digit_scores.clone();
+                let mut total_loss: f32 = 0.0;
+                // Типы переменных: scores_then_gradients_for_image: &mut Vec<f32>, actual_digit: Digit.
+                for (scores_then_gradients_for_image, &actual_digit) in
+                    score_gradients.iter_mut().zip(actual_digits)
+                {
+                    assert!((actual_digit as usize) < scores_then_gradients_for_image.len());
+                    // Softmax: экспоненту оценки каждой цифры делим на сумму экспонент всех десяти оценок.
+                    // Перед этим вычитаем максимальную оценку: вероятности сохраняются, экспоненты не переполняются.
+                    let maximum_score: f32 = scores_then_gradients_for_image
+                        .iter()
+                        .copied()
+                        .fold(f32::NEG_INFINITY, f32::max);
+                    // Сохраняем исходный score правильного класса до преобразования строки.
+                    // actual_digit as usize выбирает столбец правильной цифры в digit_scores.
+                    let actual_digit_score: f32 =
+                        scores_then_gradients_for_image[actual_digit as usize];
+                    // Строка теперь содержит экспоненты разностей оценок и максимальной оценки.
+                    for score in scores_then_gradients_for_image.iter_mut() {
+                        *score = (*score - maximum_score).exp();
+                    }
+                    let exponential_sum: f32 = scores_then_gradients_for_image.iter().sum();
+                    // Ошибка = максимальная оценка + логарифм суммы экспонент − оценка правильной цифры.
+                    // Так не нужно вычислять ln почти нулевой вероятности, которая могла округлиться до 0.
+                    total_loss += maximum_score + exponential_sum.ln() - actual_digit_score;
+                    // Делим экспоненты на их сумму: получаем вероятности, сумма которых равна 1.
+                    for value in scores_then_gradients_for_image.iter_mut() {
+                        *value /= exponential_sum;
+                    }
+                    // Производная для каждой цифры — её вероятность минус 1 для правильной цифры или минус 0 для остальных.
+                    // Например, вероятности [0.2, 0.8] при правильной цифре 0 дают производные [-0.8, 0.8].
+                    scores_then_gradients_for_image[actual_digit as usize] -= 1.0;
+                    // Учим по средней ошибке группы, поэтому делим производные на число картинок в ней.
+                    // Неполный последний batch тоже считается правильно. Повторно делить градиенты не надо.
+                    for value in scores_then_gradients_for_image.iter_mut() {
+                        *value /= actual_digits.len() as f32;
+                    }
+                }
+                (score_gradients, total_loss)
+            };
+            (total_loss / actual_digits.len() as f32, score_gradients)
         };
-        (total_loss / actual_digits.len() as f32, score_gradients)
-    };
     // Группа для обучения и оценки: строка из 784 яркостей и правильная цифра для каждой картинки.
     // Индексы выбирают записи; нормализованные f64 пиксели переводим в f32 сети.
     let build_image_batch = |images_with_actual_digits: &[([f64; 784], Digit)],
                              batch_image_indices: &[usize]|
-     -> (ndarray::Array2<f32>, Vec<Digit>) {
+     -> (Vec<Vec<f32>>, Vec<Digit>) {
         (
-            ndarray::Array2::from_shape_fn(
-                (batch_image_indices.len(), 784),
-                |(image_position, pixel_index): (usize, usize)| -> f32 {
-                    images_with_actual_digits[batch_image_indices[image_position]].0[pixel_index]
-                        as f32
-                },
-            ),
+            {
+                let row_count: usize = batch_image_indices.len();
+                let column_count: usize = 784;
+                let mut values: Vec<Vec<f32>> = vec![vec![0.0; column_count]; row_count];
+                for row_index in 0..row_count {
+                    for column_index in 0..column_count {
+                        let (image_position, pixel_index) = (row_index, column_index);
+                        values[row_index][column_index] = {
+                            images_with_actual_digits[batch_image_indices[image_position]].0
+                                [pixel_index] as f32
+                        };
+                    }
+                }
+                values
+            },
             batch_image_indices
                 .iter()
                 .map(|&image_index: &usize| -> Digit { images_with_actual_digits[image_index].1 })
@@ -212,23 +193,22 @@ fn main() -> Result<(), String> {
          images_with_actual_digits: &[([f64; 784], Digit)]|
          -> PredictionEvaluation {
             // Наибольшая оценка выбирает цифру; при равенстве предпочитаем меньшую.
-            let digit_with_highest_score =
-                |digit_scores_for_image: ndarray::ArrayView1<'_, f32>| -> Digit {
-                    let predicted_digit_index: usize = (0..digit_scores_for_image.len())
-                        .max_by(
-                            |&first_digit_index: &usize,
-                             &second_digit_index: &usize|
-                             -> std::cmp::Ordering {
-                                digit_scores_for_image[first_digit_index]
-                                    .total_cmp(&digit_scores_for_image[second_digit_index])
-                                    .then_with(|| -> std::cmp::Ordering {
-                                        second_digit_index.cmp(&first_digit_index)
-                                    })
-                            },
-                        )
-                        .unwrap();
-                    ALL_DIGITS[predicted_digit_index]
-                };
+            let digit_with_highest_score = |digit_scores_for_image: &[f32]| -> Digit {
+                let predicted_digit_index: usize = (0..digit_scores_for_image.len())
+                    .max_by(
+                        |&first_digit_index: &usize,
+                         &second_digit_index: &usize|
+                         -> std::cmp::Ordering {
+                            digit_scores_for_image[first_digit_index]
+                                .total_cmp(&digit_scores_for_image[second_digit_index])
+                                .then_with(|| -> std::cmp::Ordering {
+                                    second_digit_index.cmp(&first_digit_index)
+                                })
+                        },
+                    )
+                    .unwrap();
+                ALL_DIGITS[predicted_digit_index]
+            };
             assert!(!images_with_actual_digits.is_empty() && batch_size > 0);
             // Индексы здесь нужны только сборке batch; снаружи передаётся сам набор картинок.
             let image_indices: Vec<usize> = (0..images_with_actual_digits.len()).collect();
@@ -238,19 +218,19 @@ fn main() -> Result<(), String> {
                 let mut total_loss: f32 = 0.0;
                 // Типы переменных: batch_image_indices: &[usize].
                 for batch_image_indices in image_indices.chunks(batch_size) {
-                    let (input_pixels, actual_digits): (ndarray::Array2<f32>, Vec<Digit>) =
+                    let (input_pixels, actual_digits): (Vec<Vec<f32>>, Vec<Digit>) =
                         build_image_batch(images_with_actual_digits, batch_image_indices);
                     let forward_values: ForwardPass =
                         calculate_digit_scores(weights_and_biases_as_linear_layers, &input_pixels);
-                    let digit_scores: &ndarray::Array2<f32> = &forward_values.digit_scores;
+                    let digit_scores: &Vec<Vec<f32>> = &forward_values.digit_scores;
                     // loss одного batch — средняя: умножаем на его фактический размер.
                     // Затем делим общую сумму на число картинок, учитывая неполный последний batch.
                     total_loss +=
                         calculate_cross_entropy_and_gradient(digit_scores, &actual_digits).0
                             * batch_image_indices.len() as f32;
-                    // Типы переменных: digit_scores_for_image: ndarray::ArrayView1<'_, f32>, actual_digit: Digit.
+                    // Типы переменных: digit_scores_for_image: &[f32], actual_digit: Digit.
                     for (digit_scores_for_image, actual_digit) in
-                        digit_scores.rows().into_iter().zip(actual_digits)
+                        digit_scores.iter().zip(actual_digits)
                     {
                         predictions.push(DigitPrediction {
                             actual_digit,
@@ -285,22 +265,29 @@ fn main() -> Result<(), String> {
         // Производные по весам: транспонированную матрицу пикселей умножаем на производные по оценкам.
         // Производные по смещениям: складываем производные по оценкам всех картинок отдельно для каждой цифры.
         // Результат — (градиент по входу, градиент весов, градиент смещений).
-        let calculate_linear_layer_gradients = |input_pixels: &ndarray::Array2<f32>,
-                                                weights: &ndarray::Array2<f32>,
-                                                score_gradients: &ndarray::Array2<f32>|
-         -> (
-            ndarray::Array2<f32>,
-            ndarray::Array2<f32>,
-            ndarray::Array1<f32>,
-        ) {
-            (
-                score_gradients.dot(&weights.t()),
-                input_pixels.t().dot(score_gradients),
-                // Смещение одной цифры добавлялось каждой картинке, поэтому его производная
-                // суммирует вклад всех строк (ось 0). Деление на число картинок уже учтено в cross-entropy.
-                score_gradients.sum_axis(ndarray::Axis(0)),
-            )
-        };
+        let calculate_linear_layer_gradients =
+            |input_pixels: &Vec<Vec<f32>>,
+             weights: &Vec<Vec<f32>>,
+             score_gradients: &Vec<Vec<f32>>|
+             -> (Vec<Vec<f32>>, Vec<Vec<f32>>, Vec<f32>) {
+                let mut input_gradient = vec![vec![0.0; weights.len()]; input_pixels.len()];
+                let mut weight_gradient = vec![vec![0.0; weights[0].len()]; weights.len()];
+                let mut bias_gradient = vec![0.0; weights[0].len()];
+                for image in 0..input_pixels.len() {
+                    for feature in 0..weights.len() {
+                        for unit in 0..weights[feature].len() {
+                            input_gradient[image][feature] +=
+                                score_gradients[image][unit] * weights[feature][unit];
+                            weight_gradient[feature][unit] +=
+                                input_pixels[image][feature] * score_gradients[image][unit];
+                        }
+                    }
+                    for unit in 0..bias_gradient.len() {
+                        bias_gradient[unit] += score_gradients[image][unit];
+                    }
+                }
+                (input_gradient, weight_gradient, bias_gradient)
+            };
 
         // Общий SplitMix64 для перемешивания и инициализации весов.
         // Состояние передаём явно: оба потребителя продолжают одну последовательность seed.
@@ -361,17 +348,25 @@ fn main() -> Result<(), String> {
                 // Один и тот же способ инициализации здесь применяется ко всем матрицам весов.
                 let initial_weight_bound: f32 = (6.0 / input_feature_count as f32).sqrt();
                 WeightsAndBiasesAsLinearLayer {
-                    weights: ndarray::Array2::from_shape_fn(
-                        (input_feature_count, output_digit_count),
-                        |_: (usize, usize)| -> f32 {
-                            // Старшие 24 бита превращаем в random_fraction от 0 до 1; 2*random_fraction-1 даёт [-1,1).
-                            // Умножение на initial_weight_bound задаёт диапазон начальных весов.
-                            let random_fraction: f32 =
-                                (next_random_number(random_state) >> 40) as f32 / 16777216.0;
-                            (2.0 * random_fraction - 1.0) * initial_weight_bound
-                        },
-                    ),
-                    biases: ndarray::Array1::zeros(output_digit_count),
+                    weights: {
+                        let row_count: usize = input_feature_count;
+                        let column_count: usize = output_digit_count;
+                        let mut values: Vec<Vec<f32>> = vec![vec![0.0; column_count]; row_count];
+                        for row_index in 0..row_count {
+                            for column_index in 0..column_count {
+                                values[row_index][column_index] = {
+                                    // Старшие 24 бита превращаем в random_fraction от 0 до 1; 2*random_fraction-1 даёт [-1,1).
+                                    // Умножение на initial_weight_bound задаёт диапазон начальных весов.
+                                    let random_fraction: f32 =
+                                        (next_random_number(random_state) >> 40) as f32
+                                            / 16777216.0;
+                                    (2.0 * random_fraction - 1.0) * initial_weight_bound
+                                };
+                            }
+                        }
+                        values
+                    },
+                    biases: vec![0.0; output_digit_count],
                 }
             };
             // Единственный слой: матрица из 784×10 весов и вектор из 10 смещений.
@@ -393,8 +388,8 @@ fn main() -> Result<(), String> {
                     .iter()
                     .map(|weights_and_biases_as_linear_layer: &WeightsAndBiasesAsLinearLayer| -> WeightsAndBiasesAsLinearLayer {
                         WeightsAndBiasesAsLinearLayer {
-                            weights: ndarray::Array2::zeros(weights_and_biases_as_linear_layer.weights.dim()),
-                            biases: ndarray::Array1::zeros(weights_and_biases_as_linear_layer.biases.dim()),
+                            weights: vec![vec![0.0; weights_and_biases_as_linear_layer.weights[0].len()]; weights_and_biases_as_linear_layer.weights.len()],
+                            biases: vec![0.0; weights_and_biases_as_linear_layer.biases.len()],
                         }
                     })
                     .collect::<Vec<WeightsAndBiasesAsLinearLayer>>()
@@ -456,7 +451,7 @@ fn main() -> Result<(), String> {
                             f32,
                             Vec<WeightsAndBiasesAsLinearLayer>,
                         ) = {
-                            let (input_pixels, actual_digits): (ndarray::Array2<f32>, Vec<Digit>) =
+                            let (input_pixels, actual_digits): (Vec<Vec<f32>>, Vec<Digit>) =
                                 build_image_batch(&train_images, batch_image_indices);
                             let forward_values: ForwardPass = calculate_digit_scores(
                                 &weights_and_biases_as_linear_layers,
@@ -464,7 +459,7 @@ fn main() -> Result<(), String> {
                             );
                             // Получаем среднюю ошибку группы и производные по оценкам цифр — начало обратного прохода.
                             // Ошибка должна быть конечной; NaN/∞ означают, что численный расчёт нарушился.
-                            let (mean_loss, score_gradients): (f32, ndarray::Array2<f32>) =
+                            let (mean_loss, score_gradients): (f32, Vec<Vec<f32>>) =
                                 calculate_cross_entropy_and_gradient(
                                     &forward_values.digit_scores,
                                     &actual_digits,
@@ -477,9 +472,9 @@ fn main() -> Result<(), String> {
                             // Вычисляем производные по весам и смещениям; forward_values.input_pixels хранит входные яркости.
                             // Производную по самим входным пикселям не используем: картинки здесь не обучаются.
                             let (_, weight_gradients, bias_gradients): (
-                                ndarray::Array2<f32>,
-                                ndarray::Array2<f32>,
-                                ndarray::Array1<f32>,
+                                Vec<Vec<f32>>,
+                                Vec<Vec<f32>>,
+                                Vec<f32>,
                             ) = calculate_linear_layer_gradients(
                                 &forward_values.input_pixels,
                                 &weights_and_biases_as_linear_layers[0].weights,
@@ -516,13 +511,25 @@ fn main() -> Result<(), String> {
                                 ) in weights_and_biases_as_linear_layers[linear_layer_index]
                                     .weights
                                     .iter_mut()
-                                    .zip(average_gradients[linear_layer_index].weights.iter_mut())
+                                    .flatten()
+                                    .zip(
+                                        average_gradients[linear_layer_index]
+                                            .weights
+                                            .iter_mut()
+                                            .flatten(),
+                                    )
                                     .zip(
                                         average_squared_gradients[linear_layer_index]
                                             .weights
-                                            .iter_mut(),
+                                            .iter_mut()
+                                            .flatten(),
                                     )
-                                    .zip(parameter_gradients[linear_layer_index].weights.iter())
+                                    .zip(
+                                        parameter_gradients[linear_layer_index]
+                                            .weights
+                                            .iter()
+                                            .flatten(),
+                                    )
                                 {
                                     // average_gradient хранит сглаженный градиент, включая его знак: 90% прежнего + 10% нового.
                                     // average_squared_gradient сглаживает квадрат градиента: 99.9% прежнего + 0.1% нового квадрата.

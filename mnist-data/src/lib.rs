@@ -29,10 +29,79 @@ pub const ALL_DIGITS: [Digit; 10] = [
     Digit::Nine,
 ];
 
+/// Каталог PNG MNIST относительно crate mnist_data, независимо от рабочей папки запуска.
+pub fn mnist_dataset_directory() -> std::path::PathBuf {
+    std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../datasets/png/mnist")
+}
+
+/// Загружает train/validation и отдельный официальный test.
+pub fn load_mnist_images(
+    dataset_directory: &std::path::Path,
+) -> Result<
+    (
+        Vec<([f64; 784], Digit)>,
+        Vec<([f64; 784], Digit)>,
+        Vec<([f64; 784], Digit)>,
+    ),
+    String,
+> {
+    let (train_images, validation_images) = load_train_validation_images(dataset_directory)?;
+    let test_images = load_labeled_png_images(&dataset_directory.join("test"))?;
+    Ok((train_images, validation_images, test_images))
+}
+
+/// Загружает train и откладывает позиции 0, 5, 10… каждой цифры в validation.
+/// Порядок цифр и отсортированных имён PNG сохраняется. Официальный test не читается.
+pub fn load_train_validation_images(
+    dataset_directory: &std::path::Path,
+) -> Result<(Vec<([f64; 784], Digit)>, Vec<([f64; 784], Digit)>), String> {
+    let original_train_images: Vec<([f64; 784], Digit)> =
+        load_labeled_png_images(&dataset_directory.join("train"))?;
+    let mut train_images: Vec<([f64; 784], Digit)> = Vec::new();
+    let mut validation_images: Vec<([f64; 784], Digit)> = Vec::new();
+    // Типы переменных: digit: Digit.
+    for digit in ALL_DIGITS {
+        // Фильтруем картинки одной цифры, сохраняя порядок имён файлов.
+        let images_of_current_digit: Vec<&([f64; 784], Digit)> = original_train_images
+            .iter()
+            .filter(|image: &&([f64; 784], Digit)| -> bool { image.1 == digit })
+            .collect();
+        // В train копируем все картинки, кроме каждой пятой внутри этой цифры.
+        train_images.extend(
+            images_of_current_digit
+                .iter()
+                .enumerate()
+                .filter(|(position, _): &(usize, &&([f64; 784], Digit))| -> bool {
+                    position % 5 != 0
+                })
+                .map(
+                    |(_, &image): (usize, &&([f64; 784], Digit))| -> ([f64; 784], Digit) {
+                        *image
+                    },
+                ),
+        );
+        // В validation копируем каждую пятую: позиции 0, 5, 10…
+        validation_images.extend(
+            images_of_current_digit
+                .iter()
+                .enumerate()
+                .filter(|(position, _): &(usize, &&([f64; 784], Digit))| -> bool {
+                    position % 5 == 0
+                })
+                .map(
+                    |(_, &image): (usize, &&([f64; 784], Digit))| -> ([f64; 784], Digit) {
+                        *image
+                    },
+                ),
+        );
+    }
+    Ok((train_images, validation_images))
+}
+
 /// Читает папки 0–9, сортирует PNG внутри каждой и возвращает картинки с метками.
 /// Каждый PNG должен быть статическим, 28×28, grayscale, 8 бит.
 /// Яркости преобразуются из байтов 0–255 в f64 от 0 до 1.
-/// Разделение train/validation и обучение выполняются в самих уроках.
+/// Разделение train/validation доступно через load_train_validation_images.
 pub fn load_labeled_png_images(
     images_directory: &std::path::Path,
 ) -> Result<Vec<([f64; 784], Digit)>, String> {

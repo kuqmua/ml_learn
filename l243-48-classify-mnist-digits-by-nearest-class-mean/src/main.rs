@@ -23,7 +23,7 @@ fn main() -> Result<(), String> {
 
     // Digit и порядок цифр общие для всех четырёх уроков MNIST.
     // Порядок соответствует папкам 0..9; при равном расстоянии выбирается меньшая цифра.
-    use mnist_data::{ALL_DIGITS, Digit, load_labeled_png_images};
+    use mnist_data::{ALL_DIGITS, Digit, load_mnist_images, mnist_dataset_directory};
     // Результат распознавания одной картинки: правильная цифра и ответ модели.
     struct DigitPrediction {
         actual_digit: Digit,
@@ -46,59 +46,17 @@ fn main() -> Result<(), String> {
         nine: T,
     }
 
-    // Корень PNG фиксирован относительно папки урока; аргументы запуска не требуются.
-    let dataset_directory: std::path::PathBuf =
-        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../datasets/png/mnist");
+    // Общий путь к PNG задаётся в mnist_data; аргументы запуска не требуются.
+    let dataset_directory: std::path::PathBuf = mnist_dataset_directory();
 
     // PNG читает общий загрузчик из mnist_data: сортировка, проверка формата и нормализация.
 
     // Сначала готовим три набора: обучение, проверку и итоговый тест.
-    let (train_images, validation_images): (Vec<([f64; 784], Digit)>, Vec<([f64; 784], Digit)>) = {
-        let original_train_images: Vec<([f64; 784], Digit)> =
-            load_labeled_png_images(&dataset_directory.join("train"))?;
-        let mut train_images: Vec<([f64; 784], Digit)> = Vec::new();
-        let mut validation_images: Vec<([f64; 784], Digit)> = Vec::new();
-        // Типы переменных: digit: Digit.
-        for digit in ALL_DIGITS {
-            // Фильтруем картинки одной цифры, сохраняя порядок имён файлов.
-            let images_of_current_digit: Vec<&([f64; 784], Digit)> = original_train_images
-                .iter()
-                .filter(|image: &&([f64; 784], Digit)| -> bool { image.1 == digit })
-                .collect();
-            // В train копируем все картинки, кроме каждой пятой внутри этой цифры.
-            train_images.extend(
-                images_of_current_digit
-                    .iter()
-                    .enumerate()
-                    .filter(|(position, _): &(usize, &&([f64; 784], Digit))| -> bool {
-                        position % 5 != 0
-                    })
-                    .map(
-                        |(_, &image): (usize, &&([f64; 784], Digit))| -> ([f64; 784], Digit) {
-                            *image
-                        },
-                    ),
-            );
-            // В validation копируем каждую пятую: позиции 0, 5, 10…
-            validation_images.extend(
-                images_of_current_digit
-                    .iter()
-                    .enumerate()
-                    .filter(|(position, _): &(usize, &&([f64; 784], Digit))| -> bool {
-                        position % 5 == 0
-                    })
-                    .map(
-                        |(_, &image): (usize, &&([f64; 784], Digit))| -> ([f64; 784], Digit) {
-                            *image
-                        },
-                    ),
-            );
-        }
-        (train_images, validation_images)
-    };
-    // Официальный test уже хранится отдельно: его не берём из обучающих картинок.
-    let test_images: Vec<([f64; 784], Digit)> =
-        load_labeled_png_images(&dataset_directory.join("test"))?;
+    let (train_images, validation_images, test_images): (
+        Vec<([f64; 784], Digit)>,
+        Vec<([f64; 784], Digit)>,
+        Vec<([f64; 784], Digit)>,
+    ) = load_mnist_images(&dataset_directory)?;
     let mean_image_by_digit: DataByDigit<[f64; 784]> = {
         // Теперь обучаем модель только по train_images.
         let (training_image_count_by_digit, zero_initialized_pixel_brightness_sums_by_digit): (
