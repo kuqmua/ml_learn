@@ -133,10 +133,10 @@ fn loads_three_sets_with_test_kept_separate() {
     let (train, validation, test) = mnist_data::load_mnist_images(&dataset.0).unwrap();
     assert_eq!((train.len(), validation.len(), test.len()), (10, 10, 20));
     for (index, digit) in ALL_DIGITS.into_iter().enumerate() {
-        assert_eq!(train[index], ([mnist_data::NormalizedPixelBrightness::try_from(32.0 / 255.0).unwrap(); 784], digit));
-        assert_eq!(validation[index], ([mnist_data::NormalizedPixelBrightness::try_from(32.0 / 255.0).unwrap(); 784], digit));
-        assert_eq!(test[2 * index], ([mnist_data::NormalizedPixelBrightness::try_from(224.0 / 255.0).unwrap(); 784], digit));
-        assert_eq!(test[2 * index + 1], ([mnist_data::NormalizedPixelBrightness::try_from(224.0 / 255.0).unwrap(); 784], digit));
+        assert_eq!(train[index], ([mnist_data::NormalizedPixelBrightnessF64::try_from(32.0 / 255.0).unwrap(); 784], digit));
+        assert_eq!(validation[index], ([mnist_data::NormalizedPixelBrightnessF64::try_from(32.0 / 255.0).unwrap(); 784], digit));
+        assert_eq!(test[2 * index], ([mnist_data::NormalizedPixelBrightnessF64::try_from(224.0 / 255.0).unwrap(); 784], digit));
+        assert_eq!(test[2 * index + 1], ([mnist_data::NormalizedPixelBrightnessF64::try_from(224.0 / 255.0).unwrap(); 784], digit));
     }
     std::fs::remove_dir_all(dataset.0.join("test/0")).unwrap();
     assert!(mnist_data::load_mnist_images(&dataset.0).unwrap_err().contains("test/0"));

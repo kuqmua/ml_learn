@@ -1,6 +1,6 @@
 //! Общие типы и чтение PNG MNIST для уроков 243–246.
 pub mod numeric_types;
-pub use numeric_types::NormalizedPixelBrightness;
+pub use numeric_types::NormalizedPixelBrightnessF64;
 
 /// Правильная или предсказанная цифра. Порядок соответствует папкам 0–9.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -207,25 +207,25 @@ pub fn load_mnist_images(
     directory: &std::path::Path,
 ) -> Result<
     (
-        Vec<([NormalizedPixelBrightness; 784], Digit)>,
-        Vec<([NormalizedPixelBrightness; 784], Digit)>,
-        Vec<([NormalizedPixelBrightness; 784], Digit)>,
+        Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
+        Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
+        Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
     ),
     String,
 > {
     let validate_image_brightness = |images: Vec<([f64; 784], Digit)>| -> Result<
-        Vec<([NormalizedPixelBrightness; 784], Digit)>,
+        Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
         String,
     > {
-        let mut validated_images: Vec<([NormalizedPixelBrightness; 784], Digit)> =
+        let mut validated_images: Vec<([NormalizedPixelBrightnessF64; 784], Digit)> =
             Vec::with_capacity(images.len());
         // Типы переменных: pixels: [f64; 784], actual_digit: Digit.
         for (pixels, actual_digit) in images {
-            let mut validated_pixels: [NormalizedPixelBrightness; 784] =
-                [NormalizedPixelBrightness::ZERO; 784];
+            let mut validated_pixels: [NormalizedPixelBrightnessF64; 784] =
+                [NormalizedPixelBrightnessF64::ZERO; 784];
             // Типы переменных: pixel_index: usize.
             for pixel_index in 0..pixels.len() {
-                validated_pixels[pixel_index] = NormalizedPixelBrightness::try_from(
+                validated_pixels[pixel_index] = NormalizedPixelBrightnessF64::try_from(
                     pixels[pixel_index],
                 )
                 .map_err(|error: String| -> String {

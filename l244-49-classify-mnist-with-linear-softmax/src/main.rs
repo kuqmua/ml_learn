@@ -1,7 +1,7 @@
 fn main() -> Result<(), String> {
     use mnist_data::numeric_types::{
-        Bias, DigitScore, Gradient, NonNegativeFiniteF32, NormalizedPixelBrightness,
-        PixelBrightnessForComputation, PixelWeight, Probability,
+        BiasF32, DigitScoreF32, GradientF32, NonNegativeFiniteF32, NormalizedPixelBrightnessF64,
+        PixelBrightnessForComputationF32, PixelWeightF32, ProbabilityF32,
     };
     // Урок 244. Учим модель узнавать цифру по 784 яркостям картинки 28×28.
     // Читай шаги сверху вниз: данные → устройство модели → операции над группой
@@ -18,9 +18,9 @@ fn main() -> Result<(), String> {
     // Тип переменной-замыкания анонимный: его имя нельзя написать после let.
     // У таких переменных типы аргументов стоят между |...|, результата — после ->.
     // f64 используется при чтении PNG, f32 — в вычислениях нейросети.
-    // Яркости: PixelBrightnessForComputation (0..=1), веса: PixelWeight (любой знак).
-    // Смещения: Bias, оценки: DigitScore, производные: Gradient — конечные числа любого знака.
-    // Probability ограничен 0..=1; NonNegativeFiniteF32 допускает конечные числа >= 0.
+    // Яркости: PixelBrightnessForComputationF32 (0..=1), веса: PixelWeightF32 (любой знак).
+    // Смещения: BiasF32, оценки: DigitScoreF32, производные: GradientF32 — конечные числа любого знака.
+    // ProbabilityF32 ограничен 0..=1; NonNegativeFiniteF32 допускает конечные числа >= 0.
     // Реализации проверок и закрытые поля находятся в модуле mnist_data::numeric_types.
     // Vec оставляем для переменного числа картинок, меток и предсказаний.
     // Массив [PixelWeightAndBias; 10] хранит параметры десяти цифр; PixelWeightAndBias — веса пикселей и смещение одной цифры.
@@ -47,9 +47,9 @@ fn main() -> Result<(), String> {
         validation_images_with_actual_digits,
         test_images_with_actual_digits,
     ): (
-        Vec<([NormalizedPixelBrightness; 784], Digit)>,
-        Vec<([NormalizedPixelBrightness; 784], Digit)>,
-        Vec<([NormalizedPixelBrightness; 784], Digit)>,
+        Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
+        Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
+        Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
     ) = load_mnist_images(&dataset_directory)?;
 
     // Шаг 2. Выбираем способ классификации и из него выводим структуру модели.
@@ -78,20 +78,20 @@ fn main() -> Result<(), String> {
     #[derive(Clone)]
     struct PixelWeightAndBias {
         // 784 коэффициента для оценки ОДНОЙ цифры: индекс выбирает пиксель.
-        pixel_weights: [PixelWeight; 784],
+        pixel_weights: [PixelWeightF32; 784],
         // Одно смещение этой цифры; добавляется после суммы вкладов всех пикселей.
-        bias: Bias,
+        bias: BiasF32,
     }
     // Производная может иметь любой знак, но не является весом или смещением.
     #[derive(Clone)]
     struct PixelWeightAndBiasGradients {
-        pixel_weights: [Gradient; 784],
-        bias: Gradient,
+        pixel_weights: [GradientF32; 784],
+        bias: GradientF32,
     }
     // Adam хранит средний градиент со знаком и неотрицательное среднее квадратов.
     #[derive(Clone, Copy)]
     struct AdamMoments {
-        mean_gradient: Gradient,
+        mean_gradient: GradientF32,
         mean_squared_gradient: NonNegativeFiniteF32,
     }
     #[derive(Clone)]
@@ -111,12 +111,12 @@ fn main() -> Result<(), String> {
         // Правильная цифра хранится с той же картинкой и её оценками.
         actual_digit: Digit,
         // 784 яркости одной картинки; индекс выбирает пиксель.
-        pixels: [PixelBrightnessForComputation; 784],
+        pixels: [PixelBrightnessForComputationF32; 784],
         // Десять оценок этой картинки; индекс выбирает цифру. Это ещё не вероятности.
-        scores_by_digit: [DigitScore; 10],
+        scores_by_digit: [DigitScoreF32; 10],
     }
     // Шаг 3. Подготавливаем яркости выбранных картинок для вычислений.
-    // Вход: ссылки на пары с f64. Выход: пары с проверенной PixelBrightnessForComputation.
+    // Вход: ссылки на пары с f64. Выход: пары с проверенной PixelBrightnessForComputationF32.
     // Деление на группы выполняет chunks(batch_size); здесь только преобразование яркостей.
     // Явно задаём правила преобразования яркости из f64 в f32.
     // Стандартного f32::try_from(f64) нет; для собственного типа можно реализовать TryFrom.
@@ -130,23 +130,23 @@ fn main() -> Result<(), String> {
     // от оборудования и реализации. Проверки ниже относятся именно к яркости 0..=1,
     // поэтому тип не является универсальным преобразователем любых чисел f64.
     let convert_image_pixel_brightness_from_f64_to_f32 = |images_with_actual_digits: &[&(
-        [NormalizedPixelBrightness; 784],
+        [NormalizedPixelBrightnessF64; 784],
         Digit,
     )]|
      -> Result<
-        Vec<([PixelBrightnessForComputation; 784], Digit)>,
+        Vec<([PixelBrightnessForComputationF32; 784], Digit)>,
         String,
     > {
-        let mut converted_images: Vec<([PixelBrightnessForComputation; 784], Digit)> =
+        let mut converted_images: Vec<([PixelBrightnessForComputationF32; 784], Digit)> =
             Vec::with_capacity(images_with_actual_digits.len());
-        // Типы переменных: pixels: &[NormalizedPixelBrightness; 784], actual_digit: &Digit.
+        // Типы переменных: pixels: &[NormalizedPixelBrightnessF64; 784], actual_digit: &Digit.
         for &(pixels, actual_digit) in images_with_actual_digits {
             // Загрузчик вернул f64; вычисления модели используют f32.
-            let mut converted_pixels: [PixelBrightnessForComputation; 784] =
-                [PixelBrightnessForComputation::ZERO; 784];
+            let mut converted_pixels: [PixelBrightnessForComputationF32; 784] =
+                [PixelBrightnessForComputationF32::ZERO; 784];
             // Типы переменных: pixel_index: usize.
             for pixel_index in 0..pixels.len() {
-                converted_pixels[pixel_index] = PixelBrightnessForComputation::try_from(
+                converted_pixels[pixel_index] = PixelBrightnessForComputationF32::try_from(
                     pixels[pixel_index],
                 )
                 .map_err(|error: String| -> String {
@@ -160,18 +160,21 @@ fn main() -> Result<(), String> {
 
     // Яркости не меняются при обучении: преобразуем каждый набор ровно один раз.
     // Дальше группы содержат ссылки на готовые пары с типизированной яркостью; меняется лишь порядок ссылок.
-    let train_images_with_actual_digits: Vec<([PixelBrightnessForComputation; 784], Digit)> = {
-        let image_references: Vec<&([NormalizedPixelBrightness; 784], Digit)> =
+    let train_images_with_actual_digits: Vec<([PixelBrightnessForComputationF32; 784], Digit)> = {
+        let image_references: Vec<&([NormalizedPixelBrightnessF64; 784], Digit)> =
             train_images_with_actual_digits.iter().collect();
         convert_image_pixel_brightness_from_f64_to_f32(&image_references)?
     };
-    let validation_images_with_actual_digits: Vec<([PixelBrightnessForComputation; 784], Digit)> = {
-        let image_references: Vec<&([NormalizedPixelBrightness; 784], Digit)> =
+    let validation_images_with_actual_digits: Vec<(
+        [PixelBrightnessForComputationF32; 784],
+        Digit,
+    )> = {
+        let image_references: Vec<&([NormalizedPixelBrightnessF64; 784], Digit)> =
             validation_images_with_actual_digits.iter().collect();
         convert_image_pixel_brightness_from_f64_to_f32(&image_references)?
     };
-    let test_images_with_actual_digits: Vec<([PixelBrightnessForComputation; 784], Digit)> = {
-        let image_references: Vec<&([NormalizedPixelBrightness; 784], Digit)> =
+    let test_images_with_actual_digits: Vec<([PixelBrightnessForComputationF32; 784], Digit)> = {
+        let image_references: Vec<&([NormalizedPixelBrightnessF64; 784], Digit)> =
             test_images_with_actual_digits.iter().collect();
         convert_image_pixel_brightness_from_f64_to_f32(&image_references)?
     };
@@ -182,16 +185,16 @@ fn main() -> Result<(), String> {
     // Сохраняем входы и оценки: они нужны для расчёта градиентов.
     let build_images_with_digit_scores =
         |pixel_weights_and_biases_by_digit: &[PixelWeightAndBias; 10],
-         converted_images: &[&([PixelBrightnessForComputation; 784], Digit)]|
+         converted_images: &[&([PixelBrightnessForComputationF32; 784], Digit)]|
          -> Result<Vec<ImageWithScores>, String> {
             let mut images_with_scores: Vec<ImageWithScores> =
                 Vec::with_capacity(converted_images.len());
-            // Типы переменных: pixels: &[PixelBrightnessForComputation; 784].
+            // Типы переменных: pixels: &[PixelBrightnessForComputationF32; 784].
             for &(pixels, actual_digit) in converted_images {
                 let mut image: ImageWithScores = ImageWithScores {
                     actual_digit: *actual_digit,
                     pixels: *pixels,
-                    scores_by_digit: [DigitScore::ZERO; 10],
+                    scores_by_digit: [DigitScoreF32::ZERO; 10],
                 };
                 // Оценка каждой цифры = сумма(яркость × её вес пикселя) + её смещение.
                 // Типы переменных: digit_index: usize.
@@ -206,7 +209,7 @@ fn main() -> Result<(), String> {
                             * pixel_weights_and_bias.pixel_weights[pixel_index].value();
                     }
                     score_by_digit += pixel_weights_and_bias.bias.value();
-                    image.scores_by_digit[digit_index] = DigitScore::try_from(score_by_digit)?;
+                    image.scores_by_digit[digit_index] = DigitScoreF32::try_from(score_by_digit)?;
                 }
                 images_with_scores.push(image);
             }
@@ -225,7 +228,7 @@ fn main() -> Result<(), String> {
         mean_loss: f32,
         // [картинка][цифра]: производная средней ошибки по оценке этой цифры.
         // Это градиенты оценок; градиенты весов и смещений вычисляются дальше.
-        scores_gradients_by_digit: Vec<[Gradient; 10]>,
+        scores_gradients_by_digit: Vec<[GradientF32; 10]>,
     }
     let calculate_cross_entropy_and_gradient =
         |images_with_scores: &[ImageWithScores]| -> Result<CrossEntropyAndGradient, String> {
@@ -233,8 +236,8 @@ fn main() -> Result<(), String> {
                 return Err("Нельзя вычислить среднюю ошибку пустой группы".into());
             }
             // Для каждой картинки отдельно вычисляем вероятности, ошибку и градиенты.
-            let (scores_gradients_by_digit, total_loss): (Vec<[Gradient; 10]>, f32) = {
-                let mut scores_gradients_by_digit: Vec<[Gradient; 10]> =
+            let (scores_gradients_by_digit, total_loss): (Vec<[GradientF32; 10]>, f32) = {
+                let mut scores_gradients_by_digit: Vec<[GradientF32; 10]> =
                     Vec::with_capacity(images_with_scores.len());
                 let mut total_loss: f32 = 0.0;
                 // Типы переменных: image_with_score: &ImageWithScores.
@@ -244,7 +247,7 @@ fn main() -> Result<(), String> {
                     let maximum_score_by_digit: f32 = image_with_score
                         .scores_by_digit
                         .iter()
-                        .map(|score_by_digit: &DigitScore| -> f32 { score_by_digit.value() })
+                        .map(|score_by_digit: &DigitScoreF32| -> f32 { score_by_digit.value() })
                         .fold(f32::NEG_INFINITY, f32::max);
                     // Каждый результат exp проверяется: NaN и бесконечность вернут Err.
                     // Отдельный блок ограничивает изменение массива этапом его заполнения.
@@ -267,11 +270,12 @@ fn main() -> Result<(), String> {
                         .sum();
                     // Softmax: делим экспоненты на сумму и получаем вероятности десяти цифр.
                     // При конечных оценках хотя бы одна экспонента равна exp(0) = 1.
-                    let probabilities_by_digit: [Probability; 10] = {
-                        let mut probabilities_by_digit: [Probability; 10] = [Probability::ZERO; 10];
+                    let probabilities_by_digit: [ProbabilityF32; 10] = {
+                        let mut probabilities_by_digit: [ProbabilityF32; 10] =
+                            [ProbabilityF32::ZERO; 10];
                         // Типы переменных: digit_index: usize.
                         for digit_index in 0..probabilities_by_digit.len() {
-                            probabilities_by_digit[digit_index] = Probability::try_from(
+                            probabilities_by_digit[digit_index] = ProbabilityF32::try_from(
                                 exponentials_by_digit[digit_index].value() / exponential_sum,
                             )?;
                         }
@@ -289,8 +293,8 @@ fn main() -> Result<(), String> {
                     // Производная оценки = вероятность минус 1 для правильной цифры,
                     // минус 0 для остальных. Делим на фактический размер группы,
                     // поскольку обучаемся по средней ошибке, включая неполный последний batch.
-                    let gradients_by_digit: [Gradient; 10] = {
-                        let mut gradients_by_digit: [Gradient; 10] = [Gradient::ZERO; 10];
+                    let gradients_by_digit: [GradientF32; 10] = {
+                        let mut gradients_by_digit: [GradientF32; 10] = [GradientF32::ZERO; 10];
                         // Типы переменных: digit_index: usize.
                         for digit_index in 0..gradients_by_digit.len() {
                             let target: f32 =
@@ -299,7 +303,7 @@ fn main() -> Result<(), String> {
                                 } else {
                                     0.0
                                 };
-                            gradients_by_digit[digit_index] = Gradient::try_from(
+                            gradients_by_digit[digit_index] = GradientF32::try_from(
                                 (probabilities_by_digit[digit_index].value() - target)
                                     / images_with_scores.len() as f32,
                             )?;
@@ -330,7 +334,7 @@ fn main() -> Result<(), String> {
     let measure_prediction_quality = |pixel_weights_and_biases_by_digit: &[PixelWeightAndBias;
                                            10],
                                       images_with_actual_digits: &[(
-        [PixelBrightnessForComputation; 784],
+        [PixelBrightnessForComputationF32; 784],
         Digit,
     )]|
      -> Result<PredictionEvaluation, String> {
@@ -342,10 +346,10 @@ fn main() -> Result<(), String> {
         }
         let (predictions, total_loss): (Vec<DigitPrediction>, f32) = {
             // Ссылки выбирают существующие записи; каждая группа содержит картинки вместе с метками.
-            let image_references: Vec<&([PixelBrightnessForComputation; 784], Digit)> =
+            let image_references: Vec<&([PixelBrightnessForComputationF32; 784], Digit)> =
                 images_with_actual_digits.iter().collect();
             // Наибольшая оценка выбирает цифру; при равенстве предпочитаем меньшую.
-            let digit_with_highest_score = |digit_scores_for_image: &[DigitScore; 10]| -> Digit {
+            let digit_with_highest_score = |digit_scores_for_image: &[DigitScoreF32; 10]| -> Digit {
                 let predicted_digit_index: usize = (0..digit_scores_for_image.len())
                     .max_by(
                         |&first_digit_index: &usize,
@@ -365,9 +369,9 @@ fn main() -> Result<(), String> {
             let mut predictions: Vec<DigitPrediction> =
                 Vec::with_capacity(images_with_actual_digits.len());
             let mut total_loss: f32 = 0.0;
-            // Типы переменных: batch_images_with_actual_digits: &[&([PixelBrightnessForComputation; 784], Digit)].
+            // Типы переменных: batch_images_with_actual_digits: &[&([PixelBrightnessForComputationF32; 784], Digit)].
             for batch_images_with_actual_digits in image_references.chunks(batch_size) {
-                let converted_images: &[&([PixelBrightnessForComputation; 784], Digit)] =
+                let converted_images: &[&([PixelBrightnessForComputationF32; 784], Digit)] =
                     batch_images_with_actual_digits;
                 let images_with_scores: Vec<ImageWithScores> = build_images_with_digit_scores(
                     pixel_weights_and_biases_by_digit,
@@ -410,8 +414,8 @@ fn main() -> Result<(), String> {
         let create_zero_pixel_weights_and_biases = || -> [PixelWeightAndBias; 10] {
             std::array::from_fn(|_: usize| -> PixelWeightAndBias {
                 PixelWeightAndBias {
-                    pixel_weights: [PixelWeight::ZERO; 784],
-                    bias: Bias::ZERO,
+                    pixel_weights: [PixelWeightF32::ZERO; 784],
+                    bias: BiasF32::ZERO,
                 }
             })
         };
@@ -438,7 +442,7 @@ fn main() -> Result<(), String> {
         // Fisher–Yates: идём с конца и меняем текущий индекс со случайным индексом 0..=current_position.
         // Меняется порядок записей train; сами картинки и метки не изменяются.
         let shuffle_training_images =
-            |image_references: &mut [&([PixelBrightnessForComputation; 784], Digit)],
+            |image_references: &mut [&([PixelBrightnessForComputationF32; 784], Digit)],
              random_state: &mut u64|
              -> () {
                 // Типы переменных: current_position: usize.
@@ -451,10 +455,10 @@ fn main() -> Result<(), String> {
         // Перемешиваем ссылки на записи готового train. Порядок RNG совпадает с прежним уроком:
         // сначала одно перемешивание, затем инициализация весов, затем эпохи.
         let (training_image_order, random_state): (
-            Vec<&([PixelBrightnessForComputation; 784], Digit)>,
+            Vec<&([PixelBrightnessForComputationF32; 784], Digit)>,
             u64,
         ) = {
-            let mut training_image_order: Vec<&([PixelBrightnessForComputation; 784], Digit)> =
+            let mut training_image_order: Vec<&([PixelBrightnessForComputationF32; 784], Digit)> =
                 train_images_with_actual_digits.iter().collect();
             let mut random_state: u64 = random_seed;
             shuffle_training_images(&mut training_image_order, &mut random_state);
@@ -463,7 +467,7 @@ fn main() -> Result<(), String> {
         // Проверяем все десять цифр, не используя validation или test.
         if ALL_DIGITS.into_iter().any(|digit: Digit| -> bool {
             !train_images_with_actual_digits.iter().any(
-                |image: &([PixelBrightnessForComputation; 784], Digit)| -> bool {
+                |image: &([PixelBrightnessForComputationF32; 784], Digit)| -> bool {
                     image.1 == digit
                 },
             )
@@ -490,7 +494,7 @@ fn main() -> Result<(), String> {
                     let random_fraction: f32 =
                         (next_random_number(&mut random_state) >> 40) as f32 / 16777216.0;
                     pixel_weights_and_biases_by_digit[digit_index].pixel_weights[pixel_index] =
-                        PixelWeight::try_from(
+                        PixelWeightF32::try_from(
                             (2.0 * random_fraction - 1.0) * initial_weight_bound,
                         )?;
                 }
@@ -501,7 +505,7 @@ fn main() -> Result<(), String> {
         let adam_moments_by_digit: [PixelWeightAndBiasAdamMoments; 10] =
             std::array::from_fn(|_: usize| -> PixelWeightAndBiasAdamMoments {
                 let zero_moments: AdamMoments = AdamMoments {
-                    mean_gradient: Gradient::ZERO,
+                    mean_gradient: GradientF32::ZERO,
                     mean_squared_gradient: NonNegativeFiniteF32::ZERO,
                 };
                 PixelWeightAndBiasAdamMoments {
@@ -532,7 +536,7 @@ fn main() -> Result<(), String> {
         ) = {
             let mut pixel_weights_and_biases_by_digit: [PixelWeightAndBias; 10] =
                 pixel_weights_and_biases_by_digit;
-            let mut training_image_order: Vec<&([PixelBrightnessForComputation; 784], Digit)> =
+            let mut training_image_order: Vec<&([PixelBrightnessForComputationF32; 784], Digit)> =
                 training_image_order;
             let mut random_state: u64 = random_state;
             let mut adam_moments_by_digit: [PixelWeightAndBiasAdamMoments; 10] =
@@ -557,7 +561,7 @@ fn main() -> Result<(), String> {
                 // Сумма меняется только при обходе train; для отчёта возвращаем готовую train loss.
                 let total_training_loss: f32 = {
                     let mut total_training_loss: f32 = 0.0;
-                    // Типы переменных: batch_images_with_actual_digits: &[&([PixelBrightnessForComputation; 784], Digit)].
+                    // Типы переменных: batch_images_with_actual_digits: &[&([PixelBrightnessForComputationF32; 784], Digit)].
                     for batch_images_with_actual_digits in training_image_order.chunks(batch_size) {
                         // Сначала весь прямой и обратный проход по СТАРЫМ весам.
                         // Наружу из этого блока выходят только ошибка batch и градиенты параметров;
@@ -568,7 +572,7 @@ fn main() -> Result<(), String> {
                         ) = {
                             // 9.1. Берём пиксели и правильные ответы текущей группы (шаг 3).
                             let converted_images: &[&(
-                                [PixelBrightnessForComputation; 784],
+                                [PixelBrightnessForComputationF32; 784],
                                 Digit,
                             )] = batch_images_with_actual_digits;
                             // 9.2. По текущим весам получаем десять оценок на картинку (шаг 4).
@@ -596,7 +600,7 @@ fn main() -> Result<(), String> {
                                 let mut gradients_by_digit: [PixelWeightAndBiasGradients; 10] =
                                     std::array::from_fn(|_: usize| -> PixelWeightAndBiasGradients {
                                         PixelWeightAndBiasGradients {
-                                            pixel_weights: [Gradient::ZERO; 784], bias: Gradient::ZERO,
+                                            pixel_weights: [GradientF32::ZERO; 784], bias: GradientF32::ZERO,
                                         }
                                     });
                                 // Типы переменных: digit_index: usize.
@@ -604,17 +608,17 @@ fn main() -> Result<(), String> {
                                     let gradients: &mut PixelWeightAndBiasGradients = &mut gradients_by_digit[digit_index];
                                     // Типы переменных: input_pixels_index: usize.
                                     for input_pixels_index in 0..images_with_scores.len() {
-                                        let score_gradient: Gradient = scores_gradients_by_digit[input_pixels_index][digit_index];
+                                        let score_gradient: GradientF32 = scores_gradients_by_digit[input_pixels_index][digit_index];
                                         // Типы переменных: pixel_index: usize.
                                         for pixel_index in 0..gradients.pixel_weights.len() {
                                             // Яркость неотрицательна; знак вклада задаётся градиентом оценки.
-                                            gradients.pixel_weights[pixel_index] = Gradient::try_from(
+                                            gradients.pixel_weights[pixel_index] = GradientF32::try_from(
                                                 gradients.pixel_weights[pixel_index].value()
                                                     + images_with_scores[input_pixels_index].pixels[pixel_index].value()
                                                         * score_gradient.value(),
                                             )?;
                                         }
-                                        gradients.bias = Gradient::try_from(gradients.bias.value() + score_gradient.value())?;
+                                        gradients.bias = GradientF32::try_from(gradients.bias.value() + score_gradient.value())?;
                                     }
                                 }
                                 gradients_by_digit
@@ -636,13 +640,13 @@ fn main() -> Result<(), String> {
                                 1.0 - 0.999f32.powi(parameter_update_count);
 
                             // Общая формула возвращает новое число; вызывающий код проверяет
-                            // его как PixelWeight или Bias. Типы этих параметров не смешиваются.
+                            // его как PixelWeightF32 или BiasF32. Типы этих параметров не смешиваются.
                             let calculate_updated_parameter =
                                 |parameter: f32,
                                  moments: &mut AdamMoments,
-                                 gradient: Gradient|
+                                 gradient: GradientF32|
                                  -> Result<f32, String> {
-                                    moments.mean_gradient = Gradient::try_from(
+                                    moments.mean_gradient = GradientF32::try_from(
                                         0.9 * moments.mean_gradient.value()
                                             + 0.1 * gradient.value(),
                                     )?;
@@ -670,7 +674,7 @@ fn main() -> Result<(), String> {
                                 // Типы переменных: pixel_index: usize.
                                 for pixel_index in 0..pixel_weights_and_bias.pixel_weights.len() {
                                     pixel_weights_and_bias.pixel_weights[pixel_index] =
-                                        PixelWeight::try_from(calculate_updated_parameter(
+                                        PixelWeightF32::try_from(calculate_updated_parameter(
                                             pixel_weights_and_bias.pixel_weights[pixel_index]
                                                 .value(),
                                             &mut moments.pixel_weights[pixel_index],
@@ -678,7 +682,7 @@ fn main() -> Result<(), String> {
                                         )?)?;
                                 }
                                 pixel_weights_and_bias.bias =
-                                    Bias::try_from(calculate_updated_parameter(
+                                    BiasF32::try_from(calculate_updated_parameter(
                                         pixel_weights_and_bias.bias.value(),
                                         &mut moments.bias,
                                         gradients.bias,

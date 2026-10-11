@@ -14,6 +14,6 @@ let (train_images, validation_images, test_images) =
 
 Проверки: `cargo test -p mnist_data`.
 
-`load_mnist_images` возвращает три набора `Vec<([NormalizedPixelBrightness; 784], Digit)>`. Тип проверяет конечность и диапазон 0..=1 до возврата данных в урок. Низкоуровневые `load_labeled_png_images` и `load_train_validation_images` сохраняют представление `[f64; 784]`.
+`load_mnist_images` возвращает три набора `Vec<([NormalizedPixelBrightnessF64; 784], Digit)>`. Тип проверяет конечность и диапазон 0..=1 до возврата данных в урок. Низкоуровневые `load_labeled_png_images` и `load_train_validation_images` сохраняют представление `[f64; 784]`.
 
-В `mnist_data::numeric_types` находятся общие типы яркости, веса, смещения, оценки, вероятности и градиента с закрытыми полями и проверяемыми преобразованиями. `NormalizedPixelBrightness` также доступен непосредственно из `mnist_data`.
+В `mnist_data::numeric_types` находятся общие типы яркости, веса, смещения, оценки, вероятности и градиента с закрытыми полями и проверяемыми преобразованиями. `NormalizedPixelBrightnessF64` также доступен непосредственно из `mnist_data`.
