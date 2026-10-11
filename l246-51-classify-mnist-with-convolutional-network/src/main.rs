@@ -26,7 +26,9 @@ fn main() -> Result<(), String> {
 
     // Digit и порядок цифр общие для всех четырёх уроков MNIST.
     // Порядок соответствует папкам 0..9 и индексам классов в массивах.
-    use mnist_data::{ALL_DIGITS, Digit, load_mnist_images, mnist_dataset_directory};
+    use mnist_data::{
+        ALL_DIGITS, Digit, NormalizedPixelBrightness, load_mnist_images, mnist_dataset_directory,
+    };
 
     // Засекаем время загрузки данных, обучения и итоговой оценки.
     let start: std::time::Instant = std::time::Instant::now();
@@ -395,7 +397,7 @@ fn main() -> Result<(), String> {
             };
         // Один batch: X[картинка][пиксель] имеет размеры [N,784], а labels[картинка] — [N].
         // Индексы выбирают записи; нормализованные f64 пиксели переводим в f32 сети.
-        let batch = |digits: &[([f64; 784], Digit)],
+        let batch = |digits: &[([NormalizedPixelBrightness; 784], Digit)],
                      examples: &[usize]|
          -> (Vec<ExampleFeatures>, Vec<Digit>) {
             (
@@ -415,7 +417,7 @@ fn main() -> Result<(), String> {
                             let (examples_index, pixels_index): (usize, usize) =
                                 (first_dimension_index, second_dimension_index);
                             values[first_dimension_index].features[second_dimension_index] =
-                                digits[examples[examples_index]].0[pixels_index] as f32;
+                                digits[examples[examples_index]].0[pixels_index].value() as f32;
                         }
                     }
                     values
@@ -431,7 +433,7 @@ fn main() -> Result<(), String> {
         // Возвращаем (средняя loss, доля верных ответов, матрица ошибок).
         // Это же правило используем для validation и итогового test.
         let evaluate = |layers: &[Layer],
-                        digits: &[([f64; 784], Digit)],
+                        digits: &[([NormalizedPixelBrightness; 784], Digit)],
                         examples: &[usize],
                         batch_size: usize|
          -> (f32, f32, [[usize; 10]; 10]) {
@@ -493,9 +495,9 @@ fn main() -> Result<(), String> {
         };
         // Загружаем все три набора; test используем только после выбора лучших весов.
         let (train_images, validation_images, test): (
-            Vec<([f64; 784], Digit)>,
-            Vec<([f64; 784], Digit)>,
-            Vec<([f64; 784], Digit)>,
+            Vec<([NormalizedPixelBrightness; 784], Digit)>,
+            Vec<([NormalizedPixelBrightness; 784], Digit)>,
+            Vec<([NormalizedPixelBrightness; 784], Digit)>,
         ) = load_mnist_images(&data)?;
         // Из обучения выходят только выбранные веса и необходимые для отчёта значения.
         let (best, best_epoch, batch_size): (Vec<Layer>, usize, usize) = {

@@ -23,7 +23,9 @@ fn main() -> Result<(), String> {
 
     // Digit и порядок цифр общие для всех четырёх уроков MNIST.
     // Порядок соответствует папкам 0..9; при равном расстоянии выбирается меньшая цифра.
-    use mnist_data::{ALL_DIGITS, Digit, load_mnist_images, mnist_dataset_directory};
+    use mnist_data::{
+        ALL_DIGITS, Digit, NormalizedPixelBrightness, load_mnist_images, mnist_dataset_directory,
+    };
     // Результат распознавания одной картинки: правильная цифра и ответ модели.
     struct DigitPrediction {
         actual_digit: Digit,
@@ -53,9 +55,9 @@ fn main() -> Result<(), String> {
 
     // Сначала готовим три набора: обучение, проверку и итоговый тест.
     let (train_images, validation_images, test_images): (
-        Vec<([f64; 784], Digit)>,
-        Vec<([f64; 784], Digit)>,
-        Vec<([f64; 784], Digit)>,
+        Vec<([NormalizedPixelBrightness; 784], Digit)>,
+        Vec<([NormalizedPixelBrightness; 784], Digit)>,
+        Vec<([NormalizedPixelBrightness; 784], Digit)>,
     ) = load_mnist_images(&dataset_directory)?;
     let mean_image_by_digit: DataByDigit<[f64; 784]> = {
         // Теперь обучаем модель только по train_images.
@@ -94,7 +96,7 @@ fn main() -> Result<(), String> {
                     eight: [0.0; 784],
                     nine: [0.0; 784],
                 };
-            // Типы переменных: normalized_pixels: &[f64; 784], actual_digit: &Digit.
+            // Типы переменных: normalized_pixels: &[NormalizedPixelBrightness; 784], actual_digit: &Digit.
             for (normalized_pixels, actual_digit) in &train_images {
                 // Выбираем счётчик и сумму яркостей для правильной цифры.
                 let (
@@ -144,14 +146,14 @@ fn main() -> Result<(), String> {
                 };
                 *training_image_count_for_actual_digit += 1;
                 // println!("@{training_image_count_for_actual_digit}");
-                // Типы переменных: pixel_brightness_sum: &mut f64, pixel_brightness: &f64.
+                // Типы переменных: pixel_brightness_sum: &mut f64, pixel_brightness: &NormalizedPixelBrightness.
                 for (pixel_brightness_sum, pixel_brightness) in
                     zero_initialized_pixel_brightness_sums_for_actual_digit
                         .iter_mut()
                         .zip(normalized_pixels)
                 {
                     // Складываем яркости в одной и той же координате изображения.
-                    *pixel_brightness_sum += pixel_brightness;
+                    *pixel_brightness_sum += pixel_brightness.value();
                 }
             }
             if ALL_DIGITS.into_iter().any(|digit: Digit| -> bool {
@@ -263,108 +265,112 @@ fn main() -> Result<(), String> {
     // mean_image_by_digit берём из окружающего блока: это уже обученные средние изображения.
     // images_with_actual_digits — картинки с правильными ответами.
     // Для каждой картинки сохраняем правильную и предсказанную цифры, затем печатаем точность.
-    let evaluate_digit_predictions = |images_with_actual_digits: &[([f64; 784], Digit)]| -> () {
-        // Список пополняется только во время обхода проверяемых картинок.
-        let predictions: Vec<DigitPrediction> = {
-            let mut predictions: Vec<DigitPrediction> =
-                Vec::with_capacity(images_with_actual_digits.len());
-            // Типы переменных: normalized_pixels: &[f64; 784], actual_digit: &Digit.
-            for (normalized_pixels, actual_digit) in images_with_actual_digits {
-                // Проверяем все десять классов и выбираем наименьшее расстояние до среднего.
-                // Метка текущей картинки не участвует в выборе; её используем позже для проверки ответа.
-                let predicted_digit: Digit = ALL_DIGITS
-                    .into_iter()
-                    .min_by(
-                        |&first_candidate_digit: &Digit,
-                         &second_candidate_digit: &Digit|
-                         -> std::cmp::Ordering {
-                            // Представляем картинку как точку с 784 координатами:
-                            // каждая координата — нормализованная яркость одного пикселя, а не его положение (x, y).
-                            // Среднее изображение цифры — тоже точка с 784 координатами.
-                            // Сравниваем яркости в одинаковых позициях: чем меньше сумма квадратов разниц,
-                            // тем ближе эти точки и тем больше картинка похожа на среднее изображение.
-                            // min_by выбирает цифру, среднее изображение которой ближе всего.
-                            // Квадрат евклидова расстояния: sum_p((pixel_brightness[p]-mean_image[c,p])²).
-                            // Квадраты не дают положительным и отрицательным различиям сократиться.
-                            // Корень не нужен: он не меняет порядок расстояний и выбранную цифру.
-                            let squared_distance_to_mean_image = |digit: Digit| -> f64 {
-                                normalized_pixels
-                                    .iter()
-                                    .zip(match digit {
-                                        Digit::Zero => &mean_image_by_digit.zero,
-                                        Digit::One => &mean_image_by_digit.one,
-                                        Digit::Two => &mean_image_by_digit.two,
-                                        Digit::Three => &mean_image_by_digit.three,
-                                        Digit::Four => &mean_image_by_digit.four,
-                                        Digit::Five => &mean_image_by_digit.five,
-                                        Digit::Six => &mean_image_by_digit.six,
-                                        Digit::Seven => &mean_image_by_digit.seven,
-                                        Digit::Eight => &mean_image_by_digit.eight,
-                                        Digit::Nine => &mean_image_by_digit.nine,
-                                    })
-                                    .map(
-                                        |(image_pixel_brightness, mean_pixel_brightness): (
-                                            &f64,
-                                            &f64,
-                                        )|
-                                         -> f64 {
-                                            // println!(
-                                            //     "digit={digit:?}, image_pixel_brightness={image_pixel_brightness}, mean_pixel_brightness={mean_pixel_brightness}"
-                                            // );
-                                            (image_pixel_brightness - mean_pixel_brightness).powi(2)
-                                        },
-                                    )
-                                    .sum::<f64>()
-                            };
-                            let first: f64 = squared_distance_to_mean_image(first_candidate_digit);
-                            let second: f64 =
-                                squared_distance_to_mean_image(second_candidate_digit);
-                            println!("first {first}, second {second}");
-                            first.total_cmp(&second)
-                        },
-                    )
-                    .unwrap();
-                predictions.push(DigitPrediction {
-                    actual_digit: *actual_digit,
-                    predicted_digit,
-                });
-            }
-            predictions
+    let evaluate_digit_predictions =
+        |images_with_actual_digits: &[([NormalizedPixelBrightness; 784], Digit)]| -> () {
+            // Список пополняется только во время обхода проверяемых картинок.
+            let predictions: Vec<DigitPrediction> = {
+                let mut predictions: Vec<DigitPrediction> =
+                    Vec::with_capacity(images_with_actual_digits.len());
+                // Типы переменных: normalized_pixels: &[NormalizedPixelBrightness; 784], actual_digit: &Digit.
+                for (normalized_pixels, actual_digit) in images_with_actual_digits {
+                    // Проверяем все десять классов и выбираем наименьшее расстояние до среднего.
+                    // Метка текущей картинки не участвует в выборе; её используем позже для проверки ответа.
+                    let predicted_digit: Digit = ALL_DIGITS
+                        .into_iter()
+                        .min_by(
+                            |&first_candidate_digit: &Digit,
+                             &second_candidate_digit: &Digit|
+                             -> std::cmp::Ordering {
+                                // Представляем картинку как точку с 784 координатами:
+                                // каждая координата — нормализованная яркость одного пикселя, а не его положение (x, y).
+                                // Среднее изображение цифры — тоже точка с 784 координатами.
+                                // Сравниваем яркости в одинаковых позициях: чем меньше сумма квадратов разниц,
+                                // тем ближе эти точки и тем больше картинка похожа на среднее изображение.
+                                // min_by выбирает цифру, среднее изображение которой ближе всего.
+                                // Квадрат евклидова расстояния: sum_p((pixel_brightness[p]-mean_image[c,p])²).
+                                // Квадраты не дают положительным и отрицательным различиям сократиться.
+                                // Корень не нужен: он не меняет порядок расстояний и выбранную цифру.
+                                let squared_distance_to_mean_image = |digit: Digit| -> f64 {
+                                    normalized_pixels
+                                        .iter()
+                                        .zip(match digit {
+                                            Digit::Zero => &mean_image_by_digit.zero,
+                                            Digit::One => &mean_image_by_digit.one,
+                                            Digit::Two => &mean_image_by_digit.two,
+                                            Digit::Three => &mean_image_by_digit.three,
+                                            Digit::Four => &mean_image_by_digit.four,
+                                            Digit::Five => &mean_image_by_digit.five,
+                                            Digit::Six => &mean_image_by_digit.six,
+                                            Digit::Seven => &mean_image_by_digit.seven,
+                                            Digit::Eight => &mean_image_by_digit.eight,
+                                            Digit::Nine => &mean_image_by_digit.nine,
+                                        })
+                                        .map(
+                                            |(image_pixel_brightness, mean_pixel_brightness): (
+                                                &NormalizedPixelBrightness,
+                                                &f64,
+                                            )|
+                                             -> f64 {
+                                                // println!(
+                                                //     "digit={digit:?}, image_pixel_brightness={image_pixel_brightness}, mean_pixel_brightness={mean_pixel_brightness}"
+                                                // );
+                                                (image_pixel_brightness.value()
+                                                    - mean_pixel_brightness)
+                                                    .powi(2)
+                                            },
+                                        )
+                                        .sum::<f64>()
+                                };
+                                let first: f64 =
+                                    squared_distance_to_mean_image(first_candidate_digit);
+                                let second: f64 =
+                                    squared_distance_to_mean_image(second_candidate_digit);
+                                println!("first {first}, second {second}");
+                                first.total_cmp(&second)
+                            },
+                        )
+                        .unwrap();
+                    predictions.push(DigitPrediction {
+                        actual_digit: *actual_digit,
+                        predicted_digit,
+                    });
+                }
+                predictions
+            };
+            let image_count: usize = predictions.len();
+            // Ответ правильный, если предсказанная цифра совпадает с настоящей.
+            let model_correct_count: usize = predictions
+                .iter()
+                .filter(|prediction: &&DigitPrediction| -> bool {
+                    prediction.actual_digit == prediction.predicted_digit
+                })
+                .count();
+            // Accuracy = model_correct_count/image_count. Например, 8 из 10 дают 0.8.
+            println!(
+                "n={image_count}, accuracy={:.4}",
+                model_correct_count as f64 / image_count as f64
+            );
+            // if dataset_name == "test" {
+            //     println!("Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9");
+            //     // Типы переменных: actual_digit: Digit.
+            //     for actual_digit in ALL_DIGITS {
+            //         // Для каждой предсказанной цифры считаем записи с нужной парой цифр.
+            //         let counts_for_actual_digit: Vec<usize> = ALL_DIGITS
+            //             .into_iter()
+            //             .map(|predicted_digit: Digit| -> usize {
+            //                 predictions
+            //                     .iter()
+            //                     .filter(|prediction: &&DigitPrediction| -> bool {
+            //                         prediction.actual_digit == actual_digit
+            //                             && prediction.predicted_digit == predicted_digit
+            //                     })
+            //                     .count()
+            //             })
+            //             .collect();
+            //         println!("{counts_for_actual_digit:?}");
+            //     }
+            // }
         };
-        let image_count: usize = predictions.len();
-        // Ответ правильный, если предсказанная цифра совпадает с настоящей.
-        let model_correct_count: usize = predictions
-            .iter()
-            .filter(|prediction: &&DigitPrediction| -> bool {
-                prediction.actual_digit == prediction.predicted_digit
-            })
-            .count();
-        // Accuracy = model_correct_count/image_count. Например, 8 из 10 дают 0.8.
-        println!(
-            "n={image_count}, accuracy={:.4}",
-            model_correct_count as f64 / image_count as f64
-        );
-        // if dataset_name == "test" {
-        //     println!("Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9");
-        //     // Типы переменных: actual_digit: Digit.
-        //     for actual_digit in ALL_DIGITS {
-        //         // Для каждой предсказанной цифры считаем записи с нужной парой цифр.
-        //         let counts_for_actual_digit: Vec<usize> = ALL_DIGITS
-        //             .into_iter()
-        //             .map(|predicted_digit: Digit| -> usize {
-        //                 predictions
-        //                     .iter()
-        //                     .filter(|prediction: &&DigitPrediction| -> bool {
-        //                         prediction.actual_digit == actual_digit
-        //                             && prediction.predicted_digit == predicted_digit
-        //                     })
-        //                     .count()
-        //             })
-        //             .collect();
-        //         println!("{counts_for_actual_digit:?}");
-        //     }
-        // }
-    };
 
     // Проверяем готовые наборы validation и test, не изменяя обученные средние изображения.
     evaluate_digit_predictions(&validation_images);
