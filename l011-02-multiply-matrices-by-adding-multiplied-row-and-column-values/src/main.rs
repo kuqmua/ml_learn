@@ -1,7 +1,7 @@
 // Урок 011. Строим новую таблицу из двух исходных таблиц чисел.
-// Для одной ячейки берём строку первой таблицы и столбец второй.
+// Для результата [i][j] перебираем общий индекс k: left[i][k] * right[k][j].
 // Умножаем числа на одинаковых местах и складываем результаты.
-// Поэтому число столбцов первой таблицы должно совпадать с числом строк второй.
+// Поэтому второе измерение первого массива должно совпадать с первым измерением второго.
 // Например, таблицы 2×3 и 3×4 дают результат 2×4.
 
 use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_then_add_results;
@@ -32,15 +32,15 @@ fn main() {
             "внутренние размеры матриц должны совпадать"
         );
         let mut multiplied_matrix: [[f64; 2]; 2] = [[0.0; 2]; 2];
-        for row_index in 0..matrix_on_left.len() {
-            for column_index in 0..matrix_on_right[0].len() {
+        for first_dimension_index in 0..matrix_on_left.len() {
+            for second_dimension_index in 0..matrix_on_right[0].len() {
                 let column_values: [f64; 2] = [
-                    matrix_on_right[0][column_index],
-                    matrix_on_right[1][column_index],
+                    matrix_on_right[0][second_dimension_index],
+                    matrix_on_right[1][second_dimension_index],
                 ];
-                multiplied_matrix[row_index][column_index] =
+                multiplied_matrix[first_dimension_index][second_dimension_index] =
                     multiply_matching_coords_then_add_results(
-                        &matrix_on_left[row_index],
+                        &matrix_on_left[first_dimension_index],
                         &column_values,
                     )
                     .expect("внутренние размеры матриц должны совпадать");
@@ -62,6 +62,6 @@ fn main() {
 }
 
 // Чему учит этот урок:
-// Учимся вычислять каждую ячейку произведения матриц из строки слева и столбца справа.
+// Учимся вычислять каждый элемент произведения матриц суммированием по общему измерению.
 // Проверяем, что порядок умножения влияет на ответ, а умножение на единичную матрицу сохраняет
 // значения.

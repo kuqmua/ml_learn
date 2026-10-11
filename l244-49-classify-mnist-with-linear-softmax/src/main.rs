@@ -7,7 +7,7 @@ fn main() -> Result<(), String> {
     // Adam обновляет веса по этим градиентам. Так повторяем много batch и эпох.
     //
     // Картинки обрабатываются группами: обычно по 64, последняя группа может быть меньше.
-    // В матрице входов каждая строка содержит 784 яркости одной картинки.
+    // Во входном массиве первое измерение выбирает картинку, второе — одну из 784 яркостей.
     // Матрица весов связывает каждый пиксель с оценкой каждой из десяти цифр.
     // Весь код остаётся в main: замыкания ниже объявляют операции, а вызываются
     // в блоках обучения и оценки. Из вложенных блоков выходят только нужные результаты.
@@ -75,27 +75,31 @@ fn main() -> Result<(), String> {
     let calculate_digit_scores = |linear_layer: &WeightsAndBiasesAsLinearLayer,
                                   input_pixels: &Vec<Vec<f32>>|
      -> ForwardPass {
-        // input_pixels — матрица яркостей: одна строка на картинку, 784 столбца для пикселей.
-        // linear_layer.weights — матрица весов: 784 строки для пикселей, 10 столбцов для цифр.
+        // input_pixels[картинка][пиксель]: размер первого измерения — число картинок, второго — 784.
+        // linear_layer.weights[пиксель][цифра]: размеры измерений — 784 и 10.
         // Каждый вес задаёт вклад яркости определённого пикселя в оценку определённой цифры.
         // linear_layer.biases — 10 обучаемых смещений, по одному на цифру.
         // Смещение цифры прибавляется к её оценке для каждой картинки независимо от пикселей.
-        // digit_scores — матрица результатов: одна строка на картинку, 10 столбцов для оценок цифр.
+        // digit_scores[картинка][цифра]: размер первого измерения — число картинок, второго — 10.
         // Оценки пока не являются вероятностями.
         // Оценка цифры = сумма произведений яркостей пикселей на веса этой цифры + её смещение.
         // Вложенные циклы суммируют вклады пикселей, затем прибавляют смещения.
         let mut digit_scores: Vec<Vec<f32>> =
             vec![vec![0.0; linear_layer.biases.len()]; input_pixels.len()];
-        for pixels_index in 0..input_pixels.len() {
+        // Типы переменных: input_pixels_index: usize.
+        for input_pixels_index in 0..input_pixels.len() {
+            // Типы переменных: weights_index: usize.
             for weights_index in 0..linear_layer.weights.len() {
+                // Типы переменных: biases_index: usize.
                 for biases_index in 0..linear_layer.biases.len() {
-                    digit_scores[pixels_index][biases_index] += input_pixels[pixels_index]
-                        [weights_index]
+                    digit_scores[input_pixels_index][biases_index] += input_pixels
+                        [input_pixels_index][weights_index]
                         * linear_layer.weights[weights_index][biases_index];
                 }
             }
+            // Типы переменных: biases_index: usize.
             for biases_index in 0..linear_layer.biases.len() {
-                digit_scores[pixels_index][biases_index] += linear_layer.biases[biases_index];
+                digit_scores[input_pixels_index][biases_index] += linear_layer.biases[biases_index];
             }
         }
         ForwardPass {
@@ -108,7 +112,7 @@ fn main() -> Result<(), String> {
     // Вероятность правильной цифры 0.9 даёт ошибку около 0.105, а 0.1 — около 2.303.
     // Loss не равна доле неверных ответов: учитывает уверенность даже при правильном прогнозе.
     // Вычисляем среднюю ошибку и её производные по оценкам цифр для обновления весов.
-    // В digit_scores одна строка на картинку и десять столбцов с оценками цифр.
+    // В digit_scores первое измерение выбирает картинку, второе — оценку цифры.
     let calculate_cross_entropy_and_gradient =
         |digit_scores: &Vec<Vec<f32>>, actual_digits: &[Digit]| -> (f32, Vec<Vec<f32>>) {
             assert_eq!(digit_scores.len(), actual_digits.len());
@@ -130,11 +134,12 @@ fn main() -> Result<(), String> {
                         .iter()
                         .copied()
                         .fold(f32::NEG_INFINITY, f32::max);
-                    // Сохраняем исходный score правильного класса до преобразования строки.
-                    // actual_digit as usize выбирает столбец правильной цифры в digit_scores.
+                    // Сохраняем исходный score правильного класса до преобразования значений примера.
+                    // actual_digit as usize — индекс правильной цифры во втором измерении digit_scores.
                     let actual_digit_score: f32 =
                         scores_then_gradients_for_image[actual_digit as usize];
                     // Строка теперь содержит экспоненты разностей оценок и максимальной оценки.
+                    // Типы переменных: score: &mut f32.
                     for score in scores_then_gradients_for_image.iter_mut() {
                         *score = (*score - maximum_score).exp();
                     }
@@ -143,6 +148,7 @@ fn main() -> Result<(), String> {
                     // Так не нужно вычислять ln почти нулевой вероятности, которая могла округлиться до 0.
                     total_loss += maximum_score + exponential_sum.ln() - actual_digit_score;
                     // Делим экспоненты на их сумму: получаем вероятности, сумма которых равна 1.
+                    // Типы переменных: value: &mut f32.
                     for value in scores_then_gradients_for_image.iter_mut() {
                         *value /= exponential_sum;
                     }
@@ -151,6 +157,7 @@ fn main() -> Result<(), String> {
                     scores_then_gradients_for_image[actual_digit as usize] -= 1.0;
                     // Учим по средней ошибке группы, поэтому делим производные на число картинок в ней.
                     // Неполный последний batch тоже считается правильно. Повторно делить градиенты не надо.
+                    // Типы переменных: value: &mut f32.
                     for value in scores_then_gradients_for_image.iter_mut() {
                         *value /= actual_digits.len() as f32;
                     }
@@ -159,20 +166,24 @@ fn main() -> Result<(), String> {
             };
             (total_loss / actual_digits.len() as f32, score_gradients)
         };
-    // Группа для обучения и оценки: строка из 784 яркостей и правильная цифра для каждой картинки.
+    // Группа для обучения и оценки: массив из 784 яркостей и правильная цифра для каждой картинки.
     // Индексы выбирают записи; нормализованные f64 пиксели переводим в f32 сети.
     let build_image_batch = |images_with_actual_digits: &[([f64; 784], Digit)],
                              batch_image_indices: &[usize]|
      -> (Vec<Vec<f32>>, Vec<Digit>) {
         (
             {
-                let row_count: usize = batch_image_indices.len();
-                let column_count: usize = 784;
-                let mut values: Vec<Vec<f32>> = vec![vec![0.0; column_count]; row_count];
-                for row_index in 0..row_count {
-                    for column_index in 0..column_count {
-                        let (image_position, pixel_index) = (row_index, column_index);
-                        values[row_index][column_index] = {
+                let first_dimension_length: usize = batch_image_indices.len();
+                let second_dimension_length: usize = 784;
+                let mut values: Vec<Vec<f32>> =
+                    vec![vec![0.0; second_dimension_length]; first_dimension_length];
+                // Типы переменных: first_dimension_index: usize.
+                for first_dimension_index in 0..first_dimension_length {
+                    // Типы переменных: second_dimension_index: usize.
+                    for second_dimension_index in 0..second_dimension_length {
+                        let (image_position, pixel_index): (usize, usize) =
+                            (first_dimension_index, second_dimension_index);
+                        values[first_dimension_index][second_dimension_index] = {
                             images_with_actual_digits[batch_image_indices[image_position]].0
                                 [pixel_index] as f32
                         };
@@ -265,22 +276,29 @@ fn main() -> Result<(), String> {
              weights: &Vec<Vec<f32>>,
              score_gradients: &Vec<Vec<f32>>|
              -> (Vec<Vec<f32>>, Vec<Vec<f32>>, Vec<f32>) {
-                let mut input_gradient = vec![vec![0.0; weights.len()]; input_pixels.len()];
-                let mut weight_gradient = vec![vec![0.0; weights[0].len()]; weights.len()];
-                let mut bias_gradient = vec![0.0; weights[0].len()];
-                for pixels_index in 0..input_pixels.len() {
+                let mut input_gradient: Vec<Vec<f32>> =
+                    vec![vec![0.0; weights.len()]; input_pixels.len()];
+                let mut weight_gradient: Vec<Vec<f32>> =
+                    vec![vec![0.0; weights[0].len()]; weights.len()];
+                let mut bias_gradient: Vec<f32> = vec![0.0; weights[0].len()];
+                // Типы переменных: input_pixels_index: usize.
+                for input_pixels_index in 0..input_pixels.len() {
+                    // Типы переменных: weights_index: usize.
                     for weights_index in 0..weights.len() {
+                        // Типы переменных: output_neurons_index: usize.
                         for output_neurons_index in 0..weights[weights_index].len() {
-                            input_gradient[pixels_index][weights_index] += score_gradients
-                                [pixels_index][output_neurons_index]
+                            input_gradient[input_pixels_index][weights_index] += score_gradients
+                                [input_pixels_index][output_neurons_index]
                                 * weights[weights_index][output_neurons_index];
                             weight_gradient[weights_index][output_neurons_index] += input_pixels
-                                [pixels_index][weights_index]
-                                * score_gradients[pixels_index][output_neurons_index];
+                                [input_pixels_index][weights_index]
+                                * score_gradients[input_pixels_index][output_neurons_index];
                         }
                     }
+                    // Типы переменных: biases_index: usize.
                     for biases_index in 0..bias_gradient.len() {
-                        bias_gradient[biases_index] += score_gradients[pixels_index][biases_index];
+                        bias_gradient[biases_index] +=
+                            score_gradients[input_pixels_index][biases_index];
                     }
                 }
                 (input_gradient, weight_gradient, bias_gradient)
@@ -343,12 +361,15 @@ fn main() -> Result<(), String> {
                 let initial_weight_bound: f32 = (6.0 / input_feature_count as f32).sqrt();
                 WeightsAndBiasesAsLinearLayer {
                     weights: {
-                        let row_count: usize = input_feature_count;
-                        let column_count: usize = output_digit_count;
-                        let mut values: Vec<Vec<f32>> = vec![vec![0.0; column_count]; row_count];
-                        for row_index in 0..row_count {
-                            for column_index in 0..column_count {
-                                values[row_index][column_index] = {
+                        let first_dimension_length: usize = input_feature_count;
+                        let second_dimension_length: usize = output_digit_count;
+                        let mut values: Vec<Vec<f32>> =
+                            vec![vec![0.0; second_dimension_length]; first_dimension_length];
+                        // Типы переменных: first_dimension_index: usize.
+                        for first_dimension_index in 0..first_dimension_length {
+                            // Типы переменных: second_dimension_index: usize.
+                            for second_dimension_index in 0..second_dimension_length {
+                                values[first_dimension_index][second_dimension_index] = {
                                     // Старшие 24 бита превращаем в random_fraction от 0 до 1; 2*random_fraction-1 даёт [-1,1).
                                     // Умножение на initial_weight_bound задаёт диапазон начальных весов.
                                     let random_fraction: f32 =
@@ -486,24 +507,18 @@ fn main() -> Result<(), String> {
                             ) in linear_layer
                                 .weights
                                 .iter_mut()
-                                .flat_map(|input_feature| input_feature.iter_mut())
-                                .zip(
-                                    average_gradients
-                                        .weights
-                                        .iter_mut()
-                                        .flat_map(|input_feature| input_feature.iter_mut()),
-                                )
-                                .zip(
-                                    average_squared_gradients
-                                        .weights
-                                        .iter_mut()
-                                        .flat_map(|input_feature| input_feature.iter_mut()),
-                                )
+                                .flat_map(|input_feature: &mut Vec<f32>| input_feature.iter_mut())
+                                .zip(average_gradients.weights.iter_mut().flat_map(
+                                    |input_feature: &mut Vec<f32>| input_feature.iter_mut(),
+                                ))
+                                .zip(average_squared_gradients.weights.iter_mut().flat_map(
+                                    |input_feature: &mut Vec<f32>| input_feature.iter_mut(),
+                                ))
                                 .zip(
                                     parameter_gradients
                                         .weights
                                         .iter()
-                                        .flat_map(|input_feature| input_feature.iter()),
+                                        .flat_map(|input_feature: &Vec<f32>| input_feature.iter()),
                                 )
                             {
                                 // average_gradient хранит сглаженный градиент, включая его знак: 90% прежнего + 10% нового.
@@ -595,7 +610,7 @@ fn main() -> Result<(), String> {
             evaluation.accuracy,
             started_at.elapsed().as_secs_f32()
         );
-        println!("Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9");
+        println!("Ошибки[истинная цифра][прогноз]: оба измерения соответствуют цифрам 0..9");
         // Типы переменных: actual_digit: Digit.
         for actual_digit in ALL_DIGITS {
             let counts_for_actual_digit: Vec<usize> = ALL_DIGITS

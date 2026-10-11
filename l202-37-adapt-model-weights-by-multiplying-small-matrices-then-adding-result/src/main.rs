@@ -1,5 +1,5 @@
 // Урок 202. Обучаем поправку малого ранга, сохраняя исходную матрицу.
-// Прогноз = W*x + B*(A*x). Здесь A — строка из 4 весов, B — столбец из 4 весов.
+// Прогноз = W*x + B*(A*x). Здесь A содержит 4 веса входного измерения, B — 4 веса выходного измерения.
 // Вместо изменения 16 весов W обучаем 8 весов A и B.
 
 use l018_03_estimate_derivative_from_two_nearby_function_values::estimate_derivative_from_two_nearby_function_values;
@@ -15,13 +15,13 @@ fn main() {
     let original = frozen;
     let predict = |input: [f64; 4], a: [f64; 4], b: [f64; 4]| {
         let projected = a.iter().zip(input).map(|(w, x)| w * x).sum::<f64>();
-        std::array::from_fn::<f64, 4, _>(|row| {
-            let base = frozen[row]
+        std::array::from_fn::<f64, 4, _>(|first_dimension_index| {
+            let base = frozen[first_dimension_index]
                 .iter()
                 .zip(input)
                 .map(|(w, x)| w * x)
                 .sum::<f64>();
-            base + b[row] * projected
+            base + b[first_dimension_index] * projected
         })
     };
     // Новая задача требует добавлять разные доли первой координаты к каждому выходу.
@@ -46,7 +46,10 @@ fn main() {
                 let prediction = predict(input, a, b);
                 let expected = target(input);
                 (0..4)
-                    .map(|row| (prediction[row] - expected[row]).powi(2))
+                    .map(|first_dimension_index| {
+                        (prediction[first_dimension_index] - expected[first_dimension_index])
+                            .powi(2)
+                    })
                     .sum::<f64>()
             })
             .sum::<f64>()
@@ -64,12 +67,15 @@ fn main() {
             let projected = a.iter().zip(input).map(|(w, x)| w * x).sum::<f64>();
             let prediction = predict(input, a, b);
             let expected = target(input);
-            for row_index in 0..4 {
-                let output_derivative = 2.0 * (prediction[row_index] - expected[row_index]) / 16.0;
-                gradient_b[row_index] += output_derivative * projected;
-                for column_index in 0..4 {
-                    gradient_a[column_index] +=
-                        output_derivative * b[row_index] * input[column_index];
+            for first_dimension_index in 0..4 {
+                let output_derivative = 2.0
+                    * (prediction[first_dimension_index] - expected[first_dimension_index])
+                    / 16.0;
+                gradient_b[first_dimension_index] += output_derivative * projected;
+                for second_dimension_index in 0..4 {
+                    gradient_a[second_dimension_index] += output_derivative
+                        * b[first_dimension_index]
+                        * input[second_dimension_index];
                 }
             }
         }

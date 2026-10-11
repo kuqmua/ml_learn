@@ -6,8 +6,8 @@ fn main() -> Result<(), String> {
     // Оба слоя обучаются. Ошибку передаём назад от выхода к скрытому слою и к весам.
     //
     // N — число картинок в batch; X — входы, W — веса, b — смещения, L — ошибка.
-    // Форма [N,784] означает: одна строка на картинку, один столбец на пиксель.
-    // Знак T означает транспонирование: строки и столбцы меняются местами.
+    // Форма [N,784]: первое измерение выбирает картинку, второе — пиксель.
+    // Знак T означает транспонирование: первое и второе измерения меняются местами.
     // В слоях используем f32 — числа с плавающей точкой, достаточные для этого опыта.
     // Сначала объявляем локальные операции, затем main выполняет подготовку,
     // обучение, выбор лучшей эпохи по validation и одну итоговую оценку на test.
@@ -75,21 +75,25 @@ fn main() -> Result<(), String> {
             // ReLU(x) = max(x,0). Она «выключает» отрицательные ответы нейронов.
             // Без нелинейности два последовательных Dense можно было бы заменить одним.
             let dense = |input: &Vec<ExampleFeatures>, layer: &Layer| -> Vec<ExampleFeatures> {
-                let mut output = vec![
+                let mut output: Vec<ExampleFeatures> = vec![
                     ExampleFeatures {
                         features: vec![0.0; layer.biases.len()]
                     };
                     input.len()
                 ];
+                // Типы переменных: input_index: usize.
                 for input_index in 0..input.len() {
                     assert_eq!(input[input_index].features.len(), layer.weights.len());
+                    // Типы переменных: weights_index: usize.
                     for weights_index in 0..layer.weights.len() {
+                        // Типы переменных: biases_index: usize.
                         for biases_index in 0..layer.biases.len() {
                             output[input_index].features[biases_index] += input[input_index]
                                 .features[weights_index]
                                 * layer.weights[weights_index].output_neurons[biases_index];
                         }
                     }
+                    // Типы переменных: biases_index: usize.
                     for biases_index in 0..layer.biases.len() {
                         output[input_index].features[biases_index] += layer.biases[biases_index];
                     }
@@ -97,9 +101,11 @@ fn main() -> Result<(), String> {
                 output
             };
             let relu = |values: &Vec<ExampleFeatures>| -> Vec<ExampleFeatures> {
-                let mut output = values.clone();
-                for row in &mut output {
-                    for value in &mut row.features {
+                let mut output: Vec<ExampleFeatures> = values.clone();
+                // Типы переменных: example_values: &mut ExampleFeatures.
+                for example_values in &mut output {
+                    // Типы переменных: value: &mut f32.
+                    for value in &mut example_values.features {
                         *value = value.max(0.0);
                     }
                 }
@@ -134,38 +140,41 @@ fn main() -> Result<(), String> {
                     // а затем в производные; исходные scores при этом остаются неизменными.
                     let mut gradient: Vec<ExampleFeatures> = scores.clone();
                     let mut loss: f32 = 0.0;
-                    // Типы переменных: row: &mut ExampleFeatures, label: Digit.
-                    for (row, &label) in gradient.iter_mut().zip(labels) {
-                        assert!((label as usize) < row.features.len());
+                    // Типы переменных: example_values: &mut ExampleFeatures, label: Digit.
+                    for (example_values, &label) in gradient.iter_mut().zip(labels) {
+                        assert!((label as usize) < example_values.features.len());
                         // Softmax: p_c = exp(score_c) / sum(exp(scores)). Вычитаем один максимум
                         // из всех scores: вероятности сохраняются, а экспоненты не переполняются.
-                        let max: f32 = row
+                        let max: f32 = example_values
                             .features
                             .iter()
                             .copied()
                             .fold(f32::NEG_INFINITY, f32::max);
-                        // Сохраняем исходный score правильного класса до преобразования строки.
-                        // label — вариант Digit; label as usize выбирает столбец этой цифры в scores.
-                        let target: f32 = row.features[label as usize];
-                        // Теперь в строке exp(score_c - max); это положительные ненормированные веса.
-                        for value in row.features.iter_mut() {
+                        // Сохраняем исходный score правильного класса до преобразования значений примера.
+                        // label — вариант Digit; label as usize выбирает значение этой цифры во втором измерении scores.
+                        let target: f32 = example_values.features[label as usize];
+                        // Теперь значения примера равны exp(score_c - max); это положительные ненормированные веса.
+                        // Типы переменных: value: &mut f32.
+                        for value in example_values.features.iter_mut() {
                             *value = (*value - max).exp();
                         }
-                        let sum: f32 = row.features.iter().sum();
+                        let sum: f32 = example_values.features.iter().sum();
                         // Это -ln(p_target), записанное как log-sum-exp - score_target.
                         // Так не нужно вычислять ln почти нулевой вероятности, которая могла округлиться до 0.
                         loss += max + sum.ln() - target;
                         // Делим экспоненты на их сумму: получаем вероятности, сумма которых равна 1.
-                        for value in row.features.iter_mut() {
+                        // Типы переменных: value: &mut f32.
+                        for value in example_values.features.iter_mut() {
                             *value /= sum;
                         }
                         // Для softmax вместе с cross-entropy производная равна p - one_hot(label).
-                        // one_hot — строка с единицей у правильного класса и нулями у остальных.
+                        // one_hot — массив с единицей у правильного класса и нулями у остальных.
                         // Пример: p=[0.2,0.8], правильный класс 0 -> производная [-0.8,0.8].
-                        row.features[label as usize] -= 1.0;
+                        example_values.features[label as usize] -= 1.0;
                         // Мы учим по СРЕДНЕЙ ошибке batch, поэтому делим производные на фактический N.
                         // Неполный последний batch тоже считается правильно. Повторно делить градиенты не надо.
-                        for value in row.features.iter_mut() {
+                        // Типы переменных: value: &mut f32.
+                        for value in example_values.features.iter_mut() {
                             *value /= labels.len() as f32;
                         }
                     }
@@ -173,25 +182,28 @@ fn main() -> Result<(), String> {
                 };
                 (loss / labels.len() as f32, gradient)
             };
-        // Один batch для обучения и оценки: строки X=[N,784], метки labels=[N].
+        // Один batch: X[картинка][пиксель] имеет размеры [N,784], а labels[картинка] — [N].
         // Индексы выбирают записи; нормализованные f64 пиксели переводим в f32 сети.
         let batch = |digits: &[([f64; 784], Digit)],
                      examples: &[usize]|
          -> (Vec<ExampleFeatures>, Vec<Digit>) {
             (
                 {
-                    let row_count: usize = examples.len();
-                    let column_count: usize = 784;
+                    let first_dimension_length: usize = examples.len();
+                    let second_dimension_length: usize = 784;
                     let mut values: Vec<ExampleFeatures> = vec![
                         ExampleFeatures {
-                            features: vec![0.0; column_count]
+                            features: vec![0.0; second_dimension_length]
                         };
-                        row_count
+                        first_dimension_length
                     ];
-                    for row_index in 0..row_count {
-                        for column_index in 0..column_count {
-                            let (examples_index, pixels_index) = (row_index, column_index);
-                            values[row_index].features[column_index] =
+                    // Типы переменных: first_dimension_index: usize.
+                    for first_dimension_index in 0..first_dimension_length {
+                        // Типы переменных: second_dimension_index: usize.
+                        for second_dimension_index in 0..second_dimension_length {
+                            let (examples_index, pixels_index): (usize, usize) =
+                                (first_dimension_index, second_dimension_index);
+                            values[first_dimension_index].features[second_dimension_index] =
                                 digits[examples[examples_index]].0[pixels_index] as f32;
                         }
                     }
@@ -212,24 +224,24 @@ fn main() -> Result<(), String> {
                         examples: &[usize],
                         batch_size: usize|
          -> (f32, f32, [[usize; 10]; 10]) {
-            // Находим столбец с наибольшим score и возвращаем соответствующий вариант Digit.
+            // Находим индекс наибольшего score в массиве оценок одной картинки и возвращаем Digit.
             // Softmax сохраняет порядок scores, поэтому для выбора класса вероятности не нужны.
             // При одинаковых scores берём меньший индекс: результат однозначен.
-            let argmax = |row: &[f32]| -> Digit {
-                let scores_index: usize = (0..row.len())
+            let argmax = |example_values: &[f32]| -> Digit {
+                let scores_index: usize = (0..example_values.len())
                     .max_by(
                         |&first_scores_index: &usize,
                          &second_scores_index: &usize|
                          -> std::cmp::Ordering {
-                            row[first_scores_index]
-                                .total_cmp(&row[second_scores_index])
+                            example_values[first_scores_index]
+                                .total_cmp(&example_values[second_scores_index])
                                 .then_with(|| -> std::cmp::Ordering {
                                     second_scores_index.cmp(&first_scores_index)
                                 })
                         },
                     )
                     .unwrap();
-                // ALL_DIGITS переводит индекс столбца обратно в метку Digit.
+                // ALL_DIGITS переводит индекс оценки обратно в метку Digit.
                 ALL_DIGITS[scores_index]
             };
 
@@ -251,9 +263,9 @@ fn main() -> Result<(), String> {
                     // чтобы накопить сумму по картинкам; в конце делим на размер всей выборки.
                     // Так маленький последний batch не получает такой же вес, как большой.
                     loss += cross_entropy(scores, &labels).0 * indices.len() as f32;
-                    // Типы переменных: row: &ExampleFeatures, label: Digit.
-                    for (row, label) in scores.iter().zip(labels) {
-                        let predicted: Digit = argmax(&row.features);
+                    // Типы переменных: example_values: &ExampleFeatures, label: Digit.
+                    for (example_values, label) in scores.iter().zip(labels) {
+                        let predicted: Digit = argmax(&example_values.features);
                         confusion[label as usize][predicted as usize] += 1;
                     }
                 }
@@ -281,7 +293,7 @@ fn main() -> Result<(), String> {
                 data.display()
             );
             // Для Z = XW+b и входящего G=dL/dZ правило цепочки даёт:
-            // dL/dX = G W^T, dL/dW = X^T G, dL/db = сумма строк G.
+            // dL/dX = G W^T, dL/dW = X^T G, dL/db = сумма G по первому измерению (примерам).
             // Формы: X=[N,D], W=[D,K], G=[N,K]; результаты [N,D], [D,K], [K].
             // Результат — (градиент по входу, градиент весов, градиент смещений).
             let dense_backward =
@@ -289,21 +301,24 @@ fn main() -> Result<(), String> {
                  weights: &Vec<InputFeatureWeights>,
                  gradient: &Vec<ExampleFeatures>|
                  -> (Vec<ExampleFeatures>, Vec<InputFeatureWeights>, Vec<f32>) {
-                    let mut input_gradient = vec![
+                    let mut input_gradient: Vec<ExampleFeatures> = vec![
                         ExampleFeatures {
                             features: vec![0.0; weights.len()]
                         };
                         input.len()
                     ];
-                    let mut weight_gradient = vec![
+                    let mut weight_gradient: Vec<InputFeatureWeights> = vec![
                         InputFeatureWeights {
                             output_neurons: vec![0.0; weights[0].output_neurons.len()]
                         };
                         weights.len()
                     ];
-                    let mut bias_gradient = vec![0.0; weights[0].output_neurons.len()];
+                    let mut bias_gradient: Vec<f32> = vec![0.0; weights[0].output_neurons.len()];
+                    // Типы переменных: input_index: usize.
                     for input_index in 0..input.len() {
+                        // Типы переменных: weights_index: usize.
                         for weights_index in 0..weights.len() {
+                            // Типы переменных: output_neurons_index: usize.
                             for output_neurons_index in
                                 0..weights[weights_index].output_neurons.len()
                             {
@@ -317,6 +332,7 @@ fn main() -> Result<(), String> {
                                     * gradient[input_index].features[output_neurons_index];
                             }
                         }
+                        // Типы переменных: biases_index: usize.
                         for biases_index in 0..bias_gradient.len() {
                             bias_gradient[biases_index] +=
                                 gradient[input_index].features[biases_index];
@@ -331,12 +347,14 @@ fn main() -> Result<(), String> {
                                  gradient: &Vec<ExampleFeatures>|
              -> Vec<ExampleFeatures> {
                 assert_eq!(activated.len(), gradient.len());
-                let mut result = gradient.clone();
+                let mut result: Vec<ExampleFeatures> = gradient.clone();
+                // Типы переменных: examples_index: usize.
                 for examples_index in 0..activated.len() {
                     assert_eq!(
                         activated[examples_index].features.len(),
                         gradient[examples_index].features.len()
                     );
+                    // Типы переменных: features_index: usize.
                     for features_index in 0..activated[examples_index].features.len() {
                         if activated[examples_index].features[features_index] <= 0.0 {
                             result[examples_index].features[features_index] = 0.0;
@@ -411,17 +429,20 @@ fn main() -> Result<(), String> {
                     let bound: f32 = (6.0 / input as f32).sqrt();
                     Layer {
                         weights: {
-                            let row_count: usize = input;
-                            let column_count: usize = output;
+                            let first_dimension_length: usize = input;
+                            let second_dimension_length: usize = output;
                             let mut values: Vec<InputFeatureWeights> = vec![
                                 InputFeatureWeights {
-                                    output_neurons: vec![0.0; column_count]
+                                    output_neurons: vec![0.0; second_dimension_length]
                                 };
-                                row_count
+                                first_dimension_length
                             ];
-                            for row_index in 0..row_count {
-                                for column_index in 0..column_count {
-                                    values[row_index].output_neurons[column_index] = {
+                            // Типы переменных: first_dimension_index: usize.
+                            for first_dimension_index in 0..first_dimension_length {
+                                // Типы переменных: second_dimension_index: usize.
+                                for second_dimension_index in 0..second_dimension_length {
+                                    values[first_dimension_index].output_neurons
+                                        [second_dimension_index] = {
                                         // Старшие 24 бита превращаем в f32 в [0,1); 2*uniform-1 даёт [-1,1).
                                         // Умножение на bound задаёт нужный диапазон начальных весов.
                                         let uniform: f32 =
@@ -575,27 +596,33 @@ fn main() -> Result<(), String> {
                                     for (((parameter, m), v), &g) in layers[layers_index]
                                         .weights
                                         .iter_mut()
-                                        .flat_map(|input_feature| {
+                                        .flat_map(|input_feature: &mut InputFeatureWeights| {
                                             input_feature.output_neurons.iter_mut()
                                         })
                                         .zip(
                                             first_moments[layers_index]
                                                 .weights
                                                 .iter_mut()
-                                                .flat_map(|input_feature| {
-                                                    input_feature.output_neurons.iter_mut()
-                                                }),
+                                                .flat_map(
+                                                    |input_feature: &mut InputFeatureWeights| {
+                                                        input_feature.output_neurons.iter_mut()
+                                                    },
+                                                ),
                                         )
                                         .zip(
                                             second_moments[layers_index]
                                                 .weights
                                                 .iter_mut()
-                                                .flat_map(|input_feature| {
-                                                    input_feature.output_neurons.iter_mut()
-                                                }),
+                                                .flat_map(
+                                                    |input_feature: &mut InputFeatureWeights| {
+                                                        input_feature.output_neurons.iter_mut()
+                                                    },
+                                                ),
                                         )
                                         .zip(gradients[layers_index].weights.iter().flat_map(
-                                            |input_feature| input_feature.output_neurons.iter(),
+                                            |input_feature: &InputFeatureWeights| {
+                                                input_feature.output_neurons.iter()
+                                            },
                                         ))
                                     {
                                         // m хранит сглаженный градиент, включая его знак: 90% прежнего + 10% нового.
@@ -674,10 +701,10 @@ fn main() -> Result<(), String> {
                 metrics.1,
                 start.elapsed().as_secs_f32()
             );
-            println!("Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9");
-            // Типы переменных: row: [usize; 10].
-            for row in metrics.2 {
-                println!("{row:?}");
+            println!("Ошибки[истинная цифра][прогноз]: оба измерения соответствуют цифрам 0..9");
+            // Типы переменных: example_values: [usize; 10].
+            for example_values in metrics.2 {
+                println!("{example_values:?}");
             }
         }
     }

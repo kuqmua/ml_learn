@@ -316,8 +316,9 @@ fn main() -> Result<(), String> {
                                     )
                                     .sum::<f64>()
                             };
-                            let first = squared_distance_to_mean_image(first_candidate_digit);
-                            let second = squared_distance_to_mean_image(second_candidate_digit);
+                            let first: f64 = squared_distance_to_mean_image(first_candidate_digit);
+                            let second: f64 =
+                                squared_distance_to_mean_image(second_candidate_digit);
                             println!("first {first}, second {second}");
                             first.total_cmp(&second)
                         },

@@ -115,13 +115,13 @@ fn main() {
     let _ = attention_weights;
 
     println!("Веса внимания={attention_weights:?}; контексты={_attended_output:?}");
-    for row_index in 0..3 {
+    for first_dimension_index in 0..3 {
         assert!(check_f64_eq_1e_minus_10(
-            attention_weights[row_index].iter().sum::<f64>(),
+            attention_weights[first_dimension_index].iter().sum::<f64>(),
             1.0
         ));
         assert!(
-            attention_weights[row_index][row_index + 1..]
+            attention_weights[first_dimension_index][first_dimension_index + 1..]
                 .iter()
                 .all(|&w| w == 0.0)
         );

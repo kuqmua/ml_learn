@@ -1,14 +1,14 @@
-// Урок 122. Прибавлять один вектор постоянных значений к каждой строке матрицы.
+// Урок 122. Прибавлять один вектор постоянных значений по второму измерению для каждого первого индекса.
 // Так одинаковые поправки применяются сразу ко всем примерам в группе.
 
 fn main() {
     let matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
     let mut matrix_after_adding_constant_weight: [[f64; 2]; 2] = matrix;
     let constant_input_weight: [f64; 2] = [10.0, 20.0];
-    for row_index in 0..2 {
-        for column_index in 0..2 {
-            matrix_after_adding_constant_weight[row_index][column_index] +=
-                constant_input_weight[column_index];
+    for first_dimension_index in 0..2 {
+        for second_dimension_index in 0..2 {
+            matrix_after_adding_constant_weight[first_dimension_index][second_dimension_index] +=
+                constant_input_weight[second_dimension_index];
         }
     }
 
@@ -25,5 +25,5 @@ fn main() {
 }
 
 // Чему учит этот урок:
-// Учимся прибавлять один вектор постоянных значений к каждой строке матрицы.
+// Учимся прибавлять один вектор постоянных значений по второму измерению для каждого первого индекса.
 // Так одинаковые поправки применяются сразу ко всем примерам в группе.

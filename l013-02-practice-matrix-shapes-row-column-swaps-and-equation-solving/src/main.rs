@@ -1,5 +1,5 @@
-// Урок 013. Хранить матрицу в структуре: размеры отдельно, числа строка за строкой в Vec.
-// Проверяем размеры, извлекаем строки, умножаем матрицу на вектор и переставляем строки в столбцы.
+// Урок 013. Хранить матрицу в структуре: размеры измерений отдельно, элементы последовательно в Vec.
+// Проверяем размеры, извлекаем вложенные массивы, умножаем матрицу на вектор и переставляем измерения.
 // Соединяем операции, вычисляя произведение транспонированной матрицы на исходную.
 // Решаем систему Ax=b для этой матрицы и проверяем ответ обратным умножением.
 
@@ -8,36 +8,40 @@ use l001_01_multiply_matching_coords_then_add_results::multiply_matching_coords_
 fn main() {
     #[derive(Debug, PartialEq)]
     struct Matrix {
-        rows: usize,
+        first_dimension_length: usize,
 
-        column_count: usize,
+        second_dimension_length: usize,
 
         data: Vec<f64>,
     }
 
     impl Matrix {
-        /// Создаём матрицу из элементов, перечисленных строка за строкой (row-major order).
+        /// Создаём матрицу из плоского массива: сначала перебирается второе измерение, затем первое.
         fn create_matrix_from_elements_listed_row_by_row(
-            rows: usize,
+            first_dimension_length: usize,
 
-            column_count: usize,
+            second_dimension_length: usize,
 
             data: Vec<f64>,
         ) -> Result<Self, &'static str> {
-            if rows * column_count != data.len() {
+            if first_dimension_length * second_dimension_length != data.len() {
                 return Err(
-                    "число элементов должно равняться произведению числа строк на число столбцов",
+                    "число элементов должно равняться произведению размеров двух измерений",
                 );
             }
             Ok(Self {
-                rows,
-                column_count,
+                first_dimension_length,
+                second_dimension_length,
                 data,
             })
         }
 
-        fn value_at_row_and_column(&self, row_index: usize, column_index: usize) -> f64 {
-            self.data[row_index * self.column_count + column_index]
+        fn value_at_row_and_column(
+            &self,
+            first_dimension_index: usize,
+            second_dimension_index: usize,
+        ) -> f64 {
+            self.data[first_dimension_index * self.second_dimension_length + second_dimension_index]
         }
     }
 
@@ -46,53 +50,58 @@ fn main() {
             .unwrap();
     let input_vec: [f64; 2] = [1.0, 1.0];
     assert_eq!(
-        left_matrix.column_count,
+        left_matrix.second_dimension_length,
         input_vec.len(),
         "несовместимые формы"
     );
-    let mut output_vec: Vec<f64> = Vec::with_capacity(left_matrix.rows);
-    for row_index in 0..left_matrix.rows {
-        let row_start: usize = row_index * left_matrix.column_count;
-        let row_end: usize = row_start + left_matrix.column_count;
+    let mut output_vec: Vec<f64> = Vec::with_capacity(left_matrix.first_dimension_length);
+    for first_dimension_index in 0..left_matrix.first_dimension_length {
+        let row_start: usize = first_dimension_index * left_matrix.second_dimension_length;
+        let row_end: usize = row_start + left_matrix.second_dimension_length;
 
         output_vec.push(
             multiply_matching_coords_then_add_results(
                 &left_matrix.data[row_start..row_end],
                 &input_vec,
             )
-            .expect("число элементов строки должно совпадать с числом координат вектора"),
+            .expect("размер второго измерения должен совпадать с числом координат вектора"),
         );
     }
     let mut transposed_elements: Vec<f64> = Vec::with_capacity(left_matrix.data.len());
-    for column_index in 0..left_matrix.column_count {
-        for row_index in 0..left_matrix.rows {
-            transposed_elements.push(left_matrix.value_at_row_and_column(row_index, column_index));
+    for second_dimension_index in 0..left_matrix.second_dimension_length {
+        for first_dimension_index in 0..left_matrix.first_dimension_length {
+            transposed_elements.push(
+                left_matrix.value_at_row_and_column(first_dimension_index, second_dimension_index),
+            );
         }
     }
     let transposed_matrix: Matrix = Matrix {
-        rows: left_matrix.column_count,
+        first_dimension_length: left_matrix.second_dimension_length,
 
-        column_count: left_matrix.rows,
+        second_dimension_length: left_matrix.first_dimension_length,
 
         data: transposed_elements,
     };
     assert_eq!(
-        transposed_matrix.column_count, left_matrix.rows,
+        transposed_matrix.second_dimension_length, left_matrix.first_dimension_length,
         "несовместимые формы"
     );
-    let mut result_elements: Vec<f64> =
-        Vec::with_capacity(transposed_matrix.rows * left_matrix.column_count);
-    for row_index in 0..transposed_matrix.rows {
-        for column_index in 0..left_matrix.column_count {
-            let row_start: usize = row_index * transposed_matrix.column_count;
-            let row_end: usize = row_start + transposed_matrix.column_count;
+    let mut result_elements: Vec<f64> = Vec::with_capacity(
+        transposed_matrix.first_dimension_length * left_matrix.second_dimension_length,
+    );
+    for first_dimension_index in 0..transposed_matrix.first_dimension_length {
+        for second_dimension_index in 0..left_matrix.second_dimension_length {
+            let row_start: usize =
+                first_dimension_index * transposed_matrix.second_dimension_length;
+            let row_end: usize = row_start + transposed_matrix.second_dimension_length;
 
             result_elements.push(
                 multiply_matching_coords_then_add_results(
                     &transposed_matrix.data[row_start..row_end],
-                    &(0..left_matrix.rows)
+                    &(0..left_matrix.first_dimension_length)
                         .map(|shared_index| {
-                            left_matrix.value_at_row_and_column(shared_index, column_index)
+                            left_matrix
+                                .value_at_row_and_column(shared_index, second_dimension_index)
                         })
                         .collect::<Vec<_>>(),
                 )
@@ -101,16 +110,16 @@ fn main() {
         }
     }
     let result_matrix: Matrix = Matrix::create_matrix_from_elements_listed_row_by_row(
-        transposed_matrix.rows,
-        left_matrix.column_count,
+        transposed_matrix.first_dimension_length,
+        left_matrix.second_dimension_length,
         result_elements,
     )
     .unwrap();
 
     assert_eq!(output_vec, vec![3.0, 7.0]);
     assert_eq!(transposed_matrix.data, vec![1.0, 3.0, 2.0, 4.0]);
-    // Один и тот же столбец сравниваем с собой или с другим столбцом.
-    // В результате A^T*A получаются суммы произведений каждой пары столбцов.
+    // Значения с фиксированным вторым индексом сравниваем с собой или с другим таким набором.
+    // В результате A^T*A для каждой пары вторых индексов суммируем произведения по первому измерению.
     println!(
         "Исходная матрица: {:?}; умножение на [1,1]: {output_vec:?}",
         left_matrix.data
@@ -119,7 +128,7 @@ fn main() {
 
     assert_eq!(result_matrix.data, vec![10.0, 14.0, 14.0, 20.0]);
     println!(
-        "Суммы произведений пар столбцов, A^T*A: {:?}",
+        "Суммы произведений по первому измерению, A^T*A: {:?}",
         result_matrix.data
     );
     // Обратная задача: известны результаты [5, 11], найдём вход [x, y].
@@ -129,7 +138,7 @@ fn main() {
     let row1_coef2 = left_matrix.value_at_row_and_column(0, 1);
     let row2_coef1 = left_matrix.value_at_row_and_column(1, 0);
     let row2_coef2 = left_matrix.value_at_row_and_column(1, 1);
-    // Как в уроке 012: умножаем строки и вычитаем, чтобы исключить y.
+    // Как в уроке 012: умножаем коэффициенты уравнений и вычитаем, чтобы исключить y.
     let x_coef = row1_coef1 * row2_coef2 - row2_coef1 * row1_coef2;
     let right_after_eliminating_y =
         right_hand_side[0] * row2_coef2 - right_hand_side[1] * row1_coef2;
@@ -138,22 +147,22 @@ fn main() {
     let y = (right_hand_side[0] - row1_coef1 * x) / row1_coef2;
     let solution = [x, y];
     assert_eq!(solution, [1.0, 2.0]);
-    // Проверяем обе строки, а не только уравнение, из которого получили y.
-    for row_index in 0..left_matrix.rows {
-        let start = row_index * left_matrix.column_count;
+    // Проверяем оба уравнения, а не только то, из которого получили y.
+    for first_dimension_index in 0..left_matrix.first_dimension_length {
+        let start = first_dimension_index * left_matrix.second_dimension_length;
         let restored = multiply_matching_coords_then_add_results(
-            &left_matrix.data[start..start + left_matrix.column_count],
+            &left_matrix.data[start..start + left_matrix.second_dimension_length],
             &solution,
         )
         .unwrap();
-        assert_eq!(restored, right_hand_side[row_index]);
-        println!("Строка {row_index}: найденный вход {solution:?} даёт {restored}");
+        assert_eq!(restored, right_hand_side[first_dimension_index]);
+        println!("Строка {first_dimension_index}: найденный вход {solution:?} даёт {restored}");
     }
     assert!(Matrix::create_matrix_from_elements_listed_row_by_row(2, 3, vec![1.0; 4]).is_err());
 }
 
 // Чему учит этот урок:
-// Учимся хранить матрицу в структуре: размеры отдельно, числа строка за строкой в Vec.
-// Проверяем размеры, извлекаем строки, умножаем матрицу на вектор и переставляем строки в столбцы.
+// Учимся хранить матрицу в структуре: размеры измерений отдельно, элементы последовательно в Vec.
+// Проверяем размеры, извлекаем вложенные массивы, умножаем матрицу на вектор и переставляем измерения.
 // Соединяем операции, вычисляя произведение транспонированной матрицы на исходную.
 // Решаем систему Ax=b для этой матрицы и проверяем ответ обратным умножением.

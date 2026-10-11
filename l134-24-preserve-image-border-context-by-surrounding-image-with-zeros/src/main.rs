@@ -4,10 +4,10 @@
 fn main() {
     let image: [[i32; 2]; 2] = [[1, 2], [3, 4]];
     let mut image_with_zero_border: [[i32; 4]; 4] = [[0; 4]; 4];
-    for row_index in 0..2 {
-        for column_index in 0..2 {
-            image_with_zero_border[row_index + 1][column_index + 1] =
-                image[row_index][column_index];
+    for first_dimension_index in 0..2 {
+        for second_dimension_index in 0..2 {
+            image_with_zero_border[first_dimension_index + 1][second_dimension_index + 1] =
+                image[first_dimension_index][second_dimension_index];
         }
     }
 

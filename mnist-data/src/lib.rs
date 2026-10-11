@@ -15,7 +15,7 @@ pub enum Digit {
     Nine,
 }
 
-/// Все цифры в порядке номеров папок и столбцов модели.
+/// Все цифры в порядке номеров папок и выходных оценок модели.
 pub const ALL_DIGITS: [Digit; 10] = [
     Digit::Zero,
     Digit::One,
@@ -45,8 +45,10 @@ pub fn load_mnist_images(
     ),
     String,
 > {
-    let (train_images, validation_images) = load_train_validation_images(dataset_directory)?;
-    let test_images = load_labeled_png_images(&dataset_directory.join("test"))?;
+    let (train_images, validation_images): (Vec<([f64; 784], Digit)>, Vec<([f64; 784], Digit)>) =
+        load_train_validation_images(dataset_directory)?;
+    let test_images: Vec<([f64; 784], Digit)> =
+        load_labeled_png_images(&dataset_directory.join("test"))?;
     Ok((train_images, validation_images, test_images))
 }
 
@@ -75,9 +77,7 @@ pub fn load_train_validation_images(
                     position % 5 != 0
                 })
                 .map(
-                    |(_, &image): (usize, &&([f64; 784], Digit))| -> ([f64; 784], Digit) {
-                        *image
-                    },
+                    |(_, &image): (usize, &&([f64; 784], Digit))| -> ([f64; 784], Digit) { *image },
                 ),
         );
         // В validation копируем каждую пятую: позиции 0, 5, 10…
@@ -89,9 +89,7 @@ pub fn load_train_validation_images(
                     position % 5 == 0
                 })
                 .map(
-                    |(_, &image): (usize, &&([f64; 784], Digit))| -> ([f64; 784], Digit) {
-                        *image
-                    },
+                    |(_, &image): (usize, &&([f64; 784], Digit))| -> ([f64; 784], Digit) { *image },
                 ),
         );
     }
@@ -176,7 +174,7 @@ pub fn load_labeled_png_images(
                         ));
                     }
                     // u8 хранит целую яркость от 0 до 255: 0 — чёрный фон, 255 — белый штрих.
-                    // Пиксели идут строка за строкой: индекс y*28+x соответствует координатам (y,x).
+                    // Пиксели развёрнуты из двух пространственных измерений: индекс y*28+x соответствует (y,x).
                     let mut pixel_bytes: [u8; 784] = [0u8; 784];
                     png_reader.next_frame(&mut pixel_bytes).map_err(
                         |error: png::DecodingError| -> String {

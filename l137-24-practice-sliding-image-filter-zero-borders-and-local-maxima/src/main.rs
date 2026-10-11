@@ -6,32 +6,35 @@ fn main() {
     let image = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]];
     let filter = [[1.0, 0.0], [0.0, -1.0]];
     let mut padded = [[0.0; 5]; 5];
-    for row_index in 0..3 {
-        for column_index in 0..3 {
-            padded[row_index + 1][column_index + 1] = image[row_index][column_index];
+    for first_dimension_index in 0..3 {
+        for second_dimension_index in 0..3 {
+            padded[first_dimension_index + 1][second_dimension_index + 1] =
+                image[first_dimension_index][second_dimension_index];
         }
     }
     let mut responses = [[0.0_f64; 4]; 4];
-    for row_index in 0..4 {
-        for column_index in 0..4 {
-            for window_row_index in 0..2 {
-                for window_column_index in 0..2 {
-                    responses[row_index][column_index] += padded[row_index + window_row_index]
-                        [column_index + window_column_index]
-                        * filter[window_row_index][window_column_index];
+    for first_dimension_index in 0..4 {
+        for second_dimension_index in 0..4 {
+            for window_first_dimension_index in 0..2 {
+                for window_second_dimension_index in 0..2 {
+                    responses[first_dimension_index][second_dimension_index] += padded
+                        [first_dimension_index + window_first_dimension_index]
+                        [second_dimension_index + window_second_dimension_index]
+                        * filter[window_first_dimension_index][window_second_dimension_index];
                 }
             }
         }
     }
     let mut pooled = [[f64::NEG_INFINITY; 2]; 2];
-    for row_index in 0..2 {
-        for column_index in 0..2 {
-            for window_row_index in 0..2 {
-                for window_column_index in 0..2 {
-                    pooled[row_index][column_index] = pooled[row_index][column_index].max(
-                        responses[2 * row_index + window_row_index]
-                            [2 * column_index + window_column_index],
-                    );
+    for first_dimension_index in 0..2 {
+        for second_dimension_index in 0..2 {
+            for window_first_dimension_index in 0..2 {
+                for window_second_dimension_index in 0..2 {
+                    pooled[first_dimension_index][second_dimension_index] =
+                        pooled[first_dimension_index][second_dimension_index].max(
+                            responses[2 * first_dimension_index + window_first_dimension_index]
+                                [2 * second_dimension_index + window_second_dimension_index],
+                        );
                 }
             }
         }
