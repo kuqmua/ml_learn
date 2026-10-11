@@ -7,9 +7,9 @@ fn main() {
     fn groups(data: &[(f64, bool)], count: usize) -> Vec<Vec<usize>> {
         let mut result = vec![Vec::new(); count];
         let mut seen = [0; 2];
-        for (index, &(_, class)) in data.iter().enumerate() {
+        for (samples_index, &(_, class)) in data.iter().enumerate() {
             let class = usize::from(class);
-            result[seen[class] % count].push(index);
+            result[seen[class] % count].push(samples_index);
             seen[class] += 1;
         }
         result

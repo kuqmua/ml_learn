@@ -55,10 +55,10 @@ fn main() {
             .flat_map(|(document_text, _)| document_text.split_whitespace())
             .collect();
         let mut scores: [f64; 2] = [0.0; 2];
-        for (class, score) in scores.iter_mut().enumerate() {
+        for (classes_index, score) in scores.iter_mut().enumerate() {
             let class_documents: Vec<&(&str, bool)> = training_examples
                 .iter()
-                .filter(|(_, target)| *target == (class == 1))
+                .filter(|(_, target)| *target == (classes_index == 1))
                 .collect();
             let mut text_unit_counts: std::collections::HashMap<&str, usize> =
                 std::collections::HashMap::new();

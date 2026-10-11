@@ -14,8 +14,9 @@ fn main() {
         !filter_weights.is_empty() && image.len() >= filter_weights.len(),
         "ядро должно быть непустым и не длиннее изображения"
     );
-    for start in 0..=image.len() - filter_weights.len() {
-        let _: f64 = image[start] * filter_weights[0] + image[start + 1] * filter_weights[1];
+    for window_start_index in 0..=image.len() - filter_weights.len() {
+        let _: f64 = image[window_start_index] * filter_weights[0]
+            + image[window_start_index + 1] * filter_weights[1];
     }
 
     // Выполняем вычисления из примера.

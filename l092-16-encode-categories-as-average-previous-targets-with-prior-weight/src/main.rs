@@ -22,8 +22,8 @@ fn main() {
     assert_eq!(values[0], 0.5);
     assert_eq!(values[1], 0.5);
 
-    for (index, _value) in values.iter().enumerate() {
-        let _ = &(categories[index]);
+    for (values_index, _value) in values.iter().enumerate() {
+        let _ = &(categories[values_index]);
     }
 
     // Выполняем вычисления из примера.

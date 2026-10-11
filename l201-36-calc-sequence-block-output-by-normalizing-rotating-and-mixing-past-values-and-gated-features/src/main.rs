@@ -44,8 +44,8 @@ fn calc_sequence_block_output_by_normalizing_rotating_and_mixing_past_values_and
     });
     std::array::from_fn(|index| {
         let mut context: [f64; 2] = [0.0; 2];
-        for head in 0..2 {
-            let raw_query: [f64; 2] = if head == 0 {
+        for heads_index in 0..2 {
+            let raw_query: [f64; 2] = if heads_index == 0 {
                 scaled_states[index]
             } else {
                 [scaled_states[index][1], -scaled_states[index][0]]

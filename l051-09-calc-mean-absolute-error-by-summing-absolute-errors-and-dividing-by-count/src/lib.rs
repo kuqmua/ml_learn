@@ -24,8 +24,8 @@ pub fn calc_mean_absolute_error_by_summing_absolute_errors_and_dividing_by_count
 ) -> Result<f64, &'static str> {
     validate_equal_lens_of_targets_and_predictions(targets, predictions)?;
     let mut absolute_sum: f64 = 0.0;
-    for index in 0..targets.len() {
-        let error: f64 = predictions[index] - targets[index];
+    for targets_index in 0..targets.len() {
+        let error: f64 = predictions[targets_index] - targets[targets_index];
         absolute_sum += if error < 0.0 { -error } else { error };
     }
     Ok(absolute_sum / targets.len() as f64)

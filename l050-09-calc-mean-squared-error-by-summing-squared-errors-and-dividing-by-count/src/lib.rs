@@ -25,8 +25,8 @@ pub fn calc_mean_squared_error_by_summing_squared_errors_and_dividing_by_count(
 ) -> Result<f64, &'static str> {
     validate_equal_lens_of_targets_and_predictions(targets, predictions)?;
     let mut squared_sum: f64 = 0.0;
-    for index in 0..targets.len() {
-        let error: f64 = predictions[index] - targets[index];
+    for targets_index in 0..targets.len() {
+        let error: f64 = predictions[targets_index] - targets[targets_index];
         squared_sum += error * error;
     }
     Ok(squared_sum / targets.len() as f64)

@@ -22,7 +22,7 @@ fn main() -> Result<(), String> {
     // Тип переменной-замыкания анонимный: его имя нельзя написать после let.
     // У таких переменных типы аргументов стоят между |...|, результата — после ->.
     // f64 используется при чтении PNG, f32 — в вычислениях нейросети.
-    // Vec<f32> — вектор, Vec<Vec<f32>> — матрица; Layer — пара (матрица весов, вектор смещений).
+    // ExampleFeatures — признаки одного примера; InputFeatureWeights — связи одного входа с выходными нейронами.
 
     // Digit и порядок цифр общие для всех четырёх уроков MNIST.
     // Порядок соответствует папкам 0..9 и индексам классов в массивах.
@@ -42,40 +42,76 @@ fn main() -> Result<(), String> {
 
     // PNG читает общий загрузчик из mnist_data: сортировка, проверка формата и нормализация.
 
+    // Один пример — картинка, набор признаков нейронов или одно окно свёртки.
+    // Внешний Vec<ExampleFeatures> перечисляет примеры; features — признаки одного примера.
+    #[derive(Clone)]
+    struct ExampleFeatures {
+        features: Vec<f32>,
+    }
+    // Один входной признак связан с каждым выходным нейроном своим весом.
+    #[derive(Clone)]
+    struct InputFeatureWeights {
+        output_neurons: Vec<f32>,
+    }
+    #[derive(Clone)]
+    struct PoolingChoices {
+        input_feature_by_output: Vec<usize>,
+    }
+
     // Числовая часть имеет свою область видимости для массивов и замыканий.
     {
-        // Один слой храним как пару (W, b): .0 — матрица весов, .1 — вектор смещений.
+        // Layer хранит веса входных признаков и смещения выходных нейронов в именованных полях.
         // Для Dense W имеет форму [число входов, число выходов], b — [число выходов].
         // Для Conv W хранит развёрнутые фильтры, а b — по одному смещению на фильтр.
-        type Layer = (Vec<Vec<f32>>, Vec<f32>);
+        #[derive(Clone)]
+        struct Layer {
+            weights: Vec<InputFeatureWeights>,
+            biases: Vec<f32>,
+        }
+        struct ForwardPass {
+            first_convolution: Vec<ExampleFeatures>,
+            second_convolution: Vec<ExampleFeatures>,
+            second_pool: Vec<ExampleFeatures>,
+            hidden_neurons: Vec<ExampleFeatures>,
+            digit_scores: Vec<ExampleFeatures>,
+            first_windows: Vec<ExampleFeatures>,
+            second_windows: Vec<ExampleFeatures>,
+            first_pool_routes: Vec<PoolingChoices>,
+            second_pool_routes: Vec<PoolingChoices>,
+        }
         // Общие для обучения и оценки операции; их внутренние помощники локальны вызову.
         // Forward — прямой проход: из пикселей получаем оценки десяти цифр.
         // Возвращаем также промежуточные значения, которые понадобятся backward.
-        // Возвращаем (states, columns, indices): активации, окна двух свёрток и маршруты двух pooling.
-        let forward = |layers: &[Layer],
-                       input: &Vec<Vec<f32>>|
-         -> (Vec<Vec<Vec<f32>>>, Vec<Vec<Vec<f32>>>, Vec<Vec<Vec<usize>>>) {
+        // ForwardPass хранит именованные активации, окна свёрток и маршруты pooling.
+        let forward = |layers: &[Layer], input: &Vec<ExampleFeatures>| -> ForwardPass {
             // ReLU(x) = max(x,0). Она «выключает» отрицательные ответы нейронов.
             // Используем её после обеих свёрток и скрытого Dense для нелинейных сочетаний признаков.
-            let dense = |input: &Vec<Vec<f32>>, layer: &Layer| -> Vec<Vec<f32>> {
-                let mut output = vec![vec![0.0; layer.1.len()]; input.len()];
-                for image in 0..input.len() {
-                    assert_eq!(input[image].len(), layer.0.len());
-                    for feature in 0..layer.0.len() {
-                        for unit in 0..layer.1.len() {
-                            output[image][unit] += input[image][feature] * layer.0[feature][unit];
+            let dense = |input: &Vec<ExampleFeatures>, layer: &Layer| -> Vec<ExampleFeatures> {
+                let mut output = vec![
+                    ExampleFeatures {
+                        features: vec![0.0; layer.biases.len()]
+                    };
+                    input.len()
+                ];
+                for input_index in 0..input.len() {
+                    assert_eq!(input[input_index].features.len(), layer.weights.len());
+                    for weights_index in 0..layer.weights.len() {
+                        for biases_index in 0..layer.biases.len() {
+                            output[input_index].features[biases_index] += input[input_index]
+                                .features[weights_index]
+                                * layer.weights[weights_index].output_neurons[biases_index];
                         }
                     }
-                    for unit in 0..layer.1.len() {
-                        output[image][unit] += layer.1[unit];
+                    for biases_index in 0..layer.biases.len() {
+                        output[input_index].features[biases_index] += layer.biases[biases_index];
                     }
                 }
                 output
             };
-            let relu = |values: &Vec<Vec<f32>>| -> Vec<Vec<f32>> {
+            let relu = |values: &Vec<ExampleFeatures>| -> Vec<ExampleFeatures> {
                 let mut output = values.clone();
                 for row in &mut output {
-                    for value in row {
+                    for value in &mut row.features {
                         *value = value.max(0.0);
                     }
                 }
@@ -84,12 +120,12 @@ fn main() -> Result<(), String> {
             // Свёртка valid с шагом 1: окно kernel×kernel скользит без дополнения границ.
             // channels — каналы входа, side — его сторона. Каждый выходной фильтр смотрит
             // на ВСЕ входные каналы, поэтому в его весах channels*kernel*kernel чисел.
-            let convolution = |input: &Vec<Vec<f32>>,
+            let convolution = |input: &Vec<ExampleFeatures>,
                                layer: &Layer,
                                channels: usize,
                                side: usize,
                                kernel: usize|
-             -> (Vec<Vec<f32>>, Vec<Vec<f32>>) {
+             -> (Vec<ExampleFeatures>, Vec<ExampleFeatures>) {
                 // Количество положений окна по одной оси. Для входа 28 и окна 5: 28-5+1=24.
                 // Крайние положения учитывают только окна, целиком помещающиеся внутри картинки.
                 let out: usize = side - kernel + 1;
@@ -98,35 +134,49 @@ fn main() -> Result<(), String> {
                 let positions: usize = out * out;
                 // По одному смещению на фильтр: длина b равна числу выходных каналов.
                 // Например, первый слой имеет 8 разных обучаемых фильтров.
-                let outputs: usize = layer.1.len();
-                assert_eq!(input[0].len(), channels * side * side);
+                let outputs: usize = layer.biases.len();
+                assert_eq!(input[0].features.len(), channels * side * side);
                 // Заполняем окна локально; матричное умножение получает неизменяемые columns.
-                let columns: Vec<Vec<f32>> = {
+                let columns: Vec<ExampleFeatures> = {
                     // im2col: каждое многоканальное окно превращаем в одну строку.
                     // Форма [N*out², channels*kernel²]; первый слой при N=64 даёт [64*576,25].
                     // Один входной пиксель может входить в несколько перекрывающихся окон.
-                    let mut columns: Vec<Vec<f32>> =
-                        vec![vec![0.0; channels * kernel * kernel]; input.len() * positions];
-                    // Типы переменных: n: usize.
-                    for n in 0..input.len() {
-                        // Типы переменных: y: usize.
-                        for y in 0..out {
-                            // Типы переменных: x: usize.
-                            for x in 0..out {
-                                // n выбирает картинку; y,x — положение окна. Это её номер строки в im2col:
+                    let mut columns: Vec<ExampleFeatures> = vec![
+                        ExampleFeatures {
+                            features: vec![0.0; channels * kernel * kernel]
+                        };
+                        input.len() * positions
+                    ];
+                    // Типы переменных: examples_index: usize.
+                    for examples_index in 0..input.len() {
+                        // Типы переменных: output_row_index: usize.
+                        for output_row_index in 0..out {
+                            // Типы переменных: output_column_index: usize.
+                            for output_column_index in 0..out {
+                                // examples_index выбирает картинку; output_row_index,output_column_index — положение окна. Это её номер строки в im2col:
                                 // сначала все положения картинки 0, затем картинки 1 и так далее.
-                                let row: usize = n * positions + y * out + x;
-                                // Типы переменных: c: usize.
-                                for c in 0..channels {
-                                    // Типы переменных: ky: usize.
-                                    for ky in 0..kernel {
-                                        // Типы переменных: kx: usize.
-                                        for kx in 0..kernel {
-                                            // c — канал входа, ky/kx — координаты внутри окна.
-                                            // (c*kernel+ky)*kernel+kx — столбец развёрнутого окна.
-                                            // (c*side+y+ky)*side+x+kx — тот же пиксель в строке исходной карты.
-                                            columns[row][(c * kernel + ky) * kernel + kx] =
-                                                input[n][(c * side + y + ky) * side + x + kx];
+                                let row: usize = examples_index * positions
+                                    + output_row_index * out
+                                    + output_column_index;
+                                // Типы переменных: channels_index: usize.
+                                for channels_index in 0..channels {
+                                    // Типы переменных: kernel_row_index: usize.
+                                    for kernel_row_index in 0..kernel {
+                                        // Типы переменных: kernel_column_index: usize.
+                                        for kernel_column_index in 0..kernel {
+                                            // channels_index — канал входа, kernel_row_index/kernel_column_index — координаты внутри окна.
+                                            // (channels_index*kernel+kernel_row_index)*kernel+kernel_column_index — столбец развёрнутого окна.
+                                            // (channels_index*side+output_row_index+kernel_row_index)*side+output_column_index+kernel_column_index — тот же пиксель в строке исходной карты.
+                                            columns[row].features[(channels_index * kernel
+                                                + kernel_row_index)
+                                                * kernel
+                                                + kernel_column_index] = input[examples_index]
+                                                .features[(channels_index * side
+                                                + output_row_index
+                                                + kernel_row_index)
+                                                * side
+                                                + output_column_index
+                                                + kernel_column_index];
                                         }
                                     }
                                 }
@@ -138,20 +188,27 @@ fn main() -> Result<(), String> {
                 // W имеет форму [channels*kernel², outputs]. Умножение считает ответы всех фильтров
                 // сразу для всех окон; одно и то же W используется в каждой позиции.
                 // b прибавляется к каждому окну, поэтому фильтр может учить свой порог срабатывания.
-                let values: Vec<Vec<f32>> = dense(&columns, layer);
-                let output: Vec<Vec<f32>> = {
+                let values: Vec<ExampleFeatures> = dense(&columns, layer);
+                let output: Vec<ExampleFeatures> = {
                     // Переупаковываем ответы из [N*out², outputs] в [N, outputs*out²].
                     // Теперь внутри строки сначала вся карта фильтра 0, потом карта фильтра 1 и т.д.
                     // Это только смена расположения чисел, без дополнительного обучения.
-                    let mut output: Vec<Vec<f32>> =
-                        vec![vec![0.0; outputs * positions]; input.len()];
-                    // Типы переменных: n: usize.
-                    for n in 0..input.len() {
-                        // Типы переменных: p: usize.
-                        for p in 0..positions {
-                            // Типы переменных: c: usize.
-                            for c in 0..outputs {
-                                output[n][c * positions + p] = values[n * positions + p][c];
+                    let mut output: Vec<ExampleFeatures> = vec![
+                        ExampleFeatures {
+                            features: vec![0.0; outputs * positions]
+                        };
+                        input.len()
+                    ];
+                    // Типы переменных: examples_index: usize.
+                    for examples_index in 0..input.len() {
+                        // Типы переменных: positions_index: usize.
+                        for positions_index in 0..positions {
+                            // Типы переменных: filters_index: usize.
+                            for filters_index in 0..outputs {
+                                output[examples_index].features
+                                    [filters_index * positions + positions_index] = values
+                                    [examples_index * positions + positions_index]
+                                    .features[filters_index];
                             }
                         }
                     }
@@ -162,50 +219,69 @@ fn main() -> Result<(), String> {
             // Max-pool 2×2 с шагом 2: из четырёх соседних значений оставляем максимальное.
             // Сторона карты уменьшается вдвое, число каналов не меняется.
             // Чтобы позже передать градиент, запоминаем исходный индекс выбранного максимума.
-            let max_pool = |input: &Vec<Vec<f32>>,
+            let max_pool = |input: &Vec<ExampleFeatures>,
                             channels: usize,
                             side: usize|
-             -> (Vec<Vec<f32>>, Vec<Vec<usize>>) {
+             -> (Vec<ExampleFeatures>, Vec<PoolingChoices>) {
                 assert_eq!(side % 2, 0);
-                assert_eq!(input[0].len(), channels * side * side);
+                assert_eq!(input[0].features.len(), channels * side * side);
                 let out: usize = side / 2;
-                let mut values: Vec<Vec<f32>> = vec![vec![0.0; channels * out * out]; input.len()];
+                let mut values: Vec<ExampleFeatures> = vec![
+                    ExampleFeatures {
+                        features: vec![0.0; channels * out * out]
+                    };
+                    input.len()
+                ];
                 // Для каждого выхода pooling хранится индекс пикселя в его входной строке.
                 // Это адрес, а не значение яркости; он нужен только backward.
-                let mut indices: Vec<Vec<usize>> =
-                    vec![vec![0usize; values[0].len()]; values.len()];
-                // Типы переменных: n: usize.
-                for n in 0..input.len() {
-                    // Типы переменных: c: usize.
-                    for c in 0..channels {
-                        // Типы переменных: y: usize.
-                        for y in 0..out {
-                            // Типы переменных: x: usize.
-                            for x in 0..out {
+                let mut indices: Vec<PoolingChoices> = vec![
+                    PoolingChoices {
+                        input_feature_by_output: vec![0usize; values[0].features.len()]
+                    };
+                    values.len()
+                ];
+                // Типы переменных: examples_index: usize.
+                for examples_index in 0..input.len() {
+                    // Типы переменных: channels_index: usize.
+                    for channels_index in 0..channels {
+                        // Типы переменных: output_row_index: usize.
+                        for output_row_index in 0..out {
+                            // Типы переменных: output_column_index: usize.
+                            for output_column_index in 0..out {
                                 // Это индекс ячейки уменьшенной карты. Ей соответствует окно во входе,
-                                // начинающееся в (2*y,2*x) того же канала.
-                                let target: usize = (c * out + y) * out + x;
+                                // начинающееся в (2*output_row_index,2*output_column_index) того же канала.
+                                let target: usize = (channels_index * out + output_row_index) * out
+                                    + output_column_index;
                                 // Изменяемый кандидат существует только во время поиска максимума.
                                 let best: usize = {
                                     // Начальный кандидат — верхний левый пиксель окна 2×2.
-                                    let mut best: usize = (c * side + 2 * y) * side + 2 * x;
-                                    // Типы переменных: dy: usize.
-                                    for dy in 0..2 {
-                                        // Типы переменных: dx: usize.
-                                        for dx in 0..2 {
-                                            let index: usize =
-                                                (c * side + 2 * y + dy) * side + 2 * x + dx;
+                                    let mut best: usize =
+                                        (channels_index * side + 2 * output_row_index) * side
+                                            + 2 * output_column_index;
+                                    // Типы переменных: window_row_offset: usize.
+                                    for window_row_offset in 0..2 {
+                                        // Типы переменных: window_column_offset: usize.
+                                        for window_column_offset in 0..2 {
+                                            let index: usize = (channels_index * side
+                                                + 2 * output_row_index
+                                                + window_row_offset)
+                                                * side
+                                                + 2 * output_column_index
+                                                + window_column_offset;
                                             // Строгое > оставляет первый максимум при равенстве: маршрут градиента однозначен.
                                             // Меняем именно индекс best, чтобы сохранить и значение, и его адрес.
-                                            if input[n][index] > input[n][best] {
+                                            if input[examples_index].features[index]
+                                                > input[examples_index].features[best]
+                                            {
                                                 best = index;
                                             }
                                         }
                                     }
                                     best
                                 };
-                                values[n][target] = input[n][best];
-                                indices[n][target] = best;
+                                values[examples_index].features[target] =
+                                    input[examples_index].features[best];
+                                indices[examples_index].input_feature_by_output[target] = best;
                             }
                         }
                     }
@@ -215,34 +291,39 @@ fn main() -> Result<(), String> {
 
             // Первый Conv: 1 входной канал, окно 5×5, 8 фильтров.
             // Выход [N,8*24*24]. col1 хранит окна, чтобы потом вычислить градиент этих фильтров.
-            let (first, col1): (Vec<Vec<f32>>, Vec<Vec<f32>>) =
+            let (first, col1): (Vec<ExampleFeatures>, Vec<ExampleFeatures>) =
                 convolution(input, &layers[0], 1, 28, 5);
-            let first: Vec<Vec<f32>> = relu(&first);
+            let first: Vec<ExampleFeatures> = relu(&first);
             // После ReLU уменьшаем каждую из 8 карт 24×24 до 12×12.
             // Итого pool1=[N,1152]; indices1 хранит адреса максимумов в first.
-            let (pool1, indices1): (Vec<Vec<f32>>, Vec<Vec<usize>>) = max_pool(&first, 8, 24);
+            let (pool1, indices1): (Vec<ExampleFeatures>, Vec<PoolingChoices>) =
+                max_pool(&first, 8, 24);
             // Второй Conv связывает уже найденные признаки: окно 3×3 по 8 каналам,
             // 16 новых фильтров. W=[72,16], карты на выходе 16×10×10.
-            let (second, col2): (Vec<Vec<f32>>, Vec<Vec<f32>>) =
+            let (second, col2): (Vec<ExampleFeatures>, Vec<ExampleFeatures>) =
                 convolution(&pool1, &layers[1], 8, 12, 3);
-            let second: Vec<Vec<f32>> = relu(&second);
+            let second: Vec<ExampleFeatures> = relu(&second);
             // Второй pooling: 16×10×10 -> 16×5×5, то есть 400 признаков на картинку.
             // Физически это уже строка [N,400], поэтому отдельная операция flatten не нужна.
-            let (pool2, indices2): (Vec<Vec<f32>>, Vec<Vec<usize>>) = max_pool(&second, 16, 10);
+            let (pool2, indices2): (Vec<ExampleFeatures>, Vec<PoolingChoices>) =
+                max_pool(&second, 16, 10);
             // Dense над 400 признаками: W=[400,64], b=[64] -> hidden=[N,64].
             // Он учит сочетания признаков разных фильтров и разных участков изображения.
-            let hidden: Vec<Vec<f32>> = relu(&dense(&pool2, &layers[2]));
+            let hidden: Vec<ExampleFeatures> = relu(&dense(&pool2, &layers[2]));
             // Выходной Dense: [N,64] * [64,10] + [10] -> [N,10].
             // Эти scores сравнятся с правильной цифрой через cross-entropy.
-            let scores: Vec<Vec<f32>> = dense(&hidden, &layers[3]);
-            (
-                // Порядок states важен для backward: [0] вход, [1] Conv1 после ReLU,
-                // [2] pool1, [3] Conv2 после ReLU, [4] pool2, [5] hidden, [6] scores.
-                // Отдельно возвращаются columns=[col1,col2] и indices=[indices1,indices2].
-                vec![input.clone(), first, pool1, second, pool2, hidden, scores],
-                vec![col1, col2],
-                vec![indices1, indices2],
-            )
+            let scores: Vec<ExampleFeatures> = dense(&hidden, &layers[3]);
+            ForwardPass {
+                first_convolution: first,
+                second_convolution: second,
+                second_pool: pool2,
+                hidden_neurons: hidden,
+                digit_scores: scores,
+                first_windows: col1,
+                second_windows: col2,
+                first_pool_routes: indices1,
+                second_pool_routes: indices2,
+            }
         };
         // Считаем среднюю cross-entropy: L = mean(-ln(p_правильной_цифры)).
         // Если правильному классу дана большая вероятность, ошибка мала; если малая — велика.
@@ -250,73 +331,85 @@ fn main() -> Result<(), String> {
         // Loss не равна доле неверных ответов: учитывает уверенность даже при верном argmax.
         // Здесь сразу вычисляем и L, и производную dL/dscores, нужную для обучения.
         // Форма scores — [N,K], где K=10 — число классов цифр.
-        let cross_entropy = |scores: &Vec<Vec<f32>>, labels: &[Digit]| -> (f32, Vec<Vec<f32>>) {
-            assert_eq!(scores.len(), labels.len());
-            assert!(!labels.is_empty());
-            // Изменяемая копия scores нужна только вычислению вероятностей и производной.
-            let (gradient, loss): (Vec<Vec<f32>>, f32) = {
-                // Копия сначала содержит scores. По ходу цикла превращаем её в вероятности,
-                // а затем в производные; исходные scores при этом остаются неизменными.
-                let mut gradient: Vec<Vec<f32>> = scores.clone();
-                let mut loss: f32 = 0.0;
-                // Типы переменных: row: &mut Vec<f32>, label: Digit.
-                for (row, &label) in gradient.iter_mut().zip(labels) {
-                    assert!((label as usize) < row.len());
-                    // Softmax: p_c = exp(score_c) / sum(exp(scores)). Вычитаем один максимум
-                    // из всех scores: вероятности сохраняются, а экспоненты не переполняются.
-                    let max: f32 = row.iter().copied().fold(f32::NEG_INFINITY, f32::max);
-                    // Сохраняем исходный score правильного класса до преобразования строки.
-                    // label — вариант Digit; label as usize выбирает столбец этой цифры в scores.
-                    let target: f32 = row[label as usize];
-                    // Теперь в строке exp(score_c - max); это положительные ненормированные веса.
-                    for value in row.iter_mut() {
-                        *value = (*value - max).exp();
+        let cross_entropy =
+            |scores: &Vec<ExampleFeatures>, labels: &[Digit]| -> (f32, Vec<ExampleFeatures>) {
+                assert_eq!(scores.len(), labels.len());
+                assert!(!labels.is_empty());
+                // Изменяемая копия scores нужна только вычислению вероятностей и производной.
+                let (gradient, loss): (Vec<ExampleFeatures>, f32) = {
+                    // Копия сначала содержит scores. По ходу цикла превращаем её в вероятности,
+                    // а затем в производные; исходные scores при этом остаются неизменными.
+                    let mut gradient: Vec<ExampleFeatures> = scores.clone();
+                    let mut loss: f32 = 0.0;
+                    // Типы переменных: row: &mut ExampleFeatures, label: Digit.
+                    for (row, &label) in gradient.iter_mut().zip(labels) {
+                        assert!((label as usize) < row.features.len());
+                        // Softmax: p_c = exp(score_c) / sum(exp(scores)). Вычитаем один максимум
+                        // из всех scores: вероятности сохраняются, а экспоненты не переполняются.
+                        let max: f32 = row
+                            .features
+                            .iter()
+                            .copied()
+                            .fold(f32::NEG_INFINITY, f32::max);
+                        // Сохраняем исходный score правильного класса до преобразования строки.
+                        // label — вариант Digit; label as usize выбирает столбец этой цифры в scores.
+                        let target: f32 = row.features[label as usize];
+                        // Теперь в строке exp(score_c - max); это положительные ненормированные веса.
+                        for value in row.features.iter_mut() {
+                            *value = (*value - max).exp();
+                        }
+                        let sum: f32 = row.features.iter().sum();
+                        // Это -ln(p_target), записанное как log-sum-exp - score_target.
+                        // Так не нужно вычислять ln почти нулевой вероятности, которая могла округлиться до 0.
+                        loss += max + sum.ln() - target;
+                        // Делим экспоненты на их сумму: получаем вероятности, сумма которых равна 1.
+                        for value in row.features.iter_mut() {
+                            *value /= sum;
+                        }
+                        // Для softmax вместе с cross-entropy производная равна p - one_hot(label).
+                        // one_hot — строка с единицей у правильного класса и нулями у остальных.
+                        // Пример: p=[0.2,0.8], правильный класс 0 -> производная [-0.8,0.8].
+                        row.features[label as usize] -= 1.0;
+                        // Мы учим по СРЕДНЕЙ ошибке batch, поэтому делим производные на фактический N.
+                        // Неполный последний batch тоже считается правильно. Повторно делить градиенты не надо.
+                        for value in row.features.iter_mut() {
+                            *value /= labels.len() as f32;
+                        }
                     }
-                    let sum: f32 = row.iter().sum();
-                    // Это -ln(p_target), записанное как log-sum-exp - score_target.
-                    // Так не нужно вычислять ln почти нулевой вероятности, которая могла округлиться до 0.
-                    loss += max + sum.ln() - target;
-                    // Делим экспоненты на их сумму: получаем вероятности, сумма которых равна 1.
-                    for value in row.iter_mut() {
-                        *value /= sum;
-                    }
-                    // Для softmax вместе с cross-entropy производная равна p - one_hot(label).
-                    // one_hot — строка с единицей у правильного класса и нулями у остальных.
-                    // Пример: p=[0.2,0.8], правильный класс 0 -> производная [-0.8,0.8].
-                    row[label as usize] -= 1.0;
-                    // Мы учим по СРЕДНЕЙ ошибке batch, поэтому делим производные на фактический N.
-                    // Неполный последний batch тоже считается правильно. Повторно делить градиенты не надо.
-                    for value in row.iter_mut() {
-                        *value /= labels.len() as f32;
-                    }
-                }
-                (gradient, loss)
+                    (gradient, loss)
+                };
+                (loss / labels.len() as f32, gradient)
             };
-            (loss / labels.len() as f32, gradient)
-        };
         // Один batch для обучения и оценки: строки X=[N,784], метки labels=[N].
         // Индексы выбирают записи; нормализованные f64 пиксели переводим в f32 сети.
-        let batch =
-            |digits: &[([f64; 784], Digit)], examples: &[usize]| -> (Vec<Vec<f32>>, Vec<Digit>) {
-                (
-                    {
-                        let row_count: usize = examples.len();
-                        let column_count: usize = 784;
-                        let mut values: Vec<Vec<f32>> = vec![vec![0.0; column_count]; row_count];
-                        for row_index in 0..row_count {
-                            for column_index in 0..column_count {
-                                let (n, p) = (row_index, column_index);
-                                values[row_index][column_index] = digits[examples[n]].0[p] as f32;
-                            }
+        let batch = |digits: &[([f64; 784], Digit)],
+                     examples: &[usize]|
+         -> (Vec<ExampleFeatures>, Vec<Digit>) {
+            (
+                {
+                    let row_count: usize = examples.len();
+                    let column_count: usize = 784;
+                    let mut values: Vec<ExampleFeatures> = vec![
+                        ExampleFeatures {
+                            features: vec![0.0; column_count]
+                        };
+                        row_count
+                    ];
+                    for row_index in 0..row_count {
+                        for column_index in 0..column_count {
+                            let (examples_index, pixels_index) = (row_index, column_index);
+                            values[row_index].features[column_index] =
+                                digits[examples[examples_index]].0[pixels_index] as f32;
                         }
-                        values
-                    },
-                    examples
-                        .iter()
-                        .map(|&i: &usize| -> Digit { digits[i].1 })
-                        .collect::<Vec<Digit>>(),
-                )
-            };
+                    }
+                    values
+                },
+                examples
+                    .iter()
+                    .map(|&digits_index: &usize| -> Digit { digits[digits_index].1 })
+                    .collect::<Vec<Digit>>(),
+            )
+        };
 
         // Оценка только читает веса: не передаёт производные назад через слои и не обновляет параметры.
         // Возвращаем (средняя loss, доля верных ответов, матрица ошибок).
@@ -330,41 +423,44 @@ fn main() -> Result<(), String> {
             // Softmax сохраняет порядок scores, поэтому для выбора класса вероятности не нужны.
             // При одинаковых scores берём меньший индекс: результат однозначен.
             let argmax = |row: &[f32]| -> Digit {
-                let index: usize = (0..row.len())
-                    .max_by(|&a: &usize, &b: &usize| -> std::cmp::Ordering {
-                        row[a]
-                            .total_cmp(&row[b])
-                            .then_with(|| -> std::cmp::Ordering { b.cmp(&a) })
-                    })
+                let scores_index: usize = (0..row.len())
+                    .max_by(
+                        |&first_scores_index: &usize,
+                         &second_scores_index: &usize|
+                         -> std::cmp::Ordering {
+                            row[first_scores_index]
+                                .total_cmp(&row[second_scores_index])
+                                .then_with(|| -> std::cmp::Ordering {
+                                    second_scores_index.cmp(&first_scores_index)
+                                })
+                        },
+                    )
                     .unwrap();
                 // ALL_DIGITS переводит индекс столбца обратно в метку Digit.
-                ALL_DIGITS[index]
+                ALL_DIGITS[scores_index]
             };
 
             assert!(!examples.is_empty() && batch_size > 0);
             // Накопление метрик отделено от расчёта итоговых долей.
             let (confusion, loss): ([[usize; 10]; 10], f32) = {
-                // confusion[истинная_цифра][предсказанная_цифра] считает такие пары.
+                // confusion[истинная_цифра].features[предсказанная_цифра] считает такие пары.
                 // Диагональ — верные ответы; числа вне диагонали показывают, какие цифры путаются.
                 let mut confusion: [[usize; 10]; 10] = [[0usize; 10]; 10];
                 let mut loss: f32 = 0.0;
                 // Типы переменных: indices: &[usize].
                 for indices in examples.chunks(batch_size) {
-                    let (input, labels): (Vec<Vec<f32>>, Vec<Digit>) = batch(digits, indices);
-                    let (states, _, _): (
-                        Vec<Vec<Vec<f32>>>,
-                        Vec<Vec<Vec<f32>>>,
-                        Vec<Vec<Vec<usize>>>,
-                    ) = forward(layers, &input);
-                    let scores: &Vec<Vec<f32>> = states.last().unwrap();
+                    let (input, labels): (Vec<ExampleFeatures>, Vec<Digit>) =
+                        batch(digits, indices);
+                    let forward_values: ForwardPass = forward(layers, &input);
+                    let scores: &Vec<ExampleFeatures> = &forward_values.digit_scores;
                     // cross_entropy возвращает (loss, градиент); для оценки используем только .0.
                     // Функция возвращает среднюю loss одного batch. Умножаем на его размер,
                     // чтобы накопить сумму по картинкам; в конце делим на размер всей выборки.
                     // Так маленький последний batch не получает такой же вес, как большой.
                     loss += cross_entropy(scores, &labels).0 * indices.len() as f32;
-                    // Типы переменных: row: &[f32], label: Digit.
+                    // Типы переменных: row: &ExampleFeatures, label: Digit.
                     for (row, label) in scores.iter().zip(labels) {
-                        let predicted: Digit = argmax(row);
+                        let predicted: Digit = argmax(&row.features);
                         confusion[label as usize][predicted as usize] += 1;
                     }
                 }
@@ -373,7 +469,7 @@ fn main() -> Result<(), String> {
             (
                 loss / examples.len() as f32,
                 (0..10)
-                    .map(|i: usize| -> usize { confusion[i][i] })
+                    .map(|digits_index: usize| -> usize { confusion[digits_index][digits_index] })
                     .sum::<usize>() as f32
                     / examples.len() as f32,
                 confusion,
@@ -386,7 +482,7 @@ fn main() -> Result<(), String> {
             Vec<([f64; 784], Digit)>,
         ) = load_mnist_images(&data)?;
         // Из обучения выходят только выбранные веса и необходимые для отчёта значения.
-        let (best, best_epoch, batch_size): (Vec<(Vec<Vec<f32>>, Vec<f32>)>, usize, usize) = {
+        let (best, best_epoch, batch_size): (Vec<Layer>, usize, usize) = {
             println!(
                 "CNN conv5(8) -> pool -> conv3(16) -> pool -> dense64 -> 10: epochs={epochs}, batch={batch_size}, lr={learning_rate}, seed={seed}, data={}",
                 data.display()
@@ -396,131 +492,183 @@ fn main() -> Result<(), String> {
             // Формы: X=[R,D], W=[D,K], G=[R,K]; результаты [R,D], [D,K], [K].
             // R — число строк: для Dense это N картинок, для im2col — N*out² окон.
             // Результат — (градиент по входу, градиент весов, градиент смещений).
-            let dense_backward = |input: &Vec<Vec<f32>>,
-                                  weights: &Vec<Vec<f32>>,
-                                  gradient: &Vec<Vec<f32>>|
-             -> (Vec<Vec<f32>>, Vec<Vec<f32>>, Vec<f32>) {
-                let mut input_gradient = vec![vec![0.0; weights.len()]; input.len()];
-                let mut weight_gradient = vec![vec![0.0; weights[0].len()]; weights.len()];
-                let mut bias_gradient = vec![0.0; weights[0].len()];
-                for image in 0..input.len() {
-                    for feature in 0..weights.len() {
-                        for unit in 0..weights[feature].len() {
-                            input_gradient[image][feature] +=
-                                gradient[image][unit] * weights[feature][unit];
-                            weight_gradient[feature][unit] +=
-                                input[image][feature] * gradient[image][unit];
+            let dense_backward =
+                |input: &Vec<ExampleFeatures>,
+                 weights: &Vec<InputFeatureWeights>,
+                 gradient: &Vec<ExampleFeatures>|
+                 -> (Vec<ExampleFeatures>, Vec<InputFeatureWeights>, Vec<f32>) {
+                    let mut input_gradient = vec![
+                        ExampleFeatures {
+                            features: vec![0.0; weights.len()]
+                        };
+                        input.len()
+                    ];
+                    let mut weight_gradient = vec![
+                        InputFeatureWeights {
+                            output_neurons: vec![0.0; weights[0].output_neurons.len()]
+                        };
+                        weights.len()
+                    ];
+                    let mut bias_gradient = vec![0.0; weights[0].output_neurons.len()];
+                    for input_index in 0..input.len() {
+                        for weights_index in 0..weights.len() {
+                            for output_neurons_index in
+                                0..weights[weights_index].output_neurons.len()
+                            {
+                                input_gradient[input_index].features[weights_index] += gradient
+                                    [input_index]
+                                    .features[output_neurons_index]
+                                    * weights[weights_index].output_neurons[output_neurons_index];
+                                weight_gradient[weights_index].output_neurons
+                                    [output_neurons_index] += input[input_index].features
+                                    [weights_index]
+                                    * gradient[input_index].features[output_neurons_index];
+                            }
+                        }
+                        for biases_index in 0..bias_gradient.len() {
+                            bias_gradient[biases_index] +=
+                                gradient[input_index].features[biases_index];
                         }
                     }
-                    for unit in 0..bias_gradient.len() {
-                        bias_gradient[unit] += gradient[image][unit];
-                    }
-                }
-                (input_gradient, weight_gradient, bias_gradient)
-            };
+                    (input_gradient, weight_gradient, bias_gradient)
+                };
             // Производная ReLU равна 1 для положительного входа и 0 для отрицательного.
             // В нуле здесь выбираем 0. Положительность сохранённого выхода ReLU даёт эту маску:
             // пропускаем G там, где нейрон был активен, и обнуляем в остальных координатах.
-            let relu_backward =
-                |activated: &Vec<Vec<f32>>, gradient: &Vec<Vec<f32>>| -> Vec<Vec<f32>> {
-                    assert_eq!(activated.len(), gradient.len());
-                    let mut result = gradient.clone();
-                    for row in 0..activated.len() {
-                        assert_eq!(activated[row].len(), gradient[row].len());
-                        for column in 0..activated[row].len() {
-                            if activated[row][column] <= 0.0 {
-                                result[row][column] = 0.0;
-                            }
+            let relu_backward = |activated: &Vec<ExampleFeatures>,
+                                 gradient: &Vec<ExampleFeatures>|
+             -> Vec<ExampleFeatures> {
+                assert_eq!(activated.len(), gradient.len());
+                let mut result = gradient.clone();
+                for examples_index in 0..activated.len() {
+                    assert_eq!(
+                        activated[examples_index].features.len(),
+                        gradient[examples_index].features.len()
+                    );
+                    for features_index in 0..activated[examples_index].features.len() {
+                        if activated[examples_index].features[features_index] <= 0.0 {
+                            result[examples_index].features[features_index] = 0.0;
                         }
                     }
-                    result
-                };
+                }
+                result
+            };
             // Обратный проход свёртки: используем те же окна columns и СТАРЫЕ веса фильтров.
             // Сначала возвращаем G к форме [N*out², outputs], затем обычный Dense backward
             // даёт производные по окнам, общим весам фильтров и смещениям.
-            let conv_backward = |columns: &Vec<Vec<f32>>,
-                                 layer: &Layer,
-                                 gradient: &Vec<Vec<f32>>,
-                                 channels: usize,
-                                 side: usize,
-                                 kernel: usize|
-             -> (Vec<Vec<f32>>, Vec<Vec<f32>>, Vec<f32>) {
-                // Количество положений окна по одной оси. Для входа 28 и окна 5: 28-5+1=24.
-                // Крайние положения учитывают только окна, целиком помещающиеся внутри картинки.
-                let out: usize = side - kernel + 1;
-                // Всего пространственных положений окна на одной картинке: out².
-                // Число каналов считаем отдельно — в каждом положении есть ответы всех фильтров.
-                let positions: usize = out * out;
-                // По одному смещению на фильтр: длина b равна числу выходных каналов.
-                // Например, первый слой имеет 8 разных обучаемых фильтров.
-                let outputs: usize = layer.1.len();
-                // После перепаковки градиентов rows используется только для чтения.
-                let rows: Vec<Vec<f32>> = {
-                    // Перепаковываем G из [N,outputs*out²] в [N*out²,outputs] для dense_backward.
-                    let mut rows: Vec<Vec<f32>> =
-                        vec![vec![0.0; outputs]; gradient.len() * positions];
-                    // Типы переменных: n: usize.
-                    for n in 0..gradient.len() {
-                        // Типы переменных: p: usize.
-                        for p in 0..positions {
-                            // Типы переменных: c: usize.
-                            for c in 0..outputs {
-                                rows[n * positions + p][c] = gradient[n][c * positions + p];
+            let conv_backward =
+                |columns: &Vec<ExampleFeatures>,
+                 layer: &Layer,
+                 gradient: &Vec<ExampleFeatures>,
+                 channels: usize,
+                 side: usize,
+                 kernel: usize|
+                 -> (Vec<ExampleFeatures>, Vec<InputFeatureWeights>, Vec<f32>) {
+                    // Количество положений окна по одной оси. Для входа 28 и окна 5: 28-5+1=24.
+                    // Крайние положения учитывают только окна, целиком помещающиеся внутри картинки.
+                    let out: usize = side - kernel + 1;
+                    // Всего пространственных положений окна на одной картинке: out².
+                    // Число каналов считаем отдельно — в каждом положении есть ответы всех фильтров.
+                    let positions: usize = out * out;
+                    // По одному смещению на фильтр: длина b равна числу выходных каналов.
+                    // Например, первый слой имеет 8 разных обучаемых фильтров.
+                    let outputs: usize = layer.biases.len();
+                    // После перепаковки градиентов rows используется только для чтения.
+                    let rows: Vec<ExampleFeatures> = {
+                        // Перепаковываем G из [N,outputs*out²] в [N*out²,outputs] для dense_backward.
+                        let mut rows: Vec<ExampleFeatures> = vec![
+                            ExampleFeatures {
+                                features: vec![0.0; outputs]
+                            };
+                            gradient.len() * positions
+                        ];
+                        // Типы переменных: examples_index: usize.
+                        for examples_index in 0..gradient.len() {
+                            // Типы переменных: positions_index: usize.
+                            for positions_index in 0..positions {
+                                // Типы переменных: filters_index: usize.
+                                for filters_index in 0..outputs {
+                                    rows[examples_index * positions + positions_index].features
+                                        [filters_index] = gradient[examples_index].features
+                                        [filters_index * positions + positions_index];
+                                }
                             }
                         }
-                    }
-                    rows
-                };
-                // dW и db суммируют вклад всех позиций: фильтры были общими для каждого окна.
-                // dc — производная по каждому элементу каждого окна; это ещё не dL по исходной карте.
-                let (dc, dw, db): (Vec<Vec<f32>>, Vec<Vec<f32>>, Vec<f32>) =
-                    dense_backward(columns, &layer.0, &rows);
-                // dx хранит производные по исходному входу свёртки. Начинаем с нулей
-                // и суммируем вклады перекрывающихся окон в каждую координату.
-                let mut dx: Vec<Vec<f32>> = vec![vec![0.0; channels * side * side]; gradient.len()];
-                // Типы переменных: n: usize.
-                for n in 0..gradient.len() {
-                    // Типы переменных: y: usize.
-                    for y in 0..out {
-                        // Типы переменных: x: usize.
-                        for x in 0..out {
-                            // n выбирает картинку; y,x — положение окна. Это её номер строки в im2col:
-                            // сначала все положения картинки 0, затем картинки 1 и так далее.
-                            let row: usize = n * positions + y * out + x;
-                            // Типы переменных: c: usize.
-                            for c in 0..channels {
-                                // Типы переменных: ky: usize.
-                                for ky in 0..kernel {
-                                    // Типы переменных: kx: usize.
-                                    for kx in 0..kernel {
-                                        // Один исходный пиксель участвовал во многих окнах. Его общая производная —
-                                        // СУММА их вкладов. Присваивание вместо += потеряло бы часть градиента.
-                                        dx[n][(c * side + y + ky) * side + x + kx] +=
-                                            dc[row][(c * kernel + ky) * kernel + kx];
+                        rows
+                    };
+                    // dW и db суммируют вклад всех позиций: фильтры были общими для каждого окна.
+                    // dc — производная по каждому элементу каждого окна; это ещё не dL по исходной карте.
+                    let (dc, dw, db): (Vec<ExampleFeatures>, Vec<InputFeatureWeights>, Vec<f32>) =
+                        dense_backward(columns, &layer.weights, &rows);
+                    // dx хранит производные по исходному входу свёртки. Начинаем с нулей
+                    // и суммируем вклады перекрывающихся окон в каждую координату.
+                    let mut dx: Vec<ExampleFeatures> = vec![
+                        ExampleFeatures {
+                            features: vec![0.0; channels * side * side]
+                        };
+                        gradient.len()
+                    ];
+                    // Типы переменных: examples_index: usize.
+                    for examples_index in 0..gradient.len() {
+                        // Типы переменных: output_row_index: usize.
+                        for output_row_index in 0..out {
+                            // Типы переменных: output_column_index: usize.
+                            for output_column_index in 0..out {
+                                // examples_index выбирает картинку; output_row_index,output_column_index — положение окна. Это её номер строки в im2col:
+                                // сначала все положения картинки 0, затем картинки 1 и так далее.
+                                let row: usize = examples_index * positions
+                                    + output_row_index * out
+                                    + output_column_index;
+                                // Типы переменных: channels_index: usize.
+                                for channels_index in 0..channels {
+                                    // Типы переменных: kernel_row_index: usize.
+                                    for kernel_row_index in 0..kernel {
+                                        // Типы переменных: kernel_column_index: usize.
+                                        for kernel_column_index in 0..kernel {
+                                            // Один исходный пиксель участвовал во многих окнах. Его общая производная —
+                                            // СУММА их вкладов. Присваивание вместо += потеряло бы часть градиента.
+                                            dx[examples_index].features[(channels_index * side
+                                                + output_row_index
+                                                + kernel_row_index)
+                                                * side
+                                                + output_column_index
+                                                + kernel_column_index] += dc[row].features
+                                                [(channels_index * kernel + kernel_row_index)
+                                                    * kernel
+                                                    + kernel_column_index];
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                (dx, dw, db)
-            };
+                    (dx, dw, db)
+                };
             // Pooling возвращает градиент только в позицию выбранного максимума.
             // Другие три входа окна не повлияли на выход локально и получают нулевой градиент.
-            let pool_backward = |indices: &Vec<Vec<usize>>,
+            let pool_backward = |indices: &Vec<PoolingChoices>,
                                  width: usize,
-                                 gradient: &Vec<Vec<f32>>|
-             -> Vec<Vec<f32>> {
+                                 gradient: &Vec<ExampleFeatures>|
+             -> Vec<ExampleFeatures> {
                 assert_eq!(indices.len(), gradient.len());
-                let mut input: Vec<Vec<f32>> = vec![vec![0.0; width]; gradient.len()];
-                // Типы переменных: n: usize, p: usize, g: f32.
-                for n in 0..gradient.len() {
-                    assert_eq!(indices[n].len(), gradient[n].len());
-                    for p in 0..gradient[n].len() {
-                        let g = gradient[n][p];
+                let mut input: Vec<ExampleFeatures> = vec![
+                    ExampleFeatures {
+                        features: vec![0.0; width]
+                    };
+                    gradient.len()
+                ];
+                // Типы переменных: examples_index: usize, p: usize, g: f32.
+                for examples_index in 0..gradient.len() {
+                    assert_eq!(
+                        indices[examples_index].input_feature_by_output.len(),
+                        gradient[examples_index].features.len()
+                    );
+                    for features_index in 0..gradient[examples_index].features.len() {
+                        let g = gradient[examples_index].features[features_index];
                         // Сохранённый индекс маршрутизирует производную обратно к нужному пикселю.
                         // Это не обучение индексов: веса учатся в соседних Conv и Dense.
-                        input[n][indices[n][p]] += g;
+                        input[examples_index].features
+                            [indices[examples_index].input_feature_by_output[features_index]] += g;
                     }
                 }
                 input
@@ -539,10 +687,11 @@ fn main() -> Result<(), String> {
             // Fisher–Yates: идём с конца и меняем текущий индекс со случайным индексом 0..=i.
             // Меняется порядок записей train; сами картинки и метки не изменяются.
             let shuffle = |items: &mut [usize], state: &mut u64| -> () {
-                // Типы переменных: i: usize.
-                for i in (1..items.len()).rev() {
-                    let j: usize = (next_random(state) % (i as u64 + 1)) as usize;
-                    items.swap(i, j);
+                // Типы переменных: items_index: usize.
+                for items_index in (1..items.len()).rev() {
+                    let random_items_index: usize =
+                        (next_random(state) % (items_index as u64 + 1)) as usize;
+                    items.swap(items_index, random_items_index);
                 }
             };
             // Подготовка индексов двух частей и состояния генератора.
@@ -588,15 +737,19 @@ fn main() -> Result<(), String> {
                     // Это масштаб He: для ReLU он помогает сохранять разумный размер сигналов в слоях.
                     // Один и тот же способ инициализации здесь применяется ко всем матрицам весов.
                     let bound: f32 = (6.0 / input as f32).sqrt();
-                    (
-                        {
+                    Layer {
+                        weights: {
                             let row_count: usize = input;
                             let column_count: usize = output;
-                            let mut values: Vec<Vec<f32>> =
-                                vec![vec![0.0; column_count]; row_count];
+                            let mut values: Vec<InputFeatureWeights> = vec![
+                                InputFeatureWeights {
+                                    output_neurons: vec![0.0; column_count]
+                                };
+                                row_count
+                            ];
                             for row_index in 0..row_count {
                                 for column_index in 0..column_count {
-                                    values[row_index][column_index] = {
+                                    values[row_index].output_neurons[column_index] = {
                                         // Старшие 24 бита превращаем в f32 в [0,1); 2*uniform-1 даёт [-1,1).
                                         // Умножение на bound задаёт нужный диапазон начальных весов.
                                         let uniform: f32 =
@@ -607,8 +760,8 @@ fn main() -> Result<(), String> {
                             }
                             values
                         },
-                        vec![0.0; output],
-                    )
+                        biases: vec![0.0; output],
+                    }
                 };
                 let layers: Vec<Layer> = vec![
                     // layers[0]: Conv1, 1*5*5=25 весов на фильтр, 8 фильтров; W=[25,8].
@@ -623,18 +776,23 @@ fn main() -> Result<(), String> {
                 (layers, random_state)
             };
 
-            let (first_moments, second_moments): (
-                Vec<(Vec<Vec<f32>>, Vec<f32>)>,
-                Vec<(Vec<Vec<f32>>, Vec<f32>)>,
-            ) = {
+            let (first_moments, second_moments): (Vec<Layer>, Vec<Layer>) = {
                 // Adam помнит историю отдельно для каждого веса и смещения.
                 // Создаём два набора нулей той же формы: среднее градиентов m и среднее их квадратов v.
                 // Замыкание нужно только для начального создания этих массивов.
-                let zero_moments = || -> Vec<(Vec<Vec<f32>>, Vec<f32>)> {
+                let zero_moments = || -> Vec<Layer> {
                     layers
                         .iter()
-                        .map(|(w, b): &Layer| -> (Vec<Vec<f32>>, Vec<f32>) {
-                            (vec![vec![0.0; w[0].len()]; w.len()], vec![0.0; b.len()])
+                        .map(|layer: &Layer| -> Layer {
+                            Layer {
+                                weights: vec![
+                                    InputFeatureWeights {
+                                        output_neurons: vec![0.0; layer.biases.len()]
+                                    };
+                                    layer.weights.len()
+                                ],
+                                biases: vec![0.0; layer.biases.len()],
+                            }
                         })
                         .collect::<Vec<Layer>>()
                 };
@@ -662,14 +820,14 @@ fn main() -> Result<(), String> {
                 // Сохраняем отдельную копию лучших весов по validation loss.
                 // Копия нужна, потому что следующие эпохи продолжат менять текущие layers.
                 // В начале лучший кандидат — ещё не обученная сеть (эпоха 0).
-                let mut best: Vec<(Vec<Vec<f32>>, Vec<f32>)> = layers.clone();
+                let mut best: Vec<Layer> = layers.clone();
                 let mut best_loss: f32 = initial_loss;
                 let mut best_epoch: usize = 0;
                 // step — номер ОБНОВЛЕНИЯ весов, не эпохи. Он увеличивается после каждого batch
                 // и нужен Adam для поправки на нулевые начальные средние.
                 let mut step: i32 = 0i32;
                 // Одна эпоха: пройти все batch train, затем оценить validation без обновления весов.
-                // Повторяем этот цикл; test до выбора лучшей эпохи не загружаем.
+                // Повторяем этот цикл; test до выбора лучшей эпохи не используем.
                 // Типы переменных: epoch: usize.
                 for epoch in 1..=epochs {
                     // Меняем только порядок обучающих индексов. Генератор продолжает своё состояние,
@@ -683,68 +841,102 @@ fn main() -> Result<(), String> {
                             // Сначала весь прямой и обратный проход по СТАРЫМ весам.
                             // Наружу из этого блока выходят только ошибка batch и градиенты параметров;
                             // активации, окна свёрток и промежуточные производные остаются внутри.
-                            let (loss, gradients): (f32, Vec<(Vec<Vec<f32>>, Vec<f32>)>) = {
-                                let (input, labels): (Vec<Vec<f32>>, Vec<Digit>) =
+                            let (loss, gradients): (f32, Vec<Layer>) = {
+                                let (input, labels): (Vec<ExampleFeatures>, Vec<Digit>) =
                                     batch(&train_images, examples);
-                                let (states, columns, indices): (
-                                    Vec<Vec<Vec<f32>>>,
-                                    Vec<Vec<Vec<f32>>>,
-                                    Vec<Vec<Vec<usize>>>,
-                                ) = forward(&layers, &input);
+                                let forward_values: ForwardPass = forward(&layers, &input);
                                 // Получаем среднюю ошибку batch и dL/dscores — начало обратного прохода.
                                 // Ошибка должна быть конечной; NaN/∞ означают, что численный расчёт нарушился.
-                                let (loss, gradient): (f32, Vec<Vec<f32>>) =
-                                    cross_entropy(states.last().unwrap(), &labels);
+                                let (loss, gradient): (f32, Vec<ExampleFeatures>) =
+                                    cross_entropy(&forward_values.digit_scores, &labels);
                                 if !loss.is_finite() {
                                     return Err(
                                         "Ошибка обучения не конечна; уменьши learning-rate".into(),
                                     );
                                 }
                                 // Выходной Dense: ow/ob — градиенты W и b; gradient возвращается к hidden.
-                                let (gradient, ow, ob): (Vec<Vec<f32>>, Vec<Vec<f32>>, Vec<f32>) =
-                                    dense_backward(&states[5], &layers[3].0, &gradient);
+                                let (gradient, ow, ob): (
+                                    Vec<ExampleFeatures>,
+                                    Vec<InputFeatureWeights>,
+                                    Vec<f32>,
+                                ) = dense_backward(
+                                    &forward_values.hidden_neurons,
+                                    &layers[3].weights,
+                                    &gradient,
+                                );
                                 // Через ReLU скрытого слоя возвращаемся к Dense [400,64].
                                 // hw/hb — градиенты его весов и смещений; gradient по pool2 имеет форму [N,400].
-                                let (gradient, hw, hb): (Vec<Vec<f32>>, Vec<Vec<f32>>, Vec<f32>) =
-                                    dense_backward(
-                                        &states[4],
-                                        &layers[2].0,
-                                        &relu_backward(&states[5], &gradient),
-                                    );
+                                let (gradient, hw, hb): (
+                                    Vec<ExampleFeatures>,
+                                    Vec<InputFeatureWeights>,
+                                    Vec<f32>,
+                                ) = dense_backward(
+                                    &forward_values.second_pool,
+                                    &layers[2].weights,
+                                    &relu_backward(&forward_values.hidden_neurons, &gradient),
+                                );
                                 // Обратный проход второго pooling: [N,400] -> [N,1600]. Производные получают
                                 // только сохранённые максимумы; дальше нужна маска ReLU второго Conv.
-                                let gradient: Vec<Vec<f32>> =
-                                    pool_backward(&indices[1], states[3][0].len(), &gradient);
+                                let gradient: Vec<ExampleFeatures> = pool_backward(
+                                    &forward_values.second_pool_routes,
+                                    forward_values.second_convolution[0].features.len(),
+                                    &gradient,
+                                );
                                 // Второй Conv: через ReLU считаем sw/sb — градиенты весов и смещений, а также gradient по pool1.
-                                // Возвращённая производная имеет форму [N,1152]. Нужны columns[1] и старые W.
-                                let (gradient, sw, sb): (Vec<Vec<f32>>, Vec<Vec<f32>>, Vec<f32>) =
-                                    conv_backward(
-                                        &columns[1],
-                                        &layers[1],
-                                        &relu_backward(&states[3], &gradient),
-                                        8,
-                                        12,
-                                        3,
-                                    );
+                                // Возвращённая производная имеет форму [N,1152]. Нужны forward_values.second_windows и старые W.
+                                let (gradient, sw, sb): (
+                                    Vec<ExampleFeatures>,
+                                    Vec<InputFeatureWeights>,
+                                    Vec<f32>,
+                                ) = conv_backward(
+                                    &forward_values.second_windows,
+                                    &layers[1],
+                                    &relu_backward(&forward_values.second_convolution, &gradient),
+                                    8,
+                                    12,
+                                    3,
+                                );
                                 // Обратный проход первого pooling: [N,1152] -> [N,4608]. Возвращаем вклад
                                 // только выбранным максимумам первой свёртки.
-                                let gradient: Vec<Vec<f32>> =
-                                    pool_backward(&indices[0], states[1][0].len(), &gradient);
+                                let gradient: Vec<ExampleFeatures> = pool_backward(
+                                    &forward_values.first_pool_routes,
+                                    forward_values.first_convolution[0].features.len(),
+                                    &gradient,
+                                );
                                 // Первый Conv: через его ReLU получаем fw/fb — градиенты весов и смещений. Производные по пикселям
                                 // не используем: учим фильтры, а не изменяем исходные PNG.
-                                let (_, fw, fb): (Vec<Vec<f32>>, Vec<Vec<f32>>, Vec<f32>) =
-                                    conv_backward(
-                                        &columns[0],
-                                        &layers[0],
-                                        &relu_backward(&states[1], &gradient),
-                                        1,
-                                        28,
-                                        5,
-                                    );
+                                let (_, fw, fb): (
+                                    Vec<ExampleFeatures>,
+                                    Vec<InputFeatureWeights>,
+                                    Vec<f32>,
+                                ) = conv_backward(
+                                    &forward_values.first_windows,
+                                    &layers[0],
+                                    &relu_backward(&forward_values.first_convolution, &gradient),
+                                    1,
+                                    28,
+                                    5,
+                                );
                                 // Возвращаем градиенты четырёх слоёв в прямом порядке layers:
                                 // Conv1, Conv2, Dense64, Dense10. Пока всё считалось, ни один вес не менялся.
-                                let gradients: Vec<(Vec<Vec<f32>>, Vec<f32>)> =
-                                    vec![(fw, fb), (sw, sb), (hw, hb), (ow, ob)];
+                                let gradients: Vec<Layer> = vec![
+                                    Layer {
+                                        weights: fw,
+                                        biases: fb,
+                                    },
+                                    Layer {
+                                        weights: sw,
+                                        biases: sb,
+                                    },
+                                    Layer {
+                                        weights: hw,
+                                        biases: hb,
+                                    },
+                                    Layer {
+                                        weights: ow,
+                                        biases: ob,
+                                    },
+                                ];
 
                                 (loss, gradients)
                             };
@@ -757,17 +949,35 @@ fn main() -> Result<(), String> {
                                 // Деление на 1-β^step исправляет это смещение: β₁=0.9, β₂=0.999.
                                 let correction1: f32 = 1.0 - 0.9f32.powi(step);
                                 let correction2: f32 = 1.0 - 0.999f32.powi(step);
-                                // Типы переменных: i: usize.
-                                for i in 0..layers.len() {
-                                    // Обновление весов W (поле .0 слоя).
+                                // Типы переменных: layers_index: usize.
+                                for layers_index in 0..layers.len() {
+                                    // Обновление весов W (поле weights слоя).
                                     // Типы переменных: parameter: &mut f32, m: &mut f32, v: &mut f32, g: f32.
-                                    for (((parameter, m), v), &g) in layers[i]
-                                        .0
+                                    for (((parameter, m), v), &g) in layers[layers_index]
+                                        .weights
                                         .iter_mut()
-                                        .flatten()
-                                        .zip(first_moments[i].0.iter_mut().flatten())
-                                        .zip(second_moments[i].0.iter_mut().flatten())
-                                        .zip(gradients[i].0.iter().flatten())
+                                        .flat_map(|input_feature| {
+                                            input_feature.output_neurons.iter_mut()
+                                        })
+                                        .zip(
+                                            first_moments[layers_index]
+                                                .weights
+                                                .iter_mut()
+                                                .flat_map(|input_feature| {
+                                                    input_feature.output_neurons.iter_mut()
+                                                }),
+                                        )
+                                        .zip(
+                                            second_moments[layers_index]
+                                                .weights
+                                                .iter_mut()
+                                                .flat_map(|input_feature| {
+                                                    input_feature.output_neurons.iter_mut()
+                                                }),
+                                        )
+                                        .zip(gradients[layers_index].weights.iter().flat_map(
+                                            |input_feature| input_feature.output_neurons.iter(),
+                                        ))
                                     {
                                         // m хранит сглаженный градиент, включая его знак: 90% прежнего + 10% нового.
                                         // v сглаживает квадрат градиента: 99.9% прежнего + 0.1% нового квадрата.
@@ -779,14 +989,14 @@ fn main() -> Result<(), String> {
                                         *parameter -= learning_rate * (*m / correction1)
                                             / ((*v / correction2).sqrt() + 1e-8);
                                     }
-                                    // Та же формула Adam для смещений b (поле .1 слоя).
+                                    // Та же формула Adam для смещений b (поле biases слоя).
                                     // Типы переменных: parameter: &mut f32, m: &mut f32, v: &mut f32, g: f32.
-                                    for (((parameter, m), v), &g) in layers[i]
-                                        .1
+                                    for (((parameter, m), v), &g) in layers[layers_index]
+                                        .biases
                                         .iter_mut()
-                                        .zip(first_moments[i].1.iter_mut())
-                                        .zip(second_moments[i].1.iter_mut())
-                                        .zip(gradients[i].1.iter())
+                                        .zip(first_moments[layers_index].biases.iter_mut())
+                                        .zip(second_moments[layers_index].biases.iter_mut())
+                                        .zip(gradients[layers_index].biases.iter())
                                     {
                                         *m = 0.9 * *m + 0.1 * g;
                                         *v = 0.999 * *v + 0.001 * g * g;

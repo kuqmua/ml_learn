@@ -4,11 +4,11 @@
 fn main() {
     let rows = ["1.0", "oops", "3.0"];
     let mut errors = Vec::new();
-    for (index, row) in rows.into_iter().enumerate() {
+    for (rows_index, row) in rows.into_iter().enumerate() {
         match row.parse::<f64>() {
-            Ok(value) => println!("Строка {}: число={value}", index + 1),
+            Ok(value) => println!("Строка {}: число={value}", rows_index + 1),
             Err(_) => {
-                let message = format!("строка {}: не число: {row}", index + 1);
+                let message = format!("строка {}: не число: {row}", rows_index + 1);
                 eprintln!("{message}");
                 errors.push(message);
             }

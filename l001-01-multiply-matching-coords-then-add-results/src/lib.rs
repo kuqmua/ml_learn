@@ -14,8 +14,8 @@ pub fn multiply_matching_coords_then_add_results(
         return Err("векторы должны иметь одинаковое число координат");
     }
     let mut sum_after_multiplying_matching_coords: f64 = 0.0;
-    for index in 0..vec1.len() {
-        sum_after_multiplying_matching_coords += vec1[index] * vec2[index];
+    for coordinate_index in 0..vec1.len() {
+        sum_after_multiplying_matching_coords += vec1[coordinate_index] * vec2[coordinate_index];
     }
     Ok(sum_after_multiplying_matching_coords)
 }

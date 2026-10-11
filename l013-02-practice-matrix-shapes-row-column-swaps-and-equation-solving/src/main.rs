@@ -139,15 +139,15 @@ fn main() {
     let solution = [x, y];
     assert_eq!(solution, [1.0, 2.0]);
     // Проверяем обе строки, а не только уравнение, из которого получили y.
-    for row in 0..left_matrix.rows {
-        let start = row * left_matrix.column_count;
+    for row_index in 0..left_matrix.rows {
+        let start = row_index * left_matrix.column_count;
         let restored = multiply_matching_coords_then_add_results(
             &left_matrix.data[start..start + left_matrix.column_count],
             &solution,
         )
         .unwrap();
-        assert_eq!(restored, right_hand_side[row]);
-        println!("Строка {row}: найденный вход {solution:?} даёт {restored}");
+        assert_eq!(restored, right_hand_side[row_index]);
+        println!("Строка {row_index}: найденный вход {solution:?} даёт {restored}");
     }
     assert!(Matrix::create_matrix_from_elements_listed_row_by_row(2, 3, vec![1.0; 4]).is_err());
 }

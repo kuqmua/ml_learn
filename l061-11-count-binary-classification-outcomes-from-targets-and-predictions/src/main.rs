@@ -18,8 +18,8 @@ fn main() {
     let counts: BinaryClassificationCounts =
         count_binary_classification_outcomes_from_targets_and_predictions(&truth, &predicted)
             .expect("число ответов и прогнозов должно совпадать");
-    for index in 0..truth.len() {
-        let _: &str = match (truth[index], predicted[index]) {
+    for truth_index in 0..truth.len() {
+        let _: &str = match (truth[truth_index], predicted[truth_index]) {
             (true, true) => "TP: верно найден положительный класс",
 
             (false, true) => "FP: ложная тревога",
@@ -28,7 +28,7 @@ fn main() {
 
             (false, false) => "TN: верно найден отрицательный класс",
         };
-        let _ = (&(truth[index]), &(predicted[index]));
+        let _ = (&(truth[truth_index]), &(predicted[truth_index]));
     }
     assert_eq!(
         (

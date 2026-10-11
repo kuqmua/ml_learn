@@ -32,8 +32,8 @@ pub fn count_binary_classification_outcomes_from_targets_and_predictions(
 
         false_negs_as_missed_pos_cases: 0,
     };
-    for index in 0..truth.len() {
-        match (truth[index], predicted[index]) {
+    for truth_index in 0..truth.len() {
+        match (truth[truth_index], predicted[truth_index]) {
             (true, true) => counts.true_poss_as_correctly_detected_pos_cases += 1,
 
             (false, true) => counts.false_poss_as_false_alarms_on_neg_cases += 1,

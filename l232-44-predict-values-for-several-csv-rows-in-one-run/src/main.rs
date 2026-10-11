@@ -4,8 +4,8 @@
 fn main() {
     let features = [1.0, 2.0, 3.0];
     let predictions = features.map(|x| 2.0 * x + 1.0);
-    for (index, (x, y)) in features.iter().zip(predictions).enumerate() {
-        println!("Строка {}: вход={x}, прогноз={y}", index + 1);
+    for (rows_index, (x, y)) in features.iter().zip(predictions).enumerate() {
+        println!("Строка {}: вход={x}, прогноз={y}", rows_index + 1);
     }
     assert_eq!(predictions, [3.0, 5.0, 7.0]);
 }

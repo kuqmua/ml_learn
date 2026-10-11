@@ -11,9 +11,10 @@ fn main() {
         assert!(right.iter().all(|row| row.len() == columns));
         let mut sum = 0.0;
         for row in left {
-            for column in 0..columns {
-                for shared in 0..right.len() {
-                    sum += row[shared] * right[shared][column];
+            for column_index in 0..columns {
+                for shared_coordinate_index in 0..right.len() {
+                    sum +=
+                        row[shared_coordinate_index] * right[shared_coordinate_index][column_index];
                 }
             }
         }
@@ -26,30 +27,32 @@ fn main() {
         "Сумма всех элементов произведения={}",
         sum_of_product(&left, &right)
     );
-    for row in 0..left.len() {
-        for column in 0..left[0].len() {
-            let derivative = right[column].iter().sum::<f64>();
+    for row_index in 0..left.len() {
+        for column_index in 0..left[0].len() {
+            let derivative = right[column_index].iter().sum::<f64>();
             let mut plus = left.clone();
             let mut minus = left.clone();
-            plus[row][column] += h;
-            minus[row][column] -= h;
+            plus[row_index][column_index] += h;
+            minus[row_index][column_index] -= h;
             let numerical =
                 (sum_of_product(&plus, &right) - sum_of_product(&minus, &right)) / (2.0 * h);
-            println!("Левый вход[{row}][{column}]: производная={derivative}, проверка={numerical}");
+            println!(
+                "Левый вход[{row_index}][{column_index}]: производная={derivative}, проверка={numerical}"
+            );
             assert!(check_f64_eq_1e_minus_7(derivative, numerical));
         }
     }
-    for row in 0..right.len() {
-        for column in 0..right[0].len() {
-            let derivative = left.iter().map(|values| values[row]).sum::<f64>();
+    for row_index in 0..right.len() {
+        for column_index in 0..right[0].len() {
+            let derivative = left.iter().map(|values| values[row_index]).sum::<f64>();
             let mut plus = right.clone();
             let mut minus = right.clone();
-            plus[row][column] += h;
-            minus[row][column] -= h;
+            plus[row_index][column_index] += h;
+            minus[row_index][column_index] -= h;
             let numerical =
                 (sum_of_product(&left, &plus) - sum_of_product(&left, &minus)) / (2.0 * h);
             println!(
-                "Правый вход[{row}][{column}]: производная={derivative}, проверка={numerical}"
+                "Правый вход[{row_index}][{column_index}]: производная={derivative}, проверка={numerical}"
             );
             assert!(check_f64_eq_1e_minus_7(derivative, numerical));
         }

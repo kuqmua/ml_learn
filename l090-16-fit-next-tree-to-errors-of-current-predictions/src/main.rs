@@ -19,9 +19,9 @@ fn main() {
             (target_minus_prediction_values[0] + target_minus_prediction_values[1]) / 2.0;
         let average_error_for_group2: f64 =
             (target_minus_prediction_values[2] + target_minus_prediction_values[3]) / 2.0;
-        for (index, value) in predictions.iter_mut().enumerate() {
+        for (predictions_index, value) in predictions.iter_mut().enumerate() {
             *value += 0.5
-                * if index < 2 {
+                * if predictions_index < 2 {
                     average_error_for_group1
                 } else {
                     average_error_for_group2

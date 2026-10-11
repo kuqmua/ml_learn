@@ -8,13 +8,16 @@ fn main() {
     let mut velocity_history: [(f64, f64); 4] =
         [(0.0, accumulated_gradient_for_momentum_update); 4];
     let rates_of_change: [f64; 3] = [2.0, 1.0, -0.5];
-    for (step, rate_of_change) in rates_of_change.into_iter().enumerate() {
+    for (slopes_index, rate_of_change) in rates_of_change.into_iter().enumerate() {
         accumulated_gradient_for_momentum_update =
             0.8 * accumulated_gradient_for_momentum_update + rate_of_change;
         weight -= 0.1 * accumulated_gradient_for_momentum_update;
 
-        weight_history[step + 1] = ((step + 1) as f64, weight);
-        velocity_history[step + 1] = ((step + 1) as f64, accumulated_gradient_for_momentum_update);
+        weight_history[slopes_index + 1] = ((slopes_index + 1) as f64, weight);
+        velocity_history[slopes_index + 1] = (
+            (slopes_index + 1) as f64,
+            accumulated_gradient_for_momentum_update,
+        );
     }
 
     // Выполняем вычисления из примера.

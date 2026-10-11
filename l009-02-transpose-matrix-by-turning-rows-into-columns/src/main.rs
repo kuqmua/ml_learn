@@ -8,16 +8,16 @@
 fn main() {
     let matrix: [[i32; 3]; 2] = [[1, 2, 3], [4, 5, 6]];
     let mut transposed: [[i32; 2]; 3] = [[0; 2]; 3];
-    for row in 0..2 {
-        for column in 0..3 {
-            transposed[column][row] = matrix[row][column];
+    for row_index in 0..2 {
+        for column_index in 0..3 {
+            transposed[column_index][row_index] = matrix[row_index][column_index];
         }
     }
 
     let mut restored: [[i32; 3]; 2] = [[0; 3]; 2];
-    for row in 0..transposed.len() {
-        for column in 0..transposed[row].len() {
-            restored[column][row] = transposed[row][column];
+    for row_index in 0..transposed.len() {
+        for column_index in 0..transposed[row_index].len() {
+            restored[column_index][row_index] = transposed[row_index][column_index];
         }
     }
     assert_eq!(restored, matrix);

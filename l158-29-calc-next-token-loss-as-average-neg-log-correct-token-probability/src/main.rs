@@ -15,7 +15,7 @@ fn main() {
         ("правильные токены маловероятны", &[0.2, 0.1]),
     ];
     let mut previous_error: f64 = 0.0;
-    for (index, (_description, probabilities)) in cases.into_iter().enumerate() {
+    for (cases_index, (_description, probabilities)) in cases.into_iter().enumerate() {
         assert!(!probabilities.is_empty(), "нужна хотя бы одна вероятность");
         assert!(
             probabilities.iter().all(|&p| p > 0.0 && p <= 1.0),
@@ -34,7 +34,7 @@ fn main() {
         }
         let average_neg_log_correct_token_probability: f64 =
             neg_log_sum / probabilities.len() as f64;
-        if index > 0 {
+        if cases_index > 0 {
             assert!(average_neg_log_correct_token_probability > previous_error);
         }
         println!("{_description}: средняя ошибка={average_neg_log_correct_token_probability}");

@@ -23,8 +23,11 @@ fn main() {
             println!(
                 "Точка ({x}, {y}), шаг={step:e}: по формулам={analytical:?}, численно={numerical:?}"
             );
-            for coord in 0..2 {
-                assert!(check_f64_eq_1e_minus_6(numerical[coord], analytical[coord]));
+            for coordinate_index in 0..2 {
+                assert!(check_f64_eq_1e_minus_6(
+                    numerical[coordinate_index],
+                    analytical[coordinate_index]
+                ));
             }
         }
     }

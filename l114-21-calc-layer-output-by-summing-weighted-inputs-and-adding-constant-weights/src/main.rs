@@ -8,10 +8,10 @@ fn main() {
     let weights: [[f64; 2]; 2] = [[0.5, 0.2], [-0.3, 0.8]];
     let constant_input_weights: [f64; 2] = [0.1, -0.2];
     let mut output: [f64; 2] = [0.0; 2];
-    for neuron in 0..2 {
-        output[neuron] = constant_input_weights[neuron];
-        for feature in 0..2 {
-            output[neuron] += weights[neuron][feature] * input[feature];
+    for neurons_index in 0..2 {
+        output[neurons_index] = constant_input_weights[neurons_index];
+        for features_index in 0..2 {
+            output[neurons_index] += weights[neurons_index][features_index] * input[features_index];
         }
     }
 

@@ -11,7 +11,7 @@ fn main() {
         ("отрицательный класс предсказан верно", 0.0, 0.1),
     ];
     let mut neg_log_correct_class_probabilities: [f64; 4] = [0.0; 4];
-    for (index, (_description, target, probability)) in cases.into_iter().enumerate() {
+    for (cases_index, (_description, target, probability)) in cases.into_iter().enumerate() {
         assert!(target == 0.0 || target == 1.0);
         assert!(probability > 0.0 && probability < 1.0);
         let probability_assigned_to_correct_class: f64 = if target == 1.0 {
@@ -27,8 +27,8 @@ fn main() {
             logarithm += term / odd_divisor as f64;
             term *= ratio * ratio;
         }
-        neg_log_correct_class_probabilities[index] = -2.0 * logarithm;
-        let _ = &(neg_log_correct_class_probabilities[index]);
+        neg_log_correct_class_probabilities[cases_index] = -2.0 * logarithm;
+        let _ = &(neg_log_correct_class_probabilities[cases_index]);
     }
 
     // Выполняем вычисления из примера.

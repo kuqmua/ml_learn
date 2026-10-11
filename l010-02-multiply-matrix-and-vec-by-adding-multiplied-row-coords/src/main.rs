@@ -13,9 +13,10 @@ fn main() {
         ("нулевой вектор", [0.0, 0.0], [0.0, 0.0]),
     ] {
         let mut matrix_vec_output: [f64; 2] = [0.0; 2];
-        for row in 0..matrix.len() {
-            matrix_vec_output[row] = multiply_matching_coords_then_add_results(&matrix[row], &vec)
-                .expect("число столбцов матрицы должно совпадать с числом координат вектора");
+        for row_index in 0..matrix.len() {
+            matrix_vec_output[row_index] =
+                multiply_matching_coords_then_add_results(&matrix[row_index], &vec)
+                    .expect("число столбцов матрицы должно совпадать с числом координат вектора");
         }
         assert_eq!(matrix_vec_output, expected);
     }

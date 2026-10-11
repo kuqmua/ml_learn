@@ -30,8 +30,11 @@ fn main() {
     )
     .unwrap();
     println!("Вход={input_component:?}; после={normalized:?}; удвоенный вход после={doubled:?}");
-    for i in 0..2 {
-        assert!(check_f64_eq_1e_minus_8(normalized[i], doubled[i]));
+    for coordinate_index in 0..2 {
+        assert!(check_f64_eq_1e_minus_8(
+            normalized[coordinate_index],
+            doubled[coordinate_index]
+        ));
     }
     assert!(check_f64_eq_1e_minus_8(
         normalized.iter().map(|v| v * v).sum::<f64>() / 2.0,

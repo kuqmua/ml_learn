@@ -19,8 +19,9 @@ fn main() {
             sum_of_allowed_weights > 0.0,
             "доступные позиции должны иметь положительную сумму весов"
         );
-        for index in 0..=current_position {
-            future_position_filtered_weights[index] = raw_weights[index] / sum_of_allowed_weights;
+        for allowed_position_index in 0..=current_position {
+            future_position_filtered_weights[allowed_position_index] =
+                raw_weights[allowed_position_index] / sum_of_allowed_weights;
         }
         assert!(check_f64_eq_1e_minus_10(
             future_position_filtered_weights.iter().sum::<f64>(),

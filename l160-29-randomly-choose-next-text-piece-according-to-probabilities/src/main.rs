@@ -9,10 +9,10 @@ fn main() {
     let choose = |draw: f64| {
         assert!((0.0..1.0).contains(&draw));
         let mut cumulative = 0.0;
-        for (index, probability) in probabilities.iter().enumerate() {
+        for (probabilities_index, probability) in probabilities.iter().enumerate() {
             cumulative += probability;
             if draw < cumulative {
-                return index;
+                return probabilities_index;
             }
         }
         unreachable!("вероятности этого примера покрывают [0, 1)")
@@ -43,15 +43,15 @@ fn main() {
     assert_eq!(counts, sample(42));
     assert_ne!(counts, sample(43));
     assert_eq!(counts.iter().sum::<usize>(), 10_000);
-    for index in 0..words.len() {
-        let frequency = counts[index] as f64 / 10_000.0;
+    for words_index in 0..words.len() {
+        let frequency = counts[words_index] as f64 / 10_000.0;
         println!(
             "{}: ожидаемая доля={}, частота={frequency}",
-            words[index], probabilities[index]
+            words[words_index], probabilities[words_index]
         );
         assert!(compare_2_floats_for_approximate_equality(
             frequency,
-            probabilities[index],
+            probabilities[words_index],
             0.02
         ));
     }

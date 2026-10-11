@@ -41,8 +41,11 @@ fn main() {
         )
         .unwrap();
     let rotated = rotate_vec_coord_pair_by_token_position(scaled_input, 2, 0.1);
-    for i in 0..2 {
-        assert!(check_f64_eq_1e_minus_6(rotated[i], query_vec[i]));
+    for coordinate_index in 0..2 {
+        assert!(check_f64_eq_1e_minus_6(
+            rotated[coordinate_index],
+            query_vec[coordinate_index]
+        ));
     }
     println!(
         "Увеличение масштаба входного запроса в 10 раз почти не изменило результат нормализации."

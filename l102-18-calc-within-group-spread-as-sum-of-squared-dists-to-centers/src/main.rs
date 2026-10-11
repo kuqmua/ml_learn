@@ -15,8 +15,8 @@ fn main() {
         "номер центра выходит за границы списка"
     );
     let mut _total_squared_dist_to_cluster_centers: f64 = 0.0;
-    for index in 0..points.len() {
-        let delta: f64 = points[index][0] - centers[assignments[index]][0];
+    for points_index in 0..points.len() {
+        let delta: f64 = points[points_index][0] - centers[assignments[points_index]][0];
         _total_squared_dist_to_cluster_centers += delta * delta;
     }
 

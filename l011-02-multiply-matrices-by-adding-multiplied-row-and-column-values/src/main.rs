@@ -32,13 +32,18 @@ fn main() {
             "внутренние размеры матриц должны совпадать"
         );
         let mut multiplied_matrix: [[f64; 2]; 2] = [[0.0; 2]; 2];
-        for row in 0..matrix_on_left.len() {
-            for column in 0..matrix_on_right[0].len() {
-                let column_values: [f64; 2] =
-                    [matrix_on_right[0][column], matrix_on_right[1][column]];
-                multiplied_matrix[row][column] =
-                    multiply_matching_coords_then_add_results(&matrix_on_left[row], &column_values)
-                        .expect("внутренние размеры матриц должны совпадать");
+        for row_index in 0..matrix_on_left.len() {
+            for column_index in 0..matrix_on_right[0].len() {
+                let column_values: [f64; 2] = [
+                    matrix_on_right[0][column_index],
+                    matrix_on_right[1][column_index],
+                ];
+                multiplied_matrix[row_index][column_index] =
+                    multiply_matching_coords_then_add_results(
+                        &matrix_on_left[row_index],
+                        &column_values,
+                    )
+                    .expect("внутренние размеры матриц должны совпадать");
             }
         }
         assert_eq!(multiplied_matrix, expected);

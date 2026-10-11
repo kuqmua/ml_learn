@@ -12,8 +12,8 @@ pub fn calc_squared_point_dist_by_summing_squared_coord_diffs<const N: usize>(
         return Err("точки должны быть непустыми и содержать только конечные координаты");
     }
     let mut squared_sum: f64 = 0.0;
-    for index in 0..point1.len() {
-        let diff: f64 = point1[index] - point2[index];
+    for coordinate_index in 0..point1.len() {
+        let diff: f64 = point1[coordinate_index] - point2[coordinate_index];
         squared_sum += diff * diff;
     }
     if !squared_sum.is_finite() {

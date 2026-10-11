@@ -16,10 +16,10 @@ fn main() {
     let mean_vertical_coord: f64 =
         feature2_values.iter().sum::<f64>() / feature2_values.len() as f64;
     let mut sum_after_multiplying_paired_diffs_from_mean: f64 = 0.0;
-    for index in 0..feature1_values.len() {
-        sum_after_multiplying_paired_diffs_from_mean += (feature1_values[index]
+    for samples_index in 0..feature1_values.len() {
+        sum_after_multiplying_paired_diffs_from_mean += (feature1_values[samples_index]
             - mean_horizontal_coord)
-            * (feature2_values[index] - mean_vertical_coord);
+            * (feature2_values[samples_index] - mean_vertical_coord);
     }
     let _covariance: f64 =
         sum_after_multiplying_paired_diffs_from_mean / (feature1_values.len() - 1) as f64;

@@ -16,12 +16,12 @@ fn main() {
         ("изменилась одна метка", "1,0\n2,0\n"),
     ];
     let mut fingerprints: [u64; 3] = [0; 3];
-    for (index, (_description, data)) in cases.into_iter().enumerate() {
+    for (cases_index, (_description, data)) in cases.into_iter().enumerate() {
         let mut hasher: std::collections::hash_map::DefaultHasher =
             std::collections::hash_map::DefaultHasher::new();
         std::hash::Hash::hash(data, &mut hasher);
-        fingerprints[index] = std::hash::Hasher::finish(&hasher);
-        let _ = &(fingerprints[index]);
+        fingerprints[cases_index] = std::hash::Hasher::finish(&hasher);
+        let _ = &(fingerprints[cases_index]);
     }
     assert_eq!(fingerprints[0], fingerprints[1]);
     assert_ne!(fingerprints[0], fingerprints[2]);

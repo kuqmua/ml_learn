@@ -41,10 +41,10 @@ fn main() {
         keys.len()
     );
     assert_eq!(separate_key_numbers, 2 * shared_key_numbers);
-    for head in 0..queries.len() {
+    for heads_index in 0..queries.len() {
         println!(
-            "Запрос {head} использует группу ключей и значений {}",
-            head / 2
+            "Запрос {heads_index} использует группу ключей и значений {}",
+            heads_index / 2
         );
     }
 }

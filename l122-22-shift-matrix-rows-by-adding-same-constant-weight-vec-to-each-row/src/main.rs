@@ -5,9 +5,10 @@ fn main() {
     let matrix: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
     let mut matrix_after_adding_constant_weight: [[f64; 2]; 2] = matrix;
     let constant_input_weight: [f64; 2] = [10.0, 20.0];
-    for row in 0..2 {
-        for column in 0..2 {
-            matrix_after_adding_constant_weight[row][column] += constant_input_weight[column];
+    for row_index in 0..2 {
+        for column_index in 0..2 {
+            matrix_after_adding_constant_weight[row_index][column_index] +=
+                constant_input_weight[column_index];
         }
     }
 

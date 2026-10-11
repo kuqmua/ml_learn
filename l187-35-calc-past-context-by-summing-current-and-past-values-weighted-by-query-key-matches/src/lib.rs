@@ -15,14 +15,14 @@ pub fn calc_past_context_by_summing_current_and_past_values_weighted_by_query_ke
         return Err("Q, K и V должны быть непустыми последовательностями одинаковой длины");
     }
     let mut output: Vec<[f64; 2]> = Vec::with_capacity(query_vec.len());
-    for index in 0..query_vec.len() {
+    for query_coordinate_index in 0..query_vec.len() {
         let mut state: [f64; 2] = [0.0; 2];
         for (past, weight) in
             calc_softmax_probability_weights_by_exponentiating_shifted_scores_then_dividing_by_sum(
-                &(0..=index)
+                &(0..=query_coordinate_index)
                     .map(|past| {
-                        (query_vec[index][0] * key_vec[past][0]
-                            + query_vec[index][1] * key_vec[past][1])
+                        (query_vec[query_coordinate_index][0] * key_vec[past][0]
+                            + query_vec[query_coordinate_index][1] * key_vec[past][1])
                             / 2.0_f64.sqrt()
                     })
                     .collect::<Vec<_>>(),
@@ -30,8 +30,8 @@ pub fn calc_past_context_by_summing_current_and_past_values_weighted_by_query_ke
             .into_iter()
             .enumerate()
         {
-            for feature in 0..2 {
-                state[feature] += weight * value_vecs[past][feature];
+            for features_index in 0..2 {
+                state[features_index] += weight * value_vecs[past][features_index];
             }
         }
         output.push(state);

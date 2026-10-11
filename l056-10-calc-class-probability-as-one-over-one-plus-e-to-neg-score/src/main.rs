@@ -15,8 +15,8 @@ fn main() {
     ] {
         let mut term: f64 = 1.0;
         let mut exponential: f64 = 1.0;
-        for index in 1..=30 {
-            term *= -raw_model_score / index as f64;
+        for term_index in 1..=30 {
+            term *= -raw_model_score / term_index as f64;
             exponential += term;
         }
         let pos_class_probability: f64 = 1.0 / (1.0 + exponential);

@@ -28,8 +28,9 @@ fn main() {
             let id = vocabulary[word];
             let derivative_by_score = probability(embeddings[id]) - target;
             // Обновляется только строка текущего слова. Оба её числа — параметры модели.
-            for coord in 0..2 {
-                embeddings[id][coord] -= 0.2 * derivative_by_score * readout[coord];
+            for coordinate_index in 0..2 {
+                embeddings[id][coordinate_index] -=
+                    0.2 * derivative_by_score * readout[coordinate_index];
             }
         }
     }

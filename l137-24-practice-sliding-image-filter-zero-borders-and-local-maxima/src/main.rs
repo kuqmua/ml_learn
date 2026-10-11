@@ -6,27 +6,32 @@ fn main() {
     let image = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]];
     let filter = [[1.0, 0.0], [0.0, -1.0]];
     let mut padded = [[0.0; 5]; 5];
-    for row in 0..3 {
-        for col in 0..3 {
-            padded[row + 1][col + 1] = image[row][col];
+    for row_index in 0..3 {
+        for column_index in 0..3 {
+            padded[row_index + 1][column_index + 1] = image[row_index][column_index];
         }
     }
     let mut responses = [[0.0_f64; 4]; 4];
-    for row in 0..4 {
-        for col in 0..4 {
-            for r in 0..2 {
-                for c in 0..2 {
-                    responses[row][col] += padded[row + r][col + c] * filter[r][c];
+    for row_index in 0..4 {
+        for column_index in 0..4 {
+            for window_row_index in 0..2 {
+                for window_column_index in 0..2 {
+                    responses[row_index][column_index] += padded[row_index + window_row_index]
+                        [column_index + window_column_index]
+                        * filter[window_row_index][window_column_index];
                 }
             }
         }
     }
     let mut pooled = [[f64::NEG_INFINITY; 2]; 2];
-    for row in 0..2 {
-        for col in 0..2 {
-            for r in 0..2 {
-                for c in 0..2 {
-                    pooled[row][col] = pooled[row][col].max(responses[2 * row + r][2 * col + c]);
+    for row_index in 0..2 {
+        for column_index in 0..2 {
+            for window_row_index in 0..2 {
+                for window_column_index in 0..2 {
+                    pooled[row_index][column_index] = pooled[row_index][column_index].max(
+                        responses[2 * row_index + window_row_index]
+                            [2 * column_index + window_column_index],
+                    );
                 }
             }
         }

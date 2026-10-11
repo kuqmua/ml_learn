@@ -64,11 +64,12 @@ fn main() {
             let projected = a.iter().zip(input).map(|(w, x)| w * x).sum::<f64>();
             let prediction = predict(input, a, b);
             let expected = target(input);
-            for row in 0..4 {
-                let output_derivative = 2.0 * (prediction[row] - expected[row]) / 16.0;
-                gradient_b[row] += output_derivative * projected;
-                for column in 0..4 {
-                    gradient_a[column] += output_derivative * b[row] * input[column];
+            for row_index in 0..4 {
+                let output_derivative = 2.0 * (prediction[row_index] - expected[row_index]) / 16.0;
+                gradient_b[row_index] += output_derivative * projected;
+                for column_index in 0..4 {
+                    gradient_a[column_index] +=
+                        output_derivative * b[row_index] * input[column_index];
                 }
             }
         }
@@ -77,35 +78,41 @@ fn main() {
     // Проверяем все 8 производных численно общей функцией из урока 018.
     let probe_b = [0.2, -0.1, 0.3, 0.4];
     let (derivatives_a, derivatives_b) = gradients(initial_a, probe_b);
-    for index in 0..4 {
+    for weights_index in 0..4 {
         let numerical_a = estimate_derivative_from_two_nearby_function_values(
             |value| {
                 let mut changed = initial_a;
-                changed[index] = value;
+                changed[weights_index] = value;
                 loss(changed, probe_b)
             },
-            initial_a[index],
+            initial_a[weights_index],
             1e-4,
         );
         let numerical_b = estimate_derivative_from_two_nearby_function_values(
             |value| {
                 let mut changed = probe_b;
-                changed[index] = value;
+                changed[weights_index] = value;
                 loss(initial_a, changed)
             },
-            probe_b[index],
+            probe_b[weights_index],
             1e-4,
         );
-        assert!(check_f64_eq_1e_minus_7(derivatives_a[index], numerical_a));
-        assert!(check_f64_eq_1e_minus_7(derivatives_b[index], numerical_b));
+        assert!(check_f64_eq_1e_minus_7(
+            derivatives_a[weights_index],
+            numerical_a
+        ));
+        assert!(check_f64_eq_1e_minus_7(
+            derivatives_b[weights_index],
+            numerical_b
+        ));
     }
     println!("Все 8 производных совпали с численной проверкой");
     for epoch in 0..2000 {
         let (gradient_a, gradient_b) = gradients(a, b);
         // Обе производные рассчитаны по одним старым весам; лишь теперь обновляем их.
-        for index in 0..4 {
-            a[index] -= 0.1 * gradient_a[index];
-            b[index] -= 0.1 * gradient_b[index];
+        for weights_index in 0..4 {
+            a[weights_index] -= 0.1 * gradient_a[weights_index];
+            b[weights_index] -= 0.1 * gradient_b[weights_index];
         }
         if matches!(epoch, 0 | 99 | 499 | 1999) {
             println!("Шаг {}: ошибка={}", epoch + 1, loss(a, b));

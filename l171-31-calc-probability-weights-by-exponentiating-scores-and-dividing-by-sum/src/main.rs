@@ -18,14 +18,14 @@ fn main() {
     let mut reference_weights: [f64; 2] = [0.0; 2];
     for (description, raw_model_scores) in cases {
         let mut exponentials: [f64; 2] = [0.0; 2];
-        for index in 0..2 {
+        for scores_index in 0..2 {
             let mut current_series_term: f64 = 1.0;
             let mut exponential_approximation: f64 = 1.0;
             for order in 1..=30 {
-                current_series_term *= raw_model_scores[index] / order as f64;
+                current_series_term *= raw_model_scores[scores_index] / order as f64;
                 exponential_approximation += current_series_term;
             }
-            exponentials[index] = exponential_approximation;
+            exponentials[scores_index] = exponential_approximation;
         }
         let sum_of_exponentials: f64 = exponentials[0] + exponentials[1];
         assert!(

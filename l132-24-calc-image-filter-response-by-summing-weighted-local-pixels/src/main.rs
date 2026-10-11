@@ -5,9 +5,9 @@ fn main() {
     let patch: [[f64; 2]; 2] = [[1.0, 2.0], [3.0, 4.0]];
     let filter_weights: [[f64; 2]; 2] = [[1.0, 0.0], [0.0, -1.0]];
     let mut response: f64 = 0.0;
-    for row in 0..2 {
-        for column in 0..2 {
-            response += patch[row][column] * filter_weights[row][column];
+    for row_index in 0..2 {
+        for column_index in 0..2 {
+            response += patch[row_index][column_index] * filter_weights[row_index][column_index];
         }
     }
 
