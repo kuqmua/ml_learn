@@ -73,6 +73,28 @@ impl DigitScoreF32 {
         self.0
     }
 }
+// Производная средней cross-entropy по оценке цифры до softmax:
+// (вероятность - целевое значение 0 или 1) / размер непустой группы.
+// Проверяем общую границу [-1, 1]; более узкая [-1/N, 1/N] зависит от размера группы.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct ScoreGradientF32(f32);
+impl TryFrom<f32> for ScoreGradientF32 {
+    type Error = String;
+    fn try_from(value: f32) -> Result<Self, Self::Error> {
+        if !value.is_finite() || !(-1.0..=1.0).contains(&value) {
+            return Err(format!(
+                "Недопустимое значение для ScoreGradientF32: {value}; ожидается конечное число от -1 до 1"
+            ));
+        }
+        Ok(Self(value))
+    }
+}
+impl ScoreGradientF32 {
+    pub const ZERO: Self = Self(0.0);
+    pub fn value(self) -> f32 {
+        self.0
+    }
+}
 // Производная ошибки: конечное число любого знака.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct GradientF32(f32);

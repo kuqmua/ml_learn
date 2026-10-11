@@ -1,7 +1,7 @@
 fn main() -> Result<(), String> {
     use mnist_data::numeric_types::{
         BiasF32, DigitScoreF32, GradientF32, NonNegativeFiniteF32, NormalizedPixelBrightnessF64,
-        PixelBrightnessForComputationF32, PixelWeightF32, ProbabilityF32,
+        PixelBrightnessForComputationF32, PixelWeightF32, ProbabilityF32, ScoreGradientF32,
     };
     // Урок 244. Учим модель узнавать цифру по 784 яркостям картинки 28×28.
     // Читай шаги сверху вниз: данные → устройство модели → операции над группой
@@ -19,6 +19,7 @@ fn main() -> Result<(), String> {
     // У таких переменных типы аргументов стоят между |...|, результата — после ->.
     // f64 используется при чтении PNG, f32 — в вычислениях нейросети.
     // Яркости: PixelBrightnessForComputationF32 (0..=1), веса: PixelWeightF32 (любой знак).
+    // Градиенты оценок: ScoreGradientF32 — конечные числа от -1 до 1.
     // Смещения: BiasF32, оценки: DigitScoreF32, производные: GradientF32 — конечные числа любого знака.
     // ProbabilityF32 ограничен 0..=1; NonNegativeFiniteF32 допускает конечные числа >= 0.
     // Реализации проверок и закрытые поля находятся в модуле mnist_data::numeric_types.
@@ -223,12 +224,43 @@ fn main() -> Result<(), String> {
     // Loss не равна доле неверных ответов: учитывает уверенность даже при правильном прогнозе.
     // Вычисляем среднюю ошибку и её производные по оценкам цифр для обновления весов.
     // У каждой картинки берём scores_by_digit; пиксели здесь не изменяем.
+    // Вычислить результат возведения 2.71828… в переданную степень (power).
+    // Это экспонента (exp). В названии 2_71828 — приближение основания:
+    // вычисление exp использует число e, а не усечённое значение 2.71828.
+    // Число Эйлера e ≈ 2.718281828459045; его десятичная запись бесконечна.
+    // exp(power) = e^power. Здесь ^ обозначает степень в формуле, не оператор Rust.
+    // Пример: exp(2) = e² ≈ 2.718281828459045 × 2.718281828459045 ≈ 7.389.
+    // Ещё примеры: exp(0) = 1; exp(-1) = 1/e ≈ 0.368.
+    // В softmax так преобразуем оценки перед делением на сумму.
+    // В математике результат всегда положительный; в f32 он может округлиться
+    // до 0 или переполниться до бесконечности. Проверка результата — в месте вызова.
+    fn calculate_result_of_raising_2_71828_to_power(power: f32) -> f32 {
+        power.exp()
+    }
+
+    // Вычислить степень, в которую нужно возвести 2.71828…,
+    // чтобы получить переданное число (number).
+    // Это натуральный логарифм (ln), основание — то же число e ≈ 2.718281828459045.
+    // Находим степень, в которую надо возвести это число e, чтобы получить number.
+    // ln(number) отвечает: «e в какой степени даст number?»
+    // Пример: ln(7.389...) ≈ 2, потому что e² ≈ 7.389.
+    // Ещё примеры: ln(1) = 0; ln(0.368...) ≈ -1.
+    // exp и ln — обратные операции: 2 → exp → 7.389... → ln → 2.
+    // В f32 результат этой цепочки может отличаться из-за округления.
+    // При расчёте ошибки используем -ln(вероятность правильной цифры):
+    // -ln(0.9) ≈ 0.105, а -ln(0.1) ≈ 2.303 — меньшая вероятность даёт большую ошибку.
+    // Конечный результат требует положительного конечного number.
+    // ln(0) даёт -∞; ln отрицательного числа даёт NaN («не число»).
+    fn calculate_power_of_2_71828_to_get_number(number: f32) -> f32 {
+        number.ln()
+    }
+
     struct CrossEntropyAndGradient {
         // Средняя ошибка группы: меньше — выше вероятность правильных цифр.
         mean_loss: f32,
         // [картинка][цифра]: производная средней ошибки по оценке этой цифры.
         // Это градиенты оценок; градиенты весов и смещений вычисляются дальше.
-        scores_gradients_by_digit: Vec<[GradientF32; 10]>,
+        scores_gradients_by_digit: Vec<[ScoreGradientF32; 10]>,
     }
     let calculate_cross_entropy_and_gradient =
         |images_with_scores: &[ImageWithScores]| -> Result<CrossEntropyAndGradient, String> {
@@ -236,8 +268,8 @@ fn main() -> Result<(), String> {
                 return Err("Нельзя вычислить среднюю ошибку пустой группы".into());
             }
             // Для каждой картинки отдельно вычисляем вероятности, ошибку и градиенты.
-            let (scores_gradients_by_digit, total_loss): (Vec<[GradientF32; 10]>, f32) = {
-                let mut scores_gradients_by_digit: Vec<[GradientF32; 10]> =
+            let (scores_gradients_by_digit, total_loss): (Vec<[ScoreGradientF32; 10]>, f32) = {
+                let mut scores_gradients_by_digit: Vec<[ScoreGradientF32; 10]> =
                     Vec::with_capacity(images_with_scores.len());
                 let mut total_loss: f32 = 0.0;
                 // Типы переменных: image_with_score: &ImageWithScores.
@@ -249,6 +281,9 @@ fn main() -> Result<(), String> {
                         .iter()
                         .map(|score_by_digit: &DigitScoreF32| -> f32 { score_by_digit.value() })
                         .fold(f32::NEG_INFINITY, f32::max);
+                    // Например, оценка 3 при максимуме 5 даёт exp(3 - 5) = e⁻² ≈ 0.135.
+                    // Максимальная оценка 5 даёт exp(5 - 5) = e⁰ = 1.
+                    // Это ещё не вероятности: ниже делим каждое число на сумму всех десяти.
                     // Каждый результат exp проверяется: NaN и бесконечность вернут Err.
                     // Отдельный блок ограничивает изменение массива этапом его заполнения.
                     let exponentials_by_digit: [NonNegativeFiniteF32; 10] = {
@@ -259,7 +294,9 @@ fn main() -> Result<(), String> {
                             let score_by_digit: f32 =
                                 image_with_score.scores_by_digit[digit_index].value();
                             exponentials_by_digit[digit_index] = NonNegativeFiniteF32::try_from(
-                                (score_by_digit - maximum_score_by_digit).exp(),
+                                calculate_result_of_raising_2_71828_to_power(
+                                    score_by_digit - maximum_score_by_digit,
+                                ),
                             )?;
                         }
                         exponentials_by_digit
@@ -273,40 +310,51 @@ fn main() -> Result<(), String> {
                     let probabilities_by_digit: [ProbabilityF32; 10] = {
                         let mut probabilities_by_digit: [ProbabilityF32; 10] =
                             [ProbabilityF32::ZERO; 10];
-                        // Типы переменных: digit_index: usize.
-                        for digit_index in 0..probabilities_by_digit.len() {
-                            probabilities_by_digit[digit_index] = ProbabilityF32::try_from(
-                                exponentials_by_digit[digit_index].value() / exponential_sum,
-                            )?;
+                        // Типы переменных: probabilities_by_digit_index: usize.
+                        for probabilities_by_digit_index in 0..probabilities_by_digit.len() {
+                            probabilities_by_digit[probabilities_by_digit_index] =
+                                ProbabilityF32::try_from(
+                                    exponentials_by_digit[probabilities_by_digit_index].value()
+                                        / exponential_sum,
+                                )?;
                         }
                         probabilities_by_digit
                     };
 
                     // Ошибка = -ln(вероятность правильной цифры).
-                    // Равнозначная формула ниже не берёт ln вероятности, округлившейся до нуля.
+                    // Вероятность правильной цифры = exp(её оценка - максимум) / сумма экспонент.
+                    // Поэтому -ln(вероятность) = максимум + ln(сумма экспонент) - её оценка.
+                    // Например: максимум = 5, сумма = 2, оценка правильной цифры = 4.
+                    // Ошибка = 5 + ln(2) - 4 ≈ 5 + 0.693 - 4 = 1.693.
+                    // Эта формула не берёт ln вероятности, которая могла округлиться до нуля.
                     let actual_digit_score: f32 = image_with_score.scores_by_digit
                         [image_with_score.actual_digit as usize]
                         .value();
-                    total_loss +=
-                        maximum_score_by_digit + exponential_sum.ln() - actual_digit_score;
+                    total_loss += maximum_score_by_digit
+                        + calculate_power_of_2_71828_to_get_number(exponential_sum)
+                        - actual_digit_score;
 
                     // Производная оценки = вероятность минус 1 для правильной цифры,
                     // минус 0 для остальных. Делим на фактический размер группы,
                     // поскольку обучаемся по средней ошибке, включая неполный последний batch.
-                    let gradients_by_digit: [GradientF32; 10] = {
-                        let mut gradients_by_digit: [GradientF32; 10] = [GradientF32::ZERO; 10];
-                        // Типы переменных: digit_index: usize.
-                        for digit_index in 0..gradients_by_digit.len() {
-                            let target: f32 =
-                                if digit_index == image_with_score.actual_digit as usize {
-                                    1.0
-                                } else {
-                                    0.0
-                                };
-                            gradients_by_digit[digit_index] = GradientF32::try_from(
-                                (probabilities_by_digit[digit_index].value() - target)
-                                    / images_with_scores.len() as f32,
-                            )?;
+                    let gradients_by_digit: [ScoreGradientF32; 10] = {
+                        let mut gradients_by_digit: [ScoreGradientF32; 10] =
+                            [ScoreGradientF32::ZERO; 10];
+                        // Типы переменных: gradients_by_digit_index: usize.
+                        for gradients_by_digit_index in 0..gradients_by_digit.len() {
+                            let target: f32 = if gradients_by_digit_index
+                                == image_with_score.actual_digit as usize
+                            {
+                                1.0
+                            } else {
+                                0.0
+                            };
+                            gradients_by_digit[gradients_by_digit_index] =
+                                ScoreGradientF32::try_from(
+                                    (probabilities_by_digit[gradients_by_digit_index].value()
+                                        - target)
+                                        / images_with_scores.len() as f32,
+                                )?;
                         }
                         gradients_by_digit
                     };
@@ -608,7 +656,7 @@ fn main() -> Result<(), String> {
                                     let gradients: &mut PixelWeightAndBiasGradients = &mut gradients_by_digit[digit_index];
                                     // Типы переменных: input_pixels_index: usize.
                                     for input_pixels_index in 0..images_with_scores.len() {
-                                        let score_gradient: GradientF32 = scores_gradients_by_digit[input_pixels_index][digit_index];
+                                        let score_gradient: ScoreGradientF32 = scores_gradients_by_digit[input_pixels_index][digit_index];
                                         // Типы переменных: pixel_index: usize.
                                         for pixel_index in 0..gradients.pixel_weights.len() {
                                             // Яркость неотрицательна; знак вклада задаётся градиентом оценки.
