@@ -22,6 +22,7 @@ fn main() -> Result<(), String> {
     // f64 — дробное число двойной точности; DataByDigit хранит отдельное поле для каждой цифры.
 
     // Digit и порядок цифр общие для всех четырёх уроков MNIST.
+    // Порядок соответствует папкам 0..9; при равном расстоянии выбирается меньшая цифра.
     use mnist_data::{ALL_DIGITS, Digit, load_labeled_png_images};
     // Результат распознавания одной картинки: правильная цифра и ответ модели.
     struct DigitPrediction {
@@ -45,9 +46,6 @@ fn main() -> Result<(), String> {
         nine: T,
     }
 
-    // Порядок соответствует папкам 0..9; при равном расстоянии выбирается меньшая цифра.
-    let all_digits: [Digit; 10] = ALL_DIGITS;
-
     // Корень PNG фиксирован относительно папки урока; аргументы запуска не требуются.
     let dataset_directory: std::path::PathBuf =
         std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../datasets/png/mnist");
@@ -61,7 +59,7 @@ fn main() -> Result<(), String> {
         let mut train_images: Vec<([f64; 784], Digit)> = Vec::new();
         let mut validation_images: Vec<([f64; 784], Digit)> = Vec::new();
         // Типы переменных: digit: Digit.
-        for digit in all_digits {
+        for digit in ALL_DIGITS {
             // Фильтруем картинки одной цифры, сохраняя порядок имён файлов.
             let images_of_current_digit: Vec<&([f64; 784], Digit)> = original_train_images
                 .iter()
@@ -198,7 +196,7 @@ fn main() -> Result<(), String> {
                     *pixel_brightness_sum += pixel_brightness;
                 }
             }
-            if all_digits.into_iter().any(|digit: Digit| -> bool {
+            if ALL_DIGITS.into_iter().any(|digit: Digit| -> bool {
                 (match digit {
                     Digit::Zero => training_image_count_by_digit.zero,
                     Digit::One => training_image_count_by_digit.one,
@@ -228,7 +226,7 @@ fn main() -> Result<(), String> {
             let mut mean_image_by_digit: DataByDigit<[f64; 784]> =
                 zero_initialized_pixel_brightness_sums_by_digit;
             // Типы переменных: digit: Digit.
-            for digit in all_digits {
+            for digit in ALL_DIGITS {
                 let (mean_image, image_count): (&mut [f64; 784], usize) = match digit {
                     Digit::Zero => (
                         &mut mean_image_by_digit.zero,
@@ -282,7 +280,7 @@ fn main() -> Result<(), String> {
         println!("{training_image_count_by_digit:#?}");
         println!(
             "train: n={}; split: every fifth per class",
-            all_digits
+            ALL_DIGITS
                 .into_iter()
                 .map(|digit: Digit| -> usize {
                     match digit {
@@ -316,7 +314,7 @@ fn main() -> Result<(), String> {
             for (normalized_pixels, actual_digit) in images_with_actual_digits {
                 // Проверяем все десять классов и выбираем наименьшее расстояние до среднего.
                 // Метка текущей картинки не участвует в выборе; её используем позже для проверки ответа.
-                let predicted_digit: Digit = all_digits
+                let predicted_digit: Digit = ALL_DIGITS
                     .into_iter()
                     .min_by(
                         |&first_candidate_digit: &Digit,
@@ -390,9 +388,9 @@ fn main() -> Result<(), String> {
         // if dataset_name == "test" {
         //     println!("Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9");
         //     // Типы переменных: actual_digit: Digit.
-        //     for actual_digit in all_digits {
+        //     for actual_digit in ALL_DIGITS {
         //         // Для каждой предсказанной цифры считаем записи с нужной парой цифр.
-        //         let counts_for_actual_digit: Vec<usize> = all_digits
+        //         let counts_for_actual_digit: Vec<usize> = ALL_DIGITS
         //             .into_iter()
         //             .map(|predicted_digit: Digit| -> usize {
         //                 predictions

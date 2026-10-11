@@ -24,9 +24,8 @@ fn main() -> Result<(), String> {
     // ndarray::Array1<f32> — вектор, ndarray::Array2<f32> — матрица; WeightsAndBiasesAsLinearLayer — структура с полями weights (веса) и biases (смещения).
 
     // Digit и порядок цифр общие для всех четырёх уроков MNIST.
-    use mnist_data::{ALL_DIGITS, Digit, load_labeled_png_images};
     // Порядок соответствует папкам 0..9 и индексам классов в массивах.
-    let all_digits: [Digit; 10] = ALL_DIGITS;
+    use mnist_data::{ALL_DIGITS, Digit, load_labeled_png_images};
 
     // Засекаем время загрузки данных, обучения и итоговой оценки.
     let started_at: std::time::Instant = std::time::Instant::now();
@@ -50,7 +49,7 @@ fn main() -> Result<(), String> {
         let mut train_images: Vec<([f64; 784], Digit)> = Vec::new();
         let mut validation_images: Vec<([f64; 784], Digit)> = Vec::new();
         // Типы переменных: digit: Digit.
-        for digit in all_digits {
+        for digit in ALL_DIGITS {
             // Фильтруем картинки одной цифры, сохраняя порядок имён файлов.
             let images_of_current_digit: Vec<&([f64; 784], Digit)> = original_train_images
                 .iter()
@@ -228,7 +227,7 @@ fn main() -> Result<(), String> {
                             },
                         )
                         .unwrap();
-                    all_digits[predicted_digit_index]
+                    ALL_DIGITS[predicted_digit_index]
                 };
             assert!(!images_with_actual_digits.is_empty() && batch_size > 0);
             // Индексы здесь нужны только сборке batch; снаружи передаётся сам набор картинок.
@@ -333,7 +332,7 @@ fn main() -> Result<(), String> {
             (training_image_order, random_state)
         };
         // Проверяем все десять цифр, не используя validation или test.
-        if all_digits.into_iter().any(|digit: Digit| -> bool {
+        if ALL_DIGITS.into_iter().any(|digit: Digit| -> bool {
             !train_images
                 .iter()
                 .any(|image: &([f64; 784], Digit)| -> bool { image.1 == digit })
@@ -626,8 +625,8 @@ fn main() -> Result<(), String> {
         );
         println!("Матрица ошибок: строки — истинные цифры, столбцы — прогнозы 0..9");
         // Типы переменных: actual_digit: Digit.
-        for actual_digit in all_digits {
-            let counts_for_actual_digit: Vec<usize> = all_digits
+        for actual_digit in ALL_DIGITS {
+            let counts_for_actual_digit: Vec<usize> = ALL_DIGITS
                 .into_iter()
                 .map(|predicted_digit: Digit| -> usize {
                     evaluation

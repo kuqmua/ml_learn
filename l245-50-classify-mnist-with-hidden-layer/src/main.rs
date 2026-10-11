@@ -24,9 +24,8 @@ fn main() -> Result<(), String> {
     // ndarray::Array1<f32> — вектор, ndarray::Array2<f32> — матрица; Layer — пара (матрица весов, вектор смещений).
 
     // Digit и порядок цифр общие для всех четырёх уроков MNIST.
-    use mnist_data::{ALL_DIGITS, Digit, load_labeled_png_images};
     // Порядок соответствует папкам 0..9 и индексам классов в массивах.
-    let classes: [Digit; 10] = ALL_DIGITS;
+    use mnist_data::{ALL_DIGITS, Digit, load_labeled_png_images};
 
     // Засекаем время загрузки данных, обучения и итоговой оценки.
     let start: std::time::Instant = std::time::Instant::now();
@@ -157,8 +156,8 @@ fn main() -> Result<(), String> {
                             .then_with(|| -> std::cmp::Ordering { b.cmp(&a) })
                     })
                     .unwrap();
-                // classes переводит индекс столбца обратно в метку Digit.
-                classes[index]
+                // ALL_DIGITS переводит индекс столбца обратно в метку Digit.
+                ALL_DIGITS[index]
             };
 
             assert!(!examples.is_empty() && batch_size > 0);
