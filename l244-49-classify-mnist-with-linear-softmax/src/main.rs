@@ -185,11 +185,11 @@ fn main() -> Result<(), String> {
     // Проверенная яркость умножается на вес со знаком; результат может быть отрицательным.
     // Forward — прямой проход: из пикселей получаем оценки десяти цифр.
     // Сохраняем входы и оценки: они нужны для расчёта градиентов.
-    let build_images_with_digit_scores =
+    let build_images_pixels_with_actual_digits_and_scores_by_digit =
         |pixel_weights_and_biases_by_digit: &[PixelWeightAndBias; 10],
          converted_images: &[&([PixelBrightnessForComputationFiniteFrom0To1InclusiveF32; 784], Digit)]|
          -> Result<Vec<ImagePixelsWithActualDigitAndScoresByDigit>, String> {
-            let mut images_with_scores: Vec<ImagePixelsWithActualDigitAndScoresByDigit> =
+            let mut images_pixels_with_actual_digits_and_scores_by_digit: Vec<ImagePixelsWithActualDigitAndScoresByDigit> =
                 Vec::with_capacity(converted_images.len());
             // Типы переменных: pixels: &[PixelBrightnessForComputationFiniteFrom0To1InclusiveF32; 784].
             for &(pixels, actual_digit) in converted_images {
@@ -213,9 +213,9 @@ fn main() -> Result<(), String> {
                     score_by_digit += pixel_weights_and_bias.bias.value();
                     image.scores_by_digit[digit_index] = DigitScoreFiniteF32::try_from(score_by_digit)?;
                 }
-                images_with_scores.push(image);
+                images_pixels_with_actual_digits_and_scores_by_digit.push(image);
             }
-            Ok(images_with_scores)
+            Ok(images_pixels_with_actual_digits_and_scores_by_digit)
         };
     // Шаг 5. Описываем расчёт вероятностей, ошибки и производных оценок.
     // Это последовательность: оценки → softmax → loss → градиенты.
@@ -264,17 +264,17 @@ fn main() -> Result<(), String> {
         scores_gradients_by_digit: Vec<[ScoreGradientFiniteFromMinus1To1InclusiveF32; 10]>,
     }
     let calculate_mean_loss_and_score_gradients_by_digit =
-        |images_with_scores: &[ImagePixelsWithActualDigitAndScoresByDigit]| -> Result<MeanLossAndScoreGradientsByDigit, String> {
-            if images_with_scores.is_empty() {
+        |images_pixels_with_actual_digits_and_scores_by_digit: &[ImagePixelsWithActualDigitAndScoresByDigit]| -> Result<MeanLossAndScoreGradientsByDigit, String> {
+            if images_pixels_with_actual_digits_and_scores_by_digit.is_empty() {
                 return Err("Нельзя вычислить среднюю ошибку пустой группы".into());
             }
             // Для каждой картинки отдельно вычисляем вероятности, ошибку и градиенты.
             let (scores_gradients_by_digit, total_loss): (Vec<[ScoreGradientFiniteFromMinus1To1InclusiveF32; 10]>, f32) = {
                 let mut scores_gradients_by_digit: Vec<[ScoreGradientFiniteFromMinus1To1InclusiveF32; 10]> =
-                    Vec::with_capacity(images_with_scores.len());
+                    Vec::with_capacity(images_pixels_with_actual_digits_and_scores_by_digit.len());
                 let mut total_loss: f32 = 0.0;
                 // Типы переменных: image_with_score: &ImagePixelsWithActualDigitAndScoresByDigit.
-                for image_with_score in images_with_scores {
+                for image_with_score in images_pixels_with_actual_digits_and_scores_by_digit {
                     // Digit имеет только варианты 0..9; оценки всегда содержат 10 элементов.
                     // Перед exp вычитаем максимум: вероятности сохраняются, переполнения нет.
                     let maximum_score_by_digit: f32 = image_with_score
@@ -354,7 +354,7 @@ fn main() -> Result<(), String> {
                                 ScoreGradientFiniteFromMinus1To1InclusiveF32::try_from(
                                     (probabilities_by_digit[gradients_by_digit_index].value()
                                         - target)
-                                        / images_with_scores.len() as f32,
+                                        / images_pixels_with_actual_digits_and_scores_by_digit.len() as f32,
                                 )?;
                         }
                         gradients_by_digit
@@ -364,7 +364,7 @@ fn main() -> Result<(), String> {
                 (scores_gradients_by_digit, total_loss)
             };
             Ok(MeanLossAndScoreGradientsByDigit {
-                mean_loss: total_loss / images_with_scores.len() as f32,
+                mean_loss: total_loss / images_pixels_with_actual_digits_and_scores_by_digit.len() as f32,
                 scores_gradients_by_digit,
             })
         };
@@ -443,16 +443,16 @@ fn main() -> Result<(), String> {
             let mut total_loss: f32 = 0.0;
             // Типы переменных: batch_images_with_actual_digits_references: &[&([PixelBrightnessForComputationFiniteFrom0To1InclusiveF32; 784], Digit)].
             for batch_images_with_actual_digits_references in images_with_actual_digits_references.chunks(batch_size) {
-                let images_with_scores: Vec<ImagePixelsWithActualDigitAndScoresByDigit> = build_images_with_digit_scores(
+                let images_pixels_with_actual_digits_and_scores_by_digit: Vec<ImagePixelsWithActualDigitAndScoresByDigit> = build_images_pixels_with_actual_digits_and_scores_by_digit(
                     pixel_weights_and_biases_by_digit,
                     batch_images_with_actual_digits_references,
                 )?;
                 // loss одного batch — средняя: умножаем на его фактический размер.
                 // Затем делим общую сумму на число картинок, учитывая неполный последний batch.
-                total_loss += calculate_mean_loss_and_score_gradients_by_digit(&images_with_scores)?.mean_loss
+                total_loss += calculate_mean_loss_and_score_gradients_by_digit(&images_pixels_with_actual_digits_and_scores_by_digit)?.mean_loss
                     * batch_images_with_actual_digits_references.len() as f32;
                 // Типы переменных: image: &ImagePixelsWithActualDigitAndScoresByDigit.
-                for image in &images_with_scores {
+                for image in &images_pixels_with_actual_digits_and_scores_by_digit {
                     digits_actual_and_predicted.push(DigitActualAndPredicted {
                         actual_digit: image.actual_digit,
                         predicted_digit: digit_with_highest_score(&image.scores_by_digit),
@@ -646,8 +646,8 @@ fn main() -> Result<(), String> {
                         ) = {
                             // 9.1. Текущая группа содержит ссылки на пиксели и правильные ответы (шаг 3).
                             // 9.2. По текущим весам получаем десять оценок на картинку (шаг 4).
-                            let images_with_scores: Vec<ImagePixelsWithActualDigitAndScoresByDigit> =
-                                build_images_with_digit_scores(
+                            let images_pixels_with_actual_digits_and_scores_by_digit: Vec<ImagePixelsWithActualDigitAndScoresByDigit> =
+                                build_images_pixels_with_actual_digits_and_scores_by_digit(
                                     &pixel_weights_and_biases_by_digit,
                                     batch_images_with_actual_digits_references,
                                 )?;
@@ -658,7 +658,7 @@ fn main() -> Result<(), String> {
                                 mean_loss,
                                 scores_gradients_by_digit,
                             }: MeanLossAndScoreGradientsByDigit =
-                                calculate_mean_loss_and_score_gradients_by_digit(&images_with_scores)?;
+                                calculate_mean_loss_and_score_gradients_by_digit(&images_pixels_with_actual_digits_and_scores_by_digit)?;
                             if !mean_loss.is_finite() {
                                 return Err(
                                     "Ошибка обучения не конечна; уменьши learning-rate".into()
@@ -677,14 +677,14 @@ fn main() -> Result<(), String> {
                                 for digit_index in 0..gradients_by_digit.len() {
                                     let gradients: &mut PixelWeightAndBiasGradients = &mut gradients_by_digit[digit_index];
                                     // Типы переменных: input_pixels_index: usize.
-                                    for input_pixels_index in 0..images_with_scores.len() {
+                                    for input_pixels_index in 0..images_pixels_with_actual_digits_and_scores_by_digit.len() {
                                         let score_gradient: ScoreGradientFiniteFromMinus1To1InclusiveF32 = scores_gradients_by_digit[input_pixels_index][digit_index];
                                         // Типы переменных: pixel_index: usize.
                                         for pixel_index in 0..gradients.pixel_weights.len() {
                                             // Яркость неотрицательна; знак вклада задаётся градиентом оценки.
                                             gradients.pixel_weights[pixel_index] = GradientFiniteF32::try_from(
                                                 gradients.pixel_weights[pixel_index].value()
-                                                    + images_with_scores[input_pixels_index].pixels[pixel_index].value()
+                                                    + images_pixels_with_actual_digits_and_scores_by_digit[input_pixels_index].pixels[pixel_index].value()
                                                         * score_gradient.value(),
                                             )?;
                                         }
