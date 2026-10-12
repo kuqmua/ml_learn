@@ -1,6 +1,6 @@
 //! Общие типы и чтение PNG MNIST для уроков 243–246.
 pub mod numeric_types;
-pub use numeric_types::NormalizedPixelBrightnessF64;
+pub use numeric_types::NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64;
 
 /// Правильная или предсказанная цифра. Порядок соответствует папкам 0–9.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -207,25 +207,25 @@ pub fn load_mnist_images(
     directory: &std::path::Path,
 ) -> Result<
     (
-        Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
-        Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
-        Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
+        Vec<([NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], Digit)>,
+        Vec<([NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], Digit)>,
+        Vec<([NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], Digit)>,
     ),
     String,
 > {
     let validate_image_brightness = |images: Vec<([f64; 784], Digit)>| -> Result<
-        Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
+        Vec<([NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], Digit)>,
         String,
     > {
-        let mut validated_images: Vec<([NormalizedPixelBrightnessF64; 784], Digit)> =
+        let mut validated_images: Vec<([NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], Digit)> =
             Vec::with_capacity(images.len());
         // Типы переменных: pixels: [f64; 784], actual_digit: Digit.
         for (pixels, actual_digit) in images {
-            let mut validated_pixels: [NormalizedPixelBrightnessF64; 784] =
-                [NormalizedPixelBrightnessF64::ZERO; 784];
+            let mut validated_pixels: [NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784] =
+                [NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64::ZERO; 784];
             // Типы переменных: pixel_index: usize.
             for pixel_index in 0..pixels.len() {
-                validated_pixels[pixel_index] = NormalizedPixelBrightnessF64::try_from(
+                validated_pixels[pixel_index] = NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64::try_from(
                     pixels[pixel_index],
                 )
                 .map_err(|error: String| -> String {

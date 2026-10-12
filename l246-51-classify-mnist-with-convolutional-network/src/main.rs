@@ -27,7 +27,7 @@ fn main() -> Result<(), String> {
     // Digit и порядок цифр общие для всех четырёх уроков MNIST.
     // Порядок соответствует папкам 0..9 и индексам классов в массивах.
     use mnist_data::{
-        ALL_DIGITS, Digit, NormalizedPixelBrightnessF64, load_mnist_images, mnist_dataset_directory,
+        ALL_DIGITS, Digit, NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64, load_mnist_images, mnist_dataset_directory,
     };
 
     // Засекаем время загрузки данных, обучения и итоговой оценки.
@@ -397,7 +397,7 @@ fn main() -> Result<(), String> {
             };
         // Один batch: X[картинка][пиксель] имеет размеры [N,784], а labels[картинка] — [N].
         // Индексы выбирают записи; нормализованные f64 пиксели переводим в f32 сети.
-        let batch = |digits: &[([NormalizedPixelBrightnessF64; 784], Digit)],
+        let batch = |digits: &[([NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], Digit)],
                      examples: &[usize]|
          -> (Vec<ExampleFeatures>, Vec<Digit>) {
             (
@@ -433,7 +433,7 @@ fn main() -> Result<(), String> {
         // Возвращаем (средняя loss, доля верных ответов, матрица ошибок).
         // Это же правило используем для validation и итогового test.
         let evaluate = |layers: &[Layer],
-                        digits: &[([NormalizedPixelBrightnessF64; 784], Digit)],
+                        digits: &[([NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], Digit)],
                         examples: &[usize],
                         batch_size: usize|
          -> (f32, f32, [[usize; 10]; 10]) {
@@ -495,9 +495,9 @@ fn main() -> Result<(), String> {
         };
         // Загружаем все три набора; test используем только после выбора лучших весов.
         let (train_images, validation_images, test): (
-            Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
-            Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
-            Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
+            Vec<([NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], Digit)>,
+            Vec<([NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], Digit)>,
+            Vec<([NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], Digit)>,
         ) = load_mnist_images(&data)?;
         // Из обучения выходят только выбранные веса и необходимые для отчёта значения.
         let (best, best_epoch, batch_size): (Vec<Layer>, usize, usize) = {

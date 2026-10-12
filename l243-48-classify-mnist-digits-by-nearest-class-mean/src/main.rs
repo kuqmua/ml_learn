@@ -24,7 +24,7 @@ fn main() -> Result<(), String> {
     // Digit и порядок цифр общие для всех четырёх уроков MNIST.
     // Порядок соответствует папкам 0..9; при равном расстоянии выбирается меньшая цифра.
     use mnist_data::{
-        ALL_DIGITS, Digit, NormalizedPixelBrightnessF64, load_mnist_images, mnist_dataset_directory,
+        ALL_DIGITS, Digit, NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64, load_mnist_images, mnist_dataset_directory,
     };
     // Результат распознавания одной картинки: правильная цифра и ответ модели.
     struct DigitPrediction {
@@ -55,9 +55,9 @@ fn main() -> Result<(), String> {
 
     // Сначала готовим три набора: обучение, проверку и итоговый тест.
     let (train_images, validation_images, test_images): (
-        Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
-        Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
-        Vec<([NormalizedPixelBrightnessF64; 784], Digit)>,
+        Vec<([NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], Digit)>,
+        Vec<([NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], Digit)>,
+        Vec<([NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], Digit)>,
     ) = load_mnist_images(&dataset_directory)?;
     let mean_image_by_digit: DataByDigit<[f64; 784]> = {
         // Теперь обучаем модель только по train_images.
@@ -96,7 +96,7 @@ fn main() -> Result<(), String> {
                     eight: [0.0; 784],
                     nine: [0.0; 784],
                 };
-            // Типы переменных: normalized_pixels: &[NormalizedPixelBrightnessF64; 784], actual_digit: &Digit.
+            // Типы переменных: normalized_pixels: &[NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], actual_digit: &Digit.
             for (normalized_pixels, actual_digit) in &train_images {
                 // Выбираем счётчик и сумму яркостей для правильной цифры.
                 let (
@@ -146,7 +146,7 @@ fn main() -> Result<(), String> {
                 };
                 *training_image_count_for_actual_digit += 1;
                 // println!("@{training_image_count_for_actual_digit}");
-                // Типы переменных: pixel_brightness_sum: &mut f64, pixel_brightness: &NormalizedPixelBrightnessF64.
+                // Типы переменных: pixel_brightness_sum: &mut f64, pixel_brightness: &NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64.
                 for (pixel_brightness_sum, pixel_brightness) in
                     zero_initialized_pixel_brightness_sums_for_actual_digit
                         .iter_mut()
@@ -266,12 +266,12 @@ fn main() -> Result<(), String> {
     // images_with_actual_digits — картинки с правильными ответами.
     // Для каждой картинки сохраняем правильную и предсказанную цифры, затем печатаем точность.
     let evaluate_digit_predictions =
-        |images_with_actual_digits: &[([NormalizedPixelBrightnessF64; 784], Digit)]| -> () {
+        |images_with_actual_digits: &[([NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], Digit)]| -> () {
             // Список пополняется только во время обхода проверяемых картинок.
             let predictions: Vec<DigitPrediction> = {
                 let mut predictions: Vec<DigitPrediction> =
                     Vec::with_capacity(images_with_actual_digits.len());
-                // Типы переменных: normalized_pixels: &[NormalizedPixelBrightnessF64; 784], actual_digit: &Digit.
+                // Типы переменных: normalized_pixels: &[NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64; 784], actual_digit: &Digit.
                 for (normalized_pixels, actual_digit) in images_with_actual_digits {
                     // Проверяем все десять классов и выбираем наименьшее расстояние до среднего.
                     // Метка текущей картинки не участвует в выборе; её используем позже для проверки ответа.
@@ -307,7 +307,7 @@ fn main() -> Result<(), String> {
                                         })
                                         .map(
                                             |(image_pixel_brightness, mean_pixel_brightness): (
-                                                &NormalizedPixelBrightnessF64,
+                                                &NormalizedPixelBrightnessFiniteFrom0To1InclusiveF64,
                                                 &f64,
                                             )|
                                              -> f64 {
