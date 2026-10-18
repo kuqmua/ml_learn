@@ -973,3 +973,7 @@
 ## 51. MNIST: Свёрточная нейросеть для PNG
 
 [246 · Свёрточная нейросеть для PNG](l246-51-classify-mnist-with-convolutional-network/README.md): обучение на PNG, сравнение с предыдущей моделью и общий воспроизводимый цикл оценки.
+
+### 52. Makemore: генерация имён через эмбеддинги и MLP
+
+Новый практический [урок 247](l247-52-generate-names-with-makemore-mlp/README.md) повторяет `makemore_part2_mlp.ipynb`: контекст из трёх букв, lookup эмбеддингов, tanh MLP, cross-entropy, ручной backprop, mini-batch SGD, подбор learning rate, train/dev/test, графики и генерация имён. Полный запуск: `cargo run --release -p l247-52-generate-names-with-makemore-mlp`. Зависимости вне Rust не требуются, данные включены в урок.

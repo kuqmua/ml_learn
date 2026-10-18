@@ -1393,6 +1393,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "l247-52-generate-names-with-makemore-mlp"
+version = "0.1.0"
+
+[[package]]
 name = "lesson-datasets"
 version = "0.1.0"
 dependencies = [

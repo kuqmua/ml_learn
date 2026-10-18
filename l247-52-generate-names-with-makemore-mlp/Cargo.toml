@@ -1,0 +1,4 @@
+[package]
+name = "l247-52-generate-names-with-makemore-mlp"
+version = "0.1.0"
+edition = "2024"

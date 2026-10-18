@@ -250,6 +250,7 @@ members = [
     "l244-49-classify-mnist-with-linear-softmax",
     "l245-50-classify-mnist-with-hidden-layer",
     "l246-51-classify-mnist-with-convolutional-network",
+    "l247-52-generate-names-with-makemore-mlp",
 ]
 resolver = "3"
 
@@ -309,4 +310,7 @@ opt-level = 3
 opt-level = 3
 
 [profile.dev.package.mnist_data]
+opt-level = 3
+
+[profile.dev.package.l247-52-generate-names-with-makemore-mlp]
 opt-level = 3
