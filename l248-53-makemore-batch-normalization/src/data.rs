@@ -9,9 +9,9 @@ impl RandomGenerator {
     }
     fn next(&mut self) -> u64 {
         self.state = self.state.wrapping_add(0x9e3779b97f4a7c15);
-        let mut mixed_bits = self.state;
-        mixed_bits = (mixed_bits ^ (mixed_bits >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
-        mixed_bits = (mixed_bits ^ (mixed_bits >> 27)).wrapping_mul(0x94d049bb133111eb);
+        let mixed_bits = self.state;
+        let mixed_bits = (mixed_bits ^ (mixed_bits >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
+        let mixed_bits = (mixed_bits ^ (mixed_bits >> 27)).wrapping_mul(0x94d049bb133111eb);
         mixed_bits ^ (mixed_bits >> 31)
     }
     pub fn uniform(&mut self) -> f32 {
@@ -19,10 +19,9 @@ impl RandomGenerator {
     }
     pub fn index(&mut self, upper_bound: usize) -> usize {
         let upper_bound = upper_bound as u64;
-        let rejection_threshold = upper_bound.wrapping_neg() % upper_bound;
         loop {
             let random_bits = self.next();
-            if random_bits >= rejection_threshold {
+            if random_bits >= upper_bound.wrapping_neg() % upper_bound {
                 return (random_bits % upper_bound) as usize;
             }
         }
@@ -32,8 +31,7 @@ impl RandomGenerator {
     }
     pub fn shuffle<T>(&mut self, items: &mut [T]) {
         for current_index in (1..items.len()).rev() {
-            let swap_index = self.index(current_index + 1);
-            items.swap(current_index, swap_index);
+            items.swap(current_index, self.index(current_index + 1));
         }
     }
 }
@@ -74,14 +72,18 @@ pub fn cross_entropy(character_scores: &[f32], target_character_index: usize) ->
         .iter()
         .copied()
         .fold(f32::NEG_INFINITY, f32::max);
-    let mut character_probabilities: Vec<_> = character_scores
-        .iter()
-        .map(|character_score| (character_score - maximum_score).exp())
-        .collect();
-    let exponential_sum: f32 = character_probabilities.iter().sum();
-    for character_probability in &mut character_probabilities {
-        *character_probability /= exponential_sum;
-    }
+    let (character_probabilities, exponential_sum) = {
+        let mut character_probabilities: Vec<_> = character_scores
+            .iter()
+            .map(|character_score| (character_score - maximum_score).exp())
+            .collect();
+        let exponential_sum: f32 = character_probabilities.iter().sum();
+        for character_probability in &mut character_probabilities {
+            *character_probability /= exponential_sum;
+        }
+
+        (character_probabilities, exponential_sum)
+    };
     (
         (maximum_score - character_scores[target_character_index]) + exponential_sum.ln(),
         character_probabilities,
