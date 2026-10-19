@@ -5,23 +5,23 @@ fn plot(
     character_labels: Option<&[char]>,
     title: &str,
 ) -> std::io::Result<()> {
-    let minimum_horizontal_value = data_points
+    let minimum_horizontal_value: f32 = data_points
         .iter()
         .map(|data_point| data_point.0)
         .fold(f32::INFINITY, f32::min);
-    let maximum_horizontal_value = data_points
+    let maximum_horizontal_value: f32 = data_points
         .iter()
         .map(|data_point| data_point.0)
         .fold(f32::NEG_INFINITY, f32::max);
-    let minimum_vertical_value = data_points
+    let minimum_vertical_value: f32 = data_points
         .iter()
         .map(|data_point| data_point.1)
         .fold(f32::INFINITY, f32::min);
-    let maximum_vertical_value = data_points
+    let maximum_vertical_value: f32 = data_points
         .iter()
         .map(|data_point| data_point.1)
         .fold(f32::NEG_INFINITY, f32::max);
-    let to_pixel_coordinates = |data_point: &(f32, f32)| {
+    let to_pixel_coordinates = |data_point: &(f32, f32)| -> (f32, f32) {
         (
             65.0 + 680.0 * (data_point.0 - minimum_horizontal_value)
                 / (maximum_horizontal_value - minimum_horizontal_value).max(1e-6),
@@ -30,20 +30,22 @@ fn plot(
                     / (maximum_vertical_value - minimum_vertical_value).max(1e-6),
         )
     };
-    let svg_document = {
-        let mut svg_document = format!(
+    let svg_document: String = {
+        let mut svg_document: String = format!(
             "<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='white'/><g font-family='sans-serif' fill='#172554'><text x='65' y='28'>{title}</text><path d='M65 55V535H755' fill='none' stroke='#64748b'/><text x='65' y='565'>{minimum_horizontal_value:.3}</text><text x='690' y='565'>{maximum_horizontal_value:.3}</text><text x='5' y='535'>{minimum_vertical_value:.3}</text><text x='5' y='65'>{maximum_vertical_value:.3}</text>"
         );
         if let Some(character_labels) = character_labels {
             for (data_point, character) in data_points.iter().zip(character_labels) {
-                let (horizontal_pixel, vertical_pixel) = to_pixel_coordinates(data_point);
+                let (horizontal_pixel, vertical_pixel): (f32, f32) =
+                    to_pixel_coordinates(data_point);
                 svg_document.push_str(&format!("<circle cx='{horizontal_pixel}' cy='{vertical_pixel}' r='12' fill='#2563eb'/><text x='{horizontal_pixel}' y='{}' text-anchor='middle' fill='white'>{character}</text>", vertical_pixel+4.0));
             }
         } else {
             svg_document
                 .push_str("<polyline fill='none' stroke='#2563eb' stroke-width='0.7' points='");
             for data_point in data_points {
-                let (horizontal_pixel, vertical_pixel) = to_pixel_coordinates(data_point);
+                let (horizontal_pixel, vertical_pixel): (f32, f32) =
+                    to_pixel_coordinates(data_point);
                 svg_document.push_str(&format!("{horizontal_pixel:.2},{vertical_pixel:.2} "));
             }
             svg_document.push_str("'/>");
@@ -57,16 +59,17 @@ fn plot(
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Настройки урока: меняй здесь и запускай cargo run.
-    let training_steps = 200_000usize;
-    let output_directory = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("output");
+    let training_steps: usize = 200_000usize;
+    let output_directory: std::path::PathBuf =
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("output");
     assert!(training_steps > 0, "число шагов должно быть положительным");
 
     std::fs::create_dir_all(&output_directory)?;
     // 1. Данные и словарь: 0 — начало/конец имени, a..z — 1..26.
-    let names_text = include_str!("../data/names.txt");
-    let names: Vec<_> = names_text.lines().collect();
-    let vocabulary = {
-        let mut vocabulary: Vec<_> = names_text
+    let names_text: &str = include_str!("../data/names.txt");
+    let names: Vec<&str> = names_text.lines().collect();
+    let vocabulary: Vec<char> = {
+        let mut vocabulary: Vec<char> = names_text
             .chars()
             .filter(|character| character.is_ascii_lowercase())
             .collect();
@@ -81,7 +84,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }));
     println!("Имена: {}, первые восемь: {:?}", names.len(), &names[..8]);
     println!("Словарь: {vocabulary:?}");
-    let all_examples = dataset(&names, &vocabulary);
+    let all_examples: Vec<TrainingExample> = dataset(&names, &vocabulary);
     println!(
         "Все X: ({},3), Y: ({},)",
         all_examples.len(),
@@ -99,17 +102,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
     }
     // 2. Маленькая сеть из начала notebook: C(27,2), W1(6,100).
-    let demonstration_model = Model::new(
+    let demonstration_model: Model = Model::new(
         vocabulary.len(),
         2,
         100,
         &mut RandomGenerator::new(2147483647),
     );
-    let (flattened_embeddings, hidden_activations, character_scores) =
-        demonstration_model.forward(all_examples[0].context_character_indices);
-    let (stable_cross_entropy, character_probabilities) =
+    let (flattened_embeddings, hidden_activations, character_scores): (
+        Vec<f32>,
+        Vec<f32>,
+        Vec<f32>,
+    ) = demonstration_model.forward(all_examples[0].context_character_indices);
+    let (stable_cross_entropy, character_probabilities): (f32, Vec<f32>) =
         cross_entropy(&character_scores, all_examples[0].target_character_index);
-    let exponentiated_scores: Vec<_> = character_scores.iter().map(|score| score.exp()).collect();
+    let exponentiated_scores: Vec<f32> = character_scores.iter().map(|score| score.exp()).collect();
     println!(
         "Демо: emb=(1,3,2), flat=(1,{}), h=(1,{}), logits=(1,{}); sum(prob)={:.6}",
         flattened_embeddings.len(),
@@ -125,19 +131,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         demonstration_model.loss(&all_examples[..32])
     );
     // 3. Разделяем ИМЕНА до построения контекстов: 80/10/10.
-    let names = {
-        let mut names = names;
+    let names: Vec<&str> = {
+        let mut names: Vec<&str> = names;
         RandomGenerator::new(42).shuffle(&mut names);
         names
     };
-    let training_names_end = names.len() * 8 / 10;
-    let validation_names_end = names.len() * 9 / 10;
-    let training_examples = dataset(&names[..training_names_end], &vocabulary);
-    let validation_examples = dataset(
+    let training_names_end: usize = names.len() * 8 / 10;
+    let validation_names_end: usize = names.len() * 9 / 10;
+    let training_examples: Vec<TrainingExample> =
+        dataset(&names[..training_names_end], &vocabulary);
+    let validation_examples: Vec<TrainingExample> = dataset(
         &names[training_names_end..validation_names_end],
         &vocabulary,
     );
-    let test_examples = dataset(&names[validation_names_end..], &vocabulary);
+    let test_examples: Vec<TrainingExample> = dataset(&names[validation_names_end..], &vocabulary);
     println!(
         "Имена train/dev/test: {}/{}/{}; примеры: {}/{}/{}",
         training_names_end,
@@ -147,7 +154,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         validation_examples.len(),
         test_examples.len()
     );
-    let model = Model::new(
+    let model: Model = Model::new(
         vocabulary.len(),
         10,
         200,
@@ -168,23 +175,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 4. Необязательный опыт с lr: отдельная копия, основной запуск не меняется.
     if false {
         // true — дополнительно построить график выбора learning rate
-        let learning_rate_curve = {
-            let mut learning_rate_trial_model = model.clone();
-            let mut batch_random_generator = RandomGenerator::new(123);
-            let mut learning_rate_curve = Vec::new();
+        let learning_rate_curve: Vec<(f32, f32)> = {
+            let mut learning_rate_trial_model: Model = model.clone();
+            let mut batch_random_generator: RandomGenerator = RandomGenerator::new(123);
+            let mut learning_rate_curve: Vec<(f32, f32)> = Vec::new();
 
-            let mut loss_csv_file = std::fs::File::create(output_directory.join("lr_sweep.csv"))?;
+            let mut loss_csv_file: std::fs::File =
+                std::fs::File::create(output_directory.join("lr_sweep.csv"))?;
 
             std::io::Write::write_fmt(&mut loss_csv_file, format_args!("log10_lr,lr,loss\n"))?;
             for step_index in 0..1000 {
-                let learning_rate_exponent = -3.0 + 3.0 * step_index as f32 / 999.0;
-                let learning_rate = 10.0f32.powf(learning_rate_exponent);
-                let loss = learning_rate_trial_model.step(
+                let learning_rate_exponent: f32 = -3.0 + 3.0 * step_index as f32 / 999.0;
+                let learning_rate: f32 = 10.0f32.powf(learning_rate_exponent);
+                let loss: f32 = learning_rate_trial_model.step(
                     &(0..32)
                         .map(|_| {
                             training_examples[batch_random_generator.index(training_examples.len())]
                         })
-                        .collect::<Vec<_>>(),
+                        .collect::<Vec<TrainingExample>>(),
                     learning_rate,
                 );
                 std::io::Write::write_fmt(
@@ -204,30 +212,30 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         )?;
     }
     // 5. SGD: выборка с возвращением, средняя CE, очистка градиентов каждый шаг.
-    let initial_validation_loss = model.loss(&validation_examples);
+    let initial_validation_loss: f32 = model.loss(&validation_examples);
     println!("До обучения dev loss={initial_validation_loss:.6}");
-    let (model, training_loss_curve) = {
-        let mut model = model;
-        let mut batch_random_generator = RandomGenerator::new(2147483647);
+    let (model, training_loss_curve): (Model, Vec<(f32, f32)>) = {
+        let mut model: Model = model;
+        let mut batch_random_generator: RandomGenerator = RandomGenerator::new(2147483647);
 
-        let mut loss_csv_file =
+        let mut loss_csv_file: std::io::BufWriter<std::fs::File> =
             std::io::BufWriter::new(std::fs::File::create(output_directory.join("loss.csv"))?);
 
         std::io::Write::write_fmt(
             &mut loss_csv_file,
             format_args!("step,learning_rate,loss,log10_loss\n"),
         )?;
-        let mut training_loss_curve = Vec::with_capacity(training_steps);
+        let mut training_loss_curve: Vec<(f32, f32)> = Vec::with_capacity(training_steps);
 
-        let training_started_at = std::time::Instant::now();
+        let training_started_at: std::time::Instant = std::time::Instant::now();
         for step_index in 0..training_steps {
-            let learning_rate = if step_index < 100_000 { 0.1 } else { 0.01 };
-            let loss = model.step(
+            let learning_rate: f32 = if step_index < 100_000 { 0.1 } else { 0.01 };
+            let loss: f32 = model.step(
                 &(0..32)
                     .map(|_| {
                         training_examples[batch_random_generator.index(training_examples.len())]
                     })
-                    .collect::<Vec<_>>(),
+                    .collect::<Vec<TrainingExample>>(),
                 learning_rate,
             );
             if !loss.is_finite() {
@@ -251,7 +259,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     // 6. Оценка без обновлений и графики, как в notebook.
     // Test — только окончательная оценка, не выбор lr/архитектуры.
-    let metrics_text = format!(
+    let metrics_text: String = format!(
         "steps={training_steps}\nparameters={parameter_count}\ninitial_dev_loss={initial_validation_loss:.6}\ntrain_loss={training_loss:.6}\ndev_loss={validation_loss:.6}\ntest_loss={test_loss:.6}\n",
         parameter_count = model.parameters.iter().map(Vec::len).sum::<usize>(),
         training_loss = model.loss(&training_examples),
@@ -267,8 +275,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         None,
         "Training: x=step, y=log10(minibatch loss)",
     )?;
-    let [character_embeddings, _, _, _, _] = &model.parameters;
-    let embedding_coordinates: Vec<_> = (0..vocabulary.len())
+    let [character_embeddings, _, _, _, _]: &[Vec<f32>; 5] = &model.parameters;
+    let embedding_coordinates: Vec<(f32, f32)> = (0..vocabulary.len())
         .map(|character_index| {
             (
                 character_embeddings[character_index * model.embedding_dimensions],
@@ -283,7 +291,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "C: x=dimension 0, y=dimension 1 (of 10)",
     )?;
     {
-        let mut embeddings_csv_file =
+        let mut embeddings_csv_file: std::fs::File =
             std::fs::File::create(output_directory.join("embeddings.csv"))?;
         std::io::Write::write_fmt(&mut embeddings_csv_file, format_args!("character,c0,c1\n"))?;
         for (character, (first_coordinate, second_coordinate)) in
@@ -296,11 +304,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     // 7. Авторегрессионная генерация с собственным фиксированным seed.
-    let generated_names = {
-        let mut sampling_random_generator = RandomGenerator::new(2147483647 + 10);
-        let mut generated_names = String::new();
+    let generated_names: String = {
+        let mut sampling_random_generator: RandomGenerator = RandomGenerator::new(2147483647 + 10);
+        let mut generated_names: String = String::new();
         for _ in 0..20 {
-            let name = model.sample(&vocabulary, &mut sampling_random_generator);
+            let name: String = model.sample(&vocabulary, &mut sampling_random_generator);
             println!("{name}");
             generated_names.push_str(&name);
             generated_names.push('\n');
@@ -324,18 +332,18 @@ impl RandomGenerator {
     }
     fn next(&mut self) -> u64 {
         self.state = self.state.wrapping_add(0x9e3779b97f4a7c15);
-        let mixed_bits = self.state;
-        let mixed_bits = (mixed_bits ^ (mixed_bits >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
-        let mixed_bits = (mixed_bits ^ (mixed_bits >> 27)).wrapping_mul(0x94d049bb133111eb);
+        let mixed_bits: u64 = self.state;
+        let mixed_bits: u64 = (mixed_bits ^ (mixed_bits >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
+        let mixed_bits: u64 = (mixed_bits ^ (mixed_bits >> 27)).wrapping_mul(0x94d049bb133111eb);
         mixed_bits ^ (mixed_bits >> 31)
     }
     pub fn uniform(&mut self) -> f32 {
         ((self.next() >> 40) as f32 + 0.5) / 16777216.0
     }
     pub fn index(&mut self, upper_bound: usize) -> usize {
-        let upper_bound = upper_bound as u64;
+        let upper_bound: u64 = upper_bound as u64;
         loop {
-            let random_bits = self.next();
+            let random_bits: u64 = self.next();
             if random_bits >= upper_bound.wrapping_neg() % upper_bound {
                 return (random_bits % upper_bound) as usize;
             }
@@ -357,12 +365,12 @@ pub struct TrainingExample {
     pub target_character_index: usize,
 }
 pub fn dataset(names: &[&str], vocabulary: &[char]) -> Vec<TrainingExample> {
-    let mut examples = Vec::new();
+    let mut examples: Vec<TrainingExample> = Vec::new();
     for name in names {
-        let mut context_character_indices = [0; 3];
+        let mut context_character_indices: [usize; 3] = [0; 3];
 
         for next_character in name.chars().chain(std::iter::once('.')) {
-            let target_character_index = vocabulary
+            let target_character_index: usize = vocabulary
                 .iter()
                 .position(|&vocabulary_character| vocabulary_character == next_character)
                 .expect("символ словаря");
@@ -423,10 +431,10 @@ impl Model {
             hidden_biases,
             hidden_to_output_weights,
             output_biases,
-        ] = &self.parameters;
+        ]: &[Vec<f32>; 5] = &self.parameters;
         // Берём координаты трёх букв и объединяем в один входной вектор.
         // Его длина: 3 * embedding_dimensions.
-        let flattened_embeddings: Vec<_> = context_character_indices
+        let flattened_embeddings: Vec<f32> = context_character_indices
             .iter()
             .flat_map(|&character_index| {
                 character_embeddings[character_index * self.embedding_dimensions
@@ -435,8 +443,8 @@ impl Model {
                     .copied()
             })
             .collect();
-        let hidden_activations = {
-            let mut hidden_activations = hidden_biases.clone();
+        let hidden_activations: Vec<f32> = {
+            let mut hidden_activations: Vec<f32> = hidden_biases.clone();
             for (input_index, &input_value) in flattened_embeddings.iter().enumerate() {
                 for (hidden_activation, &connection_weight) in hidden_activations.iter_mut().zip(
                     &input_to_hidden_weights[input_index * self.hidden_neuron_count
@@ -451,8 +459,8 @@ impl Model {
 
             hidden_activations
         };
-        let character_scores = {
-            let mut character_scores = output_biases.clone();
+        let character_scores: Vec<f32> = {
+            let mut character_scores: Vec<f32> = output_biases.clone();
             for (hidden_neuron_index, &hidden_activation) in hidden_activations.iter().enumerate() {
                 for (character_score, &connection_weight) in character_scores.iter_mut().zip(
                     &hidden_to_output_weights[hidden_neuron_index * self.vocabulary_size
@@ -482,7 +490,7 @@ impl Model {
     }
     pub fn gradients(&self, training_batch: &[TrainingExample]) -> (f32, [Vec<f32>; 5]) {
         assert!(!training_batch.is_empty());
-        let mut parameter_gradients = self
+        let mut parameter_gradients: [Vec<f32>; 5] = self
             .parameters
             .each_ref()
             .map(|parameter_tensor| vec![0.0; parameter_tensor.len()]);
@@ -492,14 +500,18 @@ impl Model {
             hidden_bias_gradients,
             hidden_to_output_weight_gradients,
             output_bias_gradients,
-        ] = &mut parameter_gradients;
-        let [_, input_to_hidden_weights, _, hidden_to_output_weights, _] = &self.parameters;
-        let mut total_loss = 0.0;
+        ]: &mut [Vec<f32>; 5] = &mut parameter_gradients;
+        let [_, input_to_hidden_weights, _, hidden_to_output_weights, _]: &[Vec<f32>; 5] =
+            &self.parameters;
+        let mut total_loss: f32 = 0.0;
         for example in training_batch {
-            let (flattened_embeddings, hidden_activations, character_scores) =
-                self.forward(example.context_character_indices);
-            let score_gradients = {
-                let (example_loss, mut score_gradients) =
+            let (flattened_embeddings, hidden_activations, character_scores): (
+                Vec<f32>,
+                Vec<f32>,
+                Vec<f32>,
+            ) = self.forward(example.context_character_indices);
+            let score_gradients: Vec<f32> = {
+                let (example_loss, mut score_gradients): (f32, Vec<f32>) =
                     cross_entropy(&character_scores, example.target_character_index);
                 total_loss += example_loss;
                 // Вероятности превращаем в производные ошибки по выходным оценкам.
@@ -517,8 +529,9 @@ impl Model {
                 *output_bias_gradient += score_gradient;
             }
             // Производные ошибки по суммам скрытого слоя ДО применения tanh.
-            let hidden_pre_activation_gradients = {
-                let mut hidden_pre_activation_gradients = vec![0.0; self.hidden_neuron_count];
+            let hidden_pre_activation_gradients: Vec<f32> = {
+                let mut hidden_pre_activation_gradients: Vec<f32> =
+                    vec![0.0; self.hidden_neuron_count];
                 for hidden_neuron_index in 0..self.hidden_neuron_count {
                     for output_character_index in 0..self.vocabulary_size {
                         hidden_to_output_weight_gradients[hidden_neuron_index
@@ -540,8 +553,8 @@ impl Model {
                 hidden_pre_activation_gradients
             };
             for input_coordinate_index in 0..flattened_embeddings.len() {
-                let input_coordinate_gradient = {
-                    let mut input_coordinate_gradient = 0.0;
+                let input_coordinate_gradient: f32 = {
+                    let mut input_coordinate_gradient: f32 = 0.0;
                     for hidden_neuron_index in 0..self.hidden_neuron_count {
                         input_to_hidden_weight_gradients[input_coordinate_index
                             * self.hidden_neuron_count
@@ -569,7 +582,7 @@ impl Model {
         )
     }
     pub fn step(&mut self, training_batch: &[TrainingExample], learning_rate: f32) -> f32 {
-        let (loss, gradients) = self.gradients(training_batch);
+        let (loss, gradients): (f32, [Vec<f32>; 5]) = self.gradients(training_batch);
         for (parameter_tensor, gradient_tensor) in self.parameters.iter_mut().zip(gradients) {
             for (parameter, gradient) in parameter_tensor.iter_mut().zip(gradient_tensor) {
                 *parameter -= learning_rate * gradient;
@@ -578,15 +591,15 @@ impl Model {
         loss
     }
     pub fn sample(&self, vocabulary: &[char], random_generator: &mut RandomGenerator) -> String {
-        let mut context_character_indices = [0; 3];
-        let mut generated_name = String::new();
+        let mut context_character_indices: [usize; 3] = [0; 3];
+        let mut generated_name: String = String::new();
         for _ in 0..100 {
-            let (_, character_probabilities) =
+            let (_, character_probabilities): (f32, Vec<f32>) =
                 cross_entropy(&self.forward(context_character_indices).2, 0);
-            let random_probability = random_generator.uniform();
-            let sampled_character_index = {
-                let mut cumulative_probability = 0.0;
-                let mut sampled_character_index = self.vocabulary_size - 1;
+            let random_probability: f32 = random_generator.uniform();
+            let sampled_character_index: usize = {
+                let mut cumulative_probability: f32 = 0.0;
+                let mut sampled_character_index: usize = self.vocabulary_size - 1;
                 for (character_index, character_probability) in
                     character_probabilities.iter().enumerate()
                 {
@@ -617,12 +630,12 @@ impl Model {
 // character_scores (logits) — оценки букв до softmax; это ещё не вероятности.
 pub fn cross_entropy(character_scores: &[f32], target_character_index: usize) -> (f32, Vec<f32>) {
     // log-sum-exp: exp(logits) напрямую может переполниться.
-    let maximum_score = character_scores
+    let maximum_score: f32 = character_scores
         .iter()
         .copied()
         .fold(f32::NEG_INFINITY, f32::max);
-    let (character_probabilities, exponential_sum) = {
-        let mut character_probabilities: Vec<_> = character_scores
+    let (character_probabilities, exponential_sum): (Vec<f32>, f32) = {
+        let mut character_probabilities: Vec<f32> = character_scores
             .iter()
             .map(|character_score| (character_score - maximum_score).exp())
             .collect();

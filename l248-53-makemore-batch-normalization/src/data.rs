@@ -9,18 +9,18 @@ impl RandomGenerator {
     }
     fn next(&mut self) -> u64 {
         self.state = self.state.wrapping_add(0x9e3779b97f4a7c15);
-        let mixed_bits = self.state;
-        let mixed_bits = (mixed_bits ^ (mixed_bits >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
-        let mixed_bits = (mixed_bits ^ (mixed_bits >> 27)).wrapping_mul(0x94d049bb133111eb);
+        let mixed_bits: u64 = self.state;
+        let mixed_bits: u64 = (mixed_bits ^ (mixed_bits >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
+        let mixed_bits: u64 = (mixed_bits ^ (mixed_bits >> 27)).wrapping_mul(0x94d049bb133111eb);
         mixed_bits ^ (mixed_bits >> 31)
     }
     pub fn uniform(&mut self) -> f32 {
         ((self.next() >> 40) as f32 + 0.5) / 16777216.0
     }
     pub fn index(&mut self, upper_bound: usize) -> usize {
-        let upper_bound = upper_bound as u64;
+        let upper_bound: u64 = upper_bound as u64;
         loop {
-            let random_bits = self.next();
+            let random_bits: u64 = self.next();
             if random_bits >= upper_bound.wrapping_neg() % upper_bound {
                 return (random_bits % upper_bound) as usize;
             }
@@ -42,12 +42,12 @@ pub struct TrainingExample {
     pub target_character_index: usize,
 }
 pub fn dataset(names: &[&str], vocabulary: &[char]) -> Vec<TrainingExample> {
-    let mut examples = Vec::new();
+    let mut examples: Vec<TrainingExample> = Vec::new();
     for name in names {
-        let mut context_character_indices = [0; 3];
+        let mut context_character_indices: [usize; 3] = [0; 3];
 
         for next_character in name.chars().chain(std::iter::once('.')) {
-            let target_character_index = vocabulary
+            let target_character_index: usize = vocabulary
                 .iter()
                 .position(|&vocabulary_character| vocabulary_character == next_character)
                 .expect("символ словаря");
@@ -68,12 +68,12 @@ pub fn dataset(names: &[&str], vocabulary: &[char]) -> Vec<TrainingExample> {
 // character_scores (logits) — оценки букв до softmax; это ещё не вероятности.
 pub fn cross_entropy(character_scores: &[f32], target_character_index: usize) -> (f32, Vec<f32>) {
     // log-sum-exp: exp(logits) напрямую может переполниться.
-    let maximum_score = character_scores
+    let maximum_score: f32 = character_scores
         .iter()
         .copied()
         .fold(f32::NEG_INFINITY, f32::max);
-    let (character_probabilities, exponential_sum) = {
-        let mut character_probabilities: Vec<_> = character_scores
+    let (character_probabilities, exponential_sum): (Vec<f32>, f32) = {
+        let mut character_probabilities: Vec<f32> = character_scores
             .iter()
             .map(|character_score| (character_score - maximum_score).exp())
             .collect();

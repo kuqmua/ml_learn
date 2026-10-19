@@ -13,8 +13,8 @@ cargo run
 Число шагов и папка результатов задаются в начале `main` в `src/main.rs`:
 
 ```rust
-let training_steps = 200_000usize;
-let output_directory = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("output");
+let training_steps: usize = 200_000usize;
+let output_directory: std::path::PathBuf = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("output");
 ```
 
 `training_steps` задаёт число обновлений, `output_directory` задаёт папку результатов. Для дополнительного опыта по выбору learning rate на отдельной копии модели замени `if false` на `if true` в блоке 4. Для короткого прогона поставь `training_steps = 1000`. Аргументы командной строки не используются.

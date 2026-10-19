@@ -14,7 +14,10 @@ cargo test -p l248-53-makemore-batch-normalization
 Из папки урока достаточно `cargo run`: для этого пакета включена оптимизация dev-профиля. Число шагов и граница снижения lr указаны прямо в цикле `main`:
 
 ```rust
-for (deep, steps, decay) in [(false, 200_000, 100_000), (true, 1001, 150_000)] {
+for (deep, steps, decay) in [
+    (false, 200_000usize, 100_000usize),
+    (true, 1001usize, 150_000usize),
+] {
     // обучение модели
 }
 ```
