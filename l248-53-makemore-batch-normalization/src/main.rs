@@ -3,19 +3,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let program_started_at: std::time::Instant = std::time::Instant::now();
     // Генератор псевдослучайных чисел: одинаковый seed даёт одинаковую последовательность.
     #[derive(Clone)]
-    struct RandomGenerator {
+    struct RandomGenerator(
         // Текущее внутреннее состояние, изменяемое при получении очередного числа.
-        state: u64,
-    }
+        u64,
+    );
     impl RandomGenerator {
         // Создаёт генератор с заданным seed для воспроизводимой последовательности.
         fn new(seed: u64) -> Self {
-            Self { state: seed }
+            Self(seed)
         }
         // Обновляет состояние генератора и возвращает следующее псевдослучайное u64.
         fn next(&mut self) -> u64 {
-            self.state = self.state.wrapping_add(0x9e3779b97f4a7c15);
-            let mixed_bits: u64 = self.state;
+            self.0 = self.0.wrapping_add(0x9e3779b97f4a7c15);
+            let mixed_bits: u64 = self.0;
             let mixed_bits: u64 =
                 (mixed_bits ^ (mixed_bits >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
             let mixed_bits: u64 =
@@ -42,8 +42,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    // Индексы трёх предыдущих символов; 0 обозначает точку и заполнение начала имени.
-    type ContextCharacterIndices = [usize; 3];
+    // Индекс символа, проверенный относительно размера словаря при создании.
+    #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+    struct CharacterIndex(
+        // Позиция символа в словаре; создаётся проверяющим замыканием, а читается через get.
+        usize,
+    );
+
+    impl CharacterIndex {
+        // Возвращает числовой индекс для обращения к словарю и тензорам.
+        fn get(self) -> usize {
+            self.0
+        }
+    }
+    // Три проверенных индекса предыдущих символов; индекс 0 — точка и заполнение начала.
+    type ContextCharacterIndices = [CharacterIndex; 3];
 
     // Один учебный пример: по трём предыдущим символам предсказываем следующий.
     #[derive(Clone, Copy, Debug, PartialEq)]
@@ -51,7 +64,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Индексы трёх символов в словаре; 0 означает точку, в том числе заполнение начала.
         context_character_indices: ContextCharacterIndices,
         // Индекс правильного следующего символа; 0 также обозначает конец имени.
-        target_character_index: usize,
+        target_character_index: CharacterIndex,
     }
 
     // Обучаемый тензор и производные loss по каждому его элементу.
@@ -345,7 +358,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Возвращает (cross-entropy для правильного символа, вероятности всех символов), устойчиво вычисляя softmax.
         fn cross_entropy(
             character_scores: &[f32],
-            target_character_index: usize,
+            target_character_index: CharacterIndex,
         ) -> (f32, Vec<f32>) {
             // log-sum-exp: exp(logits) напрямую может переполниться.
             let maximum_score: f32 = character_scores
@@ -365,7 +378,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 (character_probabilities, exponential_sum)
             };
             (
-                (maximum_score - character_scores[target_character_index]) + exponential_sum.ln(),
+                (maximum_score - character_scores[target_character_index.get()])
+                    + exponential_sum.ln(),
                 character_probabilities,
             )
         }
@@ -426,7 +440,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 for example in batch {
                     for &character in &example.context_character_indices {
                         values.extend_from_slice(
-                            &self.embeddings.values[character * 10..character * 10 + 10],
+                            &self.embeddings.values
+                                [character.get() * 10..character.get() * 10 + 10],
                         );
                     }
                 }
@@ -483,7 +498,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             example.target_character_index,
                         );
                         loss += value / batch.len() as f32;
-                        probabilities[example.target_character_index] -= 1.;
+                        probabilities[example.target_character_index.get()] -= 1.;
                         for (index, p) in probabilities.iter_mut().enumerate() {
                             *p /= batch.len() as f32;
                             output_bias.gradients[index] += *p;
@@ -516,7 +531,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             for (example, row) in batch.iter().zip(gradient.as_chunks::<30>().0.iter()) {
                 for (position, character) in example.context_character_indices.iter().enumerate() {
                     for coordinate in 0..10 {
-                        self.embeddings.gradients[character * 10 + coordinate] +=
+                        self.embeddings.gradients[character.get() * 10 + coordinate] +=
                             row[position * 10 + coordinate];
                     }
                 }
@@ -534,17 +549,31 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if cfg!(test) {
         let vocabulary: [char; 3] = ['.', 'a', 'b'];
 
+        // Проверяет индекс относительно захваченного размера словаря.
+        let character_index = |value: usize| -> Result<CharacterIndex, &'static str> {
+            if value < vocabulary.len() {
+                Ok(CharacterIndex(value))
+            } else {
+                Err("индекс символа должен быть меньше размера словаря")
+            }
+        };
+
         // Строит примеры по именам, заимствуя словарь из окружающей области.
-        let dataset = |names: &[&str]| -> Vec<TrainingExample> {
+        let dataset = |names: &[&str]| -> Result<Vec<TrainingExample>, &'static str> {
             let mut examples: Vec<TrainingExample> = Vec::new();
             for name in names {
-                let mut context_character_indices: ContextCharacterIndices = [0; 3];
+                let mut context_character_indices: ContextCharacterIndices =
+                    [character_index(0)?; 3];
 
                 for next_character in name.chars().chain(std::iter::once('.')) {
-                    let target_character_index: usize = vocabulary
-                        .iter()
-                        .position(|&vocabulary_character| vocabulary_character == next_character)
-                        .expect("символ словаря");
+                    let target_character_index: CharacterIndex = character_index(
+                        vocabulary
+                            .iter()
+                            .position(|&vocabulary_character| {
+                                vocabulary_character == next_character
+                            })
+                            .ok_or("символ отсутствует в словаре")?,
+                    )?;
                     examples.push(TrainingExample {
                         context_character_indices,
                         target_character_index,
@@ -556,8 +585,33 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     ];
                 }
             }
-            examples
+            Ok(examples)
         };
+
+        // Проверяем границы индекса для обычного и маленького словарей и неизвестный символ.
+        for vocabulary_size in [0usize, 3usize, 27usize] {
+            // Проверяет индекс относительно захваченного размера словаря.
+            let character_index = |value: usize| -> Result<CharacterIndex, &'static str> {
+                if value < vocabulary_size {
+                    Ok(CharacterIndex(value))
+                } else {
+                    Err("индекс символа должен быть меньше размера словаря")
+                }
+            };
+
+            if vocabulary_size == 0 {
+                assert!(character_index(0).is_err());
+                continue;
+            }
+            assert_eq!(character_index(0)?.get(), 0);
+            assert_eq!(
+                character_index(vocabulary_size - 1)?.get(),
+                vocabulary_size - 1
+            );
+            assert!(character_index(vocabulary_size).is_err());
+            assert!(character_index(usize::MAX).is_err());
+        }
+        assert!(dataset(&["ac"]).is_err());
 
         // Проверяем: некорректный батч возвращает ошибку и не меняет статистики BatchNorm.
         {
@@ -575,8 +629,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 model
                     .gradients(
                         &[TrainingExample {
-                            context_character_indices: [0; 3],
-                            target_character_index: 1,
+                            context_character_indices: [character_index(0)?; 3],
+                            target_character_index: character_index(1)?,
                         }],
                         &mut bias
                     )
@@ -627,7 +681,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         // Проверяем численные производные эмбеддингов и параметров всех типов слоёв.
         {
-            let batch: Vec<TrainingExample> = dataset(&["aba", "baa"]);
+            let batch: Vec<TrainingExample> = dataset(&["aba", "baa"])?;
             for deep in [false, true] {
                 let (mut model, bias): (Model, Parameter) = {
                     let mut model: Model = Model::new(3, deep, &mut RandomGenerator::new(55));
@@ -686,8 +740,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         // Проверяем сброс контекста между именами и снижение ошибки после шагов SGD.
         {
-            let batch: Vec<TrainingExample> = dataset(&["ab", "ab", "ab", "ab"]);
-            assert_eq!(batch[3].context_character_indices, [0; 3]);
+            let batch: Vec<TrainingExample> = dataset(&["ab", "ab", "ab", "ab"])?;
+            assert_eq!(batch[3].context_character_indices, [character_index(0)?; 3]);
             for deep in [false, true] {
                 let mut model: Model = Model::new(3, deep, &mut RandomGenerator::new(42));
                 let mut bias: Parameter = Parameter::new(vec![0.; 3]);
@@ -819,17 +873,32 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             vocabulary
         };
+
+        // Проверяет индекс относительно захваченного размера словаря.
+        let character_index = |value: usize| -> Result<CharacterIndex, &'static str> {
+            if value < vocabulary.len() {
+                Ok(CharacterIndex(value))
+            } else {
+                Err("индекс символа должен быть меньше размера словаря")
+            }
+        };
+
         // Строит примеры по именам, заимствуя словарь из окружающей области.
-        let dataset = |names: &[&str]| -> Vec<TrainingExample> {
+        let dataset = |names: &[&str]| -> Result<Vec<TrainingExample>, &'static str> {
             let mut examples: Vec<TrainingExample> = Vec::new();
             for name in names {
-                let mut context_character_indices: ContextCharacterIndices = [0; 3];
+                let mut context_character_indices: ContextCharacterIndices =
+                    [character_index(0)?; 3];
 
                 for next_character in name.chars().chain(std::iter::once('.')) {
-                    let target_character_index: usize = vocabulary
-                        .iter()
-                        .position(|&vocabulary_character| vocabulary_character == next_character)
-                        .expect("символ словаря");
+                    let target_character_index: CharacterIndex = character_index(
+                        vocabulary
+                            .iter()
+                            .position(|&vocabulary_character| {
+                                vocabulary_character == next_character
+                            })
+                            .ok_or("символ отсутствует в словаре")?,
+                    )?;
                     examples.push(TrainingExample {
                         context_character_indices,
                         target_character_index,
@@ -841,7 +910,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     ];
                 }
             }
-            examples
+            Ok(examples)
         };
 
         let names: Names<'_> = {
@@ -854,10 +923,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             names
         };
-        let training: Vec<TrainingExample> = dataset(&names[..names.len() * 8 / 10]);
+        let training: Vec<TrainingExample> = dataset(&names[..names.len() * 8 / 10])?;
         let validation: Vec<TrainingExample> =
-            dataset(&names[names.len() * 8 / 10..names.len() * 9 / 10]);
-        let test: Vec<TrainingExample> = dataset(&names[names.len() * 9 / 10..]);
+            dataset(&names[names.len() * 8 / 10..names.len() * 9 / 10])?;
+        let test: Vec<TrainingExample> = dataset(&names[names.len() * 9 / 10..])?;
         println!(
             "train/dev/test: {}/{}/{} contexts",
             training.len(),
@@ -1210,10 +1279,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let mut samples: std::fs::File = files
                 .remove(&format!("{prefix}_samples.txt"))
                 .ok_or("файл отсутствует в подготовленном наборе")?;
+
+            // Проверяет индекс относительно захваченного размера словаря.
+            let character_index = |value: usize| -> Result<CharacterIndex, &'static str> {
+                if value < vocabulary.len() {
+                    Ok(CharacterIndex(value))
+                } else {
+                    Err("индекс символа должен быть меньше размера словаря")
+                }
+            };
             let mut rng: RandomGenerator = RandomGenerator::new(2147483657);
             for _ in 0..20 {
                 let name: String = {
-                    let mut context: ContextCharacterIndices = [0; 3];
+                    let mut context: ContextCharacterIndices = [character_index(0)?; 3];
                     let mut name: String = String::new();
                     for _ in 0..100 {
                         let probabilities: Vec<f32> = Model::cross_entropy(
@@ -1221,7 +1299,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 .forward(
                                     &[TrainingExample {
                                         context_character_indices: context,
-                                        target_character_index: 0,
+                                        target_character_index: character_index(0)?,
                                     }],
                                     false,
                                 )?
@@ -1229,7 +1307,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 .zip(&bias.values)
                                 .map(|(a, b)| a + b)
                                 .collect::<Vec<f32>>(),
-                            0,
+                            character_index(0)?,
                         )
                         .1;
                         let draw: f32 = rng.uniform();
@@ -1246,8 +1324,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                             selected
                         };
-                        name.push(vocabulary[selected]);
-                        if selected == 0 {
+                        let selected: CharacterIndex = character_index(selected)?;
+                        name.push(vocabulary[selected.get()]);
+                        if selected.get() == 0 {
                             break;
                         }
                         context = [context[1], context[2], selected];
