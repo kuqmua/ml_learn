@@ -1,6 +1,8 @@
 mod data;
+mod validation;
 use data::{RandomGenerator, TrainingExample, cross_entropy, dataset};
 use std::io::Write;
+use validation::{BatchColumns, FiniteLoss, Names, ValidationError};
 
 // Точки графика: горизонтальная и вертикальная координаты.
 type PlotPoints = Vec<(f32, f32)>;
@@ -118,9 +120,10 @@ impl BatchNorm {
             inverse_scale: vec![],
         }
     }
-    fn statistics(input: &[f32], width: usize) -> (Vec<f32>, Vec<f32>) {
-        let count: usize = input.len() / width;
-        assert!(count > 1);
+    fn statistics(batch: BatchColumns<'_>) -> (Vec<f32>, Vec<f32>) {
+        let input: &[f32] = batch.values();
+        let width: usize = batch.width();
+        let count: usize = batch.rows();
         let mean: Vec<f32> = {
             let mut mean: Vec<f32> = vec![0.; width];
             for row in input.chunks_exact(width) {
@@ -139,9 +142,10 @@ impl BatchNorm {
         }
         (mean, variance)
     }
-    fn forward(&mut self, input: Vec<f32>, training: bool) -> Vec<f32> {
+    fn forward(&mut self, input: Vec<f32>, training: bool) -> Result<Vec<f32>, ValidationError> {
         let (mean, scale): (Vec<f32>, Vec<f32>) = if training {
-            let (mean, variance): (Vec<f32>, Vec<f32>) = Self::statistics(&input, self.width);
+            let (mean, variance): (Vec<f32>, Vec<f32>) =
+                Self::statistics(BatchColumns::try_from((input.as_slice(), self.width))?);
             let scale: Vec<f32> = variance
                 .iter()
                 .map(|v| {
@@ -179,13 +183,14 @@ impl BatchNorm {
                 (value - mean[index % self.width]) * self.inverse_scale[index % self.width]
             })
             .collect();
-        self.normalized
+        Ok(self
+            .normalized
             .iter()
             .enumerate()
             .map(|(index, value)| {
                 self.gain.values[index % self.width] * value + self.bias.values[index % self.width]
             })
-            .collect()
+            .collect())
     }
     fn backward(&mut self, gradient: Vec<f32>) -> Vec<f32> {
         let count: usize = gradient.len() / self.width;
@@ -220,13 +225,13 @@ enum Layer {
     },
 }
 impl Layer {
-    fn forward(&mut self, input: Vec<f32>, training: bool) -> Vec<f32> {
+    fn forward(&mut self, input: Vec<f32>, training: bool) -> Result<Vec<f32>, ValidationError> {
         match self {
-            Self::Linear(layer) => layer.forward(input),
+            Self::Linear(layer) => Ok(layer.forward(input)),
             Self::BatchNorm(layer) => layer.forward(input, training),
             Self::Tanh { output, .. } => {
                 *output = input.iter().map(|x| x.tanh()).collect();
-                output.clone()
+                Ok(output.clone())
             }
         }
     }
@@ -296,7 +301,11 @@ impl Model {
             vocabulary_size,
         }
     }
-    fn forward(&mut self, batch: &[TrainingExample], training: bool) -> Vec<f32> {
+    fn forward(
+        &mut self,
+        batch: &[TrainingExample],
+        training: bool,
+    ) -> Result<Vec<f32>, ValidationError> {
         let values: Vec<f32> = {
             let mut values: Vec<f32> = Vec::with_capacity(batch.len() * 30);
             for example in batch {
@@ -311,7 +320,7 @@ impl Model {
         };
         self.layers
             .iter_mut()
-            .fold(values, |values, layer| layer.forward(values, training))
+            .try_fold(values, |values, layer| layer.forward(values, training))
     }
     fn parameters(&mut self) -> Vec<&mut Parameter> {
         let mut result: Vec<&mut Parameter> = vec![&mut self.embeddings];
@@ -327,13 +336,17 @@ impl Model {
         }
         result
     }
-    fn gradients(&mut self, batch: &[TrainingExample], output_bias: &mut Parameter) -> f32 {
+    fn gradients(
+        &mut self,
+        batch: &[TrainingExample],
+        output_bias: &mut Parameter,
+    ) -> Result<f32, ValidationError> {
         let (gradient, loss): (Vec<f32>, f32) = {
             let mut gradient: Vec<f32> = vec![];
             let mut loss: f32 = 0.;
             output_bias.gradients.fill(0.);
             for (row, example) in self
-                .forward(batch, true)
+                .forward(batch, true)?
                 .chunks_exact(self.vocabulary_size)
                 .zip(batch)
             {
@@ -373,13 +386,17 @@ impl Model {
                 }
             }
         }
-        loss
+        Ok(loss)
     }
-    fn loss(&mut self, examples: &[TrainingExample], bias: &Parameter) -> f64 {
+    fn loss(
+        &mut self,
+        examples: &[TrainingExample],
+        bias: &Parameter,
+    ) -> Result<f64, ValidationError> {
         let mut total: f64 = 0.;
         for batch in examples.chunks(256) {
             for (row, example) in self
-                .forward(batch, false)
+                .forward(batch, false)?
                 .chunks_exact(self.vocabulary_size)
                 .zip(batch)
             {
@@ -393,7 +410,7 @@ impl Model {
                 .0 as f64;
             }
         }
-        total / examples.len() as f64
+        Ok(total / examples.len() as f64)
     }
 }
 fn standard_deviation(values: &[f32]) -> f32 {
@@ -405,7 +422,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("output");
     std::fs::create_dir_all(&output)?;
     let text: &str = include_str!("../../l247-52-generate-names-with-makemore-mlp/data/names.txt");
-    let names: Vec<&str> = text.lines().collect();
+    let names: Names<'_> = Names::try_from(text)?;
     let vocabulary: Vec<char> = {
         let mut vocabulary: Vec<char> = text.chars().filter(|c| c.is_ascii_lowercase()).collect();
         vocabulary.sort_unstable();
@@ -414,11 +431,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         vocabulary
     };
-    let names: Vec<&str> = {
-        let mut names: Vec<&str> = names;
-        RandomGenerator::new(42).shuffle(&mut names);
-        names
-    };
+    let names: Names<'_> = names.shuffled(&mut RandomGenerator::new(42));
     let training: Vec<TrainingExample> = dataset(&names[..names.len() * 8 / 10], &vocabulary);
     let validation: Vec<TrainingExample> = dataset(
         &names[names.len() * 8 / 10..names.len() * 9 / 10],
@@ -461,13 +474,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let mut curve: PlotPoints = Vec::new();
             let mut update_curves: Vec<PlotPoints> = vec![Vec::new(); model.parameters().len()];
             for step in 0..steps {
-                let loss: f32 = model.gradients(
-                    &(0..32)
-                        .map(|_| training[rng.index(training.len())])
-                        .collect::<Vec<TrainingExample>>(),
-                    &mut bias,
-                );
-                assert!(loss.is_finite());
+                let loss: FiniteLoss = FiniteLoss::try_from(
+                    model.gradients(
+                        &(0..32)
+                            .map(|_| training[rng.index(training.len())])
+                            .collect::<Vec<TrainingExample>>(),
+                        &mut bias,
+                    )?,
+                )?;
                 let rate: f32 = if step < decay { 0.1 } else { 0.01 };
                 for (index, parameter) in model.parameters().into_iter().enumerate() {
                     parameter.update(rate);
@@ -481,8 +495,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if !deep {
                     bias.update(rate);
                 }
-                writeln!(losses, "{step},{rate},{loss},{}", loss.log10())?;
-                curve.push((step as f32, loss.log10()));
+                writeln!(losses, "{step},{rate},{loss},{}", loss.get().log10())?;
+                curve.push((step as f32, loss.get().log10()));
                 if step % 10_000 == 0 {
                     println!("{prefix} {step}/{steps}: {loss:.4}");
                 }
@@ -517,7 +531,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 for (name, examples) in
                     [("train", &training), ("dev", &validation), ("test", &test)]
                 {
-                    let loss: f64 = model.loss(examples, &bias);
+                    let loss: f64 = model.loss(examples, &bias)?;
                     println!("{prefix} {name}: {loss:.6}");
                     writeln!(metrics, "{name}: {loss:.6}")?;
                 }
@@ -528,7 +542,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let mut sums: Vec<f64> = vec![0f64; 200];
                     let mut squares: Vec<f64> = vec![0f64; 200];
                     for batch in training.chunks(256) {
-                        model.forward(batch, false);
+                        model.forward(batch, false)?;
                         if let Layer::Linear(first) = &model.layers[0] {
                             for row in first.output.as_chunks::<200>().0 {
                                 for i in 0..200 {
@@ -572,7 +586,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                         target_character_index: 0,
                                     }],
                                     false,
-                                )
+                                )?
                                 .iter()
                                 .zip(&bias.values)
                                 .map(|(a, b)| a + b)
@@ -728,7 +742,7 @@ fn diagnostics(model: &Model, output: &std::path::Path, prefix: &str) -> std::io
     }
     Ok(())
 }
-fn bonus(output: &std::path::Path) -> std::io::Result<()> {
+fn bonus(output: &std::path::Path) -> Result<(), Box<dyn std::error::Error>> {
     // Локальный HTML slider и таблица всех положений x0 с шагом 0.5.
     {
         let mut file: std::fs::File = std::fs::File::create(output.join("batch_coupling.csv"))?;
@@ -779,7 +793,8 @@ slider.addEventListener('input',render);render();
 
                 values
             };
-            let (mean, variance): (Vec<f32>, Vec<f32>) = BatchNorm::statistics(&values, 1);
+            let (mean, variance): (Vec<f32>, Vec<f32>) =
+                BatchNorm::statistics(BatchColumns::try_from((values.as_slice(), 1))?);
             for (i, x) in values.iter().enumerate() {
                 writeln!(
                     file,
@@ -804,7 +819,7 @@ slider.addEventListener('input',render);render();
         let (out, gradient): (Vec<f32>, Vec<f32>) = if normalized {
             let mut bn: BatchNorm = BatchNorm::new(1, false, false);
             (
-                bn.forward(values.clone(), true),
+                bn.forward(values.clone(), true)?,
                 bn.backward(upstream.clone()),
             )
         } else {
@@ -833,14 +848,39 @@ mod tests {
     use super::*;
 
     #[test]
-    fn batch_norm_backward_matches_finite_differences() {
+    fn invalid_batch_is_returned_without_changing_running_statistics() {
+        let mut layer: BatchNorm = BatchNorm::new(2, false, false);
+        let mean: Vec<f32> = layer.running_mean.clone();
+        let scale: Vec<f32> = layer.running_scale.clone();
+        for input in [vec![], vec![1., 2.], vec![1., 2., 3.]] {
+            assert!(layer.forward(input, true).is_err());
+        }
+        assert_eq!(layer.running_mean, mean);
+        assert_eq!(layer.running_scale, scale);
+        let mut model: Model = Model::new(3, false, &mut RandomGenerator::new(42));
+        let mut bias: Parameter = Parameter::new(vec![0.; 3]);
+        assert!(
+            model
+                .gradients(
+                    &[TrainingExample {
+                        context_character_indices: [0; 3],
+                        target_character_index: 1,
+                    }],
+                    &mut bias
+                )
+                .is_err()
+        );
+    }
+
+    #[test]
+    fn batch_norm_backward_matches_finite_differences() -> Result<(), ValidationError> {
         for first_part in [false, true] {
             let input: Vec<f32> = vec![0.2, -1.1, 0.7, 0.3, -0.4, 1.2, 2.1, -0.7];
             let upstream: Vec<f32> = vec![0.3, -0.2, 0.4, 0.8, -0.1, 0.5, 0.2, -0.6];
             let (layer, analytic): (BatchNorm, Vec<f32>) = {
                 let mut layer: BatchNorm = BatchNorm::new(2, first_part, false);
                 layer.gain.values = vec![1.3, 0.6];
-                layer.forward(input.clone(), true);
+                layer.forward(input.clone(), true)?;
                 let analytic: Vec<f32> = layer.backward(upstream.clone());
 
                 (layer, analytic)
@@ -856,15 +896,16 @@ mod tests {
                     minus[index] -= 0.001;
                     minus
                 };
-                let objective = |values: Vec<f32>| -> f32 {
+                let objective = |values: Vec<f32>| -> Result<f32, ValidationError> {
                     let mut copy: BatchNorm = layer.clone();
-                    copy.forward(values, true)
+                    Ok(copy
+                        .forward(values, true)?
                         .iter()
                         .zip(&upstream)
                         .map(|(x, g)| x * g)
-                        .sum::<f32>()
+                        .sum::<f32>())
                 };
-                let numeric: f32 = (objective(plus) - objective(minus)) / 0.002;
+                let numeric: f32 = (objective(plus)? - objective(minus)?) / 0.002;
                 assert!(
                     (numeric - analytic[index]).abs() < 0.0005,
                     "{first_part} {index}: {numeric} vs {}",
@@ -872,16 +913,18 @@ mod tests {
                 );
             }
         }
+        Ok(())
     }
 
     #[test]
-    fn full_network_gradients_include_embeddings_and_all_layer_types() {
+    fn full_network_gradients_include_embeddings_and_all_layer_types() -> Result<(), ValidationError>
+    {
         let batch: Vec<TrainingExample> = dataset(&["aba", "baa"], &['.', 'a', 'b']);
         for deep in [false, true] {
             let (mut model, bias): (Model, Parameter) = {
                 let mut model: Model = Model::new(3, deep, &mut RandomGenerator::new(55));
                 let mut bias: Parameter = Parameter::new(vec![0.; 3]);
-                model.gradients(&batch, &mut bias);
+                model.gradients(&batch, &mut bias)?;
                 (model, bias)
             };
             for tensor in 0..model.parameters().len() {
@@ -896,52 +939,58 @@ mod tests {
                         .0;
                     (index, p.gradients[index])
                 };
-                let objective = |offset: f32| -> f32 {
+                let objective = |offset: f32| -> Result<f32, ValidationError> {
                     let mut copy: Model = model.clone();
                     copy.parameters()[tensor].values[index] += offset;
                     copy.gradients(&batch, &mut bias.clone())
                 };
-                let numeric: f32 = (objective(0.001) - objective(-0.001)) / 0.002;
+                let numeric: f32 = (objective(0.001)? - objective(-0.001)?) / 0.002;
                 assert!(
                     (numeric - analytic).abs() < 0.003,
                     "deep={deep} tensor={tensor}: {numeric} vs {analytic}"
                 );
             }
         }
+        Ok(())
     }
 
     #[test]
-    fn eval_uses_frozen_statistics_and_is_independent_of_companions() {
+    fn eval_uses_frozen_statistics_and_is_independent_of_companions() -> Result<(), ValidationError>
+    {
         let mut layer: BatchNorm = BatchNorm::new(2, false, false);
-        layer.forward(vec![1., 2., 3., 7., -2., 4.], true);
+        layer.forward(vec![1., 2., 3., 7., -2., 4.], true)?;
         let mean: Vec<f32> = layer.running_mean.clone();
         let variance: Vec<f32> = layer.running_scale.clone();
         assert_eq!(
-            layer.forward(vec![1., 2.], false),
-            &layer.forward(vec![1., 2., 100., -30.], false)[..2],
+            layer.forward(vec![1., 2.], false)?,
+            &layer.forward(vec![1., 2., 100., -30.], false)?[..2],
         );
         assert_eq!(mean, layer.running_mean);
         assert_eq!(variance, layer.running_scale);
         // torch correction=1: variance([1,3]) = 2, а не 1.
-        assert_eq!(BatchNorm::statistics(&[1., 3.], 1), (vec![2.], vec![2.]));
+        assert_eq!(
+            BatchNorm::statistics(BatchColumns::try_from((&[1., 3.][..], 1))?),
+            (vec![2.], vec![2.])
+        );
         assert!(
             BatchNorm::new(2, false, false)
-                .forward(vec![3.; 8], true)
+                .forward(vec![3.; 8], true)?
                 .iter()
                 .all(|x| x.is_finite())
         );
+        Ok(())
     }
 
     #[test]
-    fn sgd_learns_and_dataset_resets_context() {
+    fn sgd_learns_and_dataset_resets_context() -> Result<(), ValidationError> {
         let batch: Vec<TrainingExample> = dataset(&["ab", "ab", "ab", "ab"], &['.', 'a', 'b']);
         assert_eq!(batch[3].context_character_indices, [0; 3]);
         for deep in [false, true] {
             let mut model: Model = Model::new(3, deep, &mut RandomGenerator::new(42));
             let mut bias: Parameter = Parameter::new(vec![0.; 3]);
-            let initial: f32 = model.gradients(&batch, &mut bias);
+            let initial: f32 = model.gradients(&batch, &mut bias)?;
             for _ in 0..100 {
-                model.gradients(&batch, &mut bias);
+                model.gradients(&batch, &mut bias)?;
                 for p in model.parameters() {
                     p.update(0.1);
                 }
@@ -949,11 +998,12 @@ mod tests {
                     bias.update(0.1);
                 }
             }
-            let final_loss: f32 = model.gradients(&batch, &mut bias);
+            let final_loss: f32 = model.gradients(&batch, &mut bias)?;
             assert!(
                 final_loss < initial * 0.5,
                 "{deep}: {initial} -> {final_loss}"
             );
         }
+        Ok(())
     }
 }

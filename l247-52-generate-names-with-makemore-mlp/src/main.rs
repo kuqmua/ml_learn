@@ -1,3 +1,6 @@
+mod validation;
+use validation::{Names, NonEmptySlice, TrainingSteps};
+
 // SVG строится самим Rust; ни matplotlib, ни дополнительные программы не нужны.
 fn plot(
     output_path: std::path::PathBuf,
@@ -59,15 +62,14 @@ fn plot(
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Настройки урока: меняй здесь и запускай cargo run.
-    let training_steps: usize = 200_000usize;
+    let training_steps: TrainingSteps = TrainingSteps::try_from(200_000usize)?;
     let output_directory: std::path::PathBuf =
         std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("output");
-    assert!(training_steps > 0, "число шагов должно быть положительным");
 
     std::fs::create_dir_all(&output_directory)?;
     // 1. Данные и словарь: 0 — начало/конец имени, a..z — 1..26.
     let names_text: &str = include_str!("../data/names.txt");
-    let names: Vec<&str> = names_text.lines().collect();
+    let names: Names<'_> = Names::try_from(names_text)?;
     let vocabulary: Vec<char> = {
         let mut vocabulary: Vec<char> = names_text
             .chars()
@@ -79,10 +81,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         vocabulary
     };
-    assert!(names.iter().all(|name| {
-        !name.is_empty() && name.chars().all(|character| character.is_ascii_lowercase())
-    }));
-    println!("Имена: {}, первые восемь: {:?}", names.len(), &names[..8]);
+    println!(
+        "Имена: {}, первые восемь: {:?}",
+        names.len(),
+        &names[..names.len().min(8)]
+    );
     println!("Словарь: {vocabulary:?}");
     let all_examples: Vec<TrainingExample> = dataset(&names, &vocabulary);
     println!(
@@ -128,14 +131,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         -(exponentiated_scores[all_examples[0].target_character_index]
             / exponentiated_scores.iter().sum::<f32>())
         .ln(),
-        demonstration_model.loss(&all_examples[..32])
+        demonstration_model.loss(NonEmptySlice::try_from(&all_examples[..32])?)
     );
     // 3. Разделяем ИМЕНА до построения контекстов: 80/10/10.
-    let names: Vec<&str> = {
-        let mut names: Vec<&str> = names;
-        RandomGenerator::new(42).shuffle(&mut names);
-        names
-    };
+    let names: Names<'_> = names.shuffled(&mut RandomGenerator::new(42));
     let training_names_end: usize = names.len() * 8 / 10;
     let validation_names_end: usize = names.len() * 9 / 10;
     let training_examples: Vec<TrainingExample> =
@@ -188,11 +187,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let learning_rate_exponent: f32 = -3.0 + 3.0 * step_index as f32 / 999.0;
                 let learning_rate: f32 = 10.0f32.powf(learning_rate_exponent);
                 let loss: f32 = learning_rate_trial_model.step(
-                    &(0..32)
-                        .map(|_| {
-                            training_examples[batch_random_generator.index(training_examples.len())]
-                        })
-                        .collect::<Vec<TrainingExample>>(),
+                    NonEmptySlice::try_from(
+                        (0..32)
+                            .map(|_| {
+                                training_examples
+                                    [batch_random_generator.index(training_examples.len())]
+                            })
+                            .collect::<Vec<TrainingExample>>()
+                            .as_slice(),
+                    )?,
                     learning_rate,
                 );
                 std::io::Write::write_fmt(
@@ -212,7 +215,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         )?;
     }
     // 5. SGD: выборка с возвращением, средняя CE, очистка градиентов каждый шаг.
-    let initial_validation_loss: f32 = model.loss(&validation_examples);
+    let initial_validation_loss: f32 =
+        model.loss(NonEmptySlice::try_from(validation_examples.as_slice())?);
     println!("До обучения dev loss={initial_validation_loss:.6}");
     let (model, training_loss_curve): (Model, Vec<(f32, f32)>) = {
         let mut model: Model = model;
@@ -225,17 +229,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             &mut loss_csv_file,
             format_args!("step,learning_rate,loss,log10_loss\n"),
         )?;
-        let mut training_loss_curve: Vec<(f32, f32)> = Vec::with_capacity(training_steps);
+        let mut training_loss_curve: Vec<(f32, f32)> = Vec::with_capacity(training_steps.get());
 
         let training_started_at: std::time::Instant = std::time::Instant::now();
-        for step_index in 0..training_steps {
+        for step_index in 0..training_steps.get() {
             let learning_rate: f32 = if step_index < 100_000 { 0.1 } else { 0.01 };
             let loss: f32 = model.step(
-                &(0..32)
-                    .map(|_| {
-                        training_examples[batch_random_generator.index(training_examples.len())]
-                    })
-                    .collect::<Vec<TrainingExample>>(),
+                NonEmptySlice::try_from(
+                    (0..32)
+                        .map(|_| {
+                            training_examples[batch_random_generator.index(training_examples.len())]
+                        })
+                        .collect::<Vec<TrainingExample>>()
+                        .as_slice(),
+                )?,
                 learning_rate,
             );
             if !loss.is_finite() {
@@ -246,7 +253,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 format_args!("{step_index},{learning_rate},{loss},{}\n", loss.log10()),
             )?;
             training_loss_curve.push((step_index as f32, loss.log10()));
-            if step_index % 10_000 == 0 || step_index + 1 == training_steps {
+            if step_index % 10_000 == 0 || step_index + 1 == training_steps.get() {
                 println!(
                     "step={step_index:6} lr={learning_rate} loss={loss:.4} elapsed={:.1}s",
                     training_started_at.elapsed().as_secs_f32()
@@ -262,9 +269,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let metrics_text: String = format!(
         "steps={training_steps}\nparameters={parameter_count}\ninitial_dev_loss={initial_validation_loss:.6}\ntrain_loss={training_loss:.6}\ndev_loss={validation_loss:.6}\ntest_loss={test_loss:.6}\n",
         parameter_count = model.parameters.iter().map(Vec::len).sum::<usize>(),
-        training_loss = model.loss(&training_examples),
-        validation_loss = model.loss(&validation_examples),
-        test_loss = model.loss(&test_examples),
+        training_loss = model.loss(NonEmptySlice::try_from(training_examples.as_slice())?),
+        validation_loss = model.loss(NonEmptySlice::try_from(validation_examples.as_slice())?),
+        test_loss = model.loss(NonEmptySlice::try_from(test_examples.as_slice())?),
     );
     print!("{metrics_text}");
 
@@ -474,8 +481,7 @@ impl Model {
         };
         (flattened_embeddings, hidden_activations, character_scores)
     }
-    pub fn loss(&self, examples: &[TrainingExample]) -> f32 {
-        assert!(!examples.is_empty());
+    pub fn loss(&self, examples: NonEmptySlice<'_, TrainingExample>) -> f32 {
         examples
             .iter()
             .map(|example| {
@@ -488,8 +494,10 @@ impl Model {
             .sum::<f64>() as f32
             / examples.len() as f32
     }
-    pub fn gradients(&self, training_batch: &[TrainingExample]) -> (f32, [Vec<f32>; 5]) {
-        assert!(!training_batch.is_empty());
+    pub fn gradients(
+        &self,
+        training_batch: NonEmptySlice<'_, TrainingExample>,
+    ) -> (f32, [Vec<f32>; 5]) {
         let mut parameter_gradients: [Vec<f32>; 5] = self
             .parameters
             .each_ref()
@@ -504,7 +512,7 @@ impl Model {
         let [_, input_to_hidden_weights, _, hidden_to_output_weights, _]: &[Vec<f32>; 5] =
             &self.parameters;
         let mut total_loss: f32 = 0.0;
-        for example in training_batch {
+        for example in training_batch.iter() {
             let (flattened_embeddings, hidden_activations, character_scores): (
                 Vec<f32>,
                 Vec<f32>,
@@ -581,7 +589,11 @@ impl Model {
             parameter_gradients,
         )
     }
-    pub fn step(&mut self, training_batch: &[TrainingExample], learning_rate: f32) -> f32 {
+    pub fn step(
+        &mut self,
+        training_batch: NonEmptySlice<'_, TrainingExample>,
+        learning_rate: f32,
+    ) -> f32 {
         let (loss, gradients): (f32, [Vec<f32>; 5]) = self.gradients(training_batch);
         for (parameter_tensor, gradient_tensor) in self.parameters.iter_mut().zip(gradients) {
             for (parameter, gradient) in parameter_tensor.iter_mut().zip(gradient_tensor) {
