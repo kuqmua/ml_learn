@@ -250,26 +250,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    // Число шагов обучения задаётся ниже при создании TrainingSteps.
-    let training_steps: std::num::NonZeroUsize = {
-        // Проверенное положительное число шагов обучения.
-        #[derive(Clone, Copy, Debug)]
-        struct TrainingSteps(
-            // Количество обновлений параметров; ноль исключён самим типом.
-            std::num::NonZeroUsize,
-        );
-        impl TryFrom<usize> for TrainingSteps {
-            type Error = &'static str;
-            // Проверяет, что число шагов положительно; для нуля возвращает ошибку.
-            fn try_from(value: usize) -> Result<Self, Self::Error> {
-                std::num::NonZeroUsize::new(value)
-                    .map(Self)
-                    .ok_or("число шагов должно быть положительным")
-            }
-        }
+    // Положительное число обновлений параметров; для нуля возвращается ошибка.
+    let training_steps: std::num::NonZeroUsize =
+        std::num::NonZeroUsize::new(200_000).ok_or("число шагов должно быть положительным")?;
+    // Имена выходных файлов, общие для их создания и последующей записи.
+    const LOSS_CSV: &str = "loss.csv";
+    const LOSS_SVG: &str = "loss.svg";
+    const METRICS_TXT: &str = "metrics.txt";
+    const EMBEDDINGS_SVG: &str = "embeddings.svg";
+    const EMBEDDINGS_CSV: &str = "embeddings.csv";
+    const SAMPLES_TXT: &str = "samples.txt";
 
-        TrainingSteps::try_from(200_000usize)?.0
-    };
     let mut files: std::collections::BTreeMap<String, std::fs::File> = {
         let output_directory: std::path::PathBuf =
             std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("output");
@@ -277,12 +268,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let mut files: std::collections::BTreeMap<String, std::fs::File> =
             std::collections::BTreeMap::new();
         for name in [
-            "loss.csv",
-            "loss.svg",
-            "metrics.txt",
-            "embeddings.svg",
-            "embeddings.csv",
-            "samples.txt",
+            LOSS_CSV,
+            LOSS_SVG,
+            METRICS_TXT,
+            EMBEDDINGS_SVG,
+            EMBEDDINGS_CSV,
+            SAMPLES_TXT,
         ] {
             files.insert(
                 name.to_owned(),
@@ -522,7 +513,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let mut loss_csv_file: std::io::BufWriter<std::fs::File> = std::io::BufWriter::new(
             files
-                .remove("loss.csv")
+                .remove(LOSS_CSV)
                 .ok_or("файл отсутствует в подготовленном наборе")?,
         );
 
@@ -688,14 +679,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         std::io::Write::write_all(
             &mut files
-                .remove("metrics.txt")
+                .remove(METRICS_TXT)
                 .ok_or("файл отсутствует в подготовленном наборе")?,
             (metrics_text).as_bytes(),
         )?;
     }
     plot(
         files
-            .remove("loss.svg")
+            .remove(LOSS_SVG)
             .ok_or("файл отсутствует в подготовленном наборе")?,
         &training_loss_curve,
         None,
@@ -712,7 +703,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .collect();
     plot(
         files
-            .remove("embeddings.svg")
+            .remove(EMBEDDINGS_SVG)
             .ok_or("файл отсутствует в подготовленном наборе")?,
         &embedding_coordinates,
         Some(&vocabulary.0),
@@ -720,7 +711,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     )?;
     {
         let mut embeddings_csv_file: std::fs::File = files
-            .remove("embeddings.csv")
+            .remove(EMBEDDINGS_CSV)
             .ok_or("файл отсутствует в подготовленном наборе")?;
         std::io::Write::write_fmt(&mut embeddings_csv_file, format_args!("character,c0,c1\n"))?;
         for (character, (first_coordinate, second_coordinate)) in
@@ -786,7 +777,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     std::io::Write::write_all(
         &mut files
-            .remove("samples.txt")
+            .remove(SAMPLES_TXT)
             .ok_or("файл отсутствует в подготовленном наборе")?,
         (generated_names).as_bytes(),
     )?;
