@@ -1,15 +1,18 @@
 #[cfg_attr(test, test)]
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let program_started_at: std::time::Instant = std::time::Instant::now();
-    // Генератор случайных чисел: одинаковый seed воспроизводит ту же последовательность.
+    // Генератор псевдослучайных чисел: одинаковый seed даёт одинаковую последовательность.
     #[derive(Clone)]
     struct RandomGenerator {
+        // Текущее внутреннее состояние, изменяемое при получении очередного числа.
         state: u64,
     }
     impl RandomGenerator {
+        // Создаёт генератор с заданным seed для воспроизводимой последовательности.
         fn new(seed: u64) -> Self {
             Self { state: seed }
         }
+        // Обновляет состояние генератора и возвращает следующее псевдослучайное u64.
         fn next(&mut self) -> u64 {
             self.state = self.state.wrapping_add(0x9e3779b97f4a7c15);
             let mixed_bits: u64 = self.state;
@@ -19,9 +22,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 (mixed_bits ^ (mixed_bits >> 27)).wrapping_mul(0x94d049bb133111eb);
             mixed_bits ^ (mixed_bits >> 31)
         }
+        // Получает равномерное псевдослучайное число от 0 до 1 для выборки и инициализации.
         fn uniform(&mut self) -> f32 {
             ((self.next() >> 40) as f32 + 0.5) / 16777216.0
         }
+        // Выбирает индекс от 0 до upper_bound (не включая границу) без смещения от остатка; upper_bound > 0.
         fn index(&mut self, upper_bound: usize) -> usize {
             let upper_bound: u64 = upper_bound as u64;
             loop {
@@ -31,69 +36,63 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
         }
+        // Получает число из стандартного нормального распределения N(0, 1) преобразованием Бокса — Мюллера.
         fn normal(&mut self) -> f32 {
             (-2.0 * self.uniform().ln()).sqrt() * (std::f32::consts::TAU * self.uniform()).cos()
         }
     }
 
+    // Индексы трёх предыдущих символов; 0 обозначает точку и заполнение начала имени.
+    type ContextCharacterIndices = [usize; 3];
+
+    // Один учебный пример: по трём предыдущим символам предсказываем следующий.
     #[derive(Clone, Copy, Debug, PartialEq)]
     struct TrainingExample {
-        context_character_indices: [usize; 3],
+        // Индексы трёх символов в словаре; 0 означает точку, в том числе заполнение начала.
+        context_character_indices: ContextCharacterIndices,
+        // Индекс правильного следующего символа; 0 также обозначает конец имени.
         target_character_index: usize,
     }
-    impl TrainingExample {
-        fn dataset(names: &[&str], vocabulary: &[char]) -> Vec<TrainingExample> {
-            let mut examples: Vec<TrainingExample> = Vec::new();
-            for name in names {
-                let mut context_character_indices: [usize; 3] = [0; 3];
 
-                for next_character in name.chars().chain(std::iter::once('.')) {
-                    let target_character_index: usize = vocabulary
-                        .iter()
-                        .position(|&vocabulary_character| vocabulary_character == next_character)
-                        .expect("символ словаря");
-                    examples.push(TrainingExample {
-                        context_character_indices,
-                        target_character_index,
-                    });
-                    context_character_indices = [
-                        context_character_indices[1],
-                        context_character_indices[2],
-                        target_character_index,
-                    ];
-                }
-            }
-            examples
-        }
-    }
-
+    // Обучаемый тензор и производные loss по каждому его элементу.
     #[derive(Clone)]
     struct Parameter {
+        // Текущие значения параметров, хранящиеся в одном плоском массиве.
         values: Vec<f32>,
+        // Градиенты в том же порядке, что values; используются при обновлении SGD.
         gradients: Vec<f32>,
     }
     impl Parameter {
+        // Сохраняет начальные значения тензора и создаёт такой же по длине массив нулевых градиентов.
         fn new(values: Vec<f32>) -> Self {
             Self {
                 gradients: vec![0.; values.len()],
                 values,
             }
         }
+        // Выполняет шаг SGD: вычитает rate × gradient из каждого значения; градиенты не очищает.
         fn update(&mut self, rate: f32) {
             for (value, gradient) in self.values.iter_mut().zip(&self.gradients) {
                 *value -= rate * gradient;
             }
         }
     }
+    // Полносвязный слой без смещения: умножает входной батч на матрицу весов.
     #[derive(Clone)]
     struct Linear {
+        // Число входных признаков у одного примера.
         inputs: usize,
+        // Число выходных признаков у одного примера.
         outputs: usize,
+        // Матрица весов (inputs, outputs), развёрнутая по строкам, и её градиенты.
         weights: Parameter,
+        // Вход последнего forward: строки примеров подряд; нужен для backward.
         input: Vec<f32>,
+        // Результат последнего forward; используется также для диагностики активаций.
         output: Vec<f32>,
     }
     impl Linear {
+        // Создаёт матрицу весов из N(0, 1), масштабирует её на gain/sqrt(inputs) и оставляет кеши пустыми.
         fn new(inputs: usize, outputs: usize, gain: f32, rng: &mut RandomGenerator) -> Self {
             Self {
                 inputs,
@@ -107,6 +106,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 output: vec![],
             }
         }
+        // Умножает строки входного батча на веса, сохраняет вход и выход для backward и диагностики.
         fn forward(&mut self, input: Vec<f32>) -> Vec<f32> {
             let output: Vec<f32> = {
                 let mut output: Vec<f32> = vec![0.; input.len() / self.inputs * self.outputs];
@@ -129,6 +129,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             self.output = output.clone();
             output
         }
+        // Перезаписывает градиенты весов и возвращает производные loss по входу по градиентам выхода.
         fn backward(&mut self, gradient: Vec<f32>) -> Vec<f32> {
             self.weights.gradients.fill(0.);
             let mut input_gradient: Vec<f32> = vec![0.; self.input.len()];
@@ -150,30 +151,44 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             input_gradient
         }
     }
+    // Нормализация каждого признака по батчу с обучаемыми масштабом и смещением.
     #[derive(Clone)]
     struct BatchNorm {
+        // Число признаков в одной строке батча.
         width: usize,
+        // Обучаемый множитель gamma для каждого нормализованного признака.
         gain: Parameter,
+        // Обучаемое смещение beta для каждого признака.
         bias: Parameter,
+        // Скользящие средние признаков: накапливаются при обучении, применяются при оценке.
         running_mean: Vec<f32>,
+        // Скользящие std или дисперсии, в зависимости от average_standard_deviation.
         running_scale: Vec<f32>,
+        // Доля статистики текущего батча при обновлении скользящих значений.
         momentum: f32,
+        // Добавка к дисперсии перед корнем; используется при average_standard_deviation = false.
         epsilon: f32,
-        // Первая часть усредняет std, вторая — variance. Это разные алгоритмы.
+        // true: первая часть урока усредняет std; false: вторая усредняет дисперсию.
         average_standard_deviation: bool,
+        // Нормализованные значения последнего forward, сохранённые для backward.
         normalized: Vec<f32>,
+        // 1/std либо 1/sqrt(variance + epsilon) для каждого признака; нужен в backward.
         inverse_scale: Vec<f32>,
     }
     impl BatchNorm {
+        // Возвращает средние и выборочные дисперсии признаков (делитель n−1); проверяет форму и размер батча.
         fn statistics(input: &[f32], width: usize) -> Result<(Vec<f32>, Vec<f32>), &'static str> {
-            #[derive(Clone, Copy, Debug)]
             // Прямоугольный батч с минимум двумя строками.
+            #[derive(Clone, Copy, Debug)]
             struct BatchColumns<'a> {
+                // Все строки батча подряд в заимствованном плоском срезе.
                 values: &'a [f32],
+                // Число признаков в строке; длина values обязана делиться на него.
                 width: usize,
             }
             impl<'a> TryFrom<(&'a [f32], usize)> for BatchColumns<'a> {
                 type Error = &'static str;
+                // Проверяет положительную ширину, целое число строк и наличие минимум двух строк; данные не копирует.
                 fn try_from((values, width): (&'a [f32], usize)) -> Result<Self, Self::Error> {
                     if width == 0 || !values.len().is_multiple_of(width) || values.len() / width < 2
                     {
@@ -207,7 +222,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             Ok((mean, variance))
         }
-
+        // Настраивает нормализацию: first_part выбирает вариант со std, output уменьшает начальную gamma до 0.1.
         fn new(width: usize, first_part: bool, output: bool) -> Self {
             Self {
                 width,
@@ -222,7 +237,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 inverse_scale: vec![],
             }
         }
-
+        // Нормализует вход и применяет gamma/beta; при обучении обновляет статистики, при оценке использует накопленные.
         fn forward(&mut self, input: Vec<f32>, training: bool) -> Result<Vec<f32>, &'static str> {
             let (mean, scale): (Vec<f32>, Vec<f32>) = if training {
                 let (mean, variance): (Vec<f32>, Vec<f32>) =
@@ -274,6 +289,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 })
                 .collect())
         }
+        // По сохранённым значениям обучающего forward вычисляет градиенты gamma/beta и возвращает градиенты входа.
         fn backward(&mut self, gradient: Vec<f32>) -> Vec<f32> {
             let count: usize = gradient.len() / self.width;
             self.gain.gradients.fill(0.);
@@ -282,7 +298,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 self.gain.gradients[index % self.width] += value * self.normalized[index];
                 self.bias.gradients[index % self.width] += value;
             }
-            // Делитель n-1 соответствует torch.var/std с correction=1.
             gradient
                 .iter()
                 .enumerate()
@@ -292,30 +307,42 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         * self.inverse_scale[column]
                         * (value
                             - self.bias.gradients[column] / count as f32
+                            // Поправка n-1 соответствует дисперсии с correction=1.
                             - self.normalized[index] * self.gain.gradients[column]
                                 / (count - 1) as f32)
                 })
                 .collect()
         }
     }
+    // Одна операция сети; enum позволяет хранить разные слои в общем списке.
     #[derive(Clone)]
     enum Layer {
+        // Полносвязное преобразование с обучаемой матрицей весов.
         Linear(Linear),
+        // Нормализация признаков по батчу.
         BatchNorm(BatchNorm),
+        // Поэлементная нелинейность tanh без обучаемых параметров.
         Tanh {
+            // Значения tanh последнего forward; нужны для производной 1 - tanh².
             output: Vec<f32>,
+            // Производные loss по выходу tanh, сохранённые для диагностики.
             gradient: Vec<f32>,
         },
     }
 
+    // Модель предсказания следующего символа: таблица эмбеддингов и цепочка слоёв.
+    // Выходное смещение b2 хранится отдельно от Model и добавляется к её оценкам.
     #[derive(Clone)]
     struct Model {
+        // Таблица (vocabulary_size, 10): обучаемый вектор из 10 координат на символ.
         embeddings: Parameter,
+        // Слои в порядке прямого прохода; backward проходит их в обратном порядке.
         layers: Vec<Layer>,
+        // Число символов, включая точку; задаёт размер выхода модели.
         vocabulary_size: usize,
     }
     impl Model {
-        // Оценки букв до softmax превращаются в вероятности и cross-entropy.
+        // Возвращает (cross-entropy для правильного символа, вероятности всех символов), устойчиво вычисляя softmax.
         fn cross_entropy(
             character_scores: &[f32],
             target_character_index: usize,
@@ -342,7 +369,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 character_probabilities,
             )
         }
-
+        // Создаёт эмбеддинги и цепочку слоёв: deep выбирает глубокую сеть вместо одного скрытого слоя.
         fn new(vocabulary_size: usize, deep: bool, rng: &mut RandomGenerator) -> Self {
             Self {
                 embeddings: Parameter::new(
@@ -382,13 +409,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             0.01 * 200f32.sqrt(),
                             rng,
                         )));
-                        // Выходное смещение b2 хранится отдельно в основном цикле.
                     }
                     layers
                 },
                 vocabulary_size,
             }
         }
+        // Собирает эмбеддинги контекстов и проводит батч через слои; возвращает оценки символов без внешнего b2.
         fn forward(
             &mut self,
             batch: &[TrainingExample],
@@ -417,6 +444,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 })
         }
+        // Собирает изменяемые ссылки на эмбеддинги, веса и gamma/beta слоёв; внешний b2 в список не входит.
         fn parameters(&mut self) -> Vec<&mut Parameter> {
             let mut result: Vec<&mut Parameter> = vec![&mut self.embeddings];
             for layer in &mut self.layers {
@@ -431,6 +459,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             result
         }
+        // Выполняет обучающий forward/backward, перезаписывает градиенты модели и b2, возвращает среднюю cross-entropy.
         fn gradients(
             &mut self,
             batch: &[TrainingExample],
@@ -495,6 +524,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Ok(loss)
         }
     }
+    // Вычисляет выборочное стандартное отклонение с делителем n−1; ожидает минимум два значения.
     fn standard_deviation(values: &[f32]) -> f32 {
         let mean: f32 = values.iter().sum::<f32>() / values.len() as f32;
         (values.iter().map(|x| (x - mean).powi(2)).sum::<f32>() / (values.len() - 1) as f32).sqrt()
@@ -502,7 +532,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     #[cfg(test)]
     if cfg!(test) {
-        // invalid_batch_is_returned_without_changing_running_statistics
+        let vocabulary: [char; 3] = ['.', 'a', 'b'];
+
+        // Строит примеры по именам, заимствуя словарь из окружающей области.
+        let dataset = |names: &[&str]| -> Vec<TrainingExample> {
+            let mut examples: Vec<TrainingExample> = Vec::new();
+            for name in names {
+                let mut context_character_indices: ContextCharacterIndices = [0; 3];
+
+                for next_character in name.chars().chain(std::iter::once('.')) {
+                    let target_character_index: usize = vocabulary
+                        .iter()
+                        .position(|&vocabulary_character| vocabulary_character == next_character)
+                        .expect("символ словаря");
+                    examples.push(TrainingExample {
+                        context_character_indices,
+                        target_character_index,
+                    });
+                    context_character_indices = [
+                        context_character_indices[1],
+                        context_character_indices[2],
+                        target_character_index,
+                    ];
+                }
+            }
+            examples
+        };
+
+        // Проверяем: некорректный батч возвращает ошибку и не меняет статистики BatchNorm.
         {
             let mut layer: BatchNorm = BatchNorm::new(2, false, false);
             let mean: Vec<f32> = layer.running_mean.clone();
@@ -526,7 +583,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .is_err()
             );
         }
-        // batch_norm_backward_matches_finite_differences
+        // Сравниваем градиенты BatchNorm с численными производными.
         {
             for first_part in [false, true] {
                 let input: Vec<f32> = vec![0.2, -1.1, 0.7, 0.3, -0.4, 1.2, 2.1, -0.7];
@@ -568,10 +625,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
         }
-        // full_network_gradients_include_embeddings_and_all_layer_types
+        // Проверяем численные производные эмбеддингов и параметров всех типов слоёв.
         {
-            let batch: Vec<TrainingExample> =
-                TrainingExample::dataset(&["aba", "baa"], &['.', 'a', 'b']);
+            let batch: Vec<TrainingExample> = dataset(&["aba", "baa"]);
             for deep in [false, true] {
                 let (mut model, bias): (Model, Parameter) = {
                     let mut model: Model = Model::new(3, deep, &mut RandomGenerator::new(55));
@@ -604,7 +660,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
         }
-        // eval_uses_frozen_statistics_and_is_independent_of_companions
+        // Проверяем: оценка использует накопленные статистики и не зависит от соседей по батчу.
         {
             let mut layer: BatchNorm = BatchNorm::new(2, false, false);
             layer.forward(vec![1., 2., 3., 7., -2., 4.], true)?;
@@ -628,10 +684,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .all(|x| x.is_finite())
             );
         }
-        // sgd_learns_and_dataset_resets_context
+        // Проверяем сброс контекста между именами и снижение ошибки после шагов SGD.
         {
-            let batch: Vec<TrainingExample> =
-                TrainingExample::dataset(&["ab", "ab", "ab", "ab"], &['.', 'a', 'b']);
+            let batch: Vec<TrainingExample> = dataset(&["ab", "ab", "ab", "ab"]);
             assert_eq!(batch[3].context_character_indices, [0; 3]);
             for deep in [false, true] {
                 let mut model: Model = Model::new(3, deep, &mut RandomGenerator::new(42));
@@ -722,11 +777,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Vec<TrainingExample>,
         Vec<TrainingExample>,
     ) = {
-        // Поле закрыто; наружу доступен только неизменяемый срез проверенных имён.
+        // Проверенный непустой список имён из строчных латинских букв.
         #[derive(Debug)]
-        struct Names<'a>(Vec<&'a str>);
+        struct Names<'a>(
+            // Ссылки на строки исходного текста: сами имена не копируются.
+            Vec<&'a str>,
+        );
         impl<'a> TryFrom<&'a str> for Names<'a> {
             type Error = &'static str;
+            // Разбивает текст на имена; возвращает ошибку для пустого списка, пустых имён и символов вне a–z.
             fn try_from(text: &'a str) -> Result<Self, Self::Error> {
                 let names: Vec<&str> = text.lines().collect();
                 if names.is_empty()
@@ -742,6 +801,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         impl<'a> std::ops::Deref for Names<'a> {
             type Target = [&'a str];
+            // Даёт доступ к проверенным именам как к неизменяемому срезу, без копирования строк.
             fn deref(&self) -> &Self::Target {
                 &self.0
             }
@@ -759,6 +819,31 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             vocabulary
         };
+        // Строит примеры по именам, заимствуя словарь из окружающей области.
+        let dataset = |names: &[&str]| -> Vec<TrainingExample> {
+            let mut examples: Vec<TrainingExample> = Vec::new();
+            for name in names {
+                let mut context_character_indices: ContextCharacterIndices = [0; 3];
+
+                for next_character in name.chars().chain(std::iter::once('.')) {
+                    let target_character_index: usize = vocabulary
+                        .iter()
+                        .position(|&vocabulary_character| vocabulary_character == next_character)
+                        .expect("символ словаря");
+                    examples.push(TrainingExample {
+                        context_character_indices,
+                        target_character_index,
+                    });
+                    context_character_indices = [
+                        context_character_indices[1],
+                        context_character_indices[2],
+                        target_character_index,
+                    ];
+                }
+            }
+            examples
+        };
+
         let names: Names<'_> = {
             let mut names: Names<'_> = names;
             let mut generator: RandomGenerator = RandomGenerator::new(42);
@@ -769,14 +854,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             names
         };
-        let training: Vec<TrainingExample> =
-            TrainingExample::dataset(&names[..names.len() * 8 / 10], &vocabulary);
-        let validation: Vec<TrainingExample> = TrainingExample::dataset(
-            &names[names.len() * 8 / 10..names.len() * 9 / 10],
-            &vocabulary,
-        );
-        let test: Vec<TrainingExample> =
-            TrainingExample::dataset(&names[names.len() * 9 / 10..], &vocabulary);
+        let training: Vec<TrainingExample> = dataset(&names[..names.len() * 8 / 10]);
+        let validation: Vec<TrainingExample> =
+            dataset(&names[names.len() * 8 / 10..names.len() * 9 / 10]);
+        let test: Vec<TrainingExample> = dataset(&names[names.len() * 9 / 10..]);
         println!(
             "train/dev/test: {}/{}/{} contexts",
             training.len(),
@@ -793,7 +874,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     ] {
         // Точки графика: горизонтальная и вертикальная координаты.
         type PlotPoints = Vec<(f32, f32)>;
-
+        // Записывает точки в SVG-график; при reference -3 в заголовке добавляет горизонтальную линию y = -3.
         fn plot(
             mut output_file: std::fs::File,
             points: &[(f32, f32)],
@@ -869,10 +950,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let mut curve: PlotPoints = Vec::new();
             let mut update_curves: Vec<PlotPoints> = vec![Vec::new(); model.parameters().len()];
             for step in 0..steps {
+                // Проверенное значение ошибки обучения без NaN и бесконечности.
                 #[derive(Clone, Copy, Debug)]
-                struct FiniteLoss(f32);
+                struct FiniteLoss(
+                    // Средняя cross-entropy текущего мини-батча.
+                    f32,
+                );
                 impl TryFrom<f32> for FiniteLoss {
                     type Error = &'static str;
+                    // Принимает конечное значение loss; для NaN и бесконечности возвращает ошибку.
                     fn try_from(value: f32) -> Result<Self, Self::Error> {
                         if value.is_finite() {
                             Ok(Self(value))
@@ -882,11 +968,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 }
                 impl FiniteLoss {
+                    // Возвращает проверенное числовое значение loss для вычислений.
                     fn get(self) -> f32 {
                         self.0
                     }
                 }
                 impl std::fmt::Display for FiniteLoss {
+                    // Передаёт форматирование внутреннему f32, сохраняя запрошенную точность вывода.
                     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                         std::fmt::Display::fmt(&self.0, formatter)
                     }
@@ -950,6 +1038,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         // Сохраняем диагностику последнего train-batch ДО eval, который меняет caches.
         {
+            // Возвращает центры 50 интервалов и плотность частот для графика распределения значений.
             fn histogram(values: &[f32]) -> PlotPoints {
                 let min: f32 = values.iter().copied().fold(f32::INFINITY, f32::min);
                 let width: f32 = ((values.iter().copied().fold(f32::NEG_INFINITY, f32::max) - min)
@@ -1124,7 +1213,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let mut rng: RandomGenerator = RandomGenerator::new(2147483657);
             for _ in 0..20 {
                 let name: String = {
-                    let mut context: [usize; 3] = [0; 3];
+                    let mut context: ContextCharacterIndices = [0; 3];
                     let mut name: String = String::new();
                     for _ in 0..100 {
                         let probabilities: Vec<f32> = Model::cross_entropy(

@@ -1,16 +1,21 @@
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let program_started_at: std::time::Instant = std::time::Instant::now();
-    // Храним заимствование, поэтому проверка не копирует обучающие примеры.
+    // Обёртка над срезом, для которого уже проверено наличие хотя бы одного элемента.
     #[derive(Debug)]
-    struct NonEmptySlice<'a, T>(&'a [T]);
+    struct NonEmptySlice<'a, T>(
+        // Заимствованный срез: проверка не копирует его элементы.
+        &'a [T],
+    );
     impl<T> Copy for NonEmptySlice<'_, T> {}
     impl<T> Clone for NonEmptySlice<'_, T> {
+        // Копирует обёртку со ссылкой; элементы исходного среза не клонируются.
         fn clone(&self) -> Self {
             *self
         }
     }
     impl<'a, T> TryFrom<&'a [T]> for NonEmptySlice<'a, T> {
         type Error = &'static str;
+        // Отклоняет пустой срез и оборачивает непустой без копирования элементов.
         fn try_from(values: &'a [T]) -> Result<Self, Self::Error> {
             if values.is_empty() {
                 Err("набор обучающих примеров не должен быть пустым")
@@ -21,22 +26,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     impl<T> std::ops::Deref for NonEmptySlice<'_, T> {
         type Target = [T];
+        // Возвращает исходный срез, чтобы обращаться к его элементам и методам.
         fn deref(&self) -> &Self::Target {
             self.0
         }
     }
 
-    // SVG строится самим Rust; ни matplotlib, ни дополнительные программы не нужны.
-
-    // Генератор случайных чисел: одинаковый seed воспроизводит ту же последовательность.
+    // Генератор псевдослучайных чисел: одинаковый seed даёт одинаковую последовательность.
     #[derive(Clone)]
     struct RandomGenerator {
+        // Текущее внутреннее состояние, изменяемое при получении очередного числа.
         state: u64,
     }
     impl RandomGenerator {
+        // Создаёт генератор с заданным seed для воспроизводимой последовательности.
         fn new(seed: u64) -> Self {
             Self { state: seed }
         }
+        // Обновляет состояние генератора и возвращает следующее псевдослучайное u64.
         fn next(&mut self) -> u64 {
             self.state = self.state.wrapping_add(0x9e3779b97f4a7c15);
             let mixed_bits: u64 = self.state;
@@ -46,9 +53,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 (mixed_bits ^ (mixed_bits >> 27)).wrapping_mul(0x94d049bb133111eb);
             mixed_bits ^ (mixed_bits >> 31)
         }
+        // Получает равномерное псевдослучайное число от 0 до 1 для выборки и инициализации.
         fn uniform(&mut self) -> f32 {
             ((self.next() >> 40) as f32 + 0.5) / 16777216.0
         }
+        // Выбирает индекс от 0 до upper_bound (не включая границу) без смещения от остатка; upper_bound > 0.
         fn index(&mut self, upper_bound: usize) -> usize {
             let upper_bound: u64 = upper_bound as u64;
             loop {
@@ -60,42 +69,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
+    // Индексы трёх предыдущих символов; 0 обозначает точку и заполнение начала имени.
+    type ContextCharacterIndices = [usize; 3];
+
+    // Один учебный пример: по трём предыдущим символам предсказываем следующий.
     #[derive(Clone, Copy, Debug, PartialEq)]
     struct TrainingExample {
-        context_character_indices: [usize; 3],
+        // Индексы трёх символов в словаре; 0 означает точку, в том числе заполнение начала.
+        context_character_indices: ContextCharacterIndices,
+        // Индекс правильного следующего символа; 0 также обозначает конец имени.
         target_character_index: usize,
     }
-    impl TrainingExample {
-        fn dataset(names: &[&str], vocabulary: &[char]) -> Vec<TrainingExample> {
-            let mut examples: Vec<TrainingExample> = Vec::new();
-            for name in names {
-                let mut context_character_indices: [usize; 3] = [0; 3];
 
-                for next_character in name.chars().chain(std::iter::once('.')) {
-                    let target_character_index: usize = vocabulary
-                        .iter()
-                        .position(|&vocabulary_character| vocabulary_character == next_character)
-                        .expect("символ словаря");
-                    examples.push(TrainingExample {
-                        context_character_indices,
-                        target_character_index,
-                    });
-                    context_character_indices = [
-                        context_character_indices[1],
-                        context_character_indices[2],
-                        target_character_index,
-                    ];
-                }
-            }
-            examples
-        }
-    }
-
+    // MLP: векторы трёх символов → скрытый слой с tanh → оценки следующего символа.
     #[derive(Clone)]
     struct Model {
+        // Число символов в словаре, включая точку; столько же оценок выдаёт модель.
         vocabulary_size: usize,
         // Сколько обучаемых координат описывает одну букву.
         embedding_dimensions: usize,
+        // Число нейронов скрытого слоя.
         hidden_neuron_count: usize,
         // Пять тензоров в порядке notebook:
         // C — координаты букв, W1 — веса вход → скрытый слой, b1 — смещения скрытого слоя,
@@ -103,7 +96,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         parameters: [Vec<f32>; 5],
     }
     impl Model {
-        // Оценки букв до softmax превращаются в вероятности и cross-entropy.
+        // Возвращает (cross-entropy для правильного символа, вероятности всех символов), устойчиво вычисляя softmax.
         fn cross_entropy(
             character_scores: &[f32],
             target_character_index: usize,
@@ -130,7 +123,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 character_probabilities,
             )
         }
-
+        // Создаёт пять тензоров модели с заданными размерами и случайными значениями из N(0, 1).
         fn new(
             vocabulary_size: usize,
             embedding_dimensions: usize,
@@ -158,7 +151,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }),
             }
         }
-        fn forward(&self, context_character_indices: [usize; 3]) -> (Vec<f32>, Vec<f32>, Vec<f32>) {
+        // Для одного контекста возвращает (объединённые эмбеддинги, активации tanh, оценки символов до softmax).
+        fn forward(
+            &self,
+            context_character_indices: ContextCharacterIndices,
+        ) -> (Vec<f32>, Vec<f32>, Vec<f32>) {
             let [
                 character_embeddings,
                 input_to_hidden_weights,
@@ -212,6 +209,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             };
             (flattened_embeddings, hidden_activations, character_scores)
         }
+        // Вычисляет среднюю cross-entropy по непустому набору примеров, не изменяя параметры модели.
         fn loss(&self, examples: NonEmptySlice<'_, TrainingExample>) -> f32 {
             examples
                 .iter()
@@ -227,12 +225,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    // Настройки урока: меняй здесь и запускай cargo run.
+    // Число шагов обучения задаётся ниже при создании TrainingSteps.
     let training_steps: std::num::NonZeroUsize = {
+        // Проверенное положительное число шагов обучения.
         #[derive(Clone, Copy, Debug)]
-        struct TrainingSteps(std::num::NonZeroUsize);
+        struct TrainingSteps(
+            // Количество обновлений параметров; ноль исключён самим типом.
+            std::num::NonZeroUsize,
+        );
         impl TryFrom<usize> for TrainingSteps {
             type Error = &'static str;
+            // Проверяет, что число шагов положительно; для нуля возвращает ошибку.
             fn try_from(value: usize) -> Result<Self, Self::Error> {
                 std::num::NonZeroUsize::new(value)
                     .map(Self)
@@ -269,11 +272,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Vec<TrainingExample>,
         Vec<TrainingExample>,
     ) = {
-        // Поле закрыто; наружу доступен только неизменяемый срез проверенных имён.
+        // Проверенный непустой список имён из строчных латинских букв.
         #[derive(Debug)]
-        struct Names<'a>(Vec<&'a str>);
+        struct Names<'a>(
+            // Ссылки на строки исходного текста: сами имена не копируются.
+            Vec<&'a str>,
+        );
         impl<'a> TryFrom<&'a str> for Names<'a> {
             type Error = &'static str;
+            // Разбивает текст на имена; возвращает ошибку для пустого списка, пустых имён и символов вне a–z.
             fn try_from(text: &'a str) -> Result<Self, Self::Error> {
                 let names: Vec<&str> = text.lines().collect();
                 if names.is_empty()
@@ -289,6 +296,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         impl<'a> std::ops::Deref for Names<'a> {
             type Target = [&'a str];
+            // Даёт доступ к проверенным именам как к неизменяемому срезу, без копирования строк.
             fn deref(&self) -> &Self::Target {
                 &self.0
             }
@@ -308,19 +316,44 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             vocabulary
         };
+        // Строит примеры по именам, заимствуя словарь из окружающей области.
+        let dataset = |names: &[&str]| -> Vec<TrainingExample> {
+            let mut examples: Vec<TrainingExample> = Vec::new();
+            for name in names {
+                let mut context_character_indices: ContextCharacterIndices = [0; 3];
+
+                for next_character in name.chars().chain(std::iter::once('.')) {
+                    let target_character_index: usize = vocabulary
+                        .iter()
+                        .position(|&vocabulary_character| vocabulary_character == next_character)
+                        .expect("символ словаря");
+                    examples.push(TrainingExample {
+                        context_character_indices,
+                        target_character_index,
+                    });
+                    context_character_indices = [
+                        context_character_indices[1],
+                        context_character_indices[2],
+                        target_character_index,
+                    ];
+                }
+            }
+            examples
+        };
+
         println!(
             "Имена: {}, первые восемь: {:?}",
             names.len(),
             &names[..names.len().min(8)]
         );
         println!("Словарь: {vocabulary:?}");
-        let all_examples: Vec<TrainingExample> = TrainingExample::dataset(&names, &vocabulary);
+        let all_examples: Vec<TrainingExample> = dataset(&names);
         println!(
             "Все X: ({},3), Y: ({},)",
             all_examples.len(),
             all_examples.len()
         );
-        for example in TrainingExample::dataset(&names[..1], &vocabulary) {
+        for example in dataset(&names[..1]) {
             println!(
                 "{} -> {}",
                 example
@@ -361,7 +394,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .ln(),
             demonstration_model.loss(NonEmptySlice::try_from(&all_examples[..32])?)
         );
-        // 3. Разделяем ИМЕНА до построения контекстов: 80/10/10.
+        // 3. Перемешиваем имена и делим их на train/dev/test (80/10/10).
+        // Контексты каждого набора строятся отдельно, чтобы имена не пересекались.
         let names: Names<'_> = {
             let mut names: Names<'_> = names;
             let mut generator: RandomGenerator = RandomGenerator::new(42);
@@ -374,14 +408,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         };
         let training_names_end: usize = names.len() * 8 / 10;
         let validation_names_end: usize = names.len() * 9 / 10;
-        let training_examples: Vec<TrainingExample> =
-            TrainingExample::dataset(&names[..training_names_end], &vocabulary);
-        let validation_examples: Vec<TrainingExample> = TrainingExample::dataset(
-            &names[training_names_end..validation_names_end],
-            &vocabulary,
-        );
-        let test_examples: Vec<TrainingExample> =
-            TrainingExample::dataset(&names[validation_names_end..], &vocabulary);
+        let training_examples: Vec<TrainingExample> = dataset(&names[..training_names_end]);
+        let validation_examples: Vec<TrainingExample> =
+            dataset(&names[training_names_end..validation_names_end]);
+        let test_examples: Vec<TrainingExample> = dataset(&names[validation_names_end..]);
         println!(
             "Имена train/dev/test: {}/{}/{}; примеры: {}/{}/{}",
             training_names_end,
@@ -399,6 +429,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             test_examples,
         )
     };
+    // Строит SVG-график и записывает его в заранее созданный файл.
     fn plot(
         mut output_file: std::fs::File,
         data_points: &[(f32, f32)],
@@ -474,10 +505,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         model.vocabulary_size,
         model.parameters.iter().map(Vec::len).sum::<usize>()
     );
-    // 4. SGD: выборка с возвращением, средняя CE, очистка градиентов каждый шаг.
     let initial_validation_loss: f32 =
         model.loss(NonEmptySlice::try_from(validation_examples.as_slice())?);
     println!("До обучения dev loss={initial_validation_loss:.6}");
+    // 4. SGD: выборка с возвращением, средняя cross-entropy и новые нулевые градиенты на каждом шаге.
     let (model, training_loss_curve): (Model, Vec<(f32, f32)>) = {
         let mut model: Model = model;
         let mut batch_random_generator: RandomGenerator = RandomGenerator::new(2147483647);
@@ -566,9 +597,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                             + output_character_index]
                                             * score_gradients[output_character_index];
                                 }
+                                // Производная tanh равна 1 - tanh².
                                 hidden_pre_activation_gradients[hidden_neuron_index] *= 1.0
                                     - hidden_activations[hidden_neuron_index]
-                                        * hidden_activations[hidden_neuron_index]; // производная tanh
+                                        * hidden_activations[hidden_neuron_index];
                                 hidden_bias_gradients[hidden_neuron_index] +=
                                     hidden_pre_activation_gradients[hidden_neuron_index];
                             }
@@ -698,7 +730,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let mut generated_names: String = String::new();
         for _ in 0..20 {
             let name: String = 'sample: {
-                let mut context_character_indices: [usize; 3] = [0; 3];
+                let mut context_character_indices: ContextCharacterIndices = [0; 3];
                 let mut generated_name: String = String::new();
                 for _ in 0..100 {
                     let (_, character_probabilities): (f32, Vec<f32>) =
