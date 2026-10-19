@@ -977,3 +977,7 @@
 ### 52. Makemore: генерация имён через эмбеддинги и MLP
 
 Новый практический [урок 247](l247-52-generate-names-with-makemore-mlp/README.md) повторяет `makemore_part2_mlp.ipynb`: контекст из трёх букв, lookup эмбеддингов, tanh MLP, cross-entropy, ручной backprop, mini-batch SGD, подбор learning rate, train/dev/test, графики и генерация имён. Полный запуск: `cargo run --release -p l247-52-generate-names-with-makemore-mlp`. Зависимости вне Rust не требуются, данные включены в урок.
+
+### 53. Makemore: инициализация, BatchNorm и глубокая сеть
+
+[Урок 248](l248-53-makemore-batch-normalization/README.md) переносит `makemore_part3_bn.ipynb`: MLP с BatchNorm, train/eval и running statistics, калибровка, собственные Linear/BatchNorm/Tanh, глубокая сеть, распределения активаций и градиентов, отношение update/data, генерация и бонусные опыты. Запуск: `cargo run --release -p l248-53-makemore-batch-normalization`. Данные локальные, внешние зависимости не нужны.
