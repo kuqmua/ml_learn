@@ -22,7 +22,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 (mixed_bits ^ (mixed_bits >> 27)).wrapping_mul(0x94d049bb133111eb);
             mixed_bits ^ (mixed_bits >> 31)
         }
-        // Получает равномерное псевдослучайное число от 0 до 1 для выборки и инициализации.
+        // Масштабирует старшие 24 случайных бита в f32 для выборки и инициализации; округление может дать 1.
         fn uniform(&mut self) -> f32 {
             ((self.next() >> 40) as f32 + 0.5) / 16777216.0
         }
@@ -42,10 +42,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    // Индекс символа, проверенный относительно размера словаря при создании.
+    // Позиция символа в Vocabulary; методы словаря создают её с проверкой границ.
     #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-    struct CharacterIndex(
-        // Позиция символа в словаре; создаётся методами Vocabulary, а читается через .0.
+    struct VocabularyCharacterIndex(
+        // Числовая позиция; .0 нужен для тензоров. Сам индекс не хранит, какому Vocabulary принадлежит.
         usize,
     );
 
@@ -55,7 +55,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Vec<char>,
     );
     impl Vocabulary {
-        // Собирает уникальные строчные латинские буквы текста и добавляет точку в начало.
+        // Отбирает из текста буквы a–z, сортирует, удаляет повторы и добавляет точку под индексом 0.
         fn new(text: &str) -> Self {
             let mut characters: Vec<char> = text
                 .chars()
@@ -70,23 +70,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         fn len(&self) -> usize {
             self.0.len()
         }
-        // Проверяет границы и возвращает индекс, пригодный для этого словаря.
-        fn character_index(&self, value: usize) -> Result<CharacterIndex, &'static str> {
+        // Возвращает индекс точки: она обозначает границу имени и заполняет начальный контекст.
+        // Метод new всегда помещает точку под индексом 0.
+        fn dot_index(&self) -> VocabularyCharacterIndex {
+            VocabularyCharacterIndex(0)
+        }
+        // Проверяет value < self.len() и оборачивает числовую позицию в VocabularyCharacterIndex.
+        fn character_index(&self, value: usize) -> Result<VocabularyCharacterIndex, &'static str> {
             self.0
                 .get(value)
-                .map(|_| CharacterIndex(value))
+                .map(|_| VocabularyCharacterIndex(value))
                 .ok_or("индекс символа должен быть меньше размера словаря")
         }
         // Находит индекс символа; для отсутствующего символа возвращает ошибку.
-        fn index_of(&self, character: char) -> Result<CharacterIndex, &'static str> {
+        fn index_of(&self, character: char) -> Result<VocabularyCharacterIndex, &'static str> {
             self.0
                 .iter()
                 .position(|&candidate| candidate == character)
-                .map(CharacterIndex)
+                .map(VocabularyCharacterIndex)
                 .ok_or("символ отсутствует в словаре")
         }
-        // Возвращает символ по индексу; проверяет границы и при индексе из другого словаря.
-        fn character(&self, index: CharacterIndex) -> Result<char, &'static str> {
+        // Возвращает символ по числовой позиции, проверяя границы; принадлежность индекса словарю не проверяется.
+        fn character(&self, index: VocabularyCharacterIndex) -> Result<char, &'static str> {
             self.0
                 .get(index.0)
                 .copied()
@@ -94,16 +99,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    // Три проверенных индекса предыдущих символов; индекс 0 — точка и заполнение начала.
-    type ContextCharacterIndices = [CharacterIndex; 3];
+    // Контекст из трёх позиций символов в одном Vocabulary; dot_index() заполняет начало имени.
+    type VocabularyContextIndices = [VocabularyCharacterIndex; 3];
 
-    // Один учебный пример: по трём предыдущим символам предсказываем следующий.
+    // Обучающий пример в индексах Vocabulary: контекст из трёх символов и правильный следующий символ.
     #[derive(Clone, Copy, Debug, PartialEq)]
-    struct TrainingExample {
-        // Индексы трёх символов в словаре; 0 означает точку, в том числе заполнение начала.
-        context_character_indices: ContextCharacterIndices,
-        // Индекс правильного следующего символа; 0 также обозначает конец имени.
-        target_character_index: CharacterIndex,
+    struct VocabularyTrainingExample {
+        // Индексы трёх предыдущих символов в Vocabulary; индекс точки заполняет начало имени.
+        vocabulary_context_indices: VocabularyContextIndices,
+        // Индекс правильного следующего символа в Vocabulary; индекс точки обозначает конец имени.
+        vocabulary_character_index_target: VocabularyCharacterIndex,
     }
 
     // Обучаемый тензор и производные loss по каждому его элементу.
@@ -174,7 +179,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                 }
-
                 output
             };
             self.input = input;
@@ -224,7 +228,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         average_standard_deviation: bool,
         // Нормализованные значения последнего forward, сохранённые для backward.
         normalized: Vec<f32>,
-        // 1/std либо 1/sqrt(variance + epsilon) для каждого признака; нужен в backward.
+        // Обратный делитель по признакам: 1/max(std, 1e-12) либо 1/sqrt(variance + epsilon).
         inverse_scale: Vec<f32>,
     }
     impl BatchNorm {
@@ -252,7 +256,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
             let batch: BatchColumns<'_> = BatchColumns::try_from((input, width))?;
-
             let input: &[f32] = batch.values;
             let width: usize = batch.width;
             let count: usize = batch.values.len() / batch.width;
@@ -263,7 +266,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         *total += value / count as f32;
                     }
                 }
-
                 mean
             };
             let mut variance: Vec<f32> = vec![0.; width];
@@ -397,9 +399,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Возвращает (cross-entropy для правильного символа, вероятности всех символов), устойчиво вычисляя softmax.
         fn cross_entropy(
             character_scores: &[f32],
-            target_character_index: CharacterIndex,
+            vocabulary_character_index_target: VocabularyCharacterIndex,
         ) -> (f32, Vec<f32>) {
-            // log-sum-exp: exp(logits) напрямую может переполниться.
+            // Вычитаем максимальную оценку перед exp; cross-entropy считаем через log-sum-exp без log(вероятности).
             let maximum_score: f32 = character_scores
                 .iter()
                 .copied()
@@ -413,11 +415,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 for character_probability in &mut character_probabilities {
                     *character_probability /= exponential_sum;
                 }
-
                 (character_probabilities, exponential_sum)
             };
             (
-                (maximum_score - character_scores[target_character_index.0]) + exponential_sum.ln(),
+                (maximum_score - character_scores[vocabulary_character_index_target.0])
+                    + exponential_sum.ln(),
                 character_probabilities,
             )
         }
@@ -429,7 +431,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 ),
                 layers: {
                     let mut layers: Vec<Layer> = vec![];
-
                     if deep {
                         let mut inputs: usize = 30;
                         for outputs in [100, 100, 100, 100, 100, vocabulary_size] {
@@ -467,22 +468,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 vocabulary_size,
             }
         }
-        // Собирает эмбеддинги контекстов и проводит батч через слои; возвращает оценки символов без внешнего b2.
+        // Собирает эмбеддинги и проводит батч через слои, обновляя сохранённые входы/выходы.
+        // training также управляет статистиками BatchNorm; возвращаются оценки символов без внешнего b2.
         fn forward(
             &mut self,
-            batch: &[TrainingExample],
+            batch: &[VocabularyTrainingExample],
             training: bool,
         ) -> Result<Vec<f32>, &'static str> {
             let values: Vec<f32> = {
                 let mut values: Vec<f32> = Vec::with_capacity(batch.len() * 30);
                 for example in batch {
-                    for &character in &example.context_character_indices {
+                    for &character in &example.vocabulary_context_indices {
                         values.extend_from_slice(
                             &self.embeddings.values[character.0 * 10..character.0 * 10 + 10],
                         );
                     }
                 }
-
                 values
             };
             self.layers
@@ -511,10 +512,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             result
         }
-        // Выполняет обучающий forward/backward, перезаписывает градиенты модели и b2, возвращает среднюю cross-entropy.
+        // Выполняет обучающий forward/backward: обновляет статистики BatchNorm и перезаписывает градиенты.
+        // Возвращает среднюю cross-entropy; значения параметров модели и внешнего b2 не обновляет.
         fn gradients(
             &mut self,
-            batch: &[TrainingExample],
+            batch: &[VocabularyTrainingExample],
             output_bias: &mut Parameter,
         ) -> Result<f32, &'static str> {
             let (gradient, loss): (Vec<f32>, f32) = {
@@ -532,20 +534,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 .zip(&output_bias.values)
                                 .map(|(a, b)| a + b)
                                 .collect::<Vec<f32>>(),
-                            example.target_character_index,
+                            example.vocabulary_character_index_target,
                         );
                         loss += value / batch.len() as f32;
-                        probabilities[example.target_character_index.0] -= 1.;
+                        probabilities[example.vocabulary_character_index_target.0] -= 1.;
                         for (index, p) in probabilities.iter_mut().enumerate() {
                             *p /= batch.len() as f32;
                             output_bias.gradients[index] += *p;
                         }
-
                         probabilities
                     };
                     gradient.extend(probabilities);
                 }
-
                 (gradient, loss)
             };
             let gradient: Vec<f32> =
@@ -566,7 +566,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     });
             self.embeddings.gradients.fill(0.);
             for (example, row) in batch.iter().zip(gradient.as_chunks::<30>().0.iter()) {
-                for (position, character) in example.context_character_indices.iter().enumerate() {
+                for (position, character) in example.vocabulary_context_indices.iter().enumerate() {
                     for coordinate in 0..10 {
                         self.embeddings.gradients[character.0 * 10 + coordinate] +=
                             row[position * 10 + coordinate];
@@ -586,31 +586,31 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if cfg!(test) {
         let vocabulary: Vocabulary = Vocabulary::new("ab");
 
-        // Строит примеры по именам, заимствуя словарь из окружающей области.
-        let dataset = |names: &[&str]| -> Result<Vec<TrainingExample>, &'static str> {
-            let mut examples: Vec<TrainingExample> = Vec::new();
+        // Захватывает Vocabulary: для каждого имени сбрасывает контекст и строит пары «контекст → следующий символ».
+        // Добавленная в конец точка учит завершать имя; неизвестный символ возвращает ошибку.
+        let dataset = |names: &[&str]| -> Result<Vec<VocabularyTrainingExample>, &'static str> {
+            let mut examples: Vec<VocabularyTrainingExample> = Vec::new();
             for name in names {
-                let mut context_character_indices: ContextCharacterIndices =
-                    [vocabulary.character_index(0)?; 3];
-
+                let mut vocabulary_context_indices: VocabularyContextIndices =
+                    [vocabulary.dot_index(); 3];
                 for next_character in name.chars().chain(std::iter::once('.')) {
-                    let target_character_index: CharacterIndex =
+                    let vocabulary_character_index_target: VocabularyCharacterIndex =
                         vocabulary.index_of(next_character)?;
-                    examples.push(TrainingExample {
-                        context_character_indices,
-                        target_character_index,
+                    examples.push(VocabularyTrainingExample {
+                        vocabulary_context_indices,
+                        vocabulary_character_index_target,
                     });
-                    context_character_indices = [
-                        context_character_indices[1],
-                        context_character_indices[2],
-                        target_character_index,
+                    vocabulary_context_indices = [
+                        vocabulary_context_indices[1],
+                        vocabulary_context_indices[2],
+                        vocabulary_character_index_target,
                     ];
                 }
             }
             Ok(examples)
         };
 
-        // Проверяем границы индекса для обычного и маленького словарей и неизвестный символ.
+        // Проверяем словари из одной точки, трёх и 27 символов, границы индексов и неизвестный символ.
         for vocabulary in [
             Vocabulary::new(""),
             Vocabulary::new("ab"),
@@ -618,6 +618,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ] {
             let vocabulary_size: usize = vocabulary.len();
             assert_eq!(vocabulary.character_index(0)?.0, 0);
+            assert_eq!(vocabulary.character(vocabulary.dot_index())?, '.');
             assert_eq!(
                 vocabulary.character_index(vocabulary_size - 1)?.0,
                 vocabulary_size - 1
@@ -628,7 +629,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         assert_eq!(Vocabulary::new("baba").0, vec!['.', 'a', 'b']);
         assert!(vocabulary.index_of('c').is_err());
-        assert!(vocabulary.character(CharacterIndex(27)).is_err());
+        assert!(vocabulary.character(VocabularyCharacterIndex(27)).is_err());
         assert!(dataset(&["ac"]).is_err());
 
         // Проверяем: некорректный батч возвращает ошибку и не меняет статистики BatchNorm.
@@ -646,9 +647,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             assert!(
                 model
                     .gradients(
-                        &[TrainingExample {
-                            context_character_indices: [vocabulary.character_index(0)?; 3],
-                            target_character_index: vocabulary.character_index(1)?,
+                        &[VocabularyTrainingExample {
+                            vocabulary_context_indices: [vocabulary.dot_index(); 3],
+                            vocabulary_character_index_target: vocabulary.character_index(1)?,
                         }],
                         &mut bias
                     )
@@ -665,7 +666,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     layer.gain.values = vec![1.3, 0.6];
                     layer.forward(input.clone(), true)?;
                     let analytic: Vec<f32> = layer.backward(upstream.clone());
-
                     (layer, analytic)
                 };
                 for index in 0..input.len() {
@@ -699,7 +699,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         // Проверяем численные производные эмбеддингов и параметров всех типов слоёв.
         {
-            let batch: Vec<TrainingExample> = dataset(&["aba", "baa"])?;
+            let batch: Vec<VocabularyTrainingExample> = dataset(&["aba", "baa"])?;
             for deep in [false, true] {
                 let (mut model, bias): (Model, Parameter) = {
                     let mut model: Model = Model::new(3, deep, &mut RandomGenerator::new(55));
@@ -758,10 +758,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         // Проверяем сброс контекста между именами и снижение ошибки после шагов SGD.
         {
-            let batch: Vec<TrainingExample> = dataset(&["ab", "ab", "ab", "ab"])?;
+            let batch: Vec<VocabularyTrainingExample> = dataset(&["ab", "ab", "ab", "ab"])?;
             assert_eq!(
-                batch[3].context_character_indices,
-                [vocabulary.character_index(0)?; 3]
+                batch[3].vocabulary_context_indices,
+                [vocabulary.dot_index(); 3]
             );
             for deep in [false, true] {
                 let mut model: Model = Model::new(3, deep, &mut RandomGenerator::new(42));
@@ -783,7 +783,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 );
             }
         }
-
         return Ok(());
     }
 
@@ -848,9 +847,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let (vocabulary, training, validation, test): (
         Vocabulary,
-        Vec<TrainingExample>,
-        Vec<TrainingExample>,
-        Vec<TrainingExample>,
+        Vec<VocabularyTrainingExample>,
+        Vec<VocabularyTrainingExample>,
+        Vec<VocabularyTrainingExample>,
     ) = {
         // Проверенный непустой список имён из строчных латинских букв.
         #[derive(Debug)]
@@ -881,36 +880,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 &self.0
             }
         }
-
         let text: &str =
             include_str!("../../l247-52-generate-names-with-makemore-mlp/data/names.txt");
         let names: Names<'_> = Names::try_from(text)?;
         let vocabulary: Vocabulary = Vocabulary::new(text);
 
-        // Строит примеры по именам, заимствуя словарь из окружающей области.
-        let dataset = |names: &[&str]| -> Result<Vec<TrainingExample>, &'static str> {
-            let mut examples: Vec<TrainingExample> = Vec::new();
+        // Захватывает Vocabulary: для каждого имени сбрасывает контекст и строит пары «контекст → следующий символ».
+        // Добавленная в конец точка учит завершать имя; неизвестный символ возвращает ошибку.
+        let dataset = |names: &[&str]| -> Result<Vec<VocabularyTrainingExample>, &'static str> {
+            let mut examples: Vec<VocabularyTrainingExample> = Vec::new();
             for name in names {
-                let mut context_character_indices: ContextCharacterIndices =
-                    [vocabulary.character_index(0)?; 3];
-
+                let mut vocabulary_context_indices: VocabularyContextIndices =
+                    [vocabulary.dot_index(); 3];
                 for next_character in name.chars().chain(std::iter::once('.')) {
-                    let target_character_index: CharacterIndex =
+                    let vocabulary_character_index_target: VocabularyCharacterIndex =
                         vocabulary.index_of(next_character)?;
-                    examples.push(TrainingExample {
-                        context_character_indices,
-                        target_character_index,
+                    examples.push(VocabularyTrainingExample {
+                        vocabulary_context_indices,
+                        vocabulary_character_index_target,
                     });
-                    context_character_indices = [
-                        context_character_indices[1],
-                        context_character_indices[2],
-                        target_character_index,
+                    vocabulary_context_indices = [
+                        vocabulary_context_indices[1],
+                        vocabulary_context_indices[2],
+                        vocabulary_character_index_target,
                     ];
                 }
             }
             Ok(examples)
         };
-
         let names: Names<'_> = {
             let mut names: Names<'_> = names;
             let mut generator: RandomGenerator = RandomGenerator::new(42);
@@ -921,20 +918,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             names
         };
-        let training: Vec<TrainingExample> = dataset(&names[..names.len() * 8 / 10])?;
-        let validation: Vec<TrainingExample> =
+        let training: Vec<VocabularyTrainingExample> = dataset(&names[..names.len() * 8 / 10])?;
+        let validation: Vec<VocabularyTrainingExample> =
             dataset(&names[names.len() * 8 / 10..names.len() * 9 / 10])?;
-        let test: Vec<TrainingExample> = dataset(&names[names.len() * 9 / 10..])?;
+        let test: Vec<VocabularyTrainingExample> = dataset(&names[names.len() * 9 / 10..])?;
         println!(
             "train/dev/test: {}/{}/{} contexts",
             training.len(),
             validation.len(),
             test.len()
         );
-
         (vocabulary, training, validation, test)
     };
-    // Первая сеть: 200 000 шагов; глубокая: 1001 (ячейка 14: break при i >= 1000).
+    let vocabulary_size: usize = vocabulary.len();
+    // Обучаем две сети: неглубокую 200 000 шагов и глубокую 1001 шаг; третий элемент — шаг снижения lr.
     for (deep, steps, decay) in [
         (false, 200_000usize, 100_000usize),
         (true, 1001usize, 150_000usize),
@@ -977,7 +974,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     ));
                 }
                 svg.push_str("</svg>");
-
                 svg
             };
             std::io::Write::write_all(&mut output_file, svg.as_bytes())
@@ -985,8 +981,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let prefix: &str = if deep { "deep" } else { "shallow" };
         let (model, bias, curve, update_curves): (Model, Parameter, PlotPoints, Vec<PlotPoints>) = {
             let mut rng: RandomGenerator = RandomGenerator::new(2147483647);
-            let mut model: Model = Model::new(vocabulary.len(), deep, &mut rng);
-            let mut bias: Parameter = Parameter::new(vec![0.; vocabulary.len()]);
+            let mut model: Model = Model::new(vocabulary_size, deep, &mut rng);
+            let mut bias: Parameter = Parameter::new(vec![0.; vocabulary_size]);
             println!(
                 "{prefix}: {} parameters",
                 model
@@ -994,7 +990,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .iter()
                     .map(|p| p.values.len())
                     .sum::<usize>()
-                    + if deep { 0 } else { vocabulary.len() }
+                    + if deep { 0 } else { vocabulary_size }
             );
             let mut losses: std::io::BufWriter<std::fs::File> = std::io::BufWriter::new(
                 files
@@ -1046,12 +1042,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         std::fmt::Display::fmt(&self.0, formatter)
                     }
                 }
-
                 let loss: FiniteLoss = FiniteLoss::try_from(
                     model.gradients(
                         &(0..32)
                             .map(|_| training[rng.index(training.len())])
-                            .collect::<Vec<TrainingExample>>(),
+                            .collect::<Vec<VocabularyTrainingExample>>(),
                         &mut bias,
                     )?,
                 )?;
@@ -1082,7 +1077,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             std::io::Write::flush(&mut losses)?;
             std::io::Write::flush(&mut ratios)?;
-
             (model, bias, curve, update_curves)
         };
         plot(
@@ -1103,7 +1097,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 )?;
             }
         }
-        // Сохраняем диагностику последнего train-batch ДО eval, который меняет caches.
+        // Сохраняем активации и градиенты последнего обучающего батча до eval, который перезаписывает сохранённые выходы.
         {
             // Возвращает центры 50 интервалов и плотность частот для графика распределения значений.
             fn histogram(values: &[f32]) -> PlotPoints {
@@ -1116,7 +1110,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     for value in values {
                         bins[(((value - min) / width) as usize).min(49)] += 1;
                     }
-
                     bins
                 };
                 bins.iter()
@@ -1129,7 +1122,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     })
                     .collect()
             }
-
             plot(
                 files
                     .remove(&format!("{prefix}_embedding_gradient.svg"))
@@ -1204,7 +1196,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
         {
-            // Eval меняет только caches слоёв; параметры и статистики BN не обновляются.
+            // В режиме eval меняются сохранённые входы/выходы слоёв, но не параметры и накопленные статистики BatchNorm.
             let mut model: Model = model;
             {
                 let mut metrics: std::fs::File = files
@@ -1226,7 +1218,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                         .zip(&bias.values)
                                         .map(|(a, b)| a + b)
                                         .collect::<Vec<f32>>(),
-                                    example.target_character_index,
+                                    example.vocabulary_character_index_target,
                                 )
                                 .0 as f64;
                             }
@@ -1238,7 +1230,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
             if !deep {
-                // Ячейка 9 вычисляет full-train статистики, но ячейка 10 их не использует.
+                // Считаем средние и std выхода первого Linear по всему train и записываем в calibration.csv.
+                // Эти значения служат диагностикой: накопленные статистики BatchNorm ими не заменяются.
                 let (sums, squares): (Vec<f64>, Vec<f64>) = {
                     let mut sums: Vec<f64> = vec![0f64; 200];
                     let mut squares: Vec<f64> = vec![0f64; 200];
@@ -1253,7 +1246,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             }
                         }
                     }
-
                     (sums, squares)
                 };
                 let mut calibration: std::fs::File = files
@@ -1277,19 +1269,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let mut samples: std::fs::File = files
                 .remove(&format!("{prefix}_samples.txt"))
                 .ok_or("файл отсутствует в подготовленном наборе")?;
-
             let mut rng: RandomGenerator = RandomGenerator::new(2147483657);
             for _ in 0..20 {
                 let name: String = {
-                    let mut context: ContextCharacterIndices = [vocabulary.character_index(0)?; 3];
+                    let mut context: VocabularyContextIndices = [vocabulary.dot_index(); 3];
                     let mut name: String = String::new();
                     for _ in 0..100 {
                         let probabilities: Vec<f32> = Model::cross_entropy(
                             &model
                                 .forward(
-                                    &[TrainingExample {
-                                        context_character_indices: context,
-                                        target_character_index: vocabulary.character_index(0)?,
+                                    &[VocabularyTrainingExample {
+                                        vocabulary_context_indices: context,
+                                        vocabulary_character_index_target: vocabulary.dot_index(),
                                     }],
                                     false,
                                 )?
@@ -1297,13 +1288,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 .zip(&bias.values)
                                 .map(|(a, b)| a + b)
                                 .collect::<Vec<f32>>(),
-                            vocabulary.character_index(0)?,
+                            vocabulary.dot_index(),
                         )
                         .1;
                         let draw: f32 = rng.uniform();
                         let selected: usize = {
                             let mut cumulative: f32 = 0.;
-                            let mut selected: usize = vocabulary.len() - 1;
+                            let mut selected: usize = vocabulary_size - 1;
                             for (i, p) in probabilities.iter().enumerate() {
                                 cumulative += p;
                                 if draw < cumulative {
@@ -1311,10 +1302,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                     break;
                                 }
                             }
-
                             selected
                         };
-                        let selected: CharacterIndex = vocabulary.character_index(selected)?;
+                        let selected: VocabularyCharacterIndex =
+                            vocabulary.character_index(selected)?;
                         name.push(vocabulary.character(selected)?);
                         if selected.0 == 0 {
                             break;
@@ -1324,7 +1315,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     if !name.ends_with('.') {
                         name.push_str(" [лимит 100 символов]");
                     }
-
                     name
                 };
                 std::io::Write::write_fmt(&mut samples, format_args!("{name}\n"))?;
@@ -1332,7 +1322,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     {
-        // Локальный HTML slider и таблица всех положений x0 с шагом 0.5.
+        // Бонус: HTML-слайдер и CSV показывают влияние x0 на нормализацию всех пяти примеров (шаг x0 = 0.5).
         {
             let mut file: std::fs::File = files
                 .remove("batch_coupling.csv")
@@ -1341,7 +1331,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let original: Vec<f32> = {
                 let mut rng: RandomGenerator = RandomGenerator::new(2147483648);
                 let original: Vec<f32> = (0..5).map(|_| rng.normal() * 5.).collect();
-
                 original
             };
             std::io::Write::write_all(&mut files.remove("batch_coupling.html").ok_or("файл отсутствует в подготовленном наборе")?, ((r##"<!doctype html><meta charset="utf-8"><title>BatchNorm: связь примеров</title>
@@ -1378,7 +1367,6 @@ slider.addEventListener('input',render);render();
                 let values: Vec<f32> = {
                     let mut values: Vec<f32> = original.clone();
                     values[0] = -30. + step as f32 * 0.5;
-
                     values
                 };
                 let (mean, variance): (Vec<f32>, Vec<f32>) =

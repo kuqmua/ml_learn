@@ -53,7 +53,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 (mixed_bits ^ (mixed_bits >> 27)).wrapping_mul(0x94d049bb133111eb);
             mixed_bits ^ (mixed_bits >> 31)
         }
-        // Получает равномерное псевдослучайное число от 0 до 1 для выборки и инициализации.
+        // Масштабирует старшие 24 случайных бита в f32 для выборки и инициализации; округление может дать 1.
         fn uniform(&mut self) -> f32 {
             ((self.next() >> 40) as f32 + 0.5) / 16777216.0
         }
@@ -69,10 +69,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    // Индекс символа, проверенный относительно размера словаря при создании.
+    // Позиция символа в Vocabulary; методы словаря создают её с проверкой границ.
     #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-    struct CharacterIndex(
-        // Позиция символа в словаре; создаётся методами Vocabulary, а читается через .0.
+    struct VocabularyCharacterIndex(
+        // Числовая позиция; .0 нужен для тензоров. Сам индекс не хранит, какому Vocabulary принадлежит.
         usize,
     );
 
@@ -82,7 +82,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Vec<char>,
     );
     impl Vocabulary {
-        // Собирает уникальные строчные латинские буквы текста и добавляет точку в начало.
+        // Отбирает из текста буквы a–z, сортирует, удаляет повторы и добавляет точку под индексом 0.
         fn new(text: &str) -> Self {
             let mut characters: Vec<char> = text
                 .chars()
@@ -97,23 +97,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         fn len(&self) -> usize {
             self.0.len()
         }
-        // Проверяет границы и возвращает индекс, пригодный для этого словаря.
-        fn character_index(&self, value: usize) -> Result<CharacterIndex, &'static str> {
+        // Возвращает индекс точки: она обозначает границу имени и заполняет начальный контекст.
+        // Метод new всегда помещает точку под индексом 0.
+        fn dot_index(&self) -> VocabularyCharacterIndex {
+            VocabularyCharacterIndex(0)
+        }
+        // Проверяет value < self.len() и оборачивает числовую позицию в VocabularyCharacterIndex.
+        fn character_index(&self, value: usize) -> Result<VocabularyCharacterIndex, &'static str> {
             self.0
                 .get(value)
-                .map(|_| CharacterIndex(value))
+                .map(|_| VocabularyCharacterIndex(value))
                 .ok_or("индекс символа должен быть меньше размера словаря")
         }
         // Находит индекс символа; для отсутствующего символа возвращает ошибку.
-        fn index_of(&self, character: char) -> Result<CharacterIndex, &'static str> {
+        fn index_of(&self, character: char) -> Result<VocabularyCharacterIndex, &'static str> {
             self.0
                 .iter()
                 .position(|&candidate| candidate == character)
-                .map(CharacterIndex)
+                .map(VocabularyCharacterIndex)
                 .ok_or("символ отсутствует в словаре")
         }
-        // Возвращает символ по индексу; проверяет границы и при индексе из другого словаря.
-        fn character(&self, index: CharacterIndex) -> Result<char, &'static str> {
+        // Возвращает символ по числовой позиции, проверяя границы; принадлежность индекса словарю не проверяется.
+        fn character(&self, index: VocabularyCharacterIndex) -> Result<char, &'static str> {
             self.0
                 .get(index.0)
                 .copied()
@@ -121,133 +126,50 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    // Три проверенных индекса предыдущих символов; индекс 0 — точка и заполнение начала.
-    type ContextCharacterIndices = [CharacterIndex; 3];
+    // Контекст из трёх позиций символов в одном Vocabulary; dot_index() заполняет начало имени.
+    type VocabularyContextIndices = [VocabularyCharacterIndex; 3];
 
-    // Один учебный пример: по трём предыдущим символам предсказываем следующий.
+    // Обучающий пример в индексах Vocabulary: контекст из трёх символов и правильный следующий символ.
     #[derive(Clone, Copy, Debug, PartialEq)]
-    struct TrainingExample {
-        // Индексы трёх символов в словаре; 0 означает точку, в том числе заполнение начала.
-        context_character_indices: ContextCharacterIndices,
-        // Индекс правильного следующего символа; 0 также обозначает конец имени.
-        target_character_index: CharacterIndex,
+    struct VocabularyTrainingExample {
+        // Индексы трёх предыдущих символов в Vocabulary; индекс точки заполняет начало имени.
+        vocabulary_context_indices: VocabularyContextIndices,
+        // Индекс правильного следующего символа в Vocabulary; индекс точки обозначает конец имени.
+        vocabulary_character_index_target: VocabularyCharacterIndex,
     }
 
-    // MLP: векторы трёх символов → скрытый слой с tanh → оценки следующего символа.
+    // Параметры MLP: таблица эмбеддингов и два полносвязных слоя, между которыми применяется tanh.
+    // Прямой проход и loss — замыкания ниже; размер словаря хранится в локальной переменной vocabulary_size.
     #[derive(Clone)]
     struct Model {
-        // Число символов в словаре, включая точку; столько же оценок выдаёт модель.
-        vocabulary_size: usize,
-        // Сколько обучаемых координат описывает одну букву.
+        // Число координат обучаемого вектора одного символа, включая точку.
         embedding_dimensions: usize,
         // Число нейронов скрытого слоя.
         hidden_neuron_count: usize,
-        // Пять тензоров в порядке notebook:
-        // C — координаты букв, W1 — веса вход → скрытый слой, b1 — смещения скрытого слоя,
-        // W2 — веса скрытый слой → выход, b2 — смещения выходного слоя.
-        parameters: [Vec<f32>; 5],
+        // C: (vocabulary_size, embedding_dimensions) — обучаемые векторы символов.
+        character_embeddings: Vec<f32>,
+        // W1: (3 * embedding_dimensions, hidden_neuron_count) — веса первого слоя.
+        input_to_hidden_weights: Vec<f32>,
+        // b1: (hidden_neuron_count,) — смещения скрытых нейронов.
+        hidden_biases: Vec<f32>,
+        // W2: (hidden_neuron_count, vocabulary_size) — веса выходного слоя.
+        hidden_to_output_weights: Vec<f32>,
+        // b2: (vocabulary_size,) — смещения оценок следующих символов.
+        output_biases: Vec<f32>,
     }
-    impl Model {
-        // Возвращает (cross-entropy для правильного символа, вероятности всех символов), устойчиво вычисляя softmax.
-        fn cross_entropy(
-            character_scores: &[f32],
-            target_character_index: CharacterIndex,
-        ) -> (f32, Vec<f32>) {
-            // log-sum-exp: exp(logits) напрямую может переполниться.
-            let maximum_score: f32 = character_scores
-                .iter()
-                .copied()
-                .fold(f32::NEG_INFINITY, f32::max);
-            let (character_probabilities, exponential_sum): (Vec<f32>, f32) = {
-                let mut character_probabilities: Vec<f32> = character_scores
-                    .iter()
-                    .map(|character_score| (character_score - maximum_score).exp())
-                    .collect();
-                let exponential_sum: f32 = character_probabilities.iter().sum();
-                for character_probability in &mut character_probabilities {
-                    *character_probability /= exponential_sum;
-                }
 
-                (character_probabilities, exponential_sum)
-            };
-            (
-                (maximum_score - character_scores[target_character_index.0]) + exponential_sum.ln(),
-                character_probabilities,
-            )
-        }
-
-        // Для одного контекста возвращает (объединённые эмбеддинги, активации tanh, оценки символов до softmax).
-        fn forward(
-            &self,
-            context_character_indices: ContextCharacterIndices,
-        ) -> (Vec<f32>, Vec<f32>, Vec<f32>) {
-            let [
-                character_embeddings,
-                input_to_hidden_weights,
-                hidden_biases,
-                hidden_to_output_weights,
-                output_biases,
-            ]: &[Vec<f32>; 5] = &self.parameters;
-            // Берём координаты трёх букв и объединяем в один входной вектор.
-            // Его длина: 3 * embedding_dimensions.
-            let flattened_embeddings: Vec<f32> = context_character_indices
-                .iter()
-                .flat_map(|&character_index| {
-                    character_embeddings[character_index.0 * self.embedding_dimensions
-                        ..(character_index.0 + 1) * self.embedding_dimensions]
-                        .iter()
-                        .copied()
-                })
-                .collect();
-            let hidden_activations: Vec<f32> = {
-                let mut hidden_activations: Vec<f32> = hidden_biases.clone();
-                for (input_index, &input_value) in flattened_embeddings.iter().enumerate() {
-                    for (hidden_activation, &connection_weight) in
-                        hidden_activations.iter_mut().zip(
-                            &input_to_hidden_weights[input_index * self.hidden_neuron_count
-                                ..(input_index + 1) * self.hidden_neuron_count],
-                        )
-                    {
-                        *hidden_activation += input_value * connection_weight;
-                    }
-                }
-                for hidden_activation in &mut hidden_activations {
-                    *hidden_activation = hidden_activation.tanh();
-                }
-
-                hidden_activations
-            };
-            let character_scores: Vec<f32> = {
-                let mut character_scores: Vec<f32> = output_biases.clone();
-                for (hidden_neuron_index, &hidden_activation) in
-                    hidden_activations.iter().enumerate()
-                {
-                    for (character_score, &connection_weight) in character_scores.iter_mut().zip(
-                        &hidden_to_output_weights[hidden_neuron_index * self.vocabulary_size
-                            ..(hidden_neuron_index + 1) * self.vocabulary_size],
-                    ) {
-                        *character_score += hidden_activation * connection_weight;
-                    }
-                }
-
-                character_scores
-            };
-            (flattened_embeddings, hidden_activations, character_scores)
-        }
-        // Вычисляет среднюю cross-entropy по непустому набору примеров, не изменяя параметры модели.
-        fn loss(&self, examples: NonEmptySlice<'_, TrainingExample>) -> f32 {
-            examples
-                .iter()
-                .map(|example| {
-                    Model::cross_entropy(
-                        &self.forward(example.context_character_indices).2,
-                        example.target_character_index,
-                    )
-                    .0 as f64
-                })
-                .sum::<f64>() as f32
-                / examples.len() as f32
-        }
+    // Производные loss по каждому тензору Model; формы и порядок элементов совпадают с соответствующим полем.
+    struct ModelGradients {
+        // Градиенты character_embeddings.
+        character_embeddings: Vec<f32>,
+        // Градиенты input_to_hidden_weights.
+        input_to_hidden_weights: Vec<f32>,
+        // Градиенты hidden_biases.
+        hidden_biases: Vec<f32>,
+        // Градиенты hidden_to_output_weights.
+        hidden_to_output_weights: Vec<f32>,
+        // Градиенты output_biases.
+        output_biases: Vec<f32>,
     }
 
     // Положительное число обновлений параметров; для нуля возвращается ошибка.
@@ -284,9 +206,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let (vocabulary, training_examples, validation_examples, test_examples): (
         Vocabulary,
-        Vec<TrainingExample>,
-        Vec<TrainingExample>,
-        Vec<TrainingExample>,
+        Vec<VocabularyTrainingExample>,
+        Vec<VocabularyTrainingExample>,
+        Vec<VocabularyTrainingExample>,
     ) = {
         // Проверенный непустой список имён из строчных латинских букв.
         #[derive(Debug)]
@@ -318,60 +240,42 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
 
-        // 1. Данные и словарь: 0 — начало/конец имени, a..z — 1..26.
+        // 1. Проверяем имена и создаём Vocabulary: точка первая, встреченные буквы a–z — по алфавиту.
         let names_text: &str = include_str!("../data/names.txt");
         let names: Names<'_> = Names::try_from(names_text)?;
         let vocabulary: Vocabulary = Vocabulary::new(names_text);
 
-        // Строит примеры по именам, заимствуя словарь из окружающей области.
-        let dataset = |names: &[&str]| -> Result<Vec<TrainingExample>, &'static str> {
-            let mut examples: Vec<TrainingExample> = Vec::new();
+        // Захватывает Vocabulary: для каждого имени сбрасывает контекст и строит пары «контекст → следующий символ».
+        // Добавленная в конец точка учит завершать имя; неизвестный символ возвращает ошибку.
+        let dataset = |names: &[&str]| -> Result<Vec<VocabularyTrainingExample>, &'static str> {
+            let mut examples: Vec<VocabularyTrainingExample> = Vec::new();
             for name in names {
-                let mut context_character_indices: ContextCharacterIndices =
-                    [vocabulary.character_index(0)?; 3];
-
+                let mut vocabulary_context_indices: VocabularyContextIndices =
+                    [vocabulary.dot_index(); 3];
                 for next_character in name.chars().chain(std::iter::once('.')) {
-                    let target_character_index: CharacterIndex =
+                    let vocabulary_character_index_target: VocabularyCharacterIndex =
                         vocabulary.index_of(next_character)?;
-                    examples.push(TrainingExample {
-                        context_character_indices,
-                        target_character_index,
+                    examples.push(VocabularyTrainingExample {
+                        vocabulary_context_indices,
+                        vocabulary_character_index_target,
                     });
-                    context_character_indices = [
-                        context_character_indices[1],
-                        context_character_indices[2],
-                        target_character_index,
+                    vocabulary_context_indices = [
+                        vocabulary_context_indices[1],
+                        vocabulary_context_indices[2],
+                        vocabulary_character_index_target,
                     ];
                 }
             }
             Ok(examples)
         };
-
         println!(
             "Имена: {}, первые восемь: {:?}",
             names.len(),
             &names[..names.len().min(8)]
         );
         println!("Словарь: {:?}", vocabulary.0);
-        let all_examples: Vec<TrainingExample> = dataset(&names)?;
-        println!(
-            "Все X: ({},3), Y: ({},)",
-            all_examples.len(),
-            all_examples.len()
-        );
-        for example in dataset(&names[..1])? {
-            println!(
-                "{} -> {}",
-                example
-                    .context_character_indices
-                    .map(|character_index| vocabulary.character(character_index))
-                    .into_iter()
-                    .collect::<Result<String, _>>()?,
-                vocabulary.character(example.target_character_index)?
-            );
-        }
         // 2. Перемешиваем имена и делим их на train/dev/test (80/10/10).
-        // Контексты каждого набора строятся отдельно, чтобы имена не пересекались.
+        // Сначала делим записи имён, затем строим контексты: примеры одной записи остаются в одном наборе.
         let names: Names<'_> = {
             let mut names: Names<'_> = names;
             let mut generator: RandomGenerator = RandomGenerator::new(42);
@@ -382,22 +286,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             names
         };
-        let training_names_end: usize = names.len() * 8 / 10;
-        let validation_names_end: usize = names.len() * 9 / 10;
-        let training_examples: Vec<TrainingExample> = dataset(&names[..training_names_end])?;
-        let validation_examples: Vec<TrainingExample> =
-            dataset(&names[training_names_end..validation_names_end])?;
-        let test_examples: Vec<TrainingExample> = dataset(&names[validation_names_end..])?;
+        let (training_names, remaining_names): (&[&str], &[&str]) =
+            names.split_at(names.len() * 8 / 10);
+        let (validation_names, test_names): (&[&str], &[&str]) =
+            remaining_names.split_at(names.len() * 9 / 10 - training_names.len());
+        let training_examples: Vec<VocabularyTrainingExample> = dataset(training_names)?;
+        let validation_examples: Vec<VocabularyTrainingExample> = dataset(validation_names)?;
+        let test_examples: Vec<VocabularyTrainingExample> = dataset(test_names)?;
         println!(
             "Имена train/dev/test: {}/{}/{}; примеры: {}/{}/{}",
-            training_names_end,
-            validation_names_end - training_names_end,
-            names.len() - validation_names_end,
+            training_names.len(),
+            validation_names.len(),
+            test_names.len(),
             training_examples.len(),
             validation_examples.len(),
             test_examples.len()
         );
-
         (
             vocabulary,
             training_examples,
@@ -405,6 +309,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             test_examples,
         )
     };
+    let vocabulary_size: usize = vocabulary.len();
     // Строит SVG-график и записывает его в заранее созданный файл.
     fn plot(
         mut output_file: std::fs::File,
@@ -428,13 +333,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .iter()
             .map(|data_point| data_point.1)
             .fold(f32::NEG_INFINITY, f32::max);
+        // Область размещения данных внутри SVG 800 × 600; поля оставлены под оси и подписи.
+        const DATA_AREA_LEFT: f32 = 65.0; // Левая граница в пикселях SVG.
+        const DATA_AREA_BOTTOM: f32 = 535.0; // Нижняя граница в пикселях SVG.
+        const DATA_AREA_WIDTH: f32 = 680.0; // Данные занимают x от 65 до 745.
+        const DATA_AREA_HEIGHT: f32 = 470.0; // Данные занимают y от 65 до 535.
+        // Не даём делителю стать нулём, если все значения по одной оси одинаковы.
+        const MINIMUM_VALUE_SPAN: f32 = 1e-6;
         let to_pixel_coordinates = |data_point: &(f32, f32)| -> (f32, f32) {
             (
-                65.0 + 680.0 * (data_point.0 - minimum_horizontal_value)
-                    / (maximum_horizontal_value - minimum_horizontal_value).max(1e-6),
-                535.0
-                    - 470.0 * (data_point.1 - minimum_vertical_value)
-                        / (maximum_vertical_value - minimum_vertical_value).max(1e-6),
+                DATA_AREA_LEFT
+                    + DATA_AREA_WIDTH * (data_point.0 - minimum_horizontal_value)
+                        / (maximum_horizontal_value - minimum_horizontal_value)
+                            .max(MINIMUM_VALUE_SPAN),
+                // В SVG y растёт вниз, поэтому рост значения вычитается из нижней границы.
+                DATA_AREA_BOTTOM
+                    - DATA_AREA_HEIGHT * (data_point.1 - minimum_vertical_value)
+                        / (maximum_vertical_value - minimum_vertical_value).max(MINIMUM_VALUE_SPAN),
             )
         };
         let svg_document: String = {
@@ -458,123 +373,211 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 svg_document.push_str("'/>");
             }
             svg_document.push_str("</g></svg>");
-
             svg_document
         };
         std::io::Write::write_all(&mut output_file, svg_document.as_bytes())
     }
+    // Для одного примера возвращает (cross-entropy правильного символа, вероятности всех символов).
+    let cross_entropy = |character_scores: &[f32],
+                         vocabulary_character_index_target: VocabularyCharacterIndex|
+     -> (f32, Vec<f32>) {
+        // Вычитаем максимальную оценку перед exp; cross-entropy считаем через log-sum-exp без log(вероятности).
+        let maximum_score: f32 = character_scores
+            .iter()
+            .copied()
+            .fold(f32::NEG_INFINITY, f32::max);
+        let (character_probabilities, exponential_sum): (Vec<f32>, f32) = {
+            let mut character_probabilities: Vec<f32> = character_scores
+                .iter()
+                .map(|character_score| (character_score - maximum_score).exp())
+                .collect();
+            let exponential_sum: f32 = character_probabilities.iter().sum();
+            for character_probability in &mut character_probabilities {
+                *character_probability /= exponential_sum;
+            }
+            (character_probabilities, exponential_sum)
+        };
+        (
+            (maximum_score - character_scores[vocabulary_character_index_target.0])
+                + exponential_sum.ln(),
+            character_probabilities,
+        )
+    };
+    // Для одного контекста возвращает (объединённый вектор эмбеддингов, активации tanh, оценки до softmax).
+    // Модель передаётся аргументом; размер выхода берётся из захваченной переменной vocabulary_size.
+    let forward = |model: &Model,
+                   vocabulary_context_indices: VocabularyContextIndices|
+     -> (Vec<f32>, Vec<f32>, Vec<f32>) {
+        // Берём векторы трёх символов из C и объединяем в порядке контекста.
+        // Длина входного вектора: 3 * model.embedding_dimensions.
+        let flattened_embeddings: Vec<f32> = vocabulary_context_indices
+            .iter()
+            .flat_map(|&character_index| {
+                model.character_embeddings[character_index.0 * model.embedding_dimensions
+                    ..(character_index.0 + 1) * model.embedding_dimensions]
+                    .iter()
+                    .copied()
+            })
+            .collect();
+        let hidden_activations: Vec<f32> = {
+            let mut hidden_activations: Vec<f32> = model.hidden_biases.clone();
+            for (input_index, &input_value) in flattened_embeddings.iter().enumerate() {
+                for (hidden_activation, &connection_weight) in hidden_activations.iter_mut().zip(
+                    &model.input_to_hidden_weights[input_index * model.hidden_neuron_count
+                        ..(input_index + 1) * model.hidden_neuron_count],
+                ) {
+                    *hidden_activation += input_value * connection_weight;
+                }
+            }
+            for hidden_activation in &mut hidden_activations {
+                *hidden_activation = hidden_activation.tanh();
+            }
+            hidden_activations
+        };
+        let character_scores: Vec<f32> = {
+            let mut character_scores: Vec<f32> = model.output_biases.clone();
+            for (hidden_neuron_index, &hidden_activation) in hidden_activations.iter().enumerate() {
+                for (character_score, &connection_weight) in character_scores.iter_mut().zip(
+                    &model.hidden_to_output_weights[hidden_neuron_index * vocabulary_size
+                        ..(hidden_neuron_index + 1) * vocabulary_size],
+                ) {
+                    *character_score += hidden_activation * connection_weight;
+                }
+            }
+            character_scores
+        };
+        (flattened_embeddings, hidden_activations, character_scores)
+    };
+    // Усредняет cross-entropy по непустому набору; захватывает forward и cross_entropy, модель не изменяет.
+    let loss = |model: &Model, examples: NonEmptySlice<'_, VocabularyTrainingExample>| -> f32 {
+        examples
+            .iter()
+            .map(|example| {
+                cross_entropy(
+                    &forward(model, example.vocabulary_context_indices).2,
+                    example.vocabulary_character_index_target,
+                )
+                .0 as f64
+            })
+            .sum::<f64>() as f32
+            / examples.len() as f32
+    };
     let model: Model = {
-        let vocabulary_size: usize = vocabulary.len();
         let embedding_dimensions: usize = 10;
         let hidden_neuron_count: usize = 200;
         let mut random_generator: RandomGenerator = RandomGenerator::new(2147483647);
-        // Создаём пять тензоров с независимыми начальными значениями из N(0, 1).
-
+        // Заполняет плоский тензор начальными значениями из N(0, 1).
+        let mut initialize_tensor = |element_count: usize| -> Vec<f32> {
+            (0..element_count)
+                .map(|_| {
+                    (-2.0 * random_generator.uniform().ln()).sqrt()
+                        * (std::f32::consts::TAU * random_generator.uniform()).cos()
+                })
+                .collect()
+        };
+        // C: (vocabulary_size, embedding_dimensions) — обучаемый вектор для каждого символа.
+        let character_embeddings: Vec<f32> =
+            initialize_tensor(vocabulary_size * embedding_dimensions);
+        // W1: (3 * embedding_dimensions, hidden_neuron_count) — веса от контекста к скрытому слою.
+        let input_to_hidden_weights: Vec<f32> =
+            initialize_tensor(3 * embedding_dimensions * hidden_neuron_count);
+        // b1: (hidden_neuron_count,) — смещение каждого скрытого нейрона перед tanh.
+        let hidden_biases: Vec<f32> = initialize_tensor(hidden_neuron_count);
+        // W2: (hidden_neuron_count, vocabulary_size) — веса от скрытого слоя к оценкам символов.
+        let hidden_to_output_weights: Vec<f32> =
+            initialize_tensor(hidden_neuron_count * vocabulary_size);
+        // b2: (vocabulary_size,) — смещение оценки каждого следующего символа.
+        let output_biases: Vec<f32> = initialize_tensor(vocabulary_size);
         Model {
-            vocabulary_size,
             embedding_dimensions,
             hidden_neuron_count,
-            parameters: [
-                vocabulary_size * embedding_dimensions,
-                3 * embedding_dimensions * hidden_neuron_count,
-                hidden_neuron_count,
-                hidden_neuron_count * vocabulary_size,
-                vocabulary_size,
-            ]
-            .map(|tensor_size| {
-                (0..tensor_size)
-                    .map(|_| {
-                        (-2.0 * random_generator.uniform().ln()).sqrt()
-                            * (std::f32::consts::TAU * random_generator.uniform()).cos()
-                    })
-                    .collect()
-            }),
+            character_embeddings,
+            input_to_hidden_weights,
+            hidden_biases,
+            hidden_to_output_weights,
+            output_biases,
         }
     };
+    let parameter_count: usize = model.character_embeddings.len()
+        + model.input_to_hidden_weights.len()
+        + model.hidden_biases.len()
+        + model.hidden_to_output_weights.len()
+        + model.output_biases.len();
     println!(
         "C=({},{}), W1=({},{}), b1=({}), W2=({},{}), b2=({}); параметров: {}",
-        model.vocabulary_size,
+        vocabulary_size,
         model.embedding_dimensions,
         3 * model.embedding_dimensions,
         model.hidden_neuron_count,
         model.hidden_neuron_count,
         model.hidden_neuron_count,
-        model.vocabulary_size,
-        model.vocabulary_size,
-        model.parameters.iter().map(Vec::len).sum::<usize>()
+        vocabulary_size,
+        vocabulary_size,
+        parameter_count
     );
-    let initial_validation_loss: f32 =
-        model.loss(NonEmptySlice::try_from(validation_examples.as_slice())?);
+    let initial_validation_loss: f32 = loss(
+        &model,
+        NonEmptySlice::try_from(validation_examples.as_slice())?,
+    );
     println!("До обучения dev loss={initial_validation_loss:.6}");
     // 3. SGD: выборка с возвращением, средняя cross-entropy и новые нулевые градиенты на каждом шаге.
     let (model, training_loss_curve): (Model, Vec<(f32, f32)>) = {
         let mut model: Model = model;
         let mut batch_random_generator: RandomGenerator = RandomGenerator::new(2147483647);
-
         let mut loss_csv_file: std::io::BufWriter<std::fs::File> = std::io::BufWriter::new(
             files
                 .remove(LOSS_CSV)
                 .ok_or("файл отсутствует в подготовленном наборе")?,
         );
-
         std::io::Write::write_fmt(
             &mut loss_csv_file,
             format_args!("step,learning_rate,loss,log10_loss\n"),
         )?;
         let mut training_loss_curve: Vec<(f32, f32)> = Vec::with_capacity(training_steps.get());
-
         let training_started_at: std::time::Instant = std::time::Instant::now();
         for step_index in 0..training_steps.get() {
             let iteration_started_at: std::time::Instant = std::time::Instant::now();
             let learning_rate: f32 = if step_index < 100_000 { 0.1 } else { 0.01 };
             let loss: f32 = {
-                let (loss, gradients): (f32, [Vec<f32>; 5]) = {
-                    let batch: Vec<TrainingExample> = (0..32)
+                let (loss, gradients): (f32, ModelGradients) = {
+                    let batch: Vec<VocabularyTrainingExample> = (0..32)
                         .map(|_| {
                             training_examples[batch_random_generator.index(training_examples.len())]
                         })
                         .collect();
-                    let training_batch: NonEmptySlice<'_, TrainingExample> =
+                    let training_batch: NonEmptySlice<'_, VocabularyTrainingExample> =
                         NonEmptySlice::try_from(batch.as_slice())?;
-
-                    let mut parameter_gradients: [Vec<f32>; 5] = model
-                        .parameters
-                        .each_ref()
-                        .map(|parameter_tensor| vec![0.0; parameter_tensor.len()]);
-                    let [
-                        embedding_gradients,
-                        input_to_hidden_weight_gradients,
-                        hidden_bias_gradients,
-                        hidden_to_output_weight_gradients,
-                        output_bias_gradients,
-                    ]: &mut [Vec<f32>; 5] = &mut parameter_gradients;
-                    let [_, input_to_hidden_weights, _, hidden_to_output_weights, _]: &[Vec<f32>;
-                         5] = &model.parameters;
+                    let mut gradients: ModelGradients = ModelGradients {
+                        character_embeddings: vec![0.0; model.character_embeddings.len()],
+                        input_to_hidden_weights: vec![0.0; model.input_to_hidden_weights.len()],
+                        hidden_biases: vec![0.0; model.hidden_biases.len()],
+                        hidden_to_output_weights: vec![0.0; model.hidden_to_output_weights.len()],
+                        output_biases: vec![0.0; model.output_biases.len()],
+                    };
                     let mut total_loss: f32 = 0.0;
                     for example in training_batch.iter() {
                         let (flattened_embeddings, hidden_activations, character_scores): (
                             Vec<f32>,
                             Vec<f32>,
                             Vec<f32>,
-                        ) = model.forward(example.context_character_indices);
+                        ) = forward(&model, example.vocabulary_context_indices);
                         let score_gradients: Vec<f32> = {
                             let (example_loss, mut score_gradients): (f32, Vec<f32>) =
-                                Model::cross_entropy(
+                                cross_entropy(
                                     &character_scores,
-                                    example.target_character_index,
+                                    example.vocabulary_character_index_target,
                                 );
                             total_loss += example_loss;
                             // Вероятности превращаем в производные ошибки по выходным оценкам.
                             // Для правильной буквы вычитаем 1, затем усредняем по мини-батчу.
-                            score_gradients[example.target_character_index.0] -= 1.0;
+                            score_gradients[example.vocabulary_character_index_target.0] -= 1.0;
                             for score_gradient in &mut score_gradients {
                                 *score_gradient /= training_batch.len() as f32;
                             }
-
                             score_gradients
                         };
                         for (output_bias_gradient, &score_gradient) in
-                            output_bias_gradients.iter_mut().zip(&score_gradients)
+                            gradients.output_biases.iter_mut().zip(&score_gradients)
                         {
                             *output_bias_gradient += score_gradient;
                         }
@@ -583,47 +586,45 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             let mut hidden_pre_activation_gradients: Vec<f32> =
                                 vec![0.0; model.hidden_neuron_count];
                             for hidden_neuron_index in 0..model.hidden_neuron_count {
-                                for output_character_index in 0..model.vocabulary_size {
-                                    hidden_to_output_weight_gradients[hidden_neuron_index
-                                        * model.vocabulary_size
+                                for output_character_index in 0..vocabulary_size {
+                                    gradients.hidden_to_output_weights[hidden_neuron_index
+                                        * vocabulary_size
                                         + output_character_index] += hidden_activations
                                         [hidden_neuron_index]
                                         * score_gradients[output_character_index];
-                                    hidden_pre_activation_gradients[hidden_neuron_index] +=
-                                        hidden_to_output_weights[hidden_neuron_index
-                                            * model.vocabulary_size
-                                            + output_character_index]
-                                            * score_gradients[output_character_index];
+                                    hidden_pre_activation_gradients[hidden_neuron_index] += model
+                                        .hidden_to_output_weights[hidden_neuron_index
+                                        * vocabulary_size
+                                        + output_character_index]
+                                        * score_gradients[output_character_index];
                                 }
                                 // Производная tanh равна 1 - tanh².
                                 hidden_pre_activation_gradients[hidden_neuron_index] *= 1.0
                                     - hidden_activations[hidden_neuron_index]
                                         * hidden_activations[hidden_neuron_index];
-                                hidden_bias_gradients[hidden_neuron_index] +=
+                                gradients.hidden_biases[hidden_neuron_index] +=
                                     hidden_pre_activation_gradients[hidden_neuron_index];
                             }
-
                             hidden_pre_activation_gradients
                         };
                         for input_coordinate_index in 0..flattened_embeddings.len() {
                             let input_coordinate_gradient: f32 = {
                                 let mut input_coordinate_gradient: f32 = 0.0;
                                 for hidden_neuron_index in 0..model.hidden_neuron_count {
-                                    input_to_hidden_weight_gradients[input_coordinate_index
+                                    gradients.input_to_hidden_weights[input_coordinate_index
                                         * model.hidden_neuron_count
                                         + hidden_neuron_index] += flattened_embeddings
                                         [input_coordinate_index]
                                         * hidden_pre_activation_gradients[hidden_neuron_index];
-                                    input_coordinate_gradient += input_to_hidden_weights
+                                    input_coordinate_gradient += model.input_to_hidden_weights
                                         [input_coordinate_index * model.hidden_neuron_count
                                             + hidden_neuron_index]
                                         * hidden_pre_activation_gradients[hidden_neuron_index];
                                 }
-
                                 input_coordinate_gradient
                             };
                             // Scatter-add: повторяющиеся символы суммируют градиенты одной строки C.
-                            embedding_gradients[example.context_character_indices
+                            gradients.character_embeddings[example.vocabulary_context_indices
                                 [input_coordinate_index / model.embedding_dimensions]
                                 .0
                                 * model.embedding_dimensions
@@ -631,14 +632,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 input_coordinate_gradient;
                         }
                     }
-                    (
-                        total_loss / training_batch.len() as f32,
-                        parameter_gradients,
-                    )
+                    (total_loss / training_batch.len() as f32, gradients)
                 };
-                for (parameter_tensor, gradient_tensor) in
-                    model.parameters.iter_mut().zip(gradients)
-                {
+                for (parameter_tensor, gradient_tensor) in [
+                    (
+                        &mut model.character_embeddings,
+                        gradients.character_embeddings,
+                    ),
+                    (
+                        &mut model.input_to_hidden_weights,
+                        gradients.input_to_hidden_weights,
+                    ),
+                    (&mut model.hidden_biases, gradients.hidden_biases),
+                    (
+                        &mut model.hidden_to_output_weights,
+                        gradients.hidden_to_output_weights,
+                    ),
+                    (&mut model.output_biases, gradients.output_biases),
+                ] {
                     for (parameter, gradient) in parameter_tensor.iter_mut().zip(gradient_tensor) {
                         *parameter -= learning_rate * gradient;
                     }
@@ -662,21 +673,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
         std::io::Write::flush(&mut loss_csv_file)?;
-
         (model, training_loss_curve)
     };
-    // 4. Оценка без обновлений и графики, как в notebook.
-    // Test — только окончательная оценка, не выбор lr/архитектуры.
+    // 4. Считаем средние loss на train/dev/test без обновления параметров и сохраняем графики.
+    // Dev служит для выбора настроек, test — для окончательной оценки после их выбора.
     {
         let metrics_text: String = format!(
             "steps={training_steps}\nparameters={parameter_count}\ninitial_dev_loss={initial_validation_loss:.6}\ntrain_loss={training_loss:.6}\ndev_loss={validation_loss:.6}\ntest_loss={test_loss:.6}\n",
-            parameter_count = model.parameters.iter().map(Vec::len).sum::<usize>(),
-            training_loss = model.loss(NonEmptySlice::try_from(training_examples.as_slice())?),
-            validation_loss = model.loss(NonEmptySlice::try_from(validation_examples.as_slice())?),
-            test_loss = model.loss(NonEmptySlice::try_from(test_examples.as_slice())?),
+            training_loss = loss(
+                &model,
+                NonEmptySlice::try_from(training_examples.as_slice())?
+            ),
+            validation_loss = loss(
+                &model,
+                NonEmptySlice::try_from(validation_examples.as_slice())?
+            ),
+            test_loss = loss(&model, NonEmptySlice::try_from(test_examples.as_slice())?),
         );
         print!("{metrics_text}");
-
         std::io::Write::write_all(
             &mut files
                 .remove(METRICS_TXT)
@@ -692,12 +706,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         None,
         "Training: x=step, y=log10(minibatch loss)",
     )?;
-    let [character_embeddings, _, _, _, _]: &[Vec<f32>; 5] = &model.parameters;
-    let embedding_coordinates: Vec<(f32, f32)> = (0..vocabulary.len())
+    let embedding_coordinates: Vec<(f32, f32)> = (0..vocabulary_size)
         .map(|character_index| {
             (
-                character_embeddings[character_index * model.embedding_dimensions],
-                character_embeddings[character_index * model.embedding_dimensions + 1],
+                model.character_embeddings[character_index * model.embedding_dimensions],
+                model.character_embeddings[character_index * model.embedding_dimensions + 1],
             )
         })
         .collect();
@@ -723,24 +736,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             )?;
         }
     }
-    // 5. Авторегрессионная генерация с собственным фиксированным seed.
+    // 5. Генерируем имена с отдельным seed: каждый выбранный символ добавляем в контекст до точки или лимита.
     let generated_names: String = {
         let mut sampling_random_generator: RandomGenerator = RandomGenerator::new(2147483647 + 10);
         let mut generated_names: String = String::new();
         for _ in 0..20 {
             let name: String = 'sample: {
-                let mut context_character_indices: ContextCharacterIndices =
-                    [vocabulary.character_index(0)?; 3];
+                let mut vocabulary_context_indices: VocabularyContextIndices =
+                    [vocabulary.dot_index(); 3];
                 let mut generated_name: String = String::new();
                 for _ in 0..100 {
-                    let (_, character_probabilities): (f32, Vec<f32>) = Model::cross_entropy(
-                        &model.forward(context_character_indices).2,
-                        vocabulary.character_index(0)?,
+                    let (_, character_probabilities): (f32, Vec<f32>) = cross_entropy(
+                        &forward(&model, vocabulary_context_indices).2,
+                        vocabulary.dot_index(),
                     );
                     let random_probability: f32 = sampling_random_generator.uniform();
                     let sampled_character_index: usize = {
                         let mut cumulative_probability: f32 = 0.0;
-                        let mut sampled_character_index: usize = model.vocabulary_size - 1;
+                        let mut sampled_character_index: usize = vocabulary_size - 1;
                         for (character_index, character_probability) in
                             character_probabilities.iter().enumerate()
                         {
@@ -750,18 +763,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 break;
                             }
                         }
-
                         sampled_character_index
                     };
-                    let sampled_character_index: CharacterIndex =
+                    let sampled_character_index: VocabularyCharacterIndex =
                         vocabulary.character_index(sampled_character_index)?;
                     generated_name.push(vocabulary.character(sampled_character_index)?);
                     if sampled_character_index.0 == 0 {
                         break 'sample generated_name;
                     }
-                    context_character_indices = [
-                        context_character_indices[1],
-                        context_character_indices[2],
+                    vocabulary_context_indices = [
+                        vocabulary_context_indices[1],
+                        vocabulary_context_indices[2],
                         sampled_character_index,
                     ];
                 }
@@ -772,7 +784,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             generated_names.push_str(&name);
             generated_names.push('\n');
         }
-
         generated_names
     };
     std::io::Write::write_all(
