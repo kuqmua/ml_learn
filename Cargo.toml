@@ -257,6 +257,8 @@ resolver = "3"
 
 # Версии, пути и настройки зависимостей объявляются только здесь.
 [workspace.dependencies]
+rand = "0.10"
+rand_distr = "0.6"
 l001_01_multiply_matching_coords_then_add_results = { package = "l001-01-multiply-matching-coords-then-add-results", path = "l001-01-multiply-matching-coords-then-add-results" }
 l002_01_calc_sum_of_absolute_vec_coords = { package = "l002-01-calc-sum-of-absolute-vec-coords", path = "l002-01-calc-sum-of-absolute-vec-coords" }
 l003_01_calc_vec_len_as_square_root_of_sum_of_squared_coords = { package = "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords", path = "l003-01-calc-vec-len-as-square-root-of-sum-of-squared-coords" }
