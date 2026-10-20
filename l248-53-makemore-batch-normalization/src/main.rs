@@ -38,7 +38,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         // Получает число из стандартного нормального распределения N(0, 1) преобразованием Бокса — Мюллера.
         fn normal(&mut self) -> f32 {
-            (-2.0 * self.uniform().ln()).sqrt() * (std::f32::consts::TAU * self.uniform()).cos()
+            (-2.0 * self.uniform().ln()).sqrt()
+                * (2.0 * std::f32::consts::PI * self.uniform()).cos()
         }
     }
 
