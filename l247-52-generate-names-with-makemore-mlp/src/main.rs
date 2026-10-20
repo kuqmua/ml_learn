@@ -140,6 +140,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         vocabulary_character_index_target: VocabularyCharacterIndex,
     }
 
+    // Нулевое значение для координат, градиентов и накопительных сумм.
+    const ZERO: f32 = 0.0;
+
     // Фиксированные размеры модели, известные при компиляции.
     const EMBEDDING_DIMENSIONS: usize = 10;
     const HIDDEN_NEURON_COUNT: usize = 200;
@@ -480,7 +483,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Остальные координаты сначала нулевые, затем обучаются вместе со всеми параметрами.
         let initialize_embeddings_regular_cube = || -> Vec<[f32; EMBEDDING_DIMENSIONS]> {
             if vocabulary_size < 2 {
-                return vec![[0.0; EMBEDDING_DIMENSIONS]; vocabulary_size];
+                return vec![[ZERO; EMBEDDING_DIMENSIONS]; vocabulary_size];
             }
             let grid_dimensions: usize = EMBEDDING_DIMENSIONS.min(3);
             let mut levels_per_axis: usize = 1;
@@ -495,7 +498,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     // по её линейной нумерации, включая оба крайних узла; случайности нет.
                     let mut node_index: usize =
                         symbol_index * (node_count - 1) / (vocabulary_size - 1);
-                    let mut embedding: [f32; EMBEDDING_DIMENSIONS] = [0.0; EMBEDDING_DIMENSIONS];
+                    let mut embedding: [f32; EMBEDDING_DIMENSIONS] = [ZERO; EMBEDDING_DIMENSIONS];
                     for coordinate in &mut embedding[..grid_dimensions] {
                         let level: usize = node_index % levels_per_axis;
                         node_index /= levels_per_axis;
@@ -590,17 +593,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         NonEmptySlice::try_from(batch.as_slice())?;
                     let mut gradients: ModelGradients = ModelGradients {
                         character_embeddings: vec![
-                            [0.0; EMBEDDING_DIMENSIONS];
+                            [ZERO; EMBEDDING_DIMENSIONS];
                             model.character_embeddings.len()
                         ],
-                        input_to_hidden_weights: [0.0; CONTEXT_LENGTH
-                            * EMBEDDING_DIMENSIONS
-                            * HIDDEN_NEURON_COUNT],
-                        hidden_biases: [0.0; HIDDEN_NEURON_COUNT],
-                        hidden_to_output_weights: vec![0.0; model.hidden_to_output_weights.len()],
-                        output_biases: vec![0.0; model.output_biases.len()],
+                        input_to_hidden_weights: [ZERO;
+                            CONTEXT_LENGTH * EMBEDDING_DIMENSIONS * HIDDEN_NEURON_COUNT],
+                        hidden_biases: [ZERO; HIDDEN_NEURON_COUNT],
+                        hidden_to_output_weights: vec![ZERO; model.hidden_to_output_weights.len()],
+                        output_biases: vec![ZERO; model.output_biases.len()],
                     };
-                    let mut total_loss: f32 = 0.0;
+                    let mut total_loss: f32 = ZERO;
                     for example in training_batch.iter() {
                         let (flattened_embeddings, hidden_activations, character_scores): (
                             Vec<f32>,
@@ -630,7 +632,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         // Производные ошибки по суммам скрытого слоя ДО применения tanh.
                         let hidden_pre_activation_gradients: Vec<f32> = {
                             let mut hidden_pre_activation_gradients: Vec<f32> =
-                                vec![0.0; HIDDEN_NEURON_COUNT];
+                                vec![ZERO; HIDDEN_NEURON_COUNT];
                             for hidden_neuron_index in 0..HIDDEN_NEURON_COUNT {
                                 for output_character_index in 0..vocabulary_size {
                                     gradients.hidden_to_output_weights[hidden_neuron_index
@@ -655,7 +657,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         };
                         for input_coordinate_index in 0..flattened_embeddings.len() {
                             let input_coordinate_gradient: f32 = {
-                                let mut input_coordinate_gradient: f32 = 0.0;
+                                let mut input_coordinate_gradient: f32 = ZERO;
                                 for hidden_neuron_index in 0..HIDDEN_NEURON_COUNT {
                                     gradients.input_to_hidden_weights[input_coordinate_index
                                         * HIDDEN_NEURON_COUNT
@@ -793,7 +795,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     );
                     let random_probability: f32 = sampling_random_generator.uniform();
                     let sampled_character_index: usize = {
-                        let mut cumulative_probability: f32 = 0.0;
+                        let mut cumulative_probability: f32 = ZERO;
                         let mut sampled_character_index: usize = vocabulary_size - 1;
                         for (character_index, character_probability) in
                             character_probabilities.iter().enumerate()
