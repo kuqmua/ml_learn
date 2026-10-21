@@ -251,12 +251,14 @@ members = [
     "l245-50-classify-mnist-with-hidden-layer",
     "l246-51-classify-mnist-with-convolutional-network",
     "l247-52-generate-names-with-makemore-mlp",
-    "l248-53-makemore-batch-normalization",
+    "l248-53-train-makemore-mlp-with-cutile",
+    "l249-54-makemore-batch-normalization",
 ]
 resolver = "3"
 
 # Версии, пути и настройки зависимостей объявляются только здесь.
 [workspace.dependencies]
+cutile = "0.4.0"
 derive-where = "1.6"
 derive_more = { version = "2.1.1", default-features = false, features = ["deref", "into_iterator"] }
 rand = "0.10"
@@ -320,5 +322,8 @@ opt-level = 3
 [profile.dev.package.l247-52-generate-names-with-makemore-mlp]
 opt-level = 3
 
-[profile.dev.package.l248-53-makemore-batch-normalization]
+[profile.dev.package.l248-53-train-makemore-mlp-with-cutile]
+opt-level = 3
+
+[profile.dev.package.l249-54-makemore-batch-normalization]
 opt-level = 3

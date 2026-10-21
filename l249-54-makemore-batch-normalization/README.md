@@ -1,14 +1,14 @@
-# 248 · Makemore, часть 3: инициализация, BatchNorm и диагностика
+# 249 · Makemore, часть 3: инициализация, BatchNorm и диагностика
 
-Перенос на Rust урока Андрея Карпаты из `/home/sergey/projects/nn-zero-to-hero/lectures/makemore/makemore_part3_bn.ipynb`. Продолжает [урок 247](../l247-52-generate-names-with-makemore-mlp/README.md). Две модели, ручной backprop, диагностика и бонусные опыты работают на CPU, без PyTorch, Python и внешних зависимостей.
+Перенос на Rust урока Андрея Карпаты из `/home/sergey/projects/nn-zero-to-hero/lectures/makemore/makemore_part3_bn.ipynb`. Продолжает [CPU-урок 247](../l247-52-generate-names-with-makemore-mlp/README.md); между ними расположен [GPU-урок 248](../l248-53-train-makemore-mlp-with-cutile/README.md). Две модели, ручной backprop, диагностика и бонусные опыты работают на CPU, без PyTorch, Python и внешних зависимостей.
 
 ## Запуск
 
 Из корня проекта:
 
 ```bash
-cargo run --release -p l248-53-makemore-batch-normalization
-cargo test -p l248-53-makemore-batch-normalization
+cargo run --release -p l249-54-makemore-batch-normalization
+cargo test -p l249-54-makemore-batch-normalization
 ```
 
 Из папки урока достаточно `cargo run`: для этого пакета включена оптимизация dev-профиля. Число шагов и граница снижения lr указаны прямо в цикле `main`:

@@ -1,0 +1,9 @@
+[package]
+name = "l248-53-train-makemore-mlp-with-cutile"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+cutile = { workspace = true }
+rand = { workspace = true }
+rand_distr = { workspace = true }

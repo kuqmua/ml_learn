@@ -978,6 +978,10 @@
 
 Новый практический [урок 247](l247-52-generate-names-with-makemore-mlp/README.md) повторяет `makemore_part2_mlp.ipynb`: контекст из трёх букв, lookup эмбеддингов, tanh MLP, cross-entropy, ручной backprop, mini-batch SGD, train/dev/test, графики и генерация имён. Полный запуск: `cargo run --release -p l247-52-generate-names-with-makemore-mlp`. Зависимости вне Rust не требуются, данные включены в урок.
 
-### 53. Makemore: инициализация, BatchNorm и глубокая сеть
+### 53. Makemore: обучение MLP на NVIDIA GPU с cuTile
 
-[Урок 248](l248-53-makemore-batch-normalization/README.md) переносит `makemore_part3_bn.ipynb`: MLP с BatchNorm, train/eval и running statistics, калибровка, собственные Linear/BatchNorm/Tanh, глубокая сеть, распределения активаций и градиентов, отношение update/data, генерация и бонусные опыты. Запуск: `cargo run --release -p l248-53-makemore-batch-normalization`. Данные локальные, внешние зависимости не нужны.
+[Урок 248](l248-53-train-makemore-mlp-with-cutile/README.md) переносит обучение MLP на GPU: тайловые умножения матриц, ручной backward, CUDA Graph и сравнение с CPU-уроком 247. Запуск из папки урока: `cargo run`; из корня: `cargo run -p l248-53-train-makemore-mlp-with-cutile`. Нужны NVIDIA GPU, CUDA Toolkit с `tileiras` и libclang для сборки.
+
+### 54. Makemore: инициализация, BatchNorm и глубокая сеть
+
+[Урок 249](l249-54-makemore-batch-normalization/README.md) переносит `makemore_part3_bn.ipynb`: MLP с BatchNorm, train/eval и running statistics, калибровка, собственные Linear/BatchNorm/Tanh, глубокая сеть, распределения активаций и градиентов, отношение update/data, генерация и бонусные опыты. Запуск: `cargo run --release -p l249-54-makemore-batch-normalization`. Данные локальные, внешние зависимости не нужны.
