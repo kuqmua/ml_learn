@@ -257,6 +257,8 @@ resolver = "3"
 
 # Версии, пути и настройки зависимостей объявляются только здесь.
 [workspace.dependencies]
+derive-where = "1.6"
+derive_more = { version = "2.1.1", default-features = false, features = ["deref", "into_iterator"] }
 rand = "0.10"
 rand_distr = "0.6"
 l001_01_multiply_matching_coords_then_add_results = { package = "l001-01-multiply-matching-coords-then-add-results", path = "l001-01-multiply-matching-coords-then-add-results" }

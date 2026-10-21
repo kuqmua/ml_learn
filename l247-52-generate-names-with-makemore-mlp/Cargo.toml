@@ -4,5 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+derive-where = { workspace = true }
+derive_more = { workspace = true }
 rand = { workspace = true }
 rand_distr = { workspace = true }
