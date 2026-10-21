@@ -113,11 +113,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     const CONTEXT_LENGTH: usize = 3;
     // Обучающий пример в индексах Vocabulary: контекст длины CONTEXT_LENGTH и правильный следующий символ.
     #[derive(Clone, Copy, Debug, PartialEq)]
-    struct VocabularyContextAndTargetIndices {
+    struct PreviousVocabularyCharacterIndexesAndNextCharacterIndex {
         // Индексы предыдущих CONTEXT_LENGTH символов в Vocabulary; индекс точки заполняет начало имени.
-        vocabulary_context_indices: [VocabularyCharacterIndexAsUsize; CONTEXT_LENGTH],
+        previous_vocabulary_character_usize_indexes:
+            [VocabularyCharacterIndexAsUsize; CONTEXT_LENGTH],
         // Индекс правильного следующего символа в Vocabulary; индекс точки обозначает конец имени.
-        vocabulary_character_index_target: VocabularyCharacterIndexAsUsize,
+        next_vocabulary_character_usize_index: VocabularyCharacterIndexAsUsize,
     }
     // Нулевое значение для координат, градиентов и накопительных сумм.
     const ZERO_F32: f32 = 0.0;
@@ -134,7 +135,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         std::num::NonZeroUsize::new(200_000).ok_or("число шагов должно быть положительным")?;
     // Один seed и общий генератор для всех случайных операций программы.
     let mut random_generator: rand::rngs::StdRng = rand::SeedableRng::seed_from_u64(42);
-    let (vocabulary, training_examples, validation_examples, test_examples) = {
+    let (
+        vocabulary,
+        training_character_index_pairs,
+        validation_character_index_pairs,
+        test_character_index_pairs,
+    ) = {
         // 1. Проверяем записи; повторения сохраняем, чтобы не менять их частоты в наборе.
         let names_text: &str = include_str!("../data/names.txt");
         // Одно непустое имя из строчных латинских букв; заимствует исходный текст.
@@ -220,48 +226,62 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Словарь (только train): {:?}", vocabulary.0);
         // Захватывает Vocabulary: для каждого имени сбрасывает контекст и строит пары «контекст → следующий символ».
         // Вход и результат непустые; точка в конце учит завершать имя, неизвестный символ возвращает ошибку.
-        let build_vocabulary_context_and_target_indices = |names: NonEmptySlice<'_, Name<'_>>| -> Result<
-            NonEmptyVec<VocabularyContextAndTargetIndices>,
-            &'static str,
-        > {
-            let mut examples: Vec<VocabularyContextAndTargetIndices> = Vec::new();
-            for name in names.iter() {
-                let mut vocabulary_context_indices: [VocabularyCharacterIndexAsUsize;
+        let build_previous_vocabulary_character_indexes_and_next_character_indexes =
+            |names: NonEmptySlice<'_, Name<'_>>| -> Result<
+                NonEmptyVec<PreviousVocabularyCharacterIndexesAndNextCharacterIndex>,
+                &'static str,
+            > {
+                let mut character_index_pairs: Vec<
+                    PreviousVocabularyCharacterIndexesAndNextCharacterIndex,
+                > = Vec::new();
+                for name in names.iter() {
+                    let mut previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize;
                     CONTEXT_LENGTH] = [vocabulary.dot_index(); CONTEXT_LENGTH];
-                for next_character in name.0.chars().chain(std::iter::once('.')) {
-                    let vocabulary_character_index_target: VocabularyCharacterIndexAsUsize =
-                        vocabulary.index_of(next_character)?;
-                    examples.push(VocabularyContextAndTargetIndices {
-                        vocabulary_context_indices,
-                        vocabulary_character_index_target,
-                    });
-                    vocabulary_context_indices.rotate_left(1);
-                    vocabulary_context_indices[CONTEXT_LENGTH - 1] =
-                        vocabulary_character_index_target;
+                    for next_character in name.0.chars().chain(std::iter::once('.')) {
+                        let next_vocabulary_character_usize_index: VocabularyCharacterIndexAsUsize =
+                            vocabulary.index_of(next_character)?;
+                        character_index_pairs.push(
+                            PreviousVocabularyCharacterIndexesAndNextCharacterIndex {
+                                previous_vocabulary_character_usize_indexes,
+                                next_vocabulary_character_usize_index,
+                            },
+                        );
+                        previous_vocabulary_character_usize_indexes.rotate_left(1);
+                        previous_vocabulary_character_usize_indexes[CONTEXT_LENGTH - 1] =
+                            next_vocabulary_character_usize_index;
+                    }
                 }
-            }
-            NonEmptyVec::try_from(examples)
-        };
-        let training_examples: NonEmptyVec<VocabularyContextAndTargetIndices> =
-            build_vocabulary_context_and_target_indices(NonEmptySlice::from(&training_names))?;
-        let validation_examples: NonEmptyVec<VocabularyContextAndTargetIndices> =
-            build_vocabulary_context_and_target_indices(NonEmptySlice::from(&validation_names))?;
-        let test_examples: NonEmptyVec<VocabularyContextAndTargetIndices> =
-            build_vocabulary_context_and_target_indices(NonEmptySlice::from(&test_names))?;
+                NonEmptyVec::try_from(character_index_pairs)
+            };
+        let training_character_index_pairs: NonEmptyVec<
+            PreviousVocabularyCharacterIndexesAndNextCharacterIndex,
+        > = build_previous_vocabulary_character_indexes_and_next_character_indexes(
+            NonEmptySlice::from(&training_names),
+        )?;
+        let validation_character_index_pairs: NonEmptyVec<
+            PreviousVocabularyCharacterIndexesAndNextCharacterIndex,
+        > = build_previous_vocabulary_character_indexes_and_next_character_indexes(
+            NonEmptySlice::from(&validation_names),
+        )?;
+        let test_character_index_pairs: NonEmptyVec<
+            PreviousVocabularyCharacterIndexesAndNextCharacterIndex,
+        > = build_previous_vocabulary_character_indexes_and_next_character_indexes(
+            NonEmptySlice::from(&test_names),
+        )?;
         println!(
             "Имена train/dev/test: {}/{}/{}; примеры: {}/{}/{}",
             training_names.len(),
             validation_names.len(),
             test_names.len(),
-            training_examples.len(),
-            validation_examples.len(),
-            test_examples.len()
+            training_character_index_pairs.len(),
+            validation_character_index_pairs.len(),
+            test_character_index_pairs.len()
         );
         (
             vocabulary,
-            training_examples,
-            validation_examples,
-            test_examples,
+            training_character_index_pairs,
+            validation_character_index_pairs,
+            test_character_index_pairs,
         )
     };
     let vocabulary_len: usize = vocabulary.len();
@@ -346,7 +366,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Для одного примера возвращает (loss, character_probabilities).
     // loss — ошибка предсказания: -ln(вероятность правильного следующего символа).
     let cross_entropy = |character_scores: NonEmptySlice<'_, FiniteF32>,
-                         vocabulary_character_index_target: VocabularyCharacterIndexAsUsize|
+                         next_vocabulary_character_usize_index: VocabularyCharacterIndexAsUsize|
      -> Result<
         (
             CrossEntropyLossAsNonNegativeF32,
@@ -355,31 +375,31 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         &'static str,
     > {
         // Вычитаем максимальную оценку перед exp; cross-entropy считаем через log-sum-exp без log(вероятности).
-        let maximum_score: f32 = character_scores
+        let maximum_character_score: f32 = character_scores
             .iter()
             .map(|score| score.0)
             .fold(f32::NEG_INFINITY, f32::max);
-        let character_exponentials: NonEmptyVec<f32> = NonEmptyVec::try_from(
+        let exponentials_from_shifted_character_scores: NonEmptyVec<f32> = NonEmptyVec::try_from(
             character_scores
                 .iter()
-                .map(|character_score| (character_score.0 - maximum_score).exp())
+                .map(|character_score| (character_score.0 - maximum_character_score).exp())
                 .collect::<Vec<_>>(),
         )?;
-        let exponential_sum: f32 = character_exponentials.iter().sum();
+        let exponentials_sum: f32 = exponentials_from_shifted_character_scores.iter().sum();
         let character_probabilities: NonEmptyVec<CharacterProbabilityAsF32From0To1> =
             NonEmptyVec::try_from(
-                character_exponentials
+                exponentials_from_shifted_character_scores
                     .into_iter()
                     .map(|value| {
-                        CharacterProbabilityAsF32From0To1::try_from(value / exponential_sum)
+                        CharacterProbabilityAsF32From0To1::try_from(value / exponentials_sum)
                     })
                     .collect::<Result<Vec<_>, _>>()?,
             )?;
         let target_score: f32 = character_scores
-            .get(vocabulary_character_index_target.0)
+            .get(next_vocabulary_character_usize_index.0)
             .ok_or("индекс целевого символа выходит за границы оценок")?
             .0;
-        let loss: f32 = (maximum_score - target_score) + exponential_sum.ln();
+        let loss: f32 = (maximum_character_score - target_score) + exponentials_sum.ln();
         Ok((
             CrossEntropyLossAsNonNegativeF32::try_from(loss)?,
             character_probabilities,
@@ -502,14 +522,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         // Вычисляет оценки следующего символа и сохраняет промежуточные значения прямого прохода.
         let forward = |model: &Model,
-                       vocabulary_context_indices: [VocabularyCharacterIndexAsUsize;
+                       previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize;
                            CONTEXT_LENGTH]|
          -> Result<ForwardPassResult, &'static str> {
             // Берём векторы символов контекста из C и объединяем в исходном порядке.
             // Длина входного вектора: CONTEXT_LENGTH * EMBEDDING_DIMENSIONS.
             let character_embeddings_flattened: [FiniteF32; CONTEXT_LENGTH * EMBEDDING_DIMENSIONS] = {
                 let context_embeddings: [[FiniteF32; EMBEDDING_DIMENSIONS]; CONTEXT_LENGTH] =
-                    vocabulary_context_indices.map(|index| model.character_embeddings[index.0]);
+                    previous_vocabulary_character_usize_indexes
+                        .map(|index| model.character_embeddings[index.0]);
                 context_embeddings
                     .as_flattened()
                     .try_into()
@@ -567,19 +588,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         };
         // Усредняет cross-entropy по непустому набору; захватывает forward и cross_entropy, модель не изменяет.
         let loss = move |model: &Model,
-                         examples: NonEmptySlice<'_, VocabularyContextAndTargetIndices>|
+                         character_index_pairs: NonEmptySlice<
+            '_,
+            PreviousVocabularyCharacterIndexesAndNextCharacterIndex,
+        >|
               -> Result<CrossEntropyLossAsNonNegativeF32, &'static str> {
             let mut total_loss: f64 = 0.0;
-            for example in examples.iter() {
-                let (example_loss, _) = cross_entropy(
+            for character_index_pair in character_index_pairs.iter() {
+                let (character_index_pair_loss, _) = cross_entropy(
                     NonEmptySlice::from(
-                        &forward(model, example.vocabulary_context_indices)?.character_scores,
+                        &forward(
+                            model,
+                            character_index_pair.previous_vocabulary_character_usize_indexes,
+                        )?
+                        .character_scores,
                     ),
-                    example.vocabulary_character_index_target,
+                    character_index_pair.next_vocabulary_character_usize_index,
                 )?;
-                total_loss += f64::from(example_loss.0);
+                total_loss += f64::from(character_index_pair_loss.0);
             }
-            CrossEntropyLossAsNonNegativeF32::try_from((total_loss / examples.len() as f64) as f32)
+            CrossEntropyLossAsNonNegativeF32::try_from(
+                (total_loss / character_index_pairs.len() as f64) as f32,
+            )
         };
         (model, forward, loss)
     };
@@ -600,8 +630,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         vocabulary_len,
         trainable_scalar_count
     );
-    let initial_validation_loss: CrossEntropyLossAsNonNegativeF32 =
-        loss(&model, NonEmptySlice::from(&validation_examples))?;
+    let initial_validation_loss: CrossEntropyLossAsNonNegativeF32 = loss(
+        &model,
+        NonEmptySlice::from(&validation_character_index_pairs),
+    )?;
     println!("До обучения dev loss={:.6}", initial_validation_loss.0);
     // 3. SGD: выборка с возвращением, средняя cross-entropy и новые нулевые градиенты на каждом шаге.
     let model = {
@@ -631,15 +663,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         // Градиенты second_layer_biases.
                         second_layer_biases: NonEmptyVec<T>,
                     }
-                    let batch: [VocabularyContextAndTargetIndices; BATCH_SIZE] =
+                    let character_index_pairs_batch: [PreviousVocabularyCharacterIndexesAndNextCharacterIndex; BATCH_SIZE] =
                         std::array::from_fn(|_| {
-                            training_examples[rand::RngExt::random_range(
+                            training_character_index_pairs[rand::RngExt::random_range(
                                 &mut random_generator,
-                                0..training_examples.len(),
+                                0..training_character_index_pairs.len(),
                             )]
                         });
-                    let training_batch: NonEmptySlice<'_, VocabularyContextAndTargetIndices> =
-                        NonEmptySlice::try_from(batch.as_slice())?;
+                    let training_character_index_pairs_batch: NonEmptySlice<
+                        '_,
+                        PreviousVocabularyCharacterIndexesAndNextCharacterIndex,
+                    > = NonEmptySlice::try_from(character_index_pairs_batch.as_slice())?;
                     let mut gradients: ModelGradients<f32> = ModelGradients {
                         character_embeddings: model
                             .character_embeddings
@@ -653,21 +687,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         second_layer_biases: model.second_layer_biases.map(|_| ZERO_F32),
                     };
                     let mut total_loss: f32 = ZERO_F32;
-                    for example in training_batch.iter() {
-                        let forward_result = forward(&model, example.vocabulary_context_indices)?;
+                    for character_index_pair in training_character_index_pairs_batch.iter() {
+                        let forward_result = forward(
+                            &model,
+                            character_index_pair.previous_vocabulary_character_usize_indexes,
+                        )?;
                         let score_gradients: NonEmptyVec<f32> = {
-                            let (example_loss, character_probabilities) = cross_entropy(
-                                NonEmptySlice::from(&forward_result.character_scores),
-                                example.vocabulary_character_index_target,
-                            )?;
-                            total_loss += example_loss.0;
+                            let (character_index_pair_loss, character_probabilities) =
+                                cross_entropy(
+                                    NonEmptySlice::from(&forward_result.character_scores),
+                                    character_index_pair.next_vocabulary_character_usize_index,
+                                )?;
+                            total_loss += character_index_pair_loss.0;
                             let mut score_gradients: NonEmptyVec<f32> =
                                 character_probabilities.map(|probability| probability.0);
                             // Вероятности превращаем в производные ошибки по выходным оценкам.
                             // Для правильной буквы вычитаем 1, затем усредняем по мини-батчу.
-                            score_gradients.0[example.vocabulary_character_index_target.0] -= 1.0;
+                            score_gradients.0
+                                [character_index_pair.next_vocabulary_character_usize_index.0] -=
+                                1.0;
                             for score_gradient in score_gradients.0.iter_mut() {
-                                *score_gradient /= training_batch.len() as f32;
+                                *score_gradient /=
+                                    training_character_index_pairs_batch.len() as f32;
                             }
                             score_gradients
                         };
@@ -724,7 +765,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 input_coordinate_gradient
                             };
                             // Scatter-add: повторяющиеся символы суммируют градиенты одной строки C.
-                            gradients.character_embeddings.0[example.vocabulary_context_indices
+                            gradients.character_embeddings.0[character_index_pair
+                                .previous_vocabulary_character_usize_indexes
                                 [input_coordinate_index / EMBEDDING_DIMENSIONS]
                                 .0][input_coordinate_index % EMBEDDING_DIMENSIONS] +=
                                 input_coordinate_gradient;
@@ -749,7 +791,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             .second_layer_biases
                             .try_map(|&value| FiniteF32::try_from(value))?,
                     };
-                    (total_loss / training_batch.len() as f32, gradients)
+                    (
+                        total_loss / training_character_index_pairs_batch.len() as f32,
+                        gradients,
+                    )
                 };
                 for (parameter_tensor, gradient_tensor) in [
                     (
@@ -798,22 +843,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let metrics_text: String = format!(
             "steps={training_steps}\nparameters={trainable_scalar_count}\ninitial_dev_loss={initial_validation_loss:.6}\ntrain_loss={training_loss:.6}\ndev_loss={validation_loss:.6}\ntest_loss={test_loss:.6}\n",
             initial_validation_loss = initial_validation_loss.0,
-            training_loss = loss(&model, NonEmptySlice::from(&training_examples))?.0,
-            validation_loss = loss(&model, NonEmptySlice::from(&validation_examples))?.0,
-            test_loss = loss(&model, NonEmptySlice::from(&test_examples))?.0,
+            training_loss = loss(&model, NonEmptySlice::from(&training_character_index_pairs))?.0,
+            validation_loss = loss(
+                &model,
+                NonEmptySlice::from(&validation_character_index_pairs)
+            )?
+            .0,
+            test_loss = loss(&model, NonEmptySlice::from(&test_character_index_pairs))?.0,
         );
         print!("{metrics_text}");
     }
     // 5. Генерируем имена с общим генератором: каждый выбранный символ добавляем в контекст до точки или лимита.
     for _ in 0..20 {
         let name: String = 'sample: {
-            let mut vocabulary_context_indices: [VocabularyCharacterIndexAsUsize; CONTEXT_LENGTH] =
-                [vocabulary.dot_index(); CONTEXT_LENGTH];
+            let mut previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize;
+                CONTEXT_LENGTH] = [vocabulary.dot_index(); CONTEXT_LENGTH];
             let mut generated_name: String = String::new();
             for _ in 0..100 {
                 let (_, character_probabilities) = cross_entropy(
                     NonEmptySlice::from(
-                        &forward(&model, vocabulary_context_indices)?.character_scores,
+                        &forward(&model, previous_vocabulary_character_usize_indexes)?
+                            .character_scores,
                     ),
                     vocabulary.dot_index(),
                 )?;
@@ -844,8 +894,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if sampled_character_index.0 == 0 {
                     break 'sample generated_name;
                 }
-                vocabulary_context_indices.rotate_left(1);
-                vocabulary_context_indices[CONTEXT_LENGTH - 1] = sampled_character_index;
+                previous_vocabulary_character_usize_indexes.rotate_left(1);
+                previous_vocabulary_character_usize_indexes[CONTEXT_LENGTH - 1] =
+                    sampled_character_index;
             }
             generated_name.push_str(" [лимит 100 символов]");
             generated_name
