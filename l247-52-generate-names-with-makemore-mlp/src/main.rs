@@ -46,21 +46,78 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .try_into()
             .map_err(|_| "при преобразовании изменилась длина массива")
     }
+    // Словарь символов: точка под индексом 0, затем уникальные буквы a–z по алфавиту.
+    struct Vocabulary(
+        // Символы в порядке их индексов; создаются методом new.
+        NonEmptyVec<char>,
+    );
+    impl Vocabulary {
+        // Отбирает из текста буквы a–z, сортирует, удаляет повторы и добавляет точку под индексом 0.
+        fn new(text: &str) -> Result<Self, &'static str> {
+            let mut characters: Vec<char> = text
+                .chars()
+                .filter(|character| character.is_ascii_lowercase())
+                .collect();
+            characters.sort_unstable();
+            characters.dedup();
+            characters.insert(0, '.');
+            Ok(Self(NonEmptyVec::try_from(characters)?))
+        }
+        // Возвращает количество символов, включая точку.
+        fn len(&self) -> usize {
+            self.0.len()
+        }
+        // Возвращает индекс точки: она обозначает границу имени и заполняет начальный контекст.
+        // Метод new всегда помещает точку под индексом 0.
+        fn dot_index(&self) -> VocabularyCharacterIndexAsUsize {
+            VocabularyCharacterIndexAsUsize(0)
+        }
+        // Находит индекс символа; для отсутствующего символа возвращает ошибку.
+        fn index_of(
+            &self,
+            character: char,
+        ) -> Result<VocabularyCharacterIndexAsUsize, &'static str> {
+            let value: usize = self
+                .0
+                .iter()
+                .position(|&candidate| candidate == character)
+                .ok_or("символ отсутствует в словаре")?;
+            VocabularyCharacterIndexAsUsize::try_from((value, self))
+        }
+        // Возвращает символ по числовой позиции, проверяя границы; принадлежность индекса словарю не проверяется.
+        fn character(&self, index: VocabularyCharacterIndexAsUsize) -> Result<char, &'static str> {
+            self.0
+                .get(index.0)
+                .copied()
+                .ok_or("индекс символа должен быть меньше размера словаря")
+        }
+    }
     // Позиция символа, проверенная относительно размера Vocabulary при создании.
     #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-    struct VocabularyCharacterIndex(
+    struct VocabularyCharacterIndexAsUsize(
         // Позиция проверена при создании; принадлежность конкретному экземпляру Vocabulary не хранится.
         usize,
     );
+    impl TryFrom<(usize, &Vocabulary)> for VocabularyCharacterIndexAsUsize {
+        type Error = &'static str;
+        // Создаёт индекс, только если value < vocabulary.len().
+        fn try_from((value, vocabulary): (usize, &Vocabulary)) -> Result<Self, Self::Error> {
+            vocabulary
+                .0
+                .get(value)
+                .map(|_| Self(value))
+                .ok_or("индекс символа должен быть меньше размера словаря")
+        }
+    }
     // Сколько предыдущих символов получает модель; значение должно быть положительным.
     const CONTEXT_LENGTH: usize = 3;
     // Обучающий пример в индексах Vocabulary: контекст длины CONTEXT_LENGTH и правильный следующий символ.
     #[derive(Clone, Copy, Debug, PartialEq)]
     struct VocabularyContextAndTargetIndices {
         // Индексы предыдущих CONTEXT_LENGTH символов в Vocabulary; индекс точки заполняет начало имени.
-        vocabulary_context_indices: [VocabularyCharacterIndex; CONTEXT_LENGTH],
+        vocabulary_context_indices: [VocabularyCharacterIndexAsUsize; CONTEXT_LENGTH],
         // Индекс правильного следующего символа в Vocabulary; индекс точки обозначает конец имени.
-        vocabulary_character_index_target: VocabularyCharacterIndex,
+        vocabulary_character_index_target: VocabularyCharacterIndexAsUsize,
     }
     // Нулевое значение для координат, градиентов и накопительных сумм.
     const ZERO_F32: f32 = 0.0;
@@ -70,99 +127,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Число примеров, по которым усредняются градиенты одного шага.
     const BATCH_SIZE: usize = 32;
     const _: () = assert!(
-        CONTEXT_LENGTH > 0
-            && EMBEDDING_DIMENSIONS >= 2
-            && FIRST_LAYER_SIZE > 0
-            && BATCH_SIZE > 0
+        CONTEXT_LENGTH > 0 && EMBEDDING_DIMENSIONS > 0 && FIRST_LAYER_SIZE > 0 && BATCH_SIZE > 0
     );
     // Положительное число обновлений параметров; для нуля возвращается ошибка.
     let training_steps: std::num::NonZeroUsize =
         std::num::NonZeroUsize::new(200_000).ok_or("число шагов должно быть положительным")?;
-    // Имена выходных файлов, общие для их создания и последующей записи.
-    const LOSS_CSV: &str = "loss.csv";
-    const LOSS_SVG: &str = "loss.svg";
-    const METRICS_TXT: &str = "metrics.txt";
-    const EMBEDDINGS_SVG: &str = "embeddings.svg";
-    const EMBEDDINGS_CSV: &str = "embeddings.csv";
-    const SAMPLES_TXT: &str = "samples.txt";
-    let mut files: std::collections::BTreeMap<String, std::fs::File> = {
-        let output_directory: std::path::PathBuf =
-            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("output");
-        std::fs::create_dir_all(&output_directory)?;
-        let mut files: std::collections::BTreeMap<String, std::fs::File> =
-            std::collections::BTreeMap::new();
-        for name in [
-            LOSS_CSV,
-            LOSS_SVG,
-            METRICS_TXT,
-            EMBEDDINGS_SVG,
-            EMBEDDINGS_CSV,
-            SAMPLES_TXT,
-        ] {
-            files.insert(
-                name.to_owned(),
-                std::fs::File::create(output_directory.join(name))?,
-            );
-        }
-        files
-    };
     // Один seed и общий генератор для всех случайных операций программы.
     let mut random_generator: rand::rngs::StdRng = rand::SeedableRng::seed_from_u64(42);
     let (vocabulary, training_examples, validation_examples, test_examples) = {
-        // Словарь символов: точка под индексом 0, затем уникальные буквы a–z по алфавиту.
-        struct Vocabulary(
-            // Символы в порядке их индексов; создаются методом new.
-            NonEmptyVec<char>,
-        );
-        impl Vocabulary {
-            // Отбирает из текста буквы a–z, сортирует, удаляет повторы и добавляет точку под индексом 0.
-            fn new(text: &str) -> Result<Self, &'static str> {
-                let mut characters: Vec<char> = text
-                    .chars()
-                    .filter(|character| character.is_ascii_lowercase())
-                    .collect();
-                characters.sort_unstable();
-                characters.dedup();
-                characters.insert(0, '.');
-                Ok(Self(NonEmptyVec::try_from(characters)?))
-            }
-            // Возвращает количество символов, включая точку.
-            fn len(&self) -> usize {
-                self.0.len()
-            }
-            // Возвращает индекс точки: она обозначает границу имени и заполняет начальный контекст.
-            // Метод new всегда помещает точку под индексом 0.
-            fn dot_index(&self) -> VocabularyCharacterIndex {
-                VocabularyCharacterIndex(0)
-            }
-            // Находит индекс символа; для отсутствующего символа возвращает ошибку.
-            fn index_of(&self, character: char) -> Result<VocabularyCharacterIndex, &'static str> {
-                let value: usize = self
-                    .0
-                    .iter()
-                    .position(|&candidate| candidate == character)
-                    .ok_or("символ отсутствует в словаре")?;
-                VocabularyCharacterIndex::try_from((value, self))
-            }
-            // Возвращает символ по числовой позиции, проверяя границы; принадлежность индекса словарю не проверяется.
-            fn character(&self, index: VocabularyCharacterIndex) -> Result<char, &'static str> {
-                self.0
-                    .get(index.0)
-                    .copied()
-                    .ok_or("индекс символа должен быть меньше размера словаря")
-            }
-        }
-        impl TryFrom<(usize, &Vocabulary)> for VocabularyCharacterIndex {
-            type Error = &'static str;
-            // Создаёт индекс, только если value < vocabulary.len().
-            fn try_from((value, vocabulary): (usize, &Vocabulary)) -> Result<Self, Self::Error> {
-                vocabulary
-                    .0
-                    .get(value)
-                    .map(|_| Self(value))
-                    .ok_or("индекс символа должен быть меньше размера словаря")
-            }
-        }
         // 1. Проверяем записи; повторения сохраняем, чтобы не менять их частоты в наборе.
         let names_text: &str = include_str!("../data/names.txt");
         // Одно непустое имя из строчных латинских букв; заимствует исходный текст.
@@ -254,10 +226,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         > {
             let mut examples: Vec<VocabularyContextAndTargetIndices> = Vec::new();
             for name in names.iter() {
-                let mut vocabulary_context_indices: [VocabularyCharacterIndex; CONTEXT_LENGTH] =
-                    [vocabulary.dot_index(); CONTEXT_LENGTH];
+                let mut vocabulary_context_indices: [VocabularyCharacterIndexAsUsize;
+                    CONTEXT_LENGTH] = [vocabulary.dot_index(); CONTEXT_LENGTH];
                 for next_character in name.0.chars().chain(std::iter::once('.')) {
-                    let vocabulary_character_index_target: VocabularyCharacterIndex =
+                    let vocabulary_character_index_target: VocabularyCharacterIndexAsUsize =
                         vocabulary.index_of(next_character)?;
                     examples.push(VocabularyContextAndTargetIndices {
                         vocabulary_context_indices,
@@ -293,85 +265,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
     };
     let vocabulary_len: usize = vocabulary.len();
-    // Непустая линия либо точки, каждая из которых содержит свою подпись и координаты.
-    #[derive(Clone, Copy)]
-    enum PlotData<'a> {
-        Line(NonEmptySlice<'a, (FiniteF32, FiniteF32)>),
-        LabeledPoints(NonEmptySlice<'a, (char, FiniteF32, FiniteF32)>),
-    }
-    // Строит SVG-график и записывает его в заранее созданный файл.
-    fn plot(
-        mut output_file: std::fs::File,
-        data: PlotData<'_>,
-        title: &str,
-    ) -> std::io::Result<()> {
-        // Оба варианта содержат хотя бы одну точку; преобразование сохраняет число элементов.
-        let data_points: NonEmptyVec<(FiniteF32, FiniteF32)> = match data {
-            PlotData::Line(points) => NonEmptyVec(points.to_vec()),
-            PlotData::LabeledPoints(points) => {
-                NonEmptyVec(points.iter().map(|&(_, x, y)| (x, y)).collect())
-            }
-        };
-        let minimum_horizontal_value: f32 = data_points
-            .iter()
-            .map(|data_point| data_point.0.0)
-            .fold(f32::INFINITY, f32::min);
-        let maximum_horizontal_value: f32 = data_points
-            .iter()
-            .map(|data_point| data_point.0.0)
-            .fold(f32::NEG_INFINITY, f32::max);
-        let minimum_vertical_value: f32 = data_points
-            .iter()
-            .map(|data_point| data_point.1.0)
-            .fold(f32::INFINITY, f32::min);
-        let maximum_vertical_value: f32 = data_points
-            .iter()
-            .map(|data_point| data_point.1.0)
-            .fold(f32::NEG_INFINITY, f32::max);
-        // Область размещения данных внутри SVG 800 × 600; поля оставлены под оси и подписи.
-        const DATA_AREA_LEFT: f32 = 65.0; // Левая граница в пикселях SVG.
-        const DATA_AREA_BOTTOM: f32 = 535.0; // Нижняя граница в пикселях SVG.
-        const DATA_AREA_WIDTH: f32 = 680.0; // Данные занимают x от 65 до 745.
-        const DATA_AREA_HEIGHT: f32 = 470.0; // Данные занимают y от 65 до 535.
-        // Не даём делителю стать нулём, если все значения по одной оси одинаковы.
-        const MINIMUM_VALUE_SPAN: f32 = 1e-6;
-        let to_pixel_coordinates = |data_point: &(FiniteF32, FiniteF32)| -> (f32, f32) {
-            (
-                DATA_AREA_LEFT
-                    + DATA_AREA_WIDTH * (data_point.0.0 - minimum_horizontal_value)
-                        / (maximum_horizontal_value - minimum_horizontal_value)
-                            .max(MINIMUM_VALUE_SPAN),
-                // В SVG y растёт вниз, поэтому рост значения вычитается из нижней границы.
-                DATA_AREA_BOTTOM
-                    - DATA_AREA_HEIGHT * (data_point.1.0 - minimum_vertical_value)
-                        / (maximum_vertical_value - minimum_vertical_value).max(MINIMUM_VALUE_SPAN),
-            )
-        };
-        let svg_document: String = {
-            let mut svg_document: String = format!(
-                "<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='white'/><g font-family='sans-serif' fill='#172554'><text x='65' y='28'>{title}</text><path d='M65 55V535H755' fill='none' stroke='#64748b'/><text x='65' y='565'>{minimum_horizontal_value:.3}</text><text x='690' y='565'>{maximum_horizontal_value:.3}</text><text x='5' y='535'>{minimum_vertical_value:.3}</text><text x='5' y='65'>{maximum_vertical_value:.3}</text>"
-            );
-            if let PlotData::LabeledPoints(points) = data {
-                for &(character, x, y) in points.iter() {
-                    let (horizontal_pixel, vertical_pixel): (f32, f32) =
-                        to_pixel_coordinates(&(x, y));
-                    svg_document.push_str(&format!("<circle cx='{horizontal_pixel}' cy='{vertical_pixel}' r='12' fill='#2563eb'/><text x='{horizontal_pixel}' y='{}' text-anchor='middle' fill='white'>{character}</text>", vertical_pixel+4.0));
-                }
-            } else {
-                svg_document
-                    .push_str("<polyline fill='none' stroke='#2563eb' stroke-width='0.7' points='");
-                for data_point in data_points.iter() {
-                    let (horizontal_pixel, vertical_pixel): (f32, f32) =
-                        to_pixel_coordinates(data_point);
-                    svg_document.push_str(&format!("{horizontal_pixel:.2},{vertical_pixel:.2} "));
-                }
-                svg_document.push_str("'/>");
-            }
-            svg_document.push_str("</g></svg>");
-            svg_document
-        };
-        std::io::Write::write_all(&mut output_file, svg_document.as_bytes())
-    }
     // Обёртка над срезом, для которого уже проверено наличие хотя бы одного элемента.
     #[derive(Debug, derive_more::Deref)]
     #[deref(forward)]
@@ -453,7 +346,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Для одного примера возвращает (loss, character_probabilities).
     // loss — ошибка предсказания: -ln(вероятность правильного следующего символа).
     let cross_entropy = |character_scores: NonEmptySlice<'_, FiniteF32>,
-                         vocabulary_character_index_target: VocabularyCharacterIndex|
+                         vocabulary_character_index_target: VocabularyCharacterIndexAsUsize|
      -> Result<
         (
             CrossEntropyLossAsNonNegativeF32,
@@ -551,46 +444,51 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let normal_character_embeddings: NonEmptyVec<[f32; EMBEDDING_DIMENSIONS]> = vocabulary
                 .0
                 .map(|_| std::array::from_fn(|_| initialize_embeddings_sample_standard_normal()));
-            let character_embeddings: NonEmptyVec<[f32; EMBEDDING_DIMENSIONS]> = if false {
-                initialize_embeddings_regular_cube()
-            } else {
-                normal_character_embeddings
+            let character_embeddings: NonEmptyVec<[FiniteF32; EMBEDDING_DIMENSIONS]> = {
+                let embeddings: NonEmptyVec<[f32; EMBEDDING_DIMENSIONS]> = if false {
+                    initialize_embeddings_regular_cube()
+                } else {
+                    normal_character_embeddings
+                };
+                embeddings.try_map(|row| try_map_array(*row, FiniteF32::try_from))?
             };
             // W1: (CONTEXT_LENGTH * EMBEDDING_DIMENSIONS, FIRST_LAYER_SIZE) — массив фиксированной длины.
-            let first_layer_weights: [[f32; FIRST_LAYER_SIZE];
-                CONTEXT_LENGTH * EMBEDDING_DIMENSIONS] = std::array::from_fn(|_| {
-                std::array::from_fn(|_| initialize_embeddings_sample_standard_normal())
-            });
+            let first_layer_weights: [[FiniteF32; FIRST_LAYER_SIZE];
+                CONTEXT_LENGTH * EMBEDDING_DIMENSIONS] = try_map_array(
+                std::array::from_fn(|_| {
+                    std::array::from_fn(|_| initialize_embeddings_sample_standard_normal())
+                }),
+                |row| try_map_array(row, FiniteF32::try_from),
+            )?;
             // b1: (FIRST_LAYER_SIZE,) — смещения нейронов первого слоя, также фиксированный массив.
-            let first_layer_biases: [f32; FIRST_LAYER_SIZE] =
-                std::array::from_fn(|_| initialize_embeddings_sample_standard_normal());
-            // W2: для каждого выходного символа — массив весов от FIRST_LAYER_SIZE нейронов первого слоя.
-            let mut second_layer_weights: NonEmptyVec<[f32; FIRST_LAYER_SIZE]> =
-                NonEmptyVec::try_from(vec![[ZERO_F32; FIRST_LAYER_SIZE]; vocabulary_len])?;
-            // Сохраняем прежний порядок случайной инициализации: сначала нейрон первого слоя, затем символ.
+            let first_layer_biases: [FiniteF32; FIRST_LAYER_SIZE] = try_map_array(
+                std::array::from_fn(|_| initialize_embeddings_sample_standard_normal()),
+                FiniteF32::try_from,
+            )?;
+            // W2: для каждого символа — FIRST_LAYER_SIZE связей с первым слоем.
+            let mut second_layer_weights: NonEmptyVec<[FiniteF32; FIRST_LAYER_SIZE]> = {
+                let zero_weight: FiniteF32 = FiniteF32::try_from(ZERO_F32)?;
+                vocabulary.0.map(|_| [zero_weight; FIRST_LAYER_SIZE])
+            };
+            // Сначала перебираем компоненты первого слоя, затем символы: порядок случайных чисел сохраняется.
             for first_layer_index in 0..FIRST_LAYER_SIZE {
                 for character_weights in second_layer_weights.0.iter_mut() {
                     character_weights[first_layer_index] =
-                        initialize_embeddings_sample_standard_normal();
+                        FiniteF32::try_from(initialize_embeddings_sample_standard_normal())?;
                 }
             }
             // b2: (vocabulary_len,) — смещения оценок символов, размер зависит от словаря.
-            let second_layer_biases: NonEmptyVec<f32> = NonEmptyVec::try_from(
+            let second_layer_biases: NonEmptyVec<FiniteF32> = NonEmptyVec::try_from(
                 (0..vocabulary_len)
-                    .map(|_| initialize_embeddings_sample_standard_normal())
-                    .collect::<Vec<f32>>(),
+                    .map(|_| FiniteF32::try_from(initialize_embeddings_sample_standard_normal()))
+                    .collect::<Result<Vec<_>, _>>()?,
             )?;
             Model {
-                character_embeddings: character_embeddings
-                    .try_map(|row| try_map_array(*row, FiniteF32::try_from))?,
-                first_layer_weights: try_map_array(first_layer_weights, |row| {
-                    try_map_array(row, FiniteF32::try_from)
-                })?,
-                first_layer_biases: try_map_array(first_layer_biases, FiniteF32::try_from)?,
-                second_layer_weights: second_layer_weights
-                    .try_map(|row| try_map_array(*row, FiniteF32::try_from))?,
-                second_layer_biases: second_layer_biases
-                    .try_map(|&value| FiniteF32::try_from(value))?,
+                character_embeddings,
+                first_layer_weights,
+                first_layer_biases,
+                second_layer_weights,
+                second_layer_biases,
             }
         };
         // Результат прямого прохода; промежуточные значения нужны для расчёта градиентов.
@@ -604,16 +502,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         // Вычисляет оценки следующего символа и сохраняет промежуточные значения прямого прохода.
         let forward = |model: &Model,
-                       vocabulary_context_indices: [VocabularyCharacterIndex; CONTEXT_LENGTH]|
+                       vocabulary_context_indices: [VocabularyCharacterIndexAsUsize;
+                           CONTEXT_LENGTH]|
          -> Result<ForwardPassResult, &'static str> {
             // Берём векторы символов контекста из C и объединяем в исходном порядке.
             // Длина входного вектора: CONTEXT_LENGTH * EMBEDDING_DIMENSIONS.
-            let character_embeddings_flattened: [FiniteF32; CONTEXT_LENGTH * EMBEDDING_DIMENSIONS] =
-                std::array::from_fn(|coordinate_index| {
-                    model.character_embeddings
-                        [vocabulary_context_indices[coordinate_index / EMBEDDING_DIMENSIONS].0]
-                        [coordinate_index % EMBEDDING_DIMENSIONS]
-                });
+            let character_embeddings_flattened: [FiniteF32; CONTEXT_LENGTH * EMBEDDING_DIMENSIONS] = {
+                let context_embeddings: [[FiniteF32; EMBEDDING_DIMENSIONS]; CONTEXT_LENGTH] =
+                    vocabulary_context_indices.map(|index| model.character_embeddings[index.0]);
+                context_embeddings
+                    .as_flattened()
+                    .try_into()
+                    .map_err(|_| "неверная длина объединённых эмбеддингов")?
+            };
             let first_layer_activations: [FiniteF32; FIRST_LAYER_SIZE] = {
                 let mut first_layer_activations: [f32; FIRST_LAYER_SIZE] =
                     model.first_layer_biases.map(|value| value.0);
@@ -645,8 +546,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .iter_mut()
                         .zip(model.second_layer_weights.iter())
                     {
-                        *character_score += first_layer_activation.0
-                            * character_weights[first_layer_index].0;
+                        *character_score +=
+                            first_layer_activation.0 * character_weights[first_layer_index].0;
                     }
                 }
                 character_scores
@@ -703,19 +604,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         loss(&model, NonEmptySlice::from(&validation_examples))?;
     println!("До обучения dev loss={:.6}", initial_validation_loss.0);
     // 3. SGD: выборка с возвращением, средняя cross-entropy и новые нулевые градиенты на каждом шаге.
-    let (model, training_loss_curve) = {
+    let model = {
         let mut model = model;
-        let mut loss_csv_file: std::io::BufWriter<std::fs::File> = std::io::BufWriter::new(
-            files
-                .remove(LOSS_CSV)
-                .ok_or("файл отсутствует в подготовленном наборе")?,
-        );
-        std::io::Write::write_fmt(
-            &mut loss_csv_file,
-            format_args!("step,learning_rate,loss,log10_loss\n"),
-        )?;
-        let mut training_loss_curve: Vec<(FiniteF32, FiniteF32)> =
-            Vec::with_capacity(training_steps.get());
         let training_started_at: std::time::Instant = std::time::Instant::now();
         for step_index in 0..training_steps.get() {
             let iteration_started_at: std::time::Instant = std::time::Instant::now();
@@ -791,28 +681,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                         // Производные ошибки по суммам первого слоя ДО применения tanh.
                         let first_layer_pre_activation_gradients: [f32; FIRST_LAYER_SIZE] = {
-                            let mut first_layer_pre_activation_gradients: [f32;
-                                FIRST_LAYER_SIZE] = [ZERO_F32; FIRST_LAYER_SIZE];
+                            let mut first_layer_pre_activation_gradients: [f32; FIRST_LAYER_SIZE] =
+                                [ZERO_F32; FIRST_LAYER_SIZE];
                             for first_layer_index in 0..FIRST_LAYER_SIZE {
                                 for vocabulary_character_index in 0..vocabulary_len {
                                     gradients.second_layer_weights.0[vocabulary_character_index]
-                                        [first_layer_index] += forward_result
-                                        .first_layer_activations[first_layer_index]
-                                        .0
-                                        * score_gradients[vocabulary_character_index];
-                                    first_layer_pre_activation_gradients
-                                        [first_layer_index] += model.second_layer_weights
-                                        [vocabulary_character_index][first_layer_index]
+                                        [first_layer_index] +=
+                                        forward_result.first_layer_activations[first_layer_index].0
+                                            * score_gradients[vocabulary_character_index];
+                                    first_layer_pre_activation_gradients[first_layer_index] += model
+                                        .second_layer_weights[vocabulary_character_index]
+                                        [first_layer_index]
                                         .0
                                         * score_gradients[vocabulary_character_index];
                                 }
                                 // Производная tanh равна 1 - tanh².
-                                first_layer_pre_activation_gradients[first_layer_index] *=
-                                    1.0 - forward_result.first_layer_activations
-                                        [first_layer_index]
-                                        .0
-                                        * forward_result.first_layer_activations
-                                            [first_layer_index]
+                                first_layer_pre_activation_gradients[first_layer_index] *= 1.0
+                                    - forward_result.first_layer_activations[first_layer_index].0
+                                        * forward_result.first_layer_activations[first_layer_index]
                                             .0;
                                 gradients.first_layer_biases[first_layer_index] +=
                                     first_layer_pre_activation_gradients[first_layer_index];
@@ -829,13 +715,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                         [first_layer_index] += forward_result
                                         .character_embeddings_flattened[input_coordinate_index]
                                         .0
-                                        * first_layer_pre_activation_gradients
-                                            [first_layer_index];
+                                        * first_layer_pre_activation_gradients[first_layer_index];
                                     input_coordinate_gradient += model.first_layer_weights
                                         [input_coordinate_index][first_layer_index]
                                         .0
-                                        * first_layer_pre_activation_gradients
-                                            [first_layer_index];
+                                        * first_layer_pre_activation_gradients[first_layer_index];
                                 }
                                 input_coordinate_gradient
                             };
@@ -896,19 +780,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 CrossEntropyLossAsNonNegativeF32::try_from(loss)?
             };
-            std::io::Write::write_fmt(
-                &mut loss_csv_file,
-                format_args!(
-                    "{step_index},{},{},{}\n",
-                    learning_rate.0,
-                    loss.0,
-                    loss.0.log10()
-                ),
-            )?;
-            training_loss_curve.push((
-                FiniteF32::try_from(step_index as f32)?,
-                FiniteF32::try_from(loss.0.log10())?,
-            ));
             if step_index % 10_000 == 0 || step_index + 1 == training_steps.get() {
                 println!(
                     "step={step_index:6} lr={learning_rate} loss={loss:.4} elapsed={:.1}s iteration_ms={:.3}",
@@ -919,10 +790,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 );
             }
         }
-        std::io::Write::flush(&mut loss_csv_file)?;
-        (model, NonEmptyVec::try_from(training_loss_curve)?)
+        model
     };
-    // 4. Считаем средние loss на train/dev/test без обновления параметров и сохраняем графики.
+    // 4. Считаем средние loss на train/dev/test без обновления параметров и печатаем метрики.
     // Dev служит для выбора настроек, test — для окончательной оценки после их выбора.
     {
         let metrics_text: String = format!(
@@ -933,120 +803,55 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             test_loss = loss(&model, NonEmptySlice::from(&test_examples))?.0,
         );
         print!("{metrics_text}");
-        std::io::Write::write_all(
-            &mut files
-                .remove(METRICS_TXT)
-                .ok_or("файл отсутствует в подготовленном наборе")?,
-            (metrics_text).as_bytes(),
-        )?;
-    }
-    plot(
-        files
-            .remove(LOSS_SVG)
-            .ok_or("файл отсутствует в подготовленном наборе")?,
-        PlotData::Line(NonEmptySlice::from(&training_loss_curve)),
-        "Training: x=step, y=log10(minibatch loss)",
-    )?;
-    let embedding_coordinates: NonEmptyVec<(FiniteF32, FiniteF32)> = model
-        .character_embeddings
-        .map(|embedding| (embedding[0], embedding[1]));
-    let labeled_embedding_coordinates: NonEmptyVec<(char, FiniteF32, FiniteF32)> =
-        NonEmptyVec::try_from(
-            vocabulary
-                .0
-                .iter()
-                .copied()
-                .zip(embedding_coordinates.iter().copied())
-                .map(|(character, (x, y))| (character, x, y))
-                .collect::<Vec<_>>(),
-        )?;
-    plot(
-        files
-            .remove(EMBEDDINGS_SVG)
-            .ok_or("файл отсутствует в подготовленном наборе")?,
-        PlotData::LabeledPoints(NonEmptySlice::from(&labeled_embedding_coordinates)),
-        &format!("C: x=dimension 0, y=dimension 1 (of {EMBEDDING_DIMENSIONS})"),
-    )?;
-    {
-        let mut embeddings_csv_file: std::fs::File = files
-            .remove(EMBEDDINGS_CSV)
-            .ok_or("файл отсутствует в подготовленном наборе")?;
-        std::io::Write::write_fmt(&mut embeddings_csv_file, format_args!("character,c0,c1\n"))?;
-        for (character, (first_coordinate, second_coordinate)) in
-            vocabulary.0.iter().zip(embedding_coordinates)
-        {
-            std::io::Write::write_fmt(
-                &mut embeddings_csv_file,
-                format_args!(
-                    "{character},{},{}\n",
-                    first_coordinate.0, second_coordinate.0
-                ),
-            )?;
-        }
     }
     // 5. Генерируем имена с общим генератором: каждый выбранный символ добавляем в контекст до точки или лимита.
-    let generated_names: String = {
-        let mut generated_names: String = String::new();
-        for _ in 0..20 {
-            let name: String = 'sample: {
-                let mut vocabulary_context_indices: [VocabularyCharacterIndex; CONTEXT_LENGTH] =
-                    [vocabulary.dot_index(); CONTEXT_LENGTH];
-                let mut generated_name: String = String::new();
-                for _ in 0..100 {
-                    let (_, character_probabilities) = cross_entropy(
-                        NonEmptySlice::from(
-                            &forward(&model, vocabulary_context_indices)?.character_scores,
-                        ),
-                        vocabulary.dot_index(),
-                    )?;
-                    let random_probability: CharacterProbabilityAsF32From0To1 =
-                        CharacterProbabilityAsF32From0To1::try_from(rand::RngExt::random::<f32>(
-                            &mut random_generator,
-                        ))?;
-                    let sampled_character_index: usize = {
-                        let mut cumulative_probability: f32 = ZERO_F32;
-                        let mut sampled_character_index: usize = vocabulary_len - 1;
-                        for (character_index, character_probability) in
-                            character_probabilities.iter().enumerate()
-                        {
-                            cumulative_probability += character_probability.0;
-                            if random_probability.0 < cumulative_probability {
-                                sampled_character_index = character_index;
-                                break;
-                            }
+    for _ in 0..20 {
+        let name: String = 'sample: {
+            let mut vocabulary_context_indices: [VocabularyCharacterIndexAsUsize; CONTEXT_LENGTH] =
+                [vocabulary.dot_index(); CONTEXT_LENGTH];
+            let mut generated_name: String = String::new();
+            for _ in 0..100 {
+                let (_, character_probabilities) = cross_entropy(
+                    NonEmptySlice::from(
+                        &forward(&model, vocabulary_context_indices)?.character_scores,
+                    ),
+                    vocabulary.dot_index(),
+                )?;
+                let random_probability: CharacterProbabilityAsF32From0To1 =
+                    CharacterProbabilityAsF32From0To1::try_from(rand::RngExt::random::<f32>(
+                        &mut random_generator,
+                    ))?;
+                let sampled_character_index: usize = {
+                    let mut cumulative_probability: f32 = ZERO_F32;
+                    let mut sampled_character_index: usize = vocabulary_len - 1;
+                    for (character_index, character_probability) in
+                        character_probabilities.iter().enumerate()
+                    {
+                        cumulative_probability += character_probability.0;
+                        if random_probability.0 < cumulative_probability {
+                            sampled_character_index = character_index;
+                            break;
                         }
-                        sampled_character_index
-                    };
-                    let sampled_character_index: VocabularyCharacterIndex =
-                        VocabularyCharacterIndex::try_from((sampled_character_index, &vocabulary))?;
-                    generated_name.push(vocabulary.character(sampled_character_index)?);
-                    if sampled_character_index.0 == 0 {
-                        break 'sample generated_name;
                     }
-                    vocabulary_context_indices.rotate_left(1);
-                    vocabulary_context_indices[CONTEXT_LENGTH - 1] = sampled_character_index;
+                    sampled_character_index
+                };
+                let sampled_character_index: VocabularyCharacterIndexAsUsize =
+                    VocabularyCharacterIndexAsUsize::try_from((
+                        sampled_character_index,
+                        &vocabulary,
+                    ))?;
+                generated_name.push(vocabulary.character(sampled_character_index)?);
+                if sampled_character_index.0 == 0 {
+                    break 'sample generated_name;
                 }
-                generated_name.push_str(" [лимит 100 символов]");
-                generated_name
-            };
-            println!("{name}");
-            generated_names.push_str(&name);
-            generated_names.push('\n');
-        }
-        generated_names
-    };
-    std::io::Write::write_all(
-        &mut files
-            .remove(SAMPLES_TXT)
-            .ok_or("файл отсутствует в подготовленном наборе")?,
-        (generated_names).as_bytes(),
-    )?;
-    println!(
-        "Артефакты: {}",
-        std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("output")
-            .display()
-    );
+                vocabulary_context_indices.rotate_left(1);
+                vocabulary_context_indices[CONTEXT_LENGTH - 1] = sampled_character_index;
+            }
+            generated_name.push_str(" [лимит 100 символов]");
+            generated_name
+        };
+        println!("{name}");
+    }
     println!(
         "Общее время работы программы: {:.2} с",
         program_started_at.elapsed().as_secs_f64()
