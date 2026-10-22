@@ -1,117 +1,130 @@
 //! GPU-вариант: все шаги SGD исполняются в заранее выделенной памяти.
 #[cutile::module]
 mod kernels {
-    use cutile::core::*;
+    use cutile::core::{
+        BroadcastScalar, LoadTileLike, LoadTileMutAtCurrentBlock, StoreTileAtCurrentBlock,
+    };
     #[cutile::entry()]
     fn build_context_embedding_batch(
-        context_embeddings_flattened: &mut Tensor<f32, { [1, 64] }>,
-        batch_character_indexes: &mut Tensor<i32, { [1, 4] }>,
-        all_character_index_pairs: &Tensor<i32, { [-1, 4] }>,
-        character_embeddings: &Tensor<f32, { [32, 16] }>,
-        training_step: &Tensor<i32, { [1] }>,
+        context_embeddings_flattened: &mut cutile::core::Tensor<f32, { [1, 64] }>,
+        batch_character_indexes: &mut cutile::core::Tensor<i32, { [1, 4] }>,
+        all_character_index_pairs: &cutile::core::Tensor<i32, { [-1, 4] }>,
+        character_embeddings: &cutile::core::Tensor<f32, { [32, 16] }>,
+        training_step: &cutile::core::Tensor<i32, { [1] }>,
         batch_size: i32,
         sample_random_examples: i32,
     ) {
-        let tile_block_indexes = get_tile_block_id();
-        let training_step_index: i32 =
-            tile_to_scalar(training_step.load_tile(shape![1], [0]).reshape(shape![]));
+        let tile_block_indexes = cutile::core::get_tile_block_id();
+        let training_step_index: i32 = cutile::core::tile_to_scalar(
+            training_step
+                .load_tile(cutile::core::shape![1], [0])
+                .reshape(cutile::core::shape![]),
+        );
         let mut example_index = training_step_index * batch_size + tile_block_indexes.0;
         if sample_random_examples != 0 {
             // Хеш счётчика: выборка с возвращением без CPU-копий на каждом шаге.
-            let hashed_counter_bits: Tile<u32, { [] }> =
-                bitcast(scalar_to_tile::<i32>(example_index));
-            let mut hashed_counter: u32 = tile_to_scalar(hashed_counter_bits);
+            let hashed_counter_bits: cutile::core::Tile<u32, { [] }> =
+                cutile::core::bitcast(cutile::core::scalar_to_tile::<i32>(example_index));
+            let mut hashed_counter: u32 = cutile::core::tile_to_scalar(hashed_counter_bits);
             hashed_counter = hashed_counter ^ (hashed_counter >> 16u32);
             hashed_counter = hashed_counter * 2146121005u32;
             hashed_counter = hashed_counter ^ (hashed_counter >> 15u32);
             // 0x846ca68b: JIT 0.4 не разбирает целый литерал > i32::MAX.
             hashed_counter = hashed_counter * (1110856517u32 * 2u32 + 1u32);
             hashed_counter = hashed_counter ^ (hashed_counter >> 16u32);
-            let example_count_bits: Tile<u32, { [] }> =
-                bitcast(scalar_to_tile::<i32>(all_character_index_pairs.shape()[0]));
-            let example_count: u32 = tile_to_scalar(example_count_bits);
-            let example_index_bits: Tile<i32, { [] }> =
-                bitcast(scalar_to_tile::<u32>(hashed_counter % example_count));
-            example_index = tile_to_scalar(example_index_bits);
+            let example_count_bits: cutile::core::Tile<u32, { [] }> = cutile::core::bitcast(
+                cutile::core::scalar_to_tile::<i32>(all_character_index_pairs.shape()[0]),
+            );
+            let example_count: u32 = cutile::core::tile_to_scalar(example_count_bits);
+            let example_index_bits: cutile::core::Tile<i32, { [] }> = cutile::core::bitcast(
+                cutile::core::scalar_to_tile::<u32>(hashed_counter % example_count),
+            );
+            example_index = cutile::core::tile_to_scalar(example_index_bits);
         } else {
             example_index = example_index % all_character_index_pairs.shape()[0];
         }
         let context_and_next_character_indexes =
-            all_character_index_pairs.load_tile(shape![1, 4], [example_index, 0]);
+            all_character_index_pairs.load_tile(cutile::core::shape![1, 4], [example_index, 0]);
         batch_character_indexes.store(context_and_next_character_indexes);
-        let mut embedding_batch_tiles = context_embeddings_flattened.partition_mut(shape![1, 16]);
+        let mut embedding_batch_tiles =
+            context_embeddings_flattened.partition_mut(cutile::core::shape![1, 16]);
         for context_slot in 0i32..4i32 {
-            let zero_embedding: Tile<f32, { [1, 16] }> = constant(0.0f32, shape![1, 16]);
-            let mut embedding_values: Tile<f32, { [1, 16] }> = zero_embedding;
+            let zero_embedding: cutile::core::Tile<f32, { [1, 16] }> =
+                cutile::core::constant(0.0f32, cutile::core::shape![1, 16]);
+            let mut embedding_values: cutile::core::Tile<f32, { [1, 16] }> = zero_embedding;
             if context_slot < 3 {
-                let vocabulary_character_index: i32 = tile_to_scalar(
+                let vocabulary_character_index: i32 = cutile::core::tile_to_scalar(
                     all_character_index_pairs
-                        .load_tile(shape![1, 1], [example_index, context_slot])
-                        .reshape(shape![]),
+                        .load_tile(cutile::core::shape![1, 1], [example_index, context_slot])
+                        .reshape(cutile::core::shape![]),
                 );
-                embedding_values =
-                    character_embeddings.load_tile(shape![1, 16], [vocabulary_character_index, 0]);
+                embedding_values = character_embeddings
+                    .load_tile(cutile::core::shape![1, 16], [vocabulary_character_index, 0]);
             }
             embedding_batch_tiles.store(embedding_values, [0, context_slot]);
         }
     }
     // Универсальный GEMM; транспонирование выполняется внутри тайла.
-    // MATRIX_OPERATION: 1 — прибавить смещения и применить tanh; 2 — умножить градиент на производную tanh; 0 — только матричное произведение.
+    // MATRIX_OPERATION: 1 — прибавить смещения и применить cutile::core::tanh; 2 — умножить градиент на производную cutile::core::tanh; 0 — только матричное произведение.
     #[cutile::entry()]
     fn multiply_matrices<
         const TRANSPOSE_LEFT_MATRIX: i32,
         const TRANSPOSE_RIGHT_MATRIX: i32,
         const MATRIX_OPERATION: i32,
     >(
-        output_matrix: &mut Tensor<f32, { [32, 32] }>,
-        left_matrix: &Tensor<f32, { [-1, -1] }>,
-        right_matrix: &Tensor<f32, { [-1, -1] }>,
-        layer_biases: &Tensor<f32, { [-1] }>,
-        first_layer_activations: &Tensor<f32, { [-1, -1] }>,
+        output_matrix: &mut cutile::core::Tensor<f32, { [32, 32] }>,
+        left_matrix: &cutile::core::Tensor<f32, { [-1, -1] }>,
+        right_matrix: &cutile::core::Tensor<f32, { [-1, -1] }>,
+        layer_biases: &cutile::core::Tensor<f32, { [-1] }>,
+        first_layer_activations: &cutile::core::Tensor<f32, { [-1, -1] }>,
         shared_dimension_size: i32,
     ) {
-        let tile_block_indexes = get_tile_block_id();
-        let zero_matrix: Tile<f32, { [32, 32] }> = constant(0.0f32, shape![32, 32]);
+        let tile_block_indexes = cutile::core::get_tile_block_id();
+        let zero_matrix: cutile::core::Tile<f32, { [32, 32] }> =
+            cutile::core::constant(0.0f32, cutile::core::shape![32, 32]);
         let mut matrix_product_sum = zero_matrix;
         for shared_dimension_tile_index in 0i32..(shared_dimension_size / 32) {
             let left_matrix_tile = if TRANSPOSE_LEFT_MATRIX != 0 {
                 left_matrix
                     .load_tile(
-                        shape![32, 32],
+                        cutile::core::shape![32, 32],
                         [shared_dimension_tile_index, tile_block_indexes.0],
                     )
                     .transpose()
             } else {
                 left_matrix.load_tile(
-                    shape![32, 32],
+                    cutile::core::shape![32, 32],
                     [tile_block_indexes.0, shared_dimension_tile_index],
                 )
             };
             let right_matrix_tile = if TRANSPOSE_RIGHT_MATRIX != 0 {
                 right_matrix
                     .load_tile(
-                        shape![32, 32],
+                        cutile::core::shape![32, 32],
                         [tile_block_indexes.1, shared_dimension_tile_index],
                     )
                     .transpose()
             } else {
                 right_matrix.load_tile(
-                    shape![32, 32],
+                    cutile::core::shape![32, 32],
                     [shared_dimension_tile_index, tile_block_indexes.1],
                 )
             };
-            matrix_product_sum = mma(left_matrix_tile, right_matrix_tile, matrix_product_sum);
+            matrix_product_sum =
+                cutile::core::mma(left_matrix_tile, right_matrix_tile, matrix_product_sum);
         }
         if MATRIX_OPERATION == 1 {
             let layer_bias_values = layer_biases
-                .load_tile(shape![32], [tile_block_indexes.1])
-                .reshape(shape![1, 32]);
-            matrix_product_sum =
-                tanh(matrix_product_sum + layer_bias_values.broadcast(shape![32, 32]));
+                .load_tile(cutile::core::shape![32], [tile_block_indexes.1])
+                .reshape(cutile::core::shape![1, 32]);
+            matrix_product_sum = cutile::core::tanh(
+                matrix_product_sum + layer_bias_values.broadcast(cutile::core::shape![32, 32]),
+            );
         }
         if MATRIX_OPERATION == 2 {
             let first_layer_activation_values = first_layer_activations.load_like(output_matrix);
-            let ones: Tile<f32, { [32, 32] }> = constant(1.0f32, shape![32, 32]);
+            let ones: cutile::core::Tile<f32, { [32, 32] }> =
+                cutile::core::constant(1.0f32, cutile::core::shape![32, 32]);
             matrix_product_sum = matrix_product_sum
                 * (ones - first_layer_activation_values * first_layer_activation_values);
         }
@@ -119,116 +132,145 @@ mod kernels {
     }
     #[cutile::entry()]
     fn compute_score_gradients_and_negative_log_likelihood(
-        next_character_score_gradients: &mut Tensor<f32, { [32, 32] }>,
-        negative_log_likelihood_losses: &mut Tensor<f32, { [32, 1] }>,
-        character_scores_without_bias: &Tensor<f32, { [-1, 32] }>,
-        batch_character_indexes: &Tensor<i32, { [-1, 4] }>,
-        second_layer_biases: &Tensor<f32, { [32] }>,
+        next_character_score_gradients: &mut cutile::core::Tensor<f32, { [32, 32] }>,
+        negative_log_likelihood_losses: &mut cutile::core::Tensor<f32, { [32, 1] }>,
+        character_scores_without_bias: &cutile::core::Tensor<f32, { [-1, 32] }>,
+        batch_character_indexes: &cutile::core::Tensor<i32, { [-1, 4] }>,
+        second_layer_biases: &cutile::core::Tensor<f32, { [32] }>,
         batch_size_as_f32: f32,
     ) {
-        let tile_block_indexes = get_tile_block_id();
-        let vocabulary_character_indexes = iota::<i32, { [32] }>(shape![32])
-            .reshape(shape![1, 32])
-            .broadcast(shape![32, 32]);
-        let vocabulary_size: Tile<i32, { [32, 32] }> = constant(27i32, shape![32, 32]);
-        let is_vocabulary_character = cmpi(
+        let tile_block_indexes = cutile::core::get_tile_block_id();
+        let vocabulary_character_indexes =
+            cutile::core::iota::<i32, { [32] }>(cutile::core::shape![32])
+                .reshape(cutile::core::shape![1, 32])
+                .broadcast(cutile::core::shape![32, 32]);
+        let vocabulary_size: cutile::core::Tile<i32, { [32, 32] }> =
+            cutile::core::constant(27i32, cutile::core::shape![32, 32]);
+        let is_vocabulary_character = cutile::core::cmpi(
             vocabulary_character_indexes,
             vocabulary_size,
-            predicate::LessThan,
+            cutile::core::predicate::LessThan,
         );
         let character_scores = character_scores_without_bias
             .load_like(next_character_score_gradients)
             + second_layer_biases
-                .load_tile(shape![32], [0])
-                .reshape(shape![1, 32])
-                .broadcast(shape![32, 32]);
-        let padding_character_score: Tile<f32, { [32, 32] }> = constant(-1.0e30f32, shape![32, 32]);
-        let masked_character_scores = select(
+                .load_tile(cutile::core::shape![32], [0])
+                .reshape(cutile::core::shape![1, 32])
+                .broadcast(cutile::core::shape![32, 32]);
+        let padding_character_score: cutile::core::Tile<f32, { [32, 32] }> =
+            cutile::core::constant(-1.0e30f32, cutile::core::shape![32, 32]);
+        let masked_character_scores = cutile::core::select(
             is_vocabulary_character,
             character_scores,
             padding_character_score,
         );
-        let maximum_character_score: Tile<f32, { [32] }> = reduce_max(masked_character_scores, 1);
-        let maximum_character_score = maximum_character_score.reshape(shape![32, 1]);
-        let exponentials_from_character_scores_minus_maximum =
-            exp(masked_character_scores - maximum_character_score.broadcast(shape![32, 32]));
-        let exponentials_from_character_scores_minus_maximum_sum: Tile<f32, { [32] }> =
-            reduce_sum(exponentials_from_character_scores_minus_maximum, 1);
+        let maximum_character_score: cutile::core::Tile<f32, { [32] }> =
+            cutile::core::reduce_max(masked_character_scores, 1);
+        let maximum_character_score = maximum_character_score.reshape(cutile::core::shape![32, 1]);
+        let exponentials_from_character_scores_minus_maximum = cutile::core::exp(
+            masked_character_scores
+                - maximum_character_score.broadcast(cutile::core::shape![32, 32]),
+        );
+        let exponentials_from_character_scores_minus_maximum_sum: cutile::core::Tile<
+            f32,
+            { [32] },
+        > = cutile::core::reduce_sum(exponentials_from_character_scores_minus_maximum, 1);
         let exponentials_from_character_scores_minus_maximum_sum =
-            exponentials_from_character_scores_minus_maximum_sum.reshape(shape![32, 1]);
+            exponentials_from_character_scores_minus_maximum_sum
+                .reshape(cutile::core::shape![32, 1]);
         let target_character_indexes = batch_character_indexes
-            .load_tile(shape![32, 1], [tile_block_indexes.0, 3])
-            .broadcast(shape![32, 32]);
-        let is_target_character = cmpi(
+            .load_tile(cutile::core::shape![32, 1], [tile_block_indexes.0, 3])
+            .broadcast(cutile::core::shape![32, 32]);
+        let is_target_character = cutile::core::cmpi(
             vocabulary_character_indexes,
             target_character_indexes,
-            predicate::Equal,
+            cutile::core::predicate::Equal,
         );
-        let zeros: Tile<f32, { [32, 32] }> = constant(0.0f32, shape![32, 32]);
-        let ones: Tile<f32, { [32, 32] }> = constant(1.0f32, shape![32, 32]);
-        let target_character_one_hot = select(is_target_character, ones, zeros);
-        let batch_size_tile: Tile<f32, { [32, 32] }> = batch_size_as_f32.broadcast(shape![32, 32]);
+        let zeros: cutile::core::Tile<f32, { [32, 32] }> =
+            cutile::core::constant(0.0f32, cutile::core::shape![32, 32]);
+        let ones: cutile::core::Tile<f32, { [32, 32] }> =
+            cutile::core::constant(1.0f32, cutile::core::shape![32, 32]);
+        let target_character_one_hot = cutile::core::select(is_target_character, ones, zeros);
+        let batch_size_tile: cutile::core::Tile<f32, { [32, 32] }> =
+            batch_size_as_f32.broadcast(cutile::core::shape![32, 32]);
         next_character_score_gradients.store(
             (exponentials_from_character_scores_minus_maximum
-                / exponentials_from_character_scores_minus_maximum_sum.broadcast(shape![32, 32])
+                / exponentials_from_character_scores_minus_maximum_sum
+                    .broadcast(cutile::core::shape![32, 32])
                 - target_character_one_hot)
                 / batch_size_tile,
         );
-        let target_character_score: Tile<f32, { [32] }> =
-            reduce_sum(masked_character_scores * target_character_one_hot, 1);
-        let target_character_score = target_character_score.reshape(shape![32, 1]);
+        let target_character_score: cutile::core::Tile<f32, { [32] }> =
+            cutile::core::reduce_sum(masked_character_scores * target_character_one_hot, 1);
+        let target_character_score = target_character_score.reshape(cutile::core::shape![32, 1]);
         negative_log_likelihood_losses.store(
-            maximum_character_score + log(exponentials_from_character_scores_minus_maximum_sum)
+            maximum_character_score
+                + cutile::core::log(exponentials_from_character_scores_minus_maximum_sum)
                 - target_character_score,
         );
     }
     #[cutile::entry()]
     fn accumulate_character_embedding_gradients(
-        character_embeddings_gradients: &mut Tensor<f32, { [1, 16] }>,
-        context_embeddings_flattened_gradients: &Tensor<f32, { [-1, 64] }>,
-        batch_character_indexes: &Tensor<i32, { [-1, 4] }>,
+        character_embeddings_gradients: &mut cutile::core::Tensor<f32, { [1, 16] }>,
+        context_embeddings_flattened_gradients: &cutile::core::Tensor<f32, { [-1, 64] }>,
+        batch_character_indexes: &cutile::core::Tensor<i32, { [-1, 4] }>,
         batch_size: i32,
     ) {
-        let tile_block_indexes = get_tile_block_id();
-        let zero_embedding: Tile<f32, { [16] }> = constant(0.0f32, shape![16]);
+        let tile_block_indexes = cutile::core::get_tile_block_id();
+        let zero_embedding: cutile::core::Tile<f32, { [16] }> =
+            cutile::core::constant(0.0f32, cutile::core::shape![16]);
         let mut embedding_gradient_sum = zero_embedding;
         for batch_tile_index in 0i32..(batch_size / 32) {
             for context_slot in 0i32..3i32 {
-                let context_character_indexes = batch_character_indexes
-                    .load_tile(shape![32, 1], [batch_tile_index, context_slot]);
-                let current_vocabulary_character_index: Tile<i32, { [32, 1] }> =
-                    tile_block_indexes.0.broadcast(shape![32, 1]);
-                let is_current_character = cmpi(
+                let context_character_indexes = batch_character_indexes.load_tile(
+                    cutile::core::shape![32, 1],
+                    [batch_tile_index, context_slot],
+                );
+                let current_vocabulary_character_index: cutile::core::Tile<i32, { [32, 1] }> =
+                    tile_block_indexes.0.broadcast(cutile::core::shape![32, 1]);
+                let is_current_character = cutile::core::cmpi(
                     context_character_indexes,
                     current_vocabulary_character_index,
-                    predicate::Equal,
+                    cutile::core::predicate::Equal,
                 )
-                .broadcast(shape![32, 16]);
+                .broadcast(cutile::core::shape![32, 16]);
                 let context_coordinate_gradients = context_embeddings_flattened_gradients
-                    .load_tile(shape![32, 16], [batch_tile_index, context_slot]);
-                let zeros: Tile<f32, { [32, 16] }> = constant(0.0f32, shape![32, 16]);
+                    .load_tile(
+                        cutile::core::shape![32, 16],
+                        [batch_tile_index, context_slot],
+                    );
+                let zeros: cutile::core::Tile<f32, { [32, 16] }> =
+                    cutile::core::constant(0.0f32, cutile::core::shape![32, 16]);
                 embedding_gradient_sum = embedding_gradient_sum
-                    + reduce_sum(
-                        select(is_current_character, context_coordinate_gradients, zeros),
+                    + cutile::core::reduce_sum(
+                        cutile::core::select(
+                            is_current_character,
+                            context_coordinate_gradients,
+                            zeros,
+                        ),
                         0,
                     );
             }
         }
-        character_embeddings_gradients.store(embedding_gradient_sum.reshape(shape![1, 16]));
+        character_embeddings_gradients
+            .store(embedding_gradient_sum.reshape(cutile::core::shape![1, 16]));
     }
     #[cutile::entry()]
     fn sum_bias_gradients(
-        bias_gradients: &mut Tensor<f32, { [32] }>,
-        layer_score_gradients: &Tensor<f32, { [-1, -1] }>,
+        bias_gradients: &mut cutile::core::Tensor<f32, { [32] }>,
+        layer_score_gradients: &cutile::core::Tensor<f32, { [-1, -1] }>,
         batch_size: i32,
     ) {
-        let zero_bias: Tile<f32, { [32] }> = constant(0.0f32, shape![32]);
+        let zero_bias: cutile::core::Tile<f32, { [32] }> =
+            cutile::core::constant(0.0f32, cutile::core::shape![32]);
         let mut bias_gradient_sum = zero_bias;
         for batch_tile_index in 0i32..(batch_size / 32) {
             bias_gradient_sum = bias_gradient_sum
-                + reduce_sum(
-                    layer_score_gradients
-                        .load_tile(shape![32, 32], [batch_tile_index, get_tile_block_id().0]),
+                + cutile::core::reduce_sum(
+                    layer_score_gradients.load_tile(
+                        cutile::core::shape![32, 32],
+                        [batch_tile_index, cutile::core::get_tile_block_id().0],
+                    ),
                     0,
                 );
         }
@@ -236,45 +278,53 @@ mod kernels {
     }
     #[cutile::entry()]
     fn apply_vector_gradient_step(
-        parameters: &mut Tensor<f32, { [32] }>,
-        parameter_gradients: &Tensor<f32, { [-1] }>,
-        training_step: &Tensor<i32, { [1] }>,
+        parameters: &mut cutile::core::Tensor<f32, { [32] }>,
+        parameter_gradients: &cutile::core::Tensor<f32, { [-1] }>,
+        training_step: &cutile::core::Tensor<i32, { [1] }>,
         training_steps: i32,
     ) {
-        let training_step_index: i32 =
-            tile_to_scalar(training_step.load_tile(shape![1], [0]).reshape(shape![]));
+        let training_step_index: i32 = cutile::core::tile_to_scalar(
+            training_step
+                .load_tile(cutile::core::shape![1], [0])
+                .reshape(cutile::core::shape![]),
+        );
         let mut learning_rate_value = 0.3f32;
         if training_step_index >= training_steps * 3 / 4 {
             learning_rate_value = 0.03f32;
         }
         let previous_parameters = parameters.load();
         let parameter_gradient_values = parameter_gradients.load_like(parameters);
-        let learning_rate: Tile<f32, { [32] }> = learning_rate_value.broadcast(parameters.shape());
-        parameters.store(previous_parameters - parameter_gradient_values * learning_rate);
-    }
-    #[cutile::entry()]
-    fn apply_matrix_gradient_step(
-        parameters: &mut Tensor<f32, { [8, 16] }>,
-        parameter_gradients: &Tensor<f32, { [-1, -1] }>,
-        training_step: &Tensor<i32, { [1] }>,
-        training_steps: i32,
-    ) {
-        let training_step_index: i32 =
-            tile_to_scalar(training_step.load_tile(shape![1], [0]).reshape(shape![]));
-        let mut learning_rate_value = 0.3f32;
-        if training_step_index >= training_steps * 3 / 4 {
-            learning_rate_value = 0.03f32;
-        }
-        let previous_parameters = parameters.load();
-        let parameter_gradient_values = parameter_gradients.load_like(parameters);
-        let learning_rate: Tile<f32, { [8, 16] }> =
+        let learning_rate: cutile::core::Tile<f32, { [32] }> =
             learning_rate_value.broadcast(parameters.shape());
         parameters.store(previous_parameters - parameter_gradient_values * learning_rate);
     }
     #[cutile::entry()]
-    fn advance_training_step(training_step: &mut Tensor<i32, { [1] }>) {
+    fn apply_matrix_gradient_step(
+        parameters: &mut cutile::core::Tensor<f32, { [8, 16] }>,
+        parameter_gradients: &cutile::core::Tensor<f32, { [-1, -1] }>,
+        training_step: &cutile::core::Tensor<i32, { [1] }>,
+        training_steps: i32,
+    ) {
+        let training_step_index: i32 = cutile::core::tile_to_scalar(
+            training_step
+                .load_tile(cutile::core::shape![1], [0])
+                .reshape(cutile::core::shape![]),
+        );
+        let mut learning_rate_value = 0.3f32;
+        if training_step_index >= training_steps * 3 / 4 {
+            learning_rate_value = 0.03f32;
+        }
+        let previous_parameters = parameters.load();
+        let parameter_gradient_values = parameter_gradients.load_like(parameters);
+        let learning_rate: cutile::core::Tile<f32, { [8, 16] }> =
+            learning_rate_value.broadcast(parameters.shape());
+        parameters.store(previous_parameters - parameter_gradient_values * learning_rate);
+    }
+    #[cutile::entry()]
+    fn advance_training_step(training_step: &mut cutile::core::Tensor<i32, { [1] }>) {
         let previous_training_step = training_step.load();
-        let step_increment: Tile<i32, { [1] }> = constant(1i32, shape![1]);
+        let step_increment: cutile::core::Tile<i32, { [1] }> =
+            cutile::core::constant(1i32, cutile::core::shape![1]);
         training_step.store(previous_training_step + step_increment);
     }
 }
