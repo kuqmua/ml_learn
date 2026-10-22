@@ -1,7 +1,7 @@
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let program_started_at: std::time::Instant = std::time::Instant::now();
     /// Владеющий вектор, содержащий хотя бы один элемент.
-    /// Создаётся через TryFrom; доступ через срез не позволяет удалить все элементы.
+    /// TryFrom отклоняет пустой вектор; map и try_map сохраняют длину. Deref предоставляет только срез.
     #[derive(Clone, Debug, derive_more::Deref, derive_more::IntoIterator)]
     #[deref(forward)]
     struct NonEmptyVec<T>(Vec<T>);
@@ -92,10 +92,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .ok_or("индекс символа должен быть меньше размера словаря")
         }
     }
-    // Позиция символа, проверенная относительно размера Vocabulary при создании.
+    // Числовой индекс символа Vocabulary; TryFrom проверяет границы конкретного словаря.
     #[derive(Clone, Copy, Debug, PartialEq, Eq)]
     struct VocabularyCharacterIndexAsUsize(
-        // Позиция проверена при создании; принадлежность конкретному экземпляру Vocabulary не хранится.
+        // Значение от 0 до vocabulary.len() - 1 после TryFrom; сам usize не хранит связь со словарём.
         usize,
     );
     impl TryFrom<(usize, &Vocabulary)> for VocabularyCharacterIndexAsUsize {
@@ -122,11 +122,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     // Нулевое значение для координат, градиентов и накопительных сумм.
     const ZERO_F32: f32 = 0.0;
-    // Фиксированные размеры модели, известные при компиляции.
+    // Число обучаемых координат одного символа; определяет длину каждой строки C.
     const EMBEDDING_DIMENSIONS: usize = 10;
+    // Число компонентов результата первого слоя и длина b1.
     const FIRST_LAYER_SIZE: usize = 200;
     // Число примеров, по которым усредняются градиенты одного шага.
     const BATCH_SIZE: usize = 32;
+    // Проверяем положительность размеров при компиляции.
     const _: () = assert!(
         CONTEXT_LENGTH > 0 && EMBEDDING_DIMENSIONS > 0 && FIRST_LAYER_SIZE > 0 && BATCH_SIZE > 0
     );
@@ -140,6 +142,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         training_character_index_pairs,
         validation_character_index_pairs,
         test_character_index_pairs,
+    ): (
+        Vocabulary,
+        NonEmptyVec<PreviousVocabularyCharacterIndexesAndNextCharacterIndex>,
+        NonEmptyVec<PreviousVocabularyCharacterIndexesAndNextCharacterIndex>,
+        NonEmptyVec<PreviousVocabularyCharacterIndexesAndNextCharacterIndex>,
     ) = {
         // 1. Проверяем записи; повторения сохраняем, чтобы не менять их частоты в наборе.
         let names_text: &str = include_str!("../data/names.txt");
@@ -341,7 +348,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     struct FiniteF32(f32);
     impl TryFrom<f32> for FiniteF32 {
         type Error = &'static str;
-        // Проверяет конечность значения, не ограничивая его знак и величину.
+        // Разрешает отрицательные числа, ноль и положительные числа; отклоняет NaN и ±∞.
         fn try_from(value: f32) -> Result<Self, Self::Error> {
             if value.is_finite() {
                 Ok(Self(value))
@@ -350,7 +357,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     }
-    // Положительная конечная скорость обучения; ноль, отрицательные значения и бесконечности запрещены.
+    // Множитель градиента при обновлении параметров; допускается только конечное число строго больше нуля.
     #[derive(Clone, Copy, Debug)]
     struct LearningRateAsPositiveFiniteF32(f32);
     impl TryFrom<f32> for LearningRateAsPositiveFiniteF32 {
@@ -374,38 +381,54 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ),
         &'static str,
     > {
-        // Вычитаем максимальную оценку перед exp; cross-entropy считаем через log-sum-exp без log(вероятности).
+        // Находим максимум непустого набора конечных оценок; −∞ служит только начальным накопителем fold.
         let maximum_character_score: f32 = character_scores
             .iter()
             .map(|score| score.0)
             .fold(f32::NEG_INFINITY, f32::max);
-        let exponentials_from_shifted_character_scores: NonEmptyVec<f32> = NonEmptyVec::try_from(
-            character_scores
+        // Из каждой оценки вычитаем максимум: получаем значения ≤ 0, у максимумов — 0.
+        // exp(оценка − максимум) даёт значения от 0 до 1; очень малые могут округлиться до 0.
+        let exponentials_from_character_scores_minus_maximum: NonEmptyVec<f32> =
+            NonEmptyVec::try_from(
+                character_scores
+                    .iter()
+                    .map(|character_score| (character_score.0 - maximum_character_score).exp())
+                    .collect::<Vec<_>>(),
+            )?;
+        // Сумма не меньше 1: хотя бы одна максимальная оценка даёт exp(0) = 1.
+        let exponentials_from_character_scores_minus_maximum_sum: f32 =
+            exponentials_from_character_scores_minus_maximum
                 .iter()
-                .map(|character_score| (character_score.0 - maximum_character_score).exp())
-                .collect::<Vec<_>>(),
-        )?;
-        let exponentials_sum: f32 = exponentials_from_shifted_character_scores.iter().sum();
+                .sum();
+        // Softmax: делим каждую экспоненту на общую сумму, сохраняя порядок символов Vocabulary.
         let character_probabilities: NonEmptyVec<CharacterProbabilityAsF32From0To1> =
             NonEmptyVec::try_from(
-                exponentials_from_shifted_character_scores
+                exponentials_from_character_scores_minus_maximum
                     .into_iter()
                     .map(|value| {
-                        CharacterProbabilityAsF32From0To1::try_from(value / exponentials_sum)
+                        CharacterProbabilityAsF32From0To1::try_from(
+                            value / exponentials_from_character_scores_minus_maximum_sum,
+                        )
                     })
                     .collect::<Result<Vec<_>, _>>()?,
             )?;
-        let target_score: f32 = character_scores
+        // Берём исходную оценку правильного следующего символа, до вычитания максимума.
+        let target_character_score: f32 = character_scores
             .get(next_vocabulary_character_usize_index.0)
             .ok_or("индекс целевого символа выходит за границы оценок")?
             .0;
-        let loss: f32 = (maximum_character_score - target_score) + exponentials_sum.ln();
+        // loss = −ln(p правильного символа).
+        // p = exp(target_character_score − maximum_character_score) / сумма экспонент.
+        // Раскрывая −ln(p), получаем максимум − целевую оценку + ln(сумма).
+        // Считаем напрямую: крошечная вероятность может округлиться до 0, и ln(0) дал бы −∞.
+        let loss: f32 = (maximum_character_score - target_character_score)
+            + exponentials_from_character_scores_minus_maximum_sum.ln();
         Ok((
             CrossEntropyLossAsNonNegativeF32::try_from(loss)?,
             character_probabilities,
         ))
     };
-    let (model, forward, loss) = {
+    let (model, forward_pass, loss) = {
         // Параметры MLP: таблица эмбеддингов и два полносвязных слоя, между которыми применяется tanh.
         // Прямой проход и loss — замыкания ниже; размер словаря хранится в локальной переменной vocabulary_len.
         #[derive(Clone)]
@@ -415,9 +438,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             // W1: (CONTEXT_LENGTH * EMBEDDING_DIMENSIONS, FIRST_LAYER_SIZE) — веса первого слоя.
             first_layer_weights:
                 [[FiniteF32; FIRST_LAYER_SIZE]; CONTEXT_LENGTH * EMBEDDING_DIMENSIONS],
-            // b1: (FIRST_LAYER_SIZE,) — смещения нейронов первого слоя.
+            // b1: одно обучаемое смещение на каждую компоненту первого слоя.
             first_layer_biases: [FiniteF32; FIRST_LAYER_SIZE],
-            // W2: для каждого символа — веса от всех нейронов первого слоя.
+            // W2: [индекс символа][индекс компоненты первого слоя]; одна строка на символ Vocabulary.
             second_layer_weights: NonEmptyVec<[FiniteF32; FIRST_LAYER_SIZE]>,
             // b2: (vocabulary_len,) — смещения оценок следующих символов.
             second_layer_biases: NonEmptyVec<FiniteF32>,
@@ -480,7 +503,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }),
                 |row| try_map_array(row, FiniteF32::try_from),
             )?;
-            // b1: (FIRST_LAYER_SIZE,) — смещения нейронов первого слоя, также фиксированный массив.
+            // b1: FIRST_LAYER_SIZE случайных смещений первого слоя, проверенных на конечность.
             let first_layer_biases: [FiniteF32; FIRST_LAYER_SIZE] = try_map_array(
                 std::array::from_fn(|_| initialize_embeddings_sample_standard_normal()),
                 FiniteF32::try_from,
@@ -515,15 +538,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         struct ForwardPassResult {
             // Эмбеддинги символов контекста, объединённые в один входной вектор.
             character_embeddings_flattened: [FiniteF32; CONTEXT_LENGTH * EMBEDDING_DIMENSIONS],
-            // Выходы нейронов первого слоя после применения tanh.
+            // FIRST_LAYER_SIZE результатов tanh; каждый находится в диапазоне от −1 до 1.
             first_layer_activations: [FiniteF32; FIRST_LAYER_SIZE],
             // Оценки следующих символов до softmax, в порядке Vocabulary.
             character_scores: NonEmptyVec<FiniteF32>,
         }
         // Вычисляет оценки следующего символа и сохраняет промежуточные значения прямого прохода.
-        let forward = |model: &Model,
-                       previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize;
-                           CONTEXT_LENGTH]|
+        let forward_pass = |model: &Model,
+                            previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize;
+                                CONTEXT_LENGTH]|
          -> Result<ForwardPassResult, &'static str> {
             // Берём векторы символов контекста из C и объединяем в исходном порядке.
             // Длина входного вектора: CONTEXT_LENGTH * EMBEDDING_DIMENSIONS.
@@ -536,6 +559,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .try_into()
                     .map_err(|_| "неверная длина объединённых эмбеддингов")?
             };
+            // Первый слой: начинаем с b1, накапливаем вход × W1, затем применяем tanh.
             let first_layer_activations: [FiniteF32; FIRST_LAYER_SIZE] = {
                 let mut first_layer_activations: [f32; FIRST_LAYER_SIZE] =
                     model.first_layer_biases.map(|value| value.0);
@@ -556,6 +580,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 try_map_array(first_layer_activations, FiniteF32::try_from)?
             };
+            // Второй слой: b2 + сумма(активация первого слоя × W2); здесь ещё нет softmax.
             let character_scores: NonEmptyVec<f32> = {
                 let mut character_scores: NonEmptyVec<f32> =
                     model.second_layer_biases.map(|value| value.0);
@@ -586,7 +611,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 character_scores,
             })
         };
-        // Усредняет cross-entropy по непустому набору; захватывает forward и cross_entropy, модель не изменяет.
+        // Усредняет cross-entropy по непустому набору; захватывает forward_pass и cross_entropy, модель не изменяет.
         let loss = move |model: &Model,
                          character_index_pairs: NonEmptySlice<
             '_,
@@ -597,7 +622,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             for character_index_pair in character_index_pairs.iter() {
                 let (character_index_pair_loss, _) = cross_entropy(
                     NonEmptySlice::from(
-                        &forward(
+                        &forward_pass(
                             model,
                             character_index_pair.previous_vocabulary_character_usize_indexes,
                         )?
@@ -611,7 +636,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 (total_loss / character_index_pairs.len() as f64) as f32,
             )
         };
-        (model, forward, loss)
+        (model, forward_pass, loss)
     };
     let trainable_scalar_count: usize = model.character_embeddings.len() * EMBEDDING_DIMENSIONS
         + model.first_layer_weights.len() * FIRST_LAYER_SIZE
@@ -649,19 +674,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 })?;
             let loss: CrossEntropyLossAsNonNegativeF32 = {
                 let (loss, gradients) = {
-                    // Производные loss по каждому тензору Model; формы и порядок элементов совпадают с соответствующим полем.
-                    struct ModelGradients<T> {
-                        // Градиенты character_embeddings.
-                        character_embeddings: NonEmptyVec<[T; EMBEDDING_DIMENSIONS]>,
-                        // Градиенты first_layer_weights.
-                        first_layer_weights:
-                            [[T; FIRST_LAYER_SIZE]; CONTEXT_LENGTH * EMBEDDING_DIMENSIONS],
-                        // Градиенты first_layer_biases.
-                        first_layer_biases: [T; FIRST_LAYER_SIZE],
-                        // Градиенты second_layer_weights.
-                        second_layer_weights: NonEmptyVec<[T; FIRST_LAYER_SIZE]>,
-                        // Градиенты second_layer_biases.
-                        second_layer_biases: NonEmptyVec<T>,
+                    // Формы совпадают с Model; каждый градиент проверяется при изменении.
+                    struct ModelGradients {
+                        // Производные среднего loss по координатам символов C.
+                        character_embeddings_gradients: NonEmptyVec<[FiniteF32; EMBEDDING_DIMENSIONS]>,
+                        // Производные по W1: [координата объединённых эмбеддингов][компонента первого слоя].
+                        first_layer_weights_gradients:
+                            [[FiniteF32; FIRST_LAYER_SIZE]; CONTEXT_LENGTH * EMBEDDING_DIMENSIONS],
+                        // Производные по каждому смещению первого слоя b1.
+                        first_layer_biases_gradients: [FiniteF32; FIRST_LAYER_SIZE],
+                        // Производные по W2: [индекс символа Vocabulary][компонента первого слоя].
+                        second_layer_weights_gradients: NonEmptyVec<[FiniteF32; FIRST_LAYER_SIZE]>,
+                        // Производные по каждому смещению оценок символов b2.
+                        second_layer_biases_gradients: NonEmptyVec<FiniteF32>,
                     }
                     let character_index_pairs_batch: [PreviousVocabularyCharacterIndexesAndNextCharacterIndex; BATCH_SIZE] =
                         std::array::from_fn(|_| {
@@ -674,31 +699,46 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         '_,
                         PreviousVocabularyCharacterIndexesAndNextCharacterIndex,
                     > = NonEmptySlice::try_from(character_index_pairs_batch.as_slice())?;
-                    let mut gradients: ModelGradients<f32> = ModelGradients {
-                        character_embeddings: model
+                    let zero_gradient: FiniteF32 = FiniteF32::try_from(ZERO_F32)?;
+                    let mut gradients: ModelGradients = ModelGradients {
+                        character_embeddings_gradients: model
                             .character_embeddings
-                            .map(|_| [ZERO_F32; EMBEDDING_DIMENSIONS]),
-                        first_layer_weights: [[ZERO_F32; FIRST_LAYER_SIZE];
+                            .map(|_| [zero_gradient; EMBEDDING_DIMENSIONS]),
+                        first_layer_weights_gradients: [[zero_gradient; FIRST_LAYER_SIZE];
                             CONTEXT_LENGTH * EMBEDDING_DIMENSIONS],
-                        first_layer_biases: [ZERO_F32; FIRST_LAYER_SIZE],
-                        second_layer_weights: model
+                        first_layer_biases_gradients: [zero_gradient; FIRST_LAYER_SIZE],
+                        second_layer_weights_gradients: model
                             .second_layer_weights
-                            .map(|_| [ZERO_F32; FIRST_LAYER_SIZE]),
-                        second_layer_biases: model.second_layer_biases.map(|_| ZERO_F32),
+                            .map(|_| [zero_gradient; FIRST_LAYER_SIZE]),
+                        second_layer_biases_gradients: model.second_layer_biases.map(|_| zero_gradient),
                     };
-                    let mut total_loss: f32 = ZERO_F32;
+                    let mut total_loss: FiniteF32 = zero_gradient;
                     for character_index_pair in training_character_index_pairs_batch.iter() {
-                        let forward_result = forward(
+                        // Проверяем произведение и новую сумму сразу, указывая место переполнения.
+                        fn accumulate_gradient(
+                            gradient: &mut FiniteF32,
+                            left: f32,
+                            right: f32,
+                            location: &'static str,
+                        ) -> Result<(), &'static str> {
+                            let contribution: FiniteF32 =
+                                FiniteF32::try_from(left * right).map_err(|_| location)?;
+                            *gradient = FiniteF32::try_from(gradient.0 + contribution.0)
+                                .map_err(|_| location)?;
+                            Ok(())
+                        }
+                        let forward_pass_result = forward_pass(
                             &model,
                             character_index_pair.previous_vocabulary_character_usize_indexes,
                         )?;
                         let score_gradients: NonEmptyVec<f32> = {
                             let (character_index_pair_loss, character_probabilities) =
                                 cross_entropy(
-                                    NonEmptySlice::from(&forward_result.character_scores),
+                                    NonEmptySlice::from(&forward_pass_result.character_scores),
                                     character_index_pair.next_vocabulary_character_usize_index,
                                 )?;
-                            total_loss += character_index_pair_loss.0;
+                            total_loss =
+                                FiniteF32::try_from(total_loss.0 + character_index_pair_loss.0)?;
                             let mut score_gradients: NonEmptyVec<f32> =
                                 character_probabilities.map(|probability| probability.0);
                             // Вероятности превращаем в производные ошибки по выходным оценкам.
@@ -713,109 +753,130 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             score_gradients
                         };
                         for (second_layer_bias_gradient, &score_gradient) in gradients
-                            .second_layer_biases
+                            .second_layer_biases_gradients
                             .0
                             .iter_mut()
                             .zip(score_gradients.iter())
                         {
-                            *second_layer_bias_gradient += score_gradient;
+                            accumulate_gradient(
+                                second_layer_bias_gradient,
+                                score_gradient,
+                                1.0,
+                                "переполнение градиента second_layer_biases",
+                            )?;
                         }
                         // Производные ошибки по суммам первого слоя ДО применения tanh.
-                        let first_layer_pre_activation_gradients: [f32; FIRST_LAYER_SIZE] = {
-                            let mut first_layer_pre_activation_gradients: [f32; FIRST_LAYER_SIZE] =
-                                [ZERO_F32; FIRST_LAYER_SIZE];
+                        let first_layer_pre_activation_gradients: [FiniteF32; FIRST_LAYER_SIZE] = {
+                            let mut first_layer_pre_activation_gradients: [FiniteF32;
+                                FIRST_LAYER_SIZE] = [zero_gradient; FIRST_LAYER_SIZE];
                             for first_layer_index in 0..FIRST_LAYER_SIZE {
                                 for vocabulary_character_index in 0..vocabulary_len {
-                                    gradients.second_layer_weights.0[vocabulary_character_index]
-                                        [first_layer_index] +=
-                                        forward_result.first_layer_activations[first_layer_index].0
-                                            * score_gradients[vocabulary_character_index];
-                                    first_layer_pre_activation_gradients[first_layer_index] += model
-                                        .second_layer_weights[vocabulary_character_index]
-                                        [first_layer_index]
-                                        .0
-                                        * score_gradients[vocabulary_character_index];
+                                    accumulate_gradient(
+                                        &mut gradients.second_layer_weights_gradients.0
+                                            [vocabulary_character_index][first_layer_index],
+                                        forward_pass_result.first_layer_activations
+                                            [first_layer_index]
+                                            .0,
+                                        score_gradients[vocabulary_character_index],
+                                        "переполнение градиента second_layer_weights",
+                                    )?;
+                                    accumulate_gradient(
+                                        &mut first_layer_pre_activation_gradients
+                                            [first_layer_index],
+                                        model.second_layer_weights[vocabulary_character_index]
+                                            [first_layer_index]
+                                            .0,
+                                        score_gradients[vocabulary_character_index],
+                                        "переполнение градиента входа первого слоя",
+                                    )?;
                                 }
                                 // Производная tanh равна 1 - tanh².
-                                first_layer_pre_activation_gradients[first_layer_index] *= 1.0
-                                    - forward_result.first_layer_activations[first_layer_index].0
-                                        * forward_result.first_layer_activations[first_layer_index]
-                                            .0;
-                                gradients.first_layer_biases[first_layer_index] +=
-                                    first_layer_pre_activation_gradients[first_layer_index];
+                                first_layer_pre_activation_gradients[first_layer_index] =
+                                    FiniteF32::try_from(
+                                        first_layer_pre_activation_gradients[first_layer_index].0
+                                            * (1.0
+                                                - forward_pass_result.first_layer_activations
+                                                    [first_layer_index]
+                                                    .0
+                                                    * forward_pass_result.first_layer_activations
+                                                        [first_layer_index]
+                                                        .0),
+                                    )?;
+                                accumulate_gradient(
+                                    &mut gradients.first_layer_biases_gradients[first_layer_index],
+                                    first_layer_pre_activation_gradients[first_layer_index].0,
+                                    1.0,
+                                    "переполнение градиента first_layer_biases",
+                                )?;
                             }
                             first_layer_pre_activation_gradients
                         };
-                        for input_coordinate_index in
-                            0..forward_result.character_embeddings_flattened.len()
+                        for character_embeddings_flattened_index in
+                            0..forward_pass_result.character_embeddings_flattened.len()
                         {
-                            let input_coordinate_gradient: f32 = {
-                                let mut input_coordinate_gradient: f32 = ZERO_F32;
+                            let input_coordinate_gradient: FiniteF32 = {
+                                let mut input_coordinate_gradient: FiniteF32 = zero_gradient;
                                 for first_layer_index in 0..FIRST_LAYER_SIZE {
-                                    gradients.first_layer_weights[input_coordinate_index]
-                                        [first_layer_index] += forward_result
-                                        .character_embeddings_flattened[input_coordinate_index]
-                                        .0
-                                        * first_layer_pre_activation_gradients[first_layer_index];
-                                    input_coordinate_gradient += model.first_layer_weights
-                                        [input_coordinate_index][first_layer_index]
-                                        .0
-                                        * first_layer_pre_activation_gradients[first_layer_index];
+                                    accumulate_gradient(
+                                        &mut gradients.first_layer_weights_gradients
+                                            [character_embeddings_flattened_index]
+                                            [first_layer_index],
+                                        forward_pass_result.character_embeddings_flattened
+                                            [character_embeddings_flattened_index]
+                                            .0,
+                                        first_layer_pre_activation_gradients[first_layer_index].0,
+                                        "переполнение градиента first_layer_weights",
+                                    )?;
+                                    accumulate_gradient(
+                                        &mut input_coordinate_gradient,
+                                        model.first_layer_weights
+                                            [character_embeddings_flattened_index]
+                                            [first_layer_index]
+                                            .0,
+                                        first_layer_pre_activation_gradients[first_layer_index].0,
+                                        "переполнение градиента координаты эмбеддинга",
+                                    )?;
                                 }
                                 input_coordinate_gradient
                             };
-                            // Scatter-add: повторяющиеся символы суммируют градиенты одной строки C.
-                            gradients.character_embeddings.0[character_index_pair
-                                .previous_vocabulary_character_usize_indexes
-                                [input_coordinate_index / EMBEDDING_DIMENSIONS]
-                                .0][input_coordinate_index % EMBEDDING_DIMENSIONS] +=
-                                input_coordinate_gradient;
+                            // Повторяющиеся символы используют одну строку C: складываем вклады всех их появлений.
+                            accumulate_gradient(
+                                &mut gradients.character_embeddings_gradients.0[character_index_pair
+                                    .previous_vocabulary_character_usize_indexes
+                                    [character_embeddings_flattened_index / EMBEDDING_DIMENSIONS]
+                                    .0]
+                                    [character_embeddings_flattened_index % EMBEDDING_DIMENSIONS],
+                                input_coordinate_gradient.0,
+                                1.0,
+                                "переполнение градиента character_embeddings",
+                            )?;
                         }
                     }
-                    // Готовые градиенты проверяем до изменения любого параметра модели.
-                    let gradients: ModelGradients<FiniteF32> = ModelGradients {
-                        character_embeddings: gradients
-                            .character_embeddings
-                            .try_map(|row| try_map_array(*row, FiniteF32::try_from))?,
-                        first_layer_weights: try_map_array(gradients.first_layer_weights, |row| {
-                            try_map_array(row, FiniteF32::try_from)
-                        })?,
-                        first_layer_biases: try_map_array(
-                            gradients.first_layer_biases,
-                            FiniteF32::try_from,
-                        )?,
-                        second_layer_weights: gradients
-                            .second_layer_weights
-                            .try_map(|row| try_map_array(*row, FiniteF32::try_from))?,
-                        second_layer_biases: gradients
-                            .second_layer_biases
-                            .try_map(|&value| FiniteF32::try_from(value))?,
-                    };
                     (
-                        total_loss / training_character_index_pairs_batch.len() as f32,
+                        total_loss.0 / training_character_index_pairs_batch.len() as f32,
                         gradients,
                     )
                 };
                 for (parameter_tensor, gradient_tensor) in [
                     (
                         model.character_embeddings.0.as_flattened_mut(),
-                        gradients.character_embeddings.as_flattened(),
+                        gradients.character_embeddings_gradients.as_flattened(),
                     ),
                     (
                         model.first_layer_weights.as_flattened_mut(),
-                        gradients.first_layer_weights.as_flattened(),
+                        gradients.first_layer_weights_gradients.as_flattened(),
                     ),
                     (
                         &mut model.first_layer_biases[..],
-                        &gradients.first_layer_biases[..],
+                        &gradients.first_layer_biases_gradients[..],
                     ),
                     (
                         model.second_layer_weights.0.as_flattened_mut(),
-                        gradients.second_layer_weights.as_flattened(),
+                        gradients.second_layer_weights_gradients.as_flattened(),
                     ),
                     (
                         &mut model.second_layer_biases.0[..],
-                        &gradients.second_layer_biases[..],
+                        &gradients.second_layer_biases_gradients[..],
                     ),
                 ] {
                     for (parameter, &gradient) in parameter_tensor.iter_mut().zip(gradient_tensor) {
@@ -853,7 +914,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
         print!("{metrics_text}");
     }
-    // 5. Генерируем имена с общим генератором: каждый выбранный символ добавляем в контекст до точки или лимита.
+    // 5. Печатаем 20 имён: выбираем символ по вероятностям, завершаем на точке или после 100 символов.
     for _ in 0..20 {
         let name: String = 'sample: {
             let mut previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize;
@@ -862,7 +923,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             for _ in 0..100 {
                 let (_, character_probabilities) = cross_entropy(
                     NonEmptySlice::from(
-                        &forward(&model, previous_vocabulary_character_usize_indexes)?
+                        &forward_pass(&model, previous_vocabulary_character_usize_indexes)?
                             .character_scores,
                     ),
                     vocabulary.dot_index(),
@@ -871,6 +932,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     CharacterProbabilityAsF32From0To1::try_from(rand::RngExt::random::<f32>(
                         &mut random_generator,
                     ))?;
+                // Выбираем интервал накопленной вероятности; последний индекс — запасной из-за округления суммы.
                 let sampled_character_index: usize = {
                     let mut cumulative_probability: f32 = ZERO_F32;
                     let mut sampled_character_index: usize = vocabulary_len - 1;
@@ -890,6 +952,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         sampled_character_index,
                         &vocabulary,
                     ))?;
+                // Точку конца имени тоже включаем в консольную строку.
                 generated_name.push(vocabulary.character(sampled_character_index)?);
                 if sampled_character_index.0 == 0 {
                     break 'sample generated_name;
