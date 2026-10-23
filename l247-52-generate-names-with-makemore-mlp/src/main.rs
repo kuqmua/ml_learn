@@ -1,14 +1,31 @@
 const PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION: usize = 3;
-const ZERO_F32: f32 = 0.0;
 const EMBEDDING_DIMENSIONS: usize = 10;
-const TOTAL_EMBEDDING_COORDINATE_COUNT_FOR_NEXT_CHARACTER_PREDICTION: usize =
-    PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION * EMBEDDING_DIMENSIONS;
 const FIRST_LAYER_SIZE: usize = 200;
 const BATCH_SIZE: usize = 32;
+const TRAINING_STEPS: usize = 200_000;
+const RANDOM_SEED: u64 = 42;
+const TRAINING_NAMES_PERCENT: usize = 80;
+const VALIDATION_NAMES_PERCENT: usize = 10;
+const INITIAL_LEARNING_RATE: f32 = 0.1;
+const FINAL_LEARNING_RATE: f32 = 0.01;
+const LEARNING_RATE_CHANGE_STEP: usize = 100_000;
+const USE_REGULAR_CUBE_EMBEDDINGS: bool = false;
+const REGULAR_CUBE_DIMENSIONS: usize = 3;
+const REGULAR_CUBE_HALF_WIDTH_SQUARED: f32 = 3.0;
+const GENERATED_NAMES_COUNT: usize = 20;
+const MAX_GENERATED_NAME_LENGTH: usize = 100;
+const NAMES_TEXT: &str = include_str!("../data/names.txt");
+const ZERO_F32: f32 = 0.0;
+const TOTAL_EMBEDDING_COORDINATE_COUNT_FOR_NEXT_CHARACTER_PREDICTION: usize =
+    PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION * EMBEDDING_DIMENSIONS;
 const _: () = assert!(PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION > 0 && EMBEDDING_DIMENSIONS > 0 && FIRST_LAYER_SIZE > 0 && BATCH_SIZE > 0);
+const _: () = assert!(TRAINING_NAMES_PERCENT > 0 && TRAINING_NAMES_PERCENT < 100 && VALIDATION_NAMES_PERCENT > 0 && VALIDATION_NAMES_PERCENT < 100 && TRAINING_NAMES_PERCENT + VALIDATION_NAMES_PERCENT < 100);
+const _: () = assert!(REGULAR_CUBE_DIMENSIONS > 0 && REGULAR_CUBE_HALF_WIDTH_SQUARED.is_finite() && REGULAR_CUBE_HALF_WIDTH_SQUARED > ZERO_F32);
+const _: () = assert!(INITIAL_LEARNING_RATE.is_finite() && INITIAL_LEARNING_RATE > ZERO_F32 && FINAL_LEARNING_RATE.is_finite() && FINAL_LEARNING_RATE > ZERO_F32);
+const _: () = assert!(GENERATED_NAMES_COUNT > 0 && MAX_GENERATED_NAME_LENGTH > 0);
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let training_steps: std::num::NonZeroUsize = std::num::NonZeroUsize::new(200_000).ok_or("число шагов должно быть положительным")?;
-    let mut random_generator: rand::rngs::StdRng = rand::SeedableRng::seed_from_u64(42);
+    let training_steps: std::num::NonZeroUsize = std::num::NonZeroUsize::new(TRAINING_STEPS).ok_or("число шагов должно быть положительным")?;
+    let mut random_generator: rand::rngs::StdRng = rand::SeedableRng::seed_from_u64(RANDOM_SEED);
     // {
     //   "vocabulary": [
     //     {"character": ".", "index": 0},
@@ -47,7 +64,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         NonEmptyVec<PreviousVocabularyCharacterIndexesAndNextCharacterIndex>,
     ) = {
         // {"names_text": "emma\nanna\nemma\nolivia\namelia\neva\nmila\nnina\nnoel\nmia\nava\n"}
-        let names_text: &str = include_str!("../data/names.txt");
+        let names_text: &str = NAMES_TEXT;
         // {"names": ["emma", "anna", "emma", "olivia", "amelia", "eva", "mila", "nina", "noel", "mia", "ava"]}
         let names: NonEmptyVec<Name<'_>> = NonEmptyVec::try_from(names_text.lines().map(Name::try_from).collect::<Result<Vec<Name<'_>>, &'static str>>()?)?;
         // {
@@ -84,10 +101,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         //   "remaining_name_groups": [["mia"], ["ava"]]
         // }
         let (training_name_groups, remaining_name_groups): (&[NonEmptyVec<Name<'_>>], &[NonEmptyVec<Name<'_>>]) =
-            name_groups.split_at(name_groups.len() * 8 / 10);
+            name_groups.split_at(name_groups.len() * TRAINING_NAMES_PERCENT / 100);
         // {"validation_name_groups": [["mia"]], "test_name_groups": [["ava"]]}
         let (validation_name_groups, test_name_groups): (&[NonEmptyVec<Name<'_>>], &[NonEmptyVec<Name<'_>>]) =
-            remaining_name_groups.split_at(name_groups.len() * 9 / 10 - training_name_groups.len());
+            remaining_name_groups.split_at(name_groups.len() * (TRAINING_NAMES_PERCENT + VALIDATION_NAMES_PERCENT) / 100 - training_name_groups.len());
         // {"training_names": ["emma", "emma", "anna", "olivia", "amelia", "eva", "mila", "nina", "noel"]}
         let training_names: NonEmptyVec<Name<'_>> = NonEmptyVec::try_from(
             training_name_groups
@@ -247,7 +264,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .map(|_: &VocabularyCharacter| -> [f32; EMBEDDING_DIMENSIONS] { [ZERO_F32; EMBEDDING_DIMENSIONS] });
             }
             // {"grid_dimensions": 3}
-            let grid_dimensions: usize = EMBEDDING_DIMENSIONS.min(3);
+            let grid_dimensions: usize = EMBEDDING_DIMENSIONS.min(REGULAR_CUBE_DIMENSIONS);
             // {"levels_per_axis": 1}
             let mut levels_per_axis: usize = 1;
             // {"vocabulary_len": 9, "levels_per_axis_sequence": [1, 2, 3], "node_counts": [1, 8, 27]}
@@ -258,7 +275,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             // {"node_count": 27}
             let node_count: usize = levels_per_axis.pow(grid_dimensions as u32);
             // {"half_width": 1.732051}
-            let half_width: f32 = 3.0f32.sqrt();
+            let half_width: f32 = REGULAR_CUBE_HALF_WIDTH_SQUARED.sqrt();
             // {"symbol_index": 0}
             let mut symbol_index: usize = 0;
             vocabulary.0.map(|_: &VocabularyCharacter| -> [f32; EMBEDDING_DIMENSIONS] {
@@ -294,7 +311,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             })
                         })?;
                 // {"regular_cube_enabled": false, "selected_initialization": "StandardNormal"}
-                if false {
+                if USE_REGULAR_CUBE_EMBEDDINGS {
                     initialize_embeddings_regular_cube().try_map(
                         |row: &[f32; EMBEDDING_DIMENSIONS]| -> Result<[FiniteF32; EMBEDDING_DIMENSIONS], &'static str> {
                             try_map_array(*row, FiniteF32::try_from)
@@ -389,7 +406,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // {"first_step": 0, "last_step": 199999, "updates": 200000}
         for training_step in 0..training_steps.get() {
             // [{"training_step": 99999, "learning_rate": 0.1}, {"training_step": 100000, "learning_rate": 0.01}]
-            let learning_rate: LearningRateAsPositiveFiniteF32 = LearningRateAsPositiveFiniteF32::try_from(if training_step < 100_000 { 0.1 } else { 0.01 })?;
+            let learning_rate: LearningRateAsPositiveFiniteF32 = LearningRateAsPositiveFiniteF32::try_from(if training_step < LEARNING_RATE_CHANGE_STEP { INITIAL_LEARNING_RATE } else { FINAL_LEARNING_RATE })?;
             // {"_loss": 0.356675}
             let _loss: CrossEntropyLossAsNonNegativeF32 = {
                 // {"average_negative_log_likelihood_loss": 0.356675}
@@ -523,7 +540,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         loss(&model, NonEmptySlice::from(&test_character_index_pairs))?,
     ];
     // {"iterations": 20, "names_per_iteration": 1}
-    for _ in 0..20 {
+    for _ in 0..GENERATED_NAMES_COUNT {
         // {"_name": "emma."}
         let _name: String = 'sample: {
             // {"previous_vocabulary_character_usize_indexes": [0, 0, 0]}
@@ -532,7 +549,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             // {"generated_name": ""}
             let mut generated_name: String = String::new();
             // {"max_sampled_characters": 100, "stop_index": 0}
-            for _ in 0..100 {
+            for _ in 0..MAX_GENERATED_NAME_LENGTH {
                 // {
                 //   "target": 0,
                 //   "next_character_probabilities_and_negative_log_likelihood": {
@@ -607,7 +624,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 previous_vocabulary_character_usize_indexes[PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION - 1] = sampled_character_index;
             }
             // {"generated_name_len_before": 100, "appended_suffix": " [лимит 100 символов]"}
-            generated_name.push_str(" [лимит 100 символов]");
+            generated_name.push_str(&format!(" [лимит {MAX_GENERATED_NAME_LENGTH} символов]"));
             generated_name
         };
     }
