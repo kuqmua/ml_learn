@@ -2,7 +2,6 @@
 name = "l247-52-generate-names-with-makemore-mlp"
 version = "0.1.0"
 edition = "2024"
-default-run = "l247-52-generate-names-with-makemore-mlp"
 
 [dependencies]
 derive-where = { workspace = true }
