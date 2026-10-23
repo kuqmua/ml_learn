@@ -1,13 +1,13 @@
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let program_started_at: std::time::Instant = std::time::Instant::now();
-    const CONTEXT_LENGTH: usize = 3;
+    const PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION: usize = 3;
     const ZERO_F32: f32 = 0.0;
     const EMBEDDING_DIMENSIONS: usize = 10;
     // Число координат в объединённых эмбеддингах всех символов контекста.
-    const CONTEXT_EMBEDDING_SIZE: usize = CONTEXT_LENGTH * EMBEDDING_DIMENSIONS;
+    const TOTAL_EMBEDDING_COORDINATE_COUNT_FOR_NEXT_CHARACTER_PREDICTION: usize = PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION * EMBEDDING_DIMENSIONS;
     const FIRST_LAYER_SIZE: usize = 200;
     const BATCH_SIZE: usize = 32;
-    const _: () = assert!(CONTEXT_LENGTH > 0 && EMBEDDING_DIMENSIONS > 0 && FIRST_LAYER_SIZE > 0 && BATCH_SIZE > 0);
+    const _: () = assert!(PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION > 0 && EMBEDDING_DIMENSIONS > 0 && FIRST_LAYER_SIZE > 0 && BATCH_SIZE > 0);
     #[derive(Clone, Debug, derive_more::Deref, derive_more::IntoIterator)]
     #[deref(forward)]
     struct NonEmptyVec<T>(Vec<T>);
@@ -58,7 +58,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .try_into()
             .map_err(|_: Vec<U>| -> &'static str { "при преобразовании изменилась длина массива" })
     }
-    struct Vocabulary(NonEmptyVec<char>);
+    #[derive(Clone, Copy, Debug)]
+    struct VocabularyCharacter {
+        character: char,
+        index: VocabularyCharacterIndexAsUsize,
+    }
+    struct Vocabulary(NonEmptyVec<VocabularyCharacter>);
     impl Vocabulary {
         fn new(text: &str) -> Result<Self, &'static str> {
             let mut characters: Vec<char> = text
@@ -68,24 +73,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             characters.sort_unstable();
             characters.dedup();
             characters.insert(0, '.');
-            Ok(Self(NonEmptyVec::try_from(characters)?))
+            let vocabulary_characters: Vec<VocabularyCharacter> = characters
+                .into_iter()
+                .enumerate()
+                .map(|(index, character): (usize, char)| -> VocabularyCharacter {
+                    VocabularyCharacter {
+                        character,
+                        index: VocabularyCharacterIndexAsUsize(index),
+                    }
+                })
+                .collect();
+            Ok(Self(NonEmptyVec::try_from(vocabulary_characters)?))
         }
         fn len(&self) -> usize {
             self.0.len()
         }
         fn dot_index(&self) -> VocabularyCharacterIndexAsUsize {
-            VocabularyCharacterIndexAsUsize(0)
+            self.0[0].index
         }
         fn index_of(&self, character: char) -> Result<VocabularyCharacterIndexAsUsize, &'static str> {
-            let value: usize = self
-                .0
+            self.0
                 .iter()
-                .position(|&candidate: &char| -> bool { candidate == character })
-                .ok_or("символ отсутствует в словаре")?;
-            VocabularyCharacterIndexAsUsize::try_from((value, self))
+                .find(|candidate: &&VocabularyCharacter| -> bool { candidate.character == character })
+                .map(|entry: &VocabularyCharacter| -> VocabularyCharacterIndexAsUsize { entry.index })
+                .ok_or("символ отсутствует в словаре")
         }
         fn character(&self, index: VocabularyCharacterIndexAsUsize) -> Result<char, &'static str> {
-            self.0.get(index.0).copied().ok_or("индекс символа должен быть меньше размера словаря")
+            self.0
+                .get(index.0)
+                .map(|entry: &VocabularyCharacter| -> char { entry.character })
+                .ok_or("индекс символа должен быть меньше размера словаря")
         }
     }
     #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -96,13 +113,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             vocabulary
                 .0
                 .get(value)
-                .map(|_: &char| -> Self { Self(value) })
+                .map(|_: &VocabularyCharacter| -> Self { Self(value) })
                 .ok_or("индекс символа должен быть меньше размера словаря")
         }
     }
     #[derive(Clone, Copy, Debug, PartialEq)]
     struct PreviousVocabularyCharacterIndexesAndNextCharacterIndex {
-        previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize; CONTEXT_LENGTH],
+        previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize; PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION],
         next_vocabulary_character_usize_index: VocabularyCharacterIndexAsUsize,
     }
     #[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
@@ -276,8 +293,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     struct ForwardPassResult {
-        previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize; CONTEXT_LENGTH],
-        character_embeddings_flattened: [FiniteF32; CONTEXT_EMBEDDING_SIZE],
+        previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize; PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION],
+        character_embeddings_flattened: [FiniteF32; TOTAL_EMBEDDING_COORDINATE_COUNT_FOR_NEXT_CHARACTER_PREDICTION],
         first_layer_activations: [FiniteF32; FIRST_LAYER_SIZE],
         character_scores: NonEmptyVec<FiniteF32>,
     }
@@ -293,12 +310,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     #[derive(Clone)]
     struct Model {
         character_embeddings_parameters: NonEmptyVec<[FiniteF32; EMBEDDING_DIMENSIONS]>,
-        first_layer_weights_parameters: [[FiniteF32; FIRST_LAYER_SIZE]; CONTEXT_EMBEDDING_SIZE],
+        first_layer_weights_parameters: [[FiniteF32; FIRST_LAYER_SIZE]; TOTAL_EMBEDDING_COORDINATE_COUNT_FOR_NEXT_CHARACTER_PREDICTION],
         first_layer_biases_parameters: [FiniteF32; FIRST_LAYER_SIZE],
         second_layer_weights_parameters: NonEmptyVec<[FiniteF32; FIRST_LAYER_SIZE]>,
         second_layer_biases_parameters: NonEmptyVec<FiniteF32>,
         character_embeddings_gradients: NonEmptyVec<[FiniteF32; EMBEDDING_DIMENSIONS]>,
-        first_layer_weights_gradients: [[FiniteF32; FIRST_LAYER_SIZE]; CONTEXT_EMBEDDING_SIZE],
+        first_layer_weights_gradients: [[FiniteF32; FIRST_LAYER_SIZE]; TOTAL_EMBEDDING_COORDINATE_COUNT_FOR_NEXT_CHARACTER_PREDICTION],
         first_layer_biases_gradients: [FiniteF32; FIRST_LAYER_SIZE],
         second_layer_weights_gradients: NonEmptyVec<[FiniteF32; FIRST_LAYER_SIZE]>,
         second_layer_biases_gradients: NonEmptyVec<FiniteF32>,
@@ -315,11 +332,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         fn forward_pass(
             &self,
-            previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize; CONTEXT_LENGTH],
+            previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize; PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION],
         ) -> Result<ForwardPassResult, &'static str> {
-            let character_embeddings_flattened: [FiniteF32; CONTEXT_EMBEDDING_SIZE] = {
-                let context_embeddings: [[FiniteF32; EMBEDDING_DIMENSIONS]; CONTEXT_LENGTH] = previous_vocabulary_character_usize_indexes
-                    .map(|index: VocabularyCharacterIndexAsUsize| -> [FiniteF32; EMBEDDING_DIMENSIONS] { self.character_embeddings_parameters[index.0] });
+            let character_embeddings_flattened: [FiniteF32; TOTAL_EMBEDDING_COORDINATE_COUNT_FOR_NEXT_CHARACTER_PREDICTION] = {
+                let context_embeddings: [[FiniteF32; EMBEDDING_DIMENSIONS]; PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION] =
+                    previous_vocabulary_character_usize_indexes
+                        .map(|index: VocabularyCharacterIndexAsUsize| -> [FiniteF32; EMBEDDING_DIMENSIONS] { self.character_embeddings_parameters[index.0] });
                 context_embeddings
                     .as_flattened()
                     .try_into()
@@ -329,28 +347,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             };
             let first_layer_activations: [FiniteF32; FIRST_LAYER_SIZE] = {
                 let mut first_layer_activations: [f32; FIRST_LAYER_SIZE] = self.first_layer_biases_parameters.map(|value: FiniteF32| -> f32 { value.0 });
-                for iteration_value in character_embeddings_flattened.iter().enumerate() {
-                    let (context_embedding_coordinate_index, &context_embedding_coordinate): (usize, &FiniteF32) = iteration_value;
-                    for iteration_value in first_layer_activations
+                for character_embedding_flattened in character_embeddings_flattened.iter().enumerate() {
+                    let (context_embedding_coordinate_index, &context_embedding_coordinate): (usize, &FiniteF32) = character_embedding_flattened;
+                    for first_layer_activation_and_weight in first_layer_activations
                         .iter_mut()
                         .zip(&self.first_layer_weights_parameters[context_embedding_coordinate_index])
                     {
-                        let (first_layer_activation, &first_layer_weight): (&mut f32, &FiniteF32) = iteration_value;
+                        let (first_layer_activation, &first_layer_weight): (&mut f32, &FiniteF32) = first_layer_activation_and_weight;
                         *first_layer_activation += context_embedding_coordinate.0 * first_layer_weight.0;
                     }
                 }
-                for iteration_value in &mut first_layer_activations {
-                    let first_layer_activation: &mut f32 = iteration_value;
+                for first_layer_activation in &mut first_layer_activations {
                     *first_layer_activation = Tanh::forward_activation(FiniteF32::try_from(*first_layer_activation)?)?.0;
                 }
                 try_map_array(first_layer_activations, FiniteF32::try_from)?
             };
             let character_scores: NonEmptyVec<f32> = {
                 let mut character_scores: NonEmptyVec<f32> = self.second_layer_biases_parameters.map(|value: &FiniteF32| -> f32 { value.0 });
-                for iteration_value in first_layer_activations.iter().enumerate() {
-                    let (first_layer_index, &first_layer_activation): (usize, &FiniteF32) = iteration_value;
-                    for iteration_value in character_scores.0.iter_mut().zip(self.second_layer_weights_parameters.iter()) {
-                        let (character_score, character_weights): (&mut f32, &[FiniteF32; FIRST_LAYER_SIZE]) = iteration_value;
+                for first_layer_activation_with_index in first_layer_activations.iter().enumerate() {
+                    let (first_layer_index, &first_layer_activation): (usize, &FiniteF32) = first_layer_activation_with_index;
+                    for character_score_and_weights in character_scores.0.iter_mut().zip(self.second_layer_weights_parameters.iter()) {
+                        let (character_score, character_weights): (&mut f32, &[FiniteF32; FIRST_LAYER_SIZE]) = character_score_and_weights;
                         *character_score += first_layer_activation.0 * character_weights[first_layer_index].0;
                     }
                 }
@@ -419,8 +436,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let first_layer_pre_activation_gradients: [FiniteF32; FIRST_LAYER_SIZE] = {
                 let mut first_layer_pre_activation_gradients: [FiniteF32; FIRST_LAYER_SIZE] = [zero_gradient; FIRST_LAYER_SIZE];
                 for first_layer_index in 0..FIRST_LAYER_SIZE {
-                    for iteration_value in 0..second_layer_biases_parameters_len {
-                        let vocabulary_character_index: usize = iteration_value;
+                    for vocabulary_character_index in 0..second_layer_biases_parameters_len {
                         accumulate_gradient_product(
                             &mut first_layer_pre_activation_gradients[first_layer_index],
                             self.second_layer_weights_parameters[vocabulary_character_index][first_layer_index].0,
@@ -446,7 +462,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
             {
-                let first_layer_weights_gradients: &mut [[FiniteF32; FIRST_LAYER_SIZE]; CONTEXT_EMBEDDING_SIZE] = &mut self.first_layer_weights_gradients;
+                let first_layer_weights_gradients: &mut [[FiniteF32; FIRST_LAYER_SIZE]; TOTAL_EMBEDDING_COORDINATE_COUNT_FOR_NEXT_CHARACTER_PREDICTION] =
+                    &mut self.first_layer_weights_gradients;
                 for character_embeddings_flattened_index in 0..forward_pass_result.character_embeddings_flattened.len() {
                     for first_layer_index in 0..FIRST_LAYER_SIZE {
                         accumulate_gradient_product(
@@ -513,8 +530,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                      character_index_pairs: NonEmptySlice<'_, PreviousVocabularyCharacterIndexesAndNextCharacterIndex>|
           -> Result<CrossEntropyLossAsNonNegativeF32, &'static str> {
         let mut total_negative_log_likelihood_loss: f64 = 0.0;
-        for iteration_value in character_index_pairs.iter() {
-            let character_index_pair: &PreviousVocabularyCharacterIndexesAndNextCharacterIndex = iteration_value;
+        for character_index_pair in character_index_pairs.iter() {
             let next_character_probabilities_and_negative_log_likelihood: NextCharacterProbabilitiesAndNegativeLogLikelihood =
                 SoftmaxCrossEntropy::forward_probabilities_and_loss(
                     NonEmptySlice::from(
@@ -558,8 +574,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Имена: {}, первые восемь: {:?}", names.len(), &names[..names.len().min(8)]);
         let mut name_groups: NonEmptyVec<NonEmptyVec<Name<'_>>> = {
             let mut groups: std::collections::BTreeMap<Name<'_>, Vec<Name<'_>>> = std::collections::BTreeMap::new();
-            for iteration_value in names.iter() {
-                let &name: &Name<'_> = iteration_value;
+            for &name in names.iter() {
                 groups.entry(name).or_default().push(name);
             }
             NonEmptyVec::try_from(
@@ -600,19 +615,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let build_previous_vocabulary_character_indexes_and_next_character_indexes =
             |names: NonEmptySlice<'_, Name<'_>>| -> Result<NonEmptyVec<PreviousVocabularyCharacterIndexesAndNextCharacterIndex>, &'static str> {
                 let mut character_index_pairs: Vec<PreviousVocabularyCharacterIndexesAndNextCharacterIndex> = Vec::new();
-                for iteration_value in names.iter() {
-                    let name: &Name<'_> = iteration_value;
-                    let mut previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize; CONTEXT_LENGTH] =
-                        [vocabulary.dot_index(); CONTEXT_LENGTH];
-                    for iteration_value in name.0.chars().chain(std::iter::once('.')) {
-                        let next_character: char = iteration_value;
+                for name in names.iter() {
+                    let mut previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize;
+                        PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION] =
+                        [vocabulary.dot_index(); PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION];
+                    for next_character in name.0.chars().chain(std::iter::once('.')) {
                         let next_vocabulary_character_usize_index: VocabularyCharacterIndexAsUsize = vocabulary.index_of(next_character)?;
                         character_index_pairs.push(PreviousVocabularyCharacterIndexesAndNextCharacterIndex {
                             previous_vocabulary_character_usize_indexes,
                             next_vocabulary_character_usize_index,
                         });
                         previous_vocabulary_character_usize_indexes.rotate_left(1);
-                        previous_vocabulary_character_usize_indexes[CONTEXT_LENGTH - 1] = next_vocabulary_character_usize_index;
+                        previous_vocabulary_character_usize_indexes[PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION - 1] =
+                            next_vocabulary_character_usize_index;
                     }
                 }
                 NonEmptyVec::try_from(character_index_pairs)
@@ -641,11 +656,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let vocabulary_len: usize = vocabulary.len();
     let mut model: Model = {
-        let mut initialize_parameter_standard_normal =
-            || -> Result<FiniteF32, &'static str> { FiniteF32::try_from(rand_distr::Distribution::<f32>::sample(&rand_distr::StandardNormal, &mut random_generator)) };
+        let mut initialize_parameter_standard_normal = || -> Result<FiniteF32, &'static str> {
+            FiniteF32::try_from(rand_distr::Distribution::<f32>::sample(&rand_distr::StandardNormal, &mut random_generator))
+        };
         let initialize_embeddings_regular_cube = || -> NonEmptyVec<[f32; EMBEDDING_DIMENSIONS]> {
             if vocabulary_len < 2 {
-                return vocabulary.0.map(|_: &char| -> [f32; EMBEDDING_DIMENSIONS] { [ZERO_F32; EMBEDDING_DIMENSIONS] });
+                return vocabulary
+                    .0
+                    .map(|_: &VocabularyCharacter| -> [f32; EMBEDDING_DIMENSIONS] { [ZERO_F32; EMBEDDING_DIMENSIONS] });
             }
             let grid_dimensions: usize = EMBEDDING_DIMENSIONS.min(3);
             let mut levels_per_axis: usize = 1;
@@ -655,11 +673,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let node_count: usize = levels_per_axis.pow(grid_dimensions as u32);
             let half_width: f32 = 3.0f32.sqrt();
             let mut symbol_index: usize = 0;
-            vocabulary.0.map(|_: &char| -> [f32; EMBEDDING_DIMENSIONS] {
+            vocabulary.0.map(|_: &VocabularyCharacter| -> [f32; EMBEDDING_DIMENSIONS] {
                 let mut node_index: usize = symbol_index * (node_count - 1) / (vocabulary_len - 1);
                 let mut embedding: [f32; EMBEDDING_DIMENSIONS] = [ZERO_F32; EMBEDDING_DIMENSIONS];
-                for iteration_value in &mut embedding[..grid_dimensions] {
-                    let coordinate: &mut f32 = iteration_value;
+                for coordinate in &mut embedding[..grid_dimensions] {
                     let level: usize = node_index % levels_per_axis;
                     node_index /= levels_per_axis;
                     *coordinate = -half_width + 2.0 * half_width * level as f32 / (levels_per_axis - 1) as f32;
@@ -672,11 +689,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Model {
             character_embeddings_parameters: {
                 let normal_character_embeddings: NonEmptyVec<[FiniteF32; EMBEDDING_DIMENSIONS]> =
-                    vocabulary.0.try_map(|_: &char| -> Result<[FiniteF32; EMBEDDING_DIMENSIONS], &'static str> {
-                        try_map_array([(); EMBEDDING_DIMENSIONS], |_: ()| -> Result<FiniteF32, &'static str> {
-                            initialize_parameter_standard_normal()
-                        })
-                    })?;
+                    vocabulary
+                        .0
+                        .try_map(|_: &VocabularyCharacter| -> Result<[FiniteF32; EMBEDDING_DIMENSIONS], &'static str> {
+                            try_map_array([(); EMBEDDING_DIMENSIONS], |_: ()| -> Result<FiniteF32, &'static str> {
+                                initialize_parameter_standard_normal()
+                            })
+                        })?;
                 if false {
                     initialize_embeddings_regular_cube().try_map(
                         |row: &[f32; EMBEDDING_DIMENSIONS]| -> Result<[FiniteF32; EMBEDDING_DIMENSIONS], &'static str> {
@@ -687,11 +706,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     normal_character_embeddings
                 }
             },
-            first_layer_weights_parameters: try_map_array([(); CONTEXT_EMBEDDING_SIZE], |_: ()| -> Result<[FiniteF32; FIRST_LAYER_SIZE], &'static str> {
-                try_map_array([(); FIRST_LAYER_SIZE], |_: ()| -> Result<FiniteF32, &'static str> {
-                    initialize_parameter_standard_normal()
-                })
-            })?,
+            first_layer_weights_parameters: try_map_array(
+                [(); TOTAL_EMBEDDING_COORDINATE_COUNT_FOR_NEXT_CHARACTER_PREDICTION],
+                |_: ()| -> Result<[FiniteF32; FIRST_LAYER_SIZE], &'static str> {
+                    try_map_array([(); FIRST_LAYER_SIZE], |_: ()| -> Result<FiniteF32, &'static str> {
+                        initialize_parameter_standard_normal()
+                    })
+                },
+            )?,
             first_layer_biases_parameters: try_map_array([(); FIRST_LAYER_SIZE], |_: ()| -> Result<FiniteF32, &'static str> {
                 initialize_parameter_standard_normal()
             })?,
@@ -700,11 +722,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let zero_weight: FiniteF32 = FiniteF32::zero();
                     vocabulary
                         .0
-                        .map(|_: &char| -> [FiniteF32; FIRST_LAYER_SIZE] { [zero_weight; FIRST_LAYER_SIZE] })
+                        .map(|_: &VocabularyCharacter| -> [FiniteF32; FIRST_LAYER_SIZE] { [zero_weight; FIRST_LAYER_SIZE] })
                 };
                 for first_layer_index in 0..FIRST_LAYER_SIZE {
-                    for iteration_value in second_layer_weights_parameters.0.iter_mut() {
-                        let character_weights: &mut [FiniteF32; FIRST_LAYER_SIZE] = iteration_value;
+                    for character_weights in second_layer_weights_parameters.0.iter_mut() {
                         character_weights[first_layer_index] = initialize_parameter_standard_normal()?;
                     }
                 }
@@ -716,7 +737,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .collect::<Result<Vec<FiniteF32>, &'static str>>()?,
             )?,
             character_embeddings_gradients: NonEmptyVec::try_from(vec![[zero_gradient; EMBEDDING_DIMENSIONS]; vocabulary_len])?,
-            first_layer_weights_gradients: [[zero_gradient; FIRST_LAYER_SIZE]; CONTEXT_EMBEDDING_SIZE],
+            first_layer_weights_gradients: [[zero_gradient; FIRST_LAYER_SIZE]; TOTAL_EMBEDDING_COORDINATE_COUNT_FOR_NEXT_CHARACTER_PREDICTION],
             first_layer_biases_gradients: [zero_gradient; FIRST_LAYER_SIZE],
             second_layer_weights_gradients: NonEmptyVec::try_from(vec![[zero_gradient; FIRST_LAYER_SIZE]; vocabulary_len])?,
             second_layer_biases_gradients: NonEmptyVec::try_from(vec![zero_gradient; vocabulary_len])?,
@@ -731,7 +752,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "C=({},{}), W1=({},{}), b1=({}), W2=({},{}), b2=({}); параметров: {}",
         vocabulary_len,
         EMBEDDING_DIMENSIONS,
-        CONTEXT_EMBEDDING_SIZE,
+        TOTAL_EMBEDDING_COORDINATE_COUNT_FOR_NEXT_CHARACTER_PREDICTION,
         FIRST_LAYER_SIZE,
         FIRST_LAYER_SIZE,
         FIRST_LAYER_SIZE,
@@ -769,16 +790,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 let forward_pass_result: ForwardPassResult = model.forward_pass(
                                     previous_vocabulary_character_indexes_and_next_character_index_batch_element.previous_vocabulary_character_usize_indexes,
                                 )?;
-                                let loss_result: NextCharacterProbabilitiesAndNegativeLogLikelihood = SoftmaxCrossEntropy::forward_probabilities_and_loss(
-                                    NonEmptySlice::from(&forward_pass_result.character_scores),
-                                    previous_vocabulary_character_indexes_and_next_character_index_batch_element.next_vocabulary_character_usize_index,
+                                let next_character_probabilities_and_negative_log_likelihood: NextCharacterProbabilitiesAndNegativeLogLikelihood =
+                                    SoftmaxCrossEntropy::forward_probabilities_and_loss(
+                                        NonEmptySlice::from(&forward_pass_result.character_scores),
+                                        previous_vocabulary_character_indexes_and_next_character_index_batch_element.next_vocabulary_character_usize_index,
+                                    )?;
+                                total_negative_log_likelihood_loss = FiniteF32::try_from(
+                                    total_negative_log_likelihood_loss.0
+                                        + next_character_probabilities_and_negative_log_likelihood.negative_log_likelihood_loss.0,
                                 )?;
-                                total_negative_log_likelihood_loss =
-                                    FiniteF32::try_from(total_negative_log_likelihood_loss.0 + loss_result.negative_log_likelihood_loss.0)?;
 
                                 // Начало backpropagation: ошибка → второй слой → tanh → первый слой → эмбеддинги.
                                 let score_gradients: NonEmptyVec<NextCharacterScoreGradientAsF32FromMinus1To1> = SoftmaxCrossEntropy::backward_score_gradients(
-                                    &loss_result,
+                                    &next_character_probabilities_and_negative_log_likelihood,
                                     previous_vocabulary_character_indexes_and_next_character_index_batch_element.next_vocabulary_character_usize_index,
                                     batch_len,
                                 )?;
@@ -817,7 +841,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     for _ in 0..20 {
         let name: String = 'sample: {
-            let mut previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize; CONTEXT_LENGTH] = [vocabulary.dot_index(); CONTEXT_LENGTH];
+            let mut previous_vocabulary_character_usize_indexes: [VocabularyCharacterIndexAsUsize; PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION] =
+                [vocabulary.dot_index(); PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION];
             let mut generated_name: String = String::new();
             for _ in 0..100 {
                 let next_character_probabilities_and_negative_log_likelihood: NextCharacterProbabilitiesAndNegativeLogLikelihood =
@@ -830,12 +855,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let sampled_character_index: usize = {
                     let mut cumulative_probability: f32 = ZERO_F32;
                     let mut sampled_character_index: usize = vocabulary_len - 1;
-                    for iteration_value in next_character_probabilities_and_negative_log_likelihood
+                    for next_character_probability_with_index in next_character_probabilities_and_negative_log_likelihood
                         .next_character_probabilities
                         .iter()
                         .enumerate()
                     {
-                        let (character_index, character_probability): (usize, &CharacterProbabilityAsF32From0To1) = iteration_value;
+                        let (character_index, character_probability): (usize, &CharacterProbabilityAsF32From0To1) = next_character_probability_with_index;
                         cumulative_probability += character_probability.0;
                         if random_probability.0 < cumulative_probability {
                             sampled_character_index = character_index;
@@ -851,7 +876,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     break 'sample generated_name;
                 }
                 previous_vocabulary_character_usize_indexes.rotate_left(1);
-                previous_vocabulary_character_usize_indexes[CONTEXT_LENGTH - 1] = sampled_character_index;
+                previous_vocabulary_character_usize_indexes[PREVIOUS_CHARACTER_COUNT_FOR_NEXT_CHARACTER_PREDICTION - 1] = sampled_character_index;
             }
             generated_name.push_str(" [лимит 100 символов]");
             generated_name
