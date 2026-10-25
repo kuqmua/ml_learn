@@ -253,6 +253,7 @@ members = [
     "l247-52-generate-names-with-makemore-mlp",
     "l248-53-train-makemore-mlp-with-cutile",
     "l249-54-makemore-batch-normalization",
+    "l250-55-calc-float32-arithmetic-using-integer-bits",
 ]
 resolver = "3"
 

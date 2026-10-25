@@ -1,130 +1,128 @@
 //! GPU-вариант: все шаги SGD исполняются в заранее выделенной памяти.
 #[cutile::module]
 mod kernels {
-    use cutile::core::{
-        BroadcastScalar, LoadTileLike, LoadTileMutAtCurrentBlock, StoreTileAtCurrentBlock,
-    };
+    use cutile::core::*;
     #[cutile::entry()]
     fn build_context_embedding_batch(
-        context_embeddings_flattened: &mut cutile::core::Tensor<f32, { [1, 64] }>,
-        batch_character_indexes: &mut cutile::core::Tensor<i32, { [1, 4] }>,
-        all_character_index_pairs: &cutile::core::Tensor<i32, { [-1, 4] }>,
-        character_embeddings: &cutile::core::Tensor<f32, { [32, 16] }>,
-        training_step: &cutile::core::Tensor<i32, { [1] }>,
+        context_embeddings_flattened: &mut Tensor<f32, { [1, 32] }>,
+        batch_character_indexes: &mut Tensor<i32, { [1, 4] }>,
+        all_character_index_pairs: &Tensor<i32, { [-1, 4] }>,
+        character_embeddings: &Tensor<f32, { [32, 8] }>,
+        training_step: &Tensor<i32, { [1] }>,
         batch_size: i32,
         sample_random_examples: i32,
     ) {
-        let tile_block_indexes = cutile::core::get_tile_block_id();
-        let training_step_index: i32 = cutile::core::tile_to_scalar(
+        let tile_block_indexes = get_tile_block_id();
+        let training_step_index: i32 = tile_to_scalar(
             training_step
-                .load_tile(cutile::core::shape![1], [0])
-                .reshape(cutile::core::shape![]),
+                .load_tile(shape![1], [0])
+                .reshape(shape![]),
         );
         let mut example_index = training_step_index * batch_size + tile_block_indexes.0;
         if sample_random_examples != 0 {
             // Хеш счётчика: выборка с возвращением без CPU-копий на каждом шаге.
-            let hashed_counter_bits: cutile::core::Tile<u32, { [] }> =
-                cutile::core::bitcast(cutile::core::scalar_to_tile::<i32>(example_index));
-            let mut hashed_counter: u32 = cutile::core::tile_to_scalar(hashed_counter_bits);
+            let hashed_counter_bits: Tile<u32, { [] }> =
+                bitcast(scalar_to_tile::<i32>(example_index));
+            let mut hashed_counter: u32 = tile_to_scalar(hashed_counter_bits);
             hashed_counter = hashed_counter ^ (hashed_counter >> 16u32);
             hashed_counter = hashed_counter * 2146121005u32;
             hashed_counter = hashed_counter ^ (hashed_counter >> 15u32);
             // 0x846ca68b: JIT 0.4 не разбирает целый литерал > i32::MAX.
             hashed_counter = hashed_counter * (1110856517u32 * 2u32 + 1u32);
             hashed_counter = hashed_counter ^ (hashed_counter >> 16u32);
-            let example_count_bits: cutile::core::Tile<u32, { [] }> = cutile::core::bitcast(
-                cutile::core::scalar_to_tile::<i32>(all_character_index_pairs.shape()[0]),
+            let example_count_bits: Tile<u32, { [] }> = bitcast(
+                scalar_to_tile::<i32>(all_character_index_pairs.shape()[0]),
             );
-            let example_count: u32 = cutile::core::tile_to_scalar(example_count_bits);
-            let example_index_bits: cutile::core::Tile<i32, { [] }> = cutile::core::bitcast(
-                cutile::core::scalar_to_tile::<u32>(hashed_counter % example_count),
+            let example_count: u32 = tile_to_scalar(example_count_bits);
+            let example_index_bits: Tile<i32, { [] }> = bitcast(
+                scalar_to_tile::<u32>(hashed_counter % example_count),
             );
-            example_index = cutile::core::tile_to_scalar(example_index_bits);
+            example_index = tile_to_scalar(example_index_bits);
         } else {
             example_index = example_index % all_character_index_pairs.shape()[0];
         }
         let context_and_next_character_indexes =
-            all_character_index_pairs.load_tile(cutile::core::shape![1, 4], [example_index, 0]);
+            all_character_index_pairs.load_tile(shape![1, 4], [example_index, 0]);
         batch_character_indexes.store(context_and_next_character_indexes);
         let mut embedding_batch_tiles =
-            context_embeddings_flattened.partition_mut(cutile::core::shape![1, 16]);
+            context_embeddings_flattened.partition_mut(shape![1, 8]);
         for context_slot in 0i32..4i32 {
-            let zero_embedding: cutile::core::Tile<f32, { [1, 16] }> =
-                cutile::core::constant(0.0f32, cutile::core::shape![1, 16]);
-            let mut embedding_values: cutile::core::Tile<f32, { [1, 16] }> = zero_embedding;
+            let zero_embedding: Tile<f32, { [1, 8] }> =
+                constant(0.0f32, shape![1, 8]);
+            let mut embedding_values: Tile<f32, { [1, 8] }> = zero_embedding;
             if context_slot < 3 {
-                let vocabulary_character_index: i32 = cutile::core::tile_to_scalar(
+                let vocabulary_character_index: i32 = tile_to_scalar(
                     all_character_index_pairs
-                        .load_tile(cutile::core::shape![1, 1], [example_index, context_slot])
-                        .reshape(cutile::core::shape![]),
+                        .load_tile(shape![1, 1], [example_index, context_slot])
+                        .reshape(shape![]),
                 );
                 embedding_values = character_embeddings
-                    .load_tile(cutile::core::shape![1, 16], [vocabulary_character_index, 0]);
+                    .load_tile(shape![1, 8], [vocabulary_character_index, 0]);
             }
             embedding_batch_tiles.store(embedding_values, [0, context_slot]);
         }
     }
     // Универсальный GEMM; транспонирование выполняется внутри тайла.
-    // MATRIX_OPERATION: 1 — прибавить смещения и применить cutile::core::tanh; 2 — умножить градиент на производную cutile::core::tanh; 0 — только матричное произведение.
+    // MATRIX_OPERATION: 1 — прибавить смещения и применить tanh; 2 — умножить градиент на производную tanh; 0 — только матричное произведение.
     #[cutile::entry()]
     fn multiply_matrices<
         const TRANSPOSE_LEFT_MATRIX: i32,
         const TRANSPOSE_RIGHT_MATRIX: i32,
         const MATRIX_OPERATION: i32,
     >(
-        output_matrix: &mut cutile::core::Tensor<f32, { [32, 32] }>,
-        left_matrix: &cutile::core::Tensor<f32, { [-1, -1] }>,
-        right_matrix: &cutile::core::Tensor<f32, { [-1, -1] }>,
-        layer_biases: &cutile::core::Tensor<f32, { [-1] }>,
-        first_layer_activations: &cutile::core::Tensor<f32, { [-1, -1] }>,
+        output_matrix: &mut Tensor<f32, { [32, 32] }>,
+        left_matrix: &Tensor<f32, { [-1, -1] }>,
+        right_matrix: &Tensor<f32, { [-1, -1] }>,
+        layer_biases: &Tensor<f32, { [-1] }>,
+        first_layer_activations: &Tensor<f32, { [-1, -1] }>,
         shared_dimension_size: i32,
     ) {
-        let tile_block_indexes = cutile::core::get_tile_block_id();
-        let zero_matrix: cutile::core::Tile<f32, { [32, 32] }> =
-            cutile::core::constant(0.0f32, cutile::core::shape![32, 32]);
+        let tile_block_indexes = get_tile_block_id();
+        let zero_matrix: Tile<f32, { [32, 32] }> =
+            constant(0.0f32, shape![32, 32]);
         let mut matrix_product_sum = zero_matrix;
         for shared_dimension_tile_index in 0i32..(shared_dimension_size / 32) {
             let left_matrix_tile = if TRANSPOSE_LEFT_MATRIX != 0 {
                 left_matrix
                     .load_tile(
-                        cutile::core::shape![32, 32],
+                        shape![32, 32],
                         [shared_dimension_tile_index, tile_block_indexes.0],
                     )
                     .transpose()
             } else {
                 left_matrix.load_tile(
-                    cutile::core::shape![32, 32],
+                    shape![32, 32],
                     [tile_block_indexes.0, shared_dimension_tile_index],
                 )
             };
             let right_matrix_tile = if TRANSPOSE_RIGHT_MATRIX != 0 {
                 right_matrix
                     .load_tile(
-                        cutile::core::shape![32, 32],
+                        shape![32, 32],
                         [tile_block_indexes.1, shared_dimension_tile_index],
                     )
                     .transpose()
             } else {
                 right_matrix.load_tile(
-                    cutile::core::shape![32, 32],
+                    shape![32, 32],
                     [shared_dimension_tile_index, tile_block_indexes.1],
                 )
             };
             matrix_product_sum =
-                cutile::core::mma(left_matrix_tile, right_matrix_tile, matrix_product_sum);
+                mma(left_matrix_tile, right_matrix_tile, matrix_product_sum);
         }
         if MATRIX_OPERATION == 1 {
             let layer_bias_values = layer_biases
-                .load_tile(cutile::core::shape![32], [tile_block_indexes.1])
-                .reshape(cutile::core::shape![1, 32]);
-            matrix_product_sum = cutile::core::tanh(
-                matrix_product_sum + layer_bias_values.broadcast(cutile::core::shape![32, 32]),
+                .load_tile(shape![32], [tile_block_indexes.1])
+                .reshape(shape![1, 32]);
+            matrix_product_sum = tanh(
+                matrix_product_sum + layer_bias_values.broadcast(shape![32, 32]),
             );
         }
         if MATRIX_OPERATION == 2 {
             let first_layer_activation_values = first_layer_activations.load_like(output_matrix);
-            let ones: cutile::core::Tile<f32, { [32, 32] }> =
-                cutile::core::constant(1.0f32, cutile::core::shape![32, 32]);
+            let ones: Tile<f32, { [32, 32] }> =
+                constant(1.0f32, shape![32, 32]);
             matrix_product_sum = matrix_product_sum
                 * (ones - first_layer_activation_values * first_layer_activation_values);
         }
@@ -132,118 +130,118 @@ mod kernels {
     }
     #[cutile::entry()]
     fn compute_score_gradients_and_negative_log_likelihood(
-        next_character_score_gradients: &mut cutile::core::Tensor<f32, { [32, 32] }>,
-        negative_log_likelihood_losses: &mut cutile::core::Tensor<f32, { [32, 1] }>,
-        character_scores_without_bias: &cutile::core::Tensor<f32, { [-1, 32] }>,
-        batch_character_indexes: &cutile::core::Tensor<i32, { [-1, 4] }>,
-        second_layer_biases: &cutile::core::Tensor<f32, { [32] }>,
+        next_character_score_gradients: &mut Tensor<f32, { [32, 32] }>,
+        negative_log_likelihood_losses: &mut Tensor<f32, { [32, 1] }>,
+        character_scores_without_bias: &Tensor<f32, { [-1, 32] }>,
+        batch_character_indexes: &Tensor<i32, { [-1, 4] }>,
+        second_layer_biases: &Tensor<f32, { [32] }>,
         batch_size_as_f32: f32,
     ) {
-        let tile_block_indexes = cutile::core::get_tile_block_id();
+        let tile_block_indexes = get_tile_block_id();
         let vocabulary_character_indexes =
-            cutile::core::iota::<i32, { [32] }>(cutile::core::shape![32])
-                .reshape(cutile::core::shape![1, 32])
-                .broadcast(cutile::core::shape![32, 32]);
-        let vocabulary_size: cutile::core::Tile<i32, { [32, 32] }> =
-            cutile::core::constant(27i32, cutile::core::shape![32, 32]);
-        let is_vocabulary_character = cutile::core::cmpi(
+            iota::<i32, { [32] }>(shape![32])
+                .reshape(shape![1, 32])
+                .broadcast(shape![32, 32]);
+        let vocabulary_size: Tile<i32, { [32, 32] }> =
+            constant(27i32, shape![32, 32]);
+        let is_vocabulary_character = cmpi(
             vocabulary_character_indexes,
             vocabulary_size,
-            cutile::core::predicate::LessThan,
+            predicate::LessThan,
         );
         let character_scores = character_scores_without_bias
             .load_like(next_character_score_gradients)
             + second_layer_biases
-                .load_tile(cutile::core::shape![32], [0])
-                .reshape(cutile::core::shape![1, 32])
-                .broadcast(cutile::core::shape![32, 32]);
-        let padding_character_score: cutile::core::Tile<f32, { [32, 32] }> =
-            cutile::core::constant(-1.0e30f32, cutile::core::shape![32, 32]);
-        let masked_character_scores = cutile::core::select(
+                .load_tile(shape![32], [0])
+                .reshape(shape![1, 32])
+                .broadcast(shape![32, 32]);
+        let padding_character_score: Tile<f32, { [32, 32] }> =
+            constant(-1.0e30f32, shape![32, 32]);
+        let masked_character_scores = select(
             is_vocabulary_character,
             character_scores,
             padding_character_score,
         );
-        let maximum_character_score: cutile::core::Tile<f32, { [32] }> =
-            cutile::core::reduce_max(masked_character_scores, 1);
-        let maximum_character_score = maximum_character_score.reshape(cutile::core::shape![32, 1]);
-        let exponentials_from_character_scores_minus_maximum = cutile::core::exp(
+        let maximum_character_score: Tile<f32, { [32] }> =
+            reduce_max(masked_character_scores, 1);
+        let maximum_character_score = maximum_character_score.reshape(shape![32, 1]);
+        let exponentials_from_character_scores_minus_maximum = exp(
             masked_character_scores
-                - maximum_character_score.broadcast(cutile::core::shape![32, 32]),
+                - maximum_character_score.broadcast(shape![32, 32]),
         );
-        let exponentials_from_character_scores_minus_maximum_sum: cutile::core::Tile<
+        let exponentials_from_character_scores_minus_maximum_sum: Tile<
             f32,
             { [32] },
-        > = cutile::core::reduce_sum(exponentials_from_character_scores_minus_maximum, 1);
+        > = reduce_sum(exponentials_from_character_scores_minus_maximum, 1);
         let exponentials_from_character_scores_minus_maximum_sum =
             exponentials_from_character_scores_minus_maximum_sum
-                .reshape(cutile::core::shape![32, 1]);
+                .reshape(shape![32, 1]);
         let target_character_indexes = batch_character_indexes
-            .load_tile(cutile::core::shape![32, 1], [tile_block_indexes.0, 3])
-            .broadcast(cutile::core::shape![32, 32]);
-        let is_target_character = cutile::core::cmpi(
+            .load_tile(shape![32, 1], [tile_block_indexes.0, 3])
+            .broadcast(shape![32, 32]);
+        let is_target_character = cmpi(
             vocabulary_character_indexes,
             target_character_indexes,
-            cutile::core::predicate::Equal,
+            predicate::Equal,
         );
-        let zeros: cutile::core::Tile<f32, { [32, 32] }> =
-            cutile::core::constant(0.0f32, cutile::core::shape![32, 32]);
-        let ones: cutile::core::Tile<f32, { [32, 32] }> =
-            cutile::core::constant(1.0f32, cutile::core::shape![32, 32]);
-        let target_character_one_hot = cutile::core::select(is_target_character, ones, zeros);
-        let batch_size_tile: cutile::core::Tile<f32, { [32, 32] }> =
-            batch_size_as_f32.broadcast(cutile::core::shape![32, 32]);
+        let zeros: Tile<f32, { [32, 32] }> =
+            constant(0.0f32, shape![32, 32]);
+        let ones: Tile<f32, { [32, 32] }> =
+            constant(1.0f32, shape![32, 32]);
+        let target_character_one_hot = select(is_target_character, ones, zeros);
+        let batch_size_tile: Tile<f32, { [32, 32] }> =
+            batch_size_as_f32.broadcast(shape![32, 32]);
         next_character_score_gradients.store(
             (exponentials_from_character_scores_minus_maximum
                 / exponentials_from_character_scores_minus_maximum_sum
-                    .broadcast(cutile::core::shape![32, 32])
+                    .broadcast(shape![32, 32])
                 - target_character_one_hot)
                 / batch_size_tile,
         );
-        let target_character_score: cutile::core::Tile<f32, { [32] }> =
-            cutile::core::reduce_sum(masked_character_scores * target_character_one_hot, 1);
-        let target_character_score = target_character_score.reshape(cutile::core::shape![32, 1]);
+        let target_character_score: Tile<f32, { [32] }> =
+            reduce_sum(masked_character_scores * target_character_one_hot, 1);
+        let target_character_score = target_character_score.reshape(shape![32, 1]);
         negative_log_likelihood_losses.store(
             maximum_character_score
-                + cutile::core::log(exponentials_from_character_scores_minus_maximum_sum)
+                + log(exponentials_from_character_scores_minus_maximum_sum)
                 - target_character_score,
         );
     }
     #[cutile::entry()]
     fn accumulate_character_embedding_gradients(
-        character_embeddings_gradients: &mut cutile::core::Tensor<f32, { [1, 16] }>,
-        context_embeddings_flattened_gradients: &cutile::core::Tensor<f32, { [-1, 64] }>,
-        batch_character_indexes: &cutile::core::Tensor<i32, { [-1, 4] }>,
+        character_embeddings_gradients: &mut Tensor<f32, { [1, 8] }>,
+        context_embeddings_flattened_gradients: &Tensor<f32, { [-1, 32] }>,
+        batch_character_indexes: &Tensor<i32, { [-1, 4] }>,
         batch_size: i32,
     ) {
-        let tile_block_indexes = cutile::core::get_tile_block_id();
-        let zero_embedding: cutile::core::Tile<f32, { [16] }> =
-            cutile::core::constant(0.0f32, cutile::core::shape![16]);
+        let tile_block_indexes = get_tile_block_id();
+        let zero_embedding: Tile<f32, { [8] }> =
+            constant(0.0f32, shape![8]);
         let mut embedding_gradient_sum = zero_embedding;
         for batch_tile_index in 0i32..(batch_size / 32) {
             for context_slot in 0i32..3i32 {
                 let context_character_indexes = batch_character_indexes.load_tile(
-                    cutile::core::shape![32, 1],
+                    shape![32, 1],
                     [batch_tile_index, context_slot],
                 );
-                let current_vocabulary_character_index: cutile::core::Tile<i32, { [32, 1] }> =
-                    tile_block_indexes.0.broadcast(cutile::core::shape![32, 1]);
-                let is_current_character = cutile::core::cmpi(
+                let current_vocabulary_character_index: Tile<i32, { [32, 1] }> =
+                    tile_block_indexes.0.broadcast(shape![32, 1]);
+                let is_current_character = cmpi(
                     context_character_indexes,
                     current_vocabulary_character_index,
-                    cutile::core::predicate::Equal,
+                    predicate::Equal,
                 )
-                .broadcast(cutile::core::shape![32, 16]);
+                .broadcast(shape![32, 8]);
                 let context_coordinate_gradients = context_embeddings_flattened_gradients
                     .load_tile(
-                        cutile::core::shape![32, 16],
+                        shape![32, 8],
                         [batch_tile_index, context_slot],
                     );
-                let zeros: cutile::core::Tile<f32, { [32, 16] }> =
-                    cutile::core::constant(0.0f32, cutile::core::shape![32, 16]);
+                let zeros: Tile<f32, { [32, 8] }> =
+                    constant(0.0f32, shape![32, 8]);
                 embedding_gradient_sum = embedding_gradient_sum
-                    + cutile::core::reduce_sum(
-                        cutile::core::select(
+                    + reduce_sum(
+                        select(
                             is_current_character,
                             context_coordinate_gradients,
                             zeros,
@@ -253,23 +251,23 @@ mod kernels {
             }
         }
         character_embeddings_gradients
-            .store(embedding_gradient_sum.reshape(cutile::core::shape![1, 16]));
+            .store(embedding_gradient_sum.reshape(shape![1, 8]));
     }
     #[cutile::entry()]
     fn sum_bias_gradients(
-        bias_gradients: &mut cutile::core::Tensor<f32, { [32] }>,
-        layer_score_gradients: &cutile::core::Tensor<f32, { [-1, -1] }>,
+        bias_gradients: &mut Tensor<f32, { [32] }>,
+        layer_score_gradients: &Tensor<f32, { [-1, -1] }>,
         batch_size: i32,
     ) {
-        let zero_bias: cutile::core::Tile<f32, { [32] }> =
-            cutile::core::constant(0.0f32, cutile::core::shape![32]);
+        let zero_bias: Tile<f32, { [32] }> =
+            constant(0.0f32, shape![32]);
         let mut bias_gradient_sum = zero_bias;
         for batch_tile_index in 0i32..(batch_size / 32) {
             bias_gradient_sum = bias_gradient_sum
-                + cutile::core::reduce_sum(
+                + reduce_sum(
                     layer_score_gradients.load_tile(
-                        cutile::core::shape![32, 32],
-                        [batch_tile_index, cutile::core::get_tile_block_id().0],
+                        shape![32, 32],
+                        [batch_tile_index, get_tile_block_id().0],
                     ),
                     0,
                 );
@@ -278,15 +276,15 @@ mod kernels {
     }
     #[cutile::entry()]
     fn apply_vector_gradient_step(
-        parameters: &mut cutile::core::Tensor<f32, { [32] }>,
-        parameter_gradients: &cutile::core::Tensor<f32, { [-1] }>,
-        training_step: &cutile::core::Tensor<i32, { [1] }>,
+        parameters: &mut Tensor<f32, { [32] }>,
+        parameter_gradients: &Tensor<f32, { [-1] }>,
+        training_step: &Tensor<i32, { [1] }>,
         training_steps: i32,
     ) {
-        let training_step_index: i32 = cutile::core::tile_to_scalar(
+        let training_step_index: i32 = tile_to_scalar(
             training_step
-                .load_tile(cutile::core::shape![1], [0])
-                .reshape(cutile::core::shape![]),
+                .load_tile(shape![1], [0])
+                .reshape(shape![]),
         );
         let mut learning_rate_value = 0.3f32;
         if training_step_index >= training_steps * 3 / 4 {
@@ -294,21 +292,21 @@ mod kernels {
         }
         let previous_parameters = parameters.load();
         let parameter_gradient_values = parameter_gradients.load_like(parameters);
-        let learning_rate: cutile::core::Tile<f32, { [32] }> =
+        let learning_rate: Tile<f32, { [32] }> =
             learning_rate_value.broadcast(parameters.shape());
         parameters.store(previous_parameters - parameter_gradient_values * learning_rate);
     }
     #[cutile::entry()]
     fn apply_matrix_gradient_step(
-        parameters: &mut cutile::core::Tensor<f32, { [8, 16] }>,
-        parameter_gradients: &cutile::core::Tensor<f32, { [-1, -1] }>,
-        training_step: &cutile::core::Tensor<i32, { [1] }>,
+        parameters: &mut Tensor<f32, { [8, 8] }>,
+        parameter_gradients: &Tensor<f32, { [-1, -1] }>,
+        training_step: &Tensor<i32, { [1] }>,
         training_steps: i32,
     ) {
-        let training_step_index: i32 = cutile::core::tile_to_scalar(
+        let training_step_index: i32 = tile_to_scalar(
             training_step
-                .load_tile(cutile::core::shape![1], [0])
-                .reshape(cutile::core::shape![]),
+                .load_tile(shape![1], [0])
+                .reshape(shape![]),
         );
         let mut learning_rate_value = 0.3f32;
         if training_step_index >= training_steps * 3 / 4 {
@@ -316,24 +314,24 @@ mod kernels {
         }
         let previous_parameters = parameters.load();
         let parameter_gradient_values = parameter_gradients.load_like(parameters);
-        let learning_rate: cutile::core::Tile<f32, { [8, 16] }> =
+        let learning_rate: Tile<f32, { [8, 8] }> =
             learning_rate_value.broadcast(parameters.shape());
         parameters.store(previous_parameters - parameter_gradient_values * learning_rate);
     }
     #[cutile::entry()]
-    fn advance_training_step(training_step: &mut cutile::core::Tensor<i32, { [1] }>) {
+    fn advance_training_step(training_step: &mut Tensor<i32, { [1] }>) {
         let previous_training_step = training_step.load();
-        let step_increment: cutile::core::Tile<i32, { [1] }> =
-            cutile::core::constant(1i32, cutile::core::shape![1]);
+        let step_increment: Tile<i32, { [1] }> =
+            constant(1i32, shape![1]);
         training_step.store(previous_training_step + step_increment);
     }
 }
 fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
-    // Три эмбеддинга по 16 координат дают 48 чисел; ещё 16 нулей выравнивают вход для GPU.
-    const PADDED_CONTEXT_EMBEDDING_SIZE: usize = 64;
+    // Три эмбеддинга по 8 координат дают 24 числа; ещё 8 нулей выравнивают вход для GPU.
+    const PADDED_CONTEXT_EMBEDDING_SIZE: usize = 32;
     // Число компонентов результата первого полносвязного слоя.
-    const FIRST_LAYER_SIZE: usize = 256;
+    const FIRST_LAYER_SIZE: usize = 64;
     // Настоящие символы: точка и a–z. GPU-буферы имеют 32 позиции, лишние пять маскируются.
     const VOCABULARY_SIZE: usize = 27;
     struct TrainingConfiguration {
@@ -365,15 +363,15 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
             self.flattened_character_index_pairs.len() / 4
         }
     }
-    // Тот же split по группам одинаковых имён, что и в CPU-уроке.
-    fn build_training_validation_test_datasets(
-        random_generator: &mut rand::rngs::StdRng,
-    ) -> [VocabularyCharacterIndexPairs; 3] {
+    // По умолчанию удаляем копии до split, как в CPU-уроке.
+    // Сохранение кратностей доступно только для воспроизведения бенчмарка.
+    fn build_training_validation_test_datasets(random_generator: &mut rand::rngs::StdRng, unique_names: bool) -> [VocabularyCharacterIndexPairs; 3] {
         let mut name_groups = std::collections::BTreeMap::<&str, Vec<&str>>::new();
-        for name in
-            include_str!("../../l247-52-generate-names-with-makemore-mlp/data/names.txt").lines()
-        {
-            name_groups.entry(name).or_default().push(name);
+        for name in include_str!("../../l247-52-generate-names-with-makemore-mlp/data/names.txt").lines() {
+            let group = name_groups.entry(name).or_default();
+            if !unique_names || group.is_empty() {
+                group.push(name);
+            }
         }
         let mut name_groups: Vec<_> = name_groups.into_values().collect();
         rand::seq::SliceRandom::shuffle(name_groups.as_mut_slice(), random_generator);
@@ -382,14 +380,13 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
             let mut flattened_character_index_pairs = Vec::new();
             for name in name_groups.iter().flatten() {
                 let mut previous_vocabulary_character_indexes = [0; 3];
-                for next_vocabulary_character_index in name
-                    .bytes()
-                    .map(|character_byte| (character_byte - b'a' + 1) as i32)
-                    .chain([0])
-                {
+                for next_vocabulary_character_index in name.bytes().map(|character_byte| (character_byte - b'a' + 1) as i32).chain([0]) {
                     flattened_character_index_pairs.extend(previous_vocabulary_character_indexes);
                     flattened_character_index_pairs.push(next_vocabulary_character_index);
-                    previous_vocabulary_character_indexes.rotate_left(1);
+                    // Сдвигаем контекст влево, отбрасывая самый старый индекс.
+                    for context_index in 0..previous_vocabulary_character_indexes.len() - 1 {
+                        previous_vocabulary_character_indexes[context_index] = previous_vocabulary_character_indexes[context_index + 1];
+                    }
                     previous_vocabulary_character_indexes[2] = next_vocabulary_character_index;
                 }
             }
@@ -399,21 +396,19 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
         };
         [
             build_character_index_pairs(&name_groups[..unique_name_count * 8 / 10]),
-            build_character_index_pairs(
-                &name_groups[unique_name_count * 8 / 10..unique_name_count * 9 / 10],
-            ),
+            build_character_index_pairs(&name_groups[unique_name_count * 8 / 10..unique_name_count * 9 / 10]),
             build_character_index_pairs(&name_groups[unique_name_count * 9 / 10..]),
         ]
     }
     // Параметры модели на GPU; эти же формы используются для хранения их градиентов.
     struct Model {
-        // C: [32, 16], обучаемые координаты символов; реальные индексы 0–26.
+        // C: [32, 8], обучаемые координаты символов; реальные индексы 0–26.
         character_embeddings: cutile::tensor::Tensor<f32>,
-        // W1: [64, 256], от объединённых координат контекста к первому слою.
+        // W1: [32, 64], от объединённых координат контекста к первому слою.
         first_layer_weights: cutile::tensor::Tensor<f32>,
-        // b1: [256], смещения сумм первого слоя до tanh.
+        // b1: [64], смещения сумм первого слоя до tanh.
         first_layer_biases: cutile::tensor::Tensor<f32>,
-        // W2: [256, 32], от активаций первого слоя к оценкам следующих символов.
+        // W2: [64, 32], от активаций первого слоя к оценкам следующих символов.
         second_layer_weights: cutile::tensor::Tensor<f32>,
         // b2: [32], смещения оценок; последние пять позиций не участвуют в softmax.
         second_layer_biases: cutile::tensor::Tensor<f32>,
@@ -436,12 +431,12 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
                         })
                         .collect()
                 };
-            let character_embeddings = initialize_normal_values(32 * 16, 1.0);
+            let character_embeddings = initialize_normal_values(32 * 8, 1.0);
             let mut first_layer_weights = initialize_normal_values(
                 PADDED_CONTEXT_EMBEDDING_SIZE * FIRST_LAYER_SIZE,
-                (5.0 / 3.0) / (48.0f32).sqrt(),
+                (5.0 / 3.0) / (24.0f32).sqrt(),
             );
-            first_layer_weights[48 * FIRST_LAYER_SIZE..].fill(0.0);
+            first_layer_weights[24 * FIRST_LAYER_SIZE..].fill(0.0);
             let mut second_layer_weights = initialize_normal_values(FIRST_LAYER_SIZE * 32, 0.01);
             for second_layer_weight_row in second_layer_weights.chunks_mut(32) {
                 second_layer_weight_row[VOCABULARY_SIZE..].fill(0.0);
@@ -449,7 +444,7 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
             Ok(Self {
                 character_embeddings: upload_tensor_to_gpu(
                     character_embeddings,
-                    &[32, 16],
+                    &[32, 8],
                     cuda_stream,
                 )?,
                 first_layer_weights: upload_tensor_to_gpu(
@@ -471,7 +466,7 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
         ) -> Result<Self> {
             use cutile::cuda_async::device_operation::DeviceOp;
             Ok(Self {
-                character_embeddings: cutile::api::zeros(&[32, 16]).sync_on(cuda_stream)?,
+                character_embeddings: cutile::api::zeros(&[32, 8]).sync_on(cuda_stream)?,
                 first_layer_weights: cutile::api::zeros(&[
                     PADDED_CONTEXT_EMBEDDING_SIZE,
                     FIRST_LAYER_SIZE,
@@ -485,9 +480,9 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
         }
     }
     struct ForwardAndBackwardBuffers {
-        // Вход: [batch_size, 64], три эмбеддинга подряд и нулевое дополнение.
+        // Вход: [batch_size, 32], три эмбеддинга подряд и нулевое дополнение.
         context_embeddings_flattened: cutile::tensor::Tensor<f32>,
-        // Первый слой: [batch_size, 256], результаты tanh.
+        // Первый слой: [batch_size, 64], результаты tanh.
         first_layer_activations: cutile::tensor::Tensor<f32>,
         // Второй слой: [batch_size, 32], матричное произведение без b2.
         next_character_scores_without_bias: cutile::tensor::Tensor<f32>,
@@ -495,7 +490,7 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
         next_character_score_gradients: cutile::tensor::Tensor<f32>,
         // Производные по суммам первого слоя до tanh.
         first_layer_pre_activation_gradients: cutile::tensor::Tensor<f32>,
-        // Производные по 64 входным координатам; реальные первые 48 идут в C.
+        // Производные по 32 входным координатам; реальные первые 24 идут в C.
         context_embeddings_flattened_gradients: cutile::tensor::Tensor<f32>,
         // Записи выбранного батча: [previous_0, previous_1, previous_2, target].
         batch_character_indexes: cutile::tensor::Tensor<i32>,
@@ -550,7 +545,7 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
         cuda_graph_scope.record(kernels::build_context_embedding_batch(
             cutile::tensor::PartitionMut::partition(
                 &mut buffers.context_embeddings_flattened,
-                [1, 64],
+                [1, 32],
             ),
             cutile::tensor::PartitionMut::partition(&mut buffers.batch_character_indexes, [1, 4]),
             all_character_index_pairs,
@@ -672,7 +667,7 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
         cuda_graph_scope.record(kernels::accumulate_character_embedding_gradients(
             cutile::tensor::PartitionMut::partition(
                 &mut model_gradients.character_embeddings,
-                [1, 16],
+                [1, 8],
             ),
             &buffers.context_embeddings_flattened_gradients,
             &buffers.batch_character_indexes,
@@ -713,7 +708,7 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
             ),
         ] {
             cuda_graph_scope.record(kernels::apply_matrix_gradient_step(
-                cutile::tensor::PartitionMut::partition(parameter_tensor, [8, 16]),
+                cutile::tensor::PartitionMut::partition(parameter_tensor, [8, 8]),
                 gradient_tensor,
                 &*training_step,
                 training_steps as i32,
@@ -883,13 +878,13 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
             for generated_character_index in 0..100 {
                 let mut first_layer_activations = first_layer_biases.clone();
                 for context_slot in 0..3 {
-                    for embedding_coordinate_index in 0..16 {
+                    for embedding_coordinate_index in 0..8 {
                         let embedding_coordinate = character_embeddings
-                            [previous_vocabulary_character_indexes[context_slot] * 16
+                            [previous_vocabulary_character_indexes[context_slot] * 8
                                 + embedding_coordinate_index];
                         for first_layer_index in 0..FIRST_LAYER_SIZE {
                             first_layer_activations[first_layer_index] += embedding_coordinate
-                                * first_layer_weights[(context_slot * 16
+                                * first_layer_weights[(context_slot * 8
                                     + embedding_coordinate_index)
                                     * FIRST_LAYER_SIZE
                                     + first_layer_index];
@@ -940,7 +935,10 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
                     break;
                 }
                 generated_name.push((b'a' + sampled_vocabulary_character_index as u8 - 1) as char);
-                previous_vocabulary_character_indexes.rotate_left(1);
+                // Сдвигаем контекст влево, отбрасывая самый старый индекс.
+                for context_index in 0..previous_vocabulary_character_indexes.len() - 1 {
+                    previous_vocabulary_character_indexes[context_index] = previous_vocabulary_character_indexes[context_index + 1];
+                }
                 previous_vocabulary_character_indexes[2] = sampled_vocabulary_character_index;
                 if generated_character_index == 99 {
                     generated_name.push_str(" [обрезано]");
@@ -955,12 +953,16 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     let program_started_at = std::time::Instant::now();
     let mut training_steps = 10_000usize;
     let mut batch_size = 128usize;
+    let mut unique_train = false;
+    let mut benchmark_repeats = false;
+    let mut model_seed = None;
     let mut arguments = std::env::args().skip(1);
     while let Some(argument) = arguments.next() {
         match argument.as_str() {
-            "--steps" => {
-                training_steps = arguments.next().ok_or("нет значения --steps")?.parse()?
-            }
+            "--unique-train" => unique_train = true,
+            "--benchmark-repeats" => benchmark_repeats = true,
+            "--model-seed" => model_seed = Some(arguments.next().ok_or("нет значения --model-seed")?.parse::<u64>()?),
+            "--steps" => training_steps = arguments.next().ok_or("нет значения --steps")?.parse()?,
             "--batch" => batch_size = arguments.next().ok_or("нет значения --batch")?.parse()?,
             _ => return Err(format!("неизвестный GPU-аргумент: {argument}").into()),
         }
@@ -979,28 +981,34 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     let device = cutile::cuda_core::Device::new(0)?;
     let cuda_stream = device.new_stream()?;
     let mut random_generator = <rand::rngs::StdRng as rand::SeedableRng>::seed_from_u64(42);
-    let [
-        training_character_index_pairs,
-        validation_character_index_pairs,
-        test_character_index_pairs,
-    ] = build_training_validation_test_datasets(&mut random_generator);
+    let [mut training_character_index_pairs, validation_character_index_pairs, test_character_index_pairs] =
+        build_training_validation_test_datasets(&mut random_generator, !benchmark_repeats);
+    let unique_evaluation_pairs = if benchmark_repeats {
+        let mut split_generator = <rand::rngs::StdRng as rand::SeedableRng>::seed_from_u64(42);
+        let [unique_training_pairs, unique_validation_pairs, unique_test_pairs] =
+            build_training_validation_test_datasets(&mut split_generator, true);
+        if unique_train {
+            training_character_index_pairs = unique_training_pairs;
+        }
+        Some([unique_validation_pairs, unique_test_pairs])
+    } else {
+        None
+    };
+    println!("Дедупликация: {}; model_seed={model_seed:?}", if benchmark_repeats { "режим бенчмарка" } else { "train/dev/test" });
+    if let Some(seed) = model_seed {
+        random_generator = <rand::rngs::StdRng as rand::SeedableRng>::seed_from_u64(seed);
+    }
     println!(
-        "cuTile: batch={batch_size}, steps={training_steps}, embedding=16, first_layer_size={FIRST_LAYER_SIZE}; train/dev/test={}/{}/{}",
+        "cuTile: batch={batch_size}, steps={training_steps}, embedding=8, first_layer_size={FIRST_LAYER_SIZE}; train/dev/test={}/{}/{}",
         training_character_index_pairs.example_count(),
         validation_character_index_pairs.example_count(),
         test_character_index_pairs.example_count()
     );
     let mut model = Model::new(&mut random_generator, &cuda_stream)?;
-    let initial_validation_loss = evaluate_mean_negative_log_likelihood(
-        &model,
-        &validation_character_index_pairs,
-        &cuda_stream,
-    )?;
+    let initial_validation_loss = evaluate_mean_negative_log_likelihood(&model, &validation_character_index_pairs, &cuda_stream)?;
     println!("Начальный dev loss={initial_validation_loss:.6}");
     let device_training_character_index_pairs = upload_tensor_to_gpu(
-        training_character_index_pairs
-            .flattened_character_index_pairs
-            .clone(),
+        training_character_index_pairs.flattened_character_index_pairs.clone(),
         &[training_character_index_pairs.example_count(), 4],
         &cuda_stream,
     )?;
@@ -1013,27 +1021,16 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
         &mut model_gradients,
         &device_training_character_index_pairs,
         &mut training_step,
-        &TrainingConfiguration {
-            batch_size,
-            training_steps,
-        },
+        &TrainingConfiguration { batch_size, training_steps },
         &cuda_stream,
     )?;
-    println!(
-        "JIT и подготовка: {:.3}s",
-        program_started_at.elapsed().as_secs_f64()
-    );
+    println!("JIT и подготовка: {:.3}s", program_started_at.elapsed().as_secs_f64());
     let training_started_at = std::time::Instant::now();
     for graph_replay_index in 0..training_steps / 10 {
         training_graph.launch().sync_on(&cuda_stream)?;
         if (graph_replay_index + 1) % 100 == 0 || graph_replay_index + 1 == training_steps / 10 {
-            let batch_negative_log_likelihood_losses = buffers
-                .negative_log_likelihood_losses
-                .dup()
-                .to_host_vec()
-                .sync_on(&cuda_stream)?;
-            let batch_mean_negative_log_likelihood_loss =
-                batch_negative_log_likelihood_losses.iter().sum::<f32>() / batch_size as f32;
+            let batch_negative_log_likelihood_losses = buffers.negative_log_likelihood_losses.dup().to_host_vec().sync_on(&cuda_stream)?;
+            let batch_mean_negative_log_likelihood_loss = batch_negative_log_likelihood_losses.iter().sum::<f32>() / batch_size as f32;
             if !batch_mean_negative_log_likelihood_loss.is_finite() {
                 return Err("нечисловой loss".into());
             }
@@ -1053,16 +1050,19 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
         ("train", &training_character_index_pairs),
         ("dev", &validation_character_index_pairs),
         ("test", &test_character_index_pairs),
+
     ] {
         println!(
             "{dataset_name}_loss={:.6}",
             evaluate_mean_negative_log_likelihood(&model, character_index_pairs, &cuda_stream)?
         );
     }
+    if let Some([validation, test]) = &unique_evaluation_pairs {
+        for (name, pairs) in [("dev_unique", validation), ("test_unique", test)] {
+            println!("{name}_loss={:.6}", evaluate_mean_negative_log_likelihood(&model, pairs, &cuda_stream)?);
+        }
+    }
     generate_names(&model, &mut random_generator, &cuda_stream)?;
-    println!(
-        "Общее время: {:.3}s",
-        program_started_at.elapsed().as_secs_f64()
-    );
+    println!("Общее время: {:.3}s", program_started_at.elapsed().as_secs_f64());
     Ok(())
 }

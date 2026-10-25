@@ -400,3 +400,7 @@
 ## 51. MNIST: Свёрточная нейросеть для PNG
 
 - [ ] [246 · Свёрточная нейросеть для PNG](l246-51-classify-mnist-with-convolutional-network/README.md)
+
+## 55. Float32: арифметика через целые числа и биты
+
+- [ ] [250 · Явная реализация Float32](l250-55-calc-float32-arithmetic-using-integer-bits/)

@@ -985,3 +985,7 @@
 ### 54. Makemore: инициализация, BatchNorm и глубокая сеть
 
 [Урок 249](l249-54-makemore-batch-normalization/README.md) переносит `makemore_part3_bn.ipynb`: MLP с BatchNorm, train/eval и running statistics, калибровка, собственные Linear/BatchNorm/Tanh, глубокая сеть, распределения активаций и градиентов, отношение update/data, генерация и бонусные опыты. Запуск: `cargo run --release -p l249-54-makemore-batch-normalization`. Данные локальные, внешние зависимости не нужны.
+
+### 55. Float32: арифметика через целые числа и биты
+
+[Урок 250](l250-55-calc-float32-arithmetic-using-integer-bits/README.md): явный формат binary32, знак, порядок, значащая часть, сложение, вычитание, умножение, деление, округление к ближайшему чётному, субнормальные числа и специальные значения. Вычисления на целых числах; побитная сверка со встроенным `f32`.

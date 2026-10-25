@@ -1,0 +1,4 @@
+[package]
+name = "l250-55-calc-float32-arithmetic-using-integer-bits"
+version = "0.1.0"
+edition = "2024"
