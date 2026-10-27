@@ -8,37 +8,33 @@
 
 fn main() {
     let targets: [f64; 4] = [0.0, 0.0, 2.0, 2.0];
-    let mut predictions: [f64; 4] = [1.0; 4];
-    let mut history: [f64; 3] = [1.0; 3];
+    let mut preds: [f64; 4] = [1.0, 1.0, 1.0, 1.0];
+    let mut history: [f64; 3] = [1.0, 1.0, 1.0];
+    println!("Правильные ответы: {targets:?}");
+    println!("Начальные прогнозы: {preds:?}");
+    println!("Начальная MSE: {}", history[0]);
+    println!("Скорость обучения: 0.5");
     for round in 0..2 {
-        let target_minus_prediction_values: [f64; 4] =
-            std::array::from_fn::<_, 4, _>(|step_index| {
-                targets[step_index] - predictions[step_index]
-            });
-        let average_error_for_group1: f64 =
-            (target_minus_prediction_values[0] + target_minus_prediction_values[1]) / 2.0;
-        let average_error_for_group2: f64 =
-            (target_minus_prediction_values[2] + target_minus_prediction_values[3]) / 2.0;
-        for (predictions_index, value) in predictions.iter_mut().enumerate() {
-            *value += 0.5
-                * if predictions_index < 2 {
-                    average_error_for_group1
-                } else {
-                    average_error_for_group2
-                };
+        println!("\nШаг {} — добавляем новое дерево", round + 1);
+        let residuals: [f64; 4] = std::array::from_fn::<_, 4, _>(|i| targets[i] - preds[i]);
+        println!("Остатки (ответ − прогноз): {residuals:?}");
+        let left_mean: f64 = (residuals[0] + residuals[1]) / 2.0;
+        let right_mean: f64 = (residuals[2] + residuals[3]) / 2.0;
+        println!("Средние остатки в листьях: левый = {left_mean}, правый = {right_mean}");
+        for (i, p) in preds.iter_mut().enumerate() {
+            let leaf = if i < 2 { left_mean } else { right_mean };
+            let old = *p;
+            *p += 0.5 * leaf;
+            println!("  Объект {i}: {old} + 0.5 × ({leaf}) = {p}");
         }
-        let mean_squared_error: f64 = targets
-            .iter()
-            .zip(predictions)
-            .map(|(target, prediction)| (target - prediction).powi(2))
-            .sum::<f64>()
-            / 4.0;
-        history[round + 1] = mean_squared_error;
+        let mse: f64 = targets.iter().zip(preds).map(|(target, pred)| (target - pred).powi(2)).sum::<f64>() / 4.0;
+        history[round + 1] = mse;
+        println!("Прогнозы после шага: {preds:?}");
+        println!("MSE: {} → {mse}", history[round]);
     }
-    assert_eq!(predictions, [0.25, 0.25, 1.75, 1.75]);
+    assert_eq!(preds, [0.25, 0.25, 1.75, 1.75]);
 
-    // Выполняем вычисления из примера.
-    let _ = &history;
+    println!("\nИстория MSE (до обучения и после каждого шага): {history:?}");
 }
 
 // Чему учит этот урок:
