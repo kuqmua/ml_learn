@@ -418,7 +418,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Дойдя до конца выборки, начинаем снова с первого примера; последний батч может быть короче.
     // Обнуляем градиенты, для каждого примера выполняем прямой проход и считаем -ln(p правильного символа).
     // Обратный проход накапливает градиенты средней ошибки батча; веса внутри батча не меняются.
-    // После всего батча model.step обновляет обучаемые параметры: параметр -= learning_rate * градиент.
+    // После всего батча model.stochastic_gradient_descent_step обновляет обучаемые параметры: параметр -= learning_rate * градиент.
     // При FREEZE_EMBEDDINGS = true эмбеддинги остаются фиксированными.
     // Выполняем 125000 обновлений: первые 100000 с шагом 0.1, оставшиеся 25000 — с шагом 0.01.
     // _training_batch_average_negative_log_likelihood_loss хранит среднюю ошибку текущего батча до обновления параметров; дальше она не используется.
@@ -548,7 +548,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 //   "before": {"second_layer_biases_parameters_1": 0.2},
                 //   "after": {"second_layer_biases_parameters_1": 0.215}
                 // }
-                model.step(learning_rate)?;
+                model.stochastic_gradient_descent_step(learning_rate)?;
                 CrossEntropyLossAsNonNegativeF32::try_from(average_negative_log_likelihood_loss)?
             };
         }
@@ -975,7 +975,7 @@ impl Model {
     // Эмбеддинги обновляются только при FREEZE_EMBEDDINGS = false.
     // Градиенты здесь не обнуляются: перед следующим батчем вызывается overwrite_gradients_with_zeros.
     // {"learning_rate": 0.1, "updated_parameter_count": 3355}
-    fn step(&mut self, learning_rate: LearningRateAsPositiveFiniteF32) -> Result<(), &'static str> {
+    fn stochastic_gradient_descent_step(&mut self, learning_rate: LearningRateAsPositiveFiniteF32) -> Result<(), &'static str> {
         let update_parameters = |parameters: &mut [FiniteF32], gradients: &[FiniteF32]| -> Result<(), &'static str> {
             if parameters.len() != gradients.len() {
                 return Err("число параметров и градиентов должно совпадать");

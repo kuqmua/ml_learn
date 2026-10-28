@@ -184,9 +184,9 @@ Loss отдельных мини-батчей колеблется, поскол
 
 В пояснениях ниже `forward` и `backward` — сокращённые названия длинных методов прямого и обратного проходов в исходнике.
 
-`Model` хранит параметры и накопители градиентов в одном объекте. `overwrite_gradients_with_zeros(&mut self)` обнуляет градиенты весов и смещений перед батчем; градиенты C — только в обучаемом режиме, сохраняя выделенную память. `forward_pass(&self, previous_vocabulary_character_usize_indexes)` вычисляет предсказание и сохраняет промежуточные значения в `PreviousCharactersEmbeddingsFlattenedAndFirstAndSecondLayerOutputs`. `backward(&mut self, forward_result, score_gradients)` накапливает производные в поля градиентов модели, не изменяя параметры. `step(&mut self, learning_rate)` обновляет параметры по накопленным градиентам после обработки всего батча.
+`Model` хранит параметры и накопители градиентов в одном объекте. `overwrite_gradients_with_zeros(&mut self)` обнуляет градиенты весов и смещений перед батчем; градиенты C — только в обучаемом режиме, сохраняя выделенную память. `forward_pass(&self, previous_vocabulary_character_usize_indexes)` вычисляет предсказание и сохраняет промежуточные значения в `PreviousCharactersEmbeddingsFlattenedAndFirstAndSecondLayerOutputs`. `backward(&mut self, forward_result, score_gradients)` накапливает производные в поля градиентов модели, не изменяя параметры. `stochastic_gradient_descent_step(&mut self, learning_rate)` обновляет параметры по накопленным градиентам после обработки всего батча.
 
-Порядок вызовов: `model.overwrite_gradients_with_zeros()?` → для каждого примера `model.forward(...)`, `SoftmaxCrossEntropy::forward(...)`, `SoftmaxCrossEntropy::backward(...)`, `model.backward(...)` → один `model.step(learning_rate)?`. `backward` добавляет вклад каждого примера; обнуление внутри этого цикла уничтожило бы вклады предыдущих примеров. `step` оставляет градиенты доступными для просмотра, а следующий `overwrite_gradients_with_zeros` очищает их.
+Порядок вызовов: `model.overwrite_gradients_with_zeros()?` → для каждого примера `model.forward(...)`, `SoftmaxCrossEntropy::forward(...)`, `SoftmaxCrossEntropy::backward(...)`, `model.backward(...)` → один `model.stochastic_gradient_descent_step(learning_rate)?`. `backward` добавляет вклад каждого примера; обнуление внутри этого цикла уничтожило бы вклады предыдущих примеров. `stochastic_gradient_descent_step` оставляет градиенты доступными для просмотра, а следующий `overwrite_gradients_with_zeros` очищает их.
 
 | Операция | `forward` | `backward` |
 |---|---|---|
@@ -194,9 +194,9 @@ Loss отдельных мини-батчей колеблется, поскол
 | `SoftmaxCrossEntropy` | Оценки и правильный символ → вероятности и ошибка | Вероятности и правильный символ → `(p − target) / batch_len` |
 | `Silu` | `output = SiLU(input)` | `input_gradient = output_gradient × (s + input × s × (1 − s)), s = sigmoid(input)` |
 
-`backward` не восстанавливает вход из выхода. Он передаёт производную ошибки назад по правилу цепочки. Градиентный спуск — следующий, отдельный этап `Model::step`: `parameter -= learning_rate * gradient`.
+`backward` не восстанавливает вход из выхода. Он передаёт производную ошибки назад по правилу цепочки. Градиентный спуск — следующий, отдельный этап `Model::stochastic_gradient_descent_step`: `parameter -= learning_rate * gradient`.
 
-В цикле обучения сначала вызываются `model.forward(...)` и `SoftmaxCrossEntropy::forward(...)`. Далее комментарии ограничивают backpropagation: `SoftmaxCrossEntropy::backward(...)` и `model.backward(...)`. Внутри `Model::backward` градиенты весов и смещений изменяются в отдельных блоках; блок C выполняется только при `FREEZE_EMBEDDINGS = false`. Между градиентами второго и первого слоёв вызывается `Silu::backward_input_gradient(...)`. После завершения батча выполняется один `model.step(...)`.
+В цикле обучения сначала вызываются `model.forward(...)` и `SoftmaxCrossEntropy::forward(...)`. Далее комментарии ограничивают backpropagation: `SoftmaxCrossEntropy::backward(...)` и `model.backward(...)`. Внутри `Model::backward` градиенты весов и смещений изменяются в отдельных блоках; блок C выполняется только при `FREEZE_EMBEDDINGS = false`. Между градиентами второго и первого слоёв вызывается `Silu::backward_input_gradient(...)`. После завершения батча выполняется один `model.stochastic_gradient_descent_step(...)`.
 
 `PreviousCharactersEmbeddingsFlattenedAndFirstAndSecondLayerOutputs` хранит объединённые эмбеддинги, входы SiLU и выходы обоих слоёв. Входы SiLU нужны для её производной: восстановить их по выходам однозначно нельзя. Для `backward` используется результат того же прямого прохода; между этими вызовами параметры не меняются. При создании `Model` в `main` накопители градиентов заполняются нулями. Перед каждым батчем `Model::overwrite_gradients_with_zeros` обнуляет их на месте. При генерации имён используется только `forward`; градиенты остаются в модели, но не участвуют в предсказании. Размер батча передаётся в `SoftmaxCrossEntropy::backward` как `NonZeroUsize`, поэтому деление на ноль исключено; усреднение выполняется ровно один раз.
 
@@ -218,9 +218,9 @@ Loss отдельных мини-батчей колеблется, поскол
 
 ## Порядок чтения кода
 
-`src/main.rs` читается сверху вниз: константы → `main` с подготовкой данных, созданием модели, обучением, оценкой и генерацией → `Model` с методами `forward_pass`, `overwrite_gradients_with_zeros`, `backward_pass`, `step` → `Silu` и `SoftmaxCrossEntropy` → типы данных и проверяющие обёртки → `try_map_array`. Каждый тип расположен рядом со своими блоками `impl`. Замыкание `loss` объявлено в `main` непосредственно перед первой оценкой модели. JSON-комментарии находятся только внутри `main`. Отдельного модуля типов нет.
+`src/main.rs` читается сверху вниз: константы → `main` с подготовкой данных, созданием модели, обучением, оценкой и генерацией → `Model` с методами `forward_pass`, `overwrite_gradients_with_zeros`, `backward_pass`, `stochastic_gradient_descent_step` → `Silu` и `SoftmaxCrossEntropy` → типы данных и проверяющие обёртки → `try_map_array`. Каждый тип расположен рядом со своими блоками `impl`. Замыкание `loss` объявлено в `main` непосредственно перед первой оценкой модели. JSON-комментарии находятся только внутри `main`. Отдельного модуля типов нет.
 
-Модель создаётся локальным блоком: C заполняется фиксированным кубом, остальные параметры — нормальными случайными числами. Замыкание `build_previous_vocabulary_character_indexes_and_next_character_indexes` локально блоку подготовки данных и захватывает словарь. Замыкание `loss` использует `Model::forward` и `SoftmaxCrossEntropy::forward` для оценки выборки. Генерация имён использует те же прямые операции без `backward` и `step`. Размеры выходных массивов методов определяются полями модели; `Model` не хранит копию размера словаря или ссылку на него. Вспомогательные функции накопления локальны `Model::backward`, замыкание обновления среза — `Model::step`.
+Модель создаётся локальным блоком: C заполняется фиксированным кубом, остальные параметры — нормальными случайными числами. Замыкание `build_previous_vocabulary_character_indexes_and_next_character_indexes` локально блоку подготовки данных и захватывает словарь. Замыкание `loss` использует `Model::forward` и `SoftmaxCrossEntropy::forward` для оценки выборки. Генерация имён использует те же прямые операции без `backward` и `stochastic_gradient_descent_step`. Размеры выходных массивов методов определяются полями модели; `Model` не хранит копию размера словаря или ссылку на него. Вспомогательные функции накопления локальны `Model::backward`, замыкание обновления среза — `Model::stochastic_gradient_descent_step`.
 
 Полные пути стандартной библиотеки, `rand` и `rand_distr` указаны непосредственно в местах обращения; типы урока объявлены в том же файле. Число шагов хранится в `std::num::NonZeroUsize`.
 
@@ -397,7 +397,7 @@ python3 l247-52-generate-names-with-makemore-mlp/benchmarks/model_sizes/summariz
 Веса обоих слоёв и смещения продолжают обучаться с тем же расписанием SGD.
 
 В `frozen` отключены расчёт градиентов эмбеддингов, их обнуление и обновление
-таблицы эмбеддингов в `step`. Все остальные вычисления обучения сохранены.
+таблицы эмбеддингов в `stochastic_gradient_descent_step`. Все остальные вычисления обучения сохранены.
 Динамическая проверка в каждом прогоне подтверждает неизменность эмбеддингов
 побитно для `frozen`, их изменение для `trainable` и изменение всех четырёх
 остальных групп параметров. Хеш всех начальных параметров и начальный dev loss
