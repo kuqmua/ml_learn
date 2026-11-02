@@ -256,6 +256,7 @@ members = [
     "l250-55-calc-float32-arithmetic-using-integer-bits",
     "l251-56-tokenize-by-byte-pair-merges",
     "l252-57-tokenize-with-sentencepiece-unigram",
+    "l253-58-build-gpt-from-scratch",
 ]
 resolver = "3"
 
@@ -329,4 +330,7 @@ opt-level = 3
 opt-level = 3
 
 [profile.dev.package.l249-54-makemore-batch-normalization]
+opt-level = 3
+
+[profile.dev.package.l253-58-build-gpt-from-scratch]
 opt-level = 3
