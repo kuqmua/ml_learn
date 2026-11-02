@@ -254,6 +254,8 @@ members = [
     "l248-53-train-makemore-mlp-with-cutile",
     "l249-54-makemore-batch-normalization",
     "l250-55-calc-float32-arithmetic-using-integer-bits",
+    "l251-56-tokenize-by-byte-pair-merges",
+    "l252-57-tokenize-with-sentencepiece-unigram",
 ]
 resolver = "3"
 

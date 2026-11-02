@@ -989,3 +989,11 @@
 ### 55. Float32: арифметика через целые числа и биты
 
 [Урок 250](l250-55-calc-float32-arithmetic-using-integer-bits/README.md): явный формат binary32, знак, порядок, значащая часть, сложение, вычитание, умножение, деление, округление к ближайшему чётному, субнормальные числа и специальные значения. Вычисления на целых числах; побитная сверка со встроенным `f32`.
+
+## 56. Токенизация tiktoken: от символов к byte-level BPE
+
+[251 · Токенизация tiktoken: от символов к byte-level BPE](l251-56-tokenize-by-byte-pair-merges/README.md)
+
+## 57. SentencePiece: нормализация и Unigram
+
+[252 · SentencePiece: нормализация и Unigram](l252-57-tokenize-with-sentencepiece-unigram/README.md)

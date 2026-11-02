@@ -1,0 +1,7 @@
+banana bandana banana bananas
+we tokenize text and learn pieces
+we learn tokens and tokenize words
+Привет мир
+Привет новый мир
+мир токенов и текст
+banana banana bandana

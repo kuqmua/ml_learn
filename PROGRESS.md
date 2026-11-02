@@ -404,3 +404,11 @@
 ## 55. Float32: арифметика через целые числа и биты
 
 - [ ] [250 · Явная реализация Float32](l250-55-calc-float32-arithmetic-using-integer-bits/)
+
+## 56. Токенизация tiktoken: от символов к byte-level BPE
+
+- [ ] [251 · Токенизация tiktoken: от символов к byte-level BPE](l251-56-tokenize-by-byte-pair-merges/README.md)
+
+## 57. SentencePiece: нормализация и Unigram
+
+- [ ] [252 · SentencePiece: нормализация и Unigram](l252-57-tokenize-with-sentencepiece-unigram/README.md)
