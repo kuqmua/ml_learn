@@ -413,6 +413,6 @@
 
 - [ ] [252 · SentencePiece: нормализация и Unigram](l252-57-tokenize-with-sentencepiece-unigram/README.md)
 
-## 58. GPT на Rust: от bigram до decoder Transformer
+## 58. GPT на Rust: обучение decoder Transformer
 
 - [ ] [253 · Обучение GPT с нуля на Tiny Shakespeare](l253-58-build-gpt-from-scratch/README.md)

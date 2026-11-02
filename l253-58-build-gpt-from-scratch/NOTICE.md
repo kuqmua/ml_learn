@@ -3,10 +3,9 @@
 Этот урок — самостоятельный учебный перенос архитектуры и экспериментов Андрея Карпаты на Rust по [ng-video-lecture](https://github.com/karpathy/ng-video-lecture), commit `52201428ed7b46804849dea0b3ccf0de9df1a5c3`:
 
 - [gpt.py](https://github.com/karpathy/ng-video-lecture/blob/52201428ed7b46804849dea0b3ccf0de9df1a5c3/gpt.py) — полная архитектура, обучение и генерация.
-- [bigram.py](https://github.com/karpathy/ng-video-lecture/blob/52201428ed7b46804849dea0b3ccf0de9df1a5c3/bigram.py) — начальная модель.
 - [Видео: Let's build GPT: from scratch, in code, spelled out](https://www.youtube.com/watch?v=kCc8FmEb1nY).
 
-Оригинальный README указывает лицензию MIT. Автор оригинального урока и кода — Andrej Karpathy. Русские объяснения, организация кода на Rust, CPU-пресеты, seeded RNG и проверки добавлены в этом проекте. Код не использует Python, PyTorch, предобученные веса или готовую Transformer-модель. Тензорные операции, autograd и AdamW предоставляет [Candle](https://github.com/huggingface/candle) (MIT OR Apache-2.0).
+Оригинальный README указывает лицензию MIT. Автор оригинального урока и кода — Andrej Karpathy. Русские объяснения, организация кода на Rust, настройки размеров для CPU, seeded RNG и проверки добавлены в этом проекте. Код не использует Python, PyTorch, предобученные веса или готовую Transformer-модель. Тензорные операции, autograd и AdamW предоставляет [Candle](https://github.com/huggingface/candle) (MIT OR Apache-2.0).
 
 Права на исходный код, на основе которого выполнен перенос:
 

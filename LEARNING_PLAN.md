@@ -998,6 +998,6 @@
 
 [252 · SentencePiece: нормализация и Unigram](l252-57-tokenize-with-sentencepiece-unigram/README.md)
 
-## 58. GPT на Rust: от bigram до decoder Transformer
+## 58. GPT на Rust: обучение decoder Transformer
 
-[Урок 253](l253-58-build-gpt-from-scratch/README.md) переносит `karpathy/ng-video-lecture`: Tiny Shakespeare, символьный словарь, сдвинутые targets, bigram baseline, causal self-attention, Q/K/V, несколько голов, FF, residual и pre-LayerNorm, dropout, autograd, AdamW, train/validation loss и авторегрессионная генерация. Маленький CPU-пресет запускается без Python и CUDA; отдельный пресет сохраняет размеры оригинала. Команда: `cargo run --release -p l253-58-build-gpt-from-scratch`.
+[Урок 253](l253-58-build-gpt-from-scratch/README.md) переносит `karpathy/ng-video-lecture`: Tiny Shakespeare, символьный словарь, сдвинутые targets, causal self-attention, Q/K/V, несколько голов, FF, residual и pre-LayerNorm, dropout, autograd, AdamW, train/validation loss и авторегрессионная генерация. Все настройки задаются в начале main через TryFrom с проверкой значений; маленькая GPT запускается на CPU без Python и CUDA, а таблица в README содержит также размеры оригинала. Команда: `cargo run --release -p l253-58-build-gpt-from-scratch`.
