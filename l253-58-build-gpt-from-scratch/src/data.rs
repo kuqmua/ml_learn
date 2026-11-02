@@ -44,7 +44,8 @@ impl CharacterVocabulary {
     }
 }
 
-// Split ДО выбора окон: ни одно train-окно не пересекает начало validation.
+// Делим token_ids до выборки окон: первые 90% идут в обучение, остальные — в проверку.
+// sample_text_batch получает только свой split_token_ids, поэтому окно не пересекает границу выборок.
 pub(crate) fn split_training_and_validation(token_ids: &[u32]) -> (&[u32], &[u32]) {
     token_ids.split_at(token_ids.len() * 9 / 10)
 }
@@ -76,10 +77,10 @@ mod tests {
     use super::*;
     #[test]
     fn unicode_roundtrip_and_shifted_batches_stay_in_split() -> Result<()> {
-        let vocabulary: CharacterVocabulary = CharacterVocabulary::new("я🦀а\n");
-        assert_eq!(vocabulary.decode(&vocabulary.encode("🦀я\n")?)?, "🦀я\n");
-        assert!(vocabulary.encode("?").is_err());
-        assert!(vocabulary.decode(&[99]).is_err());
+        let character_vocabulary: CharacterVocabulary = CharacterVocabulary::new("я🦀а\n");
+        assert_eq!(character_vocabulary.decode(&character_vocabulary.encode("🦀я\n")?)?, "🦀я\n");
+        assert!(character_vocabulary.encode("?").is_err());
+        assert!(character_vocabulary.decode(&[99]).is_err());
         let token_ids: Vec<u32> = (0u32..100).collect::<Vec<u32>>();
         let (training_token_ids, validation_token_ids): (&[u32], &[u32]) = split_training_and_validation(&token_ids);
         [training_token_ids, validation_token_ids]

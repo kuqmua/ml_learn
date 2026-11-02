@@ -12,7 +12,7 @@
 cargo run --release -p l253-58-build-gpt-from-scratch
 ```
 
-- Быстрая проверка (в таблицах ниже «smoke»): `batch_size=2`, `block_size=8`, `embedding_dimension=16`, `attention_head_count=2`, `transformer_block_count=1`, `training_step_count=20`, `evaluation_interval=10`, `evaluation_batch_count=2`, `optimizer_settings.learning_rate=0.003`, `generated_token_count=80`.
+- Быстрая проверка (в таблицах ниже «smoke»): `batch_size=2`, `block_size=8`, `embedding_dimension=16`, `attention_head_count=2`, `transformer_block_count=1`, `training_step_count=20`, `evaluation_interval=10`, `evaluation_batch_count=2`, `adamw_settings.learning_rate=0.003`, `generated_token_count=80`.
 - Маленькая GPT («tiny»): текущие размеры и параметры Settings, `training_step_count=500`, `generated_token_count=500`.
 - Долгое обучение: те же маленькие размеры, `training_step_count=2000`, `evaluation_interval=500`, `generated_token_count=500`.
 

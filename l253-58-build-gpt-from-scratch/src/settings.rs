@@ -1,5 +1,6 @@
-//! Каждый параметр явно создаётся через свой тип; связи между полями проверяет validate.
-//! Числовые поля newtype закрыты: некорректное отдельное значение создать нельзя.
+//! Поля Settings явно создаются через собственные типы с проверками TryFrom.
+//! Settings::validate проверяет совместимость нескольких уже проверенных значений.
+//! Числовые поля типов-обёрток закрыты: обойти проверки прямым присваиванием числа нельзя.
 use candle_core::{Error, Result};
 use candle_nn::ParamsAdamW;
 
@@ -44,7 +45,8 @@ impl DropoutProbability {
     }
 }
 
-// Ноль допустим: можно пропустить обучение или генерацию.
+// TrainingStepCount и GeneratedTokenCount допускают ноль.
+// Из usize они создаются через From: ошибочного отрицательного значения у usize нет.
 macro_rules! count_with_zero {
     ($($type_name:ident),+ $(,)?) => {$ (
         #[derive(Clone, Copy, Debug)]
@@ -57,7 +59,8 @@ count_with_zero!(TrainingStepCount, GeneratedTokenCount);
 
 #[derive(Clone, Copy, Debug)]
 pub(crate) struct PromptText(&'static str);
-// FromStr принимает произвольный &str и не может сохранить его как &'static str.
+// PromptText хранит строку программы с временем жизни 'static.
+// FromStr принимает &str с произвольным временем жизни; поэтому используем TryFrom<&'static str>.
 #[allow(clippy::try_from_instead_of_from_str)]
 impl TryFrom<&'static str> for PromptText {
     type Error = Error;
@@ -74,7 +77,7 @@ impl PromptText {
     }
 }
 
-// Все f64 внутри AdamW тоже проверяем отдельными типами.
+// LearningRate, WeightDecay и коэффициенты AdamW отклоняют NaN, бесконечности и значения вне своих диапазонов.
 macro_rules! float_setting {
     ($type_name:ident, $validation_predicate:expr, $error_message:literal) => {
         #[derive(Clone, Copy, Debug)]
@@ -130,7 +133,9 @@ pub(crate) struct AdamWSettings {
     pub(crate) numerical_stability_epsilon: NumericalStabilityEpsilon,
 }
 impl AdamWSettings {
-    // Возвращаем копию для библиотеки, а не &mut к проверенному состоянию.
+    // Переводим полные имена в поля Candle: learning_rate -> lr, gradient_average_decay -> beta1,
+    // squared_gradient_average_decay -> beta2, numerical_stability_epsilon -> eps.
+    // Возвращаем отдельный ParamsAdamW; его изменение не меняет значения в AdamWSettings.
     pub(crate) fn to_candle_parameters(&self) -> ParamsAdamW {
         ParamsAdamW {
             lr: self.learning_rate.get(),
@@ -152,15 +157,16 @@ pub(crate) struct Settings {
     pub(crate) training_step_count: TrainingStepCount,
     pub(crate) evaluation_interval: EvaluationInterval,
     pub(crate) evaluation_batch_count: EvaluationBatchCount,
-    pub(crate) optimizer_settings: AdamWSettings,
-    pub(crate) random_seed: u64, // Любой u64 — допустимый seed.
+    pub(crate) adamw_settings: AdamWSettings,
+    pub(crate) random_seed: u64, // Начальное состояние генераторов; допустим любой u64, в том числе 0.
     pub(crate) prompt_text: PromptText,
     pub(crate) generated_token_count: GeneratedTokenCount,
-    pub(crate) demonstrate_only: bool, // Оба значения bool допустимы.
+    pub(crate) demonstrate_only: bool, // true: выполнить только демонстрации; false: также обучить модель и сгенерировать текст.
 }
 impl Settings {
     pub(crate) fn validate(&self) -> Result<()> {
-        // Это связи между полями, их невозможно проверить одним отдельным newtype.
+        // Проверяем связи между полями: embedding_dimension / attention_head_count
+        // должно дать целую ширину головы, а размеры тензоров не должны переполнить индексы.
         if !self.embedding_dimension().is_multiple_of(self.attention_head_count()) {
             candle_core::bail!("embedding_dimension должно делиться на attention_head_count без остатка");
         }
@@ -184,7 +190,7 @@ getters!(block_size: usize, embedding_dimension: usize, attention_head_count: us
     prompt_text: &'static str, generated_token_count: usize);
 impl Settings {
     pub(crate) fn optimizer_parameters(&self) -> ParamsAdamW {
-        self.optimizer_settings.to_candle_parameters()
+        self.adamw_settings.to_candle_parameters()
     }
     pub(crate) fn random_seed(&self) -> u64 {
         self.random_seed
@@ -206,7 +212,7 @@ pub(crate) fn test_settings() -> Result<Settings> {
         training_step_count: TrainingStepCount::from(60),
         evaluation_interval: EvaluationInterval::try_from(10)?,
         evaluation_batch_count: EvaluationBatchCount::try_from(2)?,
-        optimizer_settings: AdamWSettings {
+        adamw_settings: AdamWSettings {
             learning_rate: LearningRate::try_from(0.001)?,
             weight_decay: WeightDecay::try_from(0.01)?,
             gradient_average_decay: GradientAverageDecay::try_from(0.9)?,

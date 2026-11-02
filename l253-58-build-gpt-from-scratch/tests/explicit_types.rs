@@ -1,4 +1,4 @@
-//! Правило учебного кода: типы всех именованных локальных переменных и параметров замыканий явные.
+//! Проверяем явные типы локальных переменных и параметров замыканий, а также понятные имена привязок и полей.
 use std::path::{Path, PathBuf};
 use syn::{
     Expr, Pat, Token,
@@ -7,11 +7,15 @@ use syn::{
     visit::{self, Visit},
 };
 
-// Смысл имени требует чтения кода; эта проверка дополнительно запрещает
-// однобуквенные привязки и прежние неоднозначные сокращения. Поля сторонних
-// struct literal (например ParamsAdamW.lr) не являются определениями наших полей.
+// Соответствие имени смыслу данных проверяется при чтении; is_unclear_name дополнительно запрещает
+// однобуквенные привязки, сокращения и неполные имена основных предметных типов. Имена полей сторонних
+// структур при инициализации (например ParamsAdamW.lr) задаёт библиотека; их проверка не переименовывает.
 fn is_unclear_name(identifier: &str) -> bool {
-    identifier.len() == 1 || matches!(identifier, "lr" | "eps" | "rng" | "vocab" | "params" | "ln1" | "ln2" | "ff")
+    identifier.len() == 1
+        || matches!(
+            identifier,
+            "lr" | "eps" | "rng" | "vocab" | "params" | "ln1" | "ln2" | "ff" | "vocabulary" | "parameters" | "language_model" | "optimizer" | "type_audit"
+        )
 }
 
 #[derive(Default)]
@@ -61,7 +65,8 @@ impl<'ast> Visit<'ast> for ExplicitTypeAudit {
         self.diagnostics.push("тип-заполнитель _, например Vec<_>".to_owned());
     }
     fn visit_expr_for_loop(&mut self, expression: &'ast syn::ExprForLoop) {
-        // for _ не вводит переменную. Именованные переменные требуют typed closure.
+        // for _ не создаёт переменной. Для именованных элементов урок использует
+        // for_each/try_for_each с явно типизированным параметром замыкания.
         if !matches!(*expression.pat, Pat::Wild(_)) {
             self.diagnostics.push("именованная переменная for без аннотации типа".to_owned());
         }
@@ -72,7 +77,8 @@ impl<'ast> Visit<'ast> for ExplicitTypeAudit {
         visit::visit_expr_let(self, expression);
     }
     fn visit_arm(&mut self, match_arm: &'ast syn::Arm) {
-        // Чтобы не оставлять неявные Some(value) в match, разрешаем только ветки без привязок.
+        // Some(value) в match вводит value с неявным типом.
+        // PatternBindingCounter находит такие привязки внутри шаблона ветки.
         struct PatternBindingCounter {
             binding_count: usize,
         }
@@ -89,8 +95,8 @@ impl<'ast> Visit<'ast> for ExplicitTypeAudit {
         visit::visit_arm(self, match_arm);
     }
     fn visit_macro(&mut self, macro_invocation: &'ast syn::Macro) {
-        // Проверяем и выражения в assert!, vec!, float_setting! и т. п.
-        // Определения macro_rules содержат метапеременные, а не Rust-выражения.
+        // Проверяем типы и имена в аргументах макросов assert!, vec!, float_setting! и других.
+        // Тело определения macro_rules содержит метапеременные; как список выражений его разобрать нельзя.
         let _: Option<()> = Punctuated::<Expr, Token![,]>::parse_terminated
             .parse2(macro_invocation.tokens.clone())
             .map(|macro_argument_expressions: Punctuated<Expr, Token![,]>| {
@@ -104,9 +110,9 @@ impl<'ast> Visit<'ast> for ExplicitTypeAudit {
 
 fn audit(source_code: &str) -> ExplicitTypeAudit {
     let syntax_tree: syn::File = syn::parse_file(source_code).expect("Корректный синтаксис Rust");
-    let mut type_audit: ExplicitTypeAudit = ExplicitTypeAudit::default();
-    type_audit.visit_file(&syntax_tree);
-    type_audit
+    let mut explicit_type_audit: ExplicitTypeAudit = ExplicitTypeAudit::default();
+    explicit_type_audit.visit_file(&syntax_tree);
+    explicit_type_audit
 }
 
 #[test]
@@ -129,10 +135,15 @@ fn every_lesson_binding_has_explicit_type_and_descriptive_name() {
     let mut closure_count: usize = 0;
     rust_source_paths.iter().for_each(|source_path: &PathBuf| {
         let source_code: String = std::fs::read_to_string(source_path).unwrap();
-        let type_audit: ExplicitTypeAudit = audit(&source_code);
-        assert!(type_audit.diagnostics.is_empty(), "{}: {:?}", source_path.display(), type_audit.diagnostics);
-        local_binding_count += type_audit.local_binding_count;
-        closure_count += type_audit.closure_count;
+        let explicit_type_audit: ExplicitTypeAudit = audit(&source_code);
+        assert!(
+            explicit_type_audit.diagnostics.is_empty(),
+            "{}: {:?}",
+            source_path.display(),
+            explicit_type_audit.diagnostics
+        );
+        local_binding_count += explicit_type_audit.local_binding_count;
+        closure_count += explicit_type_audit.closure_count;
     });
     println!(
         "Проверено {} файлов: {local_binding_count} локальных объявлений, {closure_count} замыканий",
@@ -155,19 +166,26 @@ fn audit_rejects_implicit_types_including_macro_arguments() {
     .for_each(|source_code: &str| {
         assert!(!audit(source_code).diagnostics.is_empty(), "{source_code}");
     });
-    let explicitly_typed_audit: ExplicitTypeAudit = audit(
+    let explicit_type_audit: ExplicitTypeAudit = audit(
         "fn example(){ let (left_value,right_value): (u32,u32)=(1,2); let values: Vec<u32>=vec![left_value,right_value]; values.iter().for_each(|value: &u32| {}); }",
     );
-    assert!(explicitly_typed_audit.diagnostics.is_empty());
+    assert!(explicit_type_audit.diagnostics.is_empty());
 }
 
 #[test]
 fn audit_rejects_unclear_names_in_variables_arguments_and_fields() {
-    ["fn example(){let q: u32=1;}", "fn example(p: u32){}", "struct Example{lr: f64}"]
-        .into_iter()
-        .for_each(|source_code: &str| {
-            assert!(!audit(source_code).diagnostics.is_empty());
-        });
+    [
+        "fn example(){let q: u32=1;}",
+        "fn example(p: u32){}",
+        "struct Example{lr: f64}",
+        "fn example(vocabulary: CharacterVocabulary){}",
+        "fn example(parameters: ModelParameters){}",
+        "fn example(language_model: GptLanguageModel){}",
+    ]
+    .into_iter()
+    .for_each(|source_code: &str| {
+        assert!(!audit(source_code).diagnostics.is_empty());
+    });
     assert!(
         audit("struct OptimizerSettings{learning_rate:f64} fn example(token_id:u32){let next_token_id:u32=token_id+1;}")
             .diagnostics

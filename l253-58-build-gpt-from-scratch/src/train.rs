@@ -9,21 +9,23 @@ use candle_core::{Device, Result, Tensor};
 use candle_nn::ParamsAdamW;
 use candle_nn::{AdamW, Optimizer};
 
-// Одинаковые окна при каждой оценке: seed оценки не зависит от шага и RNG обучения.
-// Это monitoring validation, а не независимый окончательный test.
-pub(crate) fn estimate_mean_loss(language_model: &GptLanguageModel, split_token_ids: &[u32], settings: &Settings, random_seed: u64) -> Result<f32> {
+// При каждом вызове random_seed оценки задаёт те же окна split_token_ids.
+// Этот генератор не расходует числа из batch_random_number_generator и dropout_random_number_generator.
+// Ошибка validation используется для наблюдения за обучением; отдельной финальной тестовой выборки нет.
+pub(crate) fn estimate_mean_loss(gpt_language_model: &GptLanguageModel, split_token_ids: &[u32], settings: &Settings, random_seed: u64) -> Result<f32> {
     let mut random_number_generator: RandomNumberGenerator = RandomNumberGenerator::new(random_seed);
     let mut accumulated_loss: f32 = 0f32;
     for _ in 0..settings.evaluation_batch_count() {
         let (input_token_tensor, target_token_tensor): (Tensor, Tensor) =
             data::sample_text_batch(split_token_ids, settings.batch_size(), settings.block_size(), &mut random_number_generator)?;
-        let next_token_logits: Tensor = language_model.forward(&input_token_tensor, false, &mut random_number_generator)?;
+        let next_token_logits: Tensor = gpt_language_model.forward(&input_token_tensor, false, &mut random_number_generator)?;
         accumulated_loss += mean_next_token_loss(&next_token_logits, &target_token_tensor)?.to_scalar::<f32>()?;
     }
     Ok(accumulated_loss / settings.evaluation_batch_count() as f32)
 }
 
-// Temperature=1, categorical sampling (не argmax). f64 для устойчивой суммы вероятностей.
+// Выбираем следующий ID случайно по next_token_logits при температуре 1, а не берём максимум.
+// Вычитаем maximum_logit перед exp; sampling_weights и cumulative_weight считаем в f64.
 fn sample_next_token_id(next_token_logits: &[f32], random_number_generator: &mut RandomNumberGenerator) -> Result<u32> {
     if next_token_logits.is_empty() || next_token_logits.iter().any(|logit_value: &f32| -> bool { !logit_value.is_finite() }) {
         candle_core::bail!("Некорректные logits при sampling");
@@ -45,33 +47,40 @@ fn sample_next_token_id(next_token_logits: &[f32], random_number_generator: &mut
     Ok(sampled_token_index as u32)
 }
 
-pub(crate) fn generate_token_ids(language_model: &GptLanguageModel, prompt_token_ids: &[u32], new_token_count: usize, random_seed: u64) -> Result<Vec<u32>> {
+pub(crate) fn generate_token_ids(
+    gpt_language_model: &GptLanguageModel,
+    prompt_token_ids: &[u32],
+    new_token_count: usize,
+    random_seed: u64,
+) -> Result<Vec<u32>> {
     if prompt_token_ids.is_empty() {
         candle_core::bail!("Prompt не может быть пустым");
     }
     let mut generated_token_ids: Vec<u32> = prompt_token_ids.to_vec();
     let mut random_number_generator: RandomNumberGenerator = RandomNumberGenerator::new(random_seed);
     for _ in 0..new_token_count {
-        // Позиции снова 0..T; это такое же обрезание окна, как в gpt.py, без KV-cache.
-        let context_token_ids: &[u32] = &generated_token_ids[generated_token_ids.len().saturating_sub(language_model.maximum_context_length())..];
+        // В модель передаём не более block_size последних ID, а generated_token_ids сохраняем целиком.
+        // Внутри GptLanguageModel позиции снова нумеруются от 0 до длины окна минус 1.
+        // Как в gpt.py, пересчитываем всё окно: кеш ключей и значений внимания не используется.
+        let context_token_ids: &[u32] = &generated_token_ids[generated_token_ids.len().saturating_sub(gpt_language_model.maximum_context_length())..];
         let input_token_tensor: Tensor = Tensor::from_slice(context_token_ids, (1, context_token_ids.len()), &Device::Cpu)?;
-        let next_token_logits: Tensor = language_model.forward(&input_token_tensor, false, &mut random_number_generator)?;
+        let next_token_logits: Tensor = gpt_language_model.forward(&input_token_tensor, false, &mut random_number_generator)?;
         let last_position_logits: Vec<f32> = next_token_logits.narrow(1, context_token_ids.len() - 1, 1)?.flatten_all()?.to_vec1::<f32>()?;
         generated_token_ids.push(sample_next_token_id(&last_position_logits, &mut random_number_generator)?);
     }
     Ok(generated_token_ids)
 }
 
-pub(crate) fn run(settings: &Settings, vocabulary: &data::CharacterVocabulary, corpus_token_ids: &[u32]) -> Result<()> {
+pub(crate) fn run(settings: &Settings, character_vocabulary: &data::CharacterVocabulary, corpus_token_ids: &[u32]) -> Result<()> {
     settings.validate()?;
     let training_started_at: std::time::Instant = std::time::Instant::now();
     let (training_token_ids, validation_token_ids): (&[u32], &[u32]) = data::split_training_and_validation(corpus_token_ids);
-    let prompt_token_ids: Vec<u32> = vocabulary.encode(settings.prompt_text())?;
+    let prompt_token_ids: Vec<u32> = character_vocabulary.encode(settings.prompt_text())?;
     if prompt_token_ids.is_empty() {
         candle_core::bail!("Prompt не может быть пустым");
     }
-    let mut parameters: ModelParameters = ModelParameters::new(settings.random_seed());
-    let language_model: GptLanguageModel = GptLanguageModel::new(&mut parameters, vocabulary.characters_by_token_id.len(), settings)?;
+    let mut model_parameters: ModelParameters = ModelParameters::new(settings.random_seed());
+    let gpt_language_model: GptLanguageModel = GptLanguageModel::new(&mut model_parameters, character_vocabulary.characters_by_token_id.len(), settings)?;
     println!("\nGPT seed={} device=CPU dtype=f32", settings.random_seed());
     println!(
         "B={} T={} steps={} lr={} weight_decay={}",
@@ -90,17 +99,18 @@ pub(crate) fn run(settings: &Settings, vocabulary: &data::CharacterVocabulary, c
     );
     println!(
         "Параметров: {}; uniform loss ln(V)={:.4}",
-        parameters.parameter_count(),
-        (vocabulary.characters_by_token_id.len() as f32).ln()
+        model_parameters.parameter_count(),
+        (character_vocabulary.characters_by_token_id.len() as f32).ln()
     );
-    // Параметры AdamW явно заданы в начале main.rs.
-    let mut optimizer: AdamW = AdamW::new(parameters.trainable_variables(), settings.optimizer_parameters())?;
+    // adamw_settings в начале main.rs содержат проверенные типы параметров AdamW.
+    // optimizer_parameters() переводит их в библиотечный ParamsAdamW для создания adamw_optimizer.
+    let mut adamw_optimizer: AdamW = AdamW::new(model_parameters.trainable_variables(), settings.optimizer_parameters())?;
     let mut batch_random_number_generator: RandomNumberGenerator = RandomNumberGenerator::new(settings.random_seed().wrapping_add(1));
     let mut dropout_random_number_generator: RandomNumberGenerator = RandomNumberGenerator::new(settings.random_seed().wrapping_add(2));
     (0usize..=settings.training_step_count()).try_for_each(|training_step_index: usize| -> Result<()> {
         if training_step_index.is_multiple_of(settings.evaluation_interval()) || training_step_index == settings.training_step_count() {
-            let training_loss: f32 = estimate_mean_loss(&language_model, training_token_ids, settings, settings.random_seed().wrapping_add(3))?;
-            let validation_loss: f32 = estimate_mean_loss(&language_model, validation_token_ids, settings, settings.random_seed().wrapping_add(4))?;
+            let training_loss: f32 = estimate_mean_loss(&gpt_language_model, training_token_ids, settings, settings.random_seed().wrapping_add(3))?;
+            let validation_loss: f32 = estimate_mean_loss(&gpt_language_model, validation_token_ids, settings, settings.random_seed().wrapping_add(4))?;
             if !training_loss.is_finite() || !validation_loss.is_finite() {
                 candle_core::bail!("Loss стал нечисловым");
             }
@@ -116,16 +126,16 @@ pub(crate) fn run(settings: &Settings, vocabulary: &data::CharacterVocabulary, c
                 settings.block_size(),
                 &mut batch_random_number_generator,
             )?;
-            let next_token_logits: Tensor = language_model.forward(&input_token_tensor, true, &mut dropout_random_number_generator)?;
+            let next_token_logits: Tensor = gpt_language_model.forward(&input_token_tensor, true, &mut dropout_random_number_generator)?;
             let next_token_loss: Tensor = mean_next_token_loss(&next_token_logits, &target_token_tensor)?;
-            // Новый forward создаёт новый граф. backward возвращает свежий GradStore,
-            // поэтому PyTorch zero_grad здесь не требуется.
-            optimizer.backward_step(&next_token_loss)?;
+            // gpt_language_model.forward создаёт новый граф, а backward_step вычисляет градиенты и обновляет веса.
+            // Candle возвращает новый GradStore для каждого обратного прохода; отдельный zero_grad не требуется.
+            adamw_optimizer.backward_step(&next_token_loss)?;
         }
         Ok(())
     })?;
     let generated_token_ids: Vec<u32> = generate_token_ids(
-        &language_model,
+        &gpt_language_model,
         &prompt_token_ids,
         settings.generated_token_count(),
         settings.random_seed().wrapping_add(5),
@@ -133,7 +143,7 @@ pub(crate) fn run(settings: &Settings, vocabulary: &data::CharacterVocabulary, c
     println!(
         "\n--- Генерация: prompt + {} новых символов ---\n{}\n--- конец ---",
         settings.generated_token_count(),
-        vocabulary.decode(&generated_token_ids)?
+        character_vocabulary.decode(&generated_token_ids)?
     );
     println!("Всего {:.2}s", training_started_at.elapsed().as_secs_f64());
     Ok(())
@@ -153,15 +163,15 @@ mod tests {
             dropout_probability: DropoutProbability::try_from(0.5)?,
             ..test_settings()?
         };
-        let mut parameters: ModelParameters = ModelParameters::new(1337);
-        let language_model: GptLanguageModel = GptLanguageModel::new(&mut parameters, 4, &settings)?;
+        let mut model_parameters: ModelParameters = ModelParameters::new(1337);
+        let gpt_language_model: GptLanguageModel = GptLanguageModel::new(&mut model_parameters, 4, &settings)?;
         let prompt_token_ids: [u32; 6] = [0, 1, 2, 3, 2, 1];
-        let generated_token_ids: Vec<u32> = generate_token_ids(&language_model, &prompt_token_ids, 20, 9)?;
+        let generated_token_ids: Vec<u32> = generate_token_ids(&gpt_language_model, &prompt_token_ids, 20, 9)?;
         assert_eq!(&generated_token_ids[..prompt_token_ids.len()], &prompt_token_ids);
         assert_eq!(generated_token_ids.len(), 26);
         assert!(generated_token_ids.iter().all(|&token_id: &u32| -> bool { token_id < 4 }));
-        assert_eq!(generated_token_ids, generate_token_ids(&language_model, &prompt_token_ids, 20, 9)?);
-        assert!(generate_token_ids(&language_model, &[], 2, 0).is_err());
+        assert_eq!(generated_token_ids, generate_token_ids(&gpt_language_model, &prompt_token_ids, 20, 9)?);
+        assert!(generate_token_ids(&gpt_language_model, &[], 2, 0).is_err());
         Ok(())
     }
     #[test]
@@ -174,10 +184,10 @@ mod tests {
             dropout_probability: DropoutProbability::try_from(0.0)?,
             ..test_settings()?
         };
-        let mut parameters: ModelParameters = ModelParameters::new(1337);
-        let language_model: GptLanguageModel = GptLanguageModel::new(&mut parameters, 4, &settings)?;
-        let mut optimizer: AdamW = AdamW::new(
-            parameters.trainable_variables(),
+        let mut model_parameters: ModelParameters = ModelParameters::new(1337);
+        let gpt_language_model: GptLanguageModel = GptLanguageModel::new(&mut model_parameters, 4, &settings)?;
+        let mut adamw_optimizer: AdamW = AdamW::new(
+            model_parameters.trainable_variables(),
             ParamsAdamW {
                 lr: 0.02,
                 weight_decay: 0.0,
@@ -188,19 +198,19 @@ mod tests {
         let target_token_tensor: Tensor = Tensor::new(&[[1u32, 2, 3, 0], [1, 2, 3, 0]], &Device::Cpu)?;
         let mut random_number_generator: RandomNumberGenerator = RandomNumberGenerator::new(1);
         let loss_before_training: f32 = mean_next_token_loss(
-            &language_model.forward(&input_token_tensor, false, &mut random_number_generator)?,
+            &gpt_language_model.forward(&input_token_tensor, false, &mut random_number_generator)?,
             &target_token_tensor,
         )?
         .to_scalar::<f32>()?;
         for _ in 0..60 {
             let next_token_loss: Tensor = mean_next_token_loss(
-                &language_model.forward(&input_token_tensor, true, &mut random_number_generator)?,
+                &gpt_language_model.forward(&input_token_tensor, true, &mut random_number_generator)?,
                 &target_token_tensor,
             )?;
-            optimizer.backward_step(&next_token_loss)?;
+            adamw_optimizer.backward_step(&next_token_loss)?;
         }
         let loss_after_training: f32 = mean_next_token_loss(
-            &language_model.forward(&input_token_tensor, false, &mut random_number_generator)?,
+            &gpt_language_model.forward(&input_token_tensor, false, &mut random_number_generator)?,
             &target_token_tensor,
         )?
         .to_scalar::<f32>()?;

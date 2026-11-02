@@ -1,5 +1,6 @@
-//! Архитектура из ng-video-lecture: отдельные головы, pre-LN, ReLU и обучаемые позиции.
-//! Candle предоставляет операции над тензорами и backward, но не готовую GPT-модель.
+//! GPT из ng-video-lecture: AttentionHead, обучаемые позиции и TransformerBlock.
+//! LayerNormalization стоит перед подслоями (pre-LN); FeedForwardNetwork использует ReLU.
+//! Архитектура описана здесь; Candle выполняет операции Tensor и обратное распространение градиента.
 use crate::{random::RandomNumberGenerator, settings::Settings};
 use candle_core::{D, DType, Device, Result, Tensor, Var};
 
@@ -37,7 +38,8 @@ impl ModelParameters {
     }
 }
 
-// В eval отсоединяем параметры от графа: ни dropout, ни накопление графа для backward.
+// При is_training=false отсоединяем parameter_tensor от графа вычислений.
+// Для этого параметра градиент не вычисляется; случайное обнуление отдельно отключает apply_dropout.
 fn parameter_for_mode(parameter_tensor: &Tensor, is_training: bool) -> Tensor {
     if is_training { parameter_tensor.clone() } else { parameter_tensor.detach() }
 }
@@ -47,11 +49,11 @@ struct LinearLayer {
     bias_vector: Option<Tensor>,
 }
 impl LinearLayer {
-    fn new(parameters: &mut ModelParameters, parameter_prefix: &str, input_dimension: usize, output_dimension: usize, use_bias: bool) -> Result<Self> {
+    fn new(model_parameters: &mut ModelParameters, parameter_prefix: &str, input_dimension: usize, output_dimension: usize, use_bias: bool) -> Result<Self> {
         Ok(Self {
-            weight_matrix: parameters.add_variable(&format!("{parameter_prefix}.weight"), &[output_dimension, input_dimension], None)?,
+            weight_matrix: model_parameters.add_variable(&format!("{parameter_prefix}.weight"), &[output_dimension, input_dimension], None)?,
             bias_vector: if use_bias {
-                Some(parameters.add_variable(&format!("{parameter_prefix}.bias"), &[output_dimension], Some(0.0))?)
+                Some(model_parameters.add_variable(&format!("{parameter_prefix}.bias"), &[output_dimension], Some(0.0))?)
             } else {
                 None
             },
@@ -80,9 +82,9 @@ struct EmbeddingTable {
     embedding_dimension: usize,
 }
 impl EmbeddingTable {
-    fn new(parameters: &mut ModelParameters, parameter_prefix: &str, embedding_count: usize, embedding_dimension: usize) -> Result<Self> {
+    fn new(model_parameters: &mut ModelParameters, parameter_prefix: &str, embedding_count: usize, embedding_dimension: usize) -> Result<Self> {
         Ok(Self {
-            embedding_vectors: parameters.add_variable(&format!("{parameter_prefix}.weight"), &[embedding_count, embedding_dimension], None)?,
+            embedding_vectors: model_parameters.add_variable(&format!("{parameter_prefix}.weight"), &[embedding_count, embedding_dimension], None)?,
             embedding_dimension,
         })
     }
@@ -95,17 +97,18 @@ impl EmbeddingTable {
     }
 }
 
-// Нормируем C координат КАЖДОЙ позиции отдельно; не batch и не ось времени.
-// Пишем через базовые операции, чтобы путь backward был виден и поддерживался.
+// Для каждой позиции отдельно нормируем embedding_dimension координат input_vectors.
+// Другие окна и позиции времени в расчёт среднего и дисперсии этой позиции не входят.
+// Базовые операции Tensor сохраняют граф для вычисления градиентов gain_vector и bias_vector.
 struct LayerNormalization {
     gain_vector: Tensor,
     bias_vector: Tensor,
 }
 impl LayerNormalization {
-    fn new(parameters: &mut ModelParameters, parameter_prefix: &str, embedding_dimension: usize) -> Result<Self> {
+    fn new(model_parameters: &mut ModelParameters, parameter_prefix: &str, embedding_dimension: usize) -> Result<Self> {
         Ok(Self {
-            gain_vector: parameters.add_variable(&format!("{parameter_prefix}.weight"), &[embedding_dimension], Some(1.0))?,
-            bias_vector: parameters.add_variable(&format!("{parameter_prefix}.bias"), &[embedding_dimension], Some(0.0))?,
+            gain_vector: model_parameters.add_variable(&format!("{parameter_prefix}.weight"), &[embedding_dimension], Some(1.0))?,
+            bias_vector: model_parameters.add_variable(&format!("{parameter_prefix}.bias"), &[embedding_dimension], Some(0.0))?,
         })
     }
     fn forward(&self, input_vectors: &Tensor, is_training: bool) -> Result<Tensor> {
@@ -118,7 +121,9 @@ impl LayerNormalization {
     }
 }
 
-// Inverted dropout: оставшиеся значения делим на 1-p; в eval это тождественная функция.
+// В обучении обнуляем значение с вероятностью dropout_probability,
+// остальные умножаем на 1/(1-dropout_probability), сохраняя математическое ожидание.
+// При is_training=false возвращаем input_values без изменений.
 fn apply_dropout(input_values: &Tensor, dropout_probability: f64, is_training: bool, random_number_generator: &mut RandomNumberGenerator) -> Result<Tensor> {
     if !is_training || dropout_probability == 0.0 {
         return Ok(input_values.clone());
@@ -146,7 +151,8 @@ pub(crate) fn causal_mask(sequence_length: usize) -> Result<Tensor> {
     Tensor::from_vec(mask_values, (sequence_length, sequence_length), &Device::Cpu)
 }
 
-// Q: что ищу; K: по каким признакам меня искать; V: что передам другим позициям.
+// query_vectors (Q) описывают, что ищет позиция; key_vectors (K) — как её найти.
+// value_vectors (V) содержат передаваемые признаки. Softmax по ключам даёт attention_probabilities.
 fn compute_attention_probabilities(query_vectors: &Tensor, key_vectors: &Tensor) -> Result<Tensor> {
     let (_, sequence_length, head_dimension): (usize, usize, usize) = query_vectors.dims3()?;
     let attention_scores: Tensor = (query_vectors.matmul(&key_vectors.transpose(1, 2)?)? / (head_dimension as f64).sqrt())?;
@@ -155,16 +161,28 @@ fn compute_attention_probabilities(query_vectors: &Tensor, key_vectors: &Tensor)
 }
 
 struct AttentionHead {
-    query_projection: LinearLayer,
-    key_projection: LinearLayer,
-    value_projection: LinearLayer,
+    query_linear_layer: LinearLayer,
+    key_linear_layer: LinearLayer,
+    value_linear_layer: LinearLayer,
 }
 impl AttentionHead {
-    fn new(parameters: &mut ModelParameters, parameter_prefix: &str, embedding_dimension: usize, head_dimension: usize) -> Result<Self> {
+    fn new(model_parameters: &mut ModelParameters, parameter_prefix: &str, embedding_dimension: usize, head_dimension: usize) -> Result<Self> {
         Ok(Self {
-            query_projection: LinearLayer::new(parameters, &format!("{parameter_prefix}.query"), embedding_dimension, head_dimension, false)?,
-            key_projection: LinearLayer::new(parameters, &format!("{parameter_prefix}.key"), embedding_dimension, head_dimension, false)?,
-            value_projection: LinearLayer::new(parameters, &format!("{parameter_prefix}.value"), embedding_dimension, head_dimension, false)?,
+            query_linear_layer: LinearLayer::new(
+                model_parameters,
+                &format!("{parameter_prefix}.query"),
+                embedding_dimension,
+                head_dimension,
+                false,
+            )?,
+            key_linear_layer: LinearLayer::new(model_parameters, &format!("{parameter_prefix}.key"), embedding_dimension, head_dimension, false)?,
+            value_linear_layer: LinearLayer::new(
+                model_parameters,
+                &format!("{parameter_prefix}.value"),
+                embedding_dimension,
+                head_dimension,
+                false,
+            )?,
         })
     }
     fn forward(
@@ -174,25 +192,25 @@ impl AttentionHead {
         is_training: bool,
         random_number_generator: &mut RandomNumberGenerator,
     ) -> Result<Tensor> {
-        let query_vectors: Tensor = self.query_projection.forward(input_vectors, is_training)?; // B,T,D
-        let key_vectors: Tensor = self.key_projection.forward(input_vectors, is_training)?;
-        let value_vectors: Tensor = self.value_projection.forward(input_vectors, is_training)?;
-        let attention_probabilities: Tensor = compute_attention_probabilities(&query_vectors, &key_vectors)?; // B,T,T: softmax по ключам
+        let query_vectors: Tensor = self.query_linear_layer.forward(input_vectors, is_training)?; // Форма: (batch_size, sequence_length, head_dimension); в формулах (B,T,D).
+        let key_vectors: Tensor = self.key_linear_layer.forward(input_vectors, is_training)?;
+        let value_vectors: Tensor = self.value_linear_layer.forward(input_vectors, is_training)?;
+        let attention_probabilities: Tensor = compute_attention_probabilities(&query_vectors, &key_vectors)?; // Форма: (batch_size, sequence_length, sequence_length); последняя ось — позиции ключей.
         apply_dropout(&attention_probabilities, dropout_probability, is_training, random_number_generator)?.matmul(&value_vectors)
     }
 }
 
 struct MultiHeadAttention {
     attention_heads: Vec<AttentionHead>,
-    output_projection: LinearLayer,
+    output_linear_layer: LinearLayer,
     dropout_probability: f64,
 }
 impl MultiHeadAttention {
-    fn new(parameters: &mut ModelParameters, parameter_prefix: &str, settings: &Settings) -> Result<Self> {
+    fn new(model_parameters: &mut ModelParameters, parameter_prefix: &str, settings: &Settings) -> Result<Self> {
         let attention_heads: Vec<AttentionHead> = (0usize..settings.attention_head_count())
             .map(|head_index: usize| -> Result<AttentionHead> {
                 AttentionHead::new(
-                    parameters,
+                    model_parameters,
                     &format!("{parameter_prefix}.head{head_index}"),
                     settings.embedding_dimension(),
                     settings.embedding_dimension() / settings.attention_head_count(),
@@ -201,8 +219,8 @@ impl MultiHeadAttention {
             .collect::<Result<Vec<AttentionHead>>>()?;
         Ok(Self {
             attention_heads,
-            output_projection: LinearLayer::new(
-                parameters,
+            output_linear_layer: LinearLayer::new(
+                model_parameters,
                 &format!("{parameter_prefix}.projection"),
                 settings.embedding_dimension(),
                 settings.embedding_dimension(),
@@ -219,9 +237,9 @@ impl MultiHeadAttention {
                 attention_head.forward(input_vectors, self.dropout_probability, is_training, random_number_generator)
             })
             .collect::<Result<Vec<Tensor>>>()?;
-        let concatenated_head_vectors: Tensor = Tensor::cat(&head_output_vectors, 2)?; // B,T,H*D = B,T,C
+        let concatenated_head_vectors: Tensor = Tensor::cat(&head_output_vectors, 2)?; // Склеиваем координаты голов: attention_head_count * head_dimension = embedding_dimension.
         apply_dropout(
-            &self.output_projection.forward(&concatenated_head_vectors, is_training)?,
+            &self.output_linear_layer.forward(&concatenated_head_vectors, is_training)?,
             self.dropout_probability,
             is_training,
             random_number_generator,
@@ -230,22 +248,22 @@ impl MultiHeadAttention {
 }
 
 struct FeedForwardNetwork {
-    expansion_projection: LinearLayer,
-    contraction_projection: LinearLayer,
+    expansion_linear_layer: LinearLayer,
+    contraction_linear_layer: LinearLayer,
     dropout_probability: f64,
 }
 impl FeedForwardNetwork {
-    fn new(parameters: &mut ModelParameters, parameter_prefix: &str, settings: &Settings) -> Result<Self> {
+    fn new(model_parameters: &mut ModelParameters, parameter_prefix: &str, settings: &Settings) -> Result<Self> {
         Ok(Self {
-            expansion_projection: LinearLayer::new(
-                parameters,
+            expansion_linear_layer: LinearLayer::new(
+                model_parameters,
                 &format!("{parameter_prefix}.expansion_projection"),
                 settings.embedding_dimension(),
                 4 * settings.embedding_dimension(),
                 true,
             )?,
-            contraction_projection: LinearLayer::new(
-                parameters,
+            contraction_linear_layer: LinearLayer::new(
+                model_parameters,
                 &format!("{parameter_prefix}.contraction_projection"),
                 4 * settings.embedding_dimension(),
                 settings.embedding_dimension(),
@@ -255,9 +273,9 @@ impl FeedForwardNetwork {
         })
     }
     fn forward(&self, input_vectors: &Tensor, is_training: bool, random_number_generator: &mut RandomNumberGenerator) -> Result<Tensor> {
-        let expanded_activations: Tensor = self.expansion_projection.forward(input_vectors, is_training)?.relu()?;
+        let expanded_activations: Tensor = self.expansion_linear_layer.forward(input_vectors, is_training)?.relu()?;
         apply_dropout(
-            &self.contraction_projection.forward(&expanded_activations, is_training)?,
+            &self.contraction_linear_layer.forward(&expanded_activations, is_training)?,
             self.dropout_probability,
             is_training,
             random_number_generator,
@@ -267,30 +285,30 @@ impl FeedForwardNetwork {
 
 struct TransformerBlock {
     attention_layer_normalization: LayerNormalization,
-    self_attention: MultiHeadAttention,
+    multi_head_attention: MultiHeadAttention,
     feed_forward_layer_normalization: LayerNormalization,
     feed_forward_network: FeedForwardNetwork,
 }
 impl TransformerBlock {
-    fn new(parameters: &mut ModelParameters, parameter_prefix: &str, settings: &Settings) -> Result<Self> {
+    fn new(model_parameters: &mut ModelParameters, parameter_prefix: &str, settings: &Settings) -> Result<Self> {
         Ok(Self {
             attention_layer_normalization: LayerNormalization::new(
-                parameters,
+                model_parameters,
                 &format!("{parameter_prefix}.attention_layer_normalization"),
                 settings.embedding_dimension(),
             )?,
-            self_attention: MultiHeadAttention::new(parameters, &format!("{parameter_prefix}.attention"), settings)?,
+            multi_head_attention: MultiHeadAttention::new(model_parameters, &format!("{parameter_prefix}.attention"), settings)?,
             feed_forward_layer_normalization: LayerNormalization::new(
-                parameters,
+                model_parameters,
                 &format!("{parameter_prefix}.feed_forward_layer_normalization"),
                 settings.embedding_dimension(),
             )?,
-            feed_forward_network: FeedForwardNetwork::new(parameters, &format!("{parameter_prefix}.ff"), settings)?,
+            feed_forward_network: FeedForwardNetwork::new(model_parameters, &format!("{parameter_prefix}.ff"), settings)?,
         })
     }
     fn forward(&self, residual_vectors: &Tensor, is_training: bool, random_number_generator: &mut RandomNumberGenerator) -> Result<Tensor> {
         let residual_vectors: Tensor = (residual_vectors
-            + self.self_attention.forward(
+            + self.multi_head_attention.forward(
                 &self.attention_layer_normalization.forward(residual_vectors, is_training)?,
                 is_training,
                 random_number_generator,
@@ -305,24 +323,24 @@ impl TransformerBlock {
 }
 
 pub(crate) struct GptLanguageModel {
-    token_embeddings: EmbeddingTable,
-    position_embeddings: EmbeddingTable,
+    token_embedding_table: EmbeddingTable,
+    position_embedding_table: EmbeddingTable,
     transformer_blocks: Vec<TransformerBlock>,
     final_layer_normalization: LayerNormalization,
-    next_token_projection: LinearLayer,
+    next_token_linear_layer: LinearLayer,
     maximum_context_length: usize,
 }
 impl GptLanguageModel {
-    pub(crate) fn new(parameters: &mut ModelParameters, vocabulary_size: usize, settings: &Settings) -> Result<Self> {
+    pub(crate) fn new(model_parameters: &mut ModelParameters, vocabulary_size: usize, settings: &Settings) -> Result<Self> {
         settings.validate()?;
         Ok(Self {
-            token_embeddings: EmbeddingTable::new(parameters, "token_embeddings", vocabulary_size, settings.embedding_dimension())?,
-            position_embeddings: EmbeddingTable::new(parameters, "position_embeddings", settings.block_size(), settings.embedding_dimension())?,
+            token_embedding_table: EmbeddingTable::new(model_parameters, "token_embeddings", vocabulary_size, settings.embedding_dimension())?,
+            position_embedding_table: EmbeddingTable::new(model_parameters, "position_embeddings", settings.block_size(), settings.embedding_dimension())?,
             transformer_blocks: (0..settings.transformer_block_count())
-                .map(|block_index: usize| -> Result<TransformerBlock> { TransformerBlock::new(parameters, &format!("block{block_index}"), settings) })
+                .map(|block_index: usize| -> Result<TransformerBlock> { TransformerBlock::new(model_parameters, &format!("block{block_index}"), settings) })
                 .collect::<Result<Vec<TransformerBlock>>>()?,
-            final_layer_normalization: LayerNormalization::new(parameters, "final_layer_normalization", settings.embedding_dimension())?,
-            next_token_projection: LinearLayer::new(parameters, "next_token_projection", settings.embedding_dimension(), vocabulary_size, true)?,
+            final_layer_normalization: LayerNormalization::new(model_parameters, "final_layer_normalization", settings.embedding_dimension())?,
+            next_token_linear_layer: LinearLayer::new(model_parameters, "next_token_projection", settings.embedding_dimension(), vocabulary_size, true)?,
             maximum_context_length: settings.block_size(),
         })
     }
@@ -336,16 +354,16 @@ impl GptLanguageModel {
         }
         let position_id_tensor: Tensor = Tensor::arange(0u32, sequence_length as u32, input_token_tensor.device())?;
         let mut context_vectors: Tensor = self
-            .token_embeddings
+            .token_embedding_table
             .forward(input_token_tensor, is_training)?
-            .broadcast_add(&self.position_embeddings.forward(&position_id_tensor, is_training)?)?;
+            .broadcast_add(&self.position_embedding_table.forward(&position_id_tensor, is_training)?)?;
         self.transformer_blocks
             .iter()
             .try_for_each(|transformer_block: &TransformerBlock| -> Result<()> {
                 context_vectors = transformer_block.forward(&context_vectors, is_training, random_number_generator)?;
                 Ok(())
             })?;
-        self.next_token_projection
+        self.next_token_linear_layer
             .forward(&self.final_layer_normalization.forward(&context_vectors, is_training)?, is_training)
     }
 }
@@ -361,8 +379,9 @@ pub(crate) fn mean_next_token_loss(next_token_logits: &Tensor, target_token_tens
     )
 }
 
-// Три эквивалентных способа усреднить прошлое: цикл, нижнетреугольная матрица,
-// masked softmax нулевых scores. Это отправная точка перехода к Q/K/V.
+// Три способа получить среднее текущей и предыдущих позиций: суммы префиксов,
+// нижнетреугольная матрица и softmax нулевых оценок с причинной маской.
+// Нулевые query_vectors/key_vectors дают равные вероятности для всех разрешённых позиций.
 pub(crate) fn demonstrate_causal_averaging() -> Result<()> {
     let position_values: Tensor = Tensor::new(&[[1f32], [2.], [3.], [4.]], &Device::Cpu)?;
     let zero_query_key_vectors: Tensor = Tensor::zeros((1, 4, 1), DType::F32, &Device::Cpu)?;
@@ -442,13 +461,13 @@ mod tests {
 
     #[test]
     fn future_tokens_do_not_change_prefix_logits() -> Result<()> {
-        let mut parameters: ModelParameters = ModelParameters::new(7);
-        let language_model: GptLanguageModel = GptLanguageModel::new(&mut parameters, 5, &settings()?)?;
+        let mut model_parameters: ModelParameters = ModelParameters::new(7);
+        let gpt_language_model: GptLanguageModel = GptLanguageModel::new(&mut model_parameters, 5, &settings()?)?;
         let original_token_tensor: Tensor = Tensor::new(&[[0u32, 1, 2, 3]], &Device::Cpu)?;
         let modified_token_tensor: Tensor = Tensor::new(&[[0u32, 1, 4, 0]], &Device::Cpu)?;
         let mut random_number_generator: RandomNumberGenerator = RandomNumberGenerator::new(3);
-        let original_logits: Tensor = language_model.forward(&original_token_tensor, false, &mut random_number_generator)?;
-        let modified_logits: Tensor = language_model.forward(&modified_token_tensor, false, &mut random_number_generator)?;
+        let original_logits: Tensor = gpt_language_model.forward(&original_token_tensor, false, &mut random_number_generator)?;
+        let modified_logits: Tensor = gpt_language_model.forward(&modified_token_tensor, false, &mut random_number_generator)?;
         let maximum_prefix_difference: f32 = (original_logits.narrow(1, 0, 2)? - modified_logits.narrow(1, 0, 2)?)?
             .abs()?
             .max_all()?
@@ -459,17 +478,17 @@ mod tests {
 
     #[test]
     fn gradients_reach_all_parameters_and_eval_detaches_them() -> Result<()> {
-        let mut parameters: ModelParameters = ModelParameters::new(7);
-        let language_model: GptLanguageModel = GptLanguageModel::new(&mut parameters, 5, &settings()?)?;
+        let mut model_parameters: ModelParameters = ModelParameters::new(7);
+        let gpt_language_model: GptLanguageModel = GptLanguageModel::new(&mut model_parameters, 5, &settings()?)?;
         let input_token_tensor: Tensor = Tensor::new(&[[0u32, 1, 2, 3], [3, 2, 1, 4]], &Device::Cpu)?;
         let target_token_tensor: Tensor = Tensor::new(&[[1u32, 2, 3, 4], [2, 1, 4, 0]], &Device::Cpu)?;
         let mut random_number_generator: RandomNumberGenerator = RandomNumberGenerator::new(4);
         let parameter_gradients: candle_core::backprop::GradStore = mean_next_token_loss(
-            &language_model.forward(&input_token_tensor, true, &mut random_number_generator)?,
+            &gpt_language_model.forward(&input_token_tensor, true, &mut random_number_generator)?,
             &target_token_tensor,
         )?
         .backward()?;
-        parameters
+        model_parameters
             .named_variables
             .iter()
             .try_for_each(|(parameter_name, parameter_variable): &(String, Var)| -> Result<()> {
@@ -487,12 +506,12 @@ mod tests {
                 );
                 Ok(())
             })?;
-        let evaluation_logits: Tensor = language_model.forward(&input_token_tensor, false, &mut random_number_generator)?;
-        let repeated_evaluation_logits: Tensor = language_model.forward(&input_token_tensor, false, &mut random_number_generator)?;
+        let evaluation_logits: Tensor = gpt_language_model.forward(&input_token_tensor, false, &mut random_number_generator)?;
+        let repeated_evaluation_logits: Tensor = gpt_language_model.forward(&input_token_tensor, false, &mut random_number_generator)?;
         assert_eq!(evaluation_logits.to_vec3::<f32>()?, repeated_evaluation_logits.to_vec3::<f32>()?);
         let parameter_gradients: candle_core::backprop::GradStore = mean_next_token_loss(&evaluation_logits, &target_token_tensor)?.backward()?;
         assert!(
-            parameters
+            model_parameters
                 .named_variables
                 .iter()
                 .all(|(_, parameter_variable): &(String, Var)| -> bool { parameter_gradients.get(parameter_variable).is_none() })
@@ -502,7 +521,9 @@ mod tests {
 
     #[test]
     fn attention_backward_matches_finite_difference() -> Result<()> {
-        // f64 и центральная разность: проверяем градиент Q через mask, softmax и AV.
+        // Проверяем производную по query_variable: сравниваем градиент Candle
+        // с центральной разностью attention_objective при малом изменении одной координаты.
+        // f64 уменьшает ошибку округления; проверка проходит через маску, softmax и взвешенную сумму value_vectors.
         let query_coordinates: Vec<f64> = vec![0.1f64, 0.2, 0.3, -0.4, 0.5, 0.6];
         let query_variable: Var = Var::from_vec(query_coordinates.clone(), (1, 3, 2), &Device::Cpu)?;
         let key_vectors: Tensor = Tensor::new(&[[[0.2f64, 0.4], [-0.3, 0.7], [0.8, 0.1]]], &Device::Cpu)?;
@@ -550,8 +571,8 @@ mod tests {
                 .to_vec1::<f32>()?,
             vec![1f32; 64]
         );
-        let mut parameters: ModelParameters = ModelParameters::new(1);
-        let layer_normalization: LayerNormalization = LayerNormalization::new(&mut parameters, "layer_normalization", 3)?;
+        let mut model_parameters: ModelParameters = ModelParameters::new(1);
+        let layer_normalization: LayerNormalization = LayerNormalization::new(&mut model_parameters, "layer_normalization", 3)?;
         let input_vectors: Tensor = Tensor::new(&[[[1f32, 2., 3.], [101., 102., 103.]]], &Device::Cpu)?;
         let normalized_vectors: Vec<Vec<Vec<f32>>> = layer_normalization.forward(&input_vectors, false)?.to_vec3::<f32>()?;
         assert_eq!(normalized_vectors[0][0], normalized_vectors[0][1]);
@@ -583,12 +604,14 @@ mod lecture_tests {
             dropout_probability: DropoutProbability::try_from(0.2)?,
             ..crate::settings::test_settings()?
         };
-        let mut parameters: ModelParameters = ModelParameters::new(1337);
-        let language_model: GptLanguageModel = GptLanguageModel::new(&mut parameters, 65, &settings)?;
-        // V*C + T*C + L*(12*C*C + 13*C) + 2*C + C*V + V.
-        assert_eq!(parameters.parameter_count(), 10_788_929);
+        let mut model_parameters: ModelParameters = ModelParameters::new(1337);
+        let gpt_language_model: GptLanguageModel = GptLanguageModel::new(&mut model_parameters, 65, &settings)?;
+        // Число параметров: V*C + T*C + L*(12*C*C + 13*C) + 2*C + C*V + V.
+        // V=vocabulary_size, C=embedding_dimension, T=block_size, L=transformer_block_count.
+        // Слагаемые: эмбеддинги символов и позиций, блоки, финальная нормировка и выходная проекция.
+        assert_eq!(model_parameters.parameter_count(), 10_788_929);
         let input_token_tensor: Tensor = Tensor::new(&[[0u32, 1, 2]], &Device::Cpu)?;
-        let output_logits: Tensor = language_model.forward(&input_token_tensor, false, &mut RandomNumberGenerator::new(0))?;
+        let output_logits: Tensor = gpt_language_model.forward(&input_token_tensor, false, &mut RandomNumberGenerator::new(0))?;
         assert_eq!(output_logits.dims(), [1, 3, 65]);
         assert!(
             output_logits

@@ -64,7 +64,9 @@ Candle здесь играет роль тензоров и autograd из PyTorc
 
 ### Как читать названия в коде
 
-Имена отражают роль и представление данных. `token_ids` — индексы символов (`Vec<u32>` или срез), `input_token_tensor` — тензор этих индексов, `query_vectors` — обученные признаки запроса, `attention_probabilities` — веса после softmax. Переменная `attention_head` имеет тип `AttentionHead`, а `parameters` — `ModelParameters`.
+Для предметных типов имя переменной повторяет название типа в snake_case: `character_vocabulary: CharacterVocabulary`, `model_parameters: ModelParameters`, `gpt_language_model: GptLanguageModel`. Роль уточняется префиксом, например `token_embedding_table: EmbeddingTable` и `query_linear_layer: LinearLayer`.
+
+Для универсальных типов имя дополнительно описывает содержимое: `token_ids` — индексы символов (`Vec<u32>` или срез), `input_token_tensor` — тензор этих индексов, `query_vectors` — признаки запроса, `attention_probabilities` — вероятности после softmax. Одного имени `tensor` недостаточно, потому что тензоры в модели выполняют разные задачи.
 
 | В формуле | В коде | Значение |
 |---|---|---|
@@ -249,7 +251,7 @@ Token embedding — таблица `(V,C)`: каждому ID соответст
 4. `loss.backward()` вычисляет градиенты всех участвующих параметров.
 5. AdamW меняет их и переходит к следующему batch.
 
-В коде шаги 4–5 объединяет `optimizer.backward_step`. `ModelParameters` хранит `Var`; слои читают те же переменные как тензоры. Мы не преобразуем признаки в `Vec` внутри forward: это разорвало бы граф. В `Vec` переводятся только демонстрации, scalar loss и финальные logits для sampling.
+В коде шаги 4–5 объединяет `adamw_optimizer.backward_step`. `ModelParameters` хранит `Var`; слои читают те же переменные как тензоры. Мы не преобразуем признаки в `Vec` внутри forward: это разорвало бы граф. В `Vec` переводятся только демонстрации, scalar loss и финальные logits для sampling.
 
 AdamW ведёт скользящие средние градиента и его квадрата, корректирует их начальное смещение, масштабирует шаг по координатам и отдельно уменьшает веса (weight decay). Изначально значения в Settings задают beta1=0.9, beta2=0.999, eps=1e-8, weight_decay=0.01 для всех параметров, как при `torch.optim.AdamW(model.parameters(), lr=...)` в исходнике. Расписание learning rate и gradient clipping в этом уроке не добавлены.
 
@@ -298,7 +300,7 @@ generated_token_count: GeneratedTokenCount::from(500),
 | Размер оригинала | 64 | 256 | 384 | 6 | 6 | 0.2 | 5000 | 0.0003 | 200 |
 
 
-Это примеры значений для полей Settings, а не переключаемые режимы. Для быстрой проверки выставь значения первой строки, `evaluation_interval: EvaluationInterval::try_from(10)?` и `generated_token_count: GeneratedTokenCount::from(80)`. Для полного размера выставь значения последней строки и `evaluation_interval: EvaluationInterval::try_from(500)?`. В таблице B/T/C/H/L соответствуют `batch_size`/`block_size`/`embedding_dimension`/`attention_head_count`/`transformer_block_count`; steps/lr/eval batches — `training_step_count`/`optimizer_settings.learning_rate`/`evaluation_batch_count`.
+Это примеры значений для полей Settings, а не переключаемые режимы. Для быстрой проверки выставь значения первой строки, `evaluation_interval: EvaluationInterval::try_from(10)?` и `generated_token_count: GeneratedTokenCount::from(80)`. Для полного размера выставь значения последней строки и `evaluation_interval: EvaluationInterval::try_from(500)?`. В таблице B/T/C/H/L соответствуют `batch_size`/`block_size`/`embedding_dimension`/`attention_head_count`/`transformer_block_count`; steps/lr/eval batches — `training_step_count`/`adamw_settings.learning_rate`/`evaluation_batch_count`.
 
 Модель также работает на CPU, а исходник выбирает CUDA, если она доступна. Время и память полного размера существенно больше tiny: в каждой голове хранится матрица внимания `(B,T,T)`, для backward нужны промежуточные значения всех блоков. Полные 5000 обновлений полного размера здесь не выполнялись; проверены построение модели, число параметров и короткий forward оригинального размера. Проверки обучения и численные результаты выполнены для маленькой конфигурации и быстрой проверки. Совпадение размеров не обещает одинаковых с Python чисел: RNG, порядок инициализации и вычислительные ядра разные.
 
@@ -311,7 +313,7 @@ generated_token_count: GeneratedTokenCount::from(500),
 | `MultiHeadAttention`, `FeedFoward`, `Block` | `MultiHeadAttention`, `FeedForwardNetwork`, `TransformerBlock` |
 | `GPTLanguageModel` | `GptLanguageModel` |
 | `model.eval()` + `no_grad()` | `is_training=false` + отсоединённые параметры |
-| `loss.backward(); optimizer.step()` | `optimizer.backward_step(&next_token_loss)` |
+| `loss.backward(); optimizer.step()` | `adamw_optimizer.backward_step(&next_token_loss)` |
 | `torch.multinomial` | `sample_next_token_id` |
 
 Основная GPT-архитектура соответствует финальному `gpt.py` указанного commit. Происхождение данных и авторство: [SOURCE.md](data/SOURCE.md), [NOTICE.md](NOTICE.md).
