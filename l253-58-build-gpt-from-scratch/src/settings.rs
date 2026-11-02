@@ -4,33 +4,41 @@ use candle_core::{Error, Result};
 use candle_nn::ParamsAdamW;
 
 macro_rules! positive_count {
-    ($($name:ident),+ $(,)?) => {$ (
+    ($($type_name:ident),+ $(,)?) => {$ (
         #[derive(Clone, Copy, Debug)]
-        pub(crate) struct $name(usize);
-        impl TryFrom<usize> for $name {
+        pub(crate) struct $type_name(usize);
+        impl TryFrom<usize> for $type_name {
             type Error = Error;
-            fn try_from(value: usize) -> Result<Self> {
-                if value == 0 { candle_core::bail!(concat!(stringify!($name), ": значение должно быть >0")); }
-                Ok(Self(value))
+            fn try_from(raw_value: usize) -> Result<Self> {
+                if raw_value == 0 { candle_core::bail!(concat!(stringify!($type_name), ": значение должно быть >0")); }
+                Ok(Self(raw_value))
             }
         }
-        impl $name { pub(crate) const fn get(self) -> usize { self.0 } }
+        impl $type_name { pub(crate) const fn get(self) -> usize { self.0 } }
     )+};
 }
-positive_count!(BlockSize, Channels, HeadCount, LayerCount, BatchSize, EvaluationInterval, EvaluationBatches);
+positive_count!(
+    BlockSize,
+    EmbeddingDimension,
+    AttentionHeadCount,
+    TransformerBlockCount,
+    BatchSize,
+    EvaluationInterval,
+    EvaluationBatchCount
+);
 
 #[derive(Clone, Copy, Debug)]
-pub(crate) struct Dropout(f64);
-impl TryFrom<f64> for Dropout {
+pub(crate) struct DropoutProbability(f64);
+impl TryFrom<f64> for DropoutProbability {
     type Error = Error;
-    fn try_from(value: f64) -> Result<Self> {
-        if !(0.0..1.0).contains(&value) {
+    fn try_from(raw_value: f64) -> Result<Self> {
+        if !(0.0..1.0).contains(&raw_value) {
             candle_core::bail!("Dropout: нужно конечное число в [0,1)");
         }
-        Ok(Self(value))
+        Ok(Self(raw_value))
     }
 }
-impl Dropout {
+impl DropoutProbability {
     pub(crate) const fn get(self) -> f64 {
         self.0
     }
@@ -38,29 +46,29 @@ impl Dropout {
 
 // Ноль допустим: можно пропустить обучение или генерацию.
 macro_rules! count_with_zero {
-    ($($name:ident),+ $(,)?) => {$ (
+    ($($type_name:ident),+ $(,)?) => {$ (
         #[derive(Clone, Copy, Debug)]
-        pub(crate) struct $name(usize);
-        impl From<usize> for $name { fn from(value: usize) -> Self { Self(value) } }
-        impl $name { pub(crate) const fn get(self) -> usize { self.0 } }
+        pub(crate) struct $type_name(usize);
+        impl From<usize> for $type_name { fn from(raw_value: usize) -> Self { Self(raw_value) } }
+        impl $type_name { pub(crate) const fn get(self) -> usize { self.0 } }
     )+};
 }
-count_with_zero!(TrainingSteps, GeneratedTokens);
+count_with_zero!(TrainingStepCount, GeneratedTokenCount);
 
 #[derive(Clone, Copy, Debug)]
-pub(crate) struct Prompt(&'static str);
+pub(crate) struct PromptText(&'static str);
 // FromStr принимает произвольный &str и не может сохранить его как &'static str.
 #[allow(clippy::try_from_instead_of_from_str)]
-impl TryFrom<&'static str> for Prompt {
+impl TryFrom<&'static str> for PromptText {
     type Error = Error;
-    fn try_from(value: &'static str) -> Result<Self> {
-        if value.is_empty() {
+    fn try_from(raw_value: &'static str) -> Result<Self> {
+        if raw_value.is_empty() {
             candle_core::bail!("Prompt не может быть пустым");
         }
-        Ok(Self(value))
+        Ok(Self(raw_value))
     }
 }
-impl Prompt {
+impl PromptText {
     pub(crate) const fn get(self) -> &'static str {
         self.0
     }
@@ -68,78 +76,98 @@ impl Prompt {
 
 // Все f64 внутри AdamW тоже проверяем отдельными типами.
 macro_rules! float_setting {
-    ($name:ident, $condition:expr, $message:literal) => {
+    ($type_name:ident, $validation_predicate:expr, $error_message:literal) => {
         #[derive(Clone, Copy, Debug)]
-        pub(crate) struct $name(f64);
-        impl TryFrom<f64> for $name {
+        pub(crate) struct $type_name(f64);
+        impl TryFrom<f64> for $type_name {
             type Error = Error;
-            fn try_from(value: f64) -> Result<Self> {
-                if !value.is_finite() || !($condition)(value) {
-                    candle_core::bail!($message);
+            fn try_from(raw_value: f64) -> Result<Self> {
+                if !raw_value.is_finite() || !($validation_predicate)(raw_value) {
+                    candle_core::bail!($error_message);
                 }
-                Ok(Self(value))
+                Ok(Self(raw_value))
             }
         }
-        impl $name {
+        impl $type_name {
             pub(crate) const fn get(self) -> f64 {
                 self.0
             }
         }
     };
 }
-float_setting!(LearningRate, |v: f64| -> bool { v > 0.0 }, "LearningRate: нужно конечное число >0");
-float_setting!(WeightDecay, |v: f64| -> bool { v >= 0.0 }, "WeightDecay: нужно конечное число >=0");
-float_setting!(AdamBeta1, |v: f64| -> bool { (0.0..1.0).contains(&v) }, "AdamBeta1: нужно число в [0,1)");
-float_setting!(AdamBeta2, |v: f64| -> bool { (0.0..1.0).contains(&v) }, "AdamBeta2: нужно число в [0,1)");
-float_setting!(AdamEpsilon, |v: f64| -> bool { v > 0.0 }, "AdamEpsilon: нужно конечное число >0");
+float_setting!(
+    LearningRate,
+    |learning_rate_value: f64| -> bool { learning_rate_value > 0.0 },
+    "LearningRate: нужно конечное число >0"
+);
+float_setting!(
+    WeightDecay,
+    |weight_decay_value: f64| -> bool { weight_decay_value >= 0.0 },
+    "WeightDecay: нужно конечное число >=0"
+);
+float_setting!(
+    GradientAverageDecay,
+    |gradient_decay_coefficient: f64| -> bool { (0.0..1.0).contains(&gradient_decay_coefficient) },
+    "AdamBeta1: нужно число в [0,1)"
+);
+float_setting!(
+    SquaredGradientAverageDecay,
+    |squared_gradient_decay_coefficient: f64| -> bool { (0.0..1.0).contains(&squared_gradient_decay_coefficient) },
+    "AdamBeta2: нужно число в [0,1)"
+);
+float_setting!(
+    NumericalStabilityEpsilon,
+    |epsilon_value: f64| -> bool { epsilon_value > 0.0 },
+    "AdamEpsilon: нужно конечное число >0"
+);
 
 #[derive(Debug)]
 pub(crate) struct AdamWSettings {
-    pub(crate) lr: LearningRate,
+    pub(crate) learning_rate: LearningRate,
     pub(crate) weight_decay: WeightDecay,
-    pub(crate) beta1: AdamBeta1,
-    pub(crate) beta2: AdamBeta2,
-    pub(crate) eps: AdamEpsilon,
+    pub(crate) gradient_average_decay: GradientAverageDecay,
+    pub(crate) squared_gradient_average_decay: SquaredGradientAverageDecay,
+    pub(crate) numerical_stability_epsilon: NumericalStabilityEpsilon,
 }
 impl AdamWSettings {
     // Возвращаем копию для библиотеки, а не &mut к проверенному состоянию.
-    pub(crate) fn params(&self) -> ParamsAdamW {
+    pub(crate) fn to_candle_parameters(&self) -> ParamsAdamW {
         ParamsAdamW {
-            lr: self.lr.get(),
+            lr: self.learning_rate.get(),
             weight_decay: self.weight_decay.get(),
-            beta1: self.beta1.get(),
-            beta2: self.beta2.get(),
-            eps: self.eps.get(),
+            beta1: self.gradient_average_decay.get(),
+            beta2: self.squared_gradient_average_decay.get(),
+            eps: self.numerical_stability_epsilon.get(),
         }
     }
 }
 
 pub(crate) struct Settings {
-    pub(crate) block: BlockSize,
-    pub(crate) channels: Channels,
-    pub(crate) heads: HeadCount,
-    pub(crate) layers: LayerCount,
-    pub(crate) dropout: Dropout,
-    pub(crate) batch: BatchSize,
-    pub(crate) steps: TrainingSteps,
-    pub(crate) eval_every: EvaluationInterval,
-    pub(crate) eval_batches: EvaluationBatches,
-    pub(crate) optimizer: AdamWSettings,
-    pub(crate) seed: u64, // Любой u64 — допустимый seed.
-    pub(crate) prompt: Prompt,
-    pub(crate) generate: GeneratedTokens,
-    pub(crate) demo_only: bool, // Оба значения bool допустимы.
+    pub(crate) block_size: BlockSize,
+    pub(crate) embedding_dimension: EmbeddingDimension,
+    pub(crate) attention_head_count: AttentionHeadCount,
+    pub(crate) transformer_block_count: TransformerBlockCount,
+    pub(crate) dropout_probability: DropoutProbability,
+    pub(crate) batch_size: BatchSize,
+    pub(crate) training_step_count: TrainingStepCount,
+    pub(crate) evaluation_interval: EvaluationInterval,
+    pub(crate) evaluation_batch_count: EvaluationBatchCount,
+    pub(crate) optimizer_settings: AdamWSettings,
+    pub(crate) random_seed: u64, // Любой u64 — допустимый seed.
+    pub(crate) prompt_text: PromptText,
+    pub(crate) generated_token_count: GeneratedTokenCount,
+    pub(crate) demonstrate_only: bool, // Оба значения bool допустимы.
 }
 impl Settings {
     pub(crate) fn validate(&self) -> Result<()> {
         // Это связи между полями, их невозможно проверить одним отдельным newtype.
-        if !self.channels().is_multiple_of(self.heads()) {
-            candle_core::bail!("channels должно делиться на heads без остатка");
+        if !self.embedding_dimension().is_multiple_of(self.attention_head_count()) {
+            candle_core::bail!("embedding_dimension должно делиться на attention_head_count без остатка");
         }
-        if u32::try_from(self.block()).is_err() {
-            candle_core::bail!("block не помещается в u32 для индексов позиций");
+        if u32::try_from(self.block_size()).is_err() {
+            candle_core::bail!("block_size не помещается в u32 для индексов позиций");
         }
-        if self.channels().checked_mul(4).is_none() || self.batch().checked_mul(self.block()).is_none() {
+        if self.embedding_dimension().checked_mul(4).is_none() || self.batch_size().checked_mul(self.block_size()).is_none() {
             candle_core::bail!("Размеры GPT или batch вызывают переполнение usize");
         }
         Ok(())
@@ -147,48 +175,48 @@ impl Settings {
 }
 
 macro_rules! getters {
-    ($($name:ident: $return_type:ty),+ $(,)?) => {impl Settings {$ (
-        pub(crate) fn $name(&self) -> $return_type { self.$name.get() }
+    ($($field_name:ident: $return_type:ty),+ $(,)?) => {impl Settings {$ (
+        pub(crate) fn $field_name(&self) -> $return_type { self.$field_name.get() }
     )+}};
 }
-getters!(block: usize, channels: usize, heads: usize, layers: usize, dropout: f64,
-    batch: usize, steps: usize, eval_every: usize, eval_batches: usize,
-    prompt: &'static str, generate: usize);
+getters!(block_size: usize, embedding_dimension: usize, attention_head_count: usize, transformer_block_count: usize, dropout_probability: f64,
+    batch_size: usize, training_step_count: usize, evaluation_interval: usize, evaluation_batch_count: usize,
+    prompt_text: &'static str, generated_token_count: usize);
 impl Settings {
-    pub(crate) fn optimizer(&self) -> ParamsAdamW {
-        self.optimizer.params()
+    pub(crate) fn optimizer_parameters(&self) -> ParamsAdamW {
+        self.optimizer_settings.to_candle_parameters()
     }
-    pub(crate) fn seed(&self) -> u64 {
-        self.seed
+    pub(crate) fn random_seed(&self) -> u64 {
+        self.random_seed
     }
-    pub(crate) fn demo_only(&self) -> bool {
-        self.demo_only
+    pub(crate) fn demonstrate_only(&self) -> bool {
+        self.demonstrate_only
     }
 }
 
 #[cfg(test)]
 pub(crate) fn test_settings() -> Result<Settings> {
     Ok(Settings {
-        block: BlockSize::try_from(4)?,
-        channels: Channels::try_from(8)?,
-        heads: HeadCount::try_from(2)?,
-        layers: LayerCount::try_from(2)?,
-        dropout: Dropout::try_from(0.2)?,
-        batch: BatchSize::try_from(2)?,
-        steps: TrainingSteps::from(60),
-        eval_every: EvaluationInterval::try_from(10)?,
-        eval_batches: EvaluationBatches::try_from(2)?,
-        optimizer: AdamWSettings {
-            lr: LearningRate::try_from(0.001)?,
+        block_size: BlockSize::try_from(4)?,
+        embedding_dimension: EmbeddingDimension::try_from(8)?,
+        attention_head_count: AttentionHeadCount::try_from(2)?,
+        transformer_block_count: TransformerBlockCount::try_from(2)?,
+        dropout_probability: DropoutProbability::try_from(0.2)?,
+        batch_size: BatchSize::try_from(2)?,
+        training_step_count: TrainingStepCount::from(60),
+        evaluation_interval: EvaluationInterval::try_from(10)?,
+        evaluation_batch_count: EvaluationBatchCount::try_from(2)?,
+        optimizer_settings: AdamWSettings {
+            learning_rate: LearningRate::try_from(0.001)?,
             weight_decay: WeightDecay::try_from(0.01)?,
-            beta1: AdamBeta1::try_from(0.9)?,
-            beta2: AdamBeta2::try_from(0.999)?,
-            eps: AdamEpsilon::try_from(1e-8)?,
+            gradient_average_decay: GradientAverageDecay::try_from(0.9)?,
+            squared_gradient_average_decay: SquaredGradientAverageDecay::try_from(0.999)?,
+            numerical_stability_epsilon: NumericalStabilityEpsilon::try_from(1e-8)?,
         },
-        seed: 1337,
-        prompt: Prompt::try_from("\n")?,
-        generate: GeneratedTokens::from(20),
-        demo_only: false,
+        random_seed: 1337,
+        prompt_text: PromptText::try_from("\n")?,
+        generated_token_count: GeneratedTokenCount::from(20),
+        demonstrate_only: false,
     })
 }
 
@@ -197,34 +225,46 @@ mod tests {
     use super::*;
     #[test]
     fn scalar_types_reject_invalid_boundaries() {
-        macro_rules! positive { ($($t:ty),+) => {$ (
-            assert!(<$t>::try_from(0usize).is_err());
-            assert_eq!(<$t>::try_from(1usize).unwrap().get(),1);
+        macro_rules! positive { ($($parameter_type:ty),+) => {$ (
+            assert!(<$parameter_type>::try_from(0usize).is_err());
+            assert_eq!(<$parameter_type>::try_from(1usize).unwrap().get(),1);
         )+}; }
-        positive!(BlockSize, Channels, HeadCount, LayerCount, BatchSize, EvaluationInterval, EvaluationBatches);
-        [f64::NAN, f64::INFINITY, f64::NEG_INFINITY, -0.1, 1.0].into_iter().for_each(|invalid: f64| {
-            assert!(Dropout::try_from(invalid).is_err());
-            assert!(AdamBeta1::try_from(invalid).is_err());
-            assert!(AdamBeta2::try_from(invalid).is_err());
-        });
-        assert_eq!(Dropout::try_from(0.0).unwrap().get(), 0.0);
-        assert!(Dropout::try_from(1.0 - f64::EPSILON).is_ok());
-        [f64::NAN, f64::INFINITY, f64::NEG_INFINITY, -1.0, 0.0].into_iter().for_each(|invalid: f64| {
-            assert!(LearningRate::try_from(invalid).is_err());
-            assert!(AdamEpsilon::try_from(invalid).is_err());
-        });
-        [f64::NAN, f64::INFINITY, f64::NEG_INFINITY, -1.0].into_iter().for_each(|invalid: f64| {
-            assert!(WeightDecay::try_from(invalid).is_err());
+        positive!(
+            BlockSize,
+            EmbeddingDimension,
+            AttentionHeadCount,
+            TransformerBlockCount,
+            BatchSize,
+            EvaluationInterval,
+            EvaluationBatchCount
+        );
+        [f64::NAN, f64::INFINITY, f64::NEG_INFINITY, -0.1, 1.0]
+            .into_iter()
+            .for_each(|invalid_value: f64| {
+                assert!(DropoutProbability::try_from(invalid_value).is_err());
+                assert!(GradientAverageDecay::try_from(invalid_value).is_err());
+                assert!(SquaredGradientAverageDecay::try_from(invalid_value).is_err());
+            });
+        assert_eq!(DropoutProbability::try_from(0.0).unwrap().get(), 0.0);
+        assert!(DropoutProbability::try_from(1.0 - f64::EPSILON).is_ok());
+        [f64::NAN, f64::INFINITY, f64::NEG_INFINITY, -1.0, 0.0]
+            .into_iter()
+            .for_each(|invalid_value: f64| {
+                assert!(LearningRate::try_from(invalid_value).is_err());
+                assert!(NumericalStabilityEpsilon::try_from(invalid_value).is_err());
+            });
+        [f64::NAN, f64::INFINITY, f64::NEG_INFINITY, -1.0].into_iter().for_each(|invalid_value: f64| {
+            assert!(WeightDecay::try_from(invalid_value).is_err());
         });
         assert!(WeightDecay::try_from(0.0).is_ok());
-        assert!(Prompt::try_from("").is_err());
-        assert_eq!(Prompt::try_from("\n").unwrap().get(), "\n");
+        assert!(PromptText::try_from("").is_err());
+        assert_eq!(PromptText::try_from("\n").unwrap().get(), "\n");
     }
     #[test]
     fn settings_reject_invalid_combinations_and_keep_zero_steps() -> Result<()> {
         assert!(
             Settings {
-                channels: Channels::try_from(7)?,
+                embedding_dimension: EmbeddingDimension::try_from(7)?,
                 ..test_settings()?
             }
             .validate()
@@ -232,7 +272,7 @@ mod tests {
         );
         assert!(
             Settings {
-                block: BlockSize::try_from(usize::MAX)?,
+                block_size: BlockSize::try_from(usize::MAX)?,
                 ..test_settings()?
             }
             .validate()
@@ -240,25 +280,25 @@ mod tests {
         );
         assert!(
             Settings {
-                batch: BatchSize::try_from(usize::MAX)?,
+                batch_size: BatchSize::try_from(usize::MAX)?,
                 ..test_settings()?
             }
             .validate()
             .is_err()
         );
-        let s: Settings = Settings {
-            steps: TrainingSteps::from(0),
-            generate: GeneratedTokens::from(0),
-            seed: 0,
+        let settings: Settings = Settings {
+            training_step_count: TrainingStepCount::from(0),
+            generated_token_count: GeneratedTokenCount::from(0),
+            random_seed: 0,
             ..test_settings()?
         };
-        s.validate()?;
-        assert_eq!(s.steps(), 0);
-        assert_eq!(s.generate(), 0);
-        assert_eq!(s.seed(), 0);
-        let mut copy: ParamsAdamW = s.optimizer();
-        copy.lr = -1.0;
-        assert!(copy.lr < 0.0 && s.optimizer().lr > 0.0);
+        settings.validate()?;
+        assert_eq!(settings.training_step_count(), 0);
+        assert_eq!(settings.generated_token_count(), 0);
+        assert_eq!(settings.random_seed(), 0);
+        let mut optimizer_parameter_copy: ParamsAdamW = settings.optimizer_parameters();
+        optimizer_parameter_copy.lr = -1.0;
+        assert!(optimizer_parameter_copy.lr < 0.0 && settings.optimizer_parameters().lr > 0.0);
         Ok(())
     }
 }
