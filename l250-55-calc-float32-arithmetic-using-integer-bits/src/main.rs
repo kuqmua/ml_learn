@@ -145,6 +145,139 @@ fn main() -> Result<(), &'static str> {
             }
         }
 
+        fn sub(self, other: Self) -> Self {
+            // a − b = a + (−b). Меняем только бит знака второго числа.
+            self.add(Self { sign: 1 - other.sign, ..other })
+        }
+
+        fn mul(self, other: Self) -> Self {
+            let left = self.classify();
+            let right = other.classify();
+            let sign = self.sign ^ other.sign;
+            let left_zero = matches!(left, FloatClass::PositiveZero | FloatClass::NegativeZero);
+            let right_zero = matches!(right, FloatClass::PositiveZero | FloatClass::NegativeZero);
+            let left_infinity = matches!(left, FloatClass::PositiveInfinity | FloatClass::NegativeInfinity);
+            let right_infinity = matches!(right, FloatClass::PositiveInfinity | FloatClass::NegativeInfinity);
+            if matches!(left, FloatClass::PositiveNan | FloatClass::NegativeNan)
+                || matches!(right, FloatClass::PositiveNan | FloatClass::NegativeNan)
+                || (left_zero && right_infinity) || (left_infinity && right_zero)
+            {
+                return Self::from_integer_fields(0, 255, 4_194_304);
+            }
+            if left_infinity || right_infinity {
+                return Self::from_integer_fields(sign, 255, 0);
+            }
+            if left_zero || right_zero {
+                return Self::from_integer_fields(sign, 0, 0);
+            }
+            let (left_mantissa, left_exponent) = self.normalized_integer_parts();
+            let (right_mantissa, right_exponent) = other.normalized_integer_parts();
+            // Каждая целая мантисса содержит 23 дробных разряда.
+            // (A × 2^(ea−23)) × (B × 2^(eb−23)) = (A×B) × 2^(ea+eb−46).
+            // Произведение двух 24-битных чисел помещается в u64 без потерь.
+            Self::round_integer_result(sign, left_mantissa * right_mantissa,
+                left_exponent + right_exponent - 46)
+        }
+
+        fn div(self, other: Self) -> Self {
+            let left = self.classify();
+            let right = other.classify();
+            let sign = self.sign ^ other.sign;
+            let left_zero = matches!(left, FloatClass::PositiveZero | FloatClass::NegativeZero);
+            let right_zero = matches!(right, FloatClass::PositiveZero | FloatClass::NegativeZero);
+            let left_infinity = matches!(left, FloatClass::PositiveInfinity | FloatClass::NegativeInfinity);
+            let right_infinity = matches!(right, FloatClass::PositiveInfinity | FloatClass::NegativeInfinity);
+            if matches!(left, FloatClass::PositiveNan | FloatClass::NegativeNan)
+                || matches!(right, FloatClass::PositiveNan | FloatClass::NegativeNan)
+                || (left_zero && right_zero) || (left_infinity && right_infinity)
+            {
+                return Self::from_integer_fields(0, 255, 4_194_304);
+            }
+            if left_infinity || right_zero {
+                return Self::from_integer_fields(sign, 255, 0);
+            }
+            if left_zero || right_infinity {
+                return Self::from_integer_fields(sign, 0, 0);
+            }
+            let (numerator, numerator_exponent) = self.normalized_integer_parts();
+            let (denominator, denominator_exponent) = other.normalized_integer_parts();
+            // Сохраняем 32 дополнительных двоичных разряда перед целым делением.
+            let scaled_numerator = numerator * 4_294_967_296; // numerator × 2^32.
+            let quotient = scaled_numerator / denominator;
+            let remainder = scaled_numerator % denominator;
+            // Ненулевой остаток отмечаем младшим битом (sticky).
+            // Этот бит будет отброшен при округлении, но повлияет на его направление.
+            let quotient = if remainder != 0 { quotient | 1 } else { quotient };
+            Self::round_integer_result(sign, quotient,
+                numerator_exponent - denominator_exponent - 32)
+        }
+
+        // Для конечного ненулевого числа: модуль = mantissa × 2^(exponent−23).
+        fn normalized_integer_parts(&self) -> (u64, i32) {
+            let mut stored_exponent = 0_i32;
+            for bit in self.exponent_bits {
+                stored_exponent = stored_exponent * 2 + i32::from(bit);
+            }
+            let mut mantissa = 0_u64;
+            for bit in self.mantissa_bits {
+                mantissa = mantissa * 2 + u64::from(bit);
+            }
+            if stored_exponent != 0 {
+                return (8_388_608 + mantissa, stored_exponent - 127);
+            }
+            // Для Subnormal временно приводим мантиссу к тем же 24 разрядам.
+            // Умножение на 2 компенсируем уменьшением степени: значение сохраняется.
+            let mut exponent = -126;
+            while mantissa < 8_388_608 {
+                mantissa *= 2;
+                exponent -= 1;
+            }
+            (mantissa, exponent)
+        }
+
+        // Записываем magnitude × 2^power в binary32 с одним округлением.
+        fn round_integer_result(sign: u8, magnitude: u64, power: i32) -> Self {
+            if magnitude == 0 {
+                return Self::from_integer_fields(sign, 0, 0);
+            }
+            let highest_bit = 63 - magnitude.leading_zeros() as i32;
+            let mut exponent = highest_bit + power;
+            // Normal: сохраняем 24 значащих бита. Subnormal: шаг не меньше 2^−149.
+            let output_power = (exponent - 23).max(-149);
+            let discarded_count = output_power - power;
+            let mut mantissa = if discarded_count > 64 {
+                0 // Число меньше половины минимального шага.
+            } else if discarded_count == 64 {
+                u64::from(magnitude > 2_u64.pow(63))
+            } else if discarded_count > 0 {
+                let divisor = 2_u64.pow(discarded_count as u32);
+                let kept = magnitude / divisor;
+                let discarded = magnitude % divisor;
+                let halfway = divisor / 2;
+                let round_up = discarded > halfway || (discarded == halfway && kept % 2 == 1);
+                kept + u64::from(round_up)
+            } else {
+                magnitude * 2_u64.pow((-discarded_count) as u32)
+            };
+            if exponent < -126 {
+                // При округлении до 2^23 Subnormal становится минимальным Normal.
+                return if mantissa >= 8_388_608 {
+                    Self::from_integer_fields(sign, 1, 0)
+                } else {
+                    Self::from_integer_fields(sign, 0, mantissa as u32)
+                };
+            }
+            if mantissa >= 16_777_216 {
+                mantissa /= 2;
+                exponent += 1;
+            }
+            if exponent > 127 {
+                return Self::from_integer_fields(sign, 255, 0);
+            }
+            Self::from_integer_fields(sign, (exponent + 127) as u32,
+                (mantissa - 8_388_608) as u32)
+        }
+
         fn classify(&self) -> FloatClass {
             let exponent_is_zero = self.exponent_bits == [0; 8];
             let exponent_is_all_ones = self.exponent_bits == [1; 8];
@@ -283,6 +416,10 @@ fn main() -> Result<(), &'static str> {
     // −3.25 + 1.0 = −2.25.
     let one = Float32::try_from((0, [0, 1, 1, 1, 1, 1, 1, 1], [0; 23]))?;
     let _sum = number.add(one);
+    let _difference = number.sub(one); // −3.25 − 1 = −4.25.
+    let two = Float32::try_from((0, [1, 0, 0, 0, 0, 0, 0, 0], [0; 23]))?;
+    let _product = number.mul(two); // −3.25 × 2 = −6.5.
+    let _quotient = number.div(two); // −3.25 / 2 = −1.625.
 
     // Самое большое положительное Subnormal + минимальный положительный шаг.
     let largest_subnormal = Float32::try_from((0, [0; 8], [1; 23]))?;
